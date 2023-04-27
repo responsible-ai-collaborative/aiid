@@ -389,7 +389,7 @@ export default function SubmissionTable({ data }) {
                 data-cy="edit-submission"
                 onClick={() => {
                   setIsEditing(true);
-                  setSubmission(cell.values);
+                  setSubmission(cell.row.original);
                 }}
                 className="mr-4 text-xs md:text-base whitespace-nowrap"
               >
@@ -398,7 +398,7 @@ export default function SubmissionTable({ data }) {
               <Button
                 color={'success'}
                 data-cy="add-submission-issue"
-                onClick={() => promoteToIssue()}
+                onClick={() => promoteToIssue(cell.row.original)}
                 className="text-xs md:text-base whitespace-nowrap"
               >
                 <Trans>Add as issue</Trans>
@@ -408,7 +408,11 @@ export default function SubmissionTable({ data }) {
                 color={'success'}
                 className="mr-2 text-xs md:text-base whitespace-nowrap"
                 disabled={!isSubmitter || promoting}
-                onClick={() => (isNewIncident ? promoteToIncident() : promoteToReport())}
+                onClick={() =>
+                  isNewIncident
+                    ? promoteToIncident(cell.row.original)
+                    : promoteToReport(cell.row.original)
+                }
               >
                 <div className="flex gap-2">
                   {promoting === 'incident' && <Spinner size="sm" />}
@@ -431,7 +435,7 @@ export default function SubmissionTable({ data }) {
               <Button
                 color="failure"
                 disabled={!isSubmitter || deleting || promoting}
-                onClick={rejectReport}
+                onClick={() => rejectReport(cell.row.original)}
                 className="text-xs md:text-base whitespace-nowrap"
               >
                 <div className="flex gap-2">
