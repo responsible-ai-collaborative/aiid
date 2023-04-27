@@ -22,6 +22,8 @@ export default function PreviewImageInputGroup({
 }) {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
+  const [imageLoadedFailed, setImageLoadedFailed] = useState(false);
+
   // Debounced function needs to be in ref
   // so it can maintain its internal state
   const debouncedUpdateCloudinaryId = useRef(debounce((c) => setCloudinaryID(c), 2000)).current;
@@ -40,6 +42,10 @@ export default function PreviewImageInputGroup({
     }
   }, [cloudinary_id, values.cloudinary_id]);
 
+  const onImageLoaded = (failed) => {
+    setImageLoadedFailed(failed);
+  };
+
   return (
     <>
       <TextInputGroup
@@ -57,6 +63,11 @@ export default function PreviewImageInputGroup({
           schema,
         }}
       />
+      {imageLoadedFailed && (
+        <span className="text-sm text-red-600">
+          <Trans>Image URL is invalid, using fallback image</Trans>
+        </span>
+      )}
       <figure
         data-cy="image-preview-figure"
         id="image-preview-figure"
@@ -83,6 +94,7 @@ export default function PreviewImageInputGroup({
               alt={alt}
               height="300"
               className="inline-block mx-auto min-h-48 min-w-48 max-w-full h-full bg-white"
+              onImageLoaded={onImageLoaded}
             />
           </div>
         </div>

@@ -29,7 +29,7 @@
     },
     "image_url": {
         "title": "Una imagen utilizada para obtener una vista previa del informe del incidente",
-        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí."
+        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí. Si la URL ingresada no es válida, se usará una imagen alternativa en su lugar."
     },
     "incident_id": {
         "title": "¿Es este un incidente existente?",

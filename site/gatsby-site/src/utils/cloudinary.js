@@ -25,6 +25,7 @@ const Image = ({
   height = '800px',
   title,
   itemIdentifier,
+  onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
   const imageElement = useRef(null);
 
@@ -47,6 +48,10 @@ const Image = ({
       setLoadFailed(true);
     }
   }, [publicID, imageElement.current?.imageRef.current]);
+
+  useEffect(() => {
+    onImageLoaded(loadFailed);
+  }, [loadFailed, onImageLoaded]);
 
   const image = new CloudinaryImage(publicID, {
     cloudName: config.cloudinary.cloudName,
