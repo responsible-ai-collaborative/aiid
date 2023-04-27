@@ -8,5 +8,6 @@
   "Notify me of new Incidents": "Notificarme cuando nuevos Incidentes sean creados",
   "New <2>{{name}}</2> Entity incidents": "Nuevos incidentes de la Entidad <2>{{name}}</2>",
   "First Name": "Nombre",
-  "Last Name": "Apellido"
+  "Last Name": "Apellido",
+  "About You": "Acerca de ti"
 }
