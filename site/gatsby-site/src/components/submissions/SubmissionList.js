@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from '../../components/ui/Link';
-import SubmissionReview from '../../components/submissions/SubmissionReview';
 import { FIND_SUBMISSIONS } from '../../graphql/submissions';
 import { useQuery } from '@apollo/client';
 import { Trans } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
-import { Card, ListGroup } from 'flowbite-react';
+import { Card } from 'flowbite-react';
+import SubmissionTable from './SubmissionTable';
 
 const SubmissionList = () => {
   const { data, loading } = useQuery(FIND_SUBMISSIONS);
@@ -19,7 +19,25 @@ const SubmissionList = () => {
           incident reports in the database.
         </Trans>
       </p>
-      <ListGroup className="mb-5" data-cy="submissions">
+      {loading && <ListSkeleton />}
+      {data?.submissions && (
+        <SubmissionTable
+          data={data?.submissions
+            .map((submission) => ({ ...submission, __typename: undefined }))
+            .sort(
+              (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
+            )}
+        />
+      )}
+      {/* // {data?.submissions
+        .map((submission) => ({ ...submission, __typename: undefined }))
+        .sort(
+          (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
+        )
+        .map((submission) => (
+          <div></div>
+        ))} */}
+      {/* <ListGroup className="mb-5" data-cy="submissions">
         {loading && <ListSkeleton />}
         {data?.submissions
           .map((submission) => ({ ...submission, __typename: undefined }))
@@ -35,7 +53,7 @@ const SubmissionList = () => {
               <SubmissionReview submission={submission} />
             </div>
           ))}
-      </ListGroup>
+      </ListGroup> */}
     </Card>
   );
 };

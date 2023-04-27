@@ -38,7 +38,7 @@ function ListCell({ cell }) {
   );
 }
 
-export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
+export default function IncidentsTable({ data, isLiveData = false, setIsLiveData = () => {} }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
   const { isLoggedIn, isRole } = useUserContext();
