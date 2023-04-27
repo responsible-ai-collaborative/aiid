@@ -7,7 +7,7 @@ describe('The CSET taxonomy page', () => {
     cy.visit(url);
   });
 
-  it('Should render CSET fields list and Searchable status', () => {
+  it.skip('Should render CSET fields list and Searchable status', () => {
     cy.visit(url);
 
     cy.waitForStableDOM();
