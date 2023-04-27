@@ -14,6 +14,7 @@ const TagsInputGroup = ({
   schema = null,
   icon = null,
   disabled = false,
+  options = undefined,
   ...props
 }) => {
   const [optional, setOptional] = useState(true);
@@ -34,12 +35,12 @@ const TagsInputGroup = ({
       <div style={{ marginTop: '0.25rem' }}>
         <div
           className={
-            'tags-control-wrapper rounded-md form-control' +
+            'tags-control-wrapper rounded-md form-control bootstrap' +
             (isInvalid ? ' is-invalid border-red-700' : '')
           }
           data-cy={props['data-cy']}
         >
-          <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
+          <TagsControl {...{ name, placeholder, disabled, options }} />
         </div>
         <div className="text-sm text-red-700">
           <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>
