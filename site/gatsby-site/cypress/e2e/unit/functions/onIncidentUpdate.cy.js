@@ -83,14 +83,14 @@ const report = {
   report_number: 2000,
   title: 'Report title',
   authors: ['Pablo Costa'],
+  url: 'https://google.com',
+  source_domain: 'google.com',
 };
 
 const variant = {
   report_number: 2001,
-  title: 'Variant #2001',
-  authors: ['Pablo Costa'],
-  text_inputs: 'Input text',
-  text_outputs: 'Output text',
+  submitters: ['Pablo Costa'],
+  inputs_outputs: ['Input text', 'Output text'],
 };
 
 const stubEverything = (isVariant = false) => {
