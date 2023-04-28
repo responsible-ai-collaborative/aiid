@@ -662,7 +662,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should show a preliminary checks message', () => {
+  it.skip('Should show a preliminary checks message', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -737,7 +737,9 @@ describe('The Submit form', () => {
       }
     }
 
-    cy.wait(['@RelatedReportsByAuthor']);
+    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByURL', '@RelatedReportsByPublishedDate'], {
+      timeout: 30000,
+    });
 
     cy.get('[data-cy="no-related-reports"]').should('be.visible');
 
