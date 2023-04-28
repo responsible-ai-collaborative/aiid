@@ -332,11 +332,15 @@ describe('The Submit form', () => {
       .first()
       .click();
 
+    cy.waitForStableDOM();
+
     cy.get(
       '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
     )
       .last()
       .click();
+
+    cy.waitForStableDOM();
 
     cy.clickOutside();
 
