@@ -35,13 +35,13 @@
         {
             "name": "Variant",
             "apply_when": {
-                "text_inputs": {
-                    "$exists": true
-                },
-                "text_outputs": {
-                    "$exists": true
-                },
                 "title": {
+                    "$eq": ""
+                },
+                "url": {
+                    "$eq": ""
+                },
+                "source_domain": {
                     "$eq": ""
                 }
             },

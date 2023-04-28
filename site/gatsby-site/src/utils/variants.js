@@ -41,8 +41,5 @@ module.exports.isCompleteReport = (report) => {
 };
 
 module.exports.hasVariantData = (report) => {
-  return (
-    (report.text_inputs && report.text_inputs != '') ||
-    (report.text_outputs && report.text_outputs != '')
-  );
+  return report.inputs_outputs && report.inputs_outputs.length > 0;
 };
