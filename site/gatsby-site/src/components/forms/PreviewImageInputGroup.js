@@ -4,6 +4,8 @@ import { Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import TextInputGroup from './TextInputGroup';
 import { Image } from 'utils/cloudinary';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 export default function PreviewImageInputGroup({
   cloudinary_id,
@@ -63,8 +65,9 @@ export default function PreviewImageInputGroup({
           schema,
         }}
       />
-      {imageLoadedFailed && (
-        <span className="text-sm text-red-600">
+      {imageLoadedFailed && touched[name] && (
+        <span className="text-sm text-orange-600 italic">
+          <FontAwesomeIcon icon={faExclamationTriangle} />{' '}
           <Trans>Image URL is invalid, using fallback image</Trans>
         </span>
       )}
