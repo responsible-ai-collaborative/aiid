@@ -72,6 +72,8 @@ describe('Incidents App', () => {
 
     cy.contains('Edit').click();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="incident-form"]').should('exist').as('form');
 
     cy.get(`[name="title"]`).scrollIntoView().clear().type('Test title');
