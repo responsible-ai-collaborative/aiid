@@ -4,7 +4,6 @@ import Layout from 'components/Layout';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
-import WordCounts from 'components/landing/WordCounts';
 import Sponsors from 'components/landing/Sponsors';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
@@ -12,7 +11,7 @@ import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
-import NewsLetterSignup from 'components/landing/newsLetterSignup';
+import NewsletterSignup from 'components/landing/NewsletterSignup';
 import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
@@ -20,12 +19,7 @@ import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 
 const LandingPage = (props) => {
-  const {
-    pageContext: { wordCountsSorted },
-    data,
-  } = props;
-
-  const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
+  const { data } = props;
 
   const { latestReport, latestReportIncident, latestPost } = data;
 
@@ -107,9 +101,9 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%] grow">
-            <NewsLetterSignup/>
+        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap h-[25rem]">
+          <div className="flex-1 lg:max-w-[50%] grow h-full self-stretch">
+            <NewsletterSignup />
           </div>
           <div className="flex-1 lg:max-w-[50%] self-stretch">
             <RandomReports />
