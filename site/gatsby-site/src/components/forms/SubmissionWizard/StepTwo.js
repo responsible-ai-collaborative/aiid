@@ -12,6 +12,7 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import { useUserContext } from 'contexts/userContext';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -79,6 +80,8 @@ const FormDetails = ({
 
   const [submitCount, setSubmitCount] = useState(0);
 
+  const { user } = useUserContext();
+
   const {
     values,
     errors,
@@ -119,6 +122,9 @@ const FormDetails = ({
             touched={touched}
             schema={schema}
             icon={faMedal}
+            disabled={
+              user?.profile?.email && user.customData.first_name && user.customData.last_name
+            }
           />
         </FieldContainer>
 

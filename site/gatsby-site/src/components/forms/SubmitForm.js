@@ -44,7 +44,7 @@ const CustomDateParam = {
 const queryConfig = {
   url: withDefault(StringParam, ''),
   title: withDefault(StringParam, ''),
-  authors: withDefault(StringParam, ''),
+  authors: withDefault(ArrayParam, []),
   submitters: withDefault(ArrayParam, []),
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
@@ -104,12 +104,6 @@ const SubmitForm = () => {
     if (!loading) {
       const submission = { ...query, cloudinary_id: '' };
 
-      for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-        if (submission[key] && !Array.isArray(submission[key])) {
-          submission[key] = [submission[key]];
-        }
-      }
-
       if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
         setIsIncidentResponse(true);
       }
@@ -120,6 +114,10 @@ const SubmitForm = () => {
 
       if (user?.profile?.email) {
         submission.user = { link: user.id };
+
+        if (user.customData.first_name && user.customData.last_name) {
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+        }
       }
 
       setSubmission(submission);

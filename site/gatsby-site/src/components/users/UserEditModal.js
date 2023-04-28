@@ -54,7 +54,7 @@ export default function UserEditModal({ onClose, userId }) {
     variables: { query: { userId } },
   });
 
-  const { isRole } = useUserContext();
+  const { user, isRole } = useUserContext();
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
 
@@ -75,6 +75,8 @@ export default function UserEditModal({ onClose, userId }) {
           last_name: values.last_name,
         },
       });
+
+      await user.refreshCustomData();
 
       addToast({
         message: <>User updated.</>,
