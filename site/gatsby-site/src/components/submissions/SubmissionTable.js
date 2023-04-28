@@ -266,7 +266,7 @@ export default function SubmissionTable({ data }) {
 
   function StringCell({ cell }) {
     return (
-      <div className="max-w-[400px] flex flex-col items-start">
+      <div className="max-w-[450px] flex flex-col items-start">
         <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
           {cell.value}
         </div>
@@ -290,16 +290,17 @@ export default function SubmissionTable({ data }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        className: 'w-[240px]',
+        className: 'min-w-[240px]',
         title: t('Source Domain'),
         accessor: 'source_domain',
       },
       {
-        className: 'w-[240px]',
+        className: 'min-w-[240px]',
         title: t('Authors'),
         accessor: 'authors',
       },
       {
+        className: 'min-w-[240px]',
         title: t('Submitters'),
         accessor: 'submitters',
       },
@@ -358,13 +359,13 @@ export default function SubmissionTable({ data }) {
         Cell: ListCell,
       },
       {
-        className: 'w-[240px]',
+        className: 'min-w-[340px]',
         title: t('Text'),
         accessor: 'text',
         Cell: StringCell,
       },
       {
-        className: 'w-[240px]',
+        className: 'min-w-[340px]',
         title: t('Editor Notes'),
         accessor: 'editor_notes',
         Cell: StringCell,
