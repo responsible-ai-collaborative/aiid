@@ -344,9 +344,13 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.waitForStableDOM();
+
     cy.wait('@FindIncidentsTitles');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[name="incident_title"]').should('not.exist');
 
