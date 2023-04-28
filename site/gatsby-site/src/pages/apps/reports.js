@@ -71,7 +71,7 @@ export default function Incidents(props) {
   const cellData = React.useMemo(() => tableData, [tableData]);
 
   const columns = React.useMemo(() => {
-    let columns = [
+    const columns = [
       {
         title: t('Incident ID'),
         accessor: 'incident_id',

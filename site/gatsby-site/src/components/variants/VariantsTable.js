@@ -132,7 +132,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
   };
 
   const columns = React.useMemo(() => {
-    let columns = [
+    const columns = [
       {
         title: t('Incident ID'),
         accessor: 'incident_id',

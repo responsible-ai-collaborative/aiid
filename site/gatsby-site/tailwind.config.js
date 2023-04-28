@@ -220,11 +220,6 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    backfaceVisibility,
-    require('flowbite/plugin'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/line-clamp'),
-  ],
+  plugins: [backfaceVisibility, require('flowbite/plugin'), require('@tailwindcss/typography')],
   safelist: safelist,
 };

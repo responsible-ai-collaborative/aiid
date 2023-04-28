@@ -330,26 +330,26 @@ export default function ClassificationsDbView(props) {
       if (taxaField.display_type === 'date') {
         column.Filter = SelectDatePickerFilter;
         column.filter = taxaField.short_name.split(' ').join('');
-        column.Cell = function DateCell({ row: { values } }) {
-          return <>{formatDateField(values[column.accessor])}</>;
+        column.Cell = function DateCell({ column: { id }, row: { values } }) {
+          return <>{formatDateField(values[id])}</>;
         };
       }
 
       if (taxaField.display_type === 'string') {
         column.className = 'min-w-[400px]';
-        column.Cell = function StringCell({ row: { values } }) {
+        column.Cell = function StringCell({ column: { id }, row: { values } }) {
           return (
             <div className="max-w-[400px] flex flex-col items-start">
               <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
-                {values[column.accessor]}
+                {values[id]}
               </div>
-              {values[column.accessor]?.length > 130 && (
+              {values[id]?.length > 130 && (
                 <FontAwesomeIcon
                   onClick={() => {
                     setShowModal(true);
                     setModalContent({
                       title: column.title,
-                      content: values[column.accessor],
+                      content: values[id],
                     });
                   }}
                   icon={faExpandAlt}
