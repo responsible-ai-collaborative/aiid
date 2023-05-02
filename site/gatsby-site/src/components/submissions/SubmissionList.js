@@ -29,31 +29,6 @@ const SubmissionList = () => {
             )}
         />
       )}
-      {/* // {data?.submissions
-        .map((submission) => ({ ...submission, __typename: undefined }))
-        .sort(
-          (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
-        )
-        .map((submission) => (
-          <div></div>
-        ))} */}
-      {/* <ListGroup className="mb-5" data-cy="submissions">
-        {loading && <ListSkeleton />}
-        {data?.submissions
-          .map((submission) => ({ ...submission, __typename: undefined }))
-          .sort(
-            (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
-          )
-          .map((submission) => (
-            <div
-              key={submission._id}
-              className="m-0 py-3 border-b last:border-none"
-              data-cy="submission"
-            >
-              <SubmissionReview submission={submission} />
-            </div>
-          ))}
-      </ListGroup> */}
     </Card>
   );
 };
