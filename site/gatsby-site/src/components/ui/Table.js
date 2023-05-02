@@ -2,6 +2,8 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
 import { Button, Dropdown, Pagination, TextInput } from 'flowbite-react';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import { format } from 'date-fns';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -67,6 +69,69 @@ export function DefaultDateCell({ cell }) {
   return <DateLabel date={new Date(cell.value)} />;
 }
 
+export function SelectDatePickerFilter({
+  column: { filterValue = [], preFilteredRows, setFilter, id },
+}) {
+  const { t } = useTranslation();
+
+  const [min, max] = React.useMemo(() => {
+    let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
+
+    let max = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
+
+    preFilteredRows.forEach((row) => {
+      const currentDatetime = new Date(row.values[id]).getTime();
+
+      min = currentDatetime <= min ? currentDatetime : min;
+      max = currentDatetime >= max ? currentDatetime : max;
+    });
+    return [min, max];
+  }, [id, preFilteredRows]);
+
+  if (filterValue.length === 0) {
+    setFilter;
+  }
+
+  const handleApply = (event, picker) => {
+    picker.element.val(
+      format(picker.startDate.toDate(), 'yyyy-MM-dd') +
+        ' - ' +
+        format(picker.endDate.toDate(), 'yyyy-MM-dd')
+    );
+    setFilter([picker.startDate.valueOf() / 1000, picker.endDate.valueOf() / 1000]);
+  };
+
+  const handleCancel = (event, picker) => {
+    picker.element.val('');
+    setFilter([min, max]);
+  };
+
+  return (
+    <div className="flex font-normal mt-2">
+      <DateRangePicker
+        className="custom-picker"
+        onApply={handleApply}
+        onCancel={handleCancel}
+        initialSettings={{
+          showDropdowns: true,
+          autoUpdateInput: false,
+          locale: {
+            cancelLabel: 'Clear',
+          },
+        }}
+      >
+        <input
+          style={{ width: 190 }}
+          type="text"
+          className="text-sm font-semibold form-control col-4 p-2.5"
+          defaultValue=""
+          placeholder={t('Select date range')}
+        />
+      </DateRangePicker>
+    </div>
+  );
+}
+
 export default function Table({ table, className = '', ...props }) {
   const { t } = useTranslation(['entities']);
 
@@ -86,52 +151,54 @@ export default function Table({ table, className = '', ...props }) {
   return (
     <div className={`max-w-full ${className}`} {...props}>
       {/* eslint-disable react/jsx-key */}
-      <div className="max-w-full overflow-x-scroll">
-        <table {...getTableProps()} className="w-full">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400 ">
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps()}
-                    className={`${column.className} py-3 px-4 border-none align-top`}
-                    data-cy={`header-${column.id}`}
-                  >
-                    {column.render('Header')}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()} className="divide-y">
-            {page.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr
-                  {...row.getRowProps()}
-                  className={`border-b dark:bg-gray-800 dark:border-gray-700") + ${
-                    i % 2 == 0
-                      ? 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
-                      : 'bg-white dark:bg-gray-900 dark:border-gray-700'
-                  }`}
-                  data-cy={`row`}
-                >
-                  {row.cells.map((cell) => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        className={`${cell.column.width} py-3 px-4 border-none align-top h-full text-gray-700`}
-                        data-cy={`cell`}
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
+      <div className="max-w-full">
+        <div className="max-h-[800px] overflow-x-scroll">
+          <table {...getTableProps()} className="w-full">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400 ">
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th
+                      {...column.getHeaderProps()}
+                      className={`${column.className} py-3 px-4 border-none align-top`}
+                      data-cy={`header-${column.id}`}
+                    >
+                      {column.render('Header')}
+                    </th>
+                  ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()} className="divide-y">
+              {page.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <tr
+                    {...row.getRowProps()}
+                    className={`border-b dark:bg-gray-800 dark:border-gray-700") + ${
+                      i % 2 == 0
+                        ? 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
+                        : 'bg-white dark:bg-gray-900 dark:border-gray-700'
+                    }`}
+                    data-cy={`row`}
+                  >
+                    {row.cells.map((cell) => {
+                      return (
+                        <td
+                          {...cell.getCellProps()}
+                          className={`${cell.column.width} py-3 px-4 border-none align-top h-full text-gray-700`}
+                          data-cy={`cell`}
+                        >
+                          {cell.render('Cell')}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
         <div className="flex gap-2 justify-start items-center my-3 pl-1 pagination">
           {pageSize < 9999 && (
             <>

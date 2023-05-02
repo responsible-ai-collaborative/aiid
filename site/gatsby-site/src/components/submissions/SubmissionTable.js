@@ -4,7 +4,11 @@ import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import { Button, Modal, Spinner } from 'flowbite-react';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  SelectDatePickerFilter,
+} from 'components/ui/Table';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@apollo/client';
@@ -307,23 +311,28 @@ export default function SubmissionTable({ data }) {
       {
         title: t('Incident Date'),
         accessor: 'incident_date',
+        Filter: SelectDatePickerFilter,
       },
       {
         title: t('Date Published'),
         accessor: 'date_published',
+        Filter: SelectDatePickerFilter,
       },
       {
         title: t('Date Submitted'),
         accessor: 'date_submitted',
+        Filter: SelectDatePickerFilter,
       },
       {
         title: t('Date Downloaded'),
         accessor: 'date_downloaded',
+        Filter: SelectDatePickerFilter,
       },
 
       {
         title: t('Date Modified'),
         accessor: 'date_modified',
+        Filter: SelectDatePickerFilter,
       },
       {
         className: 'w-[240px]',
