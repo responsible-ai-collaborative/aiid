@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import { Button, Modal, Spinner } from 'flowbite-react';
+import { Button, Modal, Progress, Spinner } from 'flowbite-react';
 import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,
@@ -293,6 +293,37 @@ export default function SubmissionTable({ data }) {
 
   const columns = React.useMemo(() => {
     const columns = [
+      {
+        className: 'min-w-[180px]',
+        title: t('Complition Status'),
+        accessor: 'complitation_status',
+        disableFilters: true,
+        Cell: ({ cell }) => {
+          let count = 0;
+
+          Object.keys(cell.row.values).forEach((key) => {
+            if (
+              !(
+                !cell.row.values[key] ||
+                cell.row.values[key].length === 0 ||
+                cell.row.values[key] === ''
+              )
+            ) {
+              count++;
+            }
+          });
+          const progress = Math.round((count / Object.keys(cell.row.values).length) * 100);
+
+          return (
+            <Progress
+              labelProgress={true}
+              progress={progress}
+              size="lg"
+              color={`${progress > 66 ? 'green' : progress > 33 ? 'yellow' : 'red'}`}
+            />
+          );
+        },
+      },
       {
         className: 'min-w-[240px]',
         title: t('Source Domain'),
