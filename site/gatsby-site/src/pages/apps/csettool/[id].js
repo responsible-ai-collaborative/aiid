@@ -42,6 +42,10 @@ const ToolPage = (props) => {
 
             if (isObject(value)) {
               row[classification.namespace] = JSON.stringify(value);
+            } else if (value === true) {
+              row[classification.namespace] = 'True';
+            } else if (value === false) {
+              row[classification.namespace] = 'False';
             } else {
               row[classification.namespace] = value;
             }
