@@ -197,8 +197,6 @@ describe('The Submit form', () => {
 
       cy.get('[data-cy="to-step-2"]').click();
 
-      cy.get('input[name="submitters"]').type('Something');
-
       cy.get('[name="language"]').select('Spanish');
 
       cy.get('[data-cy="to-step-3"]').click();
@@ -218,7 +216,7 @@ describe('The Submit form', () => {
       cy.wait('@insertSubmission').then((xhr) => {
         expect(xhr.request.body.variables.submission).to.deep.nested.include({
           title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-          submitters: ['Something'],
+          submitters: ['Test User'],
           authors: ['Valentina Palladino'],
           incident_date: '2020-01-01',
           incident_editors: ['Sean McGregor', 'Khoa Lam'],
@@ -237,6 +235,8 @@ describe('The Submit form', () => {
           editor_notes: 'Here are some notes',
           description: 'Description',
         });
+
+        expect(xhr.request.body.variables.submission.user.link).to.not.be.undefined;
       });
 
       cy.get('.tw-toast')
@@ -543,7 +543,6 @@ describe('The Submit form', () => {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
-      submitters: 'test submitter',
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
@@ -617,7 +616,7 @@ describe('The Submit form', () => {
         ...values,
         incident_ids: [1],
         authors: [values.authors],
-        submitters: [values.submitters],
+        submitters: ['Test User'],
         tags: [values.tags],
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
