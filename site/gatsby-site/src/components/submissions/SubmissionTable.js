@@ -295,8 +295,8 @@ export default function SubmissionTable({ data }) {
     const columns = [
       {
         className: 'min-w-[180px]',
-        title: t('Complition Status'),
-        accessor: 'complitation_status',
+        title: t('Completion Status'),
+        accessor: 'completion_status',
         disableFilters: true,
         Cell: ({ cell }) => {
           let count = 0;
