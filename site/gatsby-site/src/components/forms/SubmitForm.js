@@ -164,7 +164,6 @@ const SubmitForm = () => {
       const isValid = await checkLink(values.media_url);
 
       // check if the media url is valid. if not then it should return false.
-      console.log('ISVALID goes here', isValid);
 
       // if the media url is not a valid youtube or vimeo video, the set the media url to an empty string.
       if (isValid == false) {
@@ -189,36 +188,25 @@ const SubmitForm = () => {
         embedding: values.embedding || undefined,
       };
 
-      console.log(submission);
-
       submission.deployers = await processEntities(
         allEntities,
         values.deployers,
         createEntityMutation
       );
-      console.log('processed deployers');
 
       submission.developers = await processEntities(
         allEntities,
         values.developers,
         createEntityMutation
       );
-      console.log('processed developers');
 
       submission.harmed_parties = await processEntities(
         allEntities,
         values.harmed_parties,
         createEntityMutation
       );
-      console.log('processed harmed parties');
 
-      // before inserting the submission in to mongodb, capture the video_id and the vimeo_id
-      // console.log("THE NEW TIME");
       await insertSubmission({ variables: { submission } });
-
-      console.log(submission);
-      console.log('After submission');
-      console.log(initialValues);
 
       setSubmission(initialValues);
 
@@ -240,7 +228,6 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.warning,
       });
-      console.log(e);
       throw e;
     }
   };
