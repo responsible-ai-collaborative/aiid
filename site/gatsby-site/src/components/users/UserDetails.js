@@ -1,4 +1,4 @@
-import { Button, Label, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import { Link } from 'gatsby';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,17 +26,39 @@ export default function UserDetails({ userId }) {
 
   return (
     <>
-      <p>
-        <Label value={t('Email address')} /> : {data.user.adminData.email}
-      </p>
-      <p>
-        <Label value={t('First Name')} /> : {data.user.first_name}
-      </p>
-      <p>
-        <Label value={t('Last Name')} /> : {data.user.last_name}
-      </p>
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <tbody>
+          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th
+              scope="row"
+              className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              {t('Email address')}
+            </th>
+            <td className="py-4">{data.user.adminData.email}</td>
+          </tr>
+          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th
+              scope="row"
+              className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              {t('First Name')}
+            </th>
+            <td className="py-4">{data.user.first_name}</td>
+          </tr>
+          <tr className="bg-white dark:bg-gray-800">
+            <th
+              scope="row"
+              className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              {t('Last Name')}
+            </th>
+            <td className="py-4">{data.user.last_name}</td>
+          </tr>
+        </tbody>
+      </table>
 
-      <div className="flex gap-2 items-center justify-between">
+      <div className="flex gap-2 items-center justify-between mt-4">
         <Link to="/logout">
           <Trans ns="login">Log out</Trans>
         </Link>
