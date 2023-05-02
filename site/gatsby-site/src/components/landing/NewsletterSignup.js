@@ -10,6 +10,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { useUserContext } from 'contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import Card from 'elements/Card';
+import Envelope from '../../images/neural-net-envelope.png';
 
 export default function NewsletterSignup() {
   const { t } = useTranslation();
@@ -33,11 +34,16 @@ export default function NewsletterSignup() {
   });
 
   return (
-    <Card className="h-full w-full self-stretch p-6 flex justify-center">
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <Trans ns="landing">Subscribe to our newsletter</Trans>
+    <Card className="h-full w-full self-stretch flex justify-center shadow-md">
+      <h5 className="text-2xl font-bold tracking-tight p-4 pb-2 text-gray-900 dark:text-white">
+        <Trans ns="landing">AIID Newsletter</Trans>
       </h5>
-      <div className="h-full flex-shrink flex items-center justify-center">
+      <div className="h-full flex-shrink flex flex-col items-center justify-center p-8 bg-[#e1effe]">
+        <img
+          src={Envelope}
+          alt={t('An envelope with a neural net diagram on its left')}
+          className="w-1/2 mx-auto drop-shadow-xl mb-6"
+        />
         <Formik
           initialValues={{ emailSubscription: emailValue }}
           validationSchema={SubscribeSchema}
@@ -68,22 +74,15 @@ export default function NewsletterSignup() {
             setSubmitting(false);
           }}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            isValid,
-          }) => (
-            <Form onSubmit={handleSubmit}>
-              <div className="mb-3" id="formBasicEmailSubscription">
+          {({ values, touched, handleChange, handleBlur, handleSubmit, isSubmitting, isValid }) => (
+            <Form
+              onSubmit={handleSubmit}
+              className="w-full flex flex-wrap md:flex-nowrap gap-3 items-end"
+            >
+              <div id="formBasicEmailSubscription" className="w-full shrink-1">
                 <TextInputGroup
                   type="email"
-                  label={t('Email address')}
-                  placeholder={t('Email')}
+                  placeholder={t('Email address')}
                   name="emailSubscription"
                   value={values.emailSubscription}
                   handleChange={(event) => {
@@ -92,14 +91,14 @@ export default function NewsletterSignup() {
                   }}
                   handleBlur={handleBlur}
                   values={values}
-                  errors={errors}
                   touched={touched}
                 />
               </div>
 
-              <div className="flex justify-between gap-3">
+              <div className="flex justify-between gap-3 w-full md:w-min">
                 <Button
                   type="submit"
+                  className="w-full md:w-min"
                   disabled={isSubmitting || !isValid}
                   data-cy="subscribe-to-updates-btn"
                 >
@@ -111,13 +110,16 @@ export default function NewsletterSignup() {
                     ) : (
                       <FontAwesomeIcon icon={faEnvelope} />
                     )}
-                    <Trans ns="login">Subscribe to Major Updates</Trans>
+                    <Trans ns="login">Subscribe</Trans>
                   </div>
                 </Button>
               </div>
             </Form>
           )}
         </Formik>
+        <p>
+          <Trans>Get the latest updates from the AIID. Volume: ~1 / month</Trans>
+        </p>
       </div>
     </Card>
   );

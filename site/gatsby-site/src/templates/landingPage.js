@@ -101,11 +101,11 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap h-[25rem]">
-          <div className="flex-1 lg:max-w-[50%] grow h-full self-stretch">
+        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
+          <div className="flex-1 lg:max-w-[50%]">
             <NewsletterSignup />
           </div>
-          <div className="flex-1 lg:max-w-[50%] self-stretch">
+          <div className="flex-1 lg:max-w-[50%]">
             <RandomReports />
           </div>
         </div>
