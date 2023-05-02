@@ -35,13 +35,13 @@
         {
             "name": "Variant",
             "apply_when": {
+                "source_domain": {
+                    "$eq": ""
+                },
                 "title": {
                     "$eq": ""
                 },
                 "url": {
-                    "$eq": ""
-                },
-                "source_domain": {
                     "$eq": ""
                 }
             },
