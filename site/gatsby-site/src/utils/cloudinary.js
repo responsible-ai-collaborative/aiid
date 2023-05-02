@@ -22,7 +22,7 @@ const Image = ({
   transformation = null,
   plugins = [lazyload()],
   style,
-  height = '800px',
+  height = 800,
   title,
   itemIdentifier,
 }) => {
