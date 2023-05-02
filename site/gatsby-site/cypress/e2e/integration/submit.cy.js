@@ -332,11 +332,15 @@ describe('The Submit form', () => {
       .first()
       .click();
 
+    cy.waitForStableDOM();
+
     cy.get(
       '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
     )
       .last()
       .click();
+
+    cy.waitForStableDOM();
 
     cy.clickOutside();
 
@@ -344,9 +348,13 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.waitForStableDOM();
+
     cy.wait('@FindIncidentsTitles');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[name="incident_title"]').should('not.exist');
 
