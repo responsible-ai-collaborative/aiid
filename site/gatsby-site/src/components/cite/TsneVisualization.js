@@ -435,7 +435,7 @@ function PlotPoint({
               </div>
             </div>
           )}
-          <div>
+          <div className="mt-4">
             <h3 data-cy="title">{incident.title}</h3>
             {taxon && (
               <div style={{ marginTop: '.5em' }}>
