@@ -20,7 +20,7 @@ import SubmissionEditModal from './SubmissionEditModal';
 
 function ListCell({ cell }) {
   return (
-    <div>
+    <div data-cy={`${cell.column.id}`}>
       {cell.value?.map((v, i) => {
         const isLast = i === cell.value.length - 1;
 
@@ -283,7 +283,7 @@ export default function SubmissionTable({ data }) {
 
   function StringCell({ cell }) {
     return (
-      <div className="max-w-[450px] flex flex-col items-start">
+      <div className="max-w-[450px] flex flex-col items-start" data-cy={`${cell?.column?.id}`}>
         <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
           {cell.value}
         </div>
@@ -345,57 +345,104 @@ export default function SubmissionTable({ data }) {
         className: 'min-w-[240px]',
         title: t('Source Domain'),
         accessor: 'source_domain',
+        Cell: ({ cell }) => {
+          return <div data-cy="source_domain">{cell.value}</div>;
+        },
+      },
+      {
+        className: 'min-w-[340px]',
+        title: t('Title'),
+        accessor: 'title',
+        Cell: StringCell,
       },
       {
         className: 'min-w-[240px]',
         title: t('Authors'),
         accessor: 'authors',
+        Cell: ({ cell }) => {
+          return <div data-cy="authors">{cell.value}</div>;
+        },
       },
       {
         className: 'min-w-[240px]',
         title: t('Submitters'),
         accessor: 'submitters',
+        Cell: ({ cell }) => {
+          return <div data-cy="submitters">{cell.value}</div>;
+        },
       },
       {
         title: t('Incident Date'),
         accessor: 'incident_date',
         Filter: SelectDatePickerFilter,
+        Cell: ({ cell }) => {
+          return <div data-cy="incident_date">{cell.value}</div>;
+        },
       },
       {
         title: t('Date Published'),
         accessor: 'date_published',
         Filter: SelectDatePickerFilter,
+        Cell: ({ cell }) => {
+          return <div data-cy="date_published">{cell.value}</div>;
+        },
       },
       {
         title: t('Date Submitted'),
         accessor: 'date_submitted',
         Filter: SelectDatePickerFilter,
+        Cell: ({ cell }) => {
+          return <div data-cy="date_submitted">{cell.value}</div>;
+        },
       },
       {
         title: t('Date Downloaded'),
         accessor: 'date_downloaded',
         Filter: SelectDatePickerFilter,
+        Cell: ({ cell }) => {
+          return <div data-cy="date_downloaded">{cell.value}</div>;
+        },
       },
 
       {
         title: t('Date Modified'),
         accessor: 'date_modified',
         Filter: SelectDatePickerFilter,
+        Cell: ({ cell }) => {
+          return <div data-cy="date_modified">{cell.value}</div>;
+        },
       },
       {
         className: 'w-[240px]',
         title: t('URL'),
         accessor: 'url',
+        Cell: ({ cell }) => {
+          return <div data-cy="url">{cell.value}</div>;
+        },
       },
       {
         className: 'w-[240px]',
         title: t('Language'),
         accessor: 'language',
+        Cell: ({ cell }) => {
+          return <div data-cy="language">{cell.value}</div>;
+        },
       },
       {
         className: 'w-[240px]',
         title: t('ID'),
         accessor: '_id',
+        Cell: ({ cell }) => {
+          return <div data-cy="_id">{cell.value}</div>;
+        },
+      },
+      {
+        className: 'w-[240px]',
+        title: t('Image URL'),
+        accessor: 'image_url',
+        Cell: ({ cell }) => {
+          return <div data-cy="image_url">{cell.value}</div>;
+        },
       },
       {
         title: t('Alleged Deployer of AI System'),
@@ -427,6 +474,18 @@ export default function SubmissionTable({ data }) {
         accessor: 'editor_notes',
         Cell: StringCell,
       },
+      {
+        className: 'min-w-[340px]',
+        title: t('Incident Ids'),
+        accessor: 'incident_ids',
+        Cell: ({ cell }) => {
+          return (
+            <div data-cy="incident_ids">
+              {cell.value?.join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')}
+            </div>
+          );
+        },
+      },
     ];
 
     if (isRole('incident_editor')) {
@@ -435,12 +494,12 @@ export default function SubmissionTable({ data }) {
         className: '',
         accessor: 'actions',
         Cell: ({ cell }) => {
-          const incident_ids = cell.row.incident_ids ?? [];
+          const incident_ids = cell.row?.values?.incident_ids ?? [];
 
           const isNewIncident = incident_ids.length === 0;
 
           return (
-            <div className="flex gap-2">
+            <div className="flex gap-2" data-cy="actions">
               <Button
                 color={'gray'}
                 data-cy="edit-submission"

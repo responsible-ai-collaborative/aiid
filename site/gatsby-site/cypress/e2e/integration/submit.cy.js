@@ -394,10 +394,9 @@ describe('The Submit form', () => {
     cy.wait('@findSubmissions');
 
     cy.contains(
-      '[data-cy="submission"]',
+      '[data-cy="submissions"] tbody > tr',
       'YouTube to crack down on inappropriate content masked as kids’ cartoons'
     ).should('exist');
-    cy.get('[data-cy="submission"] [data-cy="review-button"]').click();
 
     const expectedValues = {
       _id: '6272f2218933c7a9b512e13b',

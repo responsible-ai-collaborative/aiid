@@ -21,13 +21,16 @@ const SubmissionList = () => {
       </p>
       {loading && <ListSkeleton />}
       {data?.submissions && (
-        <SubmissionTable
-          data={data?.submissions
-            .map((submission) => ({ ...submission, __typename: undefined }))
-            .sort(
-              (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
-            )}
-        />
+        <div data-cy="submissions">
+          <SubmissionTable
+            data={data?.submissions
+              .map((submission) => ({ ...submission, __typename: undefined }))
+              .sort(
+                (a, b) =>
+                  new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
+              )}
+          />
+        </div>
       )}
     </Card>
   );
