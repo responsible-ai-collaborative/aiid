@@ -37,7 +37,7 @@ const WordCounts = ({ pageContext, ...props }) => {
         <title>Word Counts</title>
       </AiidHelmet>
       <div className="titleWrapper">
-        <h1 className="font-karla font-bold flex-1 pt-0">Word Counts</h1>
+        <h1>Word Counts</h1>
       </div>
       <div className="styled-main-wrapper">
         <p className="paragraph">

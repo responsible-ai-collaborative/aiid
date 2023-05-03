@@ -65,7 +65,7 @@
     }
 
     .tw-content {
-        @apply flex flex-grow p-4 pb-5 md:px-10 md:pb-10 md:pt-6 z-[1] relative overflow-hidden flex-1;
+        @apply flex flex-grow p-4 pb-5 md:px-10 md:pb-10 z-[1] relative overflow-hidden flex-1;
     }
 
     .tw-container {
@@ -778,5 +778,10 @@
 
   .prose a {
     @apply text-blue-500 !important;
+  }
+
+  .titleWrapper h1 {
+    @apply font-medium m-0 p-0;
+    @apply leading-10 !important;
   }
 }

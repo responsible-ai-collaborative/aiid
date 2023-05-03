@@ -18,7 +18,7 @@ const Account = (props) => {
         <title>{t('Account Details')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">
+        <h1>
           <Trans ns="account">Account Details</Trans>
         </h1>
       </div>
