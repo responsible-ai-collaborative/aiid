@@ -315,12 +315,14 @@ export default function SubmissionTable({ data }) {
           const progress = getProgress(cell.row);
 
           return (
-            <Progress
-              labelProgress={true}
-              progress={progress}
-              size="lg"
-              color={`${progress > 66 ? 'green' : progress > 33 ? 'yellow' : 'red'}`}
-            />
+            <div className="px-3">
+              <Progress
+                labelProgress={true}
+                progress={progress}
+                size="lg"
+                color={`${progress > 66 ? 'green' : progress > 33 ? 'yellow' : 'red'}`}
+              />
+            </div>
           );
         },
         sortType: (rowA, rowB, _id, desc) => {
