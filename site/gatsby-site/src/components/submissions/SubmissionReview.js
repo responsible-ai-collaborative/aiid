@@ -7,13 +7,14 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import { useUserContext } from '../../contexts/userContext';
 import { useMutation, useQuery } from '@apollo/client';
-import { FIND_INCIDENT } from '../../graphql/incidents';
+import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Badge, Button, Card, ListGroup, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { incidentSchema, issueSchema, reportSchema } from './schemas';
+import { arrayToList } from 'utils/typography';
 
 const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = '' }) => {
   return (
@@ -31,7 +32,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
             </div>
             <div style={{ overflowWrap: 'anywhere' }}>
               {isArray(item[key])
-                ? item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)).join(', ')
+                ? arrayToList(item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)))
                 : item[key]}
             </div>
           </div>
@@ -40,7 +41,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
   );
 };
 
-const leadItems = ['source_domain', 'authors', 'submitters', 'incident_id'];
+const leadItems = ['source_domain', 'authors', 'submitters', 'incident_ids'];
 
 const urls = ['url', 'image_url'];
 
@@ -84,7 +85,7 @@ const SubmissionReview = ({ submission }) => {
 
   const [promoting, setPromoting] = useState('');
 
-  const isNewIncident = submission.incident_id === 0;
+  const isNewIncident = submission.incident_ids.length === 0;
 
   const { i18n, t } = useTranslation(['submitted']);
 
@@ -190,23 +191,23 @@ const SubmissionReview = ({ submission }) => {
       variables: {
         input: {
           submission_id: submission._id,
-          incident_ids: [submission.incident_id],
+          incident_ids: submission.incident_ids,
           is_incident_report: true,
         },
       },
     });
 
-    const incident_id = incident_ids[0];
-
-    addToast({
-      message: (
-        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
-          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
-          {{ report_number }}
-        </Trans>
-      ),
-      severity: SEVERITY.success,
-    });
+    for (const incident_id of incident_ids) {
+      addToast({
+        message: (
+          <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+            Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+            {{ report_number }}
+          </Trans>
+        ),
+        severity: SEVERITY.success,
+      });
+    }
 
     setPromoting('');
   }, [submission]);
@@ -262,8 +263,8 @@ const SubmissionReview = ({ submission }) => {
     await deleteSubmission({ variables: { _id: submission._id } });
   };
 
-  const { data: incidentData } = useQuery(FIND_INCIDENT, {
-    variables: { query: { incident_id: submission.incident_id } },
+  const { data: incidentsData } = useQuery(FIND_INCIDENTS, {
+    variables: { query: { incident_id_in: submission.incident_ids } },
   });
 
   return (
@@ -297,7 +298,13 @@ const SubmissionReview = ({ submission }) => {
           {' '}
           <h5>{submission['title']}</h5>
           <div className="flex gap-2 flex-wrap">
-            <Badge>Inc: {submission.incident_date || incidentData?.incident?.date}</Badge>{' '}
+            {submission.incident_date ? (
+              <Badge>Inc: {submission.incident_date}</Badge>
+            ) : (
+              incidentsData?.incidents?.map((incident) => (
+                <Badge key={incident.incident_id}>Inc: {incident.date}</Badge>
+              ))
+            )}
             <Badge>Pub: {submission.date_published}</Badge>{' '}
             <Badge>Sub: {submission.date_submitted}</Badge>{' '}
             {submission.submitters.map((submitter) => (
@@ -373,9 +380,13 @@ const SubmissionReview = ({ submission }) => {
                   {promoting === 'incident' && <Spinner size="sm" />}
                   {isNewIncident ? (
                     <Trans ns="submitted">Add new Incident</Trans>
+                  ) : submission.incident_ids.length == 1 ? (
+                    <Trans ns="submitted" id={submission.incident_ids[0]}>
+                      Add to incident {{ id: submission.incident_ids[0] }}
+                    </Trans>
                   ) : (
-                    <Trans ns="submitted" id={submission.incident_id}>
-                      Add to incident {{ id: submission.incident_id }}
+                    <Trans ns="submitted" ids={arrayToList(submission.incident_ids)}>
+                      Add to incidents {{ ids: arrayToList(submission.incident_ids) }}
                     </Trans>
                   )}
                 </div>

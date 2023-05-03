@@ -113,8 +113,17 @@ const StepThree = (props) => {
           }
         }
       }
+      allMongodbAiidprodEntities {
+        nodes {
+          name
+        }
+      }
     }
   `);
+
+  const entityNames = staticQueryData.allMongodbAiidprodEntities.nodes
+    .map((node) => node.name)
+    .sort();
 
   const tags = [];
 
@@ -139,7 +148,7 @@ const StepThree = (props) => {
         {(TextInputGroupProps) => (
           <>
             <Form>
-              {!data.incident_id && (
+              {data.incident_ids.length == 0 && (
                 <>
                   {isRole('incident_editor') && (
                     <FieldContainer>
@@ -188,6 +197,7 @@ const StepThree = (props) => {
                       placeholder={t('Who employed or was responsible for the technology?')}
                       className="mt-3"
                       schema={stepThreeValidationSchema}
+                      options={entityNames}
                       {...TextInputGroupProps}
                     />
                   </FieldContainer>
@@ -202,6 +212,7 @@ const StepThree = (props) => {
                       )}
                       className="mt-3"
                       schema={stepThreeValidationSchema}
+                      options={entityNames}
                       {...TextInputGroupProps}
                     />
                   </FieldContainer>
@@ -214,6 +225,7 @@ const StepThree = (props) => {
                       placeholder={t('Who experienced negative impacts?')}
                       className="mt-3"
                       schema={stepThreeValidationSchema}
+                      options={entityNames}
                       {...TextInputGroupProps}
                     />
                   </FieldContainer>

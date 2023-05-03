@@ -56,7 +56,7 @@ const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
       dataHash={hash}
       leaderboard={{
         attribute: 'submitters',
-        title: 'Distinct Incidents Reported',
+        title: 'Reports added to Existing Incidents',
       }}
       limit={limit}
       className={className}

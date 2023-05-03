@@ -7,7 +7,6 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { getCloudinaryPublicID } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import Label from '../forms/Label';
-import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
@@ -36,6 +35,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Select } from 'flowbite-react';
+import IncidentsField from 'components/incidents/IncidentsField';
 
 const SubmissionForm = () => {
   const {
@@ -314,12 +314,18 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <IncidentIdField
-          name="incident_id"
-          placeHolder={t('Leave empty to report a new incident')}
-          showIncidentData={false}
-          {...TextInputGroupProps}
-        />
+        <div>
+          <div className="flex items-center">
+            <Label popover="incident_id" label={t('Incident IDs')} />
+          </div>
+          <div className="mt-1">
+            <IncidentsField
+              name="incident_ids"
+              id={'incident_ids'}
+              placeHolder={t('Leave empty to report a new incident')}
+            />
+          </div>
+        </div>
 
         <RelatedIncidents
           incident={values}

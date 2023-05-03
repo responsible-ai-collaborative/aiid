@@ -318,6 +318,8 @@ describe('The Discover app', () => {
 
     cy.contains('li', /^Incidents$/).click();
 
+    cy.waitForStableDOM();
+
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
     cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
   });
