@@ -40,6 +40,8 @@ const report_1 = {
   embedding: {
     vector: [1, 2, 3, 4],
   },
+  url: 'https://url.com',
+  source_domain: 'domain.com',
 };
 
 const report_2 = {
@@ -48,6 +50,8 @@ const report_2 = {
   embedding: {
     vector: [6, 7, 8],
   },
+  url: 'https://url.com',
+  source_domain: 'domain.com',
 };
 
 const report_3 = {
@@ -56,6 +60,8 @@ const report_3 = {
   embedding: {
     vector: [10],
   },
+  url: 'https://url.com',
+  source_domain: 'domain.com',
 };
 
 describe('Functions', () => {
@@ -170,8 +176,9 @@ describe('Functions', () => {
 
       expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
         report_number: { $in: [3] },
-        text_inputs: { $in: [null, ''] },
-        text_outputs: { $in: [null, ''] },
+        title: { $nin: [null, ''] },
+        url: { $nin: [null, ''] },
+        source_domain: { $nin: [null, ''] },
       });
       expect(reportsCollection.updateMany.firstCall.args[1]).to.deep.equal({
         $set: { is_incident_report: true },
@@ -258,8 +265,9 @@ describe('Functions', () => {
 
       expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
         report_number: { $in: [3] },
-        text_inputs: { $in: [null, ''] },
-        text_outputs: { $in: [null, ''] },
+        title: { $nin: [null, ''] },
+        url: { $nin: [null, ''] },
+        source_domain: { $nin: [null, ''] },
       });
       expect(reportsCollection.updateMany.firstCall.args[1]).to.deep.equal({
         $set: { is_incident_report: false },
