@@ -166,8 +166,6 @@ const VariantList = ({ liveVersion, incidentId, variants }) => {
       (a, b) => a.tags.includes(VARIANT_STATUS.rejected) - b.tags.includes(VARIANT_STATUS.rejected)
     );
 
-  console.log('-- variants', variants);
-
   const [variantList, setVariantList] = useState(variants);
 
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
