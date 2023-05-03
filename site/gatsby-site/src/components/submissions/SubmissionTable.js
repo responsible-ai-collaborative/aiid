@@ -268,6 +268,19 @@ export default function SubmissionTable({ data }) {
     await deleteSubmission({ variables: { _id: submission._id } });
   };
 
+  const getProgress = (row) => {
+    let count = 0;
+
+    Object.keys(row.values).forEach((key) => {
+      if (!(!row.values[key] || row.values[key].length === 0 || row.values[key] === '')) {
+        count++;
+      }
+    });
+    const progress = Math.round((count / Object.keys(row.values).length) * 100);
+
+    return progress;
+  };
+
   function StringCell({ cell }) {
     return (
       <div className="max-w-[450px] flex flex-col items-start">
@@ -299,20 +312,7 @@ export default function SubmissionTable({ data }) {
         accessor: 'completion_status',
         disableFilters: true,
         Cell: ({ cell }) => {
-          let count = 0;
-
-          Object.keys(cell.row.values).forEach((key) => {
-            if (
-              !(
-                !cell.row.values[key] ||
-                cell.row.values[key].length === 0 ||
-                cell.row.values[key] === ''
-              )
-            ) {
-              count++;
-            }
-          });
-          const progress = Math.round((count / Object.keys(cell.row.values).length) * 100);
+          const progress = getProgress(cell.row);
 
           return (
             <Progress
@@ -322,6 +322,21 @@ export default function SubmissionTable({ data }) {
               color={`${progress > 66 ? 'green' : progress > 33 ? 'yellow' : 'red'}`}
             />
           );
+        },
+        sortType: (rowA, rowB, _id, desc) => {
+          let progressA = getProgress(rowA);
+
+          let progressB = getProgress(rowB);
+
+          if (Number.isNaN(progressA)) {
+            progressB = desc ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+          }
+          if (Number.isNaN(progressB)) {
+            progressB = desc ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+          }
+          if (progressA > progressB) return 1;
+          if (progressA < progressB) return -1;
+          return 0;
         },
       },
       {
