@@ -501,10 +501,10 @@ export default function ClassificationsDbView(props) {
           <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
             <Trans>Showing the</Trans>
             <Select
-              style={{ width: 120 }}
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
+              className="min-w-[200px]"
             >
               {allTaxonomies.map((taxa) => {
                 return (
@@ -524,12 +524,14 @@ export default function ClassificationsDbView(props) {
             <Trans>Reset filters</Trans>
           </Button>
         </div>
-        {loading && <ListSkeleton />}
-        {!loading && (
-          <div>
-            <Table table={table} />
-          </div>
-        )}
+        <div className="mt-4 always-visible-scroll">
+          {loading && <ListSkeleton />}
+          {!loading && (
+            <div>
+              <Table table={table} />
+            </div>
+          )}
+        </div>
       </div>
       <CustomModal {...fullTextModal} />
 
