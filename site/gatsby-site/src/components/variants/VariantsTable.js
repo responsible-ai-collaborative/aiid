@@ -204,15 +204,18 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div className="flex flex-col gap-2 w-full">
-            {values.inputs_outputs?.map((input_output, index) => (
-              <div
-                className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
-                key={`inputs_outputs.${index}`}
-                data-cy="variant-inputs-outputs"
-              >
-                <Markdown>{input_output}</Markdown>
-              </div>
-            ))}
+            {values.inputs_outputs?.map(
+              (input_output, index) =>
+                input_output != '' && (
+                  <div
+                    className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                    key={`inputs_outputs.${index}`}
+                    data-cy="variant-inputs-outputs"
+                  >
+                    <Markdown>{input_output}</Markdown>
+                  </div>
+                )
+            )}
           </div>
         ),
       },
