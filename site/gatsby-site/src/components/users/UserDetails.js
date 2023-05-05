@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/client';
 import UserEditModal from './UserEditModal';
 
 export default function UserDetails({ userId }) {
-  const { t } = useTranslation(['account']);
+  const { t } = useTranslation(['account', 'translation']);
 
   const [showEditModal, setShowEditModal] = React.useState(false);
 
@@ -36,7 +36,7 @@ export default function UserDetails({ userId }) {
               scope="row"
               className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
             >
-              {t('Email address')}
+              {t('Email')}
             </th>
             <td className="py-4">{data.user.adminData.email}</td>
           </tr>
@@ -82,7 +82,9 @@ export default function UserDetails({ userId }) {
         <Link to="/logout">
           <Trans ns="login">Log out</Trans>
         </Link>
-        <Button onClick={() => setShowEditModal(true)}>Edit</Button>
+        <Button onClick={() => setShowEditModal(true)}>
+          <Trans>Edit</Trans>
+        </Button>
       </div>
 
       {showEditModal && <UserEditModal userId={userId} onClose={() => setShowEditModal(false)} />}

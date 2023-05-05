@@ -21,8 +21,8 @@ const UserForm = () => {
   return (
     <div>
       <div className="mb-2 block">
-        <Label htmlFor="email" value="Email" />
-        <Field name="adminData.email" as={TextInput} placeholder="Email" disabled={true} />
+        <Label htmlFor="email" value={t('Email')} />
+        <Field name="adminData.email" as={TextInput} placeholder={t('Email')} disabled={true} />
       </div>
       <div className="mb-2 block">
         <Label htmlFor="first_name" value={t('First Name')} />
@@ -33,7 +33,7 @@ const UserForm = () => {
         <Field id="last_name" name="last_name" as={TextInput} placeholder={t('Last Name')} />
       </div>
       <div className="mb-2 block">
-        <Label htmlFor="roles" value="Roles" />
+        <Label htmlFor="roles" value={t('Roles')} />
         <TagsControl name="roles" disabled={isSubmitting || !isRole('admin')} />
       </div>
     </div>

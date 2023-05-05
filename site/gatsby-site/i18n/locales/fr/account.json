@@ -3,5 +3,6 @@
     "New <2>{{name}}</2> Entity incidents": "Nouveaux incidents d'entité <2>{{name}}</2>",
     "First Name": "Prénom",
     "Last Name": "Nom",
-    "About You": "À propos de vous"
+    "About You": "À propos de vous",
+    "Roles": "Rôles"
 }
