@@ -54,6 +54,10 @@
         {
             "name": "default",
             "apply_when": {},
+            "document_filters": {
+                "write": {},
+                "read": {}
+            },
             "fields": {
                 "flag": {
                     "write": true,
@@ -61,8 +65,8 @@
                 }
             },
             "read": true,
-            "insert": true,
-            "delete": true,
+            "insert": false,
+            "delete": false,
             "search": true
         }
     ]
