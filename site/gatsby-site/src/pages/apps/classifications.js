@@ -315,8 +315,6 @@ export default function ClassificationsDbView(props) {
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
-  const [allClassifications, setAllClassifications] = useState([]);
-
   const [tableData, setTableData] = useState([]);
 
   const [columnData, setColumnData] = useState([]);
@@ -530,10 +528,6 @@ export default function ClassificationsDbView(props) {
 
     const classificationData = await fetchClassificationData(rowQuery);
 
-    if (classificationData.length > 0) {
-      setAllClassifications(classificationData);
-    }
-
     setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
 
     setLoading(false);
@@ -640,10 +634,10 @@ export default function ClassificationsDbView(props) {
           <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
             <Trans>Showing the</Trans>
             <Select
-              style={{ width: 120 }}
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
+              className="min-w-[200px]"
             >
               {allTaxonomies.map((taxa) => {
                 return (
@@ -663,124 +657,126 @@ export default function ClassificationsDbView(props) {
             <Trans>Reset filters</Trans>
           </Button>
         </div>
-        {loading && <ListSkeleton />}
-        {!loading && (
-          <div>
-            <Table striped={true} hoverable={true} {...getTableProps()}>
-              {headerGroups.map((headerGroup) => (
-                <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
-                      <div
-                        className="flex flex-col"
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                        style={{ marginBottom: 5 }}
-                      >
-                        {column.render('Header')}
-                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                      </div>
-                      <div>{column.canFilter ? column.render('Filter') : null}</div>
-                    </Table.HeadCell>
-                  ))}
-                </Table.Head>
-              ))}
-              <Table.Body {...getTableBodyProps()}>
-                {page.map((row) => {
-                  prepareRow(row);
+        <div className="mt-4 always-visible-scroll">
+          {loading && <ListSkeleton />}
+          {!loading && (
+            <>
+              <Table striped={true} hoverable={true} {...getTableProps()}>
+                {headerGroups.map((headerGroup) => (
+                  <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
+                        <div
+                          className="flex flex-col"
+                          {...column.getHeaderProps(column.getSortByToggleProps())}
+                          style={{ marginBottom: 5 }}
+                        >
+                          {column.render('Header')}
+                          <span>
+                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                          </span>
+                        </div>
+                        <div>{column.canFilter ? column.render('Filter') : null}</div>
+                      </Table.HeadCell>
+                    ))}
+                  </Table.Head>
+                ))}
+                <Table.Body {...getTableBodyProps()}>
+                  {page.map((row) => {
+                    prepareRow(row);
 
-                  return (
-                    <Row
-                      key={row.id}
-                      row={row}
-                      allClassifications={allClassifications}
-                      allTaxonomies={allTaxonomies}
-                      isAdmin={isAdmin}
-                      currentTaxonomy={currentTaxonomy}
-                    />
-                  );
-                })}
-
-                {page.length === 0 && (
-                  <Table.Row>
-                    <Table.Cell colSpan={10}>
-                      <div>
-                        <span>
-                          <Trans>No results found</Trans>
-                        </span>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </Table>
-
-            <div className="flex items-center gap-2">
-              {pageCount > 1 && (
-                <>
-                  <Pagination
-                    className="incidents-pagination mb-0"
-                    onPageChange={(page) => {
-                      gotoPage(page - 1);
-                    }}
-                    currentPage={pageIndex + 1}
-                    showIcons={true}
-                    totalPages={pageCount}
-                  />
-                  <div className="mt-2">
-                    <span>
-                      <Trans
-                        i18nKey="paginationKey"
-                        defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
-                        values={{
-                          currentPageIndex: pageIndex + 1,
-                          pageOptionsLength: pageOptions.length,
-                        }}
-                        components={{ bold: <strong /> }}
+                    return (
+                      <Row
+                        key={row.id}
+                        row={row}
+                        isAdmin={isAdmin}
+                        currentTaxonomy={currentTaxonomy}
                       />
-                    </span>
-                    <span>
-                      | <Trans>Go to page:</Trans>{' '}
-                      <input
-                        type="number"
-                        defaultValue={pageIndex + 1}
-                        onChange={(e) => {
-                          const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                    );
+                  })}
 
-                          gotoPage(page);
-                        }}
-                        style={{ width: '100px' }}
-                      />
-                    </span>{' '}
-                  </div>
-                </>
-              )}
-              <div className="mt-2">
-                <Dropdown
-                  color={'gray'}
-                  label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
-                  style={{ width: 120 }}
-                  size="sm"
-                  value={pageSize}
-                >
-                  {[10, 20, 30, 40, 50, 100, 500, 9999].map((pageSize) => (
-                    <Dropdown.Item
-                      key={pageSize}
-                      onClick={() => {
-                        setPageSize(Number(pageSize));
+                  {page.length === 0 && (
+                    <Table.Row>
+                      <Table.Cell colSpan={10}>
+                        <div>
+                          <span>
+                            <Trans>No results found</Trans>
+                          </span>
+                        </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  )}
+                </Table.Body>
+              </Table>
+
+              <div className="flex items-center gap-2">
+                {pageCount > 1 && (
+                  <>
+                    <Pagination
+                      className="incidents-pagination mb-0"
+                      onPageChange={(page) => {
+                        gotoPage(page - 1);
                       }}
-                    >
-                      {pageSize === 9999 ? (
-                        <Trans>Show all</Trans>
-                      ) : (
-                        <Trans>Show {{ pageSize }}</Trans>
-                      )}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown>
+                      currentPage={pageIndex + 1}
+                      showIcons={true}
+                      totalPages={pageCount}
+                    />
+                    <div className="mt-2">
+                      <span>
+                        <Trans
+                          i18nKey="paginationKey"
+                          defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+                          values={{
+                            currentPageIndex: pageIndex + 1,
+                            pageOptionsLength: pageOptions.length,
+                          }}
+                          components={{ bold: <strong /> }}
+                        />
+                      </span>
+                      <span>
+                        | <Trans>Go to page:</Trans>{' '}
+                        <input
+                          type="number"
+                          defaultValue={pageIndex + 1}
+                          onChange={(e) => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
+
+                            gotoPage(page);
+                          }}
+                          style={{ width: '100px' }}
+                        />
+                      </span>{' '}
+                    </div>
+                  </>
+                )}
+                <div className="mt-2">
+                  <Dropdown
+                    color={'gray'}
+                    label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
+                    style={{ width: 120 }}
+                    size="sm"
+                    value={pageSize}
+                  >
+                    {[10, 20, 30, 40, 50, 100, 500, 9999].map((pageSize) => (
+                      <Dropdown.Item
+                        key={pageSize}
+                        onClick={() => {
+                          setPageSize(Number(pageSize));
+                        }}
+                      >
+                        {pageSize === 9999 ? (
+                          <Trans>Show all</Trans>
+                        ) : (
+                          <Trans>Show {{ pageSize }}</Trans>
+                        )}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
       <CustomModal {...fullTextModal} />
     </Layout>

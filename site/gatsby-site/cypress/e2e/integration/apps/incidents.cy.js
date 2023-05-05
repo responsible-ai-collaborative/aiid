@@ -71,9 +71,23 @@ describe('Incidents App', () => {
 
     cy.contains('Edit').click();
 
-    cy.get('[data-cy="incident-form"]').should('exist').as('form');
+    cy.waitForStableDOM();
 
-    cy.get(`[name="title"]`).scrollIntoView().clear().type('Test title');
+    cy.get('[data-cy="incident-form"]', { timeout: 12000 }).should('exist').as('form');
+
+    cy.get('.submission-modal').find('h3').contains('Edit Incident 112').should('exist');
+
+    cy.get(`[data-cy=title-input]`).scrollIntoView().clear().type('Test title');
+
+    cy.get('[data-cy=description-input]').clear().type('New description');
+
+    cy.get('[data-cy=date-input]').clear().type('2023-05-04');
+
+    cy.get('[data-cy=alleged-deployer-of-ai-system-input] input')
+      .first()
+      .type('Test Deployer{enter}');
+
+    cy.get('[data-cy=editors-input] input').first().type('Pablo Costa{enter}');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -119,6 +133,23 @@ describe('Incidents App', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' &&
+        req.body.variables.entity.entity_id == 'test-deployer',
+      'UpsertTestDeployer',
+      {
+        data: {
+          upsertOneEntity: {
+            __typename: 'Entity',
+            entity_id: 'test-deployer',
+            name: 'Test Deployer',
+          },
+        },
+      }
+    );
+
     cy.contains('Update').scrollIntoView().click();
 
     cy.wait('@UpsertYoutube')
@@ -127,11 +158,41 @@ describe('Incidents App', () => {
 
     cy.wait('@UpsertGoogle').its('request.body.variables.entity.entity_id').should('eq', 'google');
 
+    cy.wait('@UpsertTestDeployer')
+      .its('request.body.variables.entity.entity_id')
+      .should('eq', 'test-deployer');
+
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
+      expect(xhr.request.body.variables.set.description).to.eq('New description');
+      expect(xhr.request.body.variables.set.date).to.eq('2023-05-04');
+
+      expect(xhr.request.body.variables.set.editors).to.have.length(2);
+      expect(xhr.request.body.variables.set.editors).to.contain('Anonymous');
+      expect(xhr.request.body.variables.set.editors).to.contain('Pablo Costa');
+
+      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.have.length(2);
+      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain('youtube');
+      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain(
+        'test-deployer'
+      );
+
+      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.have.length(1);
+      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.contain('youtube');
+
+      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.have.length(
+        1
+      );
+      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.contain(
+        'google'
+      );
+
+      expect(xhr.request.body.variables.set.nlp_similar_incidents).to.have.length(0);
       expect(xhr.request.body.variables.set.editor_similar_incidents).to.contain(4);
+      expect(xhr.request.body.variables.set.editor_dissimilar_incidents).to.have.length(0);
+      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).to.have.length(0);
     });
 
     cy.get('[data-cy="incident-form"]').should('not.exist');
@@ -264,5 +325,21 @@ describe('Incidents App', () => {
             incident.AllegedHarmedOrNearlyHarmedParties.map((i) => i['name']).join(', ')
           );
       });
+  });
+
+  it('Should navigate to the last page, and the first page', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="last-page"]').click();
+
+    cy.get('[data-cy="total-pages"]')
+      .invoke('text')
+      .then((text) => {
+        cy.get('[data-cy="current-page"]').should('have.text', text);
+      });
+
+    cy.get('[data-cy="first-page"]').click();
+
+    cy.get('[data-cy="current-page"]').should('have.text', '1');
   });
 });

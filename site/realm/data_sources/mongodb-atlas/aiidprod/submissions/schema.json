@@ -86,8 +86,11 @@
                 "bsonType": "string"
             }
         },
-        "incident_id": {
-            "bsonType": "int"
+        "incident_ids": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
         },
         "incident_title": {
             "bsonType": "string"
