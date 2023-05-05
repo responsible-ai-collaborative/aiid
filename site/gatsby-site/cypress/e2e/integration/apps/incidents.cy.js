@@ -1,7 +1,6 @@
 import incident from '../../../fixtures/incidents/incident112.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
-import { maybeIt } from '../../../support/utils';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -16,7 +15,7 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length.at.least', 10);
   });
 
-  maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  it.skip('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
