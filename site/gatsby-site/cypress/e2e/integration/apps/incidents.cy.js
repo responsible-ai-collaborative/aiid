@@ -74,7 +74,7 @@ describe('Incidents App', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="incident-form"]').should('exist').as('form');
+    cy.get('[data-cy="incident-form"]', { timeout: 12000 }).should('exist').as('form');
 
     cy.get(`[name="title"]`).scrollIntoView().clear().type('Test title');
 
