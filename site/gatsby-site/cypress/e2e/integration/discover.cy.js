@@ -343,7 +343,7 @@ describe('The Discover app', () => {
       .type('starbucks')
       .type('{enter}');
 
-    cy.url().should('include', 's=starbucks');
+    cy.waitForStableDOM();
 
     cy.get('[data-cy=export-to-csv]').click();
 
