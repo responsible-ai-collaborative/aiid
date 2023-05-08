@@ -63,8 +63,9 @@ exports = async (input) => {
   await reportsCollection.updateMany(
     {
       report_number: { $in: input.report_numbers },
-      text_inputs: { $in: [null, ""] },
-      text_outputs: { $in: [null, ""] },
+      title: { $nin: [null, ""] },
+      url: { $nin: [null, ""] },
+      source_domain: { $nin: [null, ""] },
     },
     {
       $set: { is_incident_report: input.incident_ids.length > 0 }
