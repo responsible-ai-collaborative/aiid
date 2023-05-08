@@ -44,10 +44,6 @@ export default function PreviewImageInputGroup({
     }
   }, [cloudinary_id, values.cloudinary_id]);
 
-  const onImageLoaded = (failed) => {
-    setImageLoadedFailed(failed);
-  };
-
   return (
     <>
       <TextInputGroup
@@ -97,7 +93,7 @@ export default function PreviewImageInputGroup({
               alt={alt}
               height="300"
               className="inline-block mx-auto min-h-48 min-w-48 max-w-full h-full bg-white"
-              onImageLoaded={onImageLoaded}
+              onImageLoaded={setImageLoadedFailed}
             />
           </div>
         </div>
