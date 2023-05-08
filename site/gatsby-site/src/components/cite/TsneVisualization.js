@@ -412,7 +412,7 @@ function PlotPoint({
             <>
               <Image
                 publicID={incidentData.reports[0].cloudinary_id}
-                title={incidentData.title}
+                alt={incidentData.title}
                 className="bg-gray-300"
                 itemIdentifier={t('Incident {{id}}', { id: incidentData.incident_id }).replace(
                   ' ',

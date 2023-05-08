@@ -117,11 +117,13 @@ const Header = ({ location = null }) => {
                 className={'hidden md:inline ml-[10px] mr-[10px] w-[200px]'}
                 src={logo.image !== '' ? logo.image : logoImg}
                 alt={'logo'}
+                loading="lazy"
               />
               <img
                 className="md:hidden w-[50px]"
                 src={logo.mobile !== '' ? logo.mobile : logoImg}
                 alt={'logo'}
+                loading="lazy"
               />
             </div>
             <Divider />

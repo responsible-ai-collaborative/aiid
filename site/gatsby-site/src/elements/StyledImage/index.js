@@ -9,6 +9,7 @@ export function StyledImage(props) {
         className={`flex ml-auto mr-auto mb-2 justify-around items-center h-[85%] w-auto cursor-zoom-in ${
           props.className || ''
         }`}
+        loading="lazy"
       />
     </>
   );
@@ -22,6 +23,7 @@ function LogoImage(props) {
       className={`flex ml-auto mr-auto mb-2 justify-around items-center w-[85%] max-w-[200px] max-h-[80px] ${
         props.className || ''
       }`}
+      loading="lazy"
     />
   );
 }
@@ -50,6 +52,7 @@ export function StyledImageCover(props) {
         className={`flex ml-auto mr-auto mb-[30px] justify-around items-center max-w-[220px] rounded border-black ${
           props.className || ''
         }`}
+        loading="lazy"
       />
     </>
   );

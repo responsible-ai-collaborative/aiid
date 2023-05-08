@@ -96,39 +96,41 @@ const VariantCard = ({ variant, incidentId }) => {
               </div>
             </>
           )}
-          {variant.inputs_outputs && variant.inputs_outputs.length > 0 && (
-            <>
-              <div className="font-bold flex items-center gap-2">
-                <Trans ns="variants">Inputs / Outputs</Trans>
-                <Tooltip
-                  content={
-                    <Trans ns="variants">
-                      The sequence of data inputs into the intelligent system and outputs produced
-                      by the system involved in the incident. For a chatbot, this will generally
-                      present a back and forth between a human and the chatbot&apos;s responses.
-                    </Trans>
-                  }
-                  trigger="click"
-                  placement="right"
-                >
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                    className="far fa-question-circle"
-                  />
-                </Tooltip>
-              </div>
-              {variant.inputs_outputs.map((input_output, index) => (
-                <div
-                  className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
-                  key={`inputs_outputs.${index}`}
-                  data-cy="variant-inputs-outputs"
-                >
-                  <Markdown>{input_output}</Markdown>
+          {variant.inputs_outputs &&
+            variant.inputs_outputs.length > 0 &&
+            variant.inputs_outputs.some((io) => io != '') && (
+              <>
+                <div className="font-bold flex items-center gap-2">
+                  <Trans ns="variants">Inputs / Outputs</Trans>
+                  <Tooltip
+                    content={
+                      <Trans ns="variants">
+                        The sequence of data inputs into the intelligent system and outputs produced
+                        by the system involved in the incident. For a chatbot, this will generally
+                        present a back and forth between a human and the chatbot&apos;s responses.
+                      </Trans>
+                    }
+                    trigger="click"
+                    placement="right"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                      className="far fa-question-circle"
+                    />
+                  </Tooltip>
                 </div>
-              ))}
-            </>
-          )}
+                {variant.inputs_outputs.map((input_output, index) => (
+                  <div
+                    className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                    key={`inputs_outputs.${index}`}
+                    data-cy="variant-inputs-outputs"
+                  >
+                    <Markdown>{input_output}</Markdown>
+                  </div>
+                ))}
+              </>
+            )}
         </div>
 
         {!loadingUserContext && isRole('incident_editor') && (
@@ -154,6 +156,15 @@ const VariantList = ({ liveVersion, incidentId, variants }) => {
   const { t } = useTranslation(['variants']);
 
   const [displayForm, setDisplayForm] = useState(false);
+
+  //Sort variants
+  variants = variants
+    .sort(
+      (a, b) => b.tags.includes(VARIANT_STATUS.approved) - a.tags.includes(VARIANT_STATUS.approved)
+    )
+    .sort(
+      (a, b) => a.tags.includes(VARIANT_STATUS.rejected) - b.tags.includes(VARIANT_STATUS.rejected)
+    );
 
   const [variantList, setVariantList] = useState(variants);
 
@@ -186,7 +197,16 @@ const VariantList = ({ liveVersion, incidentId, variants }) => {
 
       const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports.slice());
 
-      const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
+      const variants = sortedIncidentReports
+        .filter((report) => !isCompleteReport(report))
+        .sort(
+          (a, b) =>
+            b.tags.includes(VARIANT_STATUS.approved) - a.tags.includes(VARIANT_STATUS.approved)
+        )
+        .sort(
+          (a, b) =>
+            a.tags.includes(VARIANT_STATUS.rejected) - b.tags.includes(VARIANT_STATUS.rejected)
+        );
 
       setVariantList(variants);
     }
