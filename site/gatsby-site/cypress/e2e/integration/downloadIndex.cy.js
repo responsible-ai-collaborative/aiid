@@ -69,7 +69,7 @@ describe('Download Algolia Index', () => {
             incident_date: '2016-03-24',
             description: '"Tay" says she supports genocide and hates black people.',
             authors: ['Rob Price'],
-            image_url:
+            media_url:
               'https://amp.businessinsider.com/images/56f3ebc19105842b008b870b-960-480.png',
             cloudinary_id:
               'reports/amp.businessinsider.com/images/56f3ebc19105842b008b870b-960-480.png',

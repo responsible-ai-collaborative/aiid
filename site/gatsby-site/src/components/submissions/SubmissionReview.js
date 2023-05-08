@@ -43,7 +43,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
 
 const leadItems = ['source_domain', 'authors', 'submitters', 'incident_ids'];
 
-const urls = ['url', 'image_url'];
+const urls = ['url', 'media_url'];
 
 const dateRender = [
   'incident_date',
@@ -64,9 +64,13 @@ const SubmissionReview = ({ submission }) => {
 
   const isSubmitter = isRole('submitter');
 
+  console.log(isSubmitter);
+
   const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',
   });
+
+  console.log(submission);
 
   const promoteSubmission = ({ submission, variables }) =>
     promoteSubmissionToReport({
@@ -216,6 +220,7 @@ const SubmissionReview = ({ submission }) => {
     if (!(await validateSchema({ submission, schema: incidentSchema }))) {
       return;
     }
+    console.log(submission);
 
     if (
       !confirm(

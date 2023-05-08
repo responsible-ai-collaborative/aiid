@@ -27,6 +27,8 @@ import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
+// validator from a new file
+import { checkLink } from './check_video';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -49,7 +51,7 @@ const queryConfig = {
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
-  image_url: withDefault(StringParam, ''),
+  media_url: withDefault(StringParam, ''),
   incident_ids: withDefault(NumericArrayParam, []),
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
@@ -63,7 +65,7 @@ const initialValues = {
   incident_date: '',
   date_published: '',
   date_downloaded: '',
-  image_url: '',
+  media_url: '',
   cloudinary_id: '',
   incident_ids: [],
   text: '',
@@ -112,8 +114,8 @@ const SubmitForm = () => {
       setIsIncidentResponse(true);
     }
 
-    if (queryParams.image_url) {
-      queryParams.cloudinary_id = getCloudinaryPublicID(queryParams.image_url);
+    if (queryParams.media_url) {
+      queryParams.cloudinary_id = getCloudinaryPublicID(queryParams.media_url);
     }
 
     setSubmission(queryParams);
@@ -169,6 +171,19 @@ const SubmitForm = () => {
       const url = new URL(values?.url);
 
       const source_domain = getSourceDomain(url);
+
+      // check and grab the platfrom of the media source
+
+      const isValid = await checkLink(values.media_url);
+
+      // check if the media url is valid. if not then it should return false.
+
+      // if the media url is not a valid youtube or vimeo video, the set the media url to an empty string.
+      if (isValid == false) {
+        values.media_url = '';
+      }
+
+      // grab the video id from a valid vimeo or youtube url
 
       const submission = {
         ...values,

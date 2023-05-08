@@ -59,7 +59,7 @@
         "flag": {
             "bsonType": "bool"
         },
-        "image_url": {
+        "media_url": {
             "bsonType": "string"
         },
         "inputs_outputs": {
@@ -115,7 +115,7 @@
         "epoch_date_modified",
         "epoch_date_published",
         "epoch_date_submitted",
-        "image_url",
+        "media_url",
         "cloudinary_id",
         "authors",
         "submitters",

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import md5 from 'md5';
-import { Image as CloudinaryImage } from 'utils/cloudinary';
+import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
@@ -14,6 +14,7 @@ import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
+import VideoPlayer from 'components/cite/VideoPlayer';
 
 const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }) => {
   const { isRole, loading } = useUserContext();
@@ -59,14 +60,20 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <CloudinaryImage
-            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
-            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
-            alt={item.title}
-            transformation={fill().height(480)}
-            itemIdentifier={t('Report {{report_number}}', {
-              report_number: item.report_number,
-            }).replace(' ', '.')}
+          <VideoPlayer
+            className={`img-fluid h-full w-full max-w-full object-cover`}
+            mediaURL={item.media_url}
+            fallback={
+              <Image
+                className={`img-fluid h-full w-full max-w-full object-cover`}
+                publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
+                alt={item.title}
+                transformation={fill().height(480)}
+                itemIdentifier={t('Report {{report_number}}', {
+                  report_number: item.report_number,
+                }).replace(' ', '.')}
+              />
+            }
           />
         </div>
         <div

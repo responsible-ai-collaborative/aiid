@@ -29,7 +29,7 @@ function ReportPage(props) {
 
   const metaDescription = report.description;
 
-  const metaImage = report.image_url;
+  const metaImage = report.media_url;
 
   return (
     <Layout {...props}>
@@ -66,7 +66,7 @@ export const query = graphql`
       report_number
       title
       url
-      image_url
+      media_url
       cloudinary_id
       source_domain
       mongodb_id

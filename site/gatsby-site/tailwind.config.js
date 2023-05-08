@@ -220,6 +220,11 @@ module.exports = {
       },
     },
   },
-  plugins: [backfaceVisibility, require('flowbite/plugin'), require('@tailwindcss/typography')],
+  plugins: [
+    backfaceVisibility,
+    require('flowbite/plugin'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
   safelist: safelist,
 };

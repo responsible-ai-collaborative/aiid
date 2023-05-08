@@ -400,7 +400,7 @@ describe('Cite pages', () => {
             title
             description
             reports {
-              image_url
+              media_url
               date_published
             }
           }

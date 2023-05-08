@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       ? format(parseISO(article.date_published), 'yyyy-MM-dd')
       : null,
     date_downloaded: format(new Date(), 'yyyy-MM-dd'),
-    image_url: article.lead_image_url,
+    media_url: article.lead_media_url,
     text: article.content?.replace(stripImages, '').trim(),
   };
 

@@ -102,7 +102,7 @@ export const pageQuery = graphql`
         date_submitted
         description
         flag
-        image_url
+        media_url
         language
         source_domain
         submitters

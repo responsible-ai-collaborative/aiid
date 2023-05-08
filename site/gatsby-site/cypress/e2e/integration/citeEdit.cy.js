@@ -76,7 +76,7 @@ describe('Edit report', () => {
       'authors',
       'date_downloaded',
       'date_published',
-      'image_url',
+      'media_url',
       'submitters',
       'title',
       'editor_notes',
@@ -110,7 +110,7 @@ describe('Edit report', () => {
       authors: 'Test Author',
       date_downloaded: '2022-01-01',
       date_published: '2022-02-02',
-      image_url: 'https://test.com/test.jpg',
+      media_url: 'https://test.com/test.jpg',
       submitters: 'Test Submitter',
       title: 'Test Title',
       url: 'https://www.test.com/test',
@@ -171,7 +171,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.epoch_date_modified).eq(epoch_date_modified);
       expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
       expect(xhr.request.body.variables.set.flag).eq(null);
-      expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
+      expect(xhr.request.body.variables.set.media_url).eq('https://test.com/test.jpg');
       expect(xhr.request.body.variables.set.report_number).eq(10);
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
       expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
@@ -249,7 +249,7 @@ describe('Edit report', () => {
       'authors',
       'date_downloaded',
       'date_published',
-      'image_url',
+      'media_url',
       'submitters',
       'title',
       'editor_notes',
@@ -280,7 +280,7 @@ describe('Edit report', () => {
       authors: 'Test Author',
       date_downloaded: '2022-01-01',
       date_published: '2022-02-02',
-      image_url: 'https://test.com/test.jpg',
+      media_url: 'https://test.com/test.jpg',
       submitters: 'Test Submitter',
       title: 'Test Title',
       url: 'https://www.test.com/test',
@@ -341,7 +341,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.epoch_date_modified).eq(epoch_date_modified);
       expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
       expect(xhr.request.body.variables.set.flag).eq(null);
-      expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
+      expect(xhr.request.body.variables.set.media_url).eq('https://test.com/test.jpg');
       expect(xhr.request.body.variables.set.report_number).eq(10);
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
       expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);

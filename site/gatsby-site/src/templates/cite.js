@@ -55,7 +55,9 @@ function CitePage(props) {
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
 
-  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
+  const sortedReports = sortedIncidentReports
+    .filter((report) => isCompleteReport(report))
+    .reverse();
 
   const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
 
@@ -215,7 +217,7 @@ export const query = graphql`
         title
         description
         url
-        image_url
+        media_url
         cloudinary_id
         source_domain
         mongodb_id

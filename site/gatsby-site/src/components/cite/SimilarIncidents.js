@@ -35,11 +35,11 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   return (
     <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
       <LocalizedLink to={`/cite/${incident.incident_id}`} data-cy="cite-link">
-        {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
+        {(incident.reports[0].cloudinary_id || incident.reports[0]?.media_url) && (
           <Image
             className="object-cover w-full aspect-[16/9]"
             publicID={
-              incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.image_url)}`
+              incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.media_url)}`
             }
             transformation={fill().height(480)}
             alt=""

@@ -130,7 +130,7 @@ const plugins = [
             return allMongodbAiidprodReports.edges.map((edge) => {
               const publicID = edge.node.cloudinary_id
                 ? edge.node.cloudinary_id
-                : `legacy/${md5(edge.node.image_url)}`;
+                : `legacy/${md5(edge.node.media_url)}`;
 
               return Object.assign({}, edge.node.frontmatter, {
                 title: edge.node.title,
@@ -149,21 +149,23 @@ const plugins = [
               });
             });
           },
-          query: `{
-  allMongodbAiidprodReports(sort: {date_submitted: DESC}, limit: 100) {
-    totalCount
-    edges {
-      node {
-        title
-        url
-        description
-        id
-        image_url
-        cloudinary_id
-      }
-    }
-  }
-}`,
+          query: `
+            {
+              allMongodbAiidprodReports(sort: {fields: date_submitted, order: DESC}, limit: 100) {
+                totalCount
+                edges {
+                  node {
+                    title
+                    url
+                    description
+                    id
+                    media_url
+                    cloudinary_id
+                  }
+                }
+              }
+            }
+          `,
           output: '/rss.xml',
           title: 'AI Incident Database RSS Feed',
         },

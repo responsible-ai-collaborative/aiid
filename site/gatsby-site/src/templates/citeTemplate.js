@@ -27,6 +27,8 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 import Tools from 'components/cite/Tools';
+import { isVideo } from 'components/cite/VideoPlayer';
+import VideoPlayerCard from 'components/cite/VideoPlayerCard';
 
 function CiteTemplate({
   incident,
@@ -82,6 +84,12 @@ function CiteTemplate({
       }),
     []
   );
+
+  let videoURLs = [];
+
+  sortedReports.forEach((report) => {
+    if (isVideo(report.media_url)) videoURLs.push(report.media_url);
+  });
 
   const [taxonomiesList, setTaxonomiesList] = useState(
     taxonomies.map((t) => ({ ...t, canEdit: false }))
@@ -246,6 +254,7 @@ function CiteTemplate({
           </Row>
 
           <Container>
+            <VideoPlayerCard videoURLs={videoURLs} />
             <Row>
               <Col>
                 <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">

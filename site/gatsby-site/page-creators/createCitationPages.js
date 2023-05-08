@@ -28,7 +28,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
             title
             report_number
             language
-            image_url
+            media_url
             cloudinary_id
           }
         }

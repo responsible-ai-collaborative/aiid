@@ -37,7 +37,7 @@ const response = {
           title: 'Google’s YouTube Kids App Criticized for ‘Inappropriate Content’',
           report_number: 1,
           language: 'en',
-          image_url:
+          media_url:
             'http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_20150518174822.jpg',
           cloudinary_id:
             'reports/si.wsj.net/public/resources/images/BN-IM269_YouTub_P_20150518174822.jpg',
@@ -46,7 +46,7 @@ const response = {
           title: 'YouTube Kids app is STILL showing disturbing videos',
           report_number: 2,
           language: 'en',
-          image_url:
+          media_url:
             'https://i.dailymail.co.uk/i/pix/2018/02/06/15/48EEE02F00000578-0-image-a-18_1517931140185.jpg',
           cloudinary_id:
             'reports/i.dailymail.co.uk/i/pix/2018/02/06/15/48EEE02F00000578-0-image-a-18_1517931140185.jpg',

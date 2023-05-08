@@ -55,7 +55,7 @@ const CloudinaryImage = (value) => {
     <>
       <Image
         className="h-[320px] object-cover w-full"
-        publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`}
+        publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.media_url)}`}
         alt={value.title}
         transformation={fill().height(640)}
         plugins={[]}
