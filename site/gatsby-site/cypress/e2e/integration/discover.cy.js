@@ -27,6 +27,8 @@ describe('The Discover app', () => {
   it('Performs a search and filters results', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('form#searchForm').as('form');
 
     cy.get('@form')
