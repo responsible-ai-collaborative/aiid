@@ -204,7 +204,6 @@ export function formatDateField(date) {
 }
 
 export default function Table({ table, className = '', ...props }) {
-  console.log(className);
   const { t } = useTranslation(['entities']);
 
   const {
