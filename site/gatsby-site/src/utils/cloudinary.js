@@ -21,9 +21,8 @@ const Image = ({
   alt,
   transformation = null,
   plugins = [lazyload()],
-  style,
-  height = '800px',
-  title,
+  style = null,
+  height = 800,
   itemIdentifier,
 }) => {
   const imageElement = useRef(null);
@@ -69,7 +68,7 @@ const Image = ({
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
-        title={title || alt}
+        title={alt}
         className={`${className} ${!publicID || publicID == '' || loadFailed ? '' : 'hidden'}`}
         height={height}
         style={style}

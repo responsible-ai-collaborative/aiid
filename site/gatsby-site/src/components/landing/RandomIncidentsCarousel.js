@@ -71,7 +71,6 @@ const RandomIncidentsCarousel = () => {
                       publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
                       alt={title}
                       transformation={fill().height(800).width(1000)}
-                      plugins={[]}
                       className="w-full h-full object-cover"
                       itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
                     />

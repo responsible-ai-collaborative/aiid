@@ -42,8 +42,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.image_url)}`
             }
             transformation={fill().height(480)}
-            alt=""
-            title={incident.title}
+            alt={incident.title}
             itemIdentifier={t('Incident {{id}}', { id: incident.incident_id }).replace(' ', '.')}
           />
         )}
