@@ -75,7 +75,7 @@ const StepOne = (props) => {
   };
 
   useEffect(() => {
-    setData(props.data);
+    setData({ ...props.data });
   }, [props.data]);
 
   const { site } = useStaticQuery(
@@ -118,6 +118,7 @@ const StepOne = (props) => {
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
           submissionComplete={props.submissionComplete}
+          submissionReset={props.submissionReset}
           urlFromQueryString={props.urlFromQueryString}
         />
       </Formik>
@@ -133,6 +134,7 @@ const FormDetails = ({
   validateAndSubmitForm,
   submissionFailed,
   submissionComplete,
+  submissionReset,
   urlFromQueryString,
 }) => {
   const { t } = useTranslation(['submit']);
@@ -161,15 +163,15 @@ const FormDetails = ({
   }, [values.date_downloaded]);
 
   useEffect(() => {
-    if (submissionFailed || submissionComplete) {
+    if (submissionFailed || submissionComplete || submissionReset.reset) {
       setIsSubmitting(false);
       setSubmitCount(0);
     }
 
-    if (submissionComplete) {
+    if (submissionComplete || submissionReset.reset) {
       resetForm();
     }
-  }, [submissionFailed, submissionComplete]);
+  }, [submissionFailed, submissionComplete, submissionReset]);
 
   useEffect(() => {
     // Save form values to local storage when form values change
@@ -195,6 +197,8 @@ const FormDetails = ({
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
+  console.log('values', values);
+
   return (
     <>
       {parsingNews && (
@@ -205,7 +209,7 @@ const FormDetails = ({
           </span>
         </>
       )}
-      {values.incident_ids.length > 0 && (
+      {values?.incident_ids?.length > 0 && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
           <Badge>
             {values.tags && values.tags.includes(RESPONSE_TAG) ? (
@@ -375,22 +379,24 @@ const FormDetails = ({
           <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
         </FieldContainer>
 
-        <FieldContainer>
-          <div className={`form-group`}>
-            <div className="flex items-center">
-              <Label popover="incident_id" label={t('Incident IDs')} />
+        {values?.incident_ids?.length > 0 && (
+          <FieldContainer>
+            <div className={`form-group`}>
+              <div className="flex items-center">
+                <Label popover="incident_id" label={t('Incident IDs')} />
+              </div>
+              <div className="mt-1">
+                <IncidentsField
+                  id="incident_ids"
+                  name="incident_ids"
+                  placeHolder={t('Leave empty to report a new incident')}
+                />
+              </div>
             </div>
-            <div className="mt-1">
-              <IncidentsField
-                id="incident_ids"
-                name="incident_ids"
-                placeHolder={t('Leave empty to report a new incident')}
-              />
-            </div>
-          </div>
-        </FieldContainer>
+          </FieldContainer>
+        )}
 
-        {values.incident_ids.length == 0 && (
+        {values?.incident_ids?.length == 0 && (
           <FieldContainer>
             <TextInputGroup
               name="incident_date"

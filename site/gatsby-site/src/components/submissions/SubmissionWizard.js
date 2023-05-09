@@ -6,7 +6,7 @@ import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 
-const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => {
+const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submissionReset }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -30,7 +30,6 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
       try {
         await submitForm({ ...data, ...newData });
         setSubmissionComplete(true);
-        localStorage.setItem('formValues', null);
       } catch (error) {
         setTimeout(() => {
           setSubmissionFailed(true);
@@ -156,6 +155,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
         urlFromQueryString={urlFromQueryString}
+        submissionReset={submissionReset}
       />,
       <StepTwo
         key={'submission-step-2'}
@@ -166,6 +166,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
+        submissionReset={submissionReset}
       />,
       <StepThree
         key={'submission-step-3'}
@@ -175,11 +176,12 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
         name={t('Step 3 - Tell us more')}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
+        submissionReset={submissionReset}
       />,
     ];
 
     setSteps(steps);
-  }, [data, submissionFailed, parsingNews, submissionComplete]);
+  }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };

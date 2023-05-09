@@ -86,9 +86,10 @@ const SubmitForm = () => {
 
   const [submission, setSubmission] = useState(null);
 
+  const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
+
   const {
     entities: { nodes: allEntities },
-    site,
   } = useStaticQuery(graphql`
     {
       entities: allMongodbAiidprodEntities {
@@ -96,10 +97,6 @@ const SubmitForm = () => {
           entity_id
           name
         }
-      }
-
-      site {
-        buildTime
       }
     }
   `);
@@ -217,6 +214,8 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.success,
       });
+
+      localStorage.setItem('formValues', JSON.stringify(initialValues));
     } catch (e) {
       addToast({
         message: (
@@ -230,15 +229,15 @@ const SubmitForm = () => {
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem('buildTime', new Date(site.buildTime).getTime().toString());
-  }, []);
-
-  const isClient = typeof window !== 'undefined';
-
-  if (!isClient || Date.parse(site.buildTime) > Number(localStorage.getItem('buildTime'))) {
-    return <></>;
-  }
+  const clearForm = () => {
+    setSubmission({ ...initialValues });
+    setSubmissionReset((prevState) => ({
+      ...prevState,
+      reset: true,
+      forceUpdate: !prevState.forceUpdate, // toggle forceUpdate value
+    }));
+    localStorage.setItem('formValues', JSON.stringify(initialValues));
+  };
 
   return (
     <>
@@ -291,21 +290,17 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
-      {localStorage.getItem('formValues') && (
-        <Alert color="success" rounded={true}>
-          <span>
-            <span className="font-medium">
-              <Trans i18n={i18n} ns="submit">
-                Progress saved!
-              </Trans>
-            </span>{' '}
-            <Trans i18n={i18n} ns="submit">
-              Your changes are being saved. You can continue filling out the report or come back
-              later.
-            </Trans>
-          </span>
-        </Alert>
-      )}
+      <Alert color="success" rounded={true}>
+        <div>
+          <Trans i18n={i18n} ns="submit">
+            Your changes are being saved. You can continue filling out the report or come back
+            later.
+          </Trans>
+          <Button color="gray" size={'xs'} className={'mt-2'} onClick={() => clearForm()}>
+            <Trans>Clear Form</Trans>
+          </Button>
+        </div>
+      </Alert>
 
       <div className="my-5">
         {submission && (
@@ -313,6 +308,7 @@ const SubmitForm = () => {
             submitForm={handleSubmit}
             initialValues={submission}
             urlFromQueryString={query.url}
+            submissionReset={submissionReset}
           />
         )}
 
