@@ -23,6 +23,16 @@ import SORTING_LIST from 'components/discover/SORTING_LISTS';
 import { DEFAULT_SEARCH_KEYS_VALUES } from 'components/discover/DEFAULT_SEARCH_KEYS_VALUES';
 import difference from 'lodash/difference';
 
+import DisplayModeSwitch from 'components/discover/DisplayModeSwitch';
+import DisplayOptions from 'components/discover/DisplayOptions';
+import { Accordion, Modal } from 'flowbite-react';
+import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
+import { AccordionFilter } from 'components/discover/Filter';
+import { Trans } from 'react-i18next';
+import ClearFilters from 'components/discover/ClearFilters';
+import Sorting from 'components/discover/Sorting';
+import SORTING_LISTS from 'components/discover/SORTING_LISTS';
+
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
@@ -267,49 +277,61 @@ function DiscoverApp(props) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full">
-      <AiidHelmet path={props.location.pathname}>
-        <title>Artificial Intelligence Incident Database</title>
-      </AiidHelmet>
-      <SearchContext.Provider
-        value={{ searchState, setSearchState, indexName, searchClient, onSearchStateChange }}
+    <SearchContext.Provider
+      value={{ searchState, setSearchState, indexName, searchClient, onSearchStateChange }}
+    >
+      <InstantSearch
+        indexName={
+          indexName + (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '')
+        }
+        searchClient={searchClient}
+        searchState={searchState}
+        onSearchStateChange={onSearchStateChange}
       >
-        <InstantSearch
-          indexName={
-            indexName + (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '')
-          }
-          searchClient={searchClient}
-          searchState={searchState}
-          onSearchStateChange={onSearchStateChange}
-        >
-          <Configure hitsPerPage={28} distinct={searchState.refinementList.hideDuplicates} />
+        <Layout {...props} sidebarCollapsed={true} className="w-full" rightSidebar={
+          <div className="w-64 max-w-64 sticky top-0 h-[100vh] overflow-auto">
+            <Sorting items={SORTING_LISTS} defaultRefinement={searchState.sortBy} />
+            <ClearFilters>
+              <Trans>Clear Filters</Trans>
+            </ClearFilters>
+            <Accordion>
+              {REFINEMENT_LISTS.map((list) => (
+                <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
+              ))}
+            </Accordion>
+          </div>
+        }>
+          <AiidHelmet path={props.location.pathname}>
+            <title>Artificial Intelligence Incident Database</title>
+          </AiidHelmet>
+            <Configure hitsPerPage={28} distinct={searchState.refinementList.hideDuplicates} />
 
-          <VirtualFilters />
+            <VirtualFilters />
 
-          {mounted && (
-            <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
-              <Row className="px-0 mx-0">
-                <Col className="px-0 mx-0">
-                  <SearchBox defaultRefinement={query.s} />
-                </Col>
-              </Row>
+            {mounted && (
+              <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-0">
+                <Row className="px-0 mx-0">
+                  <Col className="px-0 mx-0">
+                    <SearchBox defaultRefinement={query.s} />
+                  </Col>
+                </Row>
 
-              <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
+                {/*<Controls query={query} searchState={searchState} setSearchState={setSearchState} />*/}
 
-              <OptionsModal
-                className="hiddenDesktop"
-                searchState={searchState}
-                setSearchState={setSearchState}
-              />
-            </Container>
-          )}
+                <OptionsModal
+                  className="hiddenDesktop"
+                  searchState={searchState}
+                  setSearchState={setSearchState}
+                />
+              </Container>
+            )}
 
-          <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} viewType={viewType} />
+            <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} viewType={viewType} />
 
-          <Pagination />
+            <Pagination />
+          </Layout>
         </InstantSearch>
       </SearchContext.Provider>
-    </Layout>
   );
 }
 
