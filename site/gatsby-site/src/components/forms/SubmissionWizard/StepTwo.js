@@ -12,6 +12,8 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import DefaultSkeleton from 'elements/Skeletons/Default';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -44,10 +46,34 @@ const StepTwo = (props) => {
     setData(props.data);
   }, [props.data]);
 
+  const { site } = useStaticQuery(
+    graphql`
+      query {
+        site {
+          buildTime
+        }
+      }
+    `
+  );
+
+  useEffect(() => {
+    localStorage.setItem('buildTime', new Date(site.buildTime).getTime().toString());
+  }, []);
+
+  const isClient = typeof window !== 'undefined';
+
+  if (!isClient || Date.parse(site.buildTime) > Number(localStorage.getItem('buildTime'))) {
+    return (
+      <>
+        <DefaultSkeleton />
+      </>
+    );
+  }
+
   return (
     <StepContainer name={props.name}>
       <Formik
-        initialValues={data}
+        initialValues={(isClient && JSON.parse(localStorage.getItem('formValues'))) || data}
         onSubmit={() => {}}
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
@@ -106,6 +132,11 @@ const FormDetails = ({
       setIsSubmitting(false);
     }
   }, [submissionFailed]);
+
+  useEffect(() => {
+    // Save form values to local storage when form values change
+    localStorage.setItem('formValues', JSON.stringify(values));
+  }, [values]);
 
   return (
     <>

@@ -30,6 +30,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
       try {
         await submitForm({ ...data, ...newData });
         setSubmissionComplete(true);
+        localStorage.setItem('formValues', null);
       } catch (error) {
         setTimeout(() => {
           setSubmissionFailed(true);

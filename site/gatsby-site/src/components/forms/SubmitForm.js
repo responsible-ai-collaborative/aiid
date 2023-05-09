@@ -25,7 +25,7 @@ import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
-import { Button } from 'flowbite-react';
+import { Alert, Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 
 const CustomDateParam = {
@@ -88,6 +88,7 @@ const SubmitForm = () => {
 
   const {
     entities: { nodes: allEntities },
+    site,
   } = useStaticQuery(graphql`
     {
       entities: allMongodbAiidprodEntities {
@@ -95,6 +96,10 @@ const SubmitForm = () => {
           entity_id
           name
         }
+      }
+
+      site {
+        buildTime
       }
     }
   `);
@@ -225,6 +230,16 @@ const SubmitForm = () => {
     }
   };
 
+  useEffect(() => {
+    localStorage.setItem('buildTime', new Date(site.buildTime).getTime().toString());
+  }, []);
+
+  const isClient = typeof window !== 'undefined';
+
+  if (!isClient || Date.parse(site.buildTime) > Number(localStorage.getItem('buildTime'))) {
+    return <></>;
+  }
+
   return (
     <>
       <Helmet>
@@ -276,6 +291,22 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
+      {localStorage.getItem('formValues') && (
+        <Alert color="success" rounded={true}>
+          <span>
+            <span className="font-medium">
+              <Trans i18n={i18n} ns="submit">
+                Progress saved!
+              </Trans>
+            </span>{' '}
+            <Trans i18n={i18n} ns="submit">
+              Your changes are being saved. You can continue filling out the report or come back
+              later.
+            </Trans>
+          </span>
+        </Alert>
+      )}
+
       <div className="my-5">
         {submission && (
           <SubmissionWizard
