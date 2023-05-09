@@ -197,8 +197,6 @@ const FormDetails = ({
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
-  console.log('values', values);
-
   return (
     <>
       {parsingNews && (
