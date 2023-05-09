@@ -1,47 +1,24 @@
 import React from 'react';
-// import { Image } from 'utils/cloudinary';
-// import { fill } from '@cloudinary/base/actions/resize';
+import { Image } from 'utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 
-// import md5 from 'md5';
+import md5 from 'md5';
 import { navigate } from 'gatsby';
 import Actions from '../Actions';
 import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
-// uncomment this line
-// import { Trans, useTranslation } from 'react-i18next';
-
-// remove this line
-import { Trans } from 'react-i18next';
-
+import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import { VIEW_TYPES } from 'utils/discover';
-// import styled from 'styled-components';
-// import VideoPlayer from 'components/cite/VideoPlayer';
+import VideoPlayer from 'components/cite/VideoPlayer';
 
-// const IncidentCardImage = styled(Image)`
-//   height: ${({ height }) => height};
-//   object-fit: cover;
-//   width: 100%;
-// `;
-
-// const StyledLabel = styled.p`
-// //   margin: 0.6em 0;
-// // `;
-
-export default function Details({
-  item,
-  // authorsModal,
-  // submittersModal,
-  // flagReportModal,
-  toggleFilterByIncidentId,
-  viewType,
-}) {
+export default function Details({ item, toggleFilterByIncidentId, viewType }) {
   const localizePath = useLocalizePath();
 
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const detailsPath =
     viewType === VIEW_TYPES.INCIDENTS
@@ -62,22 +39,21 @@ export default function Details({
       <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
       <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
       <a href={detailsPath}>
-        {/* <VideoPlayer
+        <VideoPlayer
           className="card-img-top"
           mediaURL={item.media_url}
           fallback={
-            <IncidentCardImage
-              className="card-img-top"
-              publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
+            <Image
+              className={`card-img-top rounded-t-lg h-[240px] object-cover w-full`}
+              publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
               alt={item.title}
-              height="240px"
               transformation={fill().height(480)}
               itemIdentifier={t('Report {{report_number}}', {
                 report_number: item.report_number,
               }).replace(' ', '.')}
             />
           }
-        /> */}
+        />
       </a>
       <Card.Body className="flex flex-col ">
         <HeaderTitle item={item} viewType={viewType} className="text-xl" />
