@@ -297,7 +297,9 @@ const SubmitForm = () => {
             later.
           </Trans>
           <Button color="gray" size={'xs'} className={'mt-2'} onClick={() => clearForm()}>
-            <Trans>Clear Form</Trans>
+            <Trans i18n={i18n} ns="submit">
+              Clear Form
+            </Trans>
           </Button>
         </div>
       </Alert>
