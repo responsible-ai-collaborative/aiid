@@ -61,11 +61,11 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           onKeyDown={(e) => e.stopPropagation()}
         >
           <VideoPlayer
-            className={`img-fluid h-full w-full max-w-full object-cover`}
+            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
             mediaURL={item.media_url}
             fallback={
               <Image
-                className={`img-fluid h-full w-full max-w-full object-cover`}
+                className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
                 publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
                 alt={item.title}
                 transformation={fill().height(480)}

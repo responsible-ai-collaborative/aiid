@@ -55,9 +55,7 @@ function CitePage(props) {
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
 
-  const sortedReports = sortedIncidentReports
-    .filter((report) => isCompleteReport(report))
-    .reverse();
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
   const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
 
