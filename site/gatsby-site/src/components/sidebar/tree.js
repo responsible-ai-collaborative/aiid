@@ -84,10 +84,9 @@ const Tree = ({
           <TreeNode
             key={cur.url + index.toString()}
             setCollapsed={toggle}
-            navSettings={navSettings}
+            navSetting={navSettings}
             item={cur}
             isCollapsed={isCollapsed}
-            localizePath={localizePath}
           />
         );
       })}

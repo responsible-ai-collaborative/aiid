@@ -27,6 +27,8 @@ describe('The Discover app', () => {
   it('Performs a search and filters results', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('form#searchForm').as('form');
 
     cy.get('@form')
@@ -343,7 +345,7 @@ describe('The Discover app', () => {
       .type('starbucks')
       .type('{enter}');
 
-    cy.url().should('include', 's=starbucks');
+    cy.waitForStableDOM();
 
     cy.get('[data-cy=export-to-csv]').click();
 

@@ -12,7 +12,7 @@ export default function PlaceholderImage({
 }) {
   const canvasRef = useRef();
 
-  const h = Math.floor(Number(height.replace('px', '')));
+  const h = Math.floor(height);
 
   const w = Math.floor((h * 4) / 3);
 
