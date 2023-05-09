@@ -338,6 +338,8 @@ describe('The Discover app', () => {
   it('Should export results to a CSV file', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('form#searchForm').as('form');
 
     cy.get('@form')
