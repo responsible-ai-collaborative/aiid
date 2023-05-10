@@ -29,6 +29,8 @@ describe('Admin', () => {
         }
       `,
     }).then(({ data: { users } }) => {
+      cy.waitForStableDOM();
+
       for (const user of users) {
         cy.get('[data-cy="input-filter-Id"]').clear();
         cy.get('[data-cy="input-filter-Id"]').type(user.userId);
