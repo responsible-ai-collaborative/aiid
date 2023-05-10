@@ -70,5 +70,9 @@
     "inputs_outputs": {
         "title": "Entradas / Salidas",
         "text": "La secuencia de entradas de datos en el sistema inteligente y salidas producidas por el sistema involucrado en el incidente. Para un chatbot, esto generalmente presentará un ida y vuelta entre las respuestas de un humano y las del chatbot."
+    },
+    "submittersLoggedIn": {
+        "title": "¡Este eres tú!",
+        "text": "Actualmente estás conectado, por lo que este reporte se asociará automáticamente con tu cuenta. Si deseas permanecer anónimo, por favor abre una ventana de navegación privada."
     }
 }
