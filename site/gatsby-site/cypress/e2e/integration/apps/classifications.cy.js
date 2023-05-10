@@ -32,4 +32,36 @@ describe('Classifications App', () => {
 
     cy.get('a[href="/cite/2/?edit_taxonomy=CSET').click();
   });
+
+  it('Should switch taxonomies', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindTaxa',
+      'FindTaxa',
+      taxa
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindClassifications',
+      'FindClassifications',
+      classifications
+    );
+
+    cy.visit(url);
+
+    cy.wait(['@FindTaxa', '@FindClassifications']);
+
+    cy.get('select[data-cy="taxonomy"]').select('CSET');
+
+    cy.waitForStableDOM();
+
+    cy.get('select[data-cy="taxonomy"]').select('GMF');
+
+    cy.waitForStableDOM();
+
+    cy.get('[role="columnheader"]').contains('Known AI Goal').should('exist');
+  });
 });

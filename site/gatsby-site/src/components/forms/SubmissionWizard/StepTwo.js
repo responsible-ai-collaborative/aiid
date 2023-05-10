@@ -12,6 +12,7 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import { useUserContext } from 'contexts/userContext';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -79,6 +80,8 @@ const FormDetails = ({
 
   const [submitCount, setSubmitCount] = useState(0);
 
+  const { user } = useUserContext();
+
   const {
     values,
     errors,
@@ -107,18 +110,23 @@ const FormDetails = ({
     }
   }, [submissionFailed]);
 
+  const isUserDetailsComplete =
+    user?.profile?.email && user.customData.first_name && user.customData.last_name;
+
   return (
     <>
       <Form>
         <FieldContainer>
           <TagsInputGroup
             name="submitters"
+            popoverName={isUserDetailsComplete ? 'submittersLoggedIn' : 'submitters'}
             placeholder={t('Your name as you would like it to appear in the leaderboard')}
             label={t('Submitter(s)')}
             errors={errors}
             touched={touched}
             schema={schema}
             icon={faMedal}
+            disabled={isUserDetailsComplete}
           />
         </FieldContainer>
 
@@ -140,12 +148,7 @@ const FormDetails = ({
 
         <FieldContainer>
           <div className="flex items-center mb-1">
-            <FontAwesomeIcon
-              fixedWidth
-              icon={faLanguage}
-              title={t('Language')}
-              className="mb-2 mr-1"
-            />
+            <FontAwesomeIcon fixedWidth icon={faLanguage} title={t('Language')} className="mr-1" />
             <Label popover="language" label={t('Language')} />
           </div>
           <Select

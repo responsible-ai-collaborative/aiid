@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { CSVReader } from 'react-papaparse';
-import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
+import {
+  useQueryParams,
+  StringParam,
+  ArrayParam,
+  encodeDate,
+  withDefault,
+  NumericArrayParam,
+} from 'use-query-params';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -10,7 +17,6 @@ import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
-import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
@@ -20,6 +26,7 @@ import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
+import { getCloudinaryPublicID } from 'utils/cloudinary';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -37,46 +44,48 @@ const CustomDateParam = {
 const queryConfig = {
   url: withDefault(StringParam, ''),
   title: withDefault(StringParam, ''),
-  authors: withDefault(StringParam, ''),
-  submitters: withDefault(StringParam, ''),
+  authors: withDefault(ArrayParam, []),
+  submitters: withDefault(ArrayParam, []),
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
   image_url: withDefault(StringParam, ''),
-  incident_id: withDefault(StringParam, ''),
+  incident_ids: withDefault(NumericArrayParam, []),
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
   language: withDefault(StringParam, 'en'),
 };
 
+const initialValues = {
+  url: '',
+  title: '',
+  incident_date: '',
+  date_published: '',
+  date_downloaded: '',
+  image_url: '',
+  cloudinary_id: '',
+  incident_ids: [],
+  text: '',
+  authors: [],
+  submitters: [],
+  developers: [],
+  deployers: [],
+  harmed_parties: [],
+  editor_notes: '',
+  language: 'en',
+  tags: [],
+  user: '',
+};
+
 const SubmitForm = () => {
-  const { isRole, loading } = useUserContext();
+  const { isRole, loading, user } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
-  const initialValues = {
-    url: '',
-    title: '',
-    incident_date: '',
-    date_published: '',
-    date_downloaded: '',
-    image_url: '',
-    incident_id: '',
-    text: '',
-    authors: [],
-    submitters: [],
-    developers: [],
-    deployers: [],
-    harmed_parties: [],
-    editor_notes: '',
-    language: 'en',
-    tags: [],
-  };
-
-  const [submission, setSubmission] = useState(initialValues);
-
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
+
+  const [submission, setSubmission] = useState(null);
 
   const {
     entities: { nodes: allEntities },
@@ -92,20 +101,28 @@ const SubmitForm = () => {
   `);
 
   useEffect(() => {
-    const queryParams = { ...query };
+    if (!loading) {
+      const submission = { ...query, cloudinary_id: '' };
 
-    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-      if (queryParams[key] && !Array.isArray(queryParams[key])) {
-        queryParams[key] = [queryParams[key]];
+      if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
+        setIsIncidentResponse(true);
       }
-    }
 
-    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG)) {
-      setIsIncidentResponse(true);
-    }
+      if (submission.image_url) {
+        submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+      }
 
-    setSubmission(queryParams);
-  }, []);
+      if (user?.profile?.email) {
+        submission.user = { link: user.id };
+
+        if (user.customData.first_name && user.customData.last_name) {
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+        }
+      }
+
+      setSubmission(submission);
+    }
+  }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
 
@@ -161,15 +178,10 @@ const SubmitForm = () => {
       const submission = {
         ...values,
         source_domain,
-        incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
-        submitters: values.submitters
-          ? !isArray(values.submitters)
-            ? values.submitters.split(',').map((s) => s.trim())
-            : values.submitters
-          : ['Anonymous'],
+        submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
       };
@@ -218,8 +230,6 @@ const SubmitForm = () => {
     }
   };
 
-  const incident_id = submission.incident_id;
-
   return (
     <>
       <Helmet>
@@ -235,11 +245,13 @@ const SubmitForm = () => {
       <p>
         {isIncidentResponse ? (
           <>
-            {incident_id ? (
+            {submission.incident_ids.length > 0 ? (
               <Trans ns="submit" i18nKey={'submitFormResponseDescription1'}>
                 The following form will create a new incident response {}for incident{' '}
-                <Link to={`/cite/${incident_id}`}>#{{ incident_id }}</Link> for{' '}
-                <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
+                <Link to={`/cite/${submission.incident_ids[0]}`}>
+                  #{{ incident_id: submission.incident_ids[0] }}
+                </Link>{' '}
+                for <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
                 Database.
               </Trans>
             ) : (
@@ -270,11 +282,13 @@ const SubmitForm = () => {
         )}
       </p>
       <div className="my-5">
-        <SubmissionWizard
-          submitForm={handleSubmit}
-          initialValues={submission}
-          urlFromQueryString={query.url}
-        />
+        {submission && (
+          <SubmissionWizard
+            submitForm={handleSubmit}
+            initialValues={submission}
+            urlFromQueryString={query.url}
+          />
+        )}
 
         <p className="mt-4">
           <Trans ns="submit" i18nKey="submitReviewDescription">

@@ -81,8 +81,9 @@ export default function PreviewImageInputGroup({
             <Image
               publicID={cloudinaryID}
               alt={alt}
-              height="300"
+              height={300}
               className="inline-block mx-auto min-h-48 min-w-48 max-w-full h-full bg-white"
+              itemIdentifier={name}
             />
           </div>
         </div>

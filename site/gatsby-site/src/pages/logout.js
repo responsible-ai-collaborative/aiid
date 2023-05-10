@@ -23,7 +23,7 @@ const Logout = (props) => {
   }, []);
 
   return (
-    <Layout {...props} className="bootstrap">
+    <Layout {...props}>
       <div className="flex flex-wrap gap-2">
         <Spinner />
         <Trans ns="login">Logging you out...</Trans>

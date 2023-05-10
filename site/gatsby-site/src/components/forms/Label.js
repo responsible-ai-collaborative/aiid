@@ -13,7 +13,7 @@ const Label = ({ popover, label = '', required = false, showPopover = true }) =>
 
   if (!i18n.exists(popover, { ns: 'popovers' })) {
     return (
-      <label className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative">
+      <label className="text-sm font-medium text-gray-900 dark:text-gray-300 relative">
         {required && <>* </>}
         {label}
       </label>
@@ -40,7 +40,7 @@ const Label = ({ popover, label = '', required = false, showPopover = true }) =>
     <Tooltip content={TooltipContent} className="form-tooltip">
       <label
         data-cy={`label-${popover}`}
-        className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative whitespace-nowrap"
+        className="text-sm font-medium text-gray-900 dark:text-gray-300 relative whitespace-nowrap"
       >
         {required && <>* </>}
         <span className="whitespace-normal mr-1">{label}</span>

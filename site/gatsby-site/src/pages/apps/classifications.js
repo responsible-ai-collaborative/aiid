@@ -4,7 +4,7 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Pagination, Select, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Pagination, Select, Spinner, Table } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -225,6 +225,10 @@ function Row({ row, isAdmin, currentTaxonomy }) {
   return (
     <Table.Row key={row.id} {...row.getRowProps()}>
       {row.cells.map((cell) => {
+        cell.value = ((value) =>
+          Array.isArray(value)
+            ? value.map((v) => (typeof v == 'object' ? JSON.stringify(v) : v)).join(', ')
+            : value)(cell.value);
         if (cell.column.Header.includes(t('Incident ID'))) {
           return (
             <Table.Cell key={cell.id} {...cell.getCellProps()}>
@@ -294,9 +298,7 @@ function Row({ row, isAdmin, currentTaxonomy }) {
           return (
             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
               <div className="w-full m-0 p-0 overflow-auto">
-                {((value) => (Array.isArray(value) ? value.join(', ') : value))(
-                  cell.render('Cell').props.cell.value
-                )}
+                {cell.render('Cell').props.cell.value}
               </div>
             </Table.Cell>
           );
@@ -314,8 +316,6 @@ export default function ClassificationsDbView(props) {
   const [collapse, setCollapse] = useState(true);
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
-
-  const [allClassifications, setAllClassifications] = useState([]);
 
   const [tableData, setTableData] = useState([]);
 
@@ -360,7 +360,7 @@ export default function ClassificationsDbView(props) {
   const fetchClassificationData = async (query) => {
     const classificationsData = await client.query({
       query: FIND_CLASSIFICATION,
-      variables: query,
+      variables: { query },
     });
 
     // For now we convert the list of attributes into a classifications object
@@ -368,11 +368,14 @@ export default function ClassificationsDbView(props) {
     const classifications = [];
 
     for (const c of classificationsData.data.classifications) {
-      if (c.attributes && c.publish) {
+      if (c.attributes && (c.publish || isAdmin)) {
         classifications.push({
           ...c,
           classifications: c.attributes.reduce((classifications, attribute) => {
             classifications[attribute.short_name] = JSON.parse(attribute.value_json);
+            if (attribute.value_json && attribute.value_json[0] == '{') {
+              classifications[attribute.short_name] = attribute.value_json;
+            }
             return classifications;
           }, {}),
         });
@@ -521,7 +524,16 @@ export default function ClassificationsDbView(props) {
     setColumnData([
       actionsColumn,
       incidentIdColumn,
-      ...taxaData[0].field_list.map(fieldToColumnMap),
+      ...taxaData[0].field_list.reduce(
+        (acc, field) => {
+          if (!acc.field_names.has(field.short_name)) {
+            acc.field_names.add(field.short_name);
+            acc.fields.push(fieldToColumnMap(field));
+          }
+          return acc;
+        },
+        { fields: [], field_names: new Set() }
+      ).fields,
     ]);
 
     let rowQuery = {
@@ -529,10 +541,6 @@ export default function ClassificationsDbView(props) {
     };
 
     const classificationData = await fetchClassificationData(rowQuery);
-
-    if (classificationData.length > 0) {
-      setAllClassifications(classificationData);
-    }
 
     setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
 
@@ -548,7 +556,6 @@ export default function ClassificationsDbView(props) {
     try {
       initSetup();
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   }, [currentTaxonomy, allTaxonomies]);
@@ -640,10 +647,10 @@ export default function ClassificationsDbView(props) {
           <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
             <Trans>Showing the</Trans>
             <Select
-              style={{ width: 120 }}
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
+              className="min-w-[200px]"
             >
               {allTaxonomies.map((taxa) => {
                 return (
@@ -663,113 +670,126 @@ export default function ClassificationsDbView(props) {
             <Trans>Reset filters</Trans>
           </Button>
         </div>
-        {loading && <ListSkeleton />}
-        {!loading && (
-          <div>
-            <Table striped={true} hoverable={true} {...getTableProps()}>
-              {headerGroups.map((headerGroup) => (
-                <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
-                      <div
-                        className="flex flex-col"
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                        style={{ marginBottom: 5 }}
-                      >
-                        {column.render('Header')}
-                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                      </div>
-                      <div>{column.canFilter ? column.render('Filter') : null}</div>
-                    </Table.HeadCell>
-                  ))}
-                </Table.Head>
-              ))}
-              <Table.Body {...getTableBodyProps()}>
-                {page.map((row) => {
-                  prepareRow(row);
-
-                  return (
-                    <Row
-                      key={row.id}
-                      row={row}
-                      allClassifications={allClassifications}
-                      allTaxonomies={allTaxonomies}
-                      isAdmin={isAdmin}
-                      currentTaxonomy={currentTaxonomy}
-                    />
-                  );
-                })}
-
-                {page.length === 0 && (
-                  <Table.Row>
-                    <Table.Cell colSpan={10}>
-                      <div>
-                        <span>
-                          <Trans>No results found</Trans>
-                        </span>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </Table>
-
-            <div className="flex items-center gap-2">
-              {pageCount > 1 && (
-                <>
-                  <Pagination
-                    className="incidents-pagination mb-0"
-                    onPageChange={(page) => {
-                      gotoPage(page - 1);
-                    }}
-                    currentPage={pageIndex + 1}
-                    showIcons={true}
-                    totalPages={pageCount}
-                  />
-                  <div className="mt-2">
-                    <span>
-                      <Trans
-                        i18nKey="paginationKey"
-                        defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
-                        values={{
-                          currentPageIndex: pageIndex + 1,
-                          pageOptionsLength: pageOptions.length,
-                        }}
-                        components={{ bold: <strong /> }}
-                      />
-                    </span>
-                    <span>
-                      | <Trans>Go to page:</Trans>{' '}
-                      <input
-                        type="number"
-                        defaultValue={pageIndex + 1}
-                        onChange={(e) => {
-                          const page = e.target.value ? Number(e.target.value) - 1 : 0;
-
-                          gotoPage(page);
-                        }}
-                        style={{ width: '100px' }}
-                      />
-                    </span>{' '}
-                  </div>
-                </>
-              )}
-              <Select
-                className="mt-2"
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                }}
-              >
-                {[10, 20, 30, 40, 50, 100, 500].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    <Trans>Show {{ pageSize }}</Trans>
-                  </option>
+        <div className="mt-4 always-visible-scroll">
+          {loading && <ListSkeleton />}
+          {!loading && (
+            <>
+              <Table striped={true} hoverable={true} {...getTableProps()}>
+                {headerGroups.map((headerGroup) => (
+                  <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
+                        <div
+                          className="flex flex-col"
+                          {...column.getHeaderProps(column.getSortByToggleProps())}
+                          style={{ marginBottom: 5 }}
+                        >
+                          {column.render('Header')}
+                          <span>
+                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                          </span>
+                        </div>
+                        <div>{column.canFilter ? column.render('Filter') : null}</div>
+                      </Table.HeadCell>
+                    ))}
+                  </Table.Head>
                 ))}
-              </Select>
-            </div>
-          </div>
-        )}
+                <Table.Body {...getTableBodyProps()}>
+                  {page.map((row) => {
+                    prepareRow(row);
+
+                    return (
+                      <Row
+                        key={row.id}
+                        row={row}
+                        isAdmin={isAdmin}
+                        currentTaxonomy={currentTaxonomy}
+                      />
+                    );
+                  })}
+
+                  {page.length === 0 && (
+                    <Table.Row>
+                      <Table.Cell colSpan={10}>
+                        <div>
+                          <span>
+                            <Trans>No results found</Trans>
+                          </span>
+                        </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  )}
+                </Table.Body>
+              </Table>
+
+              <div className="flex items-center gap-2">
+                {pageCount > 1 && (
+                  <>
+                    <Pagination
+                      className="incidents-pagination mb-0"
+                      onPageChange={(page) => {
+                        gotoPage(page - 1);
+                      }}
+                      currentPage={pageIndex + 1}
+                      showIcons={true}
+                      totalPages={pageCount}
+                    />
+                    <div className="mt-2">
+                      <span>
+                        <Trans
+                          i18nKey="paginationKey"
+                          defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+                          values={{
+                            currentPageIndex: pageIndex + 1,
+                            pageOptionsLength: pageOptions.length,
+                          }}
+                          components={{ bold: <strong /> }}
+                        />
+                      </span>
+                      <span>
+                        | <Trans>Go to page:</Trans>{' '}
+                        <input
+                          type="number"
+                          defaultValue={pageIndex + 1}
+                          onChange={(e) => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
+
+                            gotoPage(page);
+                          }}
+                          style={{ width: '100px' }}
+                        />
+                      </span>{' '}
+                    </div>
+                  </>
+                )}
+                <div className="mt-2">
+                  <Dropdown
+                    color={'gray'}
+                    label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
+                    style={{ width: 120 }}
+                    size="sm"
+                    value={pageSize}
+                  >
+                    {[10, 20, 30, 40, 50, 100, 500, 9999].map((pageSize) => (
+                      <Dropdown.Item
+                        key={pageSize}
+                        onClick={() => {
+                          setPageSize(Number(pageSize));
+                        }}
+                      >
+                        {pageSize === 9999 ? (
+                          <Trans>Show all</Trans>
+                        ) : (
+                          <Trans>Show {{ pageSize }}</Trans>
+                        )}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
       <CustomModal {...fullTextModal} />
     </Layout>
