@@ -7,10 +7,13 @@ import siteConfig from '../../config';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import bodyParser from 'body-parser';
 
 const plugins = [ApolloServerPluginLandingPageLocalDefault({ embed: true })];
 
 const cors = Cors();
+
+const json = bodyParser.json();
 
 export const config = {
   bodyParser: {
@@ -25,7 +28,7 @@ export const config = {
       extended: true,
     },
     json: {
-      type: `*/*`,
+      type: `-`,
     },
   },
 };
@@ -93,6 +96,15 @@ export default async function handler(req, res) {
 
   await new Promise((resolve, reject) => {
     cors(req, res, (result) => {
+      if (result instanceof Error) {
+        reject(result);
+      }
+      resolve(result);
+    });
+  });
+
+  await new Promise((resolve, reject) => {
+    json(req, res, (result) => {
       if (result instanceof Error) {
         reject(result);
       }
