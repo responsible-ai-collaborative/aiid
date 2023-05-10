@@ -110,21 +110,23 @@ const FormDetails = ({
     }
   }, [submissionFailed]);
 
+  const isUserDetailsComplete =
+    user?.profile?.email && user.customData.first_name && user.customData.last_name;
+
   return (
     <>
       <Form>
         <FieldContainer>
           <TagsInputGroup
             name="submitters"
+            popoverName={isUserDetailsComplete ? 'submittersLoggedIn' : 'submitters'}
             placeholder={t('Your name as you would like it to appear in the leaderboard')}
             label={t('Submitter(s)')}
             errors={errors}
             touched={touched}
             schema={schema}
             icon={faMedal}
-            disabled={
-              user?.profile?.email && user.customData.first_name && user.customData.last_name
-            }
+            disabled={isUserDetailsComplete}
           />
         </FieldContainer>
 
