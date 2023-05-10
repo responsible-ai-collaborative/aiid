@@ -7,10 +7,14 @@ import VirtualFilters from './VirtualFilters';
 import { Trans } from 'react-i18next';
 import { Accordion, Badge, Card } from 'flowbite-react';
 
-function ToggleContent({ label, touched, faIcon, toggled }) {
+function ToggleContent({ label, touched, faIcon, toggled, accordion = false }) {
   return (
-    <div className="flex flex-wrap items-center justify-between w-full">
-      <div className="flex text-xs items-center">
+    <div className="flex flex-nowrap items-center justify-between w-full">
+      <div
+        className={`flex items-center whitespace-nowrap ${
+          !accordion ? 'text-[1.2vw] lg:text-xs' : 'text-xs'
+        }`}
+      >
         {faIcon && <FontAwesomeIcon icon={faIcon} />}
         &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
         {touched > 0 && (
@@ -21,7 +25,7 @@ function ToggleContent({ label, touched, faIcon, toggled }) {
       </div>
       {toggled ? (
         <svg
-          className="w-4 h-4 ml-2"
+          className="min-w-[1rem] w-4 h-4 ml-2"
           aria-hidden="true"
           fill="none"
           stroke="currentColor"
@@ -191,7 +195,13 @@ function AccordionFilter({ type, ...filterProps }) {
       collapseAll={true}
     >
       <Accordion.Title className="tw-accordion text-gray-900" onClick={toggleDropdown}>
-        <ToggleContent faIcon={faIcon} label={label} touched={touched} toggled={toggled} />
+        <ToggleContent
+          faIcon={faIcon}
+          label={label}
+          touched={touched}
+          toggled={toggled}
+          accordion={true}
+        />
       </Accordion.Title>
       <Accordion.Content style={{ visibility: 'visible' }} hidden={toggled}>
         <FilterContent type={type} filterProps={filterProps} />
