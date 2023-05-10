@@ -29,6 +29,7 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   let options;
 
   const columnsArrayValues = [
+    'Entities',
     'NamedEntities',
     'TechnologyPurveyor',
     'HarmType',
@@ -336,9 +337,7 @@ export default function ClassificationsDbView(props) {
         column.Cell = function DateCell({ column: { id }, row: { values } }) {
           return <>{formatDateField(values[id])}</>;
         };
-      }
-
-      if (taxaField.display_type === 'string') {
+      } else if (taxaField.display_type === 'string') {
         column.className = 'min-w-[400px]';
         column.Cell = function StringCell({ column: { id }, row: { values } }) {
           return (
@@ -360,6 +359,22 @@ export default function ClassificationsDbView(props) {
                 />
               )}
             </div>
+          );
+        };
+      } else {
+        column.Cell = function otherCell({ cell }) {
+          cell.value = ((value) =>
+            Array.isArray(value)
+              ? value.map((v) => (typeof v == 'object' ? JSON.stringify(v) : v)).join(', ')
+              : value)(cell.value);
+          return (
+            <>
+              <div key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+                <div className="w-full m-0 p-0 overflow-auto">
+                  {cell.render('Cell').props.cell.value}
+                </div>
+              </div>
+            </>
           );
         };
       }
