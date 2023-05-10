@@ -193,7 +193,7 @@ export default function ClassificationsDbView(props) {
   const fetchClassificationData = async (query) => {
     const classificationsData = await client.query({
       query: FIND_CLASSIFICATION,
-      variables: query,
+      variables: { query },
     });
 
     // For now we convert the list of attributes into a classifications object
@@ -201,11 +201,14 @@ export default function ClassificationsDbView(props) {
     const classifications = [];
 
     for (const c of classificationsData.data.classifications) {
-      if (c.attributes && c.publish) {
+      if (c.attributes && (c.publish || isAdmin)) {
         classifications.push({
           ...c,
           classifications: c.attributes.reduce((classifications, attribute) => {
             classifications[attribute.short_name] = JSON.parse(attribute.value_json);
+            if (attribute.value_json && attribute.value_json[0] == '{') {
+              classifications[attribute.short_name] = attribute.value_json;
+            }
             return classifications;
           }, {}),
         });
@@ -408,7 +411,16 @@ export default function ClassificationsDbView(props) {
 
     setColumnData([
       incidentIdColumn,
-      ...taxaData[0].field_list.map(fieldToColumnMap),
+      ...taxaData[0].field_list.reduce(
+        (acc, field) => {
+          if (!acc.field_names.has(field.short_name)) {
+            acc.field_names.add(field.short_name);
+            acc.fields.push(fieldToColumnMap(field));
+          }
+          return acc;
+        },
+        { fields: [], field_names: new Set() }
+      ).fields,
       actionsColumn,
     ]);
 
@@ -432,7 +444,6 @@ export default function ClassificationsDbView(props) {
     try {
       initSetup();
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   }, [currentTaxonomy, allTaxonomies]);

@@ -21,9 +21,8 @@ const Image = ({
   alt,
   transformation = null,
   plugins = [lazyload()],
-  style,
-  height = '800px',
-  title,
+  style = null,
+  height = 800,
   itemIdentifier,
 }) => {
   const imageElement = useRef(null);
@@ -65,12 +64,14 @@ const Image = ({
   image.transformation = tmpImage.transformation.toString();
 
   return (
-    <div data-cy="cloudinary-image-wrapper" className="h-full">
+    <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
-        title={title || alt}
-        className={`${className} ${!publicID || publicID == '' || loadFailed ? '' : 'hidden'}`}
+        title={alt}
+        className={`${className} ${
+          !publicID || publicID == '' || loadFailed ? '' : 'hidden'
+        } h-full w-full object-cover`}
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
@@ -79,7 +80,9 @@ const Image = ({
         data-cy={'cloudinary-image'}
         ref={imageElement}
         alt={alt}
-        className={`${className} ${!publicID || publicID == '' || loadFailed ? 'hidden' : ''}`}
+        className={`${className} ${
+          !publicID || publicID == '' || loadFailed ? 'hidden' : ''
+        } h-full w-full object-cover`}
         cldImg={image}
         plugins={plugins}
         style={style}

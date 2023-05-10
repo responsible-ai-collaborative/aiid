@@ -4,6 +4,7 @@ const SORTING_LIST = [
   {
     default: true,
     name: 'relevance',
+    value: 'instant_search-en',
     value_en: 'instant_search-en',
     value_es: 'instant_search-es',
     value_fr: 'instant_search-fr',
@@ -14,6 +15,7 @@ const SORTING_LIST = [
   },
   {
     name: 'incident-date-desc',
+    value: 'instant_search-en_epoch_incident_date_desc',
     value_en: 'instant_search-en_epoch_incident_date_desc',
     value_es: 'instant_search-es_epoch_incident_date_desc',
     value_fr: 'instant_search-fr_epoch_incident_date_desc',
@@ -24,6 +26,7 @@ const SORTING_LIST = [
   },
   {
     name: 'incident-date-asc',
+    value: 'instant_search-en_epoch_incident_date_asc',
     value_en: 'instant_search-en_epoch_incident_date_asc',
     value_es: 'instant_search-es_epoch_incident_date_asc',
     value_fr: 'instant_search-fr_epoch_incident_date_asc',
@@ -35,6 +38,7 @@ const SORTING_LIST = [
   },
   {
     name: 'published-date-desc',
+    value: 'instant_search-en_epoch_date_published_desc',
     value_en: 'instant_search-en_epoch_date_published_desc',
     value_es: 'instant_search-es_epoch_date_published_desc',
     value_fr: 'instant_search-fr_epoch_date_published_desc',
@@ -45,6 +49,7 @@ const SORTING_LIST = [
   },
   {
     name: 'published-date-asc',
+    value: 'instant_search-en_epoch_date_published_asc',
     value_en: 'instant_search-en_epoch_date_published_asc',
     value_es: 'instant_search-es_epoch_date_published_asc',
     value_fr: 'instant_search-fr_epoch_date_published_asc',
@@ -56,6 +61,7 @@ const SORTING_LIST = [
   },
   {
     name: 'submitted-date-desc',
+    value: 'instant_search-en_epoch_date_submitted_desc',
     value_en: 'instant_search-en_epoch_date_submitted_desc',
     value_es: 'instant_search-es_epoch_date_submitted_desc',
     value_fr: 'instant_search-fr_epoch_date_submitted_desc',
@@ -66,6 +72,7 @@ const SORTING_LIST = [
   },
   {
     name: 'submitted-date-asc',
+    value: 'instant_search-en_epoch_date_submitted_asc',
     value_en: 'instant_search-en_epoch_date_submitted_asc',
     value_es: 'instant_search-es_epoch_date_submitted_asc',
     value_fr: 'instant_search-fr_epoch_date_submitted_asc',
