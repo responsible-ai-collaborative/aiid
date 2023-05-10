@@ -29,7 +29,7 @@
     },
     "image_url": {
         "title": "Una imagen utilizada para obtener una vista previa del informe del incidente",
-        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí."
+        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí. Si la URL ingresada no es válida, se usará una imagen alternativa en su lugar."
     },
     "incident_id": {
         "title": "¿Es este un incidente existente?",
@@ -70,5 +70,9 @@
     "inputs_outputs": {
         "title": "Entradas / Salidas",
         "text": "La secuencia de entradas de datos en el sistema inteligente y salidas producidas por el sistema involucrado en el incidente. Para un chatbot, esto generalmente presentará un ida y vuelta entre las respuestas de un humano y las del chatbot."
+    },
+    "submittersLoggedIn": {
+        "title": "¡Este eres tú!",
+        "text": "Actualmente estás conectado, por lo que este reporte se asociará automáticamente con tu cuenta. Si deseas permanecer anónimo, por favor abre una ventana de navegación privada."
     }
 }

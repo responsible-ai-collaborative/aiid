@@ -29,7 +29,7 @@
     },
     "image_url": {
         "title": "An image used to preview the incident report",
-        "text": "This should be a URL for an image that will be indexed and displayed next to the report. Most publications now have headline images you can grab a URL from by right-clicking. You can also link figure images here instead."
+        "text": "This should be a URL for an image that will be indexed and displayed next to the report. Most publications now have headline images you can grab a URL from by right-clicking. You can also link figure images here instead. If the URL entered is invalid, a fallback image will be used instead."
     },
     "incident_id": {
         "title": "Is this an existing incident?",
@@ -70,5 +70,9 @@
     "inputs_outputs": {
         "title": "Inputs / Outputs",
         "text": "The sequence of data inputs into the intelligent system and outputs produced by the system involved in the incident. For a chatbot, this will generally present a back and forth between a human and the chatbot's responses."
+    },
+    "submittersLoggedIn": {
+        "title": "This is you!",
+        "text": "You are currently logged in so this submission will automatically be associated with your account. If you would like to remain anonymous, please open a private browsing window to submit."
     }
 }
