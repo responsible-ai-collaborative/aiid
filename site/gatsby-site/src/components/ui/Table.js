@@ -92,11 +92,9 @@ export function SelectDatePickerFilter({
 
   const handleApply = (event, picker) => {
     picker.element.val(
-      format(picker.startDate.toDate(), 'yyyy-MM-dd') +
-        ' - ' +
-        format(picker.endDate.toDate(), 'yyyy-MM-dd')
+      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
     );
-    setFilter([picker.startDate.valueOf() / 1000, picker.endDate.valueOf() / 1000]);
+    setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
   };
 
   const handleCancel = (event, picker) => {
