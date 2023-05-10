@@ -174,6 +174,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submi
         previous={handlePreviousStep}
         data={data}
         name={t('Step 3 - Tell us more')}
+        validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
         submissionReset={submissionReset}

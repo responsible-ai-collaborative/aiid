@@ -151,7 +151,7 @@ const StepThree = (props) => {
   return (
     <StepContainer name={props.name}>
       <Formik
-        initialValues={(isClient && JSON.parse(localStorage.getItem('formValues'))) || data}
+        initialValues={data}
         onSubmit={() => {}}
         validationSchema={stepThreeValidationSchema}
         enableReinitialize

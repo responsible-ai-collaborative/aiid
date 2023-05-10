@@ -27,6 +27,7 @@ import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Alert, Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
+import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -57,26 +58,6 @@ const queryConfig = {
   language: withDefault(StringParam, 'en'),
 };
 
-const initialValues = {
-  url: '',
-  title: '',
-  incident_date: '',
-  date_published: '',
-  date_downloaded: '',
-  image_url: '',
-  cloudinary_id: '',
-  incident_ids: [],
-  text: '',
-  authors: [],
-  submitters: [],
-  developers: [],
-  deployers: [],
-  harmed_parties: [],
-  editor_notes: '',
-  language: 'en',
-  tags: [],
-};
-
 const SubmitForm = () => {
   const { isRole, loading } = useUserContext();
 
@@ -84,7 +65,13 @@ const SubmitForm = () => {
 
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
 
-  const [submission, setSubmission] = useState(null);
+  const isClient = typeof window !== 'undefined';
+
+  const [submission, setSubmission] = useState(
+    isClient && localStorage.getItem('formValues')
+      ? JSON.parse(localStorage.getItem('formValues'))
+      : SUBMISSION_INITIAL_VALUES
+  );
 
   const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
 
@@ -203,7 +190,7 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      setSubmission(initialValues);
+      setSubmission(SUBMISSION_INITIAL_VALUES);
 
       addToast({
         message: (
@@ -215,7 +202,9 @@ const SubmitForm = () => {
         severity: SEVERITY.success,
       });
 
-      localStorage.setItem('formValues', JSON.stringify(initialValues));
+      if (isClient) {
+        localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
+      }
     } catch (e) {
       addToast({
         message: (
@@ -230,13 +219,13 @@ const SubmitForm = () => {
   };
 
   const clearForm = () => {
-    setSubmission({ ...initialValues });
+    setSubmission({ ...SUBMISSION_INITIAL_VALUES });
     setSubmissionReset((prevState) => ({
       ...prevState,
       reset: true,
       forceUpdate: !prevState.forceUpdate, // toggle forceUpdate value
     }));
-    localStorage.setItem('formValues', JSON.stringify(initialValues));
+    localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
   };
 
   return (

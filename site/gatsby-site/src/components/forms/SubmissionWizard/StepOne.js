@@ -105,7 +105,7 @@ const StepOne = (props) => {
   return (
     <StepContainer name={props.name}>
       <Formik
-        initialValues={(isClient && JSON.parse(localStorage.getItem('formValues'))) || data}
+        initialValues={data}
         onSubmit={() => {}}
         validationSchema={stepOneValidationSchema}
         enableReinitialize
@@ -377,22 +377,20 @@ const FormDetails = ({
           <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
         </FieldContainer>
 
-        {values?.incident_ids?.length > 0 && (
-          <FieldContainer>
-            <div className={`form-group`}>
-              <div className="flex items-center">
-                <Label popover="incident_id" label={t('Incident IDs')} />
-              </div>
-              <div className="mt-1">
-                <IncidentsField
-                  id="incident_ids"
-                  name="incident_ids"
-                  placeHolder={t('Leave empty to report a new incident')}
-                />
-              </div>
+        <FieldContainer>
+          <div className={`form-group`}>
+            <div className="flex items-center">
+              <Label popover="incident_id" label={t('Incident IDs')} />
             </div>
-          </FieldContainer>
-        )}
+            <div className="mt-1">
+              <IncidentsField
+                id="incident_ids"
+                name="incident_ids"
+                placeHolder={t('Leave empty to report a new incident')}
+              />
+            </div>
+          </div>
+        </FieldContainer>
 
         {values?.incident_ids?.length == 0 && (
           <FieldContainer>
