@@ -28,7 +28,7 @@ import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 // validator from a new file
-import { checkLink } from './check_video';
+import { checkLink } from 'utils/video';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -176,14 +176,10 @@ const SubmitForm = () => {
 
       const isValid = await checkLink(values.media_url);
 
-      // check if the media url is valid. if not then it should return false.
-
-      // if the media url is not a valid youtube or vimeo video, the set the media url to an empty string.
-      if (isValid == false) {
+      // if the media url is not a valid youtube or vimeo video, set the media url to an empty string.
+      if (!isValid) {
         values.media_url = '';
       }
-
-      // grab the video id from a valid vimeo or youtube url
 
       const submission = {
         ...values,

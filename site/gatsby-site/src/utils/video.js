@@ -1,5 +1,3 @@
-// import React from 'react';
-
 function checkYoutube(id) {
   // check if the video exist
   const img = new Image();
@@ -41,12 +39,32 @@ async function checkVimeo(id) {
   }
 }
 
+const youtubeRegex =
+  /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
+
+const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
+
+export const videoCloudinaryID = (publicID) => {
+  if (publicID.startsWith('reports/')) {
+    publicID = publicID.replace('reports/', '');
+  }
+
+  if (youtubeRegex.test(publicID)) {
+    return 'youtube/' + publicID.match(youtubeRegex)[5];
+  }
+
+  if (vimeoRegex.test(publicID)) {
+    return 'vimeo/' + publicID.match(vimeoRegex)[2];
+  }
+
+  return publicID;
+};
+
+export const isVideo = (url) => {
+  return youtubeRegex.test(url) || vimeoRegex.test(url);
+};
+
 export async function checkLink(url) {
-  const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
-
-  const youtubeRegex =
-    /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
-
   // check if the youtube url exist.
   if (youtubeRegex.test(url)) {
     return checkYoutube(url.match(youtubeRegex)[5]);

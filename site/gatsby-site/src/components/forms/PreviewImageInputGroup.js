@@ -4,6 +4,7 @@ import { Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import TextInputGroup from './TextInputGroup';
 import { Image } from 'utils/cloudinary';
+import { isVideo } from 'utils/video';
 import { isWebUri } from 'valid-url';
 
 const IMG_FALLBACK = 'fallback.jpg';
@@ -34,34 +35,10 @@ export default function PreviewImageInputGroup({
 
   const imageUrl = useRef(values.media_url);
 
-  const isVideo = (url) => {
-    const youtubeRegex =
-      /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
-
-    const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
-    // const twitterRegex = /^https:\/\/(www.)?twitter.com\/\w+\/status\/([0-9]+)/;
-
-    if (youtubeRegex.test(url)) {
-      return 'youtube/' + url.match(youtubeRegex)[5];
-    }
-
-    if (vimeoRegex.test(url)) {
-      return 'vimeo/' + url.match(vimeoRegex)[2];
-    }
-
-    return false;
-  };
-
   const updateCloudinaryID = () => {
-    if (isWebUri(values.media_url)) {
-      const videoPublicID = isVideo(values.media_url);
-
-      if (videoPublicID) {
-        setImageReferenceError(false);
-        setCloudinaryID(values.media_url);
-      } else {
-        setCloudinaryID(IMG_FALLBACK);
-      }
+    if (isWebUri(values.media_url) && isVideo(values.media_url)) {
+      setImageReferenceError(false);
+      setCloudinaryID(values.media_url);
     } else {
       setCloudinaryID(IMG_FALLBACK);
     }
