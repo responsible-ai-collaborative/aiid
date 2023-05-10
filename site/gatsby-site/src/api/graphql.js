@@ -6,29 +6,8 @@ import Cors from 'cors';
 import siteConfig from '../../config';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import bodyParser from 'body-parser';
 
 const cors = Cors();
-
-const json = bodyParser.json();
-
-export const config = {
-  bodyParser: {
-    raw: {
-      type: `-`,
-    },
-    text: {
-      type: `-`,
-    },
-    urlencoded: {
-      type: `-`,
-      extended: true,
-    },
-    json: {
-      type: `-`,
-    },
-  },
-};
 
 // This custom executor is used to execute GraphQL queries against the Realm API
 // https://www.graphql-tools.com/docs/schema-wrapping#schema-wrapping
@@ -93,15 +72,6 @@ export default async function handler(req, res) {
 
   await new Promise((resolve, reject) => {
     cors(req, res, (result) => {
-      if (result instanceof Error) {
-        reject(result);
-      }
-      resolve(result);
-    });
-  });
-
-  await new Promise((resolve, reject) => {
-    json(req, res, (result) => {
       if (result instanceof Error) {
         reject(result);
       }
