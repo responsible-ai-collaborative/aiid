@@ -29,7 +29,7 @@
     },
     "image_url": {
         "title": "Une image utilisée pour prévisualiser le rapport d'incident",
-        "text": "Il s'agit de l'URL d'une image qui sera indexée et affichée à côté du rapport. La plupart des publications ont maintenant des images en titre dont vous pouvez obtenir une URL en cliquant avec le bouton droit de la souris. Vous pouvez également lier des images ici."
+        "text": "Il s'agit de l'URL d'une image qui sera indexée et affichée à côté du rapport. La plupart des publications ont maintenant des images en titre dont vous pouvez obtenir une URL en cliquant avec le bouton droit de la souris. Vous pouvez également lier des images ici. Si l'URL saisie n'est pas valide, une image de remplacement sera utilisée à la place."
     },
     "incident_id": {
         "title": "Est-ce un incident existant ?",

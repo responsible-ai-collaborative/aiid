@@ -29,7 +29,7 @@
     },
     "image_url": {
         "title": "An image used to preview the incident report",
-        "text": "This should be a URL for an image that will be indexed and displayed next to the report. Most publications now have headline images you can grab a URL from by right-clicking. You can also link figure images here instead."
+        "text": "This should be a URL for an image that will be indexed and displayed next to the report. Most publications now have headline images you can grab a URL from by right-clicking. You can also link figure images here instead. If the URL entered is invalid, a fallback image will be used instead."
     },
     "incident_id": {
         "title": "Is this an existing incident?",
