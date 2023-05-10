@@ -1,3 +1,5 @@
+const { SUBSCRIPTION_TYPE } = require('../../../../src/utils/subscriptions');
+
 const promoteSubmissionToReport = require('../../../../../realm/functions/promoteSubmissionToReport');
 
 //should be on its own /cypress/unit folder or something
@@ -85,6 +87,10 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const subscriptionsCollection = {
+      findOneAndReplace: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -96,6 +102,7 @@ describe('Functions', () => {
               stub.withArgs('submissions').returns(submissionsCollection);
               stub.withArgs('incidents').returns(incidentsCollection);
               stub.withArgs('reports').returns(reportsCollection);
+              stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
               return stub;
             })(),
@@ -153,6 +160,16 @@ describe('Functions', () => {
         user: 'user1',
       });
 
+      const subscription = {
+        type: SUBSCRIPTION_TYPE.incident,
+        userId: submission.user,
+        incident_id: incident.incident_id + 1,
+      };
+
+      expect(subscriptionsCollection.findOneAndReplace.firstCall.args[0]).to.deep.nested.include(
+        subscription
+      );
+
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
 
       expect(global.context.functions.execute).to.be.calledOnceWith('linkReportsToIncidents', {
@@ -197,6 +214,10 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const subscriptionsCollection = {
+      findOneAndReplace: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -208,6 +229,7 @@ describe('Functions', () => {
               stub.withArgs('submissions').returns(submissionsCollection);
               stub.withArgs('incidents').returns(incidentsCollection);
               stub.withArgs('reports').returns(reportsCollection);
+              stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
               return stub;
             })(),
@@ -252,6 +274,16 @@ describe('Functions', () => {
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
+
+      const subscription = {
+        type: SUBSCRIPTION_TYPE.incident,
+        userId: submission.user,
+        incident_id: incident.incident_id,
+      };
+
+      expect(subscriptionsCollection.findOneAndReplace.firstCall.args[0]).to.deep.nested.include(
+        subscription
+      );
 
       expect(global.context.functions.execute).to.be.calledOnceWith('linkReportsToIncidents', {
         incident_ids: [1],
