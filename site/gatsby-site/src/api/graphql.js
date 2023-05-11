@@ -4,8 +4,7 @@ import fetch from 'cross-fetch';
 import { print } from 'graphql';
 import Cors from 'cors';
 import siteConfig from '../../config';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
+import { createHandler } from 'graphql-http/lib/use/express';
 
 const cors = Cors();
 
@@ -60,11 +59,7 @@ export default async function handler(req, res) {
       },
     });
 
-    const server = new ApolloServer({ schema: gatewaySchema, introspection: true });
-
-    await server.start();
-
-    graphqlMiddleware = expressMiddleware(server);
+    graphqlMiddleware = createHandler({ schema: gatewaySchema });
   }
 
   // Manually run the cors middleware

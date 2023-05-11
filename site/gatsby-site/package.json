@@ -6,7 +6,6 @@
   "version": "0.2.0",
   "dependencies": {
     "@apollo/client": "^3.7.8",
-    "@apollo/server": "^4.6.0",
     "@babel/plugin-proposal-export-default-from": "^7.12.13",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
@@ -60,6 +59,7 @@
     "gatsby-transformer-remark": "^6.0.0",
     "gatsby-transformer-sharp": "^5.7.0",
     "graphql": "^16.6.0",
+    "graphql-http": "^1.18.0",
     "i18next": "^20.6.1",
     "is-absolute-url": "^3.0.3",
     "md5": "^2.3.0",
