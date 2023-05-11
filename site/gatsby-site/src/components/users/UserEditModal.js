@@ -4,10 +4,12 @@ import { Modal } from 'flowbite-react';
 import { Formik } from 'formik';
 import { Trans } from 'react-i18next';
 import UserForm, { schema } from './UserForm';
-import { FIND_USER, UPDATE_USER_ROLES } from '../../graphql/users';
+import { FIND_USER, UPDATE_USER_PROFILE, UPDATE_USER_ROLES } from '../../graphql/users';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import lodash from 'lodash';
+import { useUserContext } from 'contexts/userContext';
 
 const supportedRoles = [
   { name: 'admin', description: 'All permissions' },
@@ -52,13 +54,29 @@ export default function UserEditModal({ onClose, userId }) {
     variables: { query: { userId } },
   });
 
+  const { user, isRole } = useUserContext();
+
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
+
+  const [updateUserProfile] = useMutation(UPDATE_USER_PROFILE);
 
   const addToast = useToastContext();
 
   const handleSubmit = async (values) => {
     try {
-      await updateUserRoles({ variables: { roles: values.roles, userId } });
+      if (!lodash.isEqual(values.roles, userData.user.roles)) {
+        await updateUserRoles({ variables: { roles: values.roles, userId } });
+      }
+
+      await updateUserProfile({
+        variables: {
+          userId,
+          first_name: values.first_name,
+          last_name: values.last_name,
+        },
+      });
+
+      await user.refreshCustomData();
 
       addToast({
         message: <>User updated.</>,
@@ -69,7 +87,7 @@ export default function UserEditModal({ onClose, userId }) {
     } catch (e) {
       addToast({
         message: <>Error updating user.</>,
-        severity: SEVERITY.console.error(),
+        severity: SEVERITY.danger,
         error: e,
       });
     }
@@ -78,7 +96,7 @@ export default function UserEditModal({ onClose, userId }) {
   return (
     <Modal show={true} onClose={onClose} data-cy="edit-user-modal" size="lg">
       <Modal.Header>
-        <Trans ns="admin">Edit User</Trans>
+        <Trans>Edit</Trans>
       </Modal.Header>
 
       {loading && (
@@ -97,12 +115,14 @@ export default function UserEditModal({ onClose, userId }) {
             <>
               <Modal.Body>
                 <UserForm />
-                <details>
-                  <summary className="cursor-pointer text-sm">Supported Roles</summary>
-                  <div className="mt-2">
-                    <RolesTable roles={supportedRoles} />
-                  </div>
-                </details>
+                {isRole('admin') && (
+                  <details>
+                    <summary className="cursor-pointer text-sm">Supported Roles</summary>
+                    <div className="mt-2">
+                      <RolesTable roles={supportedRoles} />
+                    </div>
+                  </details>
+                )}
               </Modal.Body>
               <Modal.Footer>
                 <SubmitButton

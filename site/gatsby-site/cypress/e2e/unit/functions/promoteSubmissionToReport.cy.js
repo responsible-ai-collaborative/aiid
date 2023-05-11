@@ -31,6 +31,7 @@ const submission = {
   editor_dissimilar_incidents: [],
   editor_similar_incidents: [],
   tags: [],
+  user: 'user1',
 };
 
 const incident = {
@@ -149,6 +150,7 @@ describe('Functions', () => {
         source_domain: 'projects.tampabay.com',
         language: 'en',
         tags: [],
+        user: 'user1',
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
@@ -246,6 +248,7 @@ describe('Functions', () => {
         source_domain: 'projects.tampabay.com',
         language: 'en',
         tags: [],
+        user: 'user1',
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
@@ -343,6 +346,7 @@ describe('Functions', () => {
         source_domain: 'projects.tampabay.com',
         language: 'en',
         tags: [],
+        user: 'user1',
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });

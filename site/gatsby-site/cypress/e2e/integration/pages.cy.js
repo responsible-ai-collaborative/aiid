@@ -50,7 +50,7 @@ describe('Pages', () => {
 
   paths.forEach((path) => {
     languages.forEach(({ code }) => {
-      it.skip(`/${code}${path} Should not have errors`, () => {
+      it(`/${code}${path} Should not have errors`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         cy.visit(canonicalPath, {
