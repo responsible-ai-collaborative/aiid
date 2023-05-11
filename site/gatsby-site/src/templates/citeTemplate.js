@@ -27,7 +27,7 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 import Tools from 'components/cite/Tools';
-import { isVideo } from 'components/cite/VideoPlayer';
+import { isVideo } from 'utils/video';
 import VideoPlayerCard from 'components/cite/VideoPlayerCard';
 
 function CiteTemplate({

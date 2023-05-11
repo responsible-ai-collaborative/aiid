@@ -5,6 +5,7 @@ import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
+import { videoCloudinaryID } from './video';
 
 const IMG_FALLBACK = 'fallback.jpg';
 
@@ -24,27 +25,7 @@ const Image = ({
   plugins = [lazyload()],
   style,
 }) => {
-  const toVideo = (url) => {
-    if (url.startsWith('reports/')) {
-      url = url.replace('reports/', '');
-    }
-    const youtubeRegex =
-      /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
-
-    const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
-
-    if (youtubeRegex.test(url)) {
-      return 'youtube/' + url.match(youtubeRegex)[5];
-    }
-
-    if (vimeoRegex.test(url)) {
-      return 'vimeo/' + url.match(vimeoRegex)[2];
-    }
-
-    return url;
-  };
-
-  const [cloudinaryId, setCloudinaryID] = useState(toVideo(publicID));
+  const [cloudinaryId, setCloudinaryID] = useState(videoCloudinaryID(publicID));
   // const [tweetThumb, setTweetThumb] = useState('');
 
   const imageElement = useRef(null);
