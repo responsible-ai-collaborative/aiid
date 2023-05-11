@@ -6,6 +6,7 @@ import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import AiidHelmet from 'components/AiidHelmet';
 import UserSubscriptions from 'components/UserSubscriptions';
+import UserDetails from 'components/users/UserDetails';
 
 const Account = (props) => {
   const { user, loading } = useUserContext();
@@ -30,15 +31,12 @@ const Account = (props) => {
       ) : user && user.isLoggedIn && user.profile.email ? (
         <>
           <div className="block p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <p>
-              <Trans>Email address</Trans>
-              {': '}
-              {user.profile.email}
-            </p>
-            <Link to="/logout">
-              <Trans ns="login">Log out</Trans>
-            </Link>
+            <h2>
+              <Trans ns="account">About You</Trans>
+            </h2>
+            <UserDetails userId={user.id} />
           </div>
+
           <div className="block mt-6 p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
             <h2>
               <Trans ns="account">Subscriptions</Trans>

@@ -17,6 +17,7 @@ import { graphql } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
+import config from '../../config';
 
 const LandingPage = (props) => {
   const {
@@ -51,12 +52,30 @@ const LandingPage = (props) => {
 
   const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
 
+  const ldJSON = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: config.gatsby.siteUrl,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: config.gatsby.siteUrl + '/apps/discover?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
     <Layout {...props} className="max-w-full 2xl:w-[72rem]">
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJSON) }}
+        />
       </AiidHelmet>
       <Container>
         <div>

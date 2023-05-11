@@ -46,7 +46,7 @@ const CustomDateParam = {
 const queryConfig = {
   url: withDefault(StringParam, ''),
   title: withDefault(StringParam, ''),
-  authors: withDefault(StringParam, ''),
+  authors: withDefault(ArrayParam, []),
   submitters: withDefault(ArrayParam, []),
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
@@ -60,7 +60,7 @@ const queryConfig = {
 };
 
 const SubmitForm = () => {
-  const { isRole, loading } = useUserContext();
+  const { isRole, loading, user } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
@@ -86,36 +86,45 @@ const SubmitForm = () => {
   `);
 
   useEffect(() => {
-    const queryParams = { ...query, cloudinary_id: '' };
+    if (!loading) {
+      let submission = { ...query, cloudinary_id: '' };
 
-    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-      if (queryParams[key]) {
-        if (!Array.isArray(queryParams[key])) {
-          queryParams[key] = [queryParams[key]];
+      for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+        if (submission[key]) {
+          if (!Array.isArray(submission[key])) {
+            submission[key] = [submission[key]];
+          }
+        } else {
+          submission[key] = [];
         }
-      } else {
-        queryParams[key] = [];
       }
-    }
+      if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
+        setIsIncidentResponse(true);
+      }
 
-    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG)) {
-      setIsIncidentResponse(true);
-    }
+      if (submission.image_url) {
+        submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+      }
 
-    if (queryParams.image_url) {
-      queryParams.cloudinary_id = getCloudinaryPublicID(queryParams.image_url);
-    }
+      if (
+        isEqual(submission, SUBMISSION_INITIAL_VALUES) &&
+        isClient &&
+        localStorage.getItem('formValues')
+      ) {
+        submission = { ...JSON.parse(localStorage.getItem('formValues')) };
+      }
 
-    if (
-      isEqual(queryParams, SUBMISSION_INITIAL_VALUES) &&
-      isClient &&
-      localStorage.getItem('formValues')
-    ) {
-      setSubmission(JSON.parse(localStorage.getItem('formValues')));
-    } else {
-      setSubmission(queryParams);
+      if (user?.profile?.email) {
+        submission.user = { link: user.id };
+
+        if (user.customData.first_name && user.customData.last_name) {
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+        }
+      }
+
+      setSubmission(submission);
     }
-  }, []);
+  }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
 
