@@ -86,43 +86,50 @@ const SubmitForm = () => {
   `);
 
   useEffect(() => {
-    if (!loading) {
-      let submission = { ...query, cloudinary_id: '' };
+    let submission = { ...query, cloudinary_id: '' };
 
-      for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-        if (submission[key]) {
-          if (!Array.isArray(submission[key])) {
-            submission[key] = [submission[key]];
-          }
-        } else {
-          submission[key] = [];
+    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+      if (submission[key]) {
+        if (!Array.isArray(submission[key])) {
+          submission[key] = [submission[key]];
         }
+      } else {
+        submission[key] = [];
       }
-      if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
-        setIsIncidentResponse(true);
-      }
+    }
+    if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
+      setIsIncidentResponse(true);
+    }
 
-      if (submission.image_url) {
-        submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
-      }
+    if (submission.image_url) {
+      submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+    }
 
-      if (
-        isEqual(submission, SUBMISSION_INITIAL_VALUES) &&
-        isClient &&
-        localStorage.getItem('formValues')
-      ) {
-        submission = { ...JSON.parse(localStorage.getItem('formValues')) };
-      }
+    if (
+      isEqual(submission, SUBMISSION_INITIAL_VALUES) &&
+      isClient &&
+      localStorage.getItem('formValues')
+    ) {
+      submission = { ...JSON.parse(localStorage.getItem('formValues')) };
+    }
 
+    setSubmission(submission);
+  }, []);
+
+  useEffect(() => {
+    const updatedSubmission = submission;
+
+    if (!loading) {
       if (user?.profile?.email) {
-        submission.user = { link: user.id };
+        updatedSubmission.user = { link: user.id };
 
         if (user.customData.first_name && user.customData.last_name) {
-          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+          updatedSubmission.submitters = [
+            `${user.customData.first_name} ${user.customData.last_name}`,
+          ];
         }
       }
-
-      setSubmission(submission);
+      setSubmission({ ...updatedSubmission });
     }
   }, [loading, user?.profile]);
 
