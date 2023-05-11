@@ -89,7 +89,7 @@ export const UserContextProvider = ({ children }) => {
       const user = await realmApp.logIn(credentials);
 
       if (redirectTo) {
-        navigate(localizePath({ path: redirectTo }));
+        window.location.href = localizePath({ path: redirectTo });
       }
 
       if (user.id === realmApp.currentUser.id) {

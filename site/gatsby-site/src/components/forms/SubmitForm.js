@@ -44,7 +44,7 @@ const CustomDateParam = {
 const queryConfig = {
   url: withDefault(StringParam, ''),
   title: withDefault(StringParam, ''),
-  authors: withDefault(StringParam, ''),
+  authors: withDefault(ArrayParam, []),
   submitters: withDefault(ArrayParam, []),
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
@@ -75,10 +75,11 @@ const initialValues = {
   editor_notes: '',
   language: 'en',
   tags: [],
+  user: '',
 };
 
 const SubmitForm = () => {
-  const { isRole, loading } = useUserContext();
+  const { isRole, loading, user } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
@@ -100,24 +101,28 @@ const SubmitForm = () => {
   `);
 
   useEffect(() => {
-    const queryParams = { ...query, cloudinary_id: '' };
+    if (!loading) {
+      const submission = { ...query, cloudinary_id: '' };
 
-    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-      if (queryParams[key] && !Array.isArray(queryParams[key])) {
-        queryParams[key] = [queryParams[key]];
+      if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
+        setIsIncidentResponse(true);
       }
-    }
 
-    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG)) {
-      setIsIncidentResponse(true);
-    }
+      if (submission.image_url) {
+        submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+      }
 
-    if (queryParams.image_url) {
-      queryParams.cloudinary_id = getCloudinaryPublicID(queryParams.image_url);
-    }
+      if (user?.profile?.email) {
+        submission.user = { link: user.id };
 
-    setSubmission(queryParams);
-  }, []);
+        if (user.customData.first_name && user.customData.last_name) {
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+        }
+      }
+
+      setSubmission(submission);
+    }
+  }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
 

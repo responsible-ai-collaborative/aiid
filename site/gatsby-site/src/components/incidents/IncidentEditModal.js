@@ -108,7 +108,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
   return (
     <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
-      <Modal.Header>Edit Incident</Modal.Header>
+      <Modal.Header>Edit Incident {incident?.incident_id}</Modal.Header>
 
       {!incident && (
         <Modal.Body>

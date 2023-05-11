@@ -111,6 +111,7 @@ export default function CommonEntities() {
                       Amazon: amazon,
                     }[entity.name]
                   }
+                  loading="lazy"
                 />
               </div>
               <div className="w-full">
