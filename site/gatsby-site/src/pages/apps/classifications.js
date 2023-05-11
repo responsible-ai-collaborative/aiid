@@ -4,47 +4,32 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Dropdown, Pagination, Select, Spinner, Table } from 'flowbite-react';
+import { Button, Select, Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
-import { format } from 'date-fns';
 import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  formatDateField,
+  SelectDatePickerFilter,
+} from 'components/ui/Table';
+import { v4 as uuidv4 } from 'uuid';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
-
-const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
-  const count = preFilteredRows.length;
-
-  const { t } = useTranslation();
-
-  return (
-    <input
-      type="text"
-      className="bg-white text-sm font-normal w-full"
-      style={{ minWidth: 100 }}
-      value={filterValue || ''}
-      onChange={(e) => {
-        e.preventDefault();
-        setFilter(e.target.value || undefined);
-      }}
-      placeholder={t(`Search {{count}} records...`, { count: count })}
-    />
-  );
-};
 
 const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
   // TODO: add search for large lists
   let options;
 
   const columnsArrayValues = [
+    'Entities',
     'NamedEntities',
     'TechnologyPurveyor',
     'HarmType',
@@ -138,6 +123,7 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
       onChange={(e) => {
         setFilter(e.target.value || undefined);
       }}
+      className="mt-2"
     >
       <option
         value=""
@@ -156,158 +142,6 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   );
 };
 
-const SelectDatePickerFilter = ({
-  column: { filterValue = [], preFilteredRows, setFilter, id },
-}) => {
-  const [min, max] = React.useMemo(() => {
-    let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
-
-    let max = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
-
-    preFilteredRows.forEach((row) => {
-      const currentDatetime = new Date(row.values[id]).getTime();
-
-      min = currentDatetime <= min ? currentDatetime : min;
-      max = currentDatetime >= max ? currentDatetime : max;
-    });
-    return [min, max];
-  }, [id, preFilteredRows]);
-
-  if (filterValue.length === 0) {
-    setFilter;
-  }
-
-  const handleApply = (event, picker) => {
-    picker.element.val(
-      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-    );
-    setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
-  };
-
-  const handleCancel = (event, picker) => {
-    picker.element.val('');
-    setFilter([min, max]);
-  };
-
-  return (
-    <DateRangePicker
-      className="custom-picker"
-      onApply={handleApply}
-      onCancel={handleCancel}
-      initialSettings={{
-        showDropdowns: true,
-        autoUpdateInput: false,
-        locale: {
-          cancelLabel: 'Clear',
-        },
-      }}
-    >
-      <input style={{ width: 190 }} type="text" className="form-control col-4" defaultValue="" />
-    </DateRangePicker>
-  );
-};
-
-const formatDateField = (s) => {
-  const dateObj = new Date(s.props.cell.value);
-
-  if (dateObj instanceof Date && !isNaN(dateObj)) {
-    return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
-  } else {
-    return <>{s.props.cell.value}</>;
-  }
-};
-
-function Row({ row, isAdmin, currentTaxonomy }) {
-  const [show, setShow] = useState(null);
-
-  const { t } = useTranslation();
-
-  return (
-    <Table.Row key={row.id} {...row.getRowProps()}>
-      {row.cells.map((cell) => {
-        cell.value = ((value) =>
-          Array.isArray(value)
-            ? value.map((v) => (typeof v == 'object' ? JSON.stringify(v) : v)).join(', ')
-            : value)(cell.value);
-        if (cell.column.Header.includes(t('Incident ID'))) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()}>
-              <div className="w-full m-0 p-0 overflow-auto">
-                <Link to={`/cite/${cell.value}/#taxa-area`}>
-                  <Trans>Incident</Trans> {cell.render('Cell')}
-                </Link>
-              </div>
-            </Table.Cell>
-          );
-        } else if (cell.column.Header.includes(t('Actions'))) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()}>
-              <a
-                target="_blank"
-                href={
-                  isAdmin
-                    ? `/cite/${row.values.IncidentId}/?edit_taxonomy=${currentTaxonomy}`
-                    : undefined
-                }
-                rel="noreferrer"
-              >
-                <Button
-                  data-cy="edit-classification"
-                  className="me-auto"
-                  disabled={!isAdmin}
-                  onClick={() => setShow('edit')}
-                >
-                  <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
-                </Button>
-              </a>
-            </Table.Cell>
-          );
-        } else if (cell.column.Header.includes('Date')) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-              <div className="w-full m-0 p-0 overflow-auto">
-                {formatDateField(cell.render('Cell'))}
-              </div>
-            </Table.Cell>
-          );
-        } else if (cell.value?.length > 130) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-              <div className="w-full m-0 p-0 overflow-hidden">
-                {cell.value.substring(0, 124)}...
-              </div>
-              <div className="cursor-pointer w-[10px] h-[10px]">
-                <FontAwesomeIcon
-                  onClick={() => setShow(cell.value)}
-                  icon={faExpandAlt}
-                  className="fas fa-expand-arrows-alt"
-                />
-
-                <Modal
-                  show={show === cell.value}
-                  onClose={() => setShow(null)}
-                  className="submission-modal"
-                >
-                  <Modal.Header>{cell.column.Header}</Modal.Header>
-                  <Modal.Body>{cell.value}</Modal.Body>
-                </Modal>
-              </div>
-            </Table.Cell>
-          );
-        } else {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-              <div className="w-full m-0 p-0 overflow-auto">
-                {cell.render('Cell').props.cell.value}
-              </div>
-            </Table.Cell>
-          );
-        }
-      })}
-    </Table.Row>
-  );
-}
-
 export default function ClassificationsDbView(props) {
   const { isAdmin } = useUserContext();
 
@@ -323,9 +157,9 @@ export default function ClassificationsDbView(props) {
 
   const [currentTaxonomy, setCurrentTaxonomy] = useState('');
 
-  const [currentFilters, setCurrentFilters] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
-  const [currentSorting, setCurrentSorting] = useState([]);
+  const [modalContent, setModalContent] = useState({ title: '', content: '' });
 
   const { t } = useTranslation();
 
@@ -487,7 +321,8 @@ export default function ClassificationsDbView(props) {
       const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
 
       const column = {
-        Header: t(taxaField.short_name),
+        id: uuidv4(),
+        title: t(taxaField.short_name),
         accessor: taxaField.short_name.split(' ').join(''),
       };
 
@@ -499,6 +334,49 @@ export default function ClassificationsDbView(props) {
       if (taxaField.display_type === 'date') {
         column.Filter = SelectDatePickerFilter;
         column.filter = taxaField.short_name.split(' ').join('');
+        column.Cell = function DateCell({ column: { id }, row: { values } }) {
+          return <>{formatDateField(values[id])}</>;
+        };
+      } else if (taxaField.display_type === 'string') {
+        column.className = 'min-w-[400px]';
+        column.Cell = function StringCell({ column: { id }, row: { values } }) {
+          return (
+            <div className="max-w-[400px] flex flex-col items-start">
+              <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
+                {values[id]}
+              </div>
+              {values[id]?.length > 130 && (
+                <FontAwesomeIcon
+                  onClick={() => {
+                    setShowModal(true);
+                    setModalContent({
+                      title: column.title,
+                      content: values[id],
+                    });
+                  }}
+                  icon={faExpandAlt}
+                  className="fas fa-expand-arrows-alt cursor-pointer"
+                />
+              )}
+            </div>
+          );
+        };
+      } else {
+        column.Cell = function otherCell({ cell }) {
+          cell.value = ((value) =>
+            Array.isArray(value)
+              ? value.map((v) => (typeof v == 'object' ? JSON.stringify(v) : v)).join(', ')
+              : value)(cell.value);
+          return (
+            <>
+              <div key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+                <div className="w-full m-0 p-0 overflow-auto">
+                  {cell.render('Cell').props.cell.value}
+                </div>
+              </div>
+            </>
+          );
+        };
       }
 
       return column;
@@ -512,17 +390,41 @@ export default function ClassificationsDbView(props) {
     }
 
     const incidentIdColumn = {
-      Header: t('Incident ID'),
+      title: t('Incident ID'),
       accessor: 'IncidentId',
+      Cell: ({ row: { values } }) => (
+        <a className="flex" href={`/cite/${values.IncidentId}`}>
+          Incident {values.IncidentId}
+        </a>
+      ),
     };
 
     const actionsColumn = {
-      Header: t('Actions'),
+      title: t('Actions'),
       accessor: 'actions',
+      disableFilters: true,
+      disableSortBy: true,
+      Cell: ({ row: { values } }) => (
+        <a
+          target="_blank"
+          href={
+            isAdmin ? `/cite/${values.IncidentId}/?edit_taxonomy=${currentTaxonomy}` : undefined
+          }
+          rel="noreferrer"
+        >
+          <Button
+            color={'gray'}
+            data-cy="edit-classification"
+            className="me-auto"
+            disabled={!isAdmin}
+          >
+            <Trans>Edit</Trans>
+          </Button>
+        </a>
+      ),
     };
 
     setColumnData([
-      actionsColumn,
       incidentIdColumn,
       ...taxaData[0].field_list.reduce(
         (acc, field) => {
@@ -534,6 +436,7 @@ export default function ClassificationsDbView(props) {
         },
         { fields: [], field_names: new Set() }
       ).fields,
+      actionsColumn,
     ]);
 
     let rowQuery = {
@@ -567,6 +470,7 @@ export default function ClassificationsDbView(props) {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
+      Header: DefaultColumnHeader,
     }),
     []
   );
@@ -587,19 +491,7 @@ export default function ClassificationsDbView(props) {
     EndingDate: filterDateFunction,
   };
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    setAllFilters,
-    state,
-  } = useTable(
+  const table = useTable(
     {
       columns,
       data,
@@ -608,24 +500,12 @@ export default function ClassificationsDbView(props) {
       initialState: {
         pageIndex: 0,
         pageSize: 500,
-        filters: currentFilters,
-        sortBy: currentSorting,
       },
     },
     useFilters,
     useSortBy,
     usePagination
   );
-
-  const { pageIndex, pageSize, filters, sortBy } = state;
-
-  useEffect(() => {
-    setCurrentFilters(filters);
-  }, [filters]);
-
-  useEffect(() => {
-    setCurrentSorting(sortBy);
-  }, [sortBy]);
 
   const fullTextModal = useModal();
 
@@ -666,132 +546,33 @@ export default function ClassificationsDbView(props) {
           <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
             <Trans>{{ currentTaxonomy }} taxonomy page</Trans>
           </Link>
-          <Button onClick={() => setAllFilters([])}>
+          <Button onClick={() => table.setAllFilters([])}>
             <Trans>Reset filters</Trans>
           </Button>
         </div>
         <div className="mt-4 always-visible-scroll">
           {loading && <ListSkeleton />}
           {!loading && (
-            <>
-              <Table striped={true} hoverable={true} {...getTableProps()}>
-                {headerGroups.map((headerGroup) => (
-                  <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
-                        <div
-                          className="flex flex-col"
-                          {...column.getHeaderProps(column.getSortByToggleProps())}
-                          style={{ marginBottom: 5 }}
-                        >
-                          {column.render('Header')}
-                          <span>
-                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
-                          </span>
-                        </div>
-                        <div>{column.canFilter ? column.render('Filter') : null}</div>
-                      </Table.HeadCell>
-                    ))}
-                  </Table.Head>
-                ))}
-                <Table.Body {...getTableBodyProps()}>
-                  {page.map((row) => {
-                    prepareRow(row);
-
-                    return (
-                      <Row
-                        key={row.id}
-                        row={row}
-                        isAdmin={isAdmin}
-                        currentTaxonomy={currentTaxonomy}
-                      />
-                    );
-                  })}
-
-                  {page.length === 0 && (
-                    <Table.Row>
-                      <Table.Cell colSpan={10}>
-                        <div>
-                          <span>
-                            <Trans>No results found</Trans>
-                          </span>
-                        </div>
-                      </Table.Cell>
-                    </Table.Row>
-                  )}
-                </Table.Body>
-              </Table>
-
-              <div className="flex items-center gap-2">
-                {pageCount > 1 && (
-                  <>
-                    <Pagination
-                      className="incidents-pagination mb-0"
-                      onPageChange={(page) => {
-                        gotoPage(page - 1);
-                      }}
-                      currentPage={pageIndex + 1}
-                      showIcons={true}
-                      totalPages={pageCount}
-                    />
-                    <div className="mt-2">
-                      <span>
-                        <Trans
-                          i18nKey="paginationKey"
-                          defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
-                          values={{
-                            currentPageIndex: pageIndex + 1,
-                            pageOptionsLength: pageOptions.length,
-                          }}
-                          components={{ bold: <strong /> }}
-                        />
-                      </span>
-                      <span>
-                        | <Trans>Go to page:</Trans>{' '}
-                        <input
-                          type="number"
-                          defaultValue={pageIndex + 1}
-                          onChange={(e) => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-
-                            gotoPage(page);
-                          }}
-                          style={{ width: '100px' }}
-                        />
-                      </span>{' '}
-                    </div>
-                  </>
-                )}
-                <div className="mt-2">
-                  <Dropdown
-                    color={'gray'}
-                    label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
-                    style={{ width: 120 }}
-                    size="sm"
-                    value={pageSize}
-                  >
-                    {[10, 20, 30, 40, 50, 100, 500, 9999].map((pageSize) => (
-                      <Dropdown.Item
-                        key={pageSize}
-                        onClick={() => {
-                          setPageSize(Number(pageSize));
-                        }}
-                      >
-                        {pageSize === 9999 ? (
-                          <Trans>Show all</Trans>
-                        ) : (
-                          <Trans>Show {{ pageSize }}</Trans>
-                        )}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown>
-                </div>
-              </div>
-            </>
+            <div>
+              <Table table={table} />
+            </div>
           )}
         </div>
       </div>
       <CustomModal {...fullTextModal} />
+
+      {showModal && (
+        <Modal
+          show={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setModalContent({ title: '', content: '' });
+          }}
+        >
+          <Modal.Header>{modalContent.title}</Modal.Header>
+          <Modal.Body>{modalContent.content}</Modal.Body>
+        </Modal>
+      )}
     </Layout>
   );
 }

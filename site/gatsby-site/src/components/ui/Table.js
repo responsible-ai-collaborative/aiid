@@ -1,7 +1,9 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
-import { Button, Dropdown, Pagination, TextInput } from 'flowbite-react';
+import { Button, Dropdown, Pagination, Select, TextInput } from 'flowbite-react';
+import { format } from 'date-fns';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -33,11 +35,11 @@ export function DefaultColumnFilter({
   }
 
   return (
-    <div>
+    <div data-cy="filter">
       <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
       <TextInput
         data-cy={`input-filter-${title}`}
-        className="w-100"
+        className="w-100 font-normal"
         type="text"
         placeholder={t(`Search {{count}} records...`, { count })}
         value={filterValue || ''}
@@ -65,6 +67,138 @@ export function DefaultColumnHeader({ column }) {
 
 export function DefaultDateCell({ cell }) {
   return <DateLabel date={new Date(cell.value)} />;
+}
+
+export function SelectDatePickerFilter({
+  column: { filterValue = [], preFilteredRows, setFilter, id },
+}) {
+  const [min, max] = React.useMemo(() => {
+    let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
+
+    let max = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
+
+    preFilteredRows.forEach((row) => {
+      const currentDatetime = new Date(row.values[id]).getTime();
+
+      min = currentDatetime <= min ? currentDatetime : min;
+      max = currentDatetime >= max ? currentDatetime : max;
+    });
+    return [min, max];
+  }, [id, preFilteredRows]);
+
+  if (filterValue.length === 0) {
+    setFilter;
+  }
+
+  const handleApply = (event, picker) => {
+    picker.element.val(
+      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+    );
+    setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
+  };
+
+  const handleCancel = (event, picker) => {
+    picker.element.val('');
+    setFilter([min, max]);
+  };
+
+  return (
+    <div className="flex font-normal mt-2">
+      <DateRangePicker
+        className="custom-picker"
+        onApply={handleApply}
+        onCancel={handleCancel}
+        initialSettings={{
+          showDropdowns: true,
+          autoUpdateInput: false,
+          locale: {
+            cancelLabel: 'Clear',
+          },
+        }}
+      >
+        <input
+          style={{ width: 190 }}
+          type="text"
+          className="form-control col-4 p-2"
+          defaultValue=""
+        />
+      </DateRangePicker>
+    </div>
+  );
+}
+
+export function SelectColumnFilter({
+  column: { filterValue = [], setFilter, preFilteredRows, id },
+}) {
+  let options;
+
+  const ARRAY_COLUMNS = ['submitters'];
+
+  const filterOptionsFromArray = () => {
+    return (options = React.useMemo(() => {
+      const options = new Set();
+
+      preFilteredRows.forEach((row) => {
+        if (Array.isArray(row.values[id])) {
+          row.values[id].forEach((w) => {
+            if (w !== '') {
+              options.add(w);
+            }
+          });
+        } else {
+          if (row.values[id] !== '') {
+            options.add(row.values[id]);
+          }
+        }
+      });
+      return [...options.values()];
+    }, [id, preFilteredRows]));
+  };
+
+  if (ARRAY_COLUMNS.includes(id)) {
+    options = filterOptionsFromArray();
+  } else {
+    options = React.useMemo(() => {
+      const options = new Set();
+
+      preFilteredRows.forEach((row) => {
+        if (row.values[id] !== '') {
+          options.add(row.values[id]);
+        }
+      });
+      return [...options.values()];
+    }, [id, preFilteredRows]);
+  }
+
+  const filteredOptions = options.filter((o) => o !== '-');
+
+  return (
+    <Select
+      style={{ width: '100%' }}
+      className="mt-2"
+      value={filterValue || 'All'}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+    >
+      <option value="">All</option>
+      {filteredOptions.map((option, i) => (
+        <option key={i} value={option}>
+          {option}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+export function formatDateField(date) {
+  const dateObj = new Date(date);
+
+  if (dateObj instanceof Date && !isNaN(dateObj)) {
+    return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
+  } else {
+    return <>{date}</>;
+  }
 }
 
 export default function Table({ table, className = '', ...props }) {
