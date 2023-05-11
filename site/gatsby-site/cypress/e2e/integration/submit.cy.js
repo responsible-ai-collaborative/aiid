@@ -17,6 +17,7 @@ describe('The Submit form', () => {
   });
 
   it('Should submit a new report not linked to any incident once all fields are filled properly', () => {
+    cy.clearLocalStorage('formValues');
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -96,6 +97,7 @@ describe('The Submit form', () => {
   });
 
   it('Should autocomplete entities', () => {
+    cy.clearLocalStorage('formValues');
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -250,6 +252,7 @@ describe('The Submit form', () => {
   );
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
+    cy.clearLocalStorage('formValues');
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -427,6 +430,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     cy.intercept('GET', parserURL, { ...parseNews, forceNetworkError: true }).as('parseNews');
@@ -445,6 +449,10 @@ describe('The Submit form', () => {
   });
 
   it('Should pull parameters form the query string and auto-fill fields', () => {
+    cy.clearLocalStorage('formValues');
+
+    cy.waitForStableDOM();
+
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -465,10 +473,15 @@ describe('The Submit form', () => {
     cy.intercept('GET', parserURL, {
       title: 'test title',
       authors: 'test author',
+      submitters: 'test submitter',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
+      incident_date: '2022-01-01',
+      incident_ids: [1],
       image_url: 'https://test.com/image.jpg',
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+      tags: 'test tag',
+      editor_notes: 'Here are some notes',
     }).as('parseNews');
 
     cy.conditionalIntercept(
@@ -535,6 +548,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show a list of related reports', () => {
+    cy.clearLocalStorage('formValues');
     const relatedReports = {
       byURL: {
         data: {
@@ -756,6 +770,7 @@ describe('The Submit form', () => {
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it('Should show related reports based on semantic similarity', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
@@ -772,6 +787,7 @@ describe('The Submit form', () => {
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     cy.setEditorText(
@@ -782,6 +798,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show fallback preview image on initial load', () => {
+    cy.clearLocalStorage('formValues');
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -815,6 +832,7 @@ describe('The Submit form', () => {
   });
 
   it('Should update preview image when url is typed', () => {
+    cy.clearLocalStorage('formValues');
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -859,6 +877,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show the editor notes field', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     const valuesStep1 = {
@@ -906,6 +925,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show a popover', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     cy.get('[data-cy="label-title"]').trigger('mouseenter');
@@ -918,6 +938,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show a translated popover', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(`/es/apps/submit/`);
 
     cy.get('[data-cy="label-title"]').trigger('mouseenter');
@@ -932,6 +953,7 @@ describe('The Submit form', () => {
   });
 
   it('Should work with translated page', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(`/es/apps/submit/`);
 
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
@@ -980,6 +1002,7 @@ describe('The Submit form', () => {
   });
 
   it('Should submit on step 1', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
@@ -1015,6 +1038,7 @@ describe('The Submit form', () => {
   });
 
   it('Should submit on step 2', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
@@ -1058,6 +1082,7 @@ describe('The Submit form', () => {
   });
 
   it('Should display an error message if data is missing', () => {
+    cy.clearLocalStorage('formValues');
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
@@ -1074,6 +1099,7 @@ describe('The Submit form', () => {
   });
 
   it('Should submit a new report response', () => {
+    cy.clearLocalStorage('formValues');
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -1161,6 +1187,7 @@ describe('The Submit form', () => {
   });
 
   it('Should show related reports based on author', () => {
+    cy.clearLocalStorage('formValues');
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -1246,6 +1273,7 @@ describe('The Submit form', () => {
   });
 
   it('Should *not* show related reports based on author', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     const valuesStep1 = {
@@ -1264,6 +1292,7 @@ describe('The Submit form', () => {
   });
 
   it('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', () => {
+    cy.clearLocalStorage('formValues');
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -1378,6 +1407,7 @@ describe('The Submit form', () => {
   });
 
   it('Should allow two submissions in a row', () => {
+    cy.clearLocalStorage('formValues');
     cy.visit(url);
 
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
@@ -1431,6 +1461,7 @@ describe('The Submit form', () => {
   });
 
   it('Should fetch the news if the url param is in the querystring', () => {
+    cy.clearLocalStorage('formValues');
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.intercept('GET', parserURL, cy.spy().as('parseNewsSpy'));
@@ -1448,5 +1479,108 @@ describe('The Submit form', () => {
     cy.get('input[name="url"]').type(`https://skylightcyber.com/2019/07/18/cylance-i-kill-you/`);
 
     cy.get('@parseNewsSpy').should('have.been.calledOnce');
+  });
+
+  it('Should load from localstorage', () => {
+    cy.clearLocalStorage('formValues');
+
+    const values = {
+      url: 'https://test.com',
+      authors: 'test author',
+      title: 'test title',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      incident_ids: [1],
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+      submitters: 'test submitters',
+      tags: 'test tags',
+      source_domain: `test.com`,
+      cloudinary_id: `reports/test.com/image.jpg`,
+      editor_notes: 'Here are some notes',
+    };
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    const params = new URLSearchParams(values);
+
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.visit(url + `?${params.toString()}`);
+
+    cy.waitForStableDOM();
+
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        ...values,
+        incident_ids: [1],
+        authors: [values.authors],
+        submitters: [values.submitters],
+        tags: [values.tags],
+        plain_text:
+          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        cloudinary_id: `reports/test.com/image.jpg`,
+        editor_notes: 'Here are some notes',
+      });
+    });
+  });
+
+  it('Should clear form', () => {
+    cy.clearLocalStorage('formValues');
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    const values = {
+      url: 'https://test.com',
+      authors: 'test author',
+      title: 'test title',
+      date_published: '2021-01-02',
+      incident_ids: [1],
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+    };
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    const params = new URLSearchParams(values);
+
+    cy.visit(url + `?${params.toString()}`);
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="clear-form"]').click();
+
+    cy.waitForStableDOM();
+
+    for (const key in values) {
+      if (key === 'text') {
+        cy.getEditorText().should('eq', '');
+      } else {
+        cy.get(`input[name="${key}"]`).should('have.value', '');
+      }
+    }
   });
 });

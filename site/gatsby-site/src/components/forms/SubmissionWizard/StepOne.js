@@ -27,8 +27,6 @@ import {
 import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
-import { graphql, useStaticQuery } from 'gatsby';
-import DefaultSkeleton from 'elements/Skeletons/Default';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -77,30 +75,6 @@ const StepOne = (props) => {
   useEffect(() => {
     setData({ ...props.data });
   }, [props.data]);
-
-  const { site } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          buildTime
-        }
-      }
-    `
-  );
-
-  useEffect(() => {
-    localStorage.setItem('buildTime', new Date(site.buildTime).getTime().toString());
-  }, []);
-
-  const isClient = typeof window !== 'undefined';
-
-  if (!isClient || Date.parse(site.buildTime) > Number(localStorage.getItem('buildTime'))) {
-    return (
-      <>
-        <DefaultSkeleton />
-      </>
-    );
-  }
 
   return (
     <StepContainer name={props.name}>

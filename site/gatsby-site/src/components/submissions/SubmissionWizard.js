@@ -9,6 +9,10 @@ import StepThree from '../forms/SubmissionWizard/StepThree';
 const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submissionReset }) => {
   const [data, setData] = useState(initialValues);
 
+  useEffect(() => {
+    setData({ ...initialValues });
+  }, [initialValues]);
+
   const [currentStep, setCurrentStep] = useState(0);
 
   const [steps, setSteps] = useState([]);

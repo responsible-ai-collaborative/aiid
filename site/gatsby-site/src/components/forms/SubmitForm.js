@@ -28,6 +28,7 @@ import { Helmet } from 'react-helmet';
 import { Alert, Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
+import isEqual from 'lodash/isEqual';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -67,11 +68,7 @@ const SubmitForm = () => {
 
   const isClient = typeof window !== 'undefined';
 
-  const [submission, setSubmission] = useState(
-    isClient && localStorage.getItem('formValues')
-      ? JSON.parse(localStorage.getItem('formValues'))
-      : SUBMISSION_INITIAL_VALUES
-  );
+  const [submission, setSubmission] = useState(SUBMISSION_INITIAL_VALUES);
 
   const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
 
@@ -92,8 +89,12 @@ const SubmitForm = () => {
     const queryParams = { ...query, cloudinary_id: '' };
 
     for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-      if (queryParams[key] && !Array.isArray(queryParams[key])) {
-        queryParams[key] = [queryParams[key]];
+      if (queryParams[key]) {
+        if (!Array.isArray(queryParams[key])) {
+          queryParams[key] = [queryParams[key]];
+        }
+      } else {
+        queryParams[key] = [];
       }
     }
 
@@ -105,7 +106,15 @@ const SubmitForm = () => {
       queryParams.cloudinary_id = getCloudinaryPublicID(queryParams.image_url);
     }
 
-    setSubmission(queryParams);
+    if (
+      isEqual(queryParams, SUBMISSION_INITIAL_VALUES) &&
+      isClient &&
+      localStorage.getItem('formValues')
+    ) {
+      setSubmission(JSON.parse(localStorage.getItem('formValues')));
+    } else {
+      setSubmission(queryParams);
+    }
   }, []);
 
   const [displayCsvSection] = useState(false);
@@ -285,7 +294,13 @@ const SubmitForm = () => {
             Your changes are being saved. You can continue filling out the report or come back
             later.
           </Trans>
-          <Button color="gray" size={'xs'} className={'mt-2'} onClick={() => clearForm()}>
+          <Button
+            color="gray"
+            size={'xs'}
+            className={'mt-2'}
+            onClick={() => clearForm()}
+            data-cy="clear-form"
+          >
             <Trans i18n={i18n} ns="submit">
               Clear Form
             </Trans>

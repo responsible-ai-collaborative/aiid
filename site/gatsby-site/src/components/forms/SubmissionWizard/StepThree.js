@@ -19,7 +19,6 @@ import {
   faPenNib,
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
-import DefaultSkeleton from 'elements/Skeletons/Default';
 
 const StepThree = (props) => {
   const [data, setData] = useState(props.data);
@@ -89,7 +88,7 @@ const StepThree = (props) => {
   };
 
   useEffect(() => {
-    setData(props.data);
+    setData({ ...props.data });
   }, [props.data]);
 
   const staticQueryData = useStaticQuery(graphql`
@@ -105,9 +104,6 @@ const StepThree = (props) => {
         nodes {
           name
         }
-      }
-      site {
-        buildTime
       }
     }
   `);
@@ -126,26 +122,6 @@ const StepThree = (props) => {
         }
       }
     }
-  }
-
-  useEffect(() => {
-    localStorage.setItem(
-      'buildTime',
-      new Date(staticQueryData.site.buildTime).getTime().toString()
-    );
-  }, []);
-
-  const isClient = typeof window !== 'undefined';
-
-  if (
-    !isClient ||
-    Date.parse(staticQueryData.site.buildTime) > Number(localStorage.getItem('buildTime'))
-  ) {
-    return (
-      <>
-        <DefaultSkeleton />
-      </>
-    );
   }
 
   return (
