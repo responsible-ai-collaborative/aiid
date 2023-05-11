@@ -21,7 +21,6 @@
     "@graphql-tools/wrap": "^8.4.6",
     "@mdx-js/react": "^2.3.0",
     "@postlight/mercury-parser": "^2.2.1",
-    "@sendgrid/mail": "^7.7.0",
     "algoliasearch": "^4.10.5",
     "async": "^3.2.2",
     "billboard.js": "^3.7.4",
