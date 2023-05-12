@@ -4,7 +4,6 @@ import React from 'react';
 import { Highlight } from 'react-instantsearch-dom';
 import { VIEW_TYPES } from 'utils/discover';
 import WebArchiveLink from '../../../components/ui/WebArchiveLink';
-import { BiasIcon } from 'components/BiasLabels';
 
 export function citationReportUrl(item, viewType) {
   let path = null;
@@ -43,8 +42,7 @@ export function HeaderTitle({ item, ...props }) {
 
 export function SourceDomainSubtitle({ item, ...props }) {
   return (
-    <div {...props} className="text-inherit flex">
-      <BiasIcon bias_labels={item.bias_labels} publicationName={item.source_domain} />
+    <div {...props} className="text-inherit">
       <WebArchiveLink url={item.url} date={item.date_submitted}>
         {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
       </WebArchiveLink>

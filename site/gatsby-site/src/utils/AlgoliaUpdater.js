@@ -10,7 +10,7 @@ const { isCompleteReport } = require('./variants');
 // to fit within the Algolia tier limits.
 //
 // TODO: Put this configuration in a more convenient place.
-const LIMIT = 50; //Number.MAX_SAFE_INTEGER;
+const LIMIT = Number.MAX_SAFE_INTEGER;
 
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
@@ -77,7 +77,7 @@ const getClassificationArray = ({ classification, taxonomy }) => {
   return result;
 };
 
-const reportToEntry = ({ incident = null, report, publication = null }) => {
+const reportToEntry = ({ incident = null, report }) => {
   let featuredValue = 0;
 
   if (config?.header?.search?.featured) {
@@ -94,7 +94,6 @@ const reportToEntry = ({ incident = null, report, publication = null }) => {
 
   const entry = {
     authors: report.authors,
-    bias_labels: publication?.bias_labels,
     description: report.description,
     epoch_date_downloaded: report.epoch_date_downloaded,
     epoch_date_modified: report.epoch_date_modified,
@@ -145,7 +144,7 @@ class AlgoliaUpdater {
     this.algoliaClient = algoliaClient;
   }
 
-  generateIndexEntries = async ({ reports, incidents, classifications, taxa, publications }) => {
+  generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
     let classificationsHash = {};
 
     classifications.forEach((classification) => {
@@ -164,9 +163,7 @@ class AlgoliaUpdater {
         if (reports.some((r) => r.report_number == report_number)) {
           const report = reports.find((r) => r.report_number == report_number) || {};
 
-          const publication = publications.find((p) => p.domain == report.source_domain);
-
-          const entry = reportToEntry({ incident, report, publication });
+          const entry = reportToEntry({ incident, report });
 
           if (classificationsHash[entry.incident_id]) {
             entry.classifications = classificationsHash[entry.incident_id];
@@ -185,23 +182,9 @@ class AlgoliaUpdater {
 
     const truncatedData = downloadData.map(truncate);
 
-    const ids = Array.from(new Set(truncatedData.map((entry) => entry.incident_id)));
+    const smallData = truncatedData.slice(0, LIMIT);
 
-    const smallData = ids.reduce(
-      (entries, id) =>
-        entries.concat(
-          truncatedData[
-            [10, 34, 186, 477, 443, 23]
-              .concat(Object.keys(config.header.search.featured))
-              .includes(id)
-              ? 'filter'
-              : 'find'
-          ]((entry) => entry.incident_id == id)
-        ),
-      []
-    );
-
-    return LIMIT < Number.MAX_SAFE_INTEGER ? smallData : truncatedData;
+    return smallData;
   };
 
   getClassifications = async () => {
@@ -292,10 +275,6 @@ class AlgoliaUpdater {
     });
 
     return fullReports;
-  };
-
-  getPublications = async () => {
-    return await this.mongoClient.db('aiidprod').collection(`publications`).find({}).toArray();
   };
 
   uploadToAlgolia = async ({ language, entries }) => {
@@ -423,14 +402,11 @@ class AlgoliaUpdater {
 
     const reports = await this.getReports({ language });
 
-    const publications = await this.getPublications();
-
     const entries = await this.generateIndexEntries({
       reports,
       incidents,
       classifications,
       taxa,
-      publications,
     });
 
     await this.mongoClient.close();
