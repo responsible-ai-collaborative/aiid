@@ -365,6 +365,8 @@ describe('The Discover app', () => {
 
     cy.get('form#searchForm').as('form');
 
+    cy.waitForStableDOM();
+
     cy.get('@form')
       .get('[data-cy="search-box"] input[placeholder="Type Here"]')
       .type('xxxxxxxxxxxxx')
