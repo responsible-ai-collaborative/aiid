@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Spinner } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -17,16 +17,22 @@ export default function NewsletterSignup() {
 
   const addToast = useToastContext();
 
-  const [emailValue, setEmailValue] = useState('');
-
-  const SubscribeSchema = Yup.object().shape({
-    emailSubscription: Yup.string().email('Invalid email').required('Required'),
-  });
-
   const {
     user,
     actions: { signUp },
   } = useUserContext();
+
+  const [emailValue, setEmailValue] = useState('');
+
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const SubscribeSchema = Yup.object().shape({
+    emailSubscription: Yup.string().email('Invalid email').required('Required'),
+  });
 
   let [{ redirectTo }] = useQueryParams({
     redirectTo: StringParam,
@@ -43,7 +49,7 @@ export default function NewsletterSignup() {
           alt={t('An envelope with a neural net diagram on its left')}
           className="w-2/5 mx-auto drop-shadow-xl mb-6"
         />
-        {user && user.providerType != 'anon-user' ? (
+        {hydrated && user && user.providerType != 'anon-user' ? (
           <p>
             <Trans>
               Check your inbox for the AI Incident Briefing, which includes incident round-ups along
