@@ -402,7 +402,7 @@ blockquote {
   border-bottom: 1px solid rgb(230, 236, 241);
   margin-top: -1rem;
   margin-bottom: 1rem;
-  padding: 1rem 0rem;
+  padding: 0.75rem 0rem;
 }
 @media (min-width: 768px) {
   .titleWrapper {
