@@ -24,7 +24,7 @@ export default function NewsletterSignup() {
   });
 
   const {
-    isLoggedIn,
+    user,
     actions: { signUp },
   } = useUserContext();
 
@@ -43,7 +43,7 @@ export default function NewsletterSignup() {
           alt={t('An envelope with a neural net diagram on its left')}
           className="w-2/5 mx-auto drop-shadow-xl mb-6"
         />
-        {isLoggedIn ? (
+        {user && user.providerType != 'anon-user' ? (
           <p>
             <Trans>
               Check your inbox for the AI Incident Briefing, which includes incident round-ups along
