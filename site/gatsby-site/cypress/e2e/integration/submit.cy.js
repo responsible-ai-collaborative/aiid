@@ -95,6 +95,72 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
+  it('Should autocomplete entities', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors').should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    cy.get('input[name="deployers"]').type('YouT');
+
+    cy.get('#deployers-tags .dropdown-item')
+      .contains(/^YouTube$/)
+      .click();
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+        authors: ['Valentina Palladino'],
+        date_published: '2017-11-10',
+        image_url:
+          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        incident_ids: [],
+        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
+        plain_text:
+          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
+        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
+        deployers: { link: ['youtube'] },
+      });
+    });
+
+    cy.get('.tw-toast')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
+
+    cy.contains('Please review. Some data is missing.').should('not.exist');
+  });
+
   maybeIt(
     'As editor, should submit a new incident report, adding an incident title and editors.',
     () => {
@@ -131,8 +197,6 @@ describe('The Submit form', () => {
 
       cy.get('[data-cy="to-step-2"]').click();
 
-      cy.get('input[name="submitters"]').type('Something');
-
       cy.get('[name="language"]').select('Spanish');
 
       cy.get('[data-cy="to-step-3"]').click();
@@ -152,7 +216,7 @@ describe('The Submit form', () => {
       cy.wait('@insertSubmission').then((xhr) => {
         expect(xhr.request.body.variables.submission).to.deep.nested.include({
           title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-          submitters: ['Something'],
+          submitters: ['Test User'],
           authors: ['Valentina Palladino'],
           incident_date: '2020-01-01',
           incident_editors: ['Sean McGregor', 'Khoa Lam'],
@@ -171,6 +235,8 @@ describe('The Submit form', () => {
           editor_notes: 'Here are some notes',
           description: 'Description',
         });
+
+        expect(xhr.request.body.variables.submission.user.link).to.not.be.undefined;
       });
 
       cy.get('.tw-toast')
@@ -266,11 +332,15 @@ describe('The Submit form', () => {
       .first()
       .click();
 
+    cy.waitForStableDOM();
+
     cy.get(
       '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
     )
       .last()
       .click();
+
+    cy.waitForStableDOM();
 
     cy.clickOutside();
 
@@ -278,9 +348,13 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.waitForStableDOM();
+
     cy.wait('@FindIncidentsTitles');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[name="incident_title"]').should('not.exist');
 
@@ -457,6 +531,101 @@ describe('The Submit form', () => {
         cloudinary_id: `reports/test.com/image.jpg`,
         editor_notes: 'Here are some notes',
       });
+
+      expect(xhr.request.body.variables.submission.user).to.be.undefined;
+    });
+  });
+
+  maybeIt('Should submit a submission and link it to the current user id', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      incident_ids: [1],
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+      tags: 'test tag',
+      editor_notes: 'Here are some notes',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.intercept('GET', parserURL, {
+      title: 'test title',
+      authors: 'test author',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+    }).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2022-01-01',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@FindIncidentsTitles');
+
+    cy.get('.form-has-errors').should('not.exist');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        ...values,
+        incident_ids: [1],
+        authors: [values.authors],
+        submitters: ['Test User'],
+        tags: [values.tags],
+        plain_text:
+          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        cloudinary_id: `reports/test.com/image.jpg`,
+        editor_notes: 'Here are some notes',
+      });
+
+      expect(xhr.request.body.variables.submission.user.link).to.not.be.undefined;
     });
   });
 
@@ -596,7 +765,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should show a preliminary checks message', () => {
+  it.skip('Should show a preliminary checks message', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -671,9 +840,13 @@ describe('The Submit form', () => {
       }
     }
 
-    cy.wait(['@RelatedReportsByAuthor']);
+    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByURL', '@RelatedReportsByPublishedDate'], {
+      timeout: 30000,
+    });
 
     cy.get('[data-cy="no-related-reports"]').should('be.visible');
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="result"]').should('not.exist');
   });

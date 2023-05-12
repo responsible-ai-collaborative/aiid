@@ -9,10 +9,22 @@
             "variant": {
                 "bsonType": "object",
                 "properties": {
-                    "text_inputs": {
+                    "date_published": {
                         "bsonType": "string"
                     },
-                    "text_outputs": {
+                    "inputs_outputs": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "string"
+                        }
+                    },
+                    "submitters": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "string"
+                        }
+                    },
+                    "text": {
                         "bsonType": "string"
                     }
                 }

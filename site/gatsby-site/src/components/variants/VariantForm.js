@@ -1,59 +1,150 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
+import { Field, FieldArray, useFormikContext } from 'formik';
 import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
+import { Trans, useTranslation } from 'react-i18next';
+import { Button } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
+import TagsInputGroup from 'components/forms/TagsInputGroup';
+import Label from 'components/forms/Label';
 
 // Schema for yup
 export const schema = yup.object().shape({
-  text_inputs: yup.string().required('*Input and circumstances field is required'),
-  text_outputs: yup.string().required('*Output and outcomes field is required'),
+  date_published: yup.date(),
+  submitters: yup
+    .string()
+    .matches(/^.{3,}$/, {
+      excludeEmptyString: true,
+      message: '*Submitter must have at least 3 characters',
+    })
+    .matches(/^.{3,200}$/, {
+      excludeEmptyString: true,
+      message: "*Submitter list can't be longer than 200 characters",
+    }),
+  inputs_outputs: yup.array().of(yup.string().min(5, '*Must have at least 5 characters')),
+  text: yup
+    .string()
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
+    .when('inputs_outputs', ([inputs_outputs], schema) => {
+      return !inputs_outputs || inputs_outputs.length < 5
+        ? schema.required('*At least this field or "Inputs / Outputs" should be filled.')
+        : schema;
+    }),
 });
 
-const VariantForm = () => {
+const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
   const { values, errors, touched, handleChange, handleBlur, isSubmitting } = useFormikContext();
 
   const { t } = useTranslation(['variants']);
 
   return (
-    <div className="flex w-full flex-col gap-2" data-cy="variant-form">
-      <FieldContainer>
-        <TextInputGroup
-          label={t('Input and circumstances')}
-          isInvalid={errors.text_inputs && touched.text_inputs}
-          type="textarea"
-          as="textarea"
-          rows={8}
-          placeholder={t('Input and circumstances')}
-          name="text_inputs"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          disabled={isSubmitting}
-          data-cy="variant-form-text-inputs"
-        />
-      </FieldContainer>
-      <FieldContainer>
-        <TextInputGroup
-          label={t('Output and outcomes')}
-          isInvalid={errors.text_outputs && touched.text_outputs}
-          type="textarea"
-          as="textarea"
-          rows={8}
-          placeholder={t('Output and outcomes')}
-          name="text_outputs"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          disabled={isSubmitting}
-          data-cy="variant-form-text-outputs"
-        />
-      </FieldContainer>
+    <div className="flex w-full min-w-6xl flex-col" data-cy="variant-form">
+      {allFieldsForm && (
+        <>
+          <TextInputGroup
+            name="date_published"
+            label={t('Incident Date')}
+            placeholder={t('Incident Date')}
+            type="date"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            data-cy="variant-form-date-published"
+          />
+          <TagsInputGroup
+            name="submitters"
+            placeholder={t('Your name as you would like it to appear in the leaderboard')}
+            label={t('Submitter(s)')}
+            errors={errors}
+            touched={touched}
+            schema={schema}
+            data-cy="variant-form-submitters"
+          />
+          <TextInputGroup
+            label={t('Description of Incident Circumstances')}
+            type="textarea"
+            as="textarea"
+            rows={8}
+            placeholder={t('Description of Incident Circumstances')}
+            name="text"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            disabled={isSubmitting}
+            data-cy="variant-form-text"
+          />
+        </>
+      )}
+      <FieldArray
+        name="inputs_outputs"
+        render={({ pop, push }) => (
+          <div className="form-group mt-6">
+            <div className="flex items-center">
+              <Label popover={'inputs_outputs'} label={t('Inputs / Outputs')} showPopover={true} />
+            </div>
+            <div className={scrollInputsOutputs ? 'max-h-240 overflow-auto mb-2' : ''}>
+              {values.inputs_outputs?.map((io, index) => (
+                <div className="mb-3" key={`inputs_outputs.${index}`}>
+                  <Field name={`inputs_outputs.${index}`}>
+                    {({ field }) => (
+                      <TextInputGroup
+                        label=""
+                        key={`inputs_outputs.${index}`}
+                        type="textarea"
+                        as="textarea"
+                        rows={3}
+                        placeholder={t('Inputs / Outputs')}
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        disabled={isSubmitting}
+                        data-cy="variant-form-inputs-outputs"
+                        {...field}
+                      />
+                    )}
+                  </Field>
+                  <div>
+                    <span className="text-red-700 text-sm">
+                      <Trans ns="validation">
+                        {errors && touched && touched['inputs_outputs'] && errors['inputs_outputs']
+                          ? errors['inputs_outputs'][index]
+                          : null}
+                      </Trans>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-2">
+              {values.inputs_outputs?.length > 1 && (
+                <Button
+                  type="button"
+                  color="failure"
+                  onClick={() => {
+                    push('');
+                    pop();
+                    pop();
+                  }}
+                  data-cy="delete-text-row-btn"
+                >
+                  <Trans ns="variants">Delete Row</Trans>
+                </Button>
+              )}
+              <Button type="button" onClick={() => push('')} data-cy="add-text-row-btn">
+                <Trans ns="variants">Add Row</Trans>
+              </Button>
+            </div>
+          </div>
+        )}
+      />
     </div>
   );
 };
