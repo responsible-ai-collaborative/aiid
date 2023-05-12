@@ -413,7 +413,7 @@ describe('The Discover app', () => {
     }
   });
 
-  it('Performs a search and filters results', () => {
+  it('Performs a search and filters results by source', () => {
     cy.visit(url);
 
     cy.waitForStableDOM();
