@@ -20,6 +20,7 @@ function CiteDynamicTemplate({
   editor_dissimilar_incidents,
   locationPathName,
   setIsLiveData,
+  publications,
 }) {
   const { locale } = useLocalization();
 
@@ -154,6 +155,7 @@ function CiteDynamicTemplate({
             editor_dissimilar_incidents={editor_dissimilar_incidents}
             liveVersion={true}
             setIsLiveData={setIsLiveData}
+            publications={publications}
           />
         )
       )}

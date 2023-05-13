@@ -45,6 +45,7 @@ function CiteTemplate({
   editor_dissimilar_incidents,
   liveVersion = false,
   setIsLiveData,
+  publications,
 }) {
   const { isRole, user } = useUserContext();
 
@@ -337,7 +338,11 @@ function CiteTemplate({
             {sortedReports.map((report) => (
               <Row className="mt-6 mb-4" key={report.report_number}>
                 <Col>
-                  <ReportCard item={report} incidentId={incident.incident_id} />
+                  <ReportCard
+                    item={report}
+                    incidentId={incident.incident_id}
+                    publications={publications}
+                  />
                 </Col>
               </Row>
             ))}
