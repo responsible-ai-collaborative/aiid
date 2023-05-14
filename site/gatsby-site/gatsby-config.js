@@ -151,7 +151,7 @@ const plugins = [
           },
           query: `
             {
-              allMongodbAiidprodReports(sort: {fields: date_submitted, order: DESC}, limit: 100) {
+              allMongodbAiidprodReports(sort: {date_submitted: DESC}, limit: 100) {
                 totalCount
                 edges {
                   node {
