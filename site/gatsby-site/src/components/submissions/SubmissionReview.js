@@ -85,7 +85,7 @@ const SubmissionReview = ({ submission }) => {
 
   const [promoting, setPromoting] = useState('');
 
-  const isNewIncident = !submission.incident_ids || submission.incident_ids.length === 0;
+  const isNewIncident = submission.incident_ids.length === 0;
 
   const { i18n, t } = useTranslation(['submitted']);
 
