@@ -38,6 +38,8 @@ describe('The Discover app', () => {
       .type('starbucks')
       .type('{enter}');
 
+    cy.waitForStableDOM();
+
     cy.url().should('include', 's=starbucks');
 
     cy.waitForStableDOM();
