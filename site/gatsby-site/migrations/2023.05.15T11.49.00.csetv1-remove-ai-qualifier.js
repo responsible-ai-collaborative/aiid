@@ -7,6 +7,18 @@ exports.up = async ({ context: { client } }) => {
   await taxaCollection.deleteOne({ namespace: 'CSETv1' });
 
   await taxaCollection.insertOne(csetV1TaxaEntry);
+
+  for (let i = 1; i < 4; i++) {
+    const namespace = 'CSETv1_Annotator-' + i;
+
+    await taxaCollection.deleteOne({ namespace });
+
+    await taxaCollection.insertOne({
+      ...csetV1TaxaEntry,
+      namespace,
+      _id: undefined,
+    });
+  }
 };
 
 /** @type {import('umzug').MigrationFn<any>} */
@@ -389,18 +401,17 @@ var csetV1TaxaEntry = {
 
     {
       field_number: '3.3',
-      short_name: 'Clear Link to AI',
-      long_name: 'Can an AI be directly and clearly linked to tangible harm?',
-      short_description: 'Can an AI be directly and clearly linked to tangible harm?',
-      long_description:
-        '“Yes” if an AI was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the AI acted differently. “Maybe” if the link is unclear. Otherwise, select “no.”',
+      short_name: 'Clear link to technology',
+      long_name:
+        'Can the technology be directly and clearly linked to the adverse outcome of the incident',
+      short_description:
+        'Can the technology be directly and clearly linked to the adverse outcome of the incident',
+      long_description: `An assessment of the technology's involvement in the chain of harm. "Yes" indicates that the technology was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the technology acted differently. "No", indicates that the technology's behavior cannot be linked to the harm outcome. "Maybe" indicates that the link is unclear.`,
       ...YesNoMaybe,
       weight: 50,
       instant_facet: true,
       required: false,
       public: true,
-      notes:
-        'For an AI to be directly linked to harm it must have played an important role in the chain of events that led to harm. The AI system doesn’t need to be the only factor, or even the major factor, in the chain of harm. However, if the AI system hadn’t acted in the way it did, the specific harm would not have occurred.\n\nAn occurrence of harm that involves a system which contains an AI is not sufficient for calling an incident and AI harm event, near-miss, or issue. The involved AI must also be directly linked to the harm.',
     },
     {
       field_number: '3.4',
@@ -718,20 +729,17 @@ var csetV1TaxaEntry = {
     },
     {
       field_number: '5.3',
-      short_name: 'AI Linked to Special Interest Intangible Harm',
+      short_name: 'Clear link to Technology',
       long_name:
-        'Can an AI be directly and clearly linked to the special interest intangible harm?',
+        'Can the technology be directly and clearly linked to the adverse outcome of the incident?',
       short_description:
-        'Can an AI be directly and clearly linked to the special interest intangible harm?',
-      long_description:
-        '“Yes” if an AI was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the AI acted differently. “Maybe” if the link is unclear. Otherwise, select “no.”',
+        'Can the technology be directly and clearly linked to the adverse outcome of the incident?',
+      long_description: `An assessment of the technology's involvement in the chain of harm. "Yes" indicates that the technology was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the technology acted differently. "No", indicates that the technology's behavior cannot be linked to the harm outcome. "Maybe" indicates that the link is unclear.`,
       ...YesNoMaybe,
       weight: 50,
       instant_facet: true,
       required: false,
       public: true,
-      notes:
-        'For an AI to be directly linked to harm it must have played an important role in the chain of events that led to harm. The AI system doesn’t need to be the only factor, or even the major factor, in the chain of harm. However, if the AI system hadn’t acted in the way it did, the specific harm would not have occurred.\n\nAn occurrence of harm that involves a system which contains an AI is not sufficient for calling an incident and AI harm event, near-miss, or issue. The involved AI must also be directly linked to the harm.',
     },
     {
       field_number: '5.4',
