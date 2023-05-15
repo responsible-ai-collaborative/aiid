@@ -76,6 +76,10 @@ const StepOne = (props) => {
     setData({ ...props.data });
   }, [props.data]);
 
+  const onValidate = (values) => {
+    localStorage.setItem('formValues', JSON.stringify(values));
+  };
+
   return (
     <StepContainer name={props.name}>
       <Formik
@@ -83,6 +87,7 @@ const StepOne = (props) => {
         onSubmit={() => {}}
         validationSchema={stepOneValidationSchema}
         enableReinitialize
+        validate={onValidate}
       >
         <FormDetails
           parsingNews={props.parsingNews}
@@ -146,11 +151,6 @@ const FormDetails = ({
       resetForm();
     }
   }, [submissionFailed, submissionComplete, submissionReset]);
-
-  useEffect(() => {
-    // Save form values to local storage when form values change
-    localStorage.setItem('formValues', JSON.stringify(values));
-  }, [values]);
 
   useEffect(() => {
     if (urlFromQueryString) {

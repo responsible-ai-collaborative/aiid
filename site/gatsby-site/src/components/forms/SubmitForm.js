@@ -29,6 +29,7 @@ import { Alert, Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
 import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -68,7 +69,7 @@ const SubmitForm = () => {
 
   const isClient = typeof window !== 'undefined';
 
-  const [submission, setSubmission] = useState(SUBMISSION_INITIAL_VALUES);
+  const [submission, setSubmission] = useState({});
 
   const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
 
@@ -113,24 +114,16 @@ const SubmitForm = () => {
       submission = { ...JSON.parse(localStorage.getItem('formValues')) };
     }
 
-    setSubmission(submission);
-  }, []);
-
-  useEffect(() => {
-    const updatedSubmission = submission;
-
     if (!loading) {
       if (user?.profile?.email) {
-        updatedSubmission.user = { link: user.id };
+        submission.user = { link: user.id };
 
         if (user.customData.first_name && user.customData.last_name) {
-          updatedSubmission.submitters = [
-            `${user.customData.first_name} ${user.customData.last_name}`,
-          ];
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
         }
       }
-      setSubmission({ ...updatedSubmission });
     }
+    setSubmission(submission);
   }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
@@ -252,6 +245,8 @@ const SubmitForm = () => {
     }));
     localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
   };
+
+  if (!submission || isEmpty(submission)) return <></>;
 
   return (
     <>
