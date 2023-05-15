@@ -36,6 +36,8 @@ describe('The Discover app', () => {
       .type('starbucks')
       .type('{enter}');
 
+    cy.waitForStableDOM();
+
     cy.url().should('include', 's=starbucks');
 
     // a flaky assertion here, should improve once a testing enviqronment is set up
