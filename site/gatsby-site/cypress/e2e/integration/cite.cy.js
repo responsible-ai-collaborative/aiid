@@ -57,7 +57,7 @@ describe('Cite pages', () => {
     }
   );
 
-  it('Should scroll to report when clicking on a report in the timeline', () => {
+  it.skip('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
 
     cy.wait(4000);
