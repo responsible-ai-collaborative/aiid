@@ -29,6 +29,8 @@ describe('Admin', () => {
         }
       `,
     }).then(({ data: { users } }) => {
+      cy.waitForStableDOM();
+
       for (const user of users) {
         cy.get('[data-cy="input-filter-Id"]').clear();
         cy.get('[data-cy="input-filter-Id"]').type(user.userId);
@@ -56,7 +58,7 @@ describe('Admin', () => {
         }
       }
 
-      const user = users.find((user) => user.adminData.email);
+      const user = users.find((user) => user.adminData.email == Cypress.env('e2eUsername'));
 
       cy.get('[data-cy="input-filter-Id"]').clear();
       cy.get('[data-cy="input-filter-Id"]').type(user.userId);
@@ -84,13 +86,74 @@ describe('Admin', () => {
         }
       );
 
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'UpdateUserProfile',
+        'UpdateUserProfile',
+        {
+          data: {
+            users: [
+              {
+                __typename: 'User',
+                adminData: {
+                  __typename: 'UserAdminDatum',
+                  creationDate: '2023-03-28T20:01:26Z',
+                  disabled: false,
+                  email: 'mail@cesarvarela.com',
+                  lastAuthenticationDate: '2023-05-04T22:03:06Z',
+                },
+                first_name: 'TestEdited',
+                last_name: 'User',
+                roles: ['subscriber', 'admin', 'banana'],
+                userId: '6423479655e4bb918a233bda',
+              },
+              {
+                __typename: 'User',
+                adminData: {
+                  __typename: 'UserAdminDatum',
+                  creationDate: '2023-03-30T19:04:55Z',
+                  disabled: false,
+                  email: 'aiidsubscriber@cesarvarela.com',
+                  lastAuthenticationDate: '2023-04-28T00:33:58Z',
+                },
+                first_name: 'cesarito',
+                last_name: 'test',
+                roles: ['subscriber', 'incident_editor'],
+                userId: '6425dd57ea44a80bf1443b33',
+              },
+              {
+                __typename: 'User',
+                adminData: {
+                  __typename: 'UserAdminDatum',
+                  creationDate: null,
+                  disabled: null,
+                  email: null,
+                  lastAuthenticationDate: null,
+                },
+                first_name: null,
+                last_name: null,
+                roles: ['subscriber', 'admin'],
+                userId: '6425dd79c505cc40eb65661e',
+              },
+            ],
+          },
+        }
+      );
+
       cy.get('[data-cy="edit-user-modal"]').within(() => {
         cy.get('[id="roles"]', { timeout: 30000 }).type('banana{enter}');
+
+        cy.get('[name="first_name"]').clear().type('Edited');
 
         cy.contains('Submit').click();
 
         cy.wait('@UpdateUserRoles').then((xhr) => {
           expect(xhr.request.body.variables.roles).includes('banana');
+          expect(xhr.request.body.variables.userId).eq(user.userId);
+        });
+
+        cy.wait('@UpdateUserProfile').then((xhr) => {
+          expect(xhr.request.body.variables.first_name).eq('Edited');
           expect(xhr.request.body.variables.userId).eq(user.userId);
         });
       });

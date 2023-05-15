@@ -138,6 +138,9 @@
         },
         "url": {
             "bsonType": "string"
+        },
+        "user": {
+            "bsonType": "string"
         }
     },
     "required": [

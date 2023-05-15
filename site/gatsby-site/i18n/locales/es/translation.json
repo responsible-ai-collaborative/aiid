@@ -260,5 +260,6 @@
   "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Recuperado el {{date}} de incidentdatabase.ai/cite/{{incidentId}}.",
   "Subscribe": "Suscribirse",
   "Show Live data": "Mostrar información en tiempo real",
-  "Posted <1></1> by <3></3>.": "Posted <1></1> by <3></3>."
+  "Posted <1></1> by <3></3>.": "Posted <1></1> by <3></3>.",
+  "Image URL is invalid, using fallback image": "La URL de la imagen no es válida, se utilizará la imagen de respaldo"
 }

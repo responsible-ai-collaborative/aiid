@@ -9,6 +9,9 @@ import { isWebUri } from 'valid-url';
 
 const IMG_FALLBACK = 'fallback.jpg';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+
 export default function PreviewImageInputGroup({
   cloudinary_id,
   name,
@@ -88,6 +91,12 @@ export default function PreviewImageInputGroup({
         handleBlur={handleBlur}
         schema={schema}
       />
+      {touched[name] && (
+        <span className="text-sm text-orange-600 italic">
+          <FontAwesomeIcon icon={faExclamationTriangle} />{' '}
+          <Trans>Image URL is invalid, using fallback image</Trans>
+        </span>
+      )}
       <figure
         data-cy="image-preview-figure"
         id="image-preview-figure"
