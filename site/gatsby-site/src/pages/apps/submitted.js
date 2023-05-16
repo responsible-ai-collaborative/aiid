@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from '../../contexts/userContext';
 import Layout from '../../components/Layout';
-import SubmissionList from '../../components/submissions/SubmissionList';
+import SubmissionListWrapper from '../../components/submissions/SubmissionListWrapper';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
@@ -89,7 +89,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
         </h1>
       </div>
       <div>
-        <SubmissionList />
+        <SubmissionListWrapper />
         <div className="mt-5">
           <h2>
             <Trans ns="submitted">Quick Add URLs</Trans>
