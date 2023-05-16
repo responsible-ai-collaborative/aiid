@@ -6,7 +6,6 @@
   "version": "0.2.0",
   "dependencies": {
     "@apollo/client": "^3.7.8",
-    "@apollo/server": "^4.6.0",
     "@babel/plugin-proposal-export-default-from": "^7.12.13",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
@@ -21,17 +20,13 @@
     "@graphql-tools/schema": "^8.3.3",
     "@graphql-tools/wrap": "^8.4.6",
     "@mdx-js/react": "^2.3.0",
-    "@philpl/buble": "^0.19.7",
     "@postlight/mercury-parser": "^2.2.1",
-    "@sendgrid/mail": "^7.7.0",
     "algoliasearch": "^4.10.5",
     "async": "^3.2.2",
     "billboard.js": "^3.7.4",
-    "body-parser": "^1.20.2",
     "bootstrap-daterangepicker": "^3.1.0",
     "bson": "^4.2.3",
     "cloudinary": "^1.36.4",
-    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.5",
     "csvtojson": "^2.0.10",
@@ -50,7 +45,6 @@
     "gatsby-plugin-image": "^3.0.0",
     "gatsby-plugin-mdx": "^5.0.0",
     "gatsby-plugin-react-helmet": "^6.0.0",
-    "gatsby-plugin-sass": "^6.0.0",
     "gatsby-plugin-sharp": "^5.0.0",
     "gatsby-plugin-sitemap": "^6.3.0",
     "gatsby-remark-copy-linked-files": "^6.0.0",
@@ -58,14 +52,13 @@
     "gatsby-source-filesystem": "^5.0.0",
     "gatsby-source-mongodb": "^5.0.0",
     "gatsby-source-s3": "^3.2.3",
-    "gatsby-transformer-remark": "^6.0.0",
     "gatsby-transformer-sharp": "^5.7.0",
     "graphql": "^16.6.0",
+    "graphql-http": "^1.18.0",
     "i18next": "^20.6.1",
     "is-absolute-url": "^3.0.3",
     "md5": "^2.3.0",
     "mongodb": "^4.2.1",
-    "node-fetch": "^2.6.7",
     "object-hash": "^3.0.0",
     "query-string": "^7.0.1",
     "react": "^18.2.0",
@@ -76,7 +69,6 @@
     "react-feather": "^2.0.9",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.17.1",
-    "react-id-generator": "^3.0.1",
     "react-instantsearch-dom": "^6.39.0",
     "react-is": "^18.2.0",
     "react-json-to-csv": "^1.2.0",
@@ -98,7 +90,6 @@
     "tsne-js": "^1.0.3",
     "umzug": "^3.0.0",
     "use-query-params": "^1.2.0",
-    "valid-url": "^1.0.9",
     "yup": "^0.29.3"
   },
   "license": "MIT",
@@ -115,7 +106,7 @@
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
-    "@netlify/plugin-gatsby": "^3.5.2",
+    "@netlify/plugin-gatsby": "^3.6.2",
     "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.7",
     "babel-eslint": "^10.1.0",
@@ -137,7 +128,7 @@
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
     "start-server-and-test": "^1.14.0",
-    "tailwindcss": "^3.1.6"
+    "tailwindcss": "^3.3.2"
   },
   "browser": {
     "crypto": false
