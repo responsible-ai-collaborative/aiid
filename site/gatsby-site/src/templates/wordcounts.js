@@ -57,7 +57,10 @@ const WordCounts = ({ pageContext, ...props }) => {
               wordClouds.map((wordCloud, idx) => (
                 <WordCloudCell
                   key={`wordcloud-${idx}`}
-                  wordCountsSorted={wordCountsSorted.slice(0, (idx + 1) * wordsPerCloud)}
+                  wordCountsSorted={wordCountsSorted.slice(
+                    idx * wordsPerCloud,
+                    idx * wordsPerCloud - 1 + wordsPerCloud
+                  )}
                   wordCloud={wordCloud}
                 />
               ))}
