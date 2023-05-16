@@ -43,7 +43,7 @@ const SubmissionList = ({ data }) => {
         ),
       },
       {
-        className: 'min-w-[240px]',
+        className: 'min-w-[120px]',
         title: t('Title'),
         accessor: 'title',
       },
@@ -75,16 +75,16 @@ const SubmissionList = ({ data }) => {
         },
       },
       {
-        className: 'min-w-[320px]',
+        className: 'min-w-[120px]',
         title: t('Incident Date'),
         accessor: 'incident_date',
         Cell: ({ row: { values } }) => {
           return (
-            <div className="flex justify-center">
-              <Badge key={`incident_date`} className="mr-2">
-                {values.incident_date}
-              </Badge>
-            </div>
+            // <div className="flex justify-center">
+            <Badge key={`incident_date`} className="mr-2 w-fit">
+              {values.incident_date}
+            </Badge>
+            // </div>
           );
         },
       },
