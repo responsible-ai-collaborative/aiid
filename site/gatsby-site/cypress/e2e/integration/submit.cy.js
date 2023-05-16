@@ -846,6 +846,8 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="no-related-reports"]').should('be.visible');
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="result"]').should('not.exist');
   });
 

@@ -4,7 +4,6 @@ import { QueryParamProvider } from 'use-query-params';
 import { UserContextProvider } from 'contexts/userContext';
 import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from './src/contexts/ToastContext';
-import ThemeProvider from 'components/theme/themeProvider';
 import { Script } from 'gatsby';
 
 export const wrapPageElement = ({ element }) => {
@@ -32,9 +31,7 @@ export const wrapRootElement = ({ element }) => {
   return (
     <>
       <Script src="/rollbar.js" />
-      <ThemeProvider>
-        <ToastContextProvider>{element}</ToastContextProvider>
-      </ThemeProvider>
+      <ToastContextProvider>{element}</ToastContextProvider>
     </>
   );
 };

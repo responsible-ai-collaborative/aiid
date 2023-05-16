@@ -3,9 +3,16 @@ import React, { useState } from 'react';
 import Markdown from 'react-markdown';
 import { format, getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useMutation } from '@apollo/client';
-import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
+import {
+  useBlockLayout,
+  useFilters,
+  usePagination,
+  useResizeColumns,
+  useSortBy,
+  useTable,
+} from 'react-table';
 import VariantEditModal from './VariantEditModal';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
@@ -13,35 +20,8 @@ import { VariantStatusBadge } from './VariantList';
 import { VARIANT_STATUS } from 'utils/variants';
 import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
-import { Button, Dropdown, Pagination, TextInput } from 'flowbite-react';
-
-function DefaultColumnFilter({
-  column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
-}) {
-  const count = preFilteredRows.length;
-
-  const { t } = useTranslation(['translation', 'variants']);
-
-  if (!canFilter) {
-    return <h6>{Header}</h6>;
-  }
-
-  return (
-    <div>
-      <h6>{Header}</h6>
-      <TextInput
-        data-cy={`input-filter-${Header}`}
-        className="w-100 font-normal"
-        type="text"
-        value={filterValue || ''}
-        onChange={(e) => {
-          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-        }}
-        placeholder={t(`Search {{count}} records...`, { count })}
-      />
-    </div>
-  );
-}
+import { Button } from 'flowbite-react';
+import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 export default function VariantsTable({ data, refetch, setLoading }) {
   const { isLoggedIn, isRole } = useUserContext();
@@ -54,8 +34,6 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
   const [incidentId, setIncidentId] = useState(0);
 
-  const [currentPage, setCurrentPage] = useState(1);
-
   const [deleteVariant] = useMutation(DELETE_VARIANT);
 
   const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
@@ -64,10 +42,8 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 30,
-      width: 220,
-      maxWidth: 640,
       Filter: DefaultColumnFilter,
+      Header: DefaultColumnHeader,
     }),
     []
   );
@@ -158,9 +134,8 @@ export default function VariantsTable({ data, refetch, setLoading }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: t('Incident ID'),
+        title: t('Incident ID'),
         accessor: 'incident_id',
-        width: 150,
         Cell: ({ row: { values } }) => (
           <a className="flex" href={`/cite/${values.incident_id}`}>
             Incident {values.incident_id}
@@ -168,16 +143,20 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         ),
       },
       {
-        Header: t('Incident Title'),
+        className: 'min-w-[240px]',
+        title: t('Incident Title'),
         accessor: 'title',
+        width: 240,
       },
       {
-        Header: 'Tags',
+        className: 'min-w-[240px]',
+        title: t('Tags'),
         accessor: 'tags',
-        show: false,
+        width: 240,
       },
       {
-        Header: t('Status'),
+        title: t('Status'),
+        className: 'min-w-[150px]',
         accessor: 'status',
         width: 150,
         Cell: ({ row: { values } }) => (
@@ -187,7 +166,8 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         ),
       },
       {
-        Header: t('Description of Incident Circumstances'),
+        title: t('Description of Incident Circumstances'),
+        className: 'min-w-[450px]',
         accessor: 'text',
         width: 450,
         disableFilters: false,
@@ -198,7 +178,8 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         ),
       },
       {
-        Header: t('Inputs / Outputs'),
+        title: t('Inputs / Outputs'),
+        className: 'min-w-[450px]',
         accessor: 'inputs_outputs',
         width: 450,
         disableFilters: false,
@@ -224,20 +205,40 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     if (isRole('incident_editor')) {
       // @ts-ignore
       columns.push({
-        Header: t('Actions'),
+        title: t('Actions'),
         accessor: 'report_number',
+        className: 'min-w-[500px]',
         disableFilters: true,
-        width: 400,
+        disableSortBy: true,
+        width: 500,
         Cell: ({ row: { values } }) => (
           <div className="flex gap-2 items-center">
             <Button
-              color="failure"
-              onClick={() => handleDelete({ report_number: values.report_number })}
-              data-cy="delete-variant-btn"
+              color={'success'}
+              onClick={() =>
+                handleSubmit({
+                  report_number: values.report_number,
+                  tags: values.tags,
+                  status: VARIANT_STATUS.approved,
+                })
+              }
+              className="flex gap-2 disabled:opacity-50"
+              data-cy="approve-variant-btn"
             >
-              <FontAwesomeIcon icon={faTrash} />
+              <Trans ns="variants">Approve</Trans>
+              <FontAwesomeIcon icon={faCheck} className="ml-2" />
             </Button>
-
+            <Button
+              color={'gray'}
+              data-cy="edit-variant-btn"
+              onClick={() => {
+                setVariantIdToEdit(values.report_number);
+                setIncidentId(values.incident_id);
+              }}
+            >
+              <Trans>Edit</Trans>
+              <FontAwesomeIcon icon={faEdit} className="ml-2" />
+            </Button>
             <Button
               color="failure"
               onClick={() =>
@@ -251,28 +252,15 @@ export default function VariantsTable({ data, refetch, setLoading }) {
               data-cy="reject-variant-btn"
             >
               <Trans ns="variants">Reject</Trans>
+              <FontAwesomeIcon icon={faBan} className="ml-2" />
             </Button>
             <Button
-              onClick={() =>
-                handleSubmit({
-                  report_number: values.report_number,
-                  tags: values.tags,
-                  status: VARIANT_STATUS.approved,
-                })
-              }
-              className="flex gap-2 disabled:opacity-50"
-              data-cy="approve-variant-btn"
+              color="failure"
+              onClick={() => handleDelete({ report_number: values.report_number })}
+              data-cy="delete-variant-btn"
             >
-              <Trans ns="variants">Approve</Trans>
-            </Button>
-            <Button
-              data-cy="edit-variant-btn"
-              onClick={() => {
-                setVariantIdToEdit(values.report_number);
-                setIncidentId(values.incident_id);
-              }}
-            >
-              <FontAwesomeIcon icon={faEdit} />
+              <Trans>Delete</Trans>
+              <FontAwesomeIcon icon={faTrash} className="ml-2" />
             </Button>
           </div>
         ),
@@ -282,18 +270,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     return columns;
   }, [isLoggedIn]);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
-  } = useTable(
+  const table = useTable(
     {
       columns,
       data,
@@ -309,6 +286,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       },
     },
     useFilters,
+    useSortBy,
     useBlockLayout,
     useResizeColumns,
     usePagination
@@ -317,100 +295,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
   return (
     <>
       {/* eslint-disable react/jsx-key */}
-
-      <table
-        {...getTableProps()}
-        className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-none overflow-hidden h-[1px]"
-      >
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          {headerGroups.map((headerGroup) => (
-            <tr key={`thead-tr-${headerGroup.id}`} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps()}
-                  className={`${column.width} py-3 px-4 border-none`}
-                  data-cy={`header-${column.id}`}
-                  key={`th-${column.id}`}
-                >
-                  {column.render('Filter')}
-                  <div
-                    {...column.getResizerProps()}
-                    className="inline-block w-2 h-full absolute translate-x-1/2 right-0 top-0 z-2 touch-none"
-                  ></div>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className={`text-gray-900 border-b dark:bg-gray-800 dark:border-gray-700") + ${
-                  i % 2 == 0
-                    ? 'bg-white dark:bg-gray-900 dark:border-gray-700'
-                    : 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
-                }`}
-                data-cy="row"
-              >
-                {row.cells.map((cell) => {
-                  return (
-                    <td
-                      {...cell.getCellProps()}
-                      className={`${cell.column.width} py-2 px-4 border-none align-top h-full flex`}
-                      data-cy="cell"
-                    >
-                      {cell.render('Cell')}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <div className="flex gap-2 justify-start items-center mt-3">
-        <Pagination
-          className="pagination mb-0"
-          onPageChange={(page) => {
-            gotoPage(page - 1);
-            setCurrentPage(page);
-          }}
-          currentPage={currentPage}
-          showIcons={true}
-          totalPages={pageCount}
-        />
-
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <Dropdown
-          color={'gray'}
-          label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
-          style={{ width: 120 }}
-          size="sm"
-          value={pageSize}
-        >
-          {[10, 50, 100, 9999].map((pageSize) => (
-            <Dropdown.Item
-              key={pageSize}
-              onClick={() => {
-                setPageSize(Number(pageSize));
-                setCurrentPage(1);
-              }}
-            >
-              {pageSize === 9999 ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-      </div>
+      <Table table={table} />
 
       <VariantEditModal
         show={variantIdToEdit !== 0}
