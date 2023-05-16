@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 import TextInputGroup from 'components/forms/TextInputGroup';
 
 const LoginSchema = Yup.object().shape({
@@ -25,15 +25,22 @@ const Login = (props) => {
 
   const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
 
+  const [redirectTo, setRedirectTo] = useState(null);
+
   const { t } = useTranslation();
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
-  let [{ redirectTo }] = useQueryParams({
-    redirectTo: StringParam,
+  const [{ redirectTo: redirectToParam }] = useQueryParams({
+    redirectTo: withDefault(StringParam, '/'),
   });
 
-  redirectTo = redirectTo ?? '/';
+  useEffect(() => {
+    const askToCompleteProfile =
+      parseInt(localStorage.getItem('signup')) - Date.now() < 1000 * 60 * 60 * 24;
+
+    setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile' : redirectToParam);
+  }, []);
 
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);

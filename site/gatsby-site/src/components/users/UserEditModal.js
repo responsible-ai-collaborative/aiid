@@ -49,7 +49,7 @@ const RolesTable = ({ roles }) => (
   </table>
 );
 
-export default function UserEditModal({ onClose, userId }) {
+export default function UserEditModal({ onClose, userId, title = 'Edit' }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
     variables: { query: { userId } },
   });
@@ -96,7 +96,7 @@ export default function UserEditModal({ onClose, userId }) {
   return (
     <Modal show={true} onClose={onClose} data-cy="edit-user-modal" size="lg">
       <Modal.Header>
-        <Trans>Edit</Trans>
+        <Trans>{title}</Trans>
       </Modal.Header>
 
       {loading && (
