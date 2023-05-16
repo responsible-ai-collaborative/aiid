@@ -27,6 +27,7 @@ import {
 import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
+import { debounce } from 'debounce';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -76,10 +77,6 @@ const StepOne = (props) => {
     setData({ ...props.data });
   }, [props.data]);
 
-  const onValidate = (values) => {
-    localStorage.setItem('formValues', JSON.stringify(values));
-  };
-
   return (
     <StepContainer name={props.name}>
       <Formik
@@ -87,7 +84,6 @@ const StepOne = (props) => {
         onSubmit={() => {}}
         validationSchema={stepOneValidationSchema}
         enableReinitialize
-        validate={onValidate}
       >
         <FormDetails
           parsingNews={props.parsingNews}
@@ -99,6 +95,7 @@ const StepOne = (props) => {
           submissionComplete={props.submissionComplete}
           submissionReset={props.submissionReset}
           urlFromQueryString={props.urlFromQueryString}
+          setSavingInLocalStorage={props.setSavingInLocalStorage}
         />
       </Formik>
     </StepContainer>
@@ -115,6 +112,7 @@ const FormDetails = ({
   submissionComplete,
   submissionReset,
   urlFromQueryString,
+  setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -134,6 +132,17 @@ const FormDetails = ({
     validateForm,
     resetForm,
   } = useFormikContext();
+
+  const saveInLocalStorage = debounce((values) => {
+    localStorage.setItem('formValues', JSON.stringify(values));
+    setSavingInLocalStorage(false);
+  }, 2000);
+
+  useEffect(() => {
+    // Save form values to local storage when form values change
+    setSavingInLocalStorage(true);
+    saveInLocalStorage(values);
+  }, [values]);
 
   useEffect(() => {
     if (!values.date_downloaded) {

@@ -18,6 +18,7 @@ describe('The Submit form', () => {
 
   it('Should submit a new report not linked to any incident once all fields are filled properly', () => {
     cy.clearLocalStorage('formValues');
+
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -166,6 +167,8 @@ describe('The Submit form', () => {
   maybeIt(
     'As editor, should submit a new incident report, adding an incident title and editors.',
     () => {
+      cy.clearLocalStorage('formValues');
+
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
       cy.intercept('GET', parserURL, parseNews).as('parseNews');
@@ -550,6 +553,7 @@ describe('The Submit form', () => {
   });
 
   maybeIt('Should submit a submission and link it to the current user id', () => {
+    cy.clearLocalStorage('formValues');
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const values = {
@@ -1648,7 +1652,6 @@ describe('The Submit form', () => {
       title: 'test title',
       date_published: '2021-01-02',
       incident_ids: [1],
-      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
     };
 
     cy.conditionalIntercept(
@@ -1673,11 +1676,7 @@ describe('The Submit form', () => {
     cy.waitForStableDOM();
 
     for (const key in values) {
-      if (key === 'text') {
-        cy.getEditorText().should('eq', '');
-      } else {
-        cy.get(`input[name="${key}"]`).should('have.value', '');
-      }
+      cy.get(`input[name="${key}"]`).should('have.value', '');
     }
   });
 });

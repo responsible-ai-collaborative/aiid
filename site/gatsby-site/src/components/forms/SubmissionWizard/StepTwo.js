@@ -13,6 +13,7 @@ import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/userContext';
+import { debounce } from 'debounce';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -60,6 +61,7 @@ const StepTwo = (props) => {
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
+          setSavingInLocalStorage={props.setSavingInLocalStorage}
         />
       </Formik>
     </StepContainer>
@@ -73,6 +75,7 @@ const FormDetails = ({
   submitForm,
   validateAndSubmitForm,
   submissionFailed,
+  setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -110,9 +113,15 @@ const FormDetails = ({
     }
   }, [submissionFailed]);
 
+  const saveInLocalStorage = debounce((values) => {
+    localStorage.setItem('formValues', JSON.stringify(values));
+    setSavingInLocalStorage(false);
+  }, 2000);
+
   useEffect(() => {
     // Save form values to local storage when form values change
-    localStorage.setItem('formValues', JSON.stringify(values));
+    setSavingInLocalStorage(true);
+    saveInLocalStorage(values);
   }, [values]);
 
   const isUserDetailsComplete =

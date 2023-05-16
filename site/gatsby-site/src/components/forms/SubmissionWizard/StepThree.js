@@ -19,6 +19,7 @@ import {
   faPenNib,
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'debounce';
 
 const StepThree = (props) => {
   const [data, setData] = useState(props.data);
@@ -140,6 +141,7 @@ const StepThree = (props) => {
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
           entityNames={entityNames}
+          setSavingInLocalStorage={props.setSavingInLocalStorage}
         />
       </Formik>
     </StepContainer>
@@ -154,6 +156,7 @@ const FormDetails = ({
   validateAndSubmitForm,
   submissionFailed,
   entityNames,
+  setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -186,9 +189,15 @@ const FormDetails = ({
     }
   }, [submissionFailed]);
 
+  const saveInLocalStorage = debounce((values) => {
+    localStorage.setItem('formValues', JSON.stringify(values));
+    setSavingInLocalStorage(false);
+  }, 2000);
+
   useEffect(() => {
     // Save form values to local storage when form values change
-    localStorage.setItem('formValues', JSON.stringify(values));
+    setSavingInLocalStorage(true);
+    saveInLocalStorage(values);
   }, [values]);
 
   return (

@@ -73,6 +73,8 @@ const SubmitForm = () => {
 
   const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
 
+  const [savingInLocalStorage, setSavingInLocalStorage] = useState(false);
+
   const {
     entities: { nodes: allEntities },
   } = useStaticQuery(graphql`
@@ -299,11 +301,12 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
-      <Alert color="success" rounded={true}>
+      <Alert color={savingInLocalStorage ? 'warning' : 'success'} rounded={true}>
         <div>
           <Trans i18n={i18n} ns="submit">
-            Your changes are being saved. You can continue filling out the report or come back
-            later.
+            {savingInLocalStorage
+              ? 'Saving changes...'
+              : 'Your changes are saved. You can continue filling out the report or come back later.'}
           </Trans>
           <Button
             color="gray"
@@ -326,6 +329,7 @@ const SubmitForm = () => {
             initialValues={submission}
             urlFromQueryString={query.url}
             submissionReset={submissionReset}
+            setSavingInLocalStorage={setSavingInLocalStorage}
           />
         )}
 

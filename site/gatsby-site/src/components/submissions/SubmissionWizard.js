@@ -6,7 +6,13 @@ import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 
-const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submissionReset }) => {
+const SubmissionWizard = ({
+  submitForm,
+  initialValues,
+  urlFromQueryString,
+  submissionReset,
+  setSavingInLocalStorage,
+}) => {
   const [data, setData] = useState(initialValues);
 
   useEffect(() => {
@@ -160,6 +166,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submi
         submissionComplete={submissionComplete}
         urlFromQueryString={urlFromQueryString}
         submissionReset={submissionReset}
+        setSavingInLocalStorage={setSavingInLocalStorage}
       />,
       <StepTwo
         key={'submission-step-2'}
@@ -171,6 +178,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submi
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
         submissionReset={submissionReset}
+        setSavingInLocalStorage={setSavingInLocalStorage}
       />,
       <StepThree
         key={'submission-step-3'}
@@ -182,6 +190,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, submi
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
         submissionReset={submissionReset}
+        setSavingInLocalStorage={setSavingInLocalStorage}
       />,
     ];
 
