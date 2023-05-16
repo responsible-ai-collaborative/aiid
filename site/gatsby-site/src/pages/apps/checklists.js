@@ -86,7 +86,16 @@ export default function ChecklistsPage(props) {
                       <div>
                         <label><Trans>Precedents Query</Trans></label>
                         <div className="h-8 max-h-8" >
-                          <Tags value={risk.query_tags} />
+                          <Tags 
+                            value={risk.query_tags.map(tag => tag.replace(/^.*:/g, '')) }
+                            onChange={(value) => {
+                              console.log('onChange', value);
+                              const updatedRisks = [...risks];
+                              updatedRisks.find(r => r.title == risk.title).query_tags = value;
+                              setRisks(updatedRisks);
+                              setFieldValue(risks, updateRisks);
+                            }}
+                          />
                         </div>
                       </div>
                       <div className="flex gap-2">
