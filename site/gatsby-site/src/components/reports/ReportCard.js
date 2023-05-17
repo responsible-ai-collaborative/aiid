@@ -73,15 +73,36 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
     };
   }, []);
 
+  const [btnRight, setBtnRight] = useState(0);
+
   useEffect(() => {
+    const card = ref.current;
+
+    const cardRect = card.getBoundingClientRect();
+
     if (expanded) {
-      const card = ref.current;
-
-      const cardRect = card.getBoundingClientRect();
-
       setIsBottomReached(
         cardRect.bottom <= window.innerHeight || cardRect.top >= window.innerHeight
       );
+
+      const observer = new IntersectionObserver(([entry]) => {
+        const { right } = entry.boundingClientRect;
+
+        setBtnRight(window.innerWidth - right);
+      });
+
+      if (card) {
+        observer.observe(card);
+      }
+
+      // Clean up the observer when the component unmounts
+      return () => {
+        if (card) {
+          observer.unobserve(card);
+        }
+      };
+    } else {
+      card.scrollIntoView();
     }
   }, [expanded]);
 
@@ -200,8 +221,9 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
             <button
               onClick={toggleReadMore}
               className={`text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 bg-white ${
-                expanded && !isBottomReached ? 'fixed bottom-6 right-16 z-10' : ''
+                expanded && !isBottomReached ? 'fixed z-10' : ''
               }`}
+              style={{ bottom: '35px', right: btnRight }}
               data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
             >
               <Trans>{expanded ? 'Collapse' : 'Read More'}</Trans>
