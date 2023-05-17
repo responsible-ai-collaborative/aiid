@@ -47,30 +47,30 @@ export default function Post(props) {
         <LocalizedLink to="/blog" className="text-lg">
           <Trans>AIID Blog</Trans>
         </LocalizedLink>
-        <h1 className="text-3xl leading-6 font-medium flex-1 mt-0 pt-0">{mdx.fields.title}</h1>
-        <div className="flex items-center mb-1 -mt-1 flex-wrap">
-          <SocialShareButtons
-            metaTitle={metaTitle}
-            path={props.location.pathname}
-            page="post"
-            className="inline-block"
-          />
-          {mdx.frontmatter.aiTranslated && (
-            <>
-              <TranslationBadge className="ml-2" />
-              <Link className="ml-2" to={mdx.frontmatter.slug}>
-                <Trans>View Original</Trans>
-              </Link>
-            </>
-          )}
-          <span>
-            {' '}
-            <Trans>
-              Posted <DateLabel className="font-bold" date={new Date(mdx.frontmatter.date)} /> by{' '}
-              <Author name={mdx.frontmatter.author} />.
-            </Trans>
-          </span>
-        </div>
+        <h1>{mdx.fields.title}</h1>
+      </div>
+      <div className="flex items-center mb-6 -mt-1 flex-wrap">
+        <SocialShareButtons
+          metaTitle={metaTitle}
+          path={props.location.pathname}
+          page="post"
+          className="inline-block"
+        />
+        {mdx.frontmatter.aiTranslated && (
+          <>
+            <TranslationBadge className="ml-2" />
+            <Link className="ml-2" to={mdx.frontmatter.slug}>
+              <Trans>View Original</Trans>
+            </Link>
+          </>
+        )}
+        <span>
+          {' '}
+          <Trans>
+            Posted <DateLabel date={new Date(mdx.frontmatter.date)} /> by{' '}
+            <Author name={mdx.frontmatter.author} />.
+          </Trans>
+        </span>
       </div>
       <div className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
@@ -79,7 +79,7 @@ export default function Post(props) {
   );
 }
 
-var Author = ({ name }) => <span className="font-bold">{name}</span>;
+var Author = ({ name }) => <span>{name}</span>;
 
 export const pageQuery = graphql`
   query PostTemplateQuery($slug: String!, $locale: String!) {
