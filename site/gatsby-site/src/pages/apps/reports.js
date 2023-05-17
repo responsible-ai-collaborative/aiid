@@ -216,7 +216,7 @@ export default function Incidents(props) {
             isCollapsed ? 'max-w-[100vw] md:pl-14' : 'md:pl-4'
           }`}
         >
-          <h1 className="font-karla font-bold flex-1 pt-0">Incident Report Table</h1>
+          <h1>Incident Report Table</h1>
           <Button onClick={() => table.setAllFilters([])}>Reset filters</Button>
           <div className="py-4 pr-4 pl-0">
             <Table table={table} />

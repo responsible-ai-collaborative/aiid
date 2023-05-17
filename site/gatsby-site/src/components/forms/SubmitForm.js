@@ -236,7 +236,7 @@ const SubmitForm = () => {
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </Helmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0" data-cy="submit-form-title">
+        <h1 data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
