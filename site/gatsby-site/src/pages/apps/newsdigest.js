@@ -163,7 +163,7 @@ export default function NewsSearchPage(props) {
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">
+        <h1>
           <Trans>{title}</Trans>
         </h1>
       </div>
