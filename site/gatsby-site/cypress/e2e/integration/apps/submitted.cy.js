@@ -7,7 +7,7 @@ import { arrayToList } from '../../../../src/utils/typography';
 import { SUBSCRIPTION_TYPE } from '../../../../src/utils/subscriptions';
 const { gql } = require('@apollo/client');
 
-describe('Submitted reports', async () => {
+describe('Submitted reports', () => {
   const url = '/apps/submitted';
 
   let user;
