@@ -30,7 +30,7 @@ export default function Doc(props) {
     <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }} />
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">{mdx.fields.title}</h1>
+        <h1>{mdx.fields.title}</h1>
         {mdx.frontmatter.aiTranslated && (
           <div>
             <TranslationBadge className="d-inline-block" />
