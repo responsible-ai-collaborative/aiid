@@ -13,7 +13,7 @@ export default function UserDetails({ userId }) {
   const [showEditModal, setShowEditModal] = React.useState(false);
 
   const [{ askToCompleteProfile }] = useQueryParams({
-    askToCompleteProfile: withDefault(BooleanParam, true),
+    askToCompleteProfile: withDefault(BooleanParam, false),
   });
 
   useEffect(() => {
@@ -102,7 +102,8 @@ export default function UserDetails({ userId }) {
         <UserEditModal
           userId={userId}
           onClose={() => setShowEditModal(false)}
-          title={'Please complete your profile data'}
+          alertTitle={askToCompleteProfile ? t('completeInfoAlertTitle') : ''}
+          alertText={askToCompleteProfile ? t('completeInfoAlertMessage') : ''}
         />
       )}
     </>
