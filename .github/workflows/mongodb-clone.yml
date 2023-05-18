@@ -2,10 +2,25 @@ name: Restore Prod DB into Staging
 on: [workflow_dispatch]
 jobs:
   mongo-clone-action:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: Restore Prod DB into Staging
     steps:
-    - uses: Maggi64/mongo-clone-action@0.3
-      with:
-        source: mongodb+srv://${{ secrets.PRODUCTION_DB_USER }}:${{ secrets.PRODUCTION_DB_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod
-        target: mongodb+srv://${{ secrets.STAGING_DB_USER }}:${{ secrets.STAGING_DB_PASSWORD }}@aiiddev.vnjimch.mongodb.net/aiidprod
+      - name: Install Mongo Tools
+        run : |
+          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
+          echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt update
+          sudo apt install mongodb-database-tools
+          mongodump --version
+          mongorestore --version
+        shell: bash
+
+      - name: "Dump Production database"
+        shell: bash
+        run: mongodump --uri="mongodb+srv://${{ secrets.DB_USER_PRODUCTION }}:${{ secrets.DB_PASSWORD_PRODUCTION }}@${{ secrets.DB_HOST_PRODUCTION }}"
+
+      - name: "Restore Staging database collection: aiidprod"
+        run: mongorestore mongodb+srv://${{ secrets.DB_USER_STAGING }}:${{ secrets.DB_PASSWORD_STAGING }}@${{ secrets.DB_HOST_STAGING }}/aiidprod ./dump/aiidprod --drop --noOptionsRestore
+        
+      - name: "Restore Staging database collection: translations"
+        run: mongorestore mongodb+srv://${{ secrets.DB_USER_STAGING }}:${{ secrets.DB_PASSWORD_STAGING }}@${{ secrets.DB_HOST_STAGING }}/translations ./dump/translations --drop --noOptionsRestore

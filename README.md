@@ -690,6 +690,22 @@ To log the errors a Realm secret value should be set:
 rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
 ```
 
+### Restoring Production database to Staging
+
+There is a Github Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
+Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow` 
+
+To enable this workflow these Github secrets should be added:
+```
+DB_HOST_PRODUCTION=[Atlas MongoDB Production host. ie: aiiddev-xxxxxx.gcp.mongodb.net]
+DB_USER_PRODUCTION=[DB readonly user]
+DB_PASSWORD_PRODUCTION=[DB user password]
+
+DB_HOST_STAGING=[Atlas MongoDB Staging host. ie: aiiddev-xxxxxx.gcp.mongodb.net]
+DB_USER_STAGING=[DB admin user]
+DB_PASSWORD_STAGING=[DB user password]
+```
+
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
