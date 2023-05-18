@@ -1,0 +1,11 @@
+name: Restore Prod DB into Staging
+on: [workflow_dispatch]
+jobs:
+  mongo-clone-action:
+    runs-on: ubuntu-22.04
+    name: Restore Prod DB into Staging
+    steps:
+    - uses: Maggi64/mongo-clone-action@0.3
+      with:
+        source: mongodb+srv://${{ secrets.PRODUCTION_DB_USER }}:${{ secrets.PRODUCTION_DB_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod
+        target: mongodb+srv://${{ secrets.STAGING_DB_USER }}:${{ secrets.STAGING_DB_PASSWORD }}@aiiddev.vnjimch.mongodb.net/aiidprod
