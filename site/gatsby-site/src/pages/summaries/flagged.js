@@ -67,7 +67,7 @@ export default function FlaggedIncidents({ data, ...props }) {
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">Flagged Incident List</h1>
+        <h1>Flagged Incident List</h1>
       </div>
       <div className="styled-main-wrapper">
         <p className="paragraph">

@@ -222,7 +222,6 @@ const plugins = [
       },
     },
   },
-  'gatsby-plugin-sass',
 ];
 
 module.exports = {
