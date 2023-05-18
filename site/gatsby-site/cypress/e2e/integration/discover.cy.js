@@ -434,6 +434,8 @@ describe('The Discover app', () => {
       .type('google')
       .type('{enter}');
 
+    cy.waitForStableDOM();
+
     cy.url().should('include', 's=google');
 
     // Filter by source
