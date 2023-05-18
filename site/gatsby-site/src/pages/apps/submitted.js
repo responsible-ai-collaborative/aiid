@@ -84,7 +84,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">
+        <h1>
           <Trans ns="submitted">Submitted Incident Report List</Trans>
         </h1>
       </div>

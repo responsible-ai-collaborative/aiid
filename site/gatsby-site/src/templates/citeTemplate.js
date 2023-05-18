@@ -197,15 +197,9 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <div className="flex justify-between w-full flex-wrap">
-          <div className="flex gap-2">
-            <SocialShareButtons
-              metaTitle={metaTitle}
-              path={locationPathName}
-              page="cite"
-              className="-mt-1"
-            ></SocialShareButtons>
+        <div className="w-full flex justify-between flex-wrap gap-1">
+          <h1 className="text-2xl inline">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
+          <div className="inline-flex gap-2">
             {incidentResponded && (
               <div className="self-center">
                 <Badge color="success" data-cy="responded-badge">
@@ -220,6 +214,11 @@ function CiteTemplate({
                 </Badge>
               </div>
             )}
+            <SocialShareButtons
+              metaTitle={metaTitle}
+              path={locationPathName}
+              page="cite"
+            ></SocialShareButtons>
           </div>
         </div>
       </div>
@@ -227,7 +226,9 @@ function CiteTemplate({
         <div className="shrink-1">
           <Row>
             <Col>
-              <strong>Description</strong>: {incident.description}
+              <div>
+                <strong>Description</strong>: {incident.description}
+              </div>
             </Col>
           </Row>
 
