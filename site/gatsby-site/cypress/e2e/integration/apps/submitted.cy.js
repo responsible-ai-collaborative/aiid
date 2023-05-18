@@ -4,9 +4,30 @@ import quickAdds from '../../../fixtures/submissions/quickadds.json';
 import parseNews from '../../../fixtures/api/parseNews.json';
 import { isArray } from 'lodash';
 import { arrayToList } from '../../../../src/utils/typography';
+import { SUBSCRIPTION_TYPE } from '../../../../src/utils/subscriptions';
+const { gql } = require('@apollo/client');
 
 describe('Submitted reports', () => {
   const url = '/apps/submitted';
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            adminData {
+              email
+            }
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.adminData.email == Cypress.env('e2eUsername'));
+    });
+  });
 
   it('Loads submissions', () => {
     cy.conditionalIntercept(
@@ -132,6 +153,19 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertSubscription',
+      'UpsertSubscription',
+      {
+        data: {
+          upsertOneSubscription: {
+            _id: 'dummyIncidentId',
+          },
+        },
+      }
+    );
+
     cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
     cy.wait('@promoteSubmission')
@@ -140,6 +174,18 @@ describe('Submitted reports', () => {
         expect(input.incident_ids).to.deep.eq([]);
         expect(input.submission_id).to.eq('5f9c3ebfd4896d392493f03c');
         expect(input.is_incident_report).to.eq(true);
+      });
+
+    cy.wait('@UpsertSubscription')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.query.incident_id.incident_id).to.eq(182);
+        expect(variables.query.userId.userId).to.eq(user.userId);
+
+        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.subscription.incident_id.link).to.eq(182);
+        expect(variables.subscription.userId.link).to.eq(user.userId);
       });
 
     cy.contains(
@@ -203,6 +249,19 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertSubscription',
+      'UpsertSubscription',
+      {
+        data: {
+          upsertOneSubscription: {
+            _id: 'dummyIncidentId',
+          },
+        },
+      }
+    );
+
     cy.get('@promoteForm').contains('button', 'Add to incident 10').click();
 
     cy.wait('@promoteSubmission')
@@ -211,6 +270,18 @@ describe('Submitted reports', () => {
         expect(input.incident_ids).to.deep.eq([10]);
         expect(input.submission_id).to.eq('6123bf345e740c1a81850e89');
         expect(input.is_incident_report).to.eq(true);
+      });
+
+    cy.wait('@UpsertSubscription')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.query.incident_id.incident_id).to.eq(10);
+        expect(variables.query.userId.userId).to.eq(user.userId);
+
+        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.subscription.incident_id.link).to.eq(10);
+        expect(variables.subscription.userId.link).to.eq(user.userId);
       });
 
     cy.contains(
@@ -274,6 +345,19 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertSubscription',
+      'UpsertSubscription',
+      {
+        data: {
+          upsertOneSubscription: {
+            _id: 'dummyIncidentId',
+          },
+        },
+      }
+    );
+
     cy.get('@promoteForm').contains('button', 'Add to incidents 52 and 53').click();
 
     cy.wait('@promoteSubmission')
@@ -282,6 +366,30 @@ describe('Submitted reports', () => {
         expect(input.incident_ids).to.deep.eq([52, 53]);
         expect(input.submission_id).to.eq('444461606b4bb5e39601234');
         expect(input.is_incident_report).to.eq(true);
+      });
+
+    cy.wait('@UpsertSubscription')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.query.incident_id.incident_id).to.eq(52);
+        expect(variables.query.userId.userId).to.eq(user.userId);
+
+        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.subscription.incident_id.link).to.eq(52);
+        expect(variables.subscription.userId.link).to.eq(user.userId);
+      });
+
+    cy.wait('@UpsertSubscription')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.query.incident_id.incident_id).to.eq(53);
+        expect(variables.query.userId.userId).to.eq(user.userId);
+
+        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.incident);
+        expect(variables.subscription.incident_id.link).to.eq(53);
+        expect(variables.subscription.userId.link).to.eq(user.userId);
       });
 
     cy.contains(

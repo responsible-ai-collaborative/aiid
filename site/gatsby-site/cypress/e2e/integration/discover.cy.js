@@ -376,12 +376,18 @@ describe('The Discover app', () => {
   it(`Shouldn't export results to a CSV file if no results are displayed`, () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('form#searchForm').as('form');
+
+    cy.waitForStableDOM();
 
     cy.get('@form')
       .get('[data-cy="search-box"] input[placeholder="Type Here"]')
-      .type('xxxxxxxxxxxxx')
-      .type('{enter}');
+      .type('xxxxxxxxxxxxx', { waitForAnimations: false })
+      .type('{enter}', { waitForAnimations: false });
+
+    cy.waitForStableDOM();
 
     cy.url().should('include', 's=xxxxxxxxxxxxx');
 
@@ -427,6 +433,8 @@ describe('The Discover app', () => {
       .get('[data-cy="search-box"] input[placeholder="Type Here"]')
       .type('google')
       .type('{enter}');
+
+    cy.waitForStableDOM();
 
     cy.url().should('include', 's=google');
 
