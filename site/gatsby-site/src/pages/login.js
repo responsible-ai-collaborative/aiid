@@ -45,7 +45,7 @@ const Login = (props) => {
 
       localStorage.removeItem('signup');
 
-      setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile' : redirectToParam);
+      setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile=1' : redirectToParam);
     }
   }, [loading]);
 

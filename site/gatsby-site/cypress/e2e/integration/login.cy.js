@@ -23,6 +23,15 @@ describe('Login', () => {
     cy.waitForStableDOM();
 
     cy.location('pathname').should('eq', '/account/');
+    cy.location('search').should('eq', '?askToCompleteProfile=1');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="edit-user-modal"]').should('be.visible');
+
+    cy.getAllLocalStorage().then((result) => {
+      expect(result[Cypress.config().baseUrl.replace(/\/$/, '')].signup).to.be.undefined;
+    });
   });
 
   it('Should redirect to specific page after login if redirectTo is provided', () => {
