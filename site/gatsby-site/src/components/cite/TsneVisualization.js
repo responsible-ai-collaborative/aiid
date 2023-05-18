@@ -412,7 +412,7 @@ function PlotPoint({
             <>
               <Image
                 publicID={incidentData.reports[0].cloudinary_id}
-                title={incidentData.title}
+                alt={incidentData.title}
                 className="bg-gray-300"
                 itemIdentifier={t('Incident {{id}}', { id: incidentData.incident_id }).replace(
                   ' ',
@@ -435,7 +435,7 @@ function PlotPoint({
               </div>
             </div>
           )}
-          <div>
+          <div className="mt-4">
             <h3 data-cy="title">{incident.title}</h3>
             {taxon && (
               <div style={{ marginTop: '.5em' }}>
