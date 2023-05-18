@@ -11,10 +11,10 @@ describe('Login', () => {
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
   });
 
-  it('Should redirect to the account page if the signup storage key is set and recent', () => {
+  it('Should redirect to the account page if the signup storage key is set', () => {
     cy.visit('/', {
       onBeforeLoad: function (window) {
-        window.localStorage.setItem('signup', Date.now().toString());
+        window.localStorage.setItem('signup', '1');
       },
     });
 

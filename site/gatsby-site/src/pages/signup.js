@@ -190,7 +190,7 @@ const SignUp = (props) => {
                 try {
                   await signUp({ email, password, redirectTo });
 
-                  localStorage.setItem('signup', Date.now().toString());
+                  localStorage.setItem('signup', '1');
 
                   addToast({
                     message: t('Verification email sent to {{email}}', { email, ns: 'login' }),

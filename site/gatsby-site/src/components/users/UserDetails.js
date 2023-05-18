@@ -102,8 +102,8 @@ export default function UserDetails({ userId }) {
         <UserEditModal
           userId={userId}
           onClose={() => setShowEditModal(false)}
-          alertTitle={askToCompleteProfile ? t('completeInfoAlertTitle') : ''}
-          alertText={askToCompleteProfile ? t('completeInfoAlertMessage') : ''}
+          alertTitle={t('completeInfoAlertTitle')}
+          alertText={t('completeInfoAlertMessage')}
         />
       )}
     </>

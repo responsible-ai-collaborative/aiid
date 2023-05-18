@@ -36,11 +36,18 @@ const Login = (props) => {
   });
 
   useEffect(() => {
-    const askToCompleteProfile =
-      parseInt(localStorage.getItem('signup')) - Date.now() < 1000 * 60 * 60 * 24;
+    if (!loading) {
+      const missingNames = !user.customData.first_name || !user.customData.last_name;
 
-    setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile' : redirectToParam);
-  }, []);
+      const isSignup = !!localStorage.getItem('signup');
+
+      const askToCompleteProfile = missingNames && isSignup;
+
+      localStorage.removeItem('signup');
+
+      setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile' : redirectToParam);
+    }
+  }, [loading]);
 
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
