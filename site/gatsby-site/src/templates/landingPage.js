@@ -169,6 +169,7 @@ export const query = graphql`
     }
     latestReports: allMongodbAiidprodReports(
       filter: { report_number: { in: $latestReportNumbers } }
+      sort: { epoch_date_submitted: DESC }
     ) {
       nodes {
         title
