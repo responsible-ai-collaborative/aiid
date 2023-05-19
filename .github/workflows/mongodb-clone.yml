@@ -24,3 +24,6 @@ jobs:
         
       - name: "Restore Staging database collection: translations"
         run: mongorestore mongodb+srv://${{ secrets.DB_USER_STAGING }}:${{ secrets.DB_PASSWORD_STAGING }}@${{ secrets.DB_HOST_STAGING }}/translations ./dump/translations --drop --noOptionsRestore
+
+      - name: Trigger Staging Netlify build
+        run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_STAGING_URL }}

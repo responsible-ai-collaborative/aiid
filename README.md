@@ -704,6 +704,8 @@ DB_PASSWORD_PRODUCTION=[DB user password]
 DB_HOST_STAGING=[Atlas MongoDB Staging host. ie: aiiddev-xxxxxx.gcp.mongodb.net]
 DB_USER_STAGING=[DB admin user]
 DB_PASSWORD_STAGING=[DB user password]
+
+NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
 ```
 
 ## Contact
