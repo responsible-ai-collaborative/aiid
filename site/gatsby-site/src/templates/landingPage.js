@@ -27,11 +27,24 @@ const LandingPage = (props) => {
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
 
-  const { latestReport, latestReportIncident, latestPost } = data;
-
-  latestReport.incident_id = latestReportIncident.incident_id;
+  let { latestReport, latestReportIncident, latestPost, latestReports } = data;
 
   const { locale: language } = useLocalization();
+
+  latestReports = latestReports.nodes.map((report) => {
+    report.incident_id = latestReportIncident.incident_id;
+
+    if (report.language !== language) {
+      const translation = data[`latestReport_${language}`];
+
+      report.title = translation.title;
+      report.text = translation.text;
+    }
+    return report;
+  });
+  latestReport.incident_id = latestReportIncident.incident_id;
+
+  // const { locale: language } = useLocalization();
 
   if (latestReport.language !== language) {
     const translation = data[`latestReport_${language}`];
@@ -88,7 +101,7 @@ const LandingPage = (props) => {
 
         <div className="mb-5 md:mb-10">
           <div>
-            <LatestReports latestReport={latestReport} />
+            <LatestReports latestReports={latestReports} />
           </div>
         </div>
 

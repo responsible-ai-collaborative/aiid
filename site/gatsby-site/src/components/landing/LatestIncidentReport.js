@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
 
-const LatestIncidentReport = ({ report }) => {
+const LatestIncidentReport = ({ report, key }) => {
   const {
     image_url,
     cloudinary_id,
@@ -22,8 +22,11 @@ const LatestIncidentReport = ({ report }) => {
   const reportLink = `/cite/${incident_id}#r${report_number}`;
 
   return (
-    <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
-      <div className="flex self-stretch justify-center items-center md:border-r md:max-w-sm">
+    <div
+      className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800 h-full"
+      key={key}
+    >
+      <div className="flex self-stretch md:w-1/3 justify-center items-center md:border-r md:max-w-sm">
         <LocalizedLink to={reportLink} className="text-primary-blue max-w-full h-full">
           <Image
             className={
@@ -35,13 +38,8 @@ const LatestIncidentReport = ({ report }) => {
           />
         </LocalizedLink>
       </div>
-      <div className="flex flex-col justify-between leading-normal">
-        <LocalizedLink to={reportLink} className="max-w-full cursor-pointer">
-          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full p-6 hover:text-primary-blue">
-            <Trans ns="landing">Latest Incident Report</Trans>
-          </h5>
-        </LocalizedLink>
-        <div className="px-6 pb-6">
+      <div className="flex flex-col md:w-2/3 justify-between leading-normal">
+        <div className="py-6 pl-6 pr-12">
           <LocalizedLink to={reportLink} className="max-w-full cursor-pointer">
             <h5
               className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue"
