@@ -97,7 +97,6 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         templates: path.resolve(__dirname, 'src/templates'),
         utils: path.resolve(__dirname, 'src/utils'),
         plugins: path.resolve(__dirname, 'plugins'),
-        buble: '@philpl/buble', // to reduce bundle size
       },
       fallback: { crypto: false },
     },
@@ -222,8 +221,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       tags: [String]
       plain_text: String
       embedding: reportEmbedding
-      text_inputs: String
-      text_outputs: String
+      inputs_outputs: [String]
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

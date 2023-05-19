@@ -132,15 +132,15 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
         >
           <ReportText text={item.text} maxChars={expanded ? null : 240} />
           {expanded && hasVariantData(item) && (
-            <div className="flex w-full flex-col mt-3 gap-2">
+            <div className="flex w-full flex-col my-4 gap-2">
               <div className="font-bold flex items-center gap-2">
-                <Trans ns="variants">Input and circumstances</Trans>
+                <Trans ns="variants">Inputs / Outputs</Trans>
                 <Tooltip
                   content={
                     <Trans ns="variants">
-                      Provide the relevant details producing the incident. Examples include the
-                      input prompts to a chatbot or a description of the circumstances leading to
-                      injuries sustained from a robot.
+                      The sequence of data inputs into the intelligent system and outputs produced
+                      by the system involved in the incident. For a chatbot, this will generally
+                      present a back and forth between a human and the chatbot&apos;s responses.
                     </Trans>
                   }
                   trigger="click"
@@ -153,31 +153,15 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
                   />
                 </Tooltip>
               </div>
-              <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
-                <Markdown>{item.text_inputs}</Markdown>
-              </div>
-              <div className="font-bold flex items-center gap-2">
-                <Trans ns="variants">Output and outcomes</Trans>
-                <Tooltip
-                  content={
-                    <Trans ns="variants">
-                      Provide the relevant details surrounding the incident. Examples include output
-                      text from a chatbot or the nature of injuries sustained from a robot.
-                    </Trans>
-                  }
-                  trigger="click"
-                  placement="right"
+              {item.inputs_outputs.map((input_output, index) => (
+                <div
+                  className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                  key={`inputs_outputs.${index}`}
+                  data-cy="variant-inputs-outputs"
                 >
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                    className="far fa-question-circle"
-                  />
-                </Tooltip>
-              </div>
-              <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
-                <Markdown>{item.text_outputs}</Markdown>
-              </div>
+                  <Markdown>{input_output}</Markdown>
+                </div>
+              ))}
             </div>
           )}
         </div>

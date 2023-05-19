@@ -14,6 +14,8 @@ const TagsInputGroup = ({
   schema = null,
   icon = null,
   disabled = false,
+  options = undefined,
+  popoverName = null,
   ...props
 }) => {
   const [optional, setOptional] = useState(true);
@@ -29,17 +31,17 @@ const TagsInputGroup = ({
     <FieldContainer>
       <div className="flex items-center">
         {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mr-1" />}
-        <Label popover={name} label={(optional ? '' : '*') + label} />
+        <Label popover={popoverName ?? name} label={(optional ? '' : '*') + label} />
       </div>
       <div style={{ marginTop: '0.25rem' }}>
         <div
           className={
-            'tags-control-wrapper rounded-md form-control' +
+            'tags-control-wrapper rounded-md form-control bootstrap' +
             (isInvalid ? ' is-invalid border-red-700' : '')
           }
           data-cy={props['data-cy']}
         >
-          <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
+          <TagsControl {...{ name, placeholder, disabled, options }} />
         </div>
         <div className="text-sm text-red-700">
           <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>

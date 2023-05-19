@@ -5,18 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faThList, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'flowbite-react';
 
-function ModeButton({ icon, ...rest }) {
-  return (
-    <Button
-      {...rest}
-      size="sm"
-      className={`${rest.active ? 'bg-gray-700' : 'bg-gray-500'} text-white w-8`}
-    >
-      <FontAwesomeIcon icon={icon} />
-    </Button>
-  );
-}
-
 const modes = {
   details: {
     icon: faInfo,
@@ -39,13 +27,16 @@ export default function DisplayModeSwitch() {
   return (
     <div className="flex gap-1">
       {Object.keys(modes).map((key) => (
-        <ModeButton
-          variant="secondary"
-          active={key == display}
+        <Button
           key={key}
-          icon={modes[key].icon}
           onClick={() => onChange(key)}
-        />
+          size="sm"
+          className={`${
+            key == display ? 'bg-gray-700 hover:bg-gray-800' : 'bg-gray-500 hover:bg-gray-700'
+          } text-white w-8`}
+        >
+          <FontAwesomeIcon icon={modes[key].icon} />
+        </Button>
       ))}
     </div>
   );

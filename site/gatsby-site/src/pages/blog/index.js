@@ -21,7 +21,7 @@ export default function BlogPage(props) {
     <>
       <AiidHelmet metaTitle={'AIID Blog'} path={props.location.pathname} />
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">Blog</h1>
+        <h1>Blog</h1>
       </div>
       <div>
         <PostsListing posts={posts} />

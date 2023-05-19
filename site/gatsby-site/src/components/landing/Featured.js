@@ -42,9 +42,17 @@ export default function Featured() {
           >
             Wired
           </a>
-          , and{' '}
+          ,{' '}
           <a href="https://arxiv.org/abs/2011.08512" target="_blank" rel="noreferrer">
             arXiv
+          </a>{' '}
+          , and{' '}
+          <a
+            href="https://www.newsweek.com/ai-accidents-set-skyrocket-this-year-1795928"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Newsweek
           </a>{' '}
           among other outlets.
         </Trans>
@@ -55,33 +63,41 @@ export default function Featured() {
           href="https://arxiv.org/abs/2011.08512"
           target="_blank"
           rel="noreferrer"
-          className="flex justify-center items-center max-w-[10rem] flex-1"
+          className="flex justify-center items-center min-w-[5rem] max-w-[10rem] flex-1"
         >
-          <img src="/images/news/arxiv.png" alt="Arxiv Logo" />
+          <img src="/images/news/arxiv.png" alt="Arxiv Logo" loading="lazy" />
         </a>
         <a
           href="https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/"
           target="_blank"
           rel="noreferrer"
-          className="flex justify-center items-center max-w-[10rem] flex-1"
+          className="flex justify-center items-center min-w-[5rem] max-w-[10rem] flex-1"
         >
-          <img src="/images/news/VentureBeat.png" alt="Venture Beat Logo" />
+          <img src="/images/news/VentureBeat.png" alt="Venture Beat Logo" loading="lazy" />
         </a>
         <a
           href="https://www.wired.com/story/artificial-intelligence-hall-shame/"
           target="_blank"
           rel="noreferrer"
-          className="flex justify-center items-center max-w-[10rem] flex-1"
+          className="flex justify-center items-center min-w-[5rem] max-w-[10rem] flex-1"
         >
-          <img src="/images/news/Wired_logo.svg" alt="Wired Logo" />
+          <img src="/images/news/Wired_logo.svg" alt="Wired Logo" loading="lazy" />
         </a>
         <a
           href="https://www.vice.com/en/article/m7agjq/this-database-is-finally-holding-ai-accountable"
           target="_blank"
           rel="noreferrer"
-          className="flex justify-center items-center max-w-[10rem] flex-1"
+          className="flex justify-center items-center min-w-[5rem] max-w-[10rem] flex-1"
         >
-          <img src="/images/news/vice.png" alt="Vice logo" />
+          <img src="/images/news/vice.png" alt="Vice logo" loading="lazy" />
+        </a>
+        <a
+          href="https://www.newsweek.com/ai-accidents-set-skyrocket-this-year-1795928"
+          target="_blank"
+          rel="noreferrer"
+          className="flex justify-center items-center min-w-[5rem] max-w-[10rem] flex-1"
+        >
+          <img src="/images/news/newsweek.svg" alt="Vice logo" loading="lazy" />
         </a>
       </div>
     </Card>

@@ -103,7 +103,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
-        <div className="my-3">
+        <div className="my-3 h-[320px]">
           {short_name == 'Location' ? (
             <LocationMap
               data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
@@ -292,18 +292,18 @@ const Taxonomy = (props) => {
       <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">{namespace}</h1>
+        <h1>{namespace}</h1>
       </div>
       <Markdown className="taxonomy-markdown">{description}</Markdown>
-      <h1 className="heading1">Taxonomy Fields</h1>
+      <h2 className="heading1">Taxonomy Fields</h2>
       <div className="flex gap-9 flex-col">
         {sortedFieldsArray
           .filter((f) => f.short_name !== 'Publish')
           .map(({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
-            <div data-cy={`field-${short_name}`} key={short_name}>
+            <div id={`field-${short_name}`} data-cy={`field-${short_name}`} key={short_name}>
               <Card>
-                <h5
-                  className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative hover:text-primary-blue flex items-center"
+                <h3
+                  className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative flex items-center"
                   data-cy={`title-${short_name}`}
                 >
                   {long_name}{' '}
@@ -312,7 +312,7 @@ const Taxonomy = (props) => {
                       <Badge color="gray">Searchable in Discover App</Badge>
                     </span>
                   )}
-                </h5>
+                </h3>
                 <FacetList
                   namespace={namespace}
                   instant_facet={instant_facet}

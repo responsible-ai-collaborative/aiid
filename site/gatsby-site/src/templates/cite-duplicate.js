@@ -30,7 +30,7 @@ const IncidentCite = ({ pageContext }) => {
     <>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">{metaDescription}</h1>
+        <h1>{metaDescription}</h1>
       </div>
       <div className="styled-main-wrapper">
         <Container>

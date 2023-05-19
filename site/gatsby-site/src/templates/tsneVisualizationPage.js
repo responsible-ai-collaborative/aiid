@@ -35,7 +35,7 @@ function TsneVisulizationPage(props) {
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">{t(metaDescription)}</h1>
+        <h1>{t(metaDescription)}</h1>
       </div>
 
       <TsneVisualization

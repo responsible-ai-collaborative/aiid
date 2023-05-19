@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Tags from './Tags';
 
-function TagsControl({ name, placeholder, disabled = false }) {
+function TagsControl({ name, placeholder, disabled = false, options = undefined }) {
   const {
     0: { value },
     2: { setTouched, setValue },
@@ -23,6 +23,7 @@ function TagsControl({ name, placeholder, disabled = false }) {
         setValue(value);
       }}
       disabled={disabled}
+      options={options}
     />
   );
 }
