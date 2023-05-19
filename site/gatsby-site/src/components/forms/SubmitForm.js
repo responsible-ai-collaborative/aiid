@@ -225,8 +225,8 @@ const SubmitForm = () => {
           </Trans>
         ),
         severity: SEVERITY.warning,
+        error: e,
       });
-      throw e;
     }
   };
 
