@@ -5,6 +5,7 @@ import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
+import { useUserContext } from 'contexts/userContext';
 
 const SubmissionWizard = ({
   submitForm,
@@ -64,6 +65,8 @@ const SubmissionWizard = ({
 
   const { t } = useTranslation(['submit']);
 
+  const { loading, user } = useUserContext();
+
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
       setParsingNews(true);
@@ -88,12 +91,22 @@ const SubmissionWizard = ({
 
         const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
-        const newValues = {
+        let newValues = {
           ...data,
           ...news,
           url: newsUrl,
           cloudinary_id,
         };
+
+        if (!loading) {
+          if (user?.profile?.email) {
+            newValues.user = { link: user.id };
+
+            if (user.customData.first_name && user.customData.last_name) {
+              newValues.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+            }
+          }
+        }
 
         for (const key of [
           'tags',

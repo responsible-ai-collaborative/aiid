@@ -239,13 +239,22 @@ const SubmitForm = () => {
   };
 
   const clearForm = () => {
-    setSubmission({ ...SUBMISSION_INITIAL_VALUES });
+    let submission = { ...SUBMISSION_INITIAL_VALUES };
+
+    if (user?.profile?.email) {
+      submission.user = { link: user.id };
+
+      if (user.customData.first_name && user.customData.last_name) {
+        submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+      }
+    }
+    setSubmission(submission);
     setSubmissionReset((prevState) => ({
       ...prevState,
       reset: true,
       forceUpdate: !prevState.forceUpdate, // toggle forceUpdate value
     }));
-    localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
+    localStorage.setItem('formValues', JSON.stringify(submission));
   };
 
   if (!submission || isEmpty(submission)) return <></>;
@@ -301,7 +310,7 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
-      <Alert color={savingInLocalStorage ? 'warning' : 'success'} rounded={true}>
+      <Alert color={'success'} rounded={true}>
         <div>
           <Trans i18n={i18n} ns="submit">
             {savingInLocalStorage
