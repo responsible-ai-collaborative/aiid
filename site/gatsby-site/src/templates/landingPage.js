@@ -145,7 +145,7 @@ const LandingPage = (props) => {
 export default LandingPage;
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int, $locale: String!) {
+  query LandingPageQuery($latestReportNumber: Int, $latestReportNumbers: [Int], $locale: String!) {
     latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
       incident_id
     }
@@ -157,6 +157,19 @@ export const query = graphql`
       report_number
       cloudinary_id
       language
+    }
+    latestReports: allMongodbAiidprodReports(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      nodes {
+        title
+        text
+        epoch_date_submitted
+        image_url
+        report_number
+        cloudinary_id
+        language
+      }
     }
     latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
       title
