@@ -695,7 +695,7 @@ rollbarAccessToken: [The access token value from your Rollbar account > Projects
 There is a Github Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
 Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow` 
 
-To enable this workflow these Github secrets should be added:
+To enable this workflow these [Github secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
 ```
 DB_HOST_PRODUCTION=[Atlas MongoDB Production host. ie: aiiddev-xxxxxx.gcp.mongodb.net]
 DB_USER_PRODUCTION=[DB readonly user]
