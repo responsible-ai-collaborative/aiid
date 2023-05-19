@@ -9,6 +9,7 @@ export default function Tags({
   onChange,
   name,
   disabled = false,
+  labelKey,
   options,
 }) {
   const ref = useRef(null);
@@ -23,8 +24,6 @@ export default function Tags({
   return (
     <Typeahead
       className="Typeahead h-8 max-h-8" 
-      ref={ref}
-      id={id}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === ',') {
@@ -46,7 +45,12 @@ export default function Tags({
       options={options || []}
       selected={value}
       placeholder={placeHolder}
-      disabled={disabled}
+      {...{
+        disabled,
+        labelKey,
+        ref,
+        id,
+      }}
     />
   );
 }

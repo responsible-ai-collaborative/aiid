@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from 'components/Layout';
 import { useTranslation } from 'react-i18next';
 import { Button, TextInput, Textarea } from 'flowbite-react';
@@ -28,6 +28,9 @@ export default function ChecklistsPage(props) {
 
   const { t } = useTranslation();
 
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
   const [risks, setRisks] = useState([{
     title: 'Distributional Bias',
     query_tags: [
@@ -43,12 +46,18 @@ export default function ChecklistsPage(props) {
 
   const updateQuery = () => {};
 
+  console.log(`risks`, risks);
+
+//  useEffect(() => {
+//
+//  }, [risk])
+
   return (
     <Layout {...props} className="md:max-w-5xl">
       <AiidHelmet path={pathname}>
         <title>{t('Risk Checklists')}</title>
       </AiidHelmet>
-      {query.id ? (
+      {hydrated && query.id ? (
         <Formik initialValues={{'tags-goals': [], 'tags-methods': [], 'tags-other': []}} >
           {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => (
             <>
@@ -80,46 +89,7 @@ export default function ChecklistsPage(props) {
                 <p><Trans>Risks are surface automatically based on the tags applied to the system. They can also be added manually. Each risk is associated with a query for precedent incidents, which can be modified to suit your needs. You can subscribe both to new risks and new precedent incidents.</Trans></p>
 
                 {risks.map((risk) => (
-                  <details>
-                    <summary>{risk.title}</summary>
-                    <div className="grid grid-cols-2 grid-rows-2 gap-4">
-                      <div>
-                        <label><Trans>Precedents Query</Trans></label>
-                        <div className="h-8 max-h-8" >
-                          <Tags 
-                            value={risk.query_tags.map(tag => tag.replace(/^.*:/g, '')) }
-                            onChange={(value) => {
-                              console.log('onChange', value);
-                              const updatedRisks = [...risks];
-                              updatedRisks.find(r => r.title == risk.title).query_tags = value;
-                              setRisks(updatedRisks);
-                              setFieldValue(risks, updateRisks);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <div>
-                          <label>Risk Status</label>
-                          <br/>
-                          <select>
-                            <option>Not Mitigated</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label>Severity</label>
-                          <TextInput value={risk.severity}/>
-                        </div>
-                      </div>
-                      <div>
-                        <label>Precedents</label>
-                      </div>
-                      <div>
-                        <label>Risk Notes</label>
-                        <Textarea value={risk.risk_notes}/>
-                      </div>
-                    </div>
-                  </details>
+                  <RiskSection {...{ risk, risks, setRisks, setFieldValue }}/>
                 ))}
               </section>
             </>
@@ -131,3 +101,61 @@ export default function ChecklistsPage(props) {
     </Layout>
   );
 };
+
+function RiskSection({ risk, risks, setRisks, setFieldValue }) {
+  const updateRisk = (attributeValueMap) => {
+
+    const updatedRisks = [...risks];
+
+    // TODO: Handle identity better than just comparing titles.
+    const updatedRisk = updatedRisks.find(r => r.title == risk.title);
+
+    for (const attribute in attributeValueMap) {
+      updatedRisk[attribute] = attributeValueMap[attribute];
+    }
+
+    setRisks(updatedRisks);
+    setFieldValue(risks, updatedRisks);
+  }
+
+  return (
+    <details>
+      <summary>{risk.title}</summary>
+      <div className="grid grid-cols-2 grid-rows-2 gap-4">
+        <div>
+          <label><Trans>Precedents Query</Trans></label>
+          <div className="h-8 max-h-8" >
+            <Tags 
+              id="risk_status"
+              labelKey={(tag) => tag.replace(/^.*:/g, '')}
+              value={risk.query_tags}
+              onChange={(value) => updateRisk({ query_tags: value })}
+            />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <div>
+            <label>Risk Status</label>
+            <br/>
+            <select value={risk.risk_status} onChange={(event) => updateRisk({risk_status: event.target.value})}>
+              {['Not Mitigated', 'Mitigated'].map((status) => (
+                <option value={status}>{status}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Severity</label>
+            <TextInput value={risk.severity} onChange={(event) => updateRisk({severity: event.target.value})}/>
+          </div>
+        </div>
+        <div>
+          <label>Precedents</label>
+        </div>
+        <div>
+          <label>Risk Notes</label>
+          <Textarea value={risk.risk_notes} onChange={(event) => updateRisk({risk_notes: event.target.value})}/>
+        </div>
+      </div>
+    </details>
+  );
+}
