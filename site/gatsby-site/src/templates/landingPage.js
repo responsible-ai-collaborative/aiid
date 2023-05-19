@@ -27,12 +27,18 @@ const LandingPage = (props) => {
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
 
-  let { latestReport, latestReportIncident, latestPost, latestReports } = data;
+  let { latestPost, latestReports, latestReportIncidents } = data;
 
   const { locale: language } = useLocalization();
 
   latestReports = latestReports.nodes.map((report) => {
-    report.incident_id = latestReportIncident.incident_id;
+    const reportIncident = latestReportIncidents.nodes.filter((incident) =>
+      incident.reports.includes(report.report_number)
+    );
+
+    if (reportIncident.length > 0) {
+      report.incident_id = reportIncident[0].incident_id;
+    }
 
     if (report.language !== language) {
       const translation = data[`latestReport_${language}`];
@@ -42,16 +48,6 @@ const LandingPage = (props) => {
     }
     return report;
   });
-  latestReport.incident_id = latestReportIncident.incident_id;
-
-  // const { locale: language } = useLocalization();
-
-  if (latestReport.language !== language) {
-    const translation = data[`latestReport_${language}`];
-
-    latestReport.title = translation.title;
-    latestReport.text = translation.text;
-  }
 
   const { t } = useTranslation(['translation', 'landing']);
 
@@ -182,6 +178,14 @@ export const query = graphql`
         report_number
         cloudinary_id
         language
+      }
+    }
+    latestReportIncidents: allMongodbAiidprodIncidents(
+      filter: { reports: { in: $latestReportNumbers } }
+    ) {
+      nodes {
+        incident_id
+        reports
       }
     }
     latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
