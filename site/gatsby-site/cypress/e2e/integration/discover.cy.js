@@ -380,6 +380,8 @@ describe('The Discover app', () => {
 
     cy.get('form#searchForm').as('form');
 
+    cy.waitForStableDOM();
+
     cy.get('@form')
       .get('[data-cy="search-box"] input[placeholder="Type Here"]')
       .type('xxxxxxxxxxxxx', { waitForAnimations: false })
@@ -431,6 +433,8 @@ describe('The Discover app', () => {
       .get('[data-cy="search-box"] input[placeholder="Type Here"]')
       .type('google')
       .type('{enter}');
+
+    cy.waitForStableDOM();
 
     cy.url().should('include', 's=google');
 

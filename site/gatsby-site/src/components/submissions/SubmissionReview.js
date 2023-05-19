@@ -9,12 +9,14 @@ import { useUserContext } from '../../contexts/userContext';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
+import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Badge, Button, Card, ListGroup, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { incidentSchema, issueSchema, reportSchema } from './schemas';
 import { arrayToList } from 'utils/typography';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = '' }) => {
   return (
@@ -56,7 +58,7 @@ const dateRender = [
 const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -67,6 +69,8 @@ const SubmissionReview = ({ submission }) => {
   const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',
   });
+
+  const [subscribeToNewReportsMutation] = useMutation(UPSERT_SUBSCRIPTION);
 
   const promoteSubmission = ({ submission, variables }) =>
     promoteSubmissionToReport({
@@ -82,6 +86,29 @@ const SubmissionReview = ({ submission }) => {
         });
       },
     });
+
+  const subscribeToNewReports = async (incident_id) => {
+    if (user) {
+      await subscribeToNewReportsMutation({
+        variables: {
+          query: {
+            type: SUBSCRIPTION_TYPE.incident,
+            userId: { userId: user.id },
+            incident_id: { incident_id: incident_id },
+          },
+          subscription: {
+            type: SUBSCRIPTION_TYPE.incident,
+            userId: {
+              link: user.id,
+            },
+            incident_id: {
+              link: incident_id,
+            },
+          },
+        },
+      });
+    }
+  };
 
   const [promoting, setPromoting] = useState('');
 
@@ -198,6 +225,8 @@ const SubmissionReview = ({ submission }) => {
     });
 
     for (const incident_id of incident_ids) {
+      await subscribeToNewReports(incident_id);
+
       addToast({
         message: (
           <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
@@ -245,6 +274,8 @@ const SubmissionReview = ({ submission }) => {
     });
 
     const incident_id = incident_ids[0];
+
+    await subscribeToNewReports(incident_id);
 
     addToast({
       message: (

@@ -17,7 +17,7 @@ export default function Authors(props) {
         <title>Submissions Leaderboard</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">Leaderboard</h1>
+        <h1>Leaderboard</h1>
       </div>
       <div className="styled-main-wrapper max-w-full">
         <p className="paragraph">
