@@ -25,11 +25,13 @@ import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
-import { Alert, Button } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -257,20 +259,47 @@ const SubmitForm = () => {
     localStorage.setItem('formValues', JSON.stringify(submission));
   };
 
-  if (!submission || isEmpty(submission)) return <></>;
   const submissionRef = useRef(null);
+
+  if (!submission || isEmpty(submission)) return <></>;
 
   return (
     <>
       <Helmet>
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </Helmet>
-      <div className={'titleWrapper'}>
+      <div className={'titleWrapper flex flex-row justify-between'}>
         <h1 data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
         </h1>
+        <div className="flex items-center justify-center mt-2">
+          <span className="text-gray-400 text-sm">
+            {savingInLocalStorage ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
+                <Trans>Saving as draft...</Trans>
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faCheck} className="mr-1" />
+                <Trans>Draft saved</Trans>
+              </>
+            )}
+          </span>
+          <Button
+            color="gray"
+            size={'xs'}
+            className={'ml-2'}
+            onClick={() => clearForm()}
+            data-cy="clear-form"
+          >
+            <Trans i18n={i18n} ns="submit">
+              Clear Form
+            </Trans>
+          </Button>
+        </div>
       </div>
       <p ref={submissionRef}>
         {isIncidentResponse ? (
@@ -311,26 +340,6 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
-      <Alert color={'success'} rounded={true}>
-        <div>
-          <Trans i18n={i18n} ns="submit">
-            {savingInLocalStorage
-              ? 'Saving changes...'
-              : 'Your changes are saved. You can continue filling out the report or come back later.'}
-          </Trans>
-          <Button
-            color="gray"
-            size={'xs'}
-            className={'mt-2'}
-            onClick={() => clearForm()}
-            data-cy="clear-form"
-          >
-            <Trans i18n={i18n} ns="submit">
-              Clear Form
-            </Trans>
-          </Button>
-        </div>
-      </Alert>
 
       <div className="my-5">
         {submission && (
