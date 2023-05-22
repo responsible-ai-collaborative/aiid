@@ -1546,4 +1546,32 @@ describe('The Submit form', () => {
 
     cy.get('@parseNewsSpy').should('have.been.calledOnce');
   });
+
+  it('Should display an error message if Date Published is not in the past', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.get('input[name=date_published]').type('3000-01-01');
+
+    cy.contains('button', 'Submit').click();
+
+    cy.get('form').contains('*Date must be in the past').should('exist');
+
+    cy.contains('Please review. Some data is missing.').should('exist');
+  });
+
+  it('Should display an error message if Date Downloaded is not in the past', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.get('input[name=date_downloaded]').type('3000-01-01');
+
+    cy.contains('button', 'Submit').click();
+
+    cy.get('form').contains('*Date must be in the past').should('exist');
+
+    cy.contains('Please review. Some data is missing.').should('exist');
+  });
 });

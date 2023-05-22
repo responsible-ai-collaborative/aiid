@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image as CloudinaryImage } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -39,25 +39,86 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
     }
   };
 
+  const [isBottomReached, setIsBottomReached] = useState(false);
+
+  useEffect(() => {
+    const cardObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsBottomReached(entry.isIntersecting);
+      },
+      { root: null, rootMargin: '0px', threshold: 0.1 }
+    );
+
+    const card = ref.current;
+
+    if (card) {
+      cardObserver.observe(card);
+    }
+
+    const handleScroll = () => {
+      const cardRect = card.getBoundingClientRect();
+
+      setIsBottomReached(
+        cardRect.bottom <= window.innerHeight || cardRect.top >= window.innerHeight
+      );
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      if (card) {
+        cardObserver.unobserve(card);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const [btnRight, setBtnRight] = useState(0);
+
+  useEffect(() => {
+    const card = ref.current;
+
+    const cardRect = card.getBoundingClientRect();
+
+    if (expanded) {
+      setIsBottomReached(
+        cardRect.bottom <= window.innerHeight || cardRect.top >= window.innerHeight
+      );
+
+      const observer = new IntersectionObserver(([entry]) => {
+        const { right } = entry.boundingClientRect;
+
+        setBtnRight(window.innerWidth - right);
+      });
+
+      if (card) {
+        observer.observe(card);
+      }
+
+      // Clean up the observer when the component unmounts
+      return () => {
+        if (card) {
+          observer.unobserve(card);
+        }
+      };
+    } else {
+      card.scrollIntoView();
+    }
+  }, [expanded]);
+
   return (
     <>
       <div
-        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer ${
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative ${
           expanded ? 'expanded' : ''
         }`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
-        onClick={toggleReadMore}
-        onKeyDown={toggleReadMoreKeyDown}
-        role="presentation"
       >
         <div
           className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
           ref={imageRef}
-          role="presentation"
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
         >
           <CloudinaryImage
             className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
@@ -69,12 +130,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
             }).replace(' ', '.')}
           />
         </div>
-        <div
-          className="mt-0 cursor-default select-text"
-          role="presentation"
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-        >
+        <div className="mt-0 cursor-default select-text">
           <div className="flex">
             <button
               className="w-3/4 text-left"
@@ -124,12 +180,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
             )}
           </div>
         </div>
-        <div
-          className="cursor-default"
-          role={'presentation'}
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-        >
+        <div className="cursor-default">
           <ReportText text={item.text} maxChars={expanded ? null : 240} />
           {expanded && hasVariantData(item) && (
             <div className="flex w-full flex-col my-4 gap-2">
@@ -166,10 +217,13 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           )}
         </div>
         {!alwaysExpanded && (
-          <div className="flex justify-end">
+          <div className="flex justify-end min-h-[35px]">
             <button
               onClick={toggleReadMore}
-              className="text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+              className={`text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 bg-white ${
+                expanded && !isBottomReached ? 'fixed z-10' : ''
+              }`}
+              style={{ bottom: '35px', right: btnRight }}
               data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
             >
               <Trans>{expanded ? 'Collapse' : 'Read More'}</Trans>
@@ -198,12 +252,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           </div>
         )}
         {expanded && (
-          <div
-            className="flex w-full flex-row justify-around items-center text-dark-gray"
-            role={'presentation'}
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
+          <div className="flex w-full flex-row justify-around items-center text-dark-gray">
             <Actions item={item} />
           </div>
         )}
