@@ -1,5 +1,5 @@
 import useToastContext, { SEVERITY } from 'hooks/useToast';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepOne from '../forms/SubmissionWizard/StepOne';
@@ -13,6 +13,7 @@ const SubmissionWizard = ({
   urlFromQueryString,
   submissionReset,
   setSavingInLocalStorage,
+  scrollToTop,
 }) => {
   const [data, setData] = useState(initialValues);
 
@@ -29,8 +30,6 @@ const SubmissionWizard = ({
   const [submissionComplete, setSubmissionComplete] = useState(false);
 
   const [parsingNews, setParsingNews] = useState(false);
-
-  const stepsRef = useRef(null);
 
   const handleNextStep = async (newData, final = false) => {
     setSubmissionFailed(false);
@@ -52,12 +51,12 @@ const SubmissionWizard = ({
       setCurrentStep((prev) => prev + 1);
     }
 
-    stepsRef?.current?.scrollIntoView();
+    scrollToTop();
   };
 
   const handlePreviousStep = (newData) => {
     setData((prev) => ({ ...prev, ...newData }));
-    stepsRef?.current?.scrollIntoView();
+    scrollToTop();
     setCurrentStep((prev) => prev - 1);
   };
 
@@ -210,7 +209,7 @@ const SubmissionWizard = ({
     setSteps(steps);
   }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset]);
 
-  return <div ref={stepsRef}>{steps[currentStep]}</div>;
+  return <div>{steps[currentStep]}</div>;
 };
 
 export default SubmissionWizard;
