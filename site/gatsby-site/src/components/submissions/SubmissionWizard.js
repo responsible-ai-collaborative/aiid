@@ -90,7 +90,7 @@ const SubmissionWizard = ({
 
         const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
-        let newValues = {
+        const newValues = {
           ...data,
           ...news,
           url: newsUrl,

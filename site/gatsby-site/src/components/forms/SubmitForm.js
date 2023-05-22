@@ -93,15 +93,6 @@ const SubmitForm = () => {
   useEffect(() => {
     let submission = { ...query, cloudinary_id: '' };
 
-    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-      if (submission[key]) {
-        if (!Array.isArray(submission[key])) {
-          submission[key] = [submission[key]];
-        }
-      } else {
-        submission[key] = [];
-      }
-    }
     if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
       setIsIncidentResponse(true);
     }
@@ -241,7 +232,7 @@ const SubmitForm = () => {
   };
 
   const clearForm = () => {
-    let submission = { ...SUBMISSION_INITIAL_VALUES };
+    const submission = { ...SUBMISSION_INITIAL_VALUES };
 
     if (user?.profile?.email) {
       submission.user = { link: user.id };
