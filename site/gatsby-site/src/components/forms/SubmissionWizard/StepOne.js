@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import Label from '../Label';
 import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
-import { dateRegExp } from 'utils/date';
+import { dateRegExp, isPastDate } from 'utils/date';
 import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
@@ -47,11 +47,13 @@ const StepOne = (props) => {
     date_published: yup
       .string()
       .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+      .test(isPastDate)
       .required('*Date published is required')
       .nullable(),
     date_downloaded: yup
       .string()
       .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+      .test(isPastDate)
       .required('*Date downloaded required')
       .nullable(),
     url: yup

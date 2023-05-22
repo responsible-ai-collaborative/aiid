@@ -960,6 +960,8 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="update-btn"]').should('be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.get('input[name="title"]').type(
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry'
     );
@@ -970,9 +972,9 @@ describe('Submitted reports', () => {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco'
     );
 
-    cy.get('input[name=date_published]').type('3033-01-01');
+    cy.get('input[name=date_published]').type('2023-01-01');
 
-    cy.get('input[name=date_downloaded]').type('3033-01-01');
+    cy.get('input[name=date_downloaded]').type('2023-01-01');
 
     cy.get('@modal')
       .contains('Please review submission. Some data is missing.')
@@ -1115,5 +1117,113 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
     cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
+  });
+
+  maybeIt('Should display an error message if Date Published is not in the past', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '62d561606b4bb5e39601234'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission,
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.waitForStableDOM();
+
+    cy.get('input[name=date_published]').type('3000-01-01');
+
+    cy.get('@modal').contains('*Date must be in the past').should('exist');
+
+    cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
+
+    cy.get('[data-cy="update-btn"]').should('be.disabled');
+  });
+
+  maybeIt('Should display an error message if Date Downloaded is not in the past', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '62d561606b4bb5e39601234'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission,
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.waitForStableDOM();
+
+    cy.get('input[name=date_downloaded]').type('3000-01-01');
+
+    cy.get('@modal').contains('*Date must be in the past').should('exist');
+
+    cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
+
+    cy.get('[data-cy="update-btn"]').should('be.disabled');
   });
 });
