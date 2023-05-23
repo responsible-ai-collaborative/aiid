@@ -697,13 +697,8 @@ Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > 
 
 To enable this workflow these [Github secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
 ```
-DB_HOST_PRODUCTION=[Atlas MongoDB Production host. ie: aiiddev-xxxxxx.gcp.mongodb.net]
-DB_USER_PRODUCTION=[DB readonly user]
-DB_PASSWORD_PRODUCTION=[DB user password]
-
-DB_HOST_STAGING=[Atlas MongoDB Staging host. ie: aiiddev-xxxxxx.gcp.mongodb.net]
-DB_USER_STAGING=[DB admin user]
-DB_PASSWORD_STAGING=[DB user password]
+DB_DUMP_PRODUCTION=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+DB_DUMP_STAGING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
 
 NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
 ```
