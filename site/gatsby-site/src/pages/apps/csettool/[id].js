@@ -27,15 +27,15 @@ const ToolPage = (props) => {
     if (data?.classifications) {
       const rows = [];
 
-      for (const attribtue of taxa.field_list) {
+      for (const attribute of taxa.field_list) {
         const row = {
-          short_name: attribtue.short_name,
+          short_name: attribute.short_name,
         };
 
         for (const classification of data.classifications) {
           try {
             const json = classification.attributes.find(
-              (a) => a.short_name == attribtue.short_name
+              (a) => a.short_name == attribute.short_name
             ).value_json;
 
             const value = JSON.parse(json);

@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
-import { startsWith } from 'lodash';
+import { startsWith, uniq } from 'lodash';
+
+function ValueCell({ cell, ...props }) {
+  const {
+    row: {
+      original: { hightlight },
+    },
+  } = props;
+
+  return <div className={(hightlight ? 'bg-red-100' : '') + ' -my-2 -mx-4 p-2'}>{cell.value}</div>;
+}
 
 export default function CsetTable({ data, className = '', ...props }) {
   const defaultColumn = React.useMemo(
@@ -28,17 +38,42 @@ export default function CsetTable({ data, className = '', ...props }) {
       for (const key of Object.keys(firstRow).filter((key) =>
         startsWith(key, 'CSETv1_Annotator-')
       )) {
-        columns.push({ accessor: key, title: key });
+        columns.push({ accessor: key, title: key, Cell: ValueCell });
       }
     }
 
     return columns;
   }, [data]);
 
+  const processedData = useMemo(() => {
+    const processedRows = [];
+
+    for (const row of data) {
+      const values = [];
+
+      for (const key in row) {
+        if (startsWith(key, 'CSETv1_Annotator-')) {
+          values.push(row[key]);
+        }
+      }
+
+      const hightlight = uniq(values).length > 1;
+
+      const processedRow = {
+        ...row,
+        hightlight,
+      };
+
+      processedRows.push(processedRow);
+    }
+
+    return processedRows;
+  }, [data]);
+
   const table = useTable(
     {
       columns,
-      data,
+      data: processedData,
       defaultColumn,
       initialState: { pageIndex: 0, pageSize: 100 },
     },
@@ -47,5 +82,5 @@ export default function CsetTable({ data, className = '', ...props }) {
     usePagination
   );
 
-  return <Table data={data} table={table} className={className} {...props} />;
+  return <Table data={processedData} table={table} className={className} {...props} />;
 }
