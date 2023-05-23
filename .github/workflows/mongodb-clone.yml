@@ -17,13 +17,13 @@ jobs:
 
       - name: "Dump Production database"
         shell: bash
-        run: mongodump --uri="${{ secrets.DB_DUMP_PRODUCTION }}"
+        run: mongodump --uri="${{ secrets.DB_PRODUCTION_CONNECTION_STRING }}"
 
       - name: "Restore Staging database collection: aiidprod"
-        run: mongorestore ${{ secrets.DB_DUMP_STAGING }}/aiidprod ./dump/aiidprod --drop --noOptionsRestore
+        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/aiidprod ./dump/aiidprod --drop --noOptionsRestore
         
       - name: "Restore Staging database collection: translations"
-        run: mongorestore ${{ secrets.DB_DUMP_STAGING }}/translations ./dump/translations --drop --noOptionsRestore
+        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/translations ./dump/translations --drop --noOptionsRestore
 
       - name: Trigger Staging Netlify build
         run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_STAGING_URL }}
