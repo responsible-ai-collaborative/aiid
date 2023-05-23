@@ -4,5 +4,7 @@
     "First Name": "Prénom",
     "Last Name": "Nom",
     "About You": "À propos de vous",
-    "Roles": "Rôles"
+    "Roles": "Rôles",
+    "completeInfoAlertTitle": "Gestion de l'identité de l'utilisateur dans le signalement d'incidents",
+    "completeInfoAlertMessage": "Lorsque vous apportez des modifications ou soumettez de nouveaux incidents, ces actions seront associées à votre compte d'utilisateur et au nom que vous entrez ici. Si vous souhaitez rester anonyme à tout moment, vous pouvez ouvrir le site Web dans une session de navigateur anonyme"
 }

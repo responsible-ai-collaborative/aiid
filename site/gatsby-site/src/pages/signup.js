@@ -50,6 +50,8 @@ const SignUp = (props) => {
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
+    localStorage.setItem('signup', '1');
+
     await loginWithFacebook({ loginRedirectUri, redirectTo });
 
     setDisplayFacebookSpinner(false);
@@ -95,6 +97,9 @@ const SignUp = (props) => {
                 onSubmit={async ({ email, password }, { setSubmitting, resetForm }) => {
                   try {
                     await signUp({ email, password, redirectTo });
+
+                    localStorage.setItem('signup', '1');
+
                     addToast({
                       message: t('Verification email sent to {{email}}', { email, ns: 'login' }),
                       severity: SEVERITY.success,

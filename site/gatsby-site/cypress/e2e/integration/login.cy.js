@@ -6,7 +6,32 @@ describe('Login', () => {
   });
 
   it('Should redirect to home page after login by default', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'), { skipSession: true });
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+  });
+
+  it('Should redirect to the account page if the signup storage key is set', () => {
+    cy.visit('/', {
+      onBeforeLoad: function (window) {
+        window.localStorage.setItem('signup', '1');
+      },
+    });
+
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'), { skipSession: true });
+
+    cy.waitForStableDOM();
+
+    cy.location('pathname').should('eq', '/account/');
+    cy.location('search').should('eq', '?askToCompleteProfile=1');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="edit-user-modal"]').should('be.visible');
+
+    cy.getAllLocalStorage().then((result) => {
+      expect(result[Cypress.config().baseUrl.replace(/\/$/, '')].signup).to.be.undefined;
+    });
   });
 
   it('Should redirect to specific page after login if redirectTo is provided', () => {
