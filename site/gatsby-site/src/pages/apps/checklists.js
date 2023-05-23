@@ -52,15 +52,21 @@ export default function ChecklistsPage(props) {
 //
 //  }, [risk])
 
+  const submit = async (values, { setSubmitting }) => {
+    setSubmitting(true);
+    console.log(values);
+    setSubmitting(false);
+  }
+
   return (
     <Layout {...props} className="md:max-w-5xl">
       <AiidHelmet path={pathname}>
         <title>{t('Risk Checklists')}</title>
       </AiidHelmet>
       {hydrated && query.id ? (
-        <Formik initialValues={{'tags-goals': [], 'tags-methods': [], 'tags-other': []}} >
+        <Formik onSubmit={submit} initialValues={{'tags-goals': [], 'tags-methods': [], 'tags-other': []}}  >
           {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => (
-            <>
+            <Form onSubmit={handleSubmit}>
               <section className="flex flex-col gap-4">
                 <h1>Risk Checklist for ""</h1>
 
@@ -92,7 +98,7 @@ export default function ChecklistsPage(props) {
                   <RiskSection {...{ risk, risks, setRisks, setFieldValue }}/>
                 ))}
               </section>
-            </>
+            </Form>
           )}
         </Formik>
       ) : (
