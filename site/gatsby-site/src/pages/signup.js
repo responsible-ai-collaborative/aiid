@@ -58,7 +58,7 @@ const SignUp = (props) => {
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
-    localStorage.setItem('signup', Date.now().toString());
+    localStorage.setItem('signup', '1');
 
     await loginWithFacebook({ loginRedirectUri, redirectTo });
 
