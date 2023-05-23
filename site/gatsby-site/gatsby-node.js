@@ -97,7 +97,6 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         templates: path.resolve(__dirname, 'src/templates'),
         utils: path.resolve(__dirname, 'src/utils'),
         plugins: path.resolve(__dirname, 'plugins'),
-        buble: '@philpl/buble', // to reduce bundle size
       },
       fallback: { crypto: false },
     },

@@ -217,9 +217,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
         </LocalizedLink>
-        <div className="flex items-center flex-wrap w-full">
-          <h1 className="text-3xl leading-6 font-medium flex-1 mt-0 pt-0">{name}</h1>
-          <div className="flex items-center my-2">
+        <div className="w-full flex flex-wrap items-center justify-between">
+          <h1>{name}</h1>
+          <div className="flex items-center -mt-1">
             {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
               <Spinner size="sm" />
             ) : subscriptions?.subscriptions.length > 0 ? (

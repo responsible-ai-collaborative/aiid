@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CSVReader } from 'react-papaparse';
 import {
   useQueryParams,
@@ -225,10 +225,12 @@ const SubmitForm = () => {
           </Trans>
         ),
         severity: SEVERITY.warning,
+        error: e,
       });
-      throw e;
     }
   };
+
+  const submissionRef = useRef(null);
 
   return (
     <>
@@ -236,13 +238,13 @@ const SubmitForm = () => {
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </Helmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0" data-cy="submit-form-title">
+        <h1 data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
         </h1>
       </div>
-      <p>
+      <p ref={submissionRef}>
         {isIncidentResponse ? (
           <>
             {submission.incident_ids.length > 0 ? (
@@ -287,6 +289,12 @@ const SubmitForm = () => {
             submitForm={handleSubmit}
             initialValues={submission}
             urlFromQueryString={query.url}
+            scrollToTop={() => {
+              setTimeout(() => {
+                // This is needed to make it work in Firefox
+                submissionRef.current.scrollIntoView();
+              }, 0);
+            }}
           />
         )}
 
