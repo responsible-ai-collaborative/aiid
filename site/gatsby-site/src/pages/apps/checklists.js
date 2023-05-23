@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Layout from 'components/Layout';
 import { useTranslation } from 'react-i18next';
 import { Button, TextInput, Textarea } from 'flowbite-react';
 import { debounce } from 'debounce';
 import { Trans } from 'react-i18next';
+import { Formik, Form } from 'formik';
+import { graphql } from 'gatsby';
 import {
   useQueryParams,
   StringParam,
@@ -15,12 +17,23 @@ import {
 
 import AiidHelmet from 'components/AiidHelmet';
 import Tags from 'components/forms/Tags.js';
-import { Formik } from 'formik';
 
 export default function ChecklistsPage(props) {
   const {
     location: { pathname },
+    data: { taxa, classifications }
   } = props;
+
+//  const tags = (
+//    taxa.nodes.map(
+//      taxonomy => taxonomy.field_list.map(
+//        field => (field.permitted_values || []).map(
+//          value => [taxonomy.namespace, field.short_name, value].join(":")
+//        )
+//      ).reduce((all, partial) => all.concat(partial), [])
+//    ).reduce((all, partial) => all.concat(partial), [])
+//  );
+
 
   const [query, setQuery] = useQueryParams({
     id: StringParam,
@@ -31,22 +44,20 @@ export default function ChecklistsPage(props) {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
-  const [risks, setRisks] = useState([{
-    title: 'Distributional Bias',
-    query_tags: [
-      'GMF:Known AI Risk:Distributional Bias',
-      'GMF:Known AI Goal:Question Answering',
-      'GMF:Known AI Technology:Language Modeling',
-      'CSET:Harm Distribution Basis:Race'
-    ],
-    risk_status: 'Not mitigated',
-    risk_notes: '',
-    severity: '',
-  }]);
+//  const [risks, setRisks] = useState([{
+//    title: 'Distributional Bias',
+//    query_tags: [
+//      'GMF:Known AI Risk:Distributional Bias',
+//      'GMF:Known AI Goal:Question Answering',
+//      'GMF:Known AI Technology:Language Modeling',
+//      'CSET:Harm Distribution Basis:Race'
+//    ],
+//    risk_status: 'Not mitigated',
+//    risk_notes: '',
+//    severity: '',
+//  }]);
 
   const updateQuery = () => {};
-
-  console.log(`risks`, risks);
 
 //  useEffect(() => {
 //
@@ -58,14 +69,59 @@ export default function ChecklistsPage(props) {
     setSubmitting(false);
   }
 
+  console.log(`taxa`, taxa);
+
+  console.log(`classifications`, classifications);
+
+  const tags = [];
+
+  for (let classification of classifications.nodes) {
+    
+    const taxonomy = taxa.nodes.find(t => t.namespace == classification.namespace);
+
+    for (let attribute of classification.attributes) {
+
+      console.log(`attribute`, attribute);
+      const field = taxonomy.field_list.find(
+        f => {
+          console.log(`f.short_name: ${f.short_name} == attribute.short_name: ${attribute.short_name}`, f.short_name == attribute.short_name);
+          return f.short_name == attribute.short_name
+        }
+      );
+      console.log(`field`, field);
+
+      if (['enum', 'bool', 'multi', ].includes(field.display_type)) {
+        tags.push(
+          [ classification.namespace,
+            attribute.short_name,
+            JSON.parse(attribute.value_json)
+          ].join(':')
+        );
+      } else if (field.display_type == 'list') {
+        for (let value of JSON.parse(attribute.value_json)) {
+          tags.push(
+            [ classification.namespace,
+              attribute.short_name,
+              JSON.parse(attribute.value_json)
+            ].join(':')
+          );
+        }
+      }
+    }
+  }
+
+  console.log(`tags`, tags);
+
   return (
     <Layout {...props} className="md:max-w-5xl">
       <AiidHelmet path={pathname}>
         <title>{t('Risk Checklists')}</title>
       </AiidHelmet>
       {hydrated && query.id ? (
-        <Formik onSubmit={submit} initialValues={{'tags-goals': [], 'tags-methods': [], 'tags-other': []}}  >
-          {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => (
+        <Formik onSubmit={submit} initialValues={{'tags-goals': [], 'tags-methods': [], 'tags-other': [], 'risks': []}}  >
+          {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting, submitForm }) => {
+            console.log(`values`, values);
+            return (
             <Form onSubmit={handleSubmit}>
               <section className="flex flex-col gap-4">
                 <h1>Risk Checklist for ""</h1>
@@ -90,16 +146,22 @@ export default function ChecklistsPage(props) {
               <section>
                 <div class="flex space-between">
                   <h2>Risks</h2>
-                  <Button>Add Risk</Button>
+                  <Button onClick={() => setFieldValue('risks', (values.risks || []).concat({
+                    title: 'Untitled Risk',
+                    query_tags: [],
+                    risk_status: 'Not mitigated',
+                    risk_notes: '',
+                    severity: '',
+                  }))}>Add Risk</Button>
                 </div>
                 <p><Trans>Risks are surface automatically based on the tags applied to the system. They can also be added manually. Each risk is associated with a query for precedent incidents, which can be modified to suit your needs. You can subscribe both to new risks and new precedent incidents.</Trans></p>
 
-                {risks.map((risk) => (
-                  <RiskSection {...{ risk, risks, setRisks, setFieldValue }}/>
+                {(values.risks || []).map((risk) => (
+                  <RiskSection {...{ risk, values, setFieldValue, submitForm }}/>
                 ))}
               </section>
             </Form>
-          )}
+          )}}
         </Formik>
       ) : (
         <h1>Risk Checklists</h1>
@@ -108,10 +170,10 @@ export default function ChecklistsPage(props) {
   );
 };
 
-function RiskSection({ risk, risks, setRisks, setFieldValue }) {
+function RiskSection({ risk, values, setRisks, setFieldValue, submitForm }) {
   const updateRisk = (attributeValueMap) => {
 
-    const updatedRisks = [...risks];
+    const updatedRisks = [...values.risks];
 
     // TODO: Handle identity better than just comparing titles.
     const updatedRisk = updatedRisks.find(r => r.title == risk.title);
@@ -120,8 +182,8 @@ function RiskSection({ risk, risks, setRisks, setFieldValue }) {
       updatedRisk[attribute] = attributeValueMap[attribute];
     }
 
-    setRisks(updatedRisks);
-    setFieldValue(risks, updatedRisks);
+    setFieldValue('risks', updatedRisks);
+    submitForm();
   }
 
   return (
@@ -165,3 +227,73 @@ function RiskSection({ risk, risks, setRisks, setFieldValue }) {
     </details>
   );
 }
+
+export const query = graphql`
+  query ChecklistsPageQuery {
+    taxa: allMongodbAiidprodTaxa {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        complete_entities
+        dummy_fields {
+          field_number
+          short_name
+        }
+        field_list {
+          field_number
+          short_name
+          long_name
+          short_description
+          long_description
+          display_type
+          mongo_type
+          default
+          placeholder
+          permitted_values
+          weight
+          instant_facet
+          required
+          public
+          complete_from {
+            all
+            current
+            entities
+          }
+          subfields {
+            field_number
+            short_name
+            long_name
+            short_description
+            long_description
+            display_type
+            mongo_type
+            default
+            placeholder
+            permitted_values
+            weight
+            instant_facet
+            required
+            public
+            complete_from {
+              all
+              current
+              entities
+            }
+          }
+        }
+      }
+    }
+    classifications: allMongodbAiidprodClassifications {
+      nodes {
+        namespace
+        attributes {
+          short_name
+          value_json
+        }
+        publish
+      }
+    }
+  }
+`;
