@@ -165,7 +165,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
       {bucket[0].isOccurrence ? (
         <text
           dominantBaseline="middle"
-          className={`text-sm hover:fill-blue-700 ${bucket[0].isResponse ? 'fill-green-700' : ''}`}
+          className={`text-sm ${bucket[0].isResponse ? 'fill-green-700' : ''}`}
           dx={16}
           data-cy={`timeline-text-${bucket[0].isResponse ? 'response' : 'occurrence'}`}
         >
