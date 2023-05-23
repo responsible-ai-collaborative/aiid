@@ -181,7 +181,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
         <a href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}>
           <text
             dominantBaseline="middle"
-            className={`text-[14px] hover:fill-blue-700 ${
+            className={`text-[14px] hover:fill-blue-500 ${
               bucket[0].isResponse ? 'fill-green-700' : ''
             }`}
             dx={16}

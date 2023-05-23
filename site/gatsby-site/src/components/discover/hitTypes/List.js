@@ -30,7 +30,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
             }).replace(' ', '.')}
           />
           <div>
-            <HeaderTitle item={item} viewType={viewType} className="text-xl" />
+            <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
 
             <div>
               <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray d-inline-block" />

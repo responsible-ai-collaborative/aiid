@@ -37,12 +37,12 @@ const Taxonomy = ({
         <>
           {editing ? (
             <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(null)}>
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
           ) : (
             canEdit && (
               <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(taxonomy)}>
-                Edit
+                <Trans>Edit</Trans>
               </Button>
             )
           )}
