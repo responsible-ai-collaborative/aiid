@@ -52,7 +52,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           </div>
         )}
 
-        <h3 className="text-lg m-4 text-gray-900 hover:text-primary-blue">
+        <h3 className="text-base m-4 text-gray-900 hover:text-primary-blue">
           {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
         </h3>
       </LocalizedLink>
