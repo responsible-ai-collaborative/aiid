@@ -34,7 +34,9 @@ const TextInputGroup = ({
     <div className={`form-group ${className}`}>
       <div className="flex items-center">
         {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mr-1" />}
-        <Label popover={name} label={(optional ? '' : '*') + label} showPopover={showPopover} />
+        {label && (
+          <Label popover={name} label={(optional ? '' : '*') + label} showPopover={showPopover} />
+        )}
       </div>
       <div className="mt-1">
         {type === 'textarea' ? (
