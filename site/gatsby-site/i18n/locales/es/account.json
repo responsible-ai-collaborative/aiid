@@ -9,5 +9,7 @@
   "New <2>{{name}}</2> Entity incidents": "Nuevos incidentes de la Entidad <2>{{name}}</2>",
   "First Name": "Nombre",
   "Last Name": "Apellido",
-  "About You": "Acerca de ti"
+  "About You": "Acerca de ti",
+  "completeInfoAlertTitle": "Gestionando la identidad del usuario en la notificación de incidentes",
+  "completeInfoAlertMessage": "Cuando hagas ediciones o envíes nuevos incidentes, esas acciones serán asociadas con tu cuenta de usuario y el nombre que ingreses aquí. Si quieres permanecer anónimo en cualquier momento, puedes abrir el sitio web en una sesión de navegador anónima"
 }

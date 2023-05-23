@@ -250,5 +250,7 @@
   "Please <2>log in</2> to subscribe": "Veuillez <2>vous connecter</2> pour vous abonner.",
   "Show Live data": "Afficher des informations en direct",
   "Posted <1></1> by <3></3>.": "Publié <1></1> par <3></3>.",
+  "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.": "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.",
+  "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.": "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.",
   "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement"
 }
