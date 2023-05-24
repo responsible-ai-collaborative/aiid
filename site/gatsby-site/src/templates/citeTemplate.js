@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Badge } from 'flowbite-react';
+import { Badge, Button } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client';
@@ -46,7 +46,7 @@ function CiteTemplate({
   liveVersion = false,
   setIsLiveData,
 }) {
-  const { isRole, user } = useUserContext();
+  const { loading, isRole, user } = useUserContext();
 
   const { i18n, t } = useTranslation();
 
@@ -335,13 +335,29 @@ function CiteTemplate({
               </Col>
             </Row>
 
-            {sortedReports.map((report) => (
-              <Row className="mt-6 mb-4" key={report.report_number}>
-                <Col>
-                  <ReportCard item={report} incidentId={incident.incident_id} />
-                </Col>
-              </Row>
-            ))}
+            {sortedReports.map((report) => {
+              let actions = <></>;
+
+              if (!loading && isRole('incident_editor')) {
+                actions = (
+                  <Button
+                    data-cy="edit-report"
+                    size={'xs'}
+                    color="light"
+                    href={`/cite/edit?report_number=${report.report_number}&incident_id=${incident.incident_id}`}
+                  >
+                    <Trans>Edit</Trans>
+                  </Button>
+                );
+              }
+              return (
+                <Row className="mt-6 mb-4" key={report.report_number}>
+                  <Col>
+                    <ReportCard item={report} incidentId={incident.incident_id} actions={actions} />
+                  </Col>
+                </Row>
+              );
+            })}
 
             <VariantList
               liveVersion={liveVersion}
