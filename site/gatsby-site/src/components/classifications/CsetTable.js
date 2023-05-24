@@ -52,7 +52,7 @@ function ValueCell({ cell, ...props }) {
   const {
     row: {
       values: { short_name },
-      original: { hightlight, result, disambiguation },
+      original: { highlight, result, disambiguation },
     },
     setData,
   } = props;
@@ -76,7 +76,7 @@ function ValueCell({ cell, ...props }) {
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
   return (
     <div
-      className={`${hightlight && 'bg-red-100'} ${
+      className={`${highlight && 'bg-red-100'} ${
         disambiguation == cell.column.id && 'border-2 border-gray-500'
       } -my-2 -mx-2 p-2`}
       onClick={handleClick}
@@ -252,13 +252,13 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
         }
       }
 
-      const hightlight = uniqWith(values, isEqual).length > 1;
+      const highlight = uniqWith(values, isEqual).length > 1;
 
       const result = mergeClassification(taxa, row);
 
       const processedRow = {
         ...row,
-        hightlight,
+        highlight,
         result,
         disambiguation: row.disambiguation || null,
       };
