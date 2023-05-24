@@ -107,7 +107,7 @@
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
-    "@netlify/plugin-gatsby": "^3.5.2",
+    "@netlify/plugin-gatsby": "^3.6.2",
     "@robinmetral/gatsby-source-s3": "^2.1.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.8",
