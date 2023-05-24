@@ -47,7 +47,6 @@ export function ToastContextProvider({ children }) {
       <div className="fixed bottom-0 left-0 max-w-full z-50 box-conten mb-4 ml-4">
         {toasts.map(({ message, severity, error, id }, index) => {
           if (error) {
-            console.log('ERROR', error);
             rollbar.error(error);
           }
           return (
