@@ -29,6 +29,7 @@ const ToolPage = (props) => {
       for (const attribute of taxa.field_list) {
         const row = {
           short_name: attribute.short_name,
+          incident_id: parseInt(incident_id),
         };
 
         for (const classification of data.classifications) {
@@ -59,7 +60,12 @@ const ToolPage = (props) => {
         ) : (
           <>
             {data?.classifications.length > 0 && tableData.length ? (
-              <CsetTable data={tableData} taxa={taxa} />
+              <CsetTable
+                data={tableData}
+                setTableData={setTableData}
+                taxa={taxa}
+                incident_id={incident_id}
+              />
             ) : (
               <div>No classifications found.</div>
             )}
