@@ -1,12 +1,12 @@
 import useToastContext, { SEVERITY } from 'hooks/useToast';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 
-const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => {
+const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, scrollToTop }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -18,8 +18,6 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
   const [submissionComplete, setSubmissionComplete] = useState(false);
 
   const [parsingNews, setParsingNews] = useState(false);
-
-  const stepsRef = useRef(null);
 
   const handleNextStep = async (newData, final = false) => {
     setSubmissionFailed(false);
@@ -41,12 +39,12 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
       setCurrentStep((prev) => prev + 1);
     }
 
-    stepsRef?.current?.scrollIntoView();
+    scrollToTop();
   };
 
   const handlePreviousStep = (newData) => {
     setData((prev) => ({ ...prev, ...newData }));
-    stepsRef?.current?.scrollIntoView();
+    scrollToTop();
     setCurrentStep((prev) => prev - 1);
   };
 
@@ -180,7 +178,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
     setSteps(steps);
   }, [data, submissionFailed, parsingNews, submissionComplete]);
 
-  return <div ref={stepsRef}>{steps[currentStep]}</div>;
+  return <div>{steps[currentStep]}</div>;
 };
 
 export default SubmissionWizard;

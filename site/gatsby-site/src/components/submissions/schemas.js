@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { dateRegExp } from '../../utils/date';
+import { dateRegExp, isPastDate } from '../../utils/date';
 
 const developers = yup.array(
   yup
@@ -73,10 +73,12 @@ export const schema = yup.object().shape({
   date_published: yup
     .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+    .test(isPastDate)
     .required('*Date published is required'),
   date_downloaded: yup
     .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+    .test(isPastDate)
     .required('*Date downloaded required'),
   url: yup
     .string()
