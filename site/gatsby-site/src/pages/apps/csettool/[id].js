@@ -3,10 +3,9 @@ import Layout from 'components/Layout';
 import AiidHelmet from 'components/AiidHelmet';
 import { useQuery } from '@apollo/client/react';
 import ListSkeleton from 'elements/Skeletons/List';
-import { FIND_CLASSIFICATION } from '../../..//graphql/classifications';
+import { FIND_CLASSIFICATION } from '../../../graphql/classifications';
 import CsetTable from 'components/classifications/CsetTable';
 import { graphql } from 'gatsby';
-import { isObject } from 'lodash';
 
 const allNamespaces = ['CSETv1_Annotator-1', 'CSETv1_Annotator-2', 'CSETv1_Annotator-3'];
 
@@ -33,25 +32,13 @@ const ToolPage = (props) => {
         };
 
         for (const classification of data.classifications) {
-          try {
-            const json = classification.attributes.find(
-              (a) => a.short_name == attribute.short_name
-            ).value_json;
+          const json = classification.attributes.find(
+            (a) => a.short_name == attribute.short_name
+          ).value_json;
 
-            const value = JSON.parse(json);
+          const value = JSON.parse(json);
 
-            if (isObject(value)) {
-              row[classification.namespace] = JSON.stringify(value);
-            } else if (value === true) {
-              row[classification.namespace] = 'True';
-            } else if (value === false) {
-              row[classification.namespace] = 'False';
-            } else {
-              row[classification.namespace] = value;
-            }
-          } catch (e) {
-            row.value = null;
-          }
+          row[classification.namespace] = value;
         }
 
         rows.push(row);
@@ -72,7 +59,7 @@ const ToolPage = (props) => {
         ) : (
           <>
             {data?.classifications.length > 0 && tableData.length ? (
-              <CsetTable data={tableData} />
+              <CsetTable data={tableData} taxa={taxa} />
             ) : (
               <div>No classifications found.</div>
             )}
@@ -90,6 +77,7 @@ export const query = graphql`
     taxa: mongodbAiidprodTaxa(namespace: { eq: "CSETv1" }) {
       field_list {
         short_name
+        mongo_type
       }
     }
   }
