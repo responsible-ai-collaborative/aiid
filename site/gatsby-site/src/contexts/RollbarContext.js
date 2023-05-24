@@ -28,6 +28,8 @@ export function RollbarProvider({ children }) {
       environment = 'staging';
     } else if (window.location.hostname == 'localhost') {
       environment = 'localhost';
+    } else if (window.location.host.includes('deploy-preview')) {
+      environment = 'deploy-preview';
     }
 
     const rollbarConfig = {
