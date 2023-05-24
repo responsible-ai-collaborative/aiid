@@ -138,10 +138,7 @@ const SimilarIncidents = ({
     <div className={`tw-similar-incidents ${className}`}>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
-          <h1
-            id="similar-incidents"
-            className="text-xl text-gray-900 dark:text-white w-full hover:text-primary-blue inline leading-9"
-          >
+          <h1 id="similar-incidents" className="text-xl dark:text-white w-full inline leading-9">
             <Trans>Similar Incidents</Trans>
           </h1>
         </LocalizedLink>
