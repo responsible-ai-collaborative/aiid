@@ -145,8 +145,10 @@ const SimilarIncidents = ({
       )}
       {editor_similar_incidents.length > 0 && (
         <>
-          <div className="tw-subtitle">
-            <Trans>Selected by our editors</Trans>
+          <div className="flex gap-2 items-center mt-2">
+            <h5 className="text-base tracking-tight text-gray-900 dark:text-white relative block mb-0">
+              <Trans>Selected by our editors</Trans>
+            </h5>
             {!loading && isRole('incident_editor') && (
               <a
                 className="tw-edit-icon"
@@ -154,7 +156,7 @@ const SimilarIncidents = ({
                 title="Change the displayed similar incidents"
                 data-cy="edit-similar-incidents"
               >
-                <FontAwesomeIcon icon={faEdit} />
+                <FontAwesomeIcon icon={faEdit} className="text-gray-700 hover:text-primary-blue" />
               </a>
             )}
           </div>
@@ -174,8 +176,8 @@ const SimilarIncidents = ({
 
       {nlp_only_incidents.length > 0 && (
         <>
-          <div>
-            <h5 className="text-base tracking-tight text-gray-900 dark:text-white relative block">
+          <div className="flex gap-2 items-center mt-2">
+            <h5 className="text-base tracking-tight text-gray-900 dark:text-white relative block mb-0">
               <Trans>By textual similarity</Trans>
             </h5>
             <span className="flex gap-2 items-center">
