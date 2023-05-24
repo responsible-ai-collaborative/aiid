@@ -73,7 +73,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           <Button
             variant="link"
             className={`p-0 hover:text-gray-500 ${
-              isFlagged ? ' text-red-50' : 'text-dark-gray'
+              isFlagged ? ' text-red-500' : 'text-dark-gray'
             } z-3`}
             data-cy="flag-similar-incident"
             onClick={async () => {
