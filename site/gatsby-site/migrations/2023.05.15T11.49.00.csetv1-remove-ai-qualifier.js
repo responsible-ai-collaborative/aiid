@@ -19,6 +19,32 @@ exports.up = async ({ context: { client } }) => {
       _id: undefined,
     });
   }
+
+  const classificationsCollection = client
+    .db(config.realm.production_db.db_name)
+    .collection('classifications');
+
+  const classifications = await classificationsCollection.find({}).toArray();
+
+  for (const classification of classifications) {
+    classificationsCollection.updateOne(
+      { namespace: classification.namespace, incident_id: classification.incident_id },
+      {
+        $set: {
+          attributes: classification.attributes.map((attribute) => {
+            let short_name = attribute.short_name;
+
+            if (short_name == 'Clear link to AI') {
+              short_name = 'Clear link to technology';
+            } else if (short_name == 'AI Linked to Special Interest Intangible Harm') {
+              short_name = 'Clear link to Technology';
+            }
+            return { ...attribute, short_name };
+          }),
+        },
+      }
+    );
+  }
 };
 
 /** @type {import('umzug').MigrationFn<any>} */
