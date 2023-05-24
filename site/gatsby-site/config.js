@@ -195,6 +195,9 @@ const config = {
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
     defaultLanguage: 'en',
   },
+  rollbar: {
+    token: process.env.GATSBY_ROLLBAR_TOKEN,
+  },
 };
 
 module.exports = config;
