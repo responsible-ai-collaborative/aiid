@@ -1,1 +1,4 @@
-{}
+{
+    "completeInfoAlertTitle": "Managing User Identity in Incident Reporting",
+    "completeInfoAlertMessage": "When you make edits or submit new incidents those actions will be associated with your user account and the name you enter here. If you would like to remain anonymous at any point you can open the website in an anonymous browser session"
+}
