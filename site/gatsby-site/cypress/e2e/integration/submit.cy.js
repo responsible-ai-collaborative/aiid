@@ -1690,16 +1690,6 @@ describe('The Submit form', () => {
         text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
         incident_ids: [],
       });
-
-      Object.keys(formValues).forEach((key) => {
-        if (
-          !formValues[key] === valuesStep1[key] &&
-          !formValues[key] === valuesStep2[key] &&
-          !formValues[key] === valuesStep3[key]
-        ) {
-          throw new Error(`Value for ${key} does not match`);
-        }
-      });
     });
   });
 
