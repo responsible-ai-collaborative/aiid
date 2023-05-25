@@ -79,22 +79,24 @@ export default function Sponsors() {
                 <StyledImageCover src="/images/reportcover.png" className="border-1" />
               </a>
               <p className="italic">
-                View the Responsible AI Collaborative’s{' '}
-                <a
-                  href="https://drive.google.com/file/d/1mTgbaDIbvNQU8PRaz7yG_pP7ibsqNNo9/view?usp=sharing"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Form 990
-                </a>{' '}
-                and{' '}
-                <a
-                  href="https://drive.google.com/file/d/1Gj0DnBKYJF2jO59MeymW8R1SCv60m6Jb/view?usp=share_link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  tax-exempt application.
-                </a>
+                <Trans i18nKey="forms" ns="landing">
+                  View the Responsible AI Collaborative’s{' '}
+                  <a
+                    href="https://drive.google.com/file/d/1mTgbaDIbvNQU8PRaz7yG_pP7ibsqNNo9/view?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Form 990
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    href="https://drive.google.com/file/d/1Gj0DnBKYJF2jO59MeymW8R1SCv60m6Jb/view?usp=share_link"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    tax-exempt application.
+                  </a>
+                </Trans>
               </p>
             </span>
           </div>
