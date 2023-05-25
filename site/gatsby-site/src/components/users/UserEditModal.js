@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Modal } from 'flowbite-react';
+import { Alert, Modal } from 'flowbite-react';
 import { Formik } from 'formik';
 import { Trans } from 'react-i18next';
 import UserForm, { schema } from './UserForm';
@@ -49,7 +49,7 @@ const RolesTable = ({ roles }) => (
   </table>
 );
 
-export default function UserEditModal({ onClose, userId }) {
+export default function UserEditModal({ onClose, userId, alertTitle = '', alertText = '' }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
     variables: { query: { userId } },
   });
@@ -114,6 +114,12 @@ export default function UserEditModal({ onClose, userId }) {
           {({ isSubmitting, isValid, submitForm }) => (
             <>
               <Modal.Body>
+                {(alertTitle || alertText) && (
+                  <Alert color="info" className="mb-4">
+                    <h5>{alertTitle}</h5>
+                    <span>{alertText}</span>
+                  </Alert>
+                )}
                 <UserForm />
                 {isRole('admin') && (
                   <details>
