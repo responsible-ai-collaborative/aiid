@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client';
 import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { Button } from 'flowbite-react';
 
 const notesShortNames = [
   'notes',
@@ -19,12 +20,43 @@ const notesShortNames = [
   'Notes (Information about AI System)',
 ];
 
-function Entity({ attributes }) {
+function Entity({ attributes, cell, setData, enableDelete = false }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
+
+  const handleClick = () => {
+    if (confirm(`Are you sure you want to remove ${name}?`)) {
+      setData((tableData) => {
+        const updated = tableData.map((row) => {
+          if (row.short_name == 'Entities') {
+            const value_json = row[cell.column.id].filter((entity) => {
+              const target = entity.attributes.find(
+                (a) => a.short_name == 'Entity' && JSON.parse(a.value_json) == name
+              );
+
+              return !target;
+            });
+
+            return { ...row, [cell.column.id]: value_json };
+          }
+
+          return row;
+        });
+
+        return updated;
+      });
+    }
+  };
 
   return (
     <div className="my-2 border border-gray-400 p-2">
-      <h3>{name}</h3>
+      <div className="flex justify-between">
+        <h3>{name}</h3>
+        {enableDelete && (
+          <Button size="xs" color="dark" onClick={handleClick}>
+            x
+          </Button>
+        )}
+      </div>
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <tbody>
           {attributes.map((a) => (
@@ -44,13 +76,19 @@ function Entity({ attributes }) {
   );
 }
 
-function ValueDisplay({ short_name, cell }) {
+function ValueDisplay({ short_name, cell, setData }) {
   if (short_name == 'Entities') {
     if (cell.value) {
       return (
         <div>
           {cell.value.map((entity) => (
-            <Entity key={cell.id} attributes={entity.attributes} />
+            <Entity
+              key={cell.id}
+              attributes={entity.attributes}
+              cell={cell}
+              setData={setData}
+              enableDelete={cell.column.id !== 'result'}
+            />
           ))}
         </div>
       );
@@ -105,7 +143,7 @@ function ValueCell({ cell, ...props }) {
       } ${clickable && 'cursor-pointer border-2 hover:border-gray-900'} -my-2 -mx-2 p-2`}
       onClick={handleClick}
     >
-      <ValueDisplay short_name={short_name} cell={cell} />
+      <ValueDisplay short_name={short_name} cell={cell} setData={setData} />
     </div>
   );
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
@@ -163,11 +201,19 @@ function mergeClassification(taxa, row) {
 
   //disambiguation
   else {
-    const truthyValues = filter(values, (value) => value !== null && value !== undefined);
+    const truthyValues = filter(
+      values,
+      (value) => value !== null && value !== undefined && value != ''
+    );
+
+    // if no value is set
+
+    if (truthyValues.length == 0) {
+      result = '';
+    }
 
     // if only one value is set
-
-    if (truthyValues.length == 1) {
+    else if (truthyValues.length == 1) {
       result = truthyValues[0];
     }
 
