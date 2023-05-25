@@ -8,6 +8,17 @@ import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
+const notesShortNames = [
+  'notes',
+  'AI Tangible Harm Level Notes',
+  'Notes (special interest intangible harm)',
+  'Notes (AI special interest intangible harm)',
+  'Notes (Environmental and Temporal Characteristics)',
+  'Notes ( Tangible Harm Quantities Information)',
+  'Notes (Information about AI System)',
+  'Notes (Information about AI System)',
+];
+
 function Entity({ attributes }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
 
@@ -50,7 +61,7 @@ function ValueDisplay({ short_name, cell }) {
     return <div>{text}</div>;
   }
 
-  if (short_name == 'notes') {
+  if (notesShortNames.includes(short_name)) {
     return <div className="whitespace-pre-wrap">{cell.value}</div>;
   }
 
@@ -118,6 +129,13 @@ function ResultCell({ cell, ...props }) {
   );
 }
 
+function computeNotesField(values) {
+  return values
+    .filter((v) => !!v)
+    .map((v, i) => `Annotator ${i + 1}: \n\n ${v}`)
+    .join('\n\n');
+}
+
 function mergeClassification(taxa, row) {
   const mongo_type =
     taxa.field_list.find((field) => field.short_name == row.short_name)?.mongo_type || null;
@@ -132,9 +150,14 @@ function mergeClassification(taxa, row) {
 
   let result = null;
 
-  // all values are the same
+  // notes fields are automatically merged
 
-  if (uniqWith(values, isEqual).length == 1) {
+  if (notesShortNames.includes(row.short_name)) {
+    result = computeNotesField(values);
+  }
+
+  // all values are the same
+  else if (uniqWith(values, isEqual).length == 1) {
     result = values[0];
   }
 
@@ -151,20 +174,6 @@ function mergeClassification(taxa, row) {
     // if a disambiguation column is chosen
     else if (row.disambiguation != null) {
       result = row[row.disambiguation];
-    }
-
-    // special rows
-    else if (mongo_type == null) {
-      switch (row.short_name) {
-        case 'notes':
-          result = values
-            .filter((v) => !!v)
-            .map((v, i) => `Annotator ${i + 1}: \n\n ${v}`)
-            .join('\n\n');
-          break;
-        default:
-          result = null;
-      }
     }
 
     // disambiguation per field is required
@@ -264,7 +273,6 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
 
   useEffect(() => {
     // prevent useEffect deep comparison loop
-
     if (previousData.current && isEqual(previousData.current, tableData)) return;
 
     const processedRows = [];
