@@ -1,15 +1,26 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
 import { Link } from 'gatsby';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { FIND_USER } from '../../graphql/users';
 import { useQuery } from '@apollo/client';
 import UserEditModal from './UserEditModal';
+import { BooleanParam, useQueryParams, withDefault } from 'use-query-params';
 
 export default function UserDetails({ userId }) {
   const { t } = useTranslation(['account', 'translation']);
 
   const [showEditModal, setShowEditModal] = React.useState(false);
+
+  const [{ askToCompleteProfile }] = useQueryParams({
+    askToCompleteProfile: withDefault(BooleanParam, false),
+  });
+
+  useEffect(() => {
+    if (askToCompleteProfile) {
+      setShowEditModal(true);
+    }
+  }, []);
 
   const { data, loading } = useQuery(FIND_USER, {
     variables: { query: { userId } },
@@ -87,7 +98,14 @@ export default function UserDetails({ userId }) {
         </Button>
       </div>
 
-      {showEditModal && <UserEditModal userId={userId} onClose={() => setShowEditModal(false)} />}
+      {showEditModal && (
+        <UserEditModal
+          userId={userId}
+          onClose={() => setShowEditModal(false)}
+          alertTitle={t('completeInfoAlertTitle')}
+          alertText={t('completeInfoAlertMessage')}
+        />
+      )}
     </>
   );
 }
