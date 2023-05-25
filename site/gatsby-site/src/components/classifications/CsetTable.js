@@ -6,6 +6,7 @@ import { UPDATE_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation } from '@apollo/client';
 import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function Entity({ attributes }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
@@ -247,6 +248,8 @@ function TableWrap({ data, setData, className, ...props }) {
 export default function CsetTable({ data, taxa, incident_id, className = '', ...props }) {
   const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
 
+  const addToast = useToastContext();
+
   const [tableData, setTableData] = useState(data);
 
   const [processed, setProcessed] = useState(false);
@@ -297,33 +300,46 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
   const [submitting, setSubmitting] = useState(false);
 
   const submit = useCallback(async () => {
-    setSubmitting(true);
+    try {
+      setSubmitting(true);
 
-    const values = tableData.reduce((acc, obj) => {
-      acc[obj.short_name] = obj.result;
-      return acc;
-    }, {});
+      const values = tableData.reduce((acc, obj) => {
+        acc[obj.short_name] = obj.result;
+        return acc;
+      }, {});
 
-    const attributes = serializeClassification(values, taxa.field_list);
+      const attributes = serializeClassification(values, taxa.field_list);
 
-    const data = {
-      incident_id,
-      notes: tableData.find((row) => row.short_name == 'notes').result,
-      namespace: 'CSETv1',
-      attributes: attributes.map((a) => a),
-    };
+      const data = {
+        incident_id,
+        notes: tableData.find((row) => row.short_name == 'notes').result,
+        namespace: 'CSETv1',
+        attributes: attributes.map((a) => a),
+      };
 
-    await updateClassification({
-      variables: {
-        query: {
-          incident_id,
-          namespace: 'CSETv1',
+      await updateClassification({
+        variables: {
+          query: {
+            incident_id,
+            namespace: 'CSETv1',
+          },
+          data,
         },
-        data,
-      },
-    });
+      });
 
-    setSubmitting(false);
+      addToast({
+        message: 'Classification updated',
+        severity: SEVERITY.success,
+      });
+
+      setSubmitting(false);
+    } catch (error) {
+      addToast({
+        message: 'Classification updated',
+        severity: SEVERITY.danger,
+        error,
+      });
+    }
   }, [tableData]);
 
   return (
