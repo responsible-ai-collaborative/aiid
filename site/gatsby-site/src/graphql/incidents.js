@@ -34,6 +34,7 @@ export const FIND_INCIDENT = gql`
         from_reports
         vector
       }
+      editor_notes
     }
   }
 `;
@@ -163,6 +164,7 @@ export const UPDATE_INCIDENT = gql`
         from_reports
         vector
       }
+      editor_notes
     }
   }
 `;

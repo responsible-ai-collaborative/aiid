@@ -104,6 +104,9 @@
                     "bsonType": "double"
                 }
             }
+        },
+        "editor_notes": {
+            "bsonType": "string"
         }
     },
     "required": [
