@@ -11,6 +11,7 @@ export default function Tags({
   disabled = false,
   labelKey,
   options,
+  className,
 }) {
   const ref = useRef(null);
 
@@ -23,7 +24,7 @@ export default function Tags({
 
   return (
     <Typeahead
-      className="Typeahead h-8 max-h-8" 
+      className={`Typeahead ${className}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === ',') {

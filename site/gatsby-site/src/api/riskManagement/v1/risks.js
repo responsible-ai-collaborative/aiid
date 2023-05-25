@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         $in: incidentIdsMatchingSearchTags
       },
     },
-    { projection: { incident_id: 1, title: 1 }}
+    { projection: { incident_id: 1, title: 1, description: 1 }}
   ).toArray();
 
   const failureAttributeQuery = {
@@ -74,6 +74,9 @@ export default async function handler(req, res) {
             title: incidentsMatchingSearchTags.find(
               incident => incident.incident_id == failureClassification.incident_id
             )?.title,
+            description: incidentsMatchingSearchTags.find(
+              incident => incident.incident_id == failureClassification.incident_id
+            )?.description,
             tags: classificationsMatchingIncidentIdOfFailureClassification.map(c => tagsFromClassification(c))
           }
         }) 

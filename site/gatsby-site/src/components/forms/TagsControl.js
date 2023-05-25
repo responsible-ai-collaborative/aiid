@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Tags from './Tags';
 
-function TagsControl({ name, placeholder, disabled = false }) {
+function TagsControl({ name, placeholder, className, disabled = false }) {
   const {
     0: { value },
     2: { setTouched, setValue },
@@ -18,11 +18,13 @@ function TagsControl({ name, placeholder, disabled = false }) {
       inputId={name}
       placeHolder={placeholder || t('Type and press Enter to add an item')}
       value={value || []}
+      disabled={disabled}
+      className={className}
       onChange={(value) => {
         setTouched(true);
         setValue(value);
       }}
-      disabled={disabled}
+
     />
   );
 }
