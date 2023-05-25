@@ -35,13 +35,19 @@ function Entity({ attributes }) {
 
 function ValueDisplay({ short_name, cell }) {
   if (short_name == 'Entities') {
-    return (
-      <div>
-        {cell.value.map((entity) => (
-          <Entity key={cell.id} attributes={entity.attributes} />
-        ))}
-      </div>
-    );
+    if (cell.value) {
+      return (
+        <div>
+          {cell.value.map((entity) => (
+            <Entity key={cell.id} attributes={entity.attributes} />
+          ))}
+        </div>
+      );
+    }
+
+    const text = JSON.stringify(cell.value);
+
+    return <div>{text}</div>;
   }
 
   if (short_name == 'notes') {

@@ -20,7 +20,7 @@ describe('CSET tool', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('tbody > tr').should('have.length', 62);
-    cy.get('thead th').should('have.length', 3);
+    cy.get('tbody > tr').should('have.length', 105);
+    cy.get('thead th').should('have.length', 4);
   });
 });
