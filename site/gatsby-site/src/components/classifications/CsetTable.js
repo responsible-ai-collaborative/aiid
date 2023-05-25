@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { startsWith, union, uniqWith, isEqual, filter } from 'lodash';
-import { Button } from 'flowbite-react';
 import { UPDATE_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation } from '@apollo/client';
 import { serializeClassification } from 'utils/classifications';
+import SubmitButton from 'components/ui/SubmitButton';
 
 function Entity({ attributes }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
@@ -43,6 +43,10 @@ function ValueDisplay({ short_name, cell }) {
     );
   }
 
+  if (short_name == 'notes') {
+    return <div className="whitespace-pre-wrap">{cell.value}</div>;
+  }
+
   const text = JSON.stringify(cell.value);
 
   return <div>{text}</div>;
@@ -57,8 +61,10 @@ function ValueCell({ cell, ...props }) {
     setData,
   } = props;
 
+  const clickable = result == null || !!disambiguation;
+
   const handleClick = () => {
-    if (result == null || !!disambiguation) {
+    if (clickable) {
       setData((tableData) => {
         const updated = tableData.map((row) => {
           if (row.short_name == short_name) {
@@ -78,7 +84,7 @@ function ValueCell({ cell, ...props }) {
     <div
       className={`${highlight && 'bg-red-100'} ${
         disambiguation == cell.column.id && 'border-2 border-gray-500'
-      } -my-2 -mx-2 p-2`}
+      } ${clickable && 'cursor-pointer border-2 hover:border-gray-900'} -my-2 -mx-2 p-2`}
       onClick={handleClick}
     >
       <ValueDisplay short_name={short_name} cell={cell} />
@@ -96,13 +102,18 @@ function ResultCell({ cell, ...props }) {
 
   return (
     <div className={(cell.value == null ? 'bg-red-100' : 'bg-green-100') + ' -my-2 -mx-4 p-2'}>
-      <ValueDisplay short_name={short_name} cell={cell} />
+      {cell.value == null ? (
+        <span>Please select a column</span>
+      ) : (
+        <ValueDisplay short_name={short_name} cell={cell} />
+      )}
     </div>
   );
 }
 
 function mergeClassification(taxa, row) {
-  const mongo_type = taxa.field_list.find((field) => field.short_name == row.short_name).mongo_type;
+  const mongo_type =
+    taxa.field_list.find((field) => field.short_name == row.short_name)?.mongo_type || null;
 
   const values = [];
 
@@ -122,10 +133,7 @@ function mergeClassification(taxa, row) {
 
   //disambiguation
   else {
-    const truthyValues = filter(
-      values,
-      (value) => value !== null && value !== undefined && value !== ''
-    );
+    const truthyValues = filter(values, (value) => value !== null && value !== undefined);
 
     // if only one value is set
 
@@ -136,6 +144,20 @@ function mergeClassification(taxa, row) {
     // if a disambiguation column is chosen
     else if (row.disambiguation != null) {
       result = row[row.disambiguation];
+    }
+
+    // special rows
+    else if (mongo_type == null) {
+      switch (row.short_name) {
+        case 'notes':
+          result = values
+            .filter((v) => !!v)
+            .map((v, i) => `Annotator ${i + 1}: \n\n ${v}`)
+            .join('\n\n');
+          break;
+        default:
+          result = null;
+      }
     }
 
     // disambiguation per field is required
@@ -151,17 +173,6 @@ function mergeClassification(taxa, row) {
           break;
 
         case 'string':
-          {
-            switch (row.short_name) {
-              case 'notes':
-                result = values.map((v, i) => `Annotator ${i + 1}: \n\n ${v}`).join('\n\n');
-                break;
-              default:
-                result = null;
-            }
-          }
-          break;
-
         case 'bool':
         case 'int':
           result = null;
@@ -240,7 +251,13 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
 
   const [processed, setProcessed] = useState(false);
 
+  const previousData = useRef(null);
+
   useEffect(() => {
+    // prevent useEffect deep comparison loop
+
+    if (previousData.current && isEqual(previousData.current, tableData)) return;
+
     const processedRows = [];
 
     for (const row of tableData) {
@@ -269,14 +286,18 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
     setProcessed(true);
 
     setTableData(processedRows);
+
+    previousData.current = processedRows;
+  }, [tableData, previousData]);
+
+  const isValid = useMemo(() => {
+    return !tableData.some((row) => row.result == null);
   }, [tableData]);
 
-  const submit = useCallback(async () => {
-    if (tableData.some((row) => row.result == null)) {
-      alert('Please resolve all conflicts before submitting');
+  const [submitting, setSubmitting] = useState(false);
 
-      return;
-    }
+  const submit = useCallback(async () => {
+    setSubmitting(true);
 
     const values = tableData.reduce((acc, obj) => {
       acc[obj.short_name] = obj.result;
@@ -287,6 +308,7 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
 
     const data = {
       incident_id,
+      notes: tableData.find((row) => row.short_name == 'notes').result,
       namespace: 'CSETv1',
       attributes: attributes.map((a) => a),
     };
@@ -300,6 +322,8 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
         data,
       },
     });
+
+    setSubmitting(false);
   }, [tableData]);
 
   return (
@@ -307,7 +331,12 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
       {processed && (
         <TableWrap data={tableData} setData={setTableData} className={className} {...props} />
       )}
-      <Button onClick={submit}>Merge Classifications</Button>
+
+      <div className="mt-4 flex justify-end">
+        <SubmitButton disabled={!isValid} loading={submitting} onClick={submit}>
+          Merge Classifications
+        </SubmitButton>
+      </div>
     </>
   );
 }

@@ -45,6 +45,14 @@ const ToolPage = (props) => {
         rows.push(row);
       }
 
+      rows.push({
+        short_name: 'notes',
+        ...data.classifications.reduce((acc, obj) => {
+          acc[obj.namespace] = obj.notes;
+          return acc;
+        }, {}),
+      });
+
       setTableData(rows);
     }
   }, [data]);
