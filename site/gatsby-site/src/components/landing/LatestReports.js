@@ -16,10 +16,16 @@ export default function LatestReports({ latestReports }) {
           className="latest-reports-carousel"
           slideInterval={5000}
           leftControl={
-            <FontAwesomeIcon icon={faArrowCircleLeft} className="h-8 w-8 text-gray-800" />
+            <FontAwesomeIcon
+              icon={faArrowCircleLeft}
+              className="h-8 w-8 text-white bg-gray-800 rounded-full"
+            />
           }
           rightControl={
-            <FontAwesomeIcon icon={faArrowCircleRight} className="h-8 w-8 text-gray-800" />
+            <FontAwesomeIcon
+              icon={faArrowCircleRight}
+              className="h-8 w-8 text-white bg-gray-800 rounded-full"
+            />
           }
         >
           {latestReports.map((report) => (
