@@ -214,7 +214,7 @@ function mergeClassification(taxa, row) {
   else {
     const truthyValues = filter(
       values,
-      (value) => value !== null && value !== undefined && value != ''
+      (value) => value !== null && value !== undefined && value !== ''
     );
 
     // if no value is set

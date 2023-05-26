@@ -135,7 +135,22 @@ describe('CSET tool', () => {
       cy.get('[data-cy="column-result"]').find('[data-cy*="entity-"]').should('have.length', 3);
     });
 
+    getRow('Estimated Harm Quantities').within(() => {
+      // should ask for disambiguation for different boolean values
+      cy.get('[data-cy="column-CSETv1_Annotator-1"]')
+        .should('have.text', 'true')
+        .should('have.class', 'bg-red-100');
+      cy.get('[data-cy="column-CSETv1_Annotator-2"]')
+        .should('have.text', 'false')
+        .should('have.class', 'bg-red-100');
+      cy.get('[data-cy="column-result"]')
+        .should('have.text', 'Please select a column')
+        .should('have.class', 'bg-red-100');
+    });
+
     cy.contains('Merge Classifications').should('be.disabled');
+
+    // disambiguate and submit
 
     getRow('Physical Objects').within(() => {
       cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
@@ -154,6 +169,28 @@ describe('CSET tool', () => {
     });
 
     getRow('User Test in Controlled Conditions').within(() => {
+      cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
+    });
+
+    getRow('Estimated Harm Quantities').within(() => {
+      cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
+    });
+
+    getRow('Quality Control').within(() => {
+      cy.get('[data-cy="column-CSETv1_Annotator-2"]').click();
+    });
+
+    getRow('There is a potentially identifiable specific entity that experienced the harm').within(
+      () => {
+        cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
+      }
+    );
+
+    getRow('Harmed Class of Entities').within(() => {
+      cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
+    });
+
+    getRow('Estimated Date').within(() => {
       cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
     });
 
@@ -350,7 +387,7 @@ describe('CSET tool', () => {
           },
           {
             short_name: 'Infrastructure Sectors',
-            value_json: '""',
+            value_json: '[]',
           },
           {
             short_name: 'Operating Conditions',
