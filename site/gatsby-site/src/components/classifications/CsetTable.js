@@ -20,6 +20,8 @@ const notesShortNames = [
   'Notes (Information about AI System)',
 ];
 
+const skippedShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
+
 function Entity({ attributes, cell, setData, enableDelete = false }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
 
@@ -366,7 +368,10 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
       setSubmitting(true);
 
       const values = tableData.reduce((acc, obj) => {
-        acc[obj.short_name] = obj.result;
+        if (!skippedShortNames.includes(obj.short_name)) {
+          acc[obj.short_name] = obj.result;
+        }
+
         return acc;
       }, {});
 

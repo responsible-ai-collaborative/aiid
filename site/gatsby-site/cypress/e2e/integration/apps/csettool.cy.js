@@ -220,18 +220,6 @@ describe('CSET tool', () => {
             value_json: '52',
           },
           {
-            short_name: 'Annotator',
-            value_json: '"006"',
-          },
-          {
-            short_name: 'Annotation Status',
-            value_json: '"2. Initial annotation complete"',
-          },
-          {
-            short_name: 'Peer Reviewer',
-            value_json: '"weqweq"',
-          },
-          {
             short_name: 'Quality Control',
             value_json: 'true',
           },
