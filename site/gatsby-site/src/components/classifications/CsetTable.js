@@ -48,7 +48,7 @@ function Entity({ attributes, cell, setData, enableDelete = false }) {
   };
 
   return (
-    <div className="my-2 border border-gray-400 p-2">
+    <div className="my-2 border border-gray-400 p-2" data-cy={`entity-${name}`}>
       <div className="flex justify-between">
         <h3>{name}</h3>
         {enableDelete && (
@@ -142,6 +142,7 @@ function ValueCell({ cell, ...props }) {
         disambiguation == cell.column.id && 'border-2 border-gray-500'
       } ${clickable && 'cursor-pointer border-2 hover:border-gray-900'} -my-2 -mx-2 p-2`}
       onClick={handleClick}
+      data-cy={`column-${cell.column.id}`}
     >
       <ValueDisplay short_name={short_name} cell={cell} setData={setData} />
     </div>
@@ -157,12 +158,23 @@ function ResultCell({ cell, ...props }) {
   } = props;
 
   return (
-    <div className={(cell.value == null ? 'bg-red-100' : 'bg-green-100') + ' -my-2 -mx-4 p-2'}>
+    <div
+      className={(cell.value == null ? 'bg-red-100' : 'bg-green-100') + ' -my-2 -mx-4 p-2'}
+      data-cy={`column-${cell.column.id}`}
+    >
       {cell.value == null ? (
         <span>Please select a column</span>
       ) : (
         <ValueDisplay short_name={short_name} cell={cell} />
       )}
+    </div>
+  );
+}
+
+function ShortNameCell({ cell }) {
+  return (
+    <div className="-my-2 -mx-4 p-2" data-cy={`column-${cell.value}`}>
+      {cell.value}
     </div>
   );
 }
@@ -189,7 +201,6 @@ function mergeClassification(taxa, row) {
   let result = null;
 
   // notes fields are automatically merged
-
   if (notesShortNames.includes(row.short_name)) {
     result = computeNotesField(values);
   }
@@ -222,24 +233,14 @@ function mergeClassification(taxa, row) {
       result = row[row.disambiguation];
     }
 
-    // disambiguation per field is required
-    else {
-      switch (mongo_type) {
-        case 'array':
-          {
-            switch (row.short_name) {
-              default:
-                result = union(...values);
-            }
-          }
-          break;
+    // arrays and multi fields are merged
+    else if (mongo_type == 'array' || row.display_type == 'multi') {
+      result = union(...values);
+    }
 
-        case 'string':
-        case 'bool':
-        case 'int':
-          result = null;
-          break;
-      }
+    // can't merge automatically
+    else {
+      result = null;
     }
   }
 
@@ -262,6 +263,7 @@ function TableWrap({ data, setData, className, ...props }) {
         className: 'w-[10%]',
         accessor: 'short_name',
         title: 'Short Name',
+        Cell: ShortNameCell,
       },
     ];
 
