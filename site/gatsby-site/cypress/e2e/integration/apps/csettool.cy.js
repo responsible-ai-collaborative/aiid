@@ -39,36 +39,27 @@ describe('CSET tool', () => {
     });
 
     getRow('Annotator').within(() => {
-      // should default to the only set value
+      // should be skipped
       cy.get('[data-cy="column-CSETv1_Annotator-1"]')
         .should('have.text', '"006"')
         .should('have.class', 'bg-red-100');
       cy.get('[data-cy="column-CSETv1_Annotator-2"]')
         .should('have.text', 'null')
         .should('have.class', 'bg-red-100');
-      cy.get('[data-cy="column-result"]')
-        .should('have.text', '"006"')
-        .should('have.class', 'bg-green-100');
+      cy.get('[data-cy="column-result"]').should('have.text', 'skipped');
     });
 
-    getRow('Annotation Status').within(() => {
-      // should ask for disambiguation and disambiguate on click
+    getRow('Physical Objects').within(() => {
+      // should  ask for disambiguation
       cy.get('[data-cy="column-CSETv1_Annotator-1"]')
-        .should('have.text', '"2. Initial annotation complete"')
+        .should('have.text', '"yes"')
         .should('have.class', 'bg-red-100');
+
       cy.get('[data-cy="column-CSETv1_Annotator-2"]')
-        .should('have.text', '"3. In peer review"')
-        .should('have.class', 'bg-red-100');
-      cy.get('[data-cy="column-result"]')
-        .should('have.text', 'Please select a column')
+        .should('have.text', '"maybe"')
         .should('have.class', 'bg-red-100');
 
-      // select column
-      cy.get('[data-cy="column-CSETv1_Annotator-1"]').click();
-
-      cy.get('[data-cy="column-result"]')
-        .should('have.text', '"2. Initial annotation complete"')
-        .should('have.class', 'bg-green-100');
+      cy.get('[data-cy="column-result"]').should('have.text', 'Please select a column');
     });
 
     getRow('Harm Distribution Basis').within(() => {

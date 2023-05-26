@@ -20,7 +20,7 @@ const notesShortNames = [
   'Notes (Information about AI System)',
 ];
 
-const skippedShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
+const skipShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
 
 function Entity({ attributes, cell, setData, enableDelete = false }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
@@ -114,12 +114,12 @@ function ValueCell({ cell, ...props }) {
   const {
     row: {
       values: { short_name },
-      original: { highlight, result, disambiguation },
+      original: { highlight, result, disambiguation, skip },
     },
     setData,
   } = props;
 
-  const clickable = result == null || !!disambiguation;
+  const clickable = !skip && (result == null || !!disambiguation);
 
   const handleClick = () => {
     if (clickable) {
@@ -156,8 +156,13 @@ function ResultCell({ cell, ...props }) {
   const {
     row: {
       values: { short_name },
+      original: { skip },
     },
   } = props;
+
+  if (skip) {
+    return <div data-cy={`column-${cell.column.id}`}>skipped</div>;
+  }
 
   return (
     <div
@@ -345,6 +350,7 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
         highlight,
         result,
         disambiguation: row.disambiguation || null,
+        skip: skipShortNames.includes(row.short_name),
       };
 
       processedRows.push(processedRow);
@@ -358,7 +364,9 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
   }, [tableData, previousData]);
 
   const isValid = useMemo(() => {
-    return !tableData.some((row) => row.result == null);
+    return !tableData
+      .filter((row) => !skipShortNames.includes(row.short_name))
+      .some((row) => row.result == null);
   }, [tableData]);
 
   const [submitting, setSubmitting] = useState(false);
@@ -368,7 +376,7 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
       setSubmitting(true);
 
       const values = tableData.reduce((acc, obj) => {
-        if (!skippedShortNames.includes(obj.short_name)) {
+        if (!skipShortNames.includes(obj.short_name)) {
           acc[obj.short_name] = obj.result;
         }
 
