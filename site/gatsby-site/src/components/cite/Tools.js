@@ -1,4 +1,4 @@
-import { faEdit, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus, faSearch, faClone } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
@@ -18,6 +18,8 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  loadingLastIncident,
+  cloneIncident,
 }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -99,6 +101,17 @@ function Tools({
               titleId="csettool"
             />
             <Trans>CSET Annotators Table</Trans>
+          </Button>
+        )}
+        {isUserLoggedIn && isRole('incident_editor') && (
+          <Button color="gray" onClick={cloneIncident} disabled={loadingLastIncident}>
+            <FontAwesomeIcon
+              className="mr-2"
+              icon={faClone}
+              title={t('Clone Incident')}
+              titleId="clone-incident-icon"
+            />
+            <Trans>Clone Incident</Trans>
           </Button>
         )}
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (

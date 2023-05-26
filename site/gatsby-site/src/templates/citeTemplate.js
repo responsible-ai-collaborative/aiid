@@ -18,6 +18,7 @@ import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import useLocalizePath from '../components/i18n/useLocalizePath';
 import { FIND_USER_SUBSCRIPTIONS, UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import { GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../graphql/incidents';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { getTaxonomies } from 'utils/cite';
@@ -65,6 +66,8 @@ function CiteTemplate({
       query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
     },
   });
+
+  const { data: lastIncident, loading: loadingLastIncident } = useQuery(GET_LATEST_INCIDENT_ID);
 
   // meta tags
 
@@ -123,6 +126,8 @@ function CiteTemplate({
 
   const [subscribeToNewReportsMutation, { loading: subscribing }] =
     useMutation(UPSERT_SUBSCRIPTION);
+
+  const [insertIncidentMutation] = useMutation(INSERT_INCIDENT);
 
   const subscribeToNewReports = async () => {
     if (!isSubscribed) {
@@ -190,6 +195,47 @@ function CiteTemplate({
     }
   };
 
+  const cloneIncident = async () => {
+    try {
+      const newIncidentId = lastIncident.incidents[0].incident_id + 1;
+
+      const newIncident = {
+        title: incident.title,
+        description: incident.description,
+        incident_id: newIncidentId,
+        reports: { link: [] },
+        editors: incident.editors,
+        date: incident.date,
+        AllegedDeployerOfAISystem: { link: incident.Alleged_deployer_of_AI_system },
+        AllegedDeveloperOfAISystem: { link: incident.Alleged_developer_of_AI_system },
+        AllegedHarmedOrNearlyHarmedParties: {
+          link: incident.Alleged_harmed_or_nearly_harmed_parties,
+        },
+        nlp_similar_incidents: [],
+        editor_similar_incidents: [],
+        editor_dissimilar_incidents: [],
+      };
+
+      await insertIncidentMutation({ variables: { incident: newIncident } });
+
+      addToast({
+        message: (
+          <>
+            {t(`You have successfully create Incident {{newIncidentId}}`, {
+              newIncidentId,
+            })}
+          </>
+        ),
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      addToast({
+        message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+        severity: SEVERITY.danger,
+      });
+    }
+  };
+
   const incidentResponded = sortedReports.some(
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
@@ -242,6 +288,8 @@ function CiteTemplate({
                 subscribing={subscribing}
                 isLiveData={liveVersion}
                 setIsLiveData={setIsLiveData}
+                loadingLastIncident={loadingLastIncident}
+                cloneIncident={cloneIncident}
               />
             </Col>
           </Row>
