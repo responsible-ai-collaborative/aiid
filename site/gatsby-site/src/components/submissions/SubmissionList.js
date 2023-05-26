@@ -32,10 +32,9 @@ const SubmissionList = ({ data }) => {
     const columns = [
       {
         className: 'min-w-[60px]',
-        title: '',
+        title: t('Completion'),
         accessor: 'completionStatus',
         disableFilters: true,
-        disableSortBy: true,
         Cell: () => (
           <div className="flex items-center justify-center">
             <ProgressCircle percentage={70} />
@@ -49,24 +48,15 @@ const SubmissionList = ({ data }) => {
       },
       {
         className: 'min-w-[240px]',
-        title: t('Authors'),
-        accessor: 'authors',
-        // Cell: ({ row: { values } }) => {
-        //   return <div className="flex justify-center">
-        //     {values.authors.map((author, index) => {
-        //       return <Badge key={`author-${index}`} className="mr-2">{author}</Badge>
-        //     })}
-        //   </div>
-        // },
-
+        title: t('Submitters'),
+        accessor: 'submitters',
         Cell: ({ row: { values } }) => {
           return (
-            <div className="">
-              {values.authors.map((author, index) => {
-                // return <Badge key={`author-${index}`} className="">{author}</Badge>
+            <div className="flex justify-center">
+              {values.submitters.map((submitter, index) => {
                 return (
-                  <Badge key={`author-${index}`} className="w-fit">
-                    {author}
+                  <Badge key={`submitter-${index}`} className="w-fit">
+                    {submitter}
                   </Badge>
                 );
               })}
@@ -80,11 +70,13 @@ const SubmissionList = ({ data }) => {
         accessor: 'incident_date',
         Cell: ({ row: { values } }) => {
           return (
-            // <div className="flex justify-center">
-            <Badge key={`incident_date`} className="mr-2 w-fit">
-              {values.incident_date}
-            </Badge>
-            // </div>
+            <div className="flex justify-center">
+              {values.incident_date && (
+                <Badge key={`incident_date`} className="mr-2 w-fit">
+                  {values.incident_date}
+                </Badge>
+              )}
+            </div>
           );
         },
       },
