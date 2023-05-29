@@ -26,23 +26,33 @@ const LandingPage = (props) => {
 
   const { locale: language } = useLocalization();
 
-  latestReports = latestReports.nodes.map((report) => {
-    const reportIncident = latestReportIncidents.nodes.filter((incident) =>
-      incident.reports.includes(report.report_number)
-    );
-
-    if (reportIncident.length > 0) {
-      report.incident_id = reportIncident[0].incident_id;
-    }
-
-    if (report.language !== language) {
-      const translation = data[`latestReport_${language}`];
-
-      report.title = translation.title;
-      report.text = translation.text;
-    }
-    return report;
+  const filteredReportNumbers = latestReportIncidents.nodes.map((incident) => {
+    return incident.reports[incident.reports.length - 1];
   });
+
+  latestReports.nodes = latestReports.nodes.filter((report) => {
+    return filteredReportNumbers.includes(report.report_number);
+  });
+
+  latestReports = latestReports.nodes
+    .map((report) => {
+      const reportIncident = latestReportIncidents.nodes.filter((incident) =>
+        incident.reports.includes(report.report_number)
+      );
+
+      if (reportIncident.length > 0) {
+        report.incident_id = reportIncident[0].incident_id;
+      }
+
+      if (report.language !== language) {
+        const translation = data[`latestReport_${language}`];
+
+        report.title = translation.title;
+        report.text = translation.text;
+      }
+      return report;
+    })
+    .slice(0, 5);
 
   const { t } = useTranslation(['translation', 'landing']);
 
