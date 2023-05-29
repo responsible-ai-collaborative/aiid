@@ -60,4 +60,14 @@ describe('Account', () => {
       });
     });
   });
+
+  maybeIt('Should show edit modal if query parameter is is set', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url + '?askToCompleteProfile=1');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="edit-user-modal"]').should('be.visible');
+  });
 });
