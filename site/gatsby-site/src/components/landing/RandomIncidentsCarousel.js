@@ -68,13 +68,13 @@ const RandomIncidentsCarousel = () => {
                 leftControl={
                   <FontAwesomeIcon
                     icon={faArrowCircleLeft}
-                    className="h-8 w-8 text-white bg-gray-800 rounded-full"
+                    className="h-8 w-8 text-white bg-gray-500 shadow rounded-full"
                   />
                 }
                 rightControl={
                   <FontAwesomeIcon
                     icon={faArrowCircleRight}
-                    className="h-8 w-8 text-white bg-gray-800 rounded-full"
+                    className="h-8 w-8 text-white bg-gray-500 shadow rounded-full"
                   />
                 }
               >
