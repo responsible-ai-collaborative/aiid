@@ -132,12 +132,15 @@ const plugins = [
                 ? edge.node.cloudinary_id
                 : `legacy/${md5(edge.node.image_url)}`;
 
+              const dateSubmitted = new Date(edge.node.date_submitted).toUTCString();
+
               return Object.assign({}, edge.node.frontmatter, {
                 title: edge.node.title,
                 url: edge.node.url,
                 link: edge.node.url,
-                description: edge.node.description,
+                description: edge.node.text,
                 guid: edge.node.id,
+                date: dateSubmitted,
                 enclosure: {
                   url: cloudinary.url(publicID, {
                     secure: true,
@@ -156,10 +159,11 @@ const plugins = [
       node {
         title
         url
-        description
+        text
         id
         image_url
         cloudinary_id
+        date_submitted
       }
     }
   }
