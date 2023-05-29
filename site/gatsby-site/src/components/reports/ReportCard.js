@@ -157,6 +157,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
                 size={'xs'}
                 color="light"
                 href={`/cite/edit?report_number=${item.report_number}&incident_id=${incidentId}`}
+                className="hover:no-underline "
               >
                 <Trans>Edit</Trans>
               </Button>

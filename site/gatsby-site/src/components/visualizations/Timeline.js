@@ -83,7 +83,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
               {b.isOccurrence ? (
                 <p className="whitespace-nowrap m-0">{b.title}</p>
               ) : (
-                <a href={`#r${b.report_number}`} className="whitespace-nowrap">
+                <a href={`#r${b.report_number}`} className="hover:no-underline whitespace-nowrap">
                   {b.title}
                 </a>
               )}
@@ -178,7 +178,10 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
           )}
         </text>
       ) : (
-        <a href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}>
+        <a
+          href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}
+          className="hover:no-underline"
+        >
           <text
             dominantBaseline="middle"
             className={`text-[14px] hover:fill-blue-500 ${

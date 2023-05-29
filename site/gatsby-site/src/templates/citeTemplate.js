@@ -364,6 +364,7 @@ function CiteTemplate({
                 color={'gray'}
                 href={localizePath({ path: `/cite/${prevIncident}` })}
                 disabled={!prevIncident}
+                className="hover:no-underline"
               >
                 <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                 <Trans>Previous Incident</Trans>
@@ -372,6 +373,7 @@ function CiteTemplate({
                 color={'gray'}
                 href={localizePath({ path: `/cite/${nextIncident}` })}
                 disabled={!nextIncident}
+                className="hover:no-underline"
               >
                 <Trans>Next Incident</Trans>
                 <FontAwesomeIcon icon={faArrowRight} className="ml-2" />

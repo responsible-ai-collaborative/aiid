@@ -34,7 +34,11 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   return (
     <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
-      <LocalizedLink to={`/cite/${incident.incident_id}`} data-cy="cite-link">
+      <LocalizedLink
+        to={`/cite/${incident.incident_id}`}
+        data-cy="cite-link"
+        className="hover:no-underline"
+      >
         {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
           <div className="object-cover w-full aspect-[16/9]">
             <Image
@@ -133,7 +137,10 @@ const SimilarIncidents = ({
     <div className={`tw-similar-incidents ${className}`}>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents" className="leading-9">
-          <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
+          <LocalizedLink
+            to={'/summaries/spatial?incident=' + parentIncident.incident_id}
+            className="hover:no-underline"
+          >
             <Trans>Similar Incidents</Trans>
           </LocalizedLink>
         </h2>
