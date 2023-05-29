@@ -94,7 +94,7 @@ const SignUp = (props) => {
               <Formik
                 initialValues={{ email: emailValue, password: '', passwordConfirm: '' }}
                 validationSchema={SignUpSchema}
-                onSubmit={async ({ email, password }, { setSubmitting, resetForm }) => {
+                onSubmit={async ({ email, password }, { setSubmitting }) => {
                   try {
                     await signUp({ email, password, redirectTo });
 
@@ -104,7 +104,6 @@ const SignUp = (props) => {
                       message: t('Verification email sent to {{email}}', { email, ns: 'login' }),
                       severity: SEVERITY.success,
                     });
-                    resetForm();
                   } catch (e) {
                     addToast({
                       message: (
