@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, Spinner, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
@@ -20,6 +20,7 @@ function Tools({
   setIsLiveData,
   loadingLastIncident,
   cloneIncident,
+  cloning,
 }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -104,14 +105,24 @@ function Tools({
           </Button>
         )}
         {isUserLoggedIn && isRole('incident_editor') && (
-          <Button color="gray" onClick={cloneIncident} disabled={loadingLastIncident}>
-            <FontAwesomeIcon
-              className="mr-2"
-              icon={faClone}
-              title={t('Clone Incident')}
-              titleId="clone-incident-icon"
-            />
-            <Trans>Clone Incident</Trans>
+          <Button color="gray" onClick={cloneIncident} disabled={loadingLastIncident || cloning}>
+            <div className="flex gap-2 items-center">
+              {cloning ? (
+                <div>
+                  <Spinner size="sm" />
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    className="mr-2"
+                    icon={faClone}
+                    title={t('Clone Incident')}
+                    titleId="clone-incident-icon"
+                  />
+                </>
+              )}
+              <Trans>Clone Incident</Trans>
+            </div>
           </Button>
         )}
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (

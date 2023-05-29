@@ -253,5 +253,6 @@
   "Posted <1></1> by <3></3>.": "Publié <1></1> par <3></3>.",
   "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.": "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.",
   "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.": "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.",
-  "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement"
+  "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement",
+  "You have successfully create Incident {{newIncidentId}}. <4>View incident</4>.": "Vous avez réussi à créer l'incident {{newIncidentId}}. <4>Voir l'incident</4>."
 }

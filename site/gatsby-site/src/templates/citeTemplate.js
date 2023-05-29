@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Badge } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'plugins/gatsby-theme-i18n';
+import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import Timeline from '../components/visualizations/Timeline';
@@ -61,13 +61,19 @@ function CiteTemplate({
 
   const [isSubscribed, setIsSubscribed] = useState(false);
 
+  const [cloning, setCloning] = useState(false);
+
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
       query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
     },
   });
 
-  const { data: lastIncident, loading: loadingLastIncident } = useQuery(GET_LATEST_INCIDENT_ID);
+  const {
+    data: lastIncident,
+    loading: loadingLastIncident,
+    refetch: refetchLastestIncidentId,
+  } = useQuery(GET_LATEST_INCIDENT_ID);
 
   // meta tags
 
@@ -164,10 +170,11 @@ function CiteTemplate({
             ),
             severity: SEVERITY.success,
           });
-        } catch (e) {
+        } catch (error) {
           addToast({
-            message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+            message: <label>{t(error.error || 'An unknown error has ocurred')}</label>,
             severity: SEVERITY.danger,
+            error,
           });
         }
       } else {
@@ -196,6 +203,8 @@ function CiteTemplate({
   };
 
   const cloneIncident = async () => {
+    setCloning(true);
+
     try {
       const newIncidentId = lastIncident.incidents[0].incident_id + 1;
 
@@ -218,22 +227,29 @@ function CiteTemplate({
 
       await insertIncidentMutation({ variables: { incident: newIncident } });
 
+      await refetchLastestIncidentId();
+
       addToast({
         message: (
-          <>
-            {t(`You have successfully create Incident {{newIncidentId}}`, {
-              newIncidentId,
-            })}
-          </>
+          <Trans i18n={i18n} newIncidentId={newIncidentId}>
+            You have successfully create Incident {{ newIncidentId }}.{' '}
+            <LocalizedLink language={locale} to={'/cite/' + newIncidentId}>
+              View incident
+            </LocalizedLink>
+            .
+          </Trans>
         ),
         severity: SEVERITY.success,
       });
-    } catch (e) {
+    } catch (error) {
       addToast({
-        message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+        message: <label>{t(error.error || 'An unknown error has ocurred')}</label>,
         severity: SEVERITY.danger,
+        error,
       });
     }
+
+    setCloning(false);
   };
 
   const incidentResponded = sortedReports.some(
@@ -290,6 +306,7 @@ function CiteTemplate({
                 setIsLiveData={setIsLiveData}
                 loadingLastIncident={loadingLastIncident}
                 cloneIncident={cloneIncident}
+                cloning={cloning}
               />
             </Col>
           </Row>
