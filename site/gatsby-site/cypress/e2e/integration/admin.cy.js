@@ -169,6 +169,8 @@ describe('Admin', () => {
 
     cy.contains('New Incident', { timeout: 30000 }).click();
 
-    cy.url().should('include', '/cite/new');
+    cy.waitForStableDOM();
+
+    cy.url({ timeout: 30000 }).should('include', '/incidents/new');
   });
 });
