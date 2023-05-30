@@ -333,7 +333,7 @@ const SubmissionForm = () => {
           columns={['byIncidentId']}
         />
 
-        {!values.incident_id && (
+        {!values.incident_ids && (
           <>
             <hr className="my-4" />
             <h3 className="text-lg">Incident Data</h3>
