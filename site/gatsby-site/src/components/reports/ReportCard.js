@@ -154,7 +154,7 @@ const ReportCard = ({
               </button>
             )}
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between flex-wrap">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
               {item.date_published
