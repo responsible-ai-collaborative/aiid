@@ -1,11 +1,6 @@
 const { defineConfig } = require('cypress');
 
-require('dotenv').config();
-
-const config = require('./config');
-
 module.exports = defineConfig({
-  projectId: config.cypress.projectId,
   video: false,
   videoUploadOnPasses: false,
   chromeWebSecurity: false,

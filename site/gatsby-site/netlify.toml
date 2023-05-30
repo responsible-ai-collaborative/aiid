@@ -9,7 +9,6 @@ TERM = "xterm"
   package = "netlify-plugin-cypress"
   [plugins.inputs]
     enable = false
-    configFile = "cypress.config.js"
   [plugins.inputs.postBuild]
     enable = true
     record = true
