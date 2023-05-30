@@ -8,6 +8,8 @@ import ListSkeleton from 'elements/Skeletons/List';
 import { useUserContext } from 'contexts/userContext';
 import { Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const AdminPage = (props) => {
   const {
@@ -17,6 +19,10 @@ const AdminPage = (props) => {
   const { data, loading } = useQuery(FIND_USERS);
 
   const { isRole, loading: loadingAuth } = useUserContext();
+
+  const { locale } = useLocalization();
+
+  const localizePath = useLocalizePath();
 
   return (
     <Layout {...props} sidebarCollapsed={true} className="w-full">
@@ -29,7 +35,7 @@ const AdminPage = (props) => {
         {data?.users && isRole('admin') && (
           <>
             <div className="w-fit mb-5">
-              <Button href={'/incidents/new'}>
+              <Button href={localizePath({ path: '/incidents/new', language: locale })}>
                 <Trans>New Incident</Trans>
               </Button>
             </div>
