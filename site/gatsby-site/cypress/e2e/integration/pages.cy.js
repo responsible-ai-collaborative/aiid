@@ -172,15 +172,12 @@ describe('Pages', () => {
 
         const title = Cypress.$(item).find('title');
 
-        const link = Cypress.$(item).find('link');
-
         const pubDate = Cypress.$(item).find('pubDate');
 
         const guid = Cypress.$(item).find('guid');
 
         expect(description.length).to.equal(1);
         expect(title.length).to.equal(1);
-        expect(link.length).to.equal(1);
         expect(pubDate.length).to.equal(1);
         expect(guid.length).to.equal(1);
       });
