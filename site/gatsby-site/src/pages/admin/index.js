@@ -6,6 +6,8 @@ import { useQuery } from '@apollo/client/react';
 import UsersTable from 'components/users/UsersTable';
 import ListSkeleton from 'elements/Skeletons/List';
 import { useUserContext } from 'contexts/userContext';
+import { Button } from 'flowbite-react';
+import { Trans } from 'react-i18next';
 
 const AdminPage = (props) => {
   const {
@@ -22,6 +24,13 @@ const AdminPage = (props) => {
         <title>Admin</title>
       </AiidHelmet>
       <div>
+        {isRole('admin') && (
+          <div className="w-fit mb-5">
+            <Button href={'/incidents/new'}>
+              <Trans>New Incident</Trans>
+            </Button>
+          </div>
+        )}
         {loading && <ListSkeleton />}
         {!loading && !loadingAuth && !isRole('admin') && <div>Not enough permissions</div>}
         {data?.users && isRole('admin') && <UsersTable data={data.users} />}
