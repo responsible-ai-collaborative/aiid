@@ -313,7 +313,7 @@
                 ],
                 "incident_id": 52,
                 "namespace": "CSETv1_Annotator-1",
-                "notes": "",
+                "notes": "This a note from the annotator 1",
                 "publish": false
             },
             {
@@ -548,7 +548,7 @@
                     {
                         "__typename": "ClassificationAttribute",
                         "short_name": "Entities",
-                        "value_json": null
+                        "value_json": "[{\"attributes\":[{\"short_name\":\"Entity\",\"value_json\":\"\\\"Joshua Brown\\\"\"},{\"short_name\":\"Named Entity\",\"value_json\":\"true\"},{\"short_name\":\"Entity type\",\"value_json\":\"\\\"individual\\\"\"},{\"short_name\":\"Entity Relationship to the AI\",\"value_json\":\"[\\\"user\\\"]\"},{\"short_name\":\"Harm Category Experienced\",\"value_json\":\"\\\"AI tangible harm event\\\"\"},{\"short_name\":\"Harm Type Experienced\",\"value_json\":\"\\\"physical health/safety\\\"\"},{\"short_name\":\"Notes (Characterizing Entities and the Harm)\",\"value_json\":\"\\\"Tesla Autopilot failed to detected truck and deploy its breaks. This could have minimized damaged during the crash. Ultimately, the Tesla was responsible for the crash\\\"\"}]}]"
                     },
                     {
                         "__typename": "ClassificationAttribute",
@@ -578,7 +578,7 @@
                     {
                         "__typename": "ClassificationAttribute",
                         "short_name": "Data Inputs",
-                        "value_json": null
+                        "value_json": "[\"road data\",\"traffic\",\"GPS\"]"
                     },
                     {
                         "__typename": "ClassificationAttribute",
@@ -628,7 +628,7 @@
                 ],
                 "incident_id": 52,
                 "namespace": "CSETv1_Annotator-2",
-                "notes": "",
+                "notes": "This a note from the annotator 2",
                 "publish": false
             }
         ]
