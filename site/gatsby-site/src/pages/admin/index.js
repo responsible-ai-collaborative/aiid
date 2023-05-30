@@ -24,16 +24,18 @@ const AdminPage = (props) => {
         <title>Admin</title>
       </AiidHelmet>
       <div>
-        {isRole('admin') && (
-          <div className="w-fit mb-5">
-            <Button href={'/incidents/new'}>
-              <Trans>New Incident</Trans>
-            </Button>
-          </div>
-        )}
         {loading && <ListSkeleton />}
         {!loading && !loadingAuth && !isRole('admin') && <div>Not enough permissions</div>}
-        {data?.users && isRole('admin') && <UsersTable data={data.users} />}
+        {data?.users && isRole('admin') && (
+          <>
+            <div className="w-fit mb-5">
+              <Button href={'/incidents/new'}>
+                <Trans>New Incident</Trans>
+              </Button>
+            </div>
+            <UsersTable data={data.users} />
+          </>
+        )}
       </div>
     </Layout>
   );

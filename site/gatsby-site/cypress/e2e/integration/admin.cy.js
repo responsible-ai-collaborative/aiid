@@ -159,4 +159,16 @@ describe('Admin', () => {
       });
     });
   });
+
+  maybeIt('Should display New Incident button', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(baseUrl);
+
+    cy.waitForStableDOM();
+
+    cy.contains('New Incident', { timeout: 30000 }).click();
+
+    cy.url().should('include', '/cite/new');
+  });
 });
