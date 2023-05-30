@@ -406,6 +406,11 @@ And to run it in continuous integration (headless) mode:
 test:e2e:ci
 ```
 
+To display the test results in the Cypress Dashboard you have to add this environment variable:
+```
+CYPRESS_PROJECT_ID=[Cypress Project Id from: Cypress > Project settings > Project ID]
+```
+
 ## Adding new Taxonomies
 
 ### To add new taxonomies, follow these steps:

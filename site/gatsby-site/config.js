@@ -195,6 +195,9 @@ const config = {
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
     defaultLanguage: 'en',
   },
+  cypress: {
+    projectId: process.env.CYPRESS_PROJECT_ID,
+  },
 };
 
 module.exports = config;
