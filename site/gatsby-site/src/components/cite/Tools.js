@@ -105,7 +105,12 @@ function Tools({
           </Button>
         )}
         {isUserLoggedIn && isRole('incident_editor') && (
-          <Button color="gray" onClick={cloneIncident} disabled={loadingLastIncident || cloning}>
+          <Button
+            color="gray"
+            onClick={cloneIncident}
+            disabled={loadingLastIncident || cloning}
+            data-cy="clone-incident-btn"
+          >
             <div className="flex gap-2 items-center">
               {cloning ? (
                 <div>
