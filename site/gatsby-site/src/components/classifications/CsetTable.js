@@ -188,8 +188,8 @@ function ShortNameCell({ cell }) {
 
 function computeNotesField(values) {
   return values
-    .filter((v) => !!v)
-    .map((v, i) => `Annotator ${i + 1}: \n\n ${v}`)
+    .map((v, i) => (v !== '' && v !== null ? `Annotator ${i + 1}: \n\n ${v}` : ''))
+    .filter((v) => v !== '')
     .join('\n\n');
 }
 

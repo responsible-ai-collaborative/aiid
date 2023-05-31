@@ -91,6 +91,19 @@ describe('CSET tool', () => {
         .should('have.class', 'bg-green-100');
     });
 
+    getRow('Notes (special interest intangible harm)').within(() => {
+      // should not mix annotator numbers
+      cy.get('[data-cy="column-CSETv1_Annotator-1"]')
+        .should('have.text', '')
+        .should('have.class', 'bg-red-100');
+      cy.get('[data-cy="column-CSETv1_Annotator-2"]')
+        .should('have.text', 'This is a note from Annotator 2')
+        .should('have.class', 'bg-red-100');
+      cy.get('[data-cy="column-result"]')
+        .should('have.text', 'Annotator 2: \n\n This is a note from Annotator 2')
+        .should('have.class', 'bg-green-100');
+    });
+
     getRow('Entities').within(() => {
       //
 
@@ -302,7 +315,7 @@ describe('CSET tool', () => {
           },
           {
             short_name: 'Notes (special interest intangible harm)',
-            value_json: '""',
+            value_json: '"Annotator 2: \\n\\n This is a note from Annotator 2"',
           },
           {
             short_name: 'Special Interest Intangible Harm',
