@@ -56,7 +56,7 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="input-filter-Entity"]').type('openai');
 
-    cy.get('[data-cy="cell-responses"]').should('have.text', '2 Incident responses');
+    cy.get('[data-cy="cell-responses"]').should('have.text', '3 Incident responses');
   });
 
   it('Should be able to sort', () => {
