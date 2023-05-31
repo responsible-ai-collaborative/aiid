@@ -445,8 +445,6 @@ describe('The Submit form', () => {
   });
 
   it('Should pull parameters form the query string and auto-fill fields', () => {
-    cy.waitForStableDOM();
-
     const values = {
       url: 'https://test.com',
       title: 'test title',
