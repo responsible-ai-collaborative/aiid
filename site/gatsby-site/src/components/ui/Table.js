@@ -201,7 +201,7 @@ export function formatDateField(date) {
   }
 }
 
-export default function Table({ table, className = '', ...props }) {
+export default function Table({ table, showPagination = true, className = '', ...props }) {
   const { t } = useTranslation(['entities']);
 
   const {
@@ -266,60 +266,62 @@ export default function Table({ table, className = '', ...props }) {
             })}
           </tbody>
         </table>
-        <div className="flex gap-2 justify-start items-center my-3 pl-1 pagination">
-          {pageSize < 9999 && (
-            <>
-              <Button onClick={() => gotoPage(0)} size={'sm'} color="light" data-cy="first-page">
-                <Trans>First</Trans>
-              </Button>
+        {showPagination && (
+          <div className="flex gap-2 justify-start items-center my-3 pl-1 pagination">
+            {pageSize < 9999 && (
+              <>
+                <Button onClick={() => gotoPage(0)} size={'sm'} color="light" data-cy="first-page">
+                  <Trans>First</Trans>
+                </Button>
 
-              <Pagination
-                className="pagination mb-0 text-gray-800"
-                onPageChange={(page) => {
-                  gotoPage(page - 1);
-                }}
-                currentPage={pageIndex + 1}
-                showIcons={true}
-                totalPages={pageCount}
-              />
+                <Pagination
+                  className="pagination mb-0 text-gray-800"
+                  onPageChange={(page) => {
+                    gotoPage(page - 1);
+                  }}
+                  currentPage={pageIndex + 1}
+                  showIcons={true}
+                  totalPages={pageCount}
+                />
 
-              <Button
-                onClick={() => gotoPage(pageCount - 1)}
-                size={'sm'}
-                color="light"
-                data-cy="last-page"
-              >
-                <Trans>Last</Trans>
-              </Button>
-            </>
-          )}
+                <Button
+                  onClick={() => gotoPage(pageCount - 1)}
+                  size={'sm'}
+                  color="light"
+                  data-cy="last-page"
+                >
+                  <Trans>Last</Trans>
+                </Button>
+              </>
+            )}
 
-          <span>
-            Page{' '}
-            <strong>
-              <span data-cy="current-page">{pageIndex + 1}</span> of{' '}
-              <span data-cy="total-pages">{pageOptions.length}</span>
-            </strong>{' '}
-          </span>
-          <Dropdown
-            color={'gray'}
-            label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
-            style={{ width: 120 }}
-            size="sm"
-            value={pageSize}
-          >
-            {[10, 50, 100, 9999].map((pageSize) => (
-              <Dropdown.Item
-                key={pageSize}
-                onClick={() => {
-                  setPageSize(Number(pageSize));
-                }}
-              >
-                {pageSize === 9999 ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
-        </div>
+            <span>
+              Page{' '}
+              <strong>
+                <span data-cy="current-page">{pageIndex + 1}</span> of{' '}
+                <span data-cy="total-pages">{pageOptions.length}</span>
+              </strong>{' '}
+            </span>
+            <Dropdown
+              color={'gray'}
+              label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
+              style={{ width: 120 }}
+              size="sm"
+              value={pageSize}
+            >
+              {[10, 50, 100, 9999].map((pageSize) => (
+                <Dropdown.Item
+                  key={pageSize}
+                  onClick={() => {
+                    setPageSize(Number(pageSize));
+                  }}
+                >
+                  {pageSize === 9999 ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+          </div>
+        )}
       </div>
     </div>
   );

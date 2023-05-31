@@ -252,6 +252,22 @@ describe('Cite pages', () => {
     cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10').should(
       'be.visible'
     );
+
+    cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
+  });
+
+  it('Should pre-fill submit report response form', () => {
+    cy.visit(url);
+
+    cy.contains('New Response').scrollIntoView().click();
+
+    cy.waitForStableDOM();
+
+    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new response to incident 10').should(
+      'be.visible'
+    );
+
+    cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
   });
 
   it('should render Next and Previous incident buttons', () => {

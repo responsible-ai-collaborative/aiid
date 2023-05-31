@@ -32,6 +32,11 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
   const toggleReadMore = () => {
     if (alwaysExpanded) return;
     setExpanded(!expanded);
+    const card = ref.current;
+
+    if (card && expanded) {
+      card.scrollIntoView();
+    }
   };
 
   const toggleReadMoreKeyDown = (e) => {
@@ -102,8 +107,6 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           observer.unobserve(card);
         }
       };
-    } else {
-      card.scrollIntoView();
     }
   }, [expanded]);
 

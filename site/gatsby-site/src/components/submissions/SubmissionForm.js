@@ -333,8 +333,8 @@ const SubmissionForm = () => {
           columns={['byIncidentId']}
         />
 
-        {!values.incident_id && (
-          <>
+        {(!values.incident_ids || values.incident_ids.length === 0) && (
+          <div data-cy="incident-data-section">
             <hr className="my-4" />
             <h3 className="text-lg">Incident Data</h3>
             <TextInputGroup
@@ -400,7 +400,7 @@ const SubmissionForm = () => {
               {...TextInputGroupProps}
             />
             <hr />
-          </>
+          </div>
         )}
 
         <TextInputGroup
