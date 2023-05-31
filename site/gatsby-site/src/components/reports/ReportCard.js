@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image as CloudinaryImage } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, Tooltip, Badge } from 'flowbite-react';
+import { Tooltip, Badge } from 'flowbite-react';
 import Markdown from 'react-markdown';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
@@ -14,10 +13,15 @@ import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
+import { format, fromUnixTime } from 'date-fns';
 
-const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }) => {
-  const { isRole, loading } = useUserContext();
-
+const ReportCard = ({
+  item,
+  className = '',
+  alwaysExpanded = false,
+  actions = null,
+  reportTitle = null,
+}) => {
   const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(alwaysExpanded);
@@ -135,35 +139,34 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
         </div>
         <div className="mt-0 cursor-default select-text">
           <div className="flex">
-            <button
-              className="w-3/4 text-left"
-              onClick={toggleReadMore}
-              onKeyDown={toggleReadMoreKeyDown}
-            >
-              <h5
-                className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
-                  !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
-                }`}
+            {reportTitle ? (
+              <>{reportTitle}</>
+            ) : (
+              <button
+                className="w-3/4 text-left"
+                onClick={toggleReadMore}
+                onKeyDown={toggleReadMoreKeyDown}
               >
-                <Trans ns="landing">{item.title}</Trans>
-              </h5>
-            </button>
+                <h5
+                  className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
+                    !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
+                  }`}
+                >
+                  <Trans ns="landing">{item.title}</Trans>
+                </h5>
+              </button>
+            )}
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between flex-wrap">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
-              {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+              {item.date_published
+                ? item.date_published.substring(0, 4)
+                : item.epoch_date_published
+                ? format(fromUnixTime(item.epoch_date_published), 'yyyy')
+                : 'Needs publish date'}
             </WebArchiveLink>
-            {!loading && isRole('incident_editor') && (
-              <Button
-                data-cy="edit-report"
-                size={'xs'}
-                color="light"
-                href={`/cite/edit?report_number=${item.report_number}&incident_id=${incidentId}`}
-              >
-                <Trans>Edit</Trans>
-              </Button>
-            )}
+            {actions && <>{actions}</>}
           </div>
           <div className="mt-1 flex w-fit">
             <TranslationBadge className="mx-2" originalLanguage={item.language} />
