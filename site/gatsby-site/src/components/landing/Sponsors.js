@@ -78,6 +78,26 @@ export default function Sponsors() {
               <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
                 <StyledImageCover src="/images/reportcover.png" className="border-1" />
               </a>
+              <p className="italic">
+                <Trans i18nKey="forms" ns="landing">
+                  View the Responsible AI Collaborative’s{' '}
+                  <a
+                    href="https://drive.google.com/file/d/1mTgbaDIbvNQU8PRaz7yG_pP7ibsqNNo9/view?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Form 990
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    href="https://drive.google.com/file/d/1Gj0DnBKYJF2jO59MeymW8R1SCv60m6Jb/view?usp=share_link"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    tax-exempt application.
+                  </a>
+                </Trans>
+              </p>
             </span>
           </div>
           <div className="flex justify-center items-center gap-5 md:gap-6 flex-nowrap flex-col flex-1">
