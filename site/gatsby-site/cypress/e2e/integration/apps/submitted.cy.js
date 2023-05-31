@@ -1226,4 +1226,149 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="update-btn"]').should('be.disabled');
   });
+
+  maybeIt(
+    'Edits a submission - links to existing incident - Incident Data should be hidden',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        submittedReports
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submittedReports.data.submissions[0],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindEntities',
+        'FindEntities',
+        {
+          data: {
+            entities: [
+              { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+              { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentsTitles',
+        'FindIncidentsTitles',
+        {
+          data: {
+            incidents: [
+              {
+                __typename: 'Incident',
+                incident_id: 1,
+                title: 'Test title',
+                date: '2016-03-13',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.wait('@FindSubmissions');
+
+      cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+      cy.get('@promoteForm').within(() => {
+        cy.get('[data-cy="review-button"]').click();
+      });
+
+      cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+      cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+      cy.waitForStableDOM();
+
+      cy.get(`input[name="incident_ids"]`).type('1');
+
+      cy.waitForStableDOM();
+
+      cy.get(`[role="option"]`).first().click();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="incident-data-section"]').should('not.exist');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'UpdateSubmission',
+        'UpdateSubmission',
+        {
+          data: {
+            updateOneSubmission: {
+              ...submittedReports.data.submissions[0],
+              incident_ids: [1],
+            },
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'UpsertEntity' &&
+          req.body.variables.entity.entity_id == 'adults',
+        'UpsertAdults',
+        {
+          data: {
+            upsertOneEntity: { __typename: 'Entity', entity_id: 'adults', name: 'Adults' },
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'UpsertEntity' &&
+          req.body.variables.entity.entity_id == 'google',
+        'UpsertGoogle',
+        {
+          data: {
+            upsertOneEntity: { __typename: 'Entity', entity_id: 'google', name: 'Google' },
+          },
+        }
+      );
+
+      cy.get('@modal').contains('Update').click();
+
+      cy.wait('@UpsertGoogle')
+        .its('request.body.variables.entity.entity_id')
+        .should('eq', 'google');
+
+      cy.wait('@UpsertAdults')
+        .its('request.body.variables.entity.entity_id')
+        .should('eq', 'adults');
+
+      cy.wait('@UpdateSubmission').then((xhr) => {
+        expect(xhr.request.body.variables.query).to.deep.nested.include({
+          _id: submittedReports.data.submissions[0]._id,
+        });
+
+        expect(xhr.request.body.variables.set).to.deep.nested.include({
+          incident_ids: [1],
+        });
+      });
+
+      cy.get('@modal').should('not.exist');
+    }
+  );
 });
