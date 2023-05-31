@@ -58,9 +58,7 @@ function NewIncidentPage(props) {
         reports: { link: [] },
         embedding: {
           ...values.embedding,
-          __typename: undefined,
         },
-        __typename: undefined,
       };
 
       const { entities } = entitiesData;
@@ -82,6 +80,9 @@ function NewIncidentPage(props) {
         values.AllegedHarmedOrNearlyHarmedParties,
         createEntityMutation
       );
+
+      newIncident.editor_similar_incidents = [];
+      newIncident.editor_dissimilar_incidents = [];
 
       await insertIncident({ variables: { incident: newIncident } });
 

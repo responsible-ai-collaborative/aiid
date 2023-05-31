@@ -136,6 +136,9 @@ describe('New Incident page', () => {
       expect(xhr.request.body.variables.incident.title).to.eq('Test title');
       expect(xhr.request.body.variables.incident.description).to.eq('Test description');
       expect(xhr.request.body.variables.incident.date).to.eq('2021-01-02');
+      expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq([]);
+      expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq([]);
+
       expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq([
         'test-deployer',
       ]);
