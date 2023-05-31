@@ -69,7 +69,7 @@ function Entity({ attributes, cell, setData, enableDelete = false }) {
               >
                 {a.short_name}
               </th>
-              <td className="py-1">{JSON.parse(a.value_json)}</td>
+              <td className="py-1">{a.value_json}</td>
             </tr>
           ))}
         </tbody>
