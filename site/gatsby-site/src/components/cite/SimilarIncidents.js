@@ -9,7 +9,6 @@ import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import Card from '../../elements/Card';
 import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -33,7 +32,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   return (
-    <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
+    <div
+      data-cy="similar-incident-card"
+      className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 pb-4"
+    >
       <LocalizedLink to={`/cite/${incident.incident_id}`} data-cy="cite-link">
         {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
           <div className="object-cover w-full aspect-[16/9]">
@@ -45,16 +47,17 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               transformation={fill().height(480)}
               alt={incident.title}
               itemIdentifier={t('Incident {{id}}', { id: incident.incident_id }).replace(' ', '.')}
+              className="rounded-t-lg"
             />
           </div>
         )}
 
-        <h3 className="text-lg m-4">
+        <h3 className="text-base m-4 text-gray-900 hover:text-primary-blue">
           {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
         </h3>
       </LocalizedLink>
-      <div className="flex w-full flex-row items-center font-bold mt-0 absolute pr-4 bottom-4">
-        <div className="text-muted-gray text-sm mx-4">
+      <div className="flex w-full flex-row items-center mt-0 pr-4 bottom-4">
+        <div className="text-sm text-gray-500 dark:text-gray-400 mx-4">
           {parsedDate && (
             <>
               <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
@@ -69,7 +72,9 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         {flaggable && (
           <Button
             variant="link"
-            className={`tw-flag-button ${isFlagged ? ' flagged' : ''} z-3`}
+            className={`p-0 hover:text-gray-500 ${
+              isFlagged ? ' text-red-500' : 'text-dark-gray'
+            } z-3`}
             data-cy="flag-similar-incident"
             onClick={async () => {
               await updateIncident({
@@ -97,11 +102,11 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               setFlagged(!isFlagged);
             }}
           >
-            <FontAwesomeIcon icon={faFlag} />
+            <FontAwesomeIcon icon={faFlag} className="hover:text-primary-blue" />
           </Button>
         )}
       </div>
-    </Card>
+    </div>
   );
 };
 
@@ -132,16 +137,18 @@ const SimilarIncidents = ({
   return (
     <div className={`tw-similar-incidents ${className}`}>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents" className="leading-9">
-          <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
+        <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
+          <h1 id="similar-incidents" className="text-xl dark:text-white w-full inline leading-9">
             <Trans>Similar Incidents</Trans>
-          </LocalizedLink>
-        </h2>
+          </h1>
+        </LocalizedLink>
       )}
       {editor_similar_incidents.length > 0 && (
         <>
-          <div className="tw-subtitle">
-            <Trans>Selected by our editors</Trans>
+          <div className="flex gap-2 items-center mt-2">
+            <h5 className="text-base tracking-tight text-gray-900 dark:text-white relative block mb-0">
+              <Trans>Selected by our editors</Trans>
+            </h5>
             {!loading && isRole('incident_editor') && (
               <a
                 className="tw-edit-icon"
@@ -149,7 +156,7 @@ const SimilarIncidents = ({
                 title="Change the displayed similar incidents"
                 data-cy="edit-similar-incidents"
               >
-                <FontAwesomeIcon icon={faEdit} />
+                <FontAwesomeIcon icon={faEdit} className="text-gray-700 hover:text-primary-blue" />
               </a>
             )}
           </div>
@@ -169,12 +176,17 @@ const SimilarIncidents = ({
 
       {nlp_only_incidents.length > 0 && (
         <>
-          <div className="tw-subtitle">
-            <Trans>By textual similarity</Trans>
-            <span className="tw-actions-icons">
+          <div className="flex gap-2 items-center mt-2">
+            <h5 className="text-base tracking-tight text-gray-900 dark:text-white relative block mb-0">
+              <Trans>By textual similarity</Trans>
+            </h5>
+            <span className="flex gap-2 items-center">
               {blogPostUrl && (
                 <Link to={blogPostUrl} data-cy="about-similar-incidents">
-                  <FontAwesomeIcon icon={faQuestionCircle} />
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    className="text-gray-700 hover:text-primary-blue"
+                  />
                 </Link>
               )}
               {!loading && isRole('incident_editor') && (
@@ -184,15 +196,19 @@ const SimilarIncidents = ({
                   title="Change the displayed similar incidents"
                   data-cy="edit-similar-incidents"
                 >
-                  <FontAwesomeIcon icon={faEdit} />
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-gray-700 hover:text-primary-blue"
+                  />
                 </a>
               )}
             </span>
           </div>
-          <p className="tw-flag-prompt mt-2">
+          <p className="mt-2">
             <Trans>
-              Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
-              unrelated incidents
+              Did <strong>our</strong> AI mess up? Flag{' '}
+              <FontAwesomeIcon icon={faFlag} className="mx-1 text-dark-gray" /> the unrelated
+              incidents
             </Trans>
           </p>
           <div
