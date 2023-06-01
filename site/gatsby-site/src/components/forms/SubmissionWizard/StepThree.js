@@ -1,6 +1,6 @@
 import { Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -189,10 +189,12 @@ const FormDetails = ({
     }
   }, [submissionFailed]);
 
-  const saveInLocalStorage = debounce((values) => {
-    localStorage.setItem('formValues', JSON.stringify(values));
-    setSavingInLocalStorage(false);
-  }, 2000);
+  const saveInLocalStorage = useRef(
+    debounce((values) => {
+      localStorage.setItem('formValues', JSON.stringify(values));
+      setSavingInLocalStorage(false);
+    }, 2000)
+  ).current;
 
   useEffect(() => {
     // Save form values to local storage when form values change
