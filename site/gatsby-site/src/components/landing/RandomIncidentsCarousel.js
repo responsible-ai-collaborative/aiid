@@ -5,8 +5,7 @@ import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Carousel } from 'flowbite-react';
 import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleLeft, faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 const RandomIncidentsCarousel = () => {
   return (
@@ -65,18 +64,8 @@ const RandomIncidentsCarousel = () => {
               <Carousel
                 slideInterval={6000}
                 slide={false}
-                leftControl={
-                  <FontAwesomeIcon
-                    icon={faArrowCircleLeft}
-                    className="h-8 w-8 text-white bg-gray-500 shadow rounded-full"
-                  />
-                }
-                rightControl={
-                  <FontAwesomeIcon
-                    icon={faArrowCircleRight}
-                    className="h-8 w-8 text-white bg-gray-500 shadow rounded-full"
-                  />
-                }
+                leftControl={<CarouselLeftArrow />}
+                rightControl={<CarouselRightArrow />}
               >
                 {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
                   <Link
