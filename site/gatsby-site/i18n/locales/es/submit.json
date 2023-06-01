@@ -54,5 +54,9 @@
   "Step 2 - additional information": "Step 2 - additional information",
   "Step 3 - Tell us more": "Step 3 - Tell us more",
   "Adding a new report to incident {{incident_id}}": "Agregando un nuevo informe al incidente {{incident_id}}",
-  "Adding a new response to incident {{incident_id}}": "Agregando una nueva respuesta al incidente {{incident_id}}"
+  "Adding a new response to incident {{incident_id}}": "Agregando una nueva respuesta al incidente {{incident_id}}",
+  "Progress saved!": "¡Progreso guardado!",
+  "Your changes are saved. You can continue filling out the report or come back later.": "Sus cambios se están guardando. Puede continuar completando el reporte o volver más tarde.",
+  "Clear Form": "Limpiar Formulario",
+  "Saving changes...": "Guardando cambios..."
 }
