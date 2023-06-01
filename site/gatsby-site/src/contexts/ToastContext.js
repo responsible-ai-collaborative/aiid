@@ -2,15 +2,12 @@ import React, { useCallback, useEffect, useState, createContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { globalHistory } from '@reach/router';
 import { Toast } from 'flowbite-react';
-import { useRollbar } from './RollbarContext';
 
 const ToastContext = createContext();
 
 export default ToastContext;
 
 export function ToastContextProvider({ children }) {
-  const rollbar = useRollbar();
-
   const [toasts, setToasts] = useState([]);
 
   globalHistory.listen(() => {
@@ -46,8 +43,8 @@ export function ToastContextProvider({ children }) {
       {children}
       <div className="fixed bottom-0 left-0 max-w-full z-50 box-conten mb-4 ml-4">
         {toasts.map(({ message, severity, error, id }, index) => {
-          if (error) {
-            rollbar.error(error);
+          if ('Rollbar' in window && error) {
+            Rollbar.error(error);
           }
           return (
             <Toast className="tw-toast" data-cy="toast" key={id}>
