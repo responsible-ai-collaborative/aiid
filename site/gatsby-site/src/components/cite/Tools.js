@@ -59,7 +59,7 @@ function Tools({
         </Button>
         <Button
           color="gray"
-          href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
+          href={`/apps/submit?tags=${RESPONSE_TAG}&incident_ids=${incident.incident_id}`}
         >
           <FontAwesomeIcon
             icon={faPlus}
