@@ -7,6 +7,7 @@ import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/T
 import ProgressCircle from 'elements/ProgessCircle';
 import isEmpty from 'lodash/isEmpty';
 import filter from 'lodash/filter';
+import { STATUS } from 'utils/submissions';
 
 const SubmissionList = ({ data }) => {
   const { t } = useTranslation();
@@ -106,15 +107,25 @@ const SubmissionList = ({ data }) => {
       },
       {
         title: t('Assignee'),
-        accessor: 'assignee',
-        Cell: () => {
+        accessor: 'editor',
+        Cell: ({ row: { values } }) => {
+          const editor = values.editor;
+
+          if (!editor) return <></>;
+
+          const firstName = editor.first_name;
+
+          const lastName = editor.last_name;
+
+          const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+
           return (
             <div className="flex justify-center">
               <div
                 className="!rounded-full w-10 h-10 relative overflow-hidden bg-blue-100 text-blue-800 dark:bg-gray-600 flex justify-center items-center"
                 data-testid="flowbite-avatar-img"
               >
-                KL
+                {initials}
               </div>
             </div>
           );
@@ -122,12 +133,15 @@ const SubmissionList = ({ data }) => {
       },
       {
         title: t('Status'),
+        className: 'min-w-[200px]',
         accessor: 'status',
-        Cell: () => {
+        Cell: ({ row: { values } }) => {
+          let color = STATUS[values.status]?.color || 'warning';
+
           return (
             <div className="flex justify-center">
-              <Badge color="success" className="mr-2">
-                In Review
+              <Badge color={color} className="mr-2">
+                <Trans>{STATUS[values.status]?.text || 'Pending Review'}</Trans>
               </Badge>
             </div>
           );

@@ -141,6 +141,12 @@
         },
         "user": {
             "bsonType": "string"
+        },
+        "status": {
+            "bsonType": "string"
+        },
+        "editor": {
+            "bsonType": "string"
         }
     },
     "required": [

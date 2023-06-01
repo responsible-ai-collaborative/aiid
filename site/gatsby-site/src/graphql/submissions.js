@@ -51,6 +51,12 @@ export const FIND_SUBMISSIONS = gql`
         entity_id
         name
       }
+      editor {
+        userId
+        first_name
+        last_name
+      }
+      status
     }
   }
 `;
