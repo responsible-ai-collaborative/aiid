@@ -158,7 +158,6 @@ describe('Pages', () => {
 
       const parsedXml = Cypress.$.parseXML(xml);
 
-      console.log(parsedXml);
       const hasChannelTag = Cypress.$(parsedXml).find('channel').length > 0;
 
       expect(hasChannelTag).to.be.true;
