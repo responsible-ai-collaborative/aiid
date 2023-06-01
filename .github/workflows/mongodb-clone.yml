@@ -1,0 +1,29 @@
+name: Restore Prod DB into Staging
+on: [workflow_dispatch]
+jobs:
+  mongo-clone-action:
+    runs-on: ubuntu-latest
+    name: Restore Prod DB into Staging
+    steps:
+      - name: Install Mongo Tools
+        run : |
+          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
+          echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt update
+          sudo apt install mongodb-database-tools
+          mongodump --version
+          mongorestore --version
+        shell: bash
+
+      - name: "Dump Production database"
+        shell: bash
+        run: mongodump --uri="${{ secrets.DB_PRODUCTION_CONNECTION_STRING }}"
+
+      - name: "Restore Staging database collection: aiidprod"
+        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/aiidprod ./dump/aiidprod --drop --noOptionsRestore
+        
+      - name: "Restore Staging database collection: translations"
+        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/translations ./dump/translations --drop --noOptionsRestore
+
+      - name: Trigger Staging Netlify build
+        run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_STAGING_URL }}
