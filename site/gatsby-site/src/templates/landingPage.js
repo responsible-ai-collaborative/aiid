@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -18,6 +17,7 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const LandingPage = (props) => {
   const { data } = props;
@@ -61,9 +61,15 @@ const LandingPage = (props) => {
     },
   };
 
+  const { setSidebar } = useMenuContext();
+
+  useEffect(() => {
+    setSidebar(<div>Hi</div>);
+  }, [setSidebar]);
+
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
-    <Layout {...props} className="max-w-full 2xl:w-[72rem]">
+    <div {...props} className="max-w-full 2xl:w-[72rem]">
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
@@ -133,7 +139,7 @@ const LandingPage = (props) => {
           <Sponsors />
         </div>
       </Container>
-    </Layout>
+    </div>
   );
 };
 

@@ -9,12 +9,18 @@ const MenuContext = createContext({
   setManual: (value) => {
     value;
   },
+  sidebar: null,
+  setSidebar: (value) => {
+    value;
+  },
 });
 
 export default MenuContext;
 
 export function MenuContextProvider({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const [sidebar, setSidebar] = useState(null);
 
   const [manual, setIsManual] = useState(false);
 
@@ -33,6 +39,8 @@ export function MenuContextProvider({ children }) {
         collapseMenu,
         manual,
         setManual,
+        sidebar,
+        setSidebar,
       }}
     >
       {children}
