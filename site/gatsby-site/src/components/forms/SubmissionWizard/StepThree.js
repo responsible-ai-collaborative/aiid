@@ -193,7 +193,7 @@ const FormDetails = ({
     debounce((values) => {
       localStorage.setItem('formValues', JSON.stringify(values));
       setSavingInLocalStorage(false);
-    }, 2000)
+    }, 1000)
   ).current;
 
   useEffect(() => {
