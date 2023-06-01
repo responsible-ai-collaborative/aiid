@@ -346,6 +346,7 @@ function CiteTemplate({
                     size={'xs'}
                     color="light"
                     href={`/cite/edit?report_number=${report.report_number}&incident_id=${incident.incident_id}`}
+                    className="hover:no-underline "
                   >
                     <Trans>Edit</Trans>
                   </Button>
