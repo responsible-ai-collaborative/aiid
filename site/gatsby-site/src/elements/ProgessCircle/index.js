@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-const ProgressCircle = ({ percentage, size = 50, strokeWidth = 5, className = '' }) => {
+const ProgressCircle = ({
+  percentage,
+  size = 50,
+  strokeWidth = 5,
+  className = '',
+  color = null,
+}) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
@@ -32,7 +38,7 @@ const ProgressCircle = ({ percentage, size = 50, strokeWidth = 5, className = ''
           2 * Math.PI * (size / 2 - strokeWidth / 2)
         }`}
         strokeDashoffset={offset}
-        stroke="#00b4d8"
+        stroke={color || '#00b4d8'}
         fill="transparent"
       />
       <text x={size / 2} y={size / 2} textAnchor="middle" dominantBaseline="central">

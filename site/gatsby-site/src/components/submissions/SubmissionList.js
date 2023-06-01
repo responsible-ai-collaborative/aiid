@@ -5,6 +5,8 @@ import { useUserContext } from 'contexts/userContext';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import ProgressCircle from 'elements/ProgessCircle';
+import isEmpty from 'lodash/isEmpty';
+import filter from 'lodash/filter';
 
 const SubmissionList = ({ data }) => {
   const { t } = useTranslation();
@@ -28,6 +30,14 @@ const SubmissionList = ({ data }) => {
     []
   );
 
+  const getRowCompletionStatus = (row) => {
+    const properties = Object.values(row.original);
+
+    const nonEmptyCount = filter(properties, (value) => !isEmpty(value)).length;
+
+    return Math.ceil((nonEmptyCount / properties.length) * 100);
+  };
+
   const columns = React.useMemo(() => {
     const columns = [
       {
@@ -35,11 +45,25 @@ const SubmissionList = ({ data }) => {
         title: t('Completion'),
         accessor: 'completionStatus',
         disableFilters: true,
-        Cell: () => (
-          <div className="flex items-center justify-center">
-            <ProgressCircle percentage={70} />
-          </div>
-        ),
+        Cell: ({ row }) => {
+          const completionStatus = getRowCompletionStatus(row);
+
+          return (
+            <div className="flex items-center justify-center">
+              <ProgressCircle
+                percentage={completionStatus}
+                color={completionStatus > 60 ? '#22c55e' : completionStatus > 0 ? '#eab308' : null}
+              />
+            </div>
+          );
+        },
+        sortType: (rowA, rowB) => {
+          const completionStatusA = getRowCompletionStatus(rowA);
+
+          const completionStatusB = getRowCompletionStatus(rowB);
+
+          return completionStatusA - completionStatusB;
+        },
       },
       {
         className: 'min-w-[120px]',
@@ -161,7 +185,9 @@ const SubmissionList = ({ data }) => {
     //       </div>
     //     ))}
     // </ListGroup>
-    <Table table={table} data-cy="submissions" className="mb-5" />
+    <div className="rounded-lg border">
+      <Table table={table} data-cy="submissions" className="mb-5" />
+    </div>
   );
 };
 
