@@ -16,6 +16,32 @@ import config from '../../../config.js';
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 
+function HeaderLink({ className, headerTitle, logo, finalLogoLink }) {
+  return (
+    <Link to={finalLogoLink} className={`flex items-center ${className}`}>
+      <div className="md:w-64 text-center">
+        <img
+          className={'hidden md:inline ml-[10px] mr-[10px] w-[200px]'}
+          src={logo.image !== '' ? logo.image : logoImg}
+          alt={'logo'}
+          loading="lazy"
+        />
+        <img
+          className="md:hidden w-[50px]"
+          src={logo.mobile !== '' ? logo.mobile : logoImg}
+          alt={'logo'}
+          loading="lazy"
+        />
+      </div>
+      <Divider />
+      <span
+        className="inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
+        dangerouslySetInnerHTML={{ __html: headerTitle }}
+      />
+    </Link>
+  );
+}
+
 const Header = ({ location = null }) => {
   const [navCollapsed, setNavCollapsed] = useState(true);
 
@@ -110,30 +136,6 @@ const Header = ({ location = null }) => {
             </div>
           );
 
-        var HeaderLink = ({ className }) => (
-          <Link to={finalLogoLink} className={`flex items-center ${className}`}>
-            <div className="md:w-64 text-center">
-              <img
-                className={'hidden md:inline ml-[10px] mr-[10px] w-[200px]'}
-                src={logo.image !== '' ? logo.image : logoImg}
-                alt={'logo'}
-                loading="lazy"
-              />
-              <img
-                className="md:hidden w-[50px]"
-                src={logo.mobile !== '' ? logo.mobile : logoImg}
-                alt={'logo'}
-                loading="lazy"
-              />
-            </div>
-            <Divider />
-            <span
-              className="inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
-              dangerouslySetInnerHTML={{ __html: headerTitle }}
-            />
-          </Link>
-        );
-
         var SkipToContent = ({ className }) => (
           <a
             href="#content"
@@ -159,7 +161,12 @@ const Header = ({ location = null }) => {
             <div className=" text-white flex flex-row items-center w-full p-4 md:pl-0 h-[80px]">
               <SkipToContent className="-order-1 mx-2" />
 
-              <HeaderLink className="-order-3" />
+              <HeaderLink
+                className="-order-3"
+                finalLogoLink={finalLogoLink}
+                headerTitle={headerTitle}
+                logo={logo}
+              />
 
               <div className="mx-auto -order-2" />
 
