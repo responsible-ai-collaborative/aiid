@@ -71,7 +71,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
   const [showFlag, setShowFlag] = useState(false);
 
   return (
-    <>
+    <div className="flex flex-wrap">
       <WebArchiveLink
         url={item.url}
         date={item.date_submitted}
@@ -166,6 +166,6 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
           {item.incident_id}
         </CustomButton>
       )}
-    </>
+    </div>
   );
 }
