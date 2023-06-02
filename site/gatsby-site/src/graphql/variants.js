@@ -9,7 +9,7 @@ export const FIND_VARIANTS = gql`
       title
       description
       url
-      image_url
+      media_url
       cloudinary_id
       source_domain
       text
@@ -80,7 +80,7 @@ export const UPDATE_VARIANT = gql`
       epoch_date_published
       epoch_date_downloaded
       epoch_date_modified
-      image_url
+      media_url
       text
       plain_text
       tags
