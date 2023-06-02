@@ -209,7 +209,7 @@ export const FIND_FULL_INCIDENT = gql`
         title
         description
         url
-        image_url
+        media_url
         cloudinary_id
         source_domain
         text

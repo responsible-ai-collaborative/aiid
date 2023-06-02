@@ -1,6 +1,6 @@
 import { Button, Select, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import Label from '../Label';
@@ -13,6 +13,7 @@ import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/userContext';
+import { debounce } from 'debounce';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -42,7 +43,7 @@ const StepTwo = (props) => {
   };
 
   useEffect(() => {
-    setData(props.data);
+    setData({ ...props.data });
   }, [props.data]);
 
   return (
@@ -60,6 +61,7 @@ const StepTwo = (props) => {
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
+          setSavingInLocalStorage={props.setSavingInLocalStorage}
         />
       </Formik>
     </StepContainer>
@@ -73,6 +75,7 @@ const FormDetails = ({
   submitForm,
   validateAndSubmitForm,
   submissionFailed,
+  setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -109,6 +112,19 @@ const FormDetails = ({
       setIsSubmitting(false);
     }
   }, [submissionFailed]);
+
+  const saveInLocalStorage = useRef(
+    debounce((values) => {
+      localStorage.setItem('formValues', JSON.stringify(values));
+      setSavingInLocalStorage(false);
+    }, 1000)
+  ).current;
+
+  useEffect(() => {
+    // Save form values to local storage when form values change
+    setSavingInLocalStorage(true);
+    saveInLocalStorage(values);
+  }, [values]);
 
   const isUserDetailsComplete =
     user?.profile?.email && user.customData.first_name && user.customData.last_name;
