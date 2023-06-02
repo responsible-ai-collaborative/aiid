@@ -42,7 +42,7 @@ import FlowbiteSearchInput from './FlowbiteSearchInput';
 // * submitters: Array(string) # People that submitted the incident report
 // * authors: Array(string) # People that wrote the incident report
 // * date_published: `2019-07-25` # (Date or null) The publication date of the report.
-// * image_url: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
+// * media_url: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
 
 // set in DB function //

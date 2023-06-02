@@ -20,7 +20,7 @@ const convertData = (hits) => {
     url: hit.url,
     'source domain': hit.source_domain,
     language: hit.language,
-    image: hit.image_url,
+    media: hit.media_url,
     authors: hit.authors.join(','),
     submitters: hit.submitters.join(','),
   }));
