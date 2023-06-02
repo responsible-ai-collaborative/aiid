@@ -2,7 +2,6 @@ import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
-import Layout from 'components/Layout';
 import config from '../../config';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
@@ -41,7 +40,7 @@ export default function Post(props) {
   );
 
   return (
-    <Layout {...{ ...props, rightSidebar }}>
+    <div {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <LocalizedLink to="/blog" className="text-lg">
@@ -75,7 +74,7 @@ export default function Post(props) {
       <div className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>
-    </Layout>
+    </div>
   );
 }
 

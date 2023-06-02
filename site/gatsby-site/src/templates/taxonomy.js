@@ -5,7 +5,6 @@ import Markdown from 'react-markdown';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge, Button } from 'flowbite-react';
@@ -280,7 +279,7 @@ const Taxonomy = (props) => {
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
@@ -320,7 +319,7 @@ const Taxonomy = (props) => {
             </div>
           ))}
       </div>
-    </Layout>
+    </>
   );
 };
 

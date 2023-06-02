@@ -2,7 +2,6 @@ import React from 'react';
 import { Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import { Trans, useTranslation } from 'react-i18next';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import AiidHelmet from 'components/AiidHelmet';
 import UserSubscriptions from 'components/UserSubscriptions';
@@ -14,7 +13,7 @@ const Account = (props) => {
   const { t } = useTranslation(['account']);
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Account Details')}</title>
       </AiidHelmet>
@@ -49,7 +48,7 @@ const Account = (props) => {
           <Trans ns="login">Login</Trans>
         </Link>
       )}
-    </Layout>
+    </>
   );
 };
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
@@ -51,7 +50,7 @@ function ReportPage(props) {
   }
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -68,7 +67,7 @@ function ReportPage(props) {
       <Container>
         <ReportCard item={report} alwaysExpanded={true} actions={actions} />
       </Container>
-    </Layout>
+    </>
   );
 }
 

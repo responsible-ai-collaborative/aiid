@@ -4,7 +4,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -61,12 +60,16 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
           path: props.location.pathname,
         }}
       />
-      <Layout {...props} sidebarCollapsed={true} className="w-full">
+      <div
+        {...props}
+        // sidebarCollapsed={true}
+        className="w-full"
+      >
         <div className="titleWrapper">
           <h1>{t(metaTitle)}</h1>
         </div>
         <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
-      </Layout>
+      </div>
     </>
   );
 };

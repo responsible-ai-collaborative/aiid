@@ -10,7 +10,6 @@ import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
-import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -147,7 +146,7 @@ export default function ClassificationsDbView(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const [collapse, setCollapse] = useState(true);
+  // const [collapse, setCollapse] = useState(true);
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
@@ -510,18 +509,16 @@ export default function ClassificationsDbView(props) {
   const fullTextModal = useModal();
 
   return (
-    <Layout
+    <div
       {...props}
-      menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
-      sidebarCollapsed={true}
+      // menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
+      // sidebarCollapsed={true}
     >
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <div
-        className={`p-0 md:p-[auto] my-0 mx-[auto] overflow-auto whitespace-nowrap text=[0.8em] ${
-          collapse ? 'max-w-[100vw] py-0 pr-0 pl-11' : 'max-w-[calc(100vw-298px)]'
-        }`}
+        className={`p-0 md:p-[auto] my-0 mx-[auto] overflow-auto whitespace-nowrap text=[0.8em]`}
       >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
@@ -573,6 +570,6 @@ export default function ClassificationsDbView(props) {
           <Modal.Body>{modalContent.content}</Modal.Body>
         </Modal>
       )}
-    </Layout>
+    </div>
   );
 }

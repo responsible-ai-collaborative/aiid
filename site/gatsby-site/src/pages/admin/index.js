@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from 'components/Layout';
 import AiidHelmet from 'components/AiidHelmet';
 import { FIND_USERS } from '../../graphql/users';
 import { useQuery } from '@apollo/client/react';
@@ -17,7 +16,7 @@ const AdminPage = (props) => {
   const { isRole, loading: loadingAuth } = useUserContext();
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full">
+    <div {...props} className="w-full">
       <AiidHelmet path={pathname}>
         <title>Admin</title>
       </AiidHelmet>
@@ -26,7 +25,7 @@ const AdminPage = (props) => {
         {!loading && !loadingAuth && !isRole('admin') && <div>Not enough permissions</div>}
         {data?.users && isRole('admin') && <UsersTable data={data.users} />}
       </div>
-    </Layout>
+    </div>
   );
 };
 

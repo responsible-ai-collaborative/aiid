@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Layout from '../components/Layout';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -58,7 +57,7 @@ const SignUp = (props) => {
   };
 
   return (
-    <Layout {...props}>
+    <>
       <div className="flex gap-8 flex-wrap">
         <Card className="max-w-lg w-96 p-4 shadow-md">
           <h5 className="text-2xl font-bold tracking-tight pb-2 text-gray-900 dark:text-white">
@@ -237,7 +236,7 @@ const SignUp = (props) => {
           <NewsletterSignup />
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 
