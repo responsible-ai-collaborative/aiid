@@ -180,6 +180,7 @@ const plugins = [
                   title
                   url
                   text
+                  plain_text
                   id
                   image_url
                   cloudinary_id
