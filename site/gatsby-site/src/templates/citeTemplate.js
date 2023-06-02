@@ -255,7 +255,7 @@ function CiteTemplate({
           </Row>
 
           <Container>
-            <VideoPlayerCard videoURLs={videoURLs} />
+            <VideoPlayerCard videoURLs={videoURLs} data-cy="incident-video" />
             <Row>
               <Col>
                 <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">

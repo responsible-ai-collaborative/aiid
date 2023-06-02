@@ -27,7 +27,7 @@ const VideoPlayer = ({ mediaURL, className = '', fallback = null, onError = () =
   const [useVideo, setUseVideo] = useState(true);
 
   return useVideo ? (
-    <div className={`aspect-w-16 aspect-h-9 ${className}`}>
+    <div className={`aspect-w-16 aspect-h-9 ${className}`} data-cy="video-player">
       <ReactPlayer
         url={mediaURL}
         controls

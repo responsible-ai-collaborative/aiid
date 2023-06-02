@@ -186,6 +186,16 @@ describe('The Discover app', () => {
     cy.get('@modal').should('not.exist');
   });
 
+  it('Should not have a video player for incidents without video URLs', () => {
+    cy.visit(
+      url +
+        '?display=details&incident_id=10&s=%E2%80%8BIs%20Starbucks%20shortchanging%20its%20baristas%3F'
+    );
+
+    // Update this with "should exist" if using reports with video URLs.
+    cy.get('[data-cy="video-player"]').should('not.exist');
+  });
+
   it('Opens an archive link', () => {
     cy.visit(url, {
       onBeforeLoad: (win) => {

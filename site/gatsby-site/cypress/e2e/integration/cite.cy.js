@@ -572,6 +572,13 @@ describe('Cite pages', () => {
     });
   });
 
+  it('Should not display Video Player card', () => {
+    cy.visit(url);
+
+    // Update this to exists if updated to incident with video.
+    cy.get('[data-cy="incident-video"]').should('not.exist');
+  });
+
   var CSETv1Fields = [
     'Notes',
     'Incident Number',
