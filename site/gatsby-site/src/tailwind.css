@@ -290,14 +290,6 @@
         @apply ml-[0.5ch] mr-[0.5ch] text-dark-gray;
     }
 
-    .tw-flag-button {
-        @apply p-0 text-dark-gray hover:text-gray-500;
-    }
-
-    .tw-flag-button.flagged {
-        @apply text-red-50;
-    }
-
     .tw-card-set {
         @apply gap-4 mb-8 grid grid-cols-1 lg:grid-cols-2 1300px:grid-cols-3;
     }

@@ -64,7 +64,7 @@ const ToolPage = (props) => {
   return (
     <Layout {...props} className="w-full">
       <AiidHelmet path={pathname}>
-        <title>Test</title>
+        <title>CSET Tool</title>
       </AiidHelmet>
       <div className="w-full max-w-full">
         {loading ? (
