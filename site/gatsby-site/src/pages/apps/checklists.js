@@ -18,7 +18,11 @@ import {
 } from 'use-query-params';
 
 import AiidHelmet from 'components/AiidHelmet';
-import Tags from 'components/forms/Tags.js';
+import Tags from 'components/forms/Tags';
+import { classy, classyDiv, classySpan } from 'utils/classy';
+
+import { abbreviatedTag } from 'utils/checklists';
+import CheckListForm from 'components/checklists/CheckListForm';
 
 export default function ChecklistsPage(props) {
   const {
@@ -60,108 +64,8 @@ export default function ChecklistsPage(props) {
 };
 
 
-function CheckListForm({ 
-  values,
-  handleChange,
-  handleSubmit,
-  setFieldTouched,
-  setFieldValue,
-  isSubmitting,
-  submitForm,
-  tags,
-  t 
-}) {
 
-  useEffect(() => {
-    const searchRisks = async () => {
-      const queryTags = [...values['tags-goals'], ...values['tags-methods'], ...values['tags-other']];
-      const response = await fetch(
-        '/api/riskManagement/v1/risks?tags=' +
-        encodeURIComponent(queryTags.join('___'))
-      );
-      const results = response.ok ? await response.json() : null;
-      console.log(`results`, results);
-
-      const risksToAdd = [];
-      for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        const newRisk = {
-          ...emptyRisk(),
-          title: abbreviatedTag(result.tag),
-          query_tags: [result.tag],
-          precedents: result.precedents,
-          description: result.description,
-        };
-        if (i > 0) {
-          newRisk.startClosed = true;
-        }
-        if (!values.risks.some(existingRisk => risksEqual(result, newRisk))) {
-          risksToAdd.push(newRisk);
-        }
-      }
-      setFieldValue('risks', values.risks.concat(risksToAdd));
-       
-      // Example result:
-      // [ { "tag": "GMF:Failure:Gaming Vulnerability",
-      //     "precedents": [
-      //       { "incident_id": 146,
-      //         "url": "https://incidentdatabase.ai/cite/146",
-      //         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-      //         "description": "A publicly accessible research model[...]moral judgments.",
-      //         "query_tags": [ "GMF:Known AI Technology:Language Modeling", ],
-      //         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
-      //       },
-      //     ]
-      //   }
-      // ]
-    }
-    searchRisks();
-    return () => {}
-  }, [values['tags-goals'], values['tags-methods'], values['tags-other']])
-            
-  const [GoalsInput, MethodsInput, OtherInput] = queryTagInputs({ 
-    values, setFieldValue, tags
-  });
-
-  //console.log(`values`, values);
-  return (
-    <Form onSubmit={handleSubmit}>
-      <h1>Risk Checklist for ""</h1>
-      <section className="flex flex-col gap-4">
-        <div>
-          <Label for="about-system">About System</Label>
-          <Textarea row={4} />
-        </div>
-
-        <div className="flex gap-2">
-          <div className="w-1/2 h-full">{GoalsInput}</div>
-          <div className="w-1/2 f-full">{MethodsInput}</div>
-        </div>
-        <div>
-          {OtherInput}
-        </div>
-      </section>
-      <section>
-        <div class="flex justify-between mt-6">
-          <h2>Risks</h2>
-          <Button onClick={() => {
-            setFieldValue(
-              'risks', [emptyRisk()].concat(values.risks || [])
-            )
-          }}>Add Risk</Button>
-        </div>
-        <p><Trans>Risks are surface automatically based on the tags applied to the system. They can also be added manually. Each risk is associated with a query for precedent incidents, which can be modified to suit your needs. You can subscribe both to new risks and new precedent incidents.</Trans></p>
-
-        <div className="flex flex-col gap-6">
-          {(values.risks || []).map((risk) => (
-            <RiskSection {...{ risk, values, setFieldValue, submitForm, tags }}/>
-          ))}
-        </div>
-      </section>
-    </Form>
-  )
-}
-
+// TODO: Handle identity better than just comparing titles.
 var risksEqual = (risk1, risk2) => risk1.title == risk2.title;
 
 function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags }) {
@@ -169,7 +73,6 @@ function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags }
 
     const updatedRisks = [...values.risks];
 
-    // TODO: Handle identity better than just comparing titles.
     const updatedRisk = updatedRisks.find(r => risksEqual(r, risk));
 
     for (const attribute in attributeValueMap) {
@@ -261,56 +164,51 @@ function RiskTitle({ title, updateRisk }) {
   );
 }
 
-var abbreviatedTag = (tag) => tag.replace(/^.*:/g, '');
 
-function queryTagInputs({ values, setFieldValue, tags }) {
-  return [
-    {
-      title: 'Goals', 
-      id: 'tags-goals', 
-      labelKey: abbreviatedTag,
-      include: tagParts => (
-        tagParts[0] == 'GMF' && 
-        ["Known AI Goal", "Potential AI Goal"].includes(tagParts[1])
-      ) 
-    },
-    {
-      title: 'Methods', 
-      id: 'tags-methods', 
-      labelKey: abbreviatedTag,
-      include: tagParts => (
-        tagParts[0] == 'GMF' && 
-        ["Known AI Technology", "Potential AI Technology"].includes(tagParts[1])
-      ) 
-    },
-    {
-      title: 'Other', 
-      id: 'tags-other', 
-      labelKey: (tag) => tag,
-      include: tagParts => (
-        tagParts[0] != 'GMF' || ![
-          "Known AI Goal", 
-          "Potential AI Goal",
-          "Known AI Technology",
-          "Potential AI Technology"
-        ].includes(tagParts[1])
-      )
-    },
-  ].map(e => (
-    <>
-      <div className="bootstrap">
-        <Label for={e.id}>{e.title}</Label>
-        <Tags 
-          id={e.id}
-          value={values[e.id]}
-          options={tags.filter(tag => e.include(tag.split(":")))}
-          onChange={(value) => { setFieldValue(e.id, value); }}
-          labelKey={e.labelKey}
-        />
-      </div>
-    </>
-  ));
+var searchRisks = async ({ values, setFieldValue }) => {
+  const queryTags = [...values['tags-goals'], ...values['tags-methods'], ...values['tags-other']];
+  const response = await fetch(
+    '/api/riskManagement/v1/risks?tags=' +
+    encodeURIComponent(queryTags.join('___'))
+  );
+  const results = response.ok ? await response.json() : null;
+  console.log(`results`, results);
+
+  const risksToAdd = [];
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    const newRisk = {
+      ...emptyRisk(),
+      title: abbreviatedTag(result.tag),
+      query_tags: [result.tag],
+      precedents: result.precedents,
+      description: result.description,
+    };
+    if (i > 0) {
+      newRisk.startClosed = true;
+    }
+    if (!values.risks.some(existingRisk => risksEqual(result, newRisk))) {
+      risksToAdd.push(newRisk);
+    }
+  }
+  setFieldValue('risks', values.risks.concat(risksToAdd));
+   
+  // Example result:
+  // [ { "tag": "GMF:Failure:Gaming Vulnerability",
+  //     "precedents": [
+  //       { "incident_id": 146,
+  //         "url": "https://incidentdatabase.ai/cite/146",
+  //         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+  //         "description": "A publicly accessible research model[...]moral judgments.",
+  //         "query_tags": [ "GMF:Known AI Technology:Language Modeling", ],
+  //         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
+  //       },
+  //     ]
+  //   }
+  // ]
 }
+
+
 
 function classificationsToTags({ classifications, taxa }) {
   const tags = new Set();
@@ -330,7 +228,7 @@ function classificationsToTags({ classifications, taxa }) {
 
         if (Array.isArray(value)) {
           for (const item of value) {
-            if (String(item).length > 20) {
+            if (String(item).length < 20) {
               tags.add(
                 [ classification.namespace,
                   attribute.short_name,
@@ -339,7 +237,7 @@ function classificationsToTags({ classifications, taxa }) {
               );
             }
           }
-        } else if (String(value).length > 20) {
+        } else if (String(value).length < 20) {
           tags.add(
             [ classification.namespace,
               attribute.short_name,
@@ -361,25 +259,15 @@ var emptyRisk = () => ({
   severity: '',
   likelihood: '',
   precedents: [],
-  untouched: true,
+  touched: false,
 })
 
-var classyDiv = (className) => classy('div', className);
-var classySpan = (className) => classy('div', className);
-var classy = (type, className) => (
-  (props) => React.createElement(
-    type,
-    {...props, className: className + " " + (props.className || '')},
-    Array.isArray(props.children) ? props.children : [props.children]
-  )
-);
 
 
 var RiskLayout = classyDiv("flex flex-col gap-4");
 var PrecedentsQuery = classyDiv();
 var Precedents = classyDiv();
 var RiskInfo = classyDiv("flex flex-col gap-2");
-var Label = classy("label", "mb-1 block")
 
 var PrecedentsList = classyDiv(`
   flex gap-3 p-2  
