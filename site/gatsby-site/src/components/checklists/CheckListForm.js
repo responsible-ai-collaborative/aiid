@@ -4,8 +4,9 @@ import { Button, Select, TextInput, Textarea, Card } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 
 import { classyDiv } from 'utils/classy';
-import { Label, abbreviatedTag } from 'utils/checklists';
+import { Label, abbreviatedTag, emptyRisk, risksEqual } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
+import RiskSection from 'components/checklists/RiskSection';
 
 export default function CheckListForm({ 
   values, handleChange, handleSubmit, setFieldTouched, 
@@ -104,3 +105,53 @@ var QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldValue
 
 var Row = classyDiv();
 var Col = classyDiv();
+
+var searchRisks = async ({ values, setFieldValue }) => {
+  const queryTags = [...values['tags-goals'], ...values['tags-methods'], ...values['tags-other']];
+  const response = await fetch(
+    '/api/riskManagement/v1/risks?tags=' +
+    encodeURIComponent(queryTags.join('___'))
+  );
+
+  if (response.ok) {
+    const results = await response.json();
+    console.log(`results`, results);
+
+    const risksToAdd = [];
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const newRisk = {
+        ...emptyRisk(),
+        title: abbreviatedTag(result.tag),
+        query_tags: [result.tag],
+        precedents: result.precedents,
+        description: result.description,
+      };
+      if (i > 0) {
+        newRisk.startClosed = true;
+      }
+      if (!values.risks.some(existingRisk => risksEqual(result, newRisk))) {
+        risksToAdd.push(newRisk);
+      }
+    }
+    setFieldValue('risks', values.risks.concat(risksToAdd));
+     
+    // Example result:
+    // [ { "tag": "GMF:Failure:Gaming Vulnerability",
+    //     "precedents": [
+    //       { "incident_id": 146,
+    //         "url": "https://incidentdatabase.ai/cite/146",
+    //         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+    //         "description": "A publicly accessible research model[...]moral judgments.",
+    //         "query_tags": [ "GMF:Known AI Technology:Language Modeling", ],
+    //         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
+    //       },
+    //     ]
+    //   }
+    // ]
+  } else {
+    // TODO: Handle the error better
+    alert("Problem");
+    console.log(`response`, response);
+  }
+}
