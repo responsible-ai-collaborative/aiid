@@ -79,6 +79,7 @@ a {
 }
 a:hover {
   text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .displayInline {
   display: inline-block;
