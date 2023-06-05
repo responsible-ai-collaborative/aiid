@@ -51,6 +51,7 @@ function Tools({
             new Date(),
             'yyyy-MM-dd'
           )}`}
+          className="hover:no-underline"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -63,6 +64,7 @@ function Tools({
         <Button
           color="gray"
           href={`/apps/submit?tags=${RESPONSE_TAG}&incident_ids=${incident.incident_id}`}
+          className="hover:no-underline"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -72,7 +74,11 @@ function Tools({
           />
           <Trans>New Response</Trans>
         </Button>
-        <Button color="gray" href={'/apps/discover?incident_id=' + incident.incident_id}>
+        <Button
+          color="gray"
+          href={'/apps/discover?incident_id=' + incident.incident_id}
+          className="hover:no-underline"
+        >
           <FontAwesomeIcon
             className="mr-2"
             icon={faSearch}
@@ -83,7 +89,11 @@ function Tools({
         </Button>
         <CitationFormat incidentReports={incidentReports} incident={incident} />
         {isUserLoggedIn && isRole('incident_editor') && (
-          <Button color="gray" href={'/incidents/edit?incident_id=' + incident.incident_id}>
+          <Button
+            color="gray"
+            href={'/incidents/edit?incident_id=' + incident.incident_id}
+            className="hover:no-underline"
+          >
             <FontAwesomeIcon
               className="mr-2"
               icon={faEdit}
@@ -94,7 +104,11 @@ function Tools({
           </Button>
         )}
         {isUserLoggedIn && isRole('taxonomy_editor') && (
-          <Button color="gray" href={`/apps/csettool/${incident.incident_id}`}>
+          <Button
+            color="gray"
+            href={`/apps/csettool/${incident.incident_id}`}
+            className="hover:no-underline"
+          >
             <FontAwesomeIcon
               className="mr-2"
               icon={faEdit}

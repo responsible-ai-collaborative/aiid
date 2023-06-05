@@ -115,7 +115,7 @@ function EditCitePage(props) {
           <h1 className="mb-5">
             <Trans>Editing Incident {{ incidentId }}</Trans>
           </h1>
-          <Link to={`/cite/${incidentId}`} className="mb-5">
+          <Link to={`/cite/${incidentId}`} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
               <Trans>Back to Incident {{ incidentId }}</Trans>
             </Button>
