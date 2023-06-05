@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
@@ -10,6 +10,7 @@ import { Trans } from 'react-i18next';
 import Outline from 'components/Outline';
 import DateLabel from 'components/ui/DateLabel';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Post(props) {
   const {
@@ -39,8 +40,14 @@ export default function Post(props) {
     </>
   );
 
+  const { displayRightSidebar } = useLayoutContext();
+
+  useEffect(() => {
+    displayRightSidebar(rightSidebar);
+  }, []);
+
   return (
-    <div {...{ ...props, rightSidebar }}>
+    <div>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <LocalizedLink to="/blog" className="text-lg">

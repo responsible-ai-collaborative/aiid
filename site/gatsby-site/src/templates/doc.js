@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 
@@ -7,6 +7,7 @@ import Components from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
 import Outline from 'components/Outline';
+import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Doc(props) {
   const {
@@ -25,8 +26,14 @@ export default function Doc(props) {
     </>
   );
 
+  const { displayRightSidebar } = useLayoutContext();
+
+  useEffect(() => {
+    displayRightSidebar(rightSidebar);
+  }, []);
+
   return (
-    <div {...{ ...props, rightSidebar }}>
+    <div>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }} />
       <div className={'titleWrapper'}>
         <h1>{mdx.fields.title}</h1>
