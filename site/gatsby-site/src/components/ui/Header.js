@@ -111,7 +111,7 @@ const Header = ({ location = null }) => {
           );
 
         var HeaderLink = ({ className }) => (
-          <Link to={finalLogoLink} className={`flex items-center ${className}`}>
+          <Link to={finalLogoLink} className={`hover:no-underline flex items-center ${className}`}>
             <div className="md:w-64 text-center">
               <img
                 className={'hidden md:inline ml-[10px] mr-[10px] w-[200px]'}
