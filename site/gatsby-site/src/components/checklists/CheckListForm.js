@@ -13,10 +13,17 @@ export default function CheckListForm({
   setFieldValue, isSubmitting, submitForm, tags, t 
 }) {
 
-  useEffect(() => {
-    searchRisks({ values, setFieldValue });
-    return () => {}
-  }, [values['tags-goals'], values['tags-methods'], values['tags-other']])
+  const searchTags = [
+    ...values['tags-goals'],
+    ...values['tags-methods'],
+    ...values['tags-other']
+  ];
+
+  useEffect(() => { searchRisks({ values, setFieldValue }) }, [
+    values['tags-goals'],
+    values['tags-methods'],
+    values['tags-other']
+  ])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -78,11 +85,11 @@ export default function CheckListForm({
             )
           }}>Add Risk</Button>
         </header>
-        <p><Trans>Risks are surface automatically based on the tags applied to the system. They can also be added manually. Each risk is associated with a query for precedent incidents, which can be modified to suit your needs. You can subscribe both to new risks and new precedent incidents.</Trans></p>
+        <p><Trans>Risks are surfaced automatically based on the tags applied to the system. They can also be added manually. Each risk is associated with a query for precedent incidents, which can be modified to suit your needs. You can subscribe both to new risks and new precedent incidents.</Trans></p>
 
         <div className="flex flex-col gap-6">
           {(values.risks || []).map((risk) => (
-            <RiskSection {...{ risk, values, setFieldValue, submitForm, tags }}/>
+            <RiskSection key={risk.id} {...{ risk, values, setFieldValue, submitForm, tags, searchTags }}/>
           ))}
         </div>
       </section>

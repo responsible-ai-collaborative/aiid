@@ -8,7 +8,7 @@ import Tags from 'components/forms/Tags';
 import { classy, classyDiv, classySpan } from 'utils/classy';
 import { Label, risksEqual } from 'utils/checklists';
 
-export default function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags }) {
+export default function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags, searchTags }) {
   const updateRisk = (attributeValueMap) => {
 
     const updatedRisks = [...values.risks];
@@ -23,7 +23,9 @@ export default function RiskSection({ risk, values, setRisks, setFieldValue, sub
     submitForm();
   }
 
-  useEffect(() => { updatePrecedents(); }, [risk.query_tags]);
+  useEffect(() => {
+    updatePrecedents({ risk, updateRisk, searchTags }); 
+  }, [risk.query_tags, searchTags]);
 
   return (
     <RiskDetails open={risk.startClosed ? undefined : true}>
@@ -137,8 +139,25 @@ var PrecedentsList = classyDiv(`
   shadow-inner
 `);
 
-var updatePrecedents = async () => {
-  // TODO
-  alert('updating precedents');
+var updatePrecedents = async ({ risk, updateRisk, searchTags }) => {
+
+  const riskTags = risk.query_tags;
+
+  const response = await fetch( 
+    '/api/riskManagement/v1/precedents?' + [
+      'searchTags=' + encodeURIComponent(searchTags.join('___')),
+      'riskTags=' + encodeURIComponent(riskTags.join('___'))
+    ].join('&')
+  );
+
+  if (response.ok) {
+    const result = await response.json();
+
+    if (result) {
+      updateRisk({ precedents: result.map(
+        precedent => ({...precedent, _id: undefined })
+      )});
+    }
+  }
 }
 

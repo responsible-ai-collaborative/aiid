@@ -8,6 +8,7 @@ const risksEqual = (risk1, risk2) => risk1.title == risk2.title;
 const Label = classy("label", "mb-1 block")
 
 const emptyRisk = () => ({
+  id: String(Math.random()),
   title: 'Untitled Risk',
   query_tags: [],
   risk_status: 'Not mitigated',
