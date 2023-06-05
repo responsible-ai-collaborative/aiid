@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Badge } from 'flowbite-react';
+import { Badge, Button } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client';
@@ -14,7 +14,6 @@ import Card from '../elements/Card';
 import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
-import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import useLocalizePath from '../components/i18n/useLocalizePath';
 import { FIND_USER_SUBSCRIPTIONS, UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
@@ -27,6 +26,8 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 import Tools from 'components/cite/Tools';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 function CiteTemplate({
   incident,
@@ -46,7 +47,7 @@ function CiteTemplate({
   liveVersion = false,
   setIsLiveData,
 }) {
-  const { isRole, user } = useUserContext();
+  const { loading, isRole, user } = useUserContext();
 
   const { i18n, t } = useTranslation();
 
@@ -335,13 +336,30 @@ function CiteTemplate({
               </Col>
             </Row>
 
-            {sortedReports.map((report) => (
-              <Row className="mt-6 mb-4" key={report.report_number}>
-                <Col>
-                  <ReportCard item={report} incidentId={incident.incident_id} />
-                </Col>
-              </Row>
-            ))}
+            {sortedReports.map((report) => {
+              let actions = <></>;
+
+              if (!loading && isRole('incident_editor')) {
+                actions = (
+                  <Button
+                    data-cy="edit-report"
+                    size={'xs'}
+                    color="light"
+                    href={`/cite/edit?report_number=${report.report_number}&incident_id=${incident.incident_id}`}
+                    className="hover:no-underline "
+                  >
+                    <Trans>Edit</Trans>
+                  </Button>
+                );
+              }
+              return (
+                <Row className="mt-6 mb-4" key={report.report_number}>
+                  <Col>
+                    <ReportCard item={report} incidentId={incident.incident_id} actions={actions} />
+                  </Col>
+                </Row>
+              );
+            })}
 
             <VariantList
               liveVersion={liveVersion}
@@ -358,20 +376,26 @@ function CiteTemplate({
               className="xl:hidden"
             />
 
-            <Pagination className="justify-between">
-              <Pagination.Item
+            <div className="flex justify-between">
+              <Button
+                color={'gray'}
                 href={localizePath({ path: `/cite/${prevIncident}` })}
                 disabled={!prevIncident}
+                className="hover:no-underline"
               >
-                ‹ <Trans>Previous Incident</Trans>
-              </Pagination.Item>
-              <Pagination.Item
+                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                <Trans>Previous Incident</Trans>
+              </Button>
+              <Button
+                color={'gray'}
                 href={localizePath({ path: `/cite/${nextIncident}` })}
                 disabled={!nextIncident}
+                className="hover:no-underline"
               >
-                <Trans>Next Incident</Trans> ›
-              </Pagination.Item>
-            </Pagination>
+                <Trans>Next Incident</Trans>
+                <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+              </Button>
+            </div>
           </Container>
         </div>
         <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
