@@ -8,6 +8,7 @@ import ProgressCircle from 'elements/ProgessCircle';
 import isEmpty from 'lodash/isEmpty';
 import filter from 'lodash/filter';
 import { STATUS } from 'utils/submissions';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const SubmissionList = ({ data }) => {
   const { t } = useTranslation();
@@ -113,9 +114,11 @@ const SubmissionList = ({ data }) => {
 
           if (!editor) return <></>;
 
-          const firstName = editor.first_name;
+          const firstName = editor.first_name || '';
 
-          const lastName = editor.last_name;
+          const lastName = editor.last_name || '';
+
+          console.log('editor', editor);
 
           const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
 
@@ -152,15 +155,13 @@ const SubmissionList = ({ data }) => {
     if (isRole('incident_editor')) {
       columns.push({
         title: t('Actions'),
-        id: 'actions',
+        accessor: '_id',
         className: 'min-w-[120px]',
-        Cell: () => (
-          <Button
-            color={'gray'}
-            data-cy="edit-incident"
-            // onClick={() => setIncindentIdToEdit(values.incident_id)}
-          >
-            <Trans>Review</Trans>
+        Cell: ({ row: { values } }) => (
+          <Button color={'gray'} data-cy="edit-incident">
+            <LocalizedLink to={`?editSubmission=${values._id}`}>
+              <Trans>Review</Trans>
+            </LocalizedLink>
           </Button>
         ),
       });
@@ -179,8 +180,6 @@ const SubmissionList = ({ data }) => {
     useSortBy,
     usePagination
   );
-
-  console.log(tableData);
 
   return (
     // <ListGroup className="mb-5" data-cy="submissions">
