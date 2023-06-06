@@ -10,7 +10,7 @@ export default function TranslationBadge({ className = '', originalLanguage = ''
   if (locale !== originalLanguage) {
     return (
       <div className={`inline-block ${className}`} data-cy="translation-badge">
-        <Link to="/blog/multilingual-incident-reporting">
+        <Link to="/blog/multilingual-incident-reporting" className="hover:no-underline">
           <Badge>
             <Trans>AI Translated</Trans>
           </Badge>

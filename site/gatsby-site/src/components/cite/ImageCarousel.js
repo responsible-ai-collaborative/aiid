@@ -50,7 +50,7 @@ const ImageCarousel = ({ nodes }) => {
               <h3 className="bg-black/50 px-1 rounded text-center">
                 <a
                   href={value.url}
-                  className="text-white"
+                  className="text-white hover:no-underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
