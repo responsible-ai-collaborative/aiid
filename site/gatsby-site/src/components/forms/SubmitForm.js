@@ -27,6 +27,11 @@ import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
+import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -57,27 +62,6 @@ const queryConfig = {
   language: withDefault(StringParam, 'en'),
 };
 
-const initialValues = {
-  url: '',
-  title: '',
-  incident_date: '',
-  date_published: '',
-  date_downloaded: '',
-  image_url: '',
-  cloudinary_id: '',
-  incident_ids: [],
-  text: '',
-  authors: [],
-  submitters: [],
-  developers: [],
-  deployers: [],
-  harmed_parties: [],
-  editor_notes: '',
-  language: 'en',
-  tags: [],
-  user: '',
-};
-
 const SubmitForm = () => {
   const { isRole, loading, user } = useUserContext();
 
@@ -85,7 +69,13 @@ const SubmitForm = () => {
 
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
 
-  const [submission, setSubmission] = useState(null);
+  const isClient = typeof window !== 'undefined';
+
+  const [submission, setSubmission] = useState({});
+
+  const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
+
+  const [savingInLocalStorage, setSavingInLocalStorage] = useState(false);
 
   const {
     entities: { nodes: allEntities },
@@ -101,17 +91,25 @@ const SubmitForm = () => {
   `);
 
   useEffect(() => {
+    let submission = { ...query, cloudinary_id: '' };
+
+    if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
+      setIsIncidentResponse(true);
+    }
+
+    if (submission.image_url) {
+      submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+    }
+
+    if (
+      isEqual(submission, SUBMISSION_INITIAL_VALUES) &&
+      isClient &&
+      localStorage.getItem('formValues')
+    ) {
+      submission = { ...JSON.parse(localStorage.getItem('formValues')) };
+    }
+
     if (!loading) {
-      const submission = { ...query, cloudinary_id: '' };
-
-      if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
-        setIsIncidentResponse(true);
-      }
-
-      if (submission.image_url) {
-        submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
-      }
-
       if (user?.profile?.email) {
         submission.user = { link: user.id };
 
@@ -119,9 +117,8 @@ const SubmitForm = () => {
           submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
         }
       }
-
-      setSubmission(submission);
     }
+    setSubmission(submission);
   }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
@@ -206,7 +203,7 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      setSubmission(initialValues);
+      setSubmission(SUBMISSION_INITIAL_VALUES);
 
       addToast({
         message: (
@@ -217,6 +214,10 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.success,
       });
+
+      if (isClient) {
+        localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
+      }
     } catch (e) {
       addToast({
         message: (
@@ -230,19 +231,66 @@ const SubmitForm = () => {
     }
   };
 
+  const clearForm = () => {
+    const submission = { ...SUBMISSION_INITIAL_VALUES };
+
+    if (user?.profile?.email) {
+      submission.user = { link: user.id };
+
+      if (user.customData.first_name && user.customData.last_name) {
+        submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+      }
+    }
+    setSubmission(submission);
+    setSubmissionReset((prevState) => ({
+      ...prevState,
+      reset: true,
+      forceUpdate: !prevState.forceUpdate, // toggle forceUpdate value
+    }));
+    localStorage.setItem('formValues', JSON.stringify(submission));
+  };
+
   const submissionRef = useRef(null);
+
+  if (!submission || isEmpty(submission)) return <></>;
 
   return (
     <>
       <Helmet>
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </Helmet>
-      <div className={'titleWrapper'}>
+      <div className={'titleWrapper flex flex-row justify-between'}>
         <h1 data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
         </h1>
+        <div className="flex items-center justify-center mt-2">
+          <span className="text-gray-400 text-sm">
+            {savingInLocalStorage ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
+                <Trans>Saving as draft...</Trans>
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faCheck} className="mr-1" />
+                <Trans>Draft saved</Trans>
+              </>
+            )}
+          </span>
+          <Button
+            color="gray"
+            size={'xs'}
+            className={'ml-2'}
+            onClick={() => clearForm()}
+            data-cy="clear-form"
+          >
+            <Trans i18n={i18n} ns="submit">
+              Clear Form
+            </Trans>
+          </Button>
+        </div>
       </div>
       <p ref={submissionRef}>
         {isIncidentResponse ? (
@@ -283,12 +331,15 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
+
       <div className="my-5">
         {submission && (
           <SubmissionWizard
             submitForm={handleSubmit}
             initialValues={submission}
             urlFromQueryString={query.url}
+            submissionReset={submissionReset}
+            setSavingInLocalStorage={setSavingInLocalStorage}
             scrollToTop={() => {
               setTimeout(() => {
                 // This is needed to make it work in Firefox
