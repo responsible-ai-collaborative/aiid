@@ -1,6 +1,6 @@
+import { maybeIt } from '../../support/utils';
+import users from '../../fixtures/users/users.json';
 const { gql } = require('@apollo/client');
-
-const { maybeIt } = require('../../support/utils');
 
 describe('Admin', () => {
   const baseUrl = '/admin';
@@ -163,11 +163,20 @@ describe('Admin', () => {
   maybeIt('Should display New Incident button', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'findUsers',
+      users
+    );
+
     cy.visit(baseUrl);
 
     cy.waitForStableDOM();
 
-    cy.contains('New Incident', { timeout: 30000 }).click();
+    cy.wait('@findUsers');
+
+    cy.contains('New Incident').click();
 
     cy.waitForStableDOM();
 
