@@ -148,7 +148,7 @@ const plugins = [
 
               const dateSubmitted = new Date(edge.node.date_submitted).toUTCString();
 
-              const description = `${edge.node.text.slice(0, 240)} ... ${
+              const description = `${edge.node.plain_text.slice(0, 240)} ... ${
                 matchingIncidents
                   ? '(https://incidentdatabase.ai/cite/' + incident_id + '#' + report_number + ')'
                   : '(report_number: ' + report_number + ')'
@@ -180,6 +180,7 @@ const plugins = [
                   title
                   url
                   text
+                  plain_text
                   id
                   image_url
                   cloudinary_id
