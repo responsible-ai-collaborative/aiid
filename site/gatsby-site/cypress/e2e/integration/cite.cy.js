@@ -572,11 +572,14 @@ describe('Cite pages', () => {
     });
   });
 
-  it('Should not display Video Player card', () => {
+  // For testing with internal DB. Will not pass until there are reports with video in production DB.
+  // NEGATE this until videos are added.
+  it('Should display Incident Video card and at least one video player in Report Card.', () => {
     cy.visit(url);
 
-    // Update this to exists if updated to incident with video.
-    cy.get('[data-cy="incident-video"]').should('not.exist');
+    // Update this to not.exist if incident has no videos in its reports.
+    cy.get('[data-cy="incident-video"]').should('exist');
+    cy.get('[data-cy="video-player"]').should('exist');
   });
 
   var CSETv1Fields = [
