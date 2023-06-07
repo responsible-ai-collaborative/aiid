@@ -769,7 +769,7 @@
   }
 
   .prose a {
-    @apply text-blue-500 !important;
+    @apply text-blue-500 no-underline hover:underline !important;
   }
 
   .titleWrapper h1 {

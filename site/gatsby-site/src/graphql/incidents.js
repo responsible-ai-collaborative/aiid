@@ -175,6 +175,14 @@ export const INSERT_INCIDENT = gql`
   }
 `;
 
+export const GET_LATEST_INCIDENT_ID = gql`
+  query FindIncidents {
+    incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
+      incident_id
+    }
+  }
+`;
+
 export const FIND_FULL_INCIDENT = gql`
   query FindIncident($query: IncidentQueryInput) {
     incident(query: $query) {

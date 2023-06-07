@@ -44,6 +44,7 @@ function ReportPage(props) {
         size={'xs'}
         color="light"
         href={`/cite/edit?report_number=${report.report_number}`}
+        className="hover:no-underline "
       >
         <Trans>Edit</Trans>
       </Button>

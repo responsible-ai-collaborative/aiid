@@ -29,7 +29,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
           titleId="twitter"
           icon={faTwitter}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to Twitter"
         />
       </button>
@@ -51,7 +51,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
           titleId="linkedin"
           icon={faLinkedin}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to LinkedIn"
         />
       </button>
@@ -73,7 +73,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
           titleId="envelope"
           icon={faEnvelope}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share by email"
         />
       </button>
@@ -95,7 +95,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
           titleId="facebook"
           icon={faFacebook}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to Facebook"
         />
       </button>
