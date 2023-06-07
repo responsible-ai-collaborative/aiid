@@ -73,8 +73,7 @@ describe('The Submit form', () => {
         authors: ['Valentina Palladino'],
         incident_date: '2020-01-01',
         date_published: '2017-11-10',
-        image_url:
-          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
         tags: ['New Tag'],
         incident_ids: [],
         text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
@@ -142,8 +141,7 @@ describe('The Submit form', () => {
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         authors: ['Valentina Palladino'],
         date_published: '2017-11-10',
-        image_url:
-          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
         incident_ids: [],
         text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
         plain_text:
@@ -222,8 +220,7 @@ describe('The Submit form', () => {
           incident_editors: ['Sean McGregor', 'Khoa Lam'],
           incident_title: 'Elsagate',
           date_published: '2017-11-10',
-          image_url:
-            'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+          media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
           tags: ['New Tag'],
           incident_ids: [],
           text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
@@ -297,8 +294,7 @@ describe('The Submit form', () => {
               authors: ['Valentina Palladino'],
               incident_date: '2021-09-21',
               date_published: '2017-11-10',
-              image_url:
-                'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+              media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
               tags: ['New Tag'],
               incident_ids: [1],
               url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
@@ -374,10 +370,8 @@ describe('The Submit form', () => {
         submitters: ['Anonymous'],
         authors: ['Valentina Palladino'],
         date_published: '2017-11-10',
-        image_url:
-          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-        cloudinary_id:
-          'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
+        cloudinary_id: 'reports/www.youtube.com/watch?v=cQ54GDm1eL0',
         tags: ['New Tag'],
         incident_ids: [1],
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
@@ -406,8 +400,7 @@ describe('The Submit form', () => {
       authors: 'Valentina Palladino',
       incident_date: '2021-09-21',
       date_published: '2017-11-10',
-      image_url:
-        'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       incident_ids: [1],
       url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
       source_domain: 'arstechnica.com',
@@ -453,7 +446,7 @@ describe('The Submit form', () => {
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
@@ -470,7 +463,7 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       incident_date: '2022-01-01',
       incident_ids: [1],
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
       editor_notes: 'Here are some notes',
@@ -533,7 +526,7 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
         editor_notes: 'Here are some notes',
       });
 
@@ -551,7 +544,7 @@ describe('The Submit form', () => {
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
@@ -565,7 +558,7 @@ describe('The Submit form', () => {
       authors: 'test author',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
     }).as('parseNews');
 
@@ -626,7 +619,7 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
         editor_notes: 'Here are some notes',
       });
 
@@ -913,10 +906,10 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
+    cy.get('[data-cy="image-preview-figure"]').should('exist');
   });
 
-  it('Should update preview image when url is typed', () => {
+  it('Should update video thumbnail when url is typed', () => {
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -936,12 +929,12 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    const suffix = 'github.com/favicon.ico';
+    const videoId = 'cQ54GDm1eL0';
 
-    const newImageUrl = 'https://' + suffix;
+    const mediaUrl = 'https://www.youtube.com/watch?v=' + videoId;
 
     const cloudinaryImageUrl =
-      'https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/' + suffix;
+      'https://res.cloudinary.com/pai/image/youtube/d_fallback.jpg/f_auto/q_auto/' + videoId;
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
@@ -953,7 +946,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
+    cy.get('input[name=media_url]').scrollIntoView().type(mediaUrl);
 
     cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
       .scrollIntoView()
@@ -987,7 +980,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
     };
 
     for (const key in valuesStep2) {
@@ -1184,7 +1177,7 @@ describe('The Submit form', () => {
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'response',
@@ -1256,7 +1249,7 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
         editor_notes: 'Here are some notes',
       });
     });
@@ -1431,7 +1424,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
     };
 
     for (const key in valuesStep2) {
@@ -1467,7 +1460,7 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
         editor_notes: 'Here are some notes',
       });
     });
@@ -1559,13 +1552,13 @@ describe('The Submit form', () => {
       title: 'test title',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       submitters: ['test submitters'],
       tags: ['test tags'],
       source_domain: `test.com`,
-      cloudinary_id: `reports/test.com/image.jpg`,
+      cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
       editor_notes: 'Here are some notes',
     };
 
@@ -1602,7 +1595,7 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
         editor_notes: 'Here are some notes',
       });
     });
@@ -1645,7 +1638,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
+      media_url: 'https://www.youtube.com/watch?v=cQ54GDm1eL0',
       language: 'en',
     };
 
@@ -1684,7 +1677,7 @@ describe('The Submit form', () => {
         deployers: [valuesStep3.deployers],
         harmed_parties: [valuesStep3.harmed_parties],
         nlp_similar_incidents: [],
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/www.youtube.com/watch?v=cQ54GDm1eL0`,
         text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
         incident_ids: [],
       });
