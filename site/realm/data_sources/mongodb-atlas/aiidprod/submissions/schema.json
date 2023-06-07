@@ -24,6 +24,9 @@
         "date_submitted": {
             "bsonType": "string"
         },
+        "epoch_date_modified": {
+            "bsonType": "int"
+        },
         "deployers": {
             "bsonType": "array",
             "items": {

@@ -32,6 +32,7 @@ import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { getUnixTime } from 'date-fns';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -166,7 +167,9 @@ const SubmitForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const date_submitted = format(new Date(), 'yyyy-MM-dd');
+      const today = new Date();
+
+      const date_submitted = format(today, 'yyyy-MM-dd');
 
       const url = new URL(values?.url);
 
@@ -177,6 +180,7 @@ const SubmitForm = () => {
         source_domain,
         date_submitted,
         date_modified: date_submitted,
+        epoch_date_modified: getUnixTime(today),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
