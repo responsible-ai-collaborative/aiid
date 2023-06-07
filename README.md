@@ -689,6 +689,10 @@ To log the errors a Realm secret value should be set:
 ```
 rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
 ```
+In addition to that, this env variable should be set as well:
+```
+GATSBY_ROLLBAR_TOKEN: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
 
 ### Restoring Production database to Staging
 
