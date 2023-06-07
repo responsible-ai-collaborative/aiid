@@ -172,11 +172,13 @@ function EditCitePage(props) {
         values.submitters = values.submitters.split(',').map((s) => s.trim());
       }
 
-      values.date_modified = format(new Date(), 'yyyy-MM-dd');
+      const today = new Date();
+
+      values.date_modified = format(today, 'yyyy-MM-dd');
 
       values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
-      values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
+      values.epoch_date_modified = getUnixTime(today);
 
       const updated = pick(values, reportFields);
 
