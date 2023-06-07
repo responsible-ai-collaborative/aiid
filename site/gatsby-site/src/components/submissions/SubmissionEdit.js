@@ -1,4 +1,4 @@
-import { Button, Spinner } from 'flowbite-react';
+import { Badge, Button, Card, Spinner } from 'flowbite-react';
 import { Link } from 'gatsby';
 import React, { useEffect } from 'react';
 import { Trans } from 'react-i18next';
@@ -94,57 +94,65 @@ const SubmissionEdit = ({ id }) => {
         </Link>
       </div>
 
-      {!loading && data?.submission && entitiesData?.entities && (
-        <Formik
-          validationSchema={schema}
-          onSubmit={handleSubmit}
-          initialValues={{
-            ...data.submission,
-            developers:
-              data.submission.developers === null
-                ? []
-                : data.submission.developers.map((item) => item.name),
-            deployers:
-              data.submission.deployers === null
-                ? []
-                : data.submission.deployers.map((item) => item.name),
-            harmed_parties:
-              data.submission.harmed_parties === null
-                ? []
-                : data.submission.harmed_parties.map((item) => item.name),
-          }}
-        >
-          {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-            <>
-              <SubmissionForm />
-              <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-              <div className="flex items-center gap-3 text-red-500">
-                {!isValid && (
-                  <Trans ns="validation">Please review submission. Some data is missing.</Trans>
-                )}
-                <Button
-                  onClick={submitForm}
-                  className="flex disabled:opacity-50"
-                  type="submit"
-                  disabled={isSubmitting || !isValid}
-                  data-cy="update-btn"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Spinner size="sm" />
-                      <div className="ml-2">
-                        <Trans>Updating...</Trans>
-                      </div>
-                    </>
-                  ) : (
-                    <Trans>Update</Trans>
-                  )}
-                </Button>
-              </div>
-            </>
-          )}
-        </Formik>
-      )}
+      <div className="flex">
+        {!loading && data?.submission && entitiesData?.entities && (
+          <Card className="w-3/4 relative">
+            <Badge className="absolute -top-3" color={'success'}>
+              In Review
+            </Badge>
+            <Formik
+              validationSchema={schema}
+              onSubmit={handleSubmit}
+              initialValues={{
+                ...data.submission,
+                developers:
+                  data.submission.developers === null
+                    ? []
+                    : data.submission.developers.map((item) => item.name),
+                deployers:
+                  data.submission.deployers === null
+                    ? []
+                    : data.submission.deployers.map((item) => item.name),
+                harmed_parties:
+                  data.submission.harmed_parties === null
+                    ? []
+                    : data.submission.harmed_parties.map((item) => item.name),
+              }}
+            >
+              {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+                <>
+                  <SubmissionForm />
+                  <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                  <div className="flex items-center gap-3 text-red-500">
+                    {!isValid && (
+                      <Trans ns="validation">Please review submission. Some data is missing.</Trans>
+                    )}
+                    <Button
+                      onClick={submitForm}
+                      className="flex disabled:opacity-50"
+                      type="submit"
+                      disabled={isSubmitting || !isValid}
+                      data-cy="update-btn"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Spinner size="sm" />
+                          <div className="ml-2">
+                            <Trans>Updating...</Trans>
+                          </div>
+                        </>
+                      ) : (
+                        <Trans>Update</Trans>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Formik>
+          </Card>
+        )}
+        <div className="flex w-1/4 p-4">Right side</div>
+      </div>
     </div>
   );
 };
