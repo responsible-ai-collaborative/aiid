@@ -27,6 +27,7 @@
             "editors": [
                 "Sean McGregor"
             ],
+            "editor": "Sean McGregor",
             "embedding": {
                 "__typename": "IncidentEmbedding",
                 "from_reports": [
