@@ -31,6 +31,7 @@
   "All Incidents": "Tous les incidents",
   "Discover": "Découvrir",
   "Edit Incident": "Modifier l'incident",
+  "Clone Incident": "Cloner l'incident",
   "BibTex Citation": "Citation de BibTex",
   "Taxonomy Details": "Détails de la taxonomie",
   "Classifications will update in production within 24 hours.": "Les classements seront mis à jour en production dans les 24 heures.",
@@ -161,7 +162,7 @@
   "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}",
   "Follow": "S'abonner",
   "Unfollow": "Désinscrire",
-  "Expand": "Voir plus",
+  "You have successfully create Incident {{newIncidentId}}": "Vous avez créé avec succès l'Incident {{newIncidentId}}",
   "New Response": "Nouvelle Réponse",
   "Response": "Réponse",
   "Responded": "Répondu",
@@ -252,5 +253,7 @@
   "Posted <1></1> by <3></3>.": "Publié <1></1> par <3></3>.",
   "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.": "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.",
   "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.": "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.",
-  "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement"
+  "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement",
+  "You have successfully create Incident {{newIncidentId}}. <4>View incident</4>.": "Vous avez réussi à créer l'incident {{newIncidentId}}. <4>Voir l'incident</4>.",
+  "New Incident": "Nouvel Incident"
 }

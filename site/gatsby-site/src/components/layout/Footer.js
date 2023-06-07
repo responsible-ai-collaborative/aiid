@@ -60,7 +60,7 @@ export default function Footer() {
                         <FontAwesomeIcon
                           icon={faExternalLinkAlt}
                           color={'gray'}
-                          className="pointer fa fa-sm "
+                          className="pointer fa fa-sm  hover:text-primary-blue"
                           title="External Link"
                         />
                       </a>
@@ -96,7 +96,7 @@ export default function Footer() {
               titleId={'twitter'}
               icon={faTwitterSquare}
               color={'gray'}
-              className="pointer fa fa-lg"
+              className="pointer fa fa-lg hover:text-primary-blue"
               title="Open Twitter"
             />
           </a>
@@ -106,7 +106,7 @@ export default function Footer() {
               titleId="github"
               icon={faGithubSquare}
               color={'gray'}
-              className="pointer fa fa-lg"
+              className="pointer fa fa-lg hover:text-primary-blue"
               title="Open github"
             />
           </a>
@@ -121,7 +121,7 @@ export default function Footer() {
               titleId="rss"
               icon={faRssSquare}
               color={'gray'}
-              className="pointer fa fa-lg"
+              className="pointer fa fa-lg hover:text-primary-blue"
               title="Open RSS Feed"
             />
           </a>
@@ -136,7 +136,7 @@ export default function Footer() {
               titleId="facebook"
               icon={faFacebookSquare}
               color={'gray'}
-              className="pointer fa fa-lg"
+              className="pointer fa fa-lg hover:text-primary-blue"
               title="Open Facebook"
             />
           </a>
@@ -151,7 +151,7 @@ export default function Footer() {
               titleId="linkedin"
               icon={faLinkedin}
               color={'gray'}
-              className="pointer fa fa-lg"
+              className="pointer fa fa-lg hover:text-primary-blue"
               title="Open Linked In"
             />
           </a>
