@@ -50,7 +50,10 @@
   "Step 3 - Tell us more": "Étape 3 - Dites-nous en plus",
   "Tags": "Étiquettes",
   "Report successfully added to review queue. You can see your submission <2>here</2>.": "Rapport ajouté à la file d'attente des révisions. Vous pouvez voir votre soumission <2>ici</2>.",
-  "Enter a valid Incident ID": "Entrez un ID d'incident valide",
   "Adding a new report to incident {{incident_id}}": "Ajout d'un nouveau rapport à l'incident {{incident_id}}",
-  "Adding a new response to incident {{incident_id}}": "Ajout d'une nouvelle réponse à l'incident {{incident_id}}"
+  "Adding a new response to incident {{incident_id}}": "Ajout d'une nouvelle réponse à l'incident {{incident_id}}",
+  "Progress saved!": "Progrès sauvegardé !",
+  "Your changes are saved. You can continue filling out the report or come back later.": "Vos modifications sont en cours d'enregistrement. Vous pouvez continuer à remplir le rapport ou revenir plus tard.",
+  "Clear Form": "Effacer le formulaire",
+  "Saving changes...": "Enregistrement des modifications..."
 }
