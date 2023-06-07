@@ -159,7 +159,7 @@ const SubmissionList = ({ data }) => {
         className: 'min-w-[120px]',
         Cell: ({ row: { values } }) => (
           <Button color={'gray'} data-cy="edit-incident">
-            <LocalizedLink to={`/submission/${values._id}`}>
+            <LocalizedLink to={`?editSubmission=${values._id}`}>
               <Trans>Review</Trans>
             </LocalizedLink>
           </Button>
