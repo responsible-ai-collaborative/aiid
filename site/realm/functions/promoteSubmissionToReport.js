@@ -95,7 +95,7 @@ exports = async (input) => {
     date_published: submission.date_published,
     date_submitted: submission.date_submitted,
     epoch_date_downloaded: getUnixTime(submission.date_downloaded),
-    epoch_date_modified: getUnixTime(submission.date_modified),
+    epoch_date_modified: getUnixTime(submission.epoch_date_modified),
     epoch_date_published: getUnixTime(submission.date_published),
     epoch_date_submitted: getUnixTime(submission.date_submitted),
     image_url: submission.image_url,
