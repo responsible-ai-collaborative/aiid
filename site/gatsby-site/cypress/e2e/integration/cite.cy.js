@@ -573,9 +573,8 @@ describe('Cite pages', () => {
     });
   });
 
-  // For testing with internal DB. Will not pass until there are reports with video in production DB.
-  // NEGATE this until videos are added.
-  it('Should display Incident Video card and at least one video player in Report Card.', () => {
+  // Use this ONLY once reports with video URLs are added to the production database.
+  it.skip('Should display Incident Video card and at least one video player in Report Card.', () => {
     cy.visit(url);
 
     // Update this to not.exist if incident has no videos in its reports.

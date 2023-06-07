@@ -195,8 +195,9 @@ describe('The Discover app', () => {
     cy.get('[data-cy="video-player"]').should('not.exist');
   });
 
-  // For testing with internal DB. Will not pass until there are reports with video in production DB.
-  it('Should HAVE a video player for incidents WITH video URLs', () => {
+  // Only use when there are reports with video in production DB.
+  it.skip('Should HAVE a video player for incidents WITH video URLs', () => {
+    // Replace the discover search term with a valid report search for a video URL.
     cy.visit(url + '?display=details&incident_id=10&s=olive%20oil');
 
     cy.get('[data-cy="video-player"]').should('exist');
