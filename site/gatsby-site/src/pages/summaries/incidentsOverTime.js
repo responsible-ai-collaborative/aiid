@@ -33,6 +33,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
   const [startAtZero, setStartAtZero] = useState(false);
 
   const incidentsByDate = data.allMongodbAiidprodIncidents.nodes
+    .filter((i) => i.reports && i.reports.length > 0)
     .map((incident) => {
       const reports = data.allMongodbAiidprodReports.nodes.filter((report) =>
         incident.reports.includes(report.report_number)

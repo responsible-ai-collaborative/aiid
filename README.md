@@ -561,7 +561,23 @@ The endpoint is implemented as a Gatsby function. In the context where this func
 ```
 REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
+You can generate a new key following these steps:
+1. Go to your Realm App
+2. Go to `Authentication`
+3. Go to `Authentication Providers`
+4. Go to `API keys`
+5. Click on `Create API key` and copy the key value
+
 About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
+
+In addition to that, you have to add your Netlify site URL to the allowed origins in your Realm App.
+
+1. Go to your Realm app
+2. Go to `App Settings`
+3. Click on `+ Add Allowed Request Origin`
+4. Add your Netlify public site URL (ie: `https://xxxx-xxxxx.netlify.app`)
+5. Click `Save Draft`
+6. Deploy draft
 
 ## Social Networks login integration
 
@@ -688,6 +704,10 @@ For the error logging for the whole site and background processes this project u
 To log the errors a Realm secret value should be set:
 ```
 rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
+In addition to that, this env variable should be set as well:
+```
+GATSBY_ROLLBAR_TOKEN: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
 ```
 
 ### Restoring Production database to Staging
