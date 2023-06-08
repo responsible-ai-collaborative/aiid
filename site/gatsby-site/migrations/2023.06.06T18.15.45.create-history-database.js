@@ -1,5 +1,8 @@
 const config = require('../config');
 
+function getUnixTime(dateString) {
+  return Math.floor(new Date(dateString).getTime() / 1000);
+}
 /**
  *
  * @param {{context: {client: import('mongodb').MongoClient}}} context
@@ -48,14 +51,22 @@ exports.up = async ({ context: { client } }) => {
 
     const editor = incident.editors && incident.editors.length > 0 ? incident.editors[0] : '';
 
+    const epoch_date_modified = getUnixTime(new Date(incident.date));
+
     console.log(`Updating incident ${incident.incident_id} with editor "${editor}"`);
 
     await incidentsCollection.updateOne(
       { incident_id: incident.incident_id },
-      { $set: { editor: editor } }
+      {
+        $set: {
+          editor: editor,
+          epoch_date_modified: epoch_date_modified,
+        },
+      }
     );
 
     incident.editor = editor;
+    incident.epoch_date_modified = epoch_date_modified;
 
     await incidentsHistoryCollection.insertOne(incident);
   }
