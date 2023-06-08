@@ -167,9 +167,9 @@ const SubmitForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const today = new Date();
+      const now = new Date();
 
-      const date_submitted = format(today, 'yyyy-MM-dd');
+      const date_submitted = format(now, 'yyyy-MM-dd');
 
       const url = new URL(values?.url);
 
@@ -180,7 +180,7 @@ const SubmitForm = () => {
         source_domain,
         date_submitted,
         date_modified: date_submitted,
-        epoch_date_modified: getUnixTime(today),
+        epoch_date_modified: getUnixTime(now),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
