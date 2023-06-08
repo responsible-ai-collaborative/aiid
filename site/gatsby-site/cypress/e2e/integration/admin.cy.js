@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
 
-// const { maybeIt } = require('../../support/utils');
+const { maybeIt } = require('../../support/utils');
 
 describe('Admin', () => {
   const baseUrl = '/admin';
@@ -11,7 +11,7 @@ describe('Admin', () => {
     cy.contains('Not enough permissions').should('be.visible');
   });
 
-  it.skip('Should display a list of users, their roles abnd allow edition', () => {
+  maybeIt('Should display a list of users, their roles abnd allow edition', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(baseUrl);
@@ -42,6 +42,7 @@ describe('Admin', () => {
               cy.contains(user.adminData.email).should('be.visible');
 
               for (const role of user.roles) {
+                cy.waitForStableDOM();
                 cy.contains(role).should('be.visible');
               }
             });
@@ -52,6 +53,7 @@ describe('Admin', () => {
               cy.contains('Not found').should('be.visible');
 
               for (const role of user.roles) {
+                cy.waitForStableDOM();
                 cy.contains(role).should('be.visible');
               }
             });
