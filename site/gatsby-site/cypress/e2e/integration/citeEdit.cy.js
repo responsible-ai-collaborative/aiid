@@ -153,14 +153,18 @@ describe('Edit report', () => {
       updateOneReportTranslation
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('button', 'Submit').click();
 
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
 
-      const date_modified = format(new Date(), 'yyyy-MM-dd');
+      const date_modified = format(now, 'yyyy-MM-dd');
 
-      const epoch_date_modified = getUnixTime(new Date(date_modified));
+      const epoch_date_modified = getUnixTime(now);
 
       expect(xhr.request.body.variables.set.authors).deep.eq(['Test Author']);
       expect(xhr.request.body.variables.set.cloudinary_id).eq('reports/test.com/test.jpg');
@@ -323,14 +327,18 @@ describe('Edit report', () => {
       updateOneReportTranslation
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('button', 'Submit').click();
 
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
 
-      const date_modified = format(new Date(), 'yyyy-MM-dd');
+      const date_modified = format(now, 'yyyy-MM-dd');
 
-      const epoch_date_modified = getUnixTime(new Date(date_modified));
+      const epoch_date_modified = getUnixTime(now);
 
       expect(xhr.request.body.variables.set.authors).deep.eq(['Test Author']);
       expect(xhr.request.body.variables.set.cloudinary_id).eq('reports/test.com/test.jpg');
