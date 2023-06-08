@@ -294,6 +294,15 @@ function CiteTemplate({
               </div>
             </Col>
           </Row>
+          {incident.editor_notes && incident.editor_notes !== '' && (
+            <Row className="mt-2">
+              <Col>
+                <div>
+                  <strong>Editor Notes</strong>: {incident.editor_notes}
+                </div>
+              </Col>
+            </Row>
+          )}
 
           <Row className="mt-6">
             <Col>

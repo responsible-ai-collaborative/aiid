@@ -198,6 +198,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type mongodbAiidprodIncidents implements Node {
       embedding: incidentEmbedding
+      editor_notes: String
     }
 
     type nlpSimilarIncident {
