@@ -288,7 +288,7 @@ describe('Variants App', () => {
       }
     );
 
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const now = new Date();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -296,8 +296,8 @@ describe('Variants App', () => {
         req.body.operationName == 'UpdateVariant' &&
         req.body.variables.query.report_number === 2310 &&
         req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-        req.body.variables.set.date_modified == today &&
-        req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+        req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+        req.body.variables.set.epoch_date_modified == getUnixTime(now),
       'updateVariant',
       {
         data: {
@@ -330,6 +330,8 @@ describe('Variants App', () => {
 
     cy.wait('@findVariants');
     cy.wait('@findIncidents');
+
+    cy.clock(now);
 
     cy.get('[data-cy="row"]')
       .eq(0)
@@ -376,7 +378,7 @@ describe('Variants App', () => {
       }
     );
 
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const now = new Date();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -384,8 +386,8 @@ describe('Variants App', () => {
         req.body.operationName == 'UpdateVariant' &&
         req.body.variables.query.report_number === variant.report_number &&
         req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
-        req.body.variables.set.date_modified == today &&
-        req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+        req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+        req.body.variables.set.epoch_date_modified == getUnixTime(now),
       'updateVariant',
       {
         data: {
@@ -418,6 +420,8 @@ describe('Variants App', () => {
 
     cy.wait('@findVariants');
     cy.wait('@findIncidents');
+
+    cy.clock(now);
 
     cy.get('[data-cy="row"]')
       .eq(0)
@@ -473,7 +477,7 @@ describe('Variants App', () => {
       }
     );
 
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const now = new Date();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -487,8 +491,8 @@ describe('Variants App', () => {
         req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
         req.body.variables.set.inputs_outputs[1] === undefined &&
         req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-        req.body.variables.set.date_modified == today &&
-        req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+        req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+        req.body.variables.set.epoch_date_modified == getUnixTime(now),
       'updateVariant',
       {
         data: {
@@ -521,6 +525,8 @@ describe('Variants App', () => {
 
     cy.wait('@findVariants');
     cy.wait('@findIncidents');
+
+    cy.clock(now);
 
     cy.get('[data-cy="row"]')
       .eq(0)
