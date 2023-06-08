@@ -34,6 +34,23 @@ export const FIND_USER = gql`
   }
 `;
 
+export const FIND_USERS_BY_ROLE = gql`
+  query FindUsersByRole($role: String!) {
+    users(query: { roles_in: [$role] }) {
+      roles
+      userId
+      first_name
+      last_name
+      adminData {
+        email
+        disabled
+        creationDate
+        lastAuthenticationDate
+      }
+    }
+  }
+`;
+
 export const UPDATE_USER_ROLES = gql`
   mutation UpdateUserRoles($roles: [String]!, $userId: String) {
     updateOneUser(query: { userId: $userId }, set: { roles: $roles }) {
