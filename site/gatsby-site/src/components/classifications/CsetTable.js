@@ -8,6 +8,8 @@ import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 const notesShortNames = [
   'notes',
@@ -27,7 +29,7 @@ function Entity({ attributes }) {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between" data-cy={`entity-${name}`}>
         <h3>{name}</h3>
       </div>
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -40,7 +42,7 @@ function Entity({ attributes }) {
               >
                 {a.short_name}
               </th>
-              <td className="py-1">{JSON.parse(a.value_json)}</td>
+              <td className="py-1">{JSON.stringify(a.value_json)}</td>
             </tr>
           ))}
         </tbody>
@@ -67,11 +69,11 @@ function DeletableItem({ cell, item, setData, children, enableDelete = false }) 
   };
 
   return (
-    <div className="my-2 border border-gray-400 p-2" data-cy={`entity-${name}`}>
+    <div className="my-2 border border-gray-400 p-2">
       <div className="relative">
         {enableDelete && (
           <Button className="absolute right-0 top-0" size="xs" color="dark" onClick={handleClick}>
-            x
+            <FontAwesomeIcon icon={faClose} />
           </Button>
         )}
         {children}
@@ -100,7 +102,7 @@ function ValueDisplay({ short_name, cell, setData }) {
               {short_name == 'Entities' ? (
                 <Entity attributes={item.attributes} />
               ) : (
-                <>{JSON.stringify(item)}</>
+                <span data-cy="item">{JSON.stringify(item)}</span>
               )}
             </DeletableItem>
           ))}
