@@ -2,7 +2,7 @@ import { maybeIt } from '../../support/utils';
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
 import incidents from '../../fixtures/incidents/incidents.json';
-import { format } from 'date-fns';
+import { format, getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
@@ -232,9 +232,23 @@ describe('Cite pages', () => {
       flaggedReport
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@updateReport');
+    cy.wait('@updateReport')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.report_number).to.equal(23);
+        expect(variables.set).deep.eq({
+          flag: true,
+          editor: 'Anonymous',
+          date_modified: format(now, 'yyyy-MM-dd'),
+          epoch_date_modified: getUnixTime(now),
+        });
+      });
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 

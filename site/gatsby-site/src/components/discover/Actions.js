@@ -14,22 +14,45 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
+import { useUserContext } from 'contexts/userContext';
+import { format, getUnixTime } from 'date-fns';
 
 function FlagModalContent({ reportNumber }) {
+  const { user } = useUserContext();
+
   const { data } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },
   });
 
-  const [flagReport, { loading }] = useMutation(UPDATE_REPORT, {
-    variables: {
-      query: {
-        report_number: reportNumber,
+  const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
+
+  const flagReport = async () => {
+    const now = new Date();
+
+    const updated = {
+      flag: true,
+      date_modified: format(now, 'yyyy-MM-dd'),
+      epoch_date_modified: getUnixTime(now),
+    };
+
+    // Set the user as the last editor
+    if (user && user.customData.first_name && user.customData.last_name) {
+      updated.editor = `${user.customData.first_name} ${user.customData.last_name}`;
+    } else {
+      updated.editor = 'Anonymous';
+    }
+
+    await flagReportMutation({
+      variables: {
+        query: {
+          report_number: reportNumber,
+        },
+        set: {
+          ...updated,
+        },
       },
-      set: {
-        flag: true,
-      },
-    },
-  });
+    });
+  };
 
   const report = data?.report;
 
