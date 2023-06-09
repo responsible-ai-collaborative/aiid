@@ -63,6 +63,7 @@ function EditCitePage(props) {
     try {
       const updated = {
         ...values,
+        editors: { link: values.editors },
         reports: undefined,
         embedding: {
           ...values.embedding,
@@ -144,6 +145,7 @@ function EditCitePage(props) {
               incident.AllegedHarmedOrNearlyHarmedParties === null
                 ? []
                 : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+            editors: incident.editors.map((user) => user.userId),
           }}
         >
           {({ isValid, isSubmitting, submitForm }) => (

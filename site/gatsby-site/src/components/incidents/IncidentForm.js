@@ -10,6 +10,7 @@ import TextInputGroup from 'components/forms/TextInputGroup';
 import { useTranslation } from 'react-i18next';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
+import UsersField from 'components/users/UsersField';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
@@ -203,14 +204,12 @@ function IncidentForm() {
         </FieldContainer>
 
         <FieldContainer>
-          <TagsInputGroup
-            name="editors"
-            label={t('Editors')}
-            placeholder={t('Editors')}
-            errors={errors}
-            touched={touched}
-            schema={schema}
+          <Label popover={'editors'} label={t('Editors')} />
+          <UsersField
             data-cy="editors-input"
+            name="editors"
+            placeHolder={t('Editors')}
+            id="editors"
           />
         </FieldContainer>
 

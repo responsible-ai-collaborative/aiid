@@ -6,7 +6,11 @@ export const FIND_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -135,7 +139,11 @@ export const UPDATE_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
