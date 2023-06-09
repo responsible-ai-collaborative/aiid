@@ -144,6 +144,7 @@ describe('Incidents', () => {
         editors: ['Sean McGregor', 'Test Editor'],
         nlp_similar_incidents: incident.data.incident.nlp_similar_incidents,
         embedding: {},
+        editor_notes: 'Test editor notes',
         editor: 'Test User',
         epoch_date_modified: getUnixTime(now),
       });
