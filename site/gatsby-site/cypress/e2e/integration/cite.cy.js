@@ -398,7 +398,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="edit-similar-incidents"]').should('exist');
   });
 
-  it('Should flag an incident as not related', () => {
+  it('Should flag an incident as not related (not authenticated)', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
@@ -410,11 +410,49 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.get('[data-cy="flag-similar-incident"]').first().click();
 
     cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
-      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        flagged_dissimilar_incidents: [11],
+        epoch_date_modified: getUnixTime(now),
+        editor: 'Anonymous',
+      });
+    });
+  });
+
+  maybeIt('Should flag an incident as not related (authenticated)', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      updateOneIncidentFlagged
+    );
+
+    cy.visit('/cite/9');
+
+    cy.waitForStableDOM();
+
+    const now = new Date();
+
+    cy.clock(now);
+
+    cy.get('[data-cy="flag-similar-incident"]').first().click();
+
+    cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        flagged_dissimilar_incidents: [],
+        epoch_date_modified: getUnixTime(now),
+        editor: 'Test User',
+      });
     });
   });
 
