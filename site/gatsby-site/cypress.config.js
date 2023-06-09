@@ -4,7 +4,7 @@ module.exports = defineConfig({
   video: false,
   videoUploadOnPasses: false,
   chromeWebSecurity: false,
-  screenshotOnRunFailure: true,
+  screenshotOnRunFailure: false,
   retries: {
     runMode: 2,
     openMode: 0,
