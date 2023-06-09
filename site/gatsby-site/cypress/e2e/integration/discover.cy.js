@@ -2,6 +2,7 @@ import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
 import config from '../../../config';
 import path from 'path';
+import { format, getUnixTime } from 'date-fns';
 
 describe('The Discover app', () => {
   const url = '/apps/discover';
@@ -175,9 +176,23 @@ describe('The Discover app', () => {
       flaggedReport
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@updateReport');
+    cy.wait('@updateReport')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.report_number).to.equal(23);
+        expect(variables.set).deep.eq({
+          flag: true,
+          editor: 'Anonymous',
+          date_modified: format(now, 'yyyy-MM-dd'),
+          epoch_date_modified: getUnixTime(now),
+        });
+      });
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
