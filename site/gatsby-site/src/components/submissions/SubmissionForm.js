@@ -37,7 +37,7 @@ import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 
-const SubmissionForm = () => {
+const SubmissionForm = ({ onChange = null }) => {
   const {
     values,
     errors,
@@ -147,7 +147,7 @@ const SubmissionForm = () => {
 
   return (
     <div>
-      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report" onChange={onChange}>
         <div className="flex items-center mb-1">
           <FontAwesomeIcon
             fixedWidth

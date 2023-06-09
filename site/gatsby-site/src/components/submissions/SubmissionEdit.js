@@ -1,9 +1,9 @@
 import { Badge, Button, Card, Label, Select, Spinner } from 'flowbite-react';
 import { Link } from 'gatsby';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans } from 'react-i18next';
 import SubmissionForm from './SubmissionForm';
-import { Formik } from 'formik';
+import { Formik, useFormikContext } from 'formik';
 import RelatedIncidents from 'components/RelatedIncidents';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -13,21 +13,23 @@ import { schema } from './schemas';
 import { stripMarkdown } from 'utils/typography';
 import { processEntities } from 'utils/entities';
 import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 import ProgressCircle from 'elements/ProgessCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsProgress,
   faCheck,
   faPlusSquare,
+  faSpinner,
   faUser,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { FIND_USERS_BY_ROLE } from '../../graphql/users';
+import { debounce } from 'debounce';
+import { STATUS } from 'utils/submissions';
 
 const SubmissionEdit = ({ id }) => {
-  console.log(id);
-
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
 
   const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
@@ -40,13 +42,13 @@ const SubmissionEdit = ({ id }) => {
     variables: { role: 'editor' },
   });
 
-  console.log('userData', userData);
-
   const addToast = useToastContext();
 
   useEffect(() => {
     findSubmission({ variables: { query: { _id: id } } });
   }, [id]);
+
+  const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
@@ -64,31 +66,40 @@ const SubmissionEdit = ({ id }) => {
         createEntityMutation
       );
 
+      if (update.nlp_similar_incidents) {
+        update.nlp_similar_incidents = update.nlp_similar_incidents.map((nlp) => {
+          return { ...nlp, __typename: undefined };
+        });
+      }
+
+      if (update.editor) {
+        update.editor = { link: isString(update.editor) ? update.editor : update.editor.userId };
+      }
+
+      const updatedSubmission = {
+        ...update,
+        incident_id: update.incident_id === '' ? 0 : update.incident_id,
+        authors: !isArray(values.authors)
+          ? values.authors.split(',').map((s) => s.trim())
+          : values.authors,
+        submitters: values.submitters
+          ? !isArray(values.submitters)
+            ? values.submitters.split(',').map((s) => s.trim())
+            : values.submitters
+          : ['Anonymous'],
+        plain_text: await stripMarkdown(update.text),
+      };
+
       await updateSubmission({
         variables: {
           query: {
             _id: values._id,
           },
-          set: {
-            ...update,
-            incident_id: update.incident_id === '' ? 0 : update.incident_id,
-            authors: !isArray(values.authors)
-              ? values.authors.split(',').map((s) => s.trim())
-              : values.authors,
-            submitters: values.submitters
-              ? !isArray(values.submitters)
-                ? values.submitters.split(',').map((s) => s.trim())
-                : values.submitters
-              : ['Anonymous'],
-            plain_text: await stripMarkdown(update.text),
-          },
+          set: updatedSubmission,
         },
       });
 
-      addToast({
-        message: `Submission updated successfully.`,
-        severity: SEVERITY.success,
-      });
+      setSaving(false);
     } catch (e) {
       addToast({
         message: `Error updating submission ${values._id}`,
@@ -98,17 +109,39 @@ const SubmissionEdit = ({ id }) => {
     }
   };
 
+  const saveChanges = (values) => {
+    setSaving(true);
+    handleSubmit(values);
+  };
+
+  console.log('data.submission', data?.submission);
+
   return (
     <div>
       <div className="flex flex-row justify-between flex-wrap">
         <h1 className="mb-5">
           <Trans>Editing Submission</Trans>
         </h1>
-        <Link to={`/apps/submitted/`} className="hover:no-underline mb-5">
-          <Button outline={true} color={'light'}>
-            <Trans>Back to Submission List</Trans>
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <span className="text-gray-400 text-sm mb-5">
+            {saving ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
+                <Trans>Saving changes...</Trans>
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faCheck} className="mr-1" />
+                <Trans>Changes saved</Trans>
+              </>
+            )}
+          </span>
+          <Link to={`/apps/submitted/`} className="hover:no-underline mb-5">
+            <Button outline={true} color={'light'}>
+              <Trans>Back to Submission List</Trans>
+            </Button>
+          </Link>
+        </div>
       </div>
       {loading ? (
         <DefaultSkeleton />
@@ -117,8 +150,8 @@ const SubmissionEdit = ({ id }) => {
           {!loading && data?.submission && entitiesData?.entities && (
             <div className="flex">
               <Card className="w-3/4 relative">
-                <Badge className="absolute -top-3" color={'success'}>
-                  In Review
+                <Badge className="absolute -top-3" color={STATUS[data.submission.status].color}>
+                  {data.submission.status}
                 </Badge>
                 <Formik
                   validationSchema={schema}
@@ -126,50 +159,20 @@ const SubmissionEdit = ({ id }) => {
                   initialValues={{
                     ...data.submission,
                     developers:
-                      data.submission.developers === null
+                      data?.submission.developers === null
                         ? []
-                        : data.submission.developers.map((item) => item.name),
+                        : data?.submission.developers.map((item) => item.name),
                     deployers:
-                      data.submission.deployers === null
+                      data?.submission.deployers === null
                         ? []
-                        : data.submission.deployers.map((item) => item.name),
+                        : data?.submission.deployers.map((item) => item.name),
                     harmed_parties:
-                      data.submission.harmed_parties === null
+                      data?.submission.harmed_parties === null
                         ? []
-                        : data.submission.harmed_parties.map((item) => item.name),
+                        : data?.submission.harmed_parties.map((item) => item.name),
                   }}
                 >
-                  {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-                    <>
-                      <SubmissionForm />
-                      <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-                      <div className="flex items-center gap-3 text-red-500">
-                        {!isValid && (
-                          <Trans ns="validation">
-                            Please review submission. Some data is missing.
-                          </Trans>
-                        )}
-                        <Button
-                          onClick={submitForm}
-                          className="flex disabled:opacity-50"
-                          type="submit"
-                          disabled={isSubmitting || !isValid}
-                          data-cy="update-btn"
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <Spinner size="sm" />
-                              <div className="ml-2">
-                                <Trans>Updating...</Trans>
-                              </div>
-                            </>
-                          ) : (
-                            <Trans>Update</Trans>
-                          )}
-                        </Button>
-                      </div>
-                    </>
-                  )}
+                  <SubmissionEditForm handleSubmit={handleSubmit} setSaving={setSaving} />
                 </Formik>
               </Card>
               <div className="flex w-1/4 py-4 pl-6 items-center flex-col gap-8">
@@ -179,7 +182,16 @@ const SubmissionEdit = ({ id }) => {
                     <FontAwesomeIcon icon={faUser} className="mr-2" />
                     <Trans>Assignee</Trans>
                   </Label>
-                  <Select className="w-full">
+                  <Select
+                    className="w-full"
+                    onChange={(e) => {
+                      saveChanges({ ...data.submission, editor: e.target.value });
+                    }}
+                    value={data.submission.editor?.userId}
+                  >
+                    <option value={null}>
+                      <Trans>Unassigned</Trans>
+                    </option>
                     {!userLoading && (
                       <>
                         {userData.users.map((user) => {
@@ -198,11 +210,17 @@ const SubmissionEdit = ({ id }) => {
                     <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
                     <Trans>Status</Trans>
                   </Label>
-                  <Select className="w-full">
-                    <option>
+                  <Select
+                    className="w-full"
+                    value={data.submission.status}
+                    onChange={(e) => {
+                      saveChanges({ ...data.submission, status: e.target.value });
+                    }}
+                  >
+                    <option value="In Review">
                       <Trans>In Review</Trans>
                     </option>
-                    <option>
+                    <option value="Pending Review">
                       <Trans>Pending Review</Trans>
                     </option>
                   </Select>
@@ -238,6 +256,50 @@ const SubmissionEdit = ({ id }) => {
         </>
       )}
     </div>
+  );
+};
+
+const SubmissionEditForm = ({ handleSubmit, setSaving }) => {
+  const { values, setFieldValue, isValid, submitForm, isSubmitting } = useFormikContext();
+
+  const onChange = () => {
+    setSaving(true);
+    saveChanges(values);
+  };
+
+  const saveChanges = useRef(
+    debounce(async (values) => {
+      await handleSubmit(values);
+      setSaving(false);
+    }, 1000)
+  ).current;
+
+  return (
+    <>
+      <SubmissionForm onChange={onChange} />
+      <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+      <div className="flex items-center gap-3 text-red-500">
+        {!isValid && <Trans ns="validation">Please review submission. Some data is missing.</Trans>}
+        <Button
+          onClick={submitForm}
+          className="flex disabled:opacity-50"
+          type="submit"
+          disabled={isSubmitting || !isValid}
+          data-cy="update-btn"
+        >
+          {isSubmitting ? (
+            <>
+              <Spinner size="sm" />
+              <div className="ml-2">
+                <Trans>Updating...</Trans>
+              </div>
+            </>
+          ) : (
+            <Trans>Update</Trans>
+          )}
+        </Button>
+      </div>
+    </>
   );
 };
 
