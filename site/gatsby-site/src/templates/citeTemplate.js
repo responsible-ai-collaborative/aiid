@@ -273,7 +273,9 @@ function CiteTemplate({
                       incidentId: incident.incident_id,
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
-                      editors: incident.editors.join(', '),
+                      editors: incident.editors
+                        .map((e) => `${e.first_name} ${e.last_name}`)
+                        .join(', '),
                     }}
                   />
                 </div>
