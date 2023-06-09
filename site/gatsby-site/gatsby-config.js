@@ -110,6 +110,14 @@ const plugins = [
     },
   },
   {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'customData',
+      collection: ['users'],
+      connectionString: config.mongodb.connectionString,
+    },
+  },
+  {
     resolve: 'gatsby-plugin-feed',
     options: {
       query: `

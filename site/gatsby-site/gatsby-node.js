@@ -196,6 +196,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type mongodbAiidprodIncidents implements Node {
       embedding: incidentEmbedding
+      editors: [mongodbCustomDataUsers] @link(by: "userId")
     }
 
     type nlpSimilarIncident {
@@ -237,6 +238,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       short_name: String
       value_json: String
     }
+    
     type mongodbAiidprodClassifications implements Node {
       incident_id: Int
       namespace: String
