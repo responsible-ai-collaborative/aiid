@@ -43,7 +43,7 @@ describe('Admin', () => {
 
               for (const role of user.roles) {
                 cy.waitForStableDOM();
-                console.log('email', user.adminData.email, role);
+                cy.log(`email, ${user.adminData.email}, ${role}`);
                 cy.contains(role).should('be.visible');
               }
             });
