@@ -54,9 +54,9 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="cell-responses"]').should('have.length.at.least', 10);
 
-    cy.get('[data-cy="input-filter-Entity"]').type('openai');
+    cy.get('[data-cy="input-filter-Entity"]').type('microsoft');
 
-    cy.get('[data-cy="cell-responses"]').should('have.text', '7 Incident responses');
+    cy.get('[data-cy="cell-responses"]').first().should('have.text', '2 Incident responses');
   });
 
   it('Should be able to sort', () => {
