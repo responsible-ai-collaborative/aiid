@@ -24,6 +24,9 @@
         "date": {
             "bsonType": "string"
         },
+        "epoch_date_modified": {
+            "bsonType": "int"
+        },
         "description": {
             "bsonType": "string"
         },
