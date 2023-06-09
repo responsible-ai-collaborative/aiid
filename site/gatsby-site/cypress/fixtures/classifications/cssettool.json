@@ -453,7 +453,7 @@
                     {
                         "__typename": "ClassificationAttribute",
                         "short_name": "Notes (special interest intangible harm)",
-                        "value_json": null
+                        "value_json": "\"This is a note from Annotator 2\""
                     },
                     {
                         "__typename": "ClassificationAttribute",

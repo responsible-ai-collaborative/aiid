@@ -69,7 +69,7 @@ function Entity({ attributes, cell, setData, enableDelete = false }) {
               >
                 {a.short_name}
               </th>
-              <td className="py-1">{JSON.parse(a.value_json)}</td>
+              <td className="py-1">{a.value_json}</td>
             </tr>
           ))}
         </tbody>
@@ -188,8 +188,8 @@ function ShortNameCell({ cell }) {
 
 function computeNotesField(values) {
   return values
-    .filter((v) => !!v)
-    .map((v, i) => `Annotator ${i + 1}: \n\n ${v}`)
+    .map((v, i) => (v !== '' && v !== null ? `Annotator ${i + 1}: \n\n ${v}` : ''))
+    .filter((v) => v !== '')
     .join('\n\n');
 }
 
