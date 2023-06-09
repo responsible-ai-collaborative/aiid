@@ -128,9 +128,10 @@ describe('Functions', () => {
         nlp_similar_incidents: [],
         reports: [],
         title: 'Submisssion 1 title',
+        editor: 'Kate Perkins',
       });
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq({
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
@@ -153,6 +154,7 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
+        editor: 'Kate Perkins',
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
