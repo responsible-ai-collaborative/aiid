@@ -1,23 +1,26 @@
 import { maybeIt } from '../../../support/utils';
 
-import incident from '../../../fixtures/incidents/incident.json';
+import incidents from '../../../fixtures/incidents/incidents.json';
 
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident.json';
-import { getUnixTime } from 'date-fns';
 
-describe('Incidents', () => {
-  const url = '/incidents/edit?incident_id=10';
+describe('New Incident page', () => {
+  const url = '/incidents/new';
 
-  maybeIt('Should successfully edit incident fields', () => {
+  it('Successfully loads', () => {
+    cy.visit(url);
+  });
+
+  maybeIt('Should successfully create a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.visit(url);
+    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindIncident',
-      'FindIncident',
-      incident
+      (req) => req.body.operationName == 'FindIncidents',
+      'GetLatestIncidentId',
+      incidents
     );
 
     cy.conditionalIntercept(
@@ -80,13 +83,14 @@ describe('Incidents', () => {
       }
     );
 
-    cy.wait(['@FindIncident', '@FindEntities']);
+    cy.visit(url);
+
+    cy.wait(['@GetLatestIncidentId', '@FindEntities'], { timeout: 30000 });
 
     const values = {
       title: 'Test title',
       description: 'Test description',
       date: '2021-01-02',
-      editor_notes: 'Test editor notes',
     };
 
     Object.keys(values).forEach((key) => {
@@ -97,24 +101,22 @@ describe('Incidents', () => {
       .first()
       .type('Test Deployer{enter}');
 
+    cy.get('[data-cy="alleged-developer-of-ai-system-input"] input').first().type('youtube{enter}');
+
+    cy.get('[data-cy="alleged-harmed-or-nearly-harmed-parties-input"] input')
+      .first()
+      .type('children{enter}');
+
     cy.get('[data-cy="editors-input"] input').first().type('Test Editor{enter}');
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncident',
-      'UpdateIncident',
+      (req) => req.body.operationName == 'InsertIncident',
+      'InsertIncident',
       updateOneIncident
     );
 
-    const now = new Date();
-
-    cy.clock(now);
-
     cy.contains('button', 'Save').click();
-
-    cy.wait('@UpsertYoutube')
-      .its('request.body.variables.entity.entity_id')
-      .should('eq', 'youtube');
 
     cy.wait('@UpsertYoutube')
       .its('request.body.variables.entity.entity_id')
@@ -128,27 +130,29 @@ describe('Incidents', () => {
       .its('request.body.variables.entity.entity_id')
       .should('eq', 'children');
 
-    cy.wait('@UpdateIncident').then((xhr) => {
-      expect(xhr.request.body.operationName).to.eq('UpdateIncident');
-      expect(xhr.request.body.variables.query.incident_id).to.eq(10);
-      expect(xhr.request.body.variables.set).to.deep.eq({
-        incident_id: incident.data.incident.incident_id,
-        title: 'Test title',
-        description: 'Test description',
-        date: '2021-01-02',
-        AllegedDeployerOfAISystem: {
-          link: ['youtube', 'test-deployer'],
-        },
-        AllegedDeveloperOfAISystem: { link: ['youtube'] },
-        AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
-        editors: ['Sean McGregor', 'Test Editor'],
-        nlp_similar_incidents: incident.data.incident.nlp_similar_incidents,
-        embedding: {},
-        editor: 'Test User',
-        epoch_date_modified: getUnixTime(now),
-      });
+    cy.wait('@InsertIncident').then((xhr) => {
+      expect(xhr.request.body.operationName).to.eq('InsertIncident');
+      expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
+      expect(xhr.request.body.variables.incident.title).to.eq('Test title');
+      expect(xhr.request.body.variables.incident.description).to.eq('Test description');
+      expect(xhr.request.body.variables.incident.date).to.eq('2021-01-02');
+      expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq([]);
+      expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq([]);
+
+      expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq([
+        'test-deployer',
+      ]);
+      expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq([
+        'youtube',
+      ]);
+      expect(
+        xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
+      ).to.deep.eq(['children']);
+      expect(xhr.request.body.variables.incident.editors).to.deep.eq(['Test Editor']);
     });
 
-    cy.get('.tw-toast').contains('Incident 10 updated successfully.').should('exist');
+    cy.get('.tw-toast')
+      .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
+      .should('exist');
   });
 });

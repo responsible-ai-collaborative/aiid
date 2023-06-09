@@ -10,7 +10,7 @@ if (location.hostname == 'incidentdatabase.ai') {
 }
 
 var _rollbarConfig = {
-  accessToken: '8e6e3a414a6d4448befd3f46786d070f',
+  accessToken: 'GATSBY_ROLLBAR_TOKEN',
   captureUncaught: true,
   captureUnhandledRejections: true,
   payload: {
