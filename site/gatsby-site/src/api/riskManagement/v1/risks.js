@@ -4,24 +4,35 @@ import config from '../../../../config';
 
 export default async function handler(req, res) {
 
-  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+  const mongoClient = new MongoClient(
+    config.mongodb.translationsConnectionString
+  );
+  const db = mongoClient.db('aiidprod')
+  const incidentsCollection = db.collection('incidents');
+  const classificationsCollection = db.collection('classifications');
 
-  const incidentsCollection = mongoClient.db('aiidprod').collection('incidents');
-  
-  const classificationsCollection = mongoClient.db('aiidprod').collection('classifications');
+  const classificationsMatchingSearchTags = (
+    await classificationsCollection.find(
+      getRiskClassificationsMongoQuery(req.query),
+    ).toArray()
+  );
 
-  const classificationsMatchingSearchTags = await classificationsCollection.find(
-    getRiskClassificationsMongoQuery(req.query),
-  ).toArray();
+  const tagsByIncidentId = {};
+  for (const classification of classificationsMatchingSearchTags) {
+    const id = classification.incident_id;
+    tagsByIncidentId[id] = (
+      (tagsByIncidentId[id] || []).concat(
+        tagsFromClassification(classification)
+      )
+    )
+  }
 
-  const incidentIdsMatchingSearchTags = classificationsMatchingSearchTags.map(classification => classification.incident_id);
+  const incidentIdsMatchingSearchTags = (
+    classificationsMatchingSearchTags.map(c => c.incident_id)
+  );
 
   const incidentsMatchingSearchTags = await incidentsCollection.find(
-    {
-      incident_id: {
-        $in: incidentIdsMatchingSearchTags
-      },
-    },
+    { incident_id: { $in: incidentIdsMatchingSearchTags } },
     { projection: { incident_id: 1, title: 1, description: 1 }}
   ).toArray();
 
@@ -37,51 +48,48 @@ export default async function handler(req, res) {
       }
     }
   };
-  const failureClassificationsMatchingIncidentIdsMatchingSearchTags = await classificationsCollection.find(
-    {
-      incident_id: {
-        $in: incidentIdsMatchingSearchTags
-      },
-      ...failureAttributeQuery
-    },
-    { 
-      projection: {
-        namespace: 1,
-        incident_id: 1,
+  const failureClassificationsMatchingIncidentIds = (
+    await classificationsCollection.find(
+      {
+        incident_id: {
+          $in: incidentIdsMatchingSearchTags
+        },
         ...failureAttributeQuery
+      },
+      { 
+        projection: {
+          namespace: 1,
+          incident_id: 1,
+          ...failureAttributeQuery
+        }
       }
-    }
-  ).toArray();
+    ).toArray()
+  );
   
-  // TODO: Use a shorter name for this
-  const failureClassificationsMatchingIncidentIdsMatchingSearchTags_ByFailure = (
-    groupable(failureClassificationsMatchingIncidentIdsMatchingSearchTags).groupByMultiple(
+  const matchingClassificationsByFailure = (
+    groupable(failureClassificationsMatchingIncidentIds).groupByMultiple(
       classification => tagsFromClassification(classification)
     )
   );
 
-  const risks = Object.keys(failureClassificationsMatchingIncidentIdsMatchingSearchTags_ByFailure).map(
-    failure => {
-      const failureClassifications = failureClassificationsMatchingIncidentIdsMatchingSearchTags_ByFailure[failure];
-      return {
-        tag: failure,
-        precedents: failureClassifications.map(failureClassification => {
-          const classificationsMatchingIncidentIdOfFailureClassification = classificationsMatchingSearchTags.filter(
-           c => c.incident_id == failureClassification.incident_id 
+  const risks = Object.keys(matchingClassificationsByFailure).map(
+    failure => ({
+      tag: failure,
+      precedents: matchingClassificationsByFailure[failure].map(
+        failureClassification => {
+          const incident = incidentsMatchingSearchTags.find(
+            incident => incident.incident_id == failureClassification.incident_id
           );
+          const incident_id = failureClassification.incident_id;
           return {
-            incident_id: failureClassification.incident_id,
-            title: incidentsMatchingSearchTags.find(
-              incident => incident.incident_id == failureClassification.incident_id
-            )?.title,
-            description: incidentsMatchingSearchTags.find(
-              incident => incident.incident_id == failureClassification.incident_id
-            )?.description,
-            tags: classificationsMatchingIncidentIdOfFailureClassification.map(c => tagsFromClassification(c))
+            incident_id,
+            title: incident?.title,
+            description: incident?.description,
+            tags: tagsByIncidentId[incident_id]
           }
-        }) 
-      }
-    }
+        }
+      )
+    })
   ).sort((a, b) => b.precedents.length - a.precedents.length);
 
   res.status(200).json(risks);
@@ -104,7 +112,6 @@ function getRiskClassificationsMongoQuery(queryParams) {
     }
     tagSearch[namespace].push(tag);
   }
-  console.log(`tagSearch`, tagSearch);
 
   return {
     $or: Object.keys(tagSearch).map(
@@ -146,7 +153,9 @@ var tagsFromClassification = (classification) => (
   )
 );
 
-var joinArrays = (arrays) => arrays.reduce((result, array) => result.concat(array), []);
+var joinArrays = (arrays) => arrays.reduce(
+  (result, array) => result.concat(array), []
+);
 
 var groupable = (array) => {
   array.groupBy = (keyFunction, valueFunction) => {
@@ -164,7 +173,6 @@ var groupable = (array) => {
     const groups = {};
     for (const element of array) {
       const keys = keyFunction(element);
-      console.log(`keys`, keys);
       for (const key of keys) {
         groups[key] ||= new Set();
         groups[key].add(

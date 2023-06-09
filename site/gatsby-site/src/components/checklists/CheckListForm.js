@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'formik';
-import { Button, Select, TextInput, Textarea, Card } from 'flowbite-react';
+import { Button, Select, TextInput, Textarea, Card, Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 
 import { classyDiv } from 'utils/classy';
@@ -13,17 +13,27 @@ export default function CheckListForm({
   setFieldValue, isSubmitting, submitForm, tags, t 
 }) {
 
+  const [risksLoading, setRisksLoading] = useState(false);
+
+  const [allPrecedents, setAllPrecedents] = useState([]);
+
   const searchTags = [
-    ...values['tags-goals'],
-    ...values['tags-methods'],
-    ...values['tags-other']
+    ...values['tags_goals'],
+    ...values['tags_methods'],
+    ...values['tags_other']
   ];
 
-  useEffect(() => { searchRisks({ values, setFieldValue }) }, [
-    values['tags-goals'],
-    values['tags-methods'],
-    values['tags-other']
+  useEffect(() => { searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents }) }, [
+    values['tags_goals'],
+    values['tags_methods'],
+    values['tags_other']
   ])
+
+  const oldSetFieldValue = setFieldValue;
+  setFieldValue = (key, value) => {
+    oldSetFieldValue(key, value);
+    submitForm();
+  }
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -37,7 +47,7 @@ export default function CheckListForm({
           <Col className="w-1/2 h-full">
             <QueryTagInput {...{
               title: 'Goals', 
-              id: 'tags-goals', 
+              id: 'tags_goals', 
               labelKey: abbreviatedTag,
               include: tagParts => (
                 tagParts[0] == 'GMF' && 
@@ -49,7 +59,7 @@ export default function CheckListForm({
           <Col className="w-1/2 f-full">
             <QueryTagInput {...{
               title: 'Methods', 
-              id: 'tags-methods', 
+              id: 'tags_methods', 
               labelKey: abbreviatedTag,
               include: tagParts => (
                 tagParts[0] == 'GMF' && 
@@ -62,7 +72,7 @@ export default function CheckListForm({
         <Row>
           <QueryTagInput {...{
             title: 'Other', 
-            id: 'tags-other', 
+            id: 'tags_other', 
             labelKey: (tag) => tag,
             include: tagParts => (
               tagParts[0] != 'GMF' || ![
@@ -87,11 +97,16 @@ export default function CheckListForm({
         </header>
         <p><Trans>Risks are surfaced automatically based on the tags applied to the system. They can also be added manually. Each risk is associated with a query for precedent incidents, which can be modified to suit your needs. You can subscribe both to new risks and new precedent incidents.</Trans></p>
 
-        <div className="flex flex-col gap-6">
-          {(values.risks || []).map((risk) => (
-            <RiskSection key={risk.id} {...{ risk, values, setFieldValue, submitForm, tags, searchTags }}/>
-          ))}
-        </div>
+        {risksLoading ? (
+            <Spinner />
+          ) : (
+            <div className="flex flex-col gap-6">
+              {(values.risks || []).map((risk) => (
+                <RiskSection key={risk.id} {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}/>
+              ))}
+            </div>
+          )
+        }
       </section>
     </Form>
   )
@@ -113,35 +128,57 @@ var QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldValue
 var Row = classyDiv();
 var Col = classyDiv();
 
-var searchRisks = async ({ values, setFieldValue }) => {
-  const queryTags = [...values['tags-goals'], ...values['tags-methods'], ...values['tags-other']];
+var searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents }) => {
+  const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
+  if (queryTags.length == 0) {
+    setFieldValue('risks', []);
+    return;
+  }
+  setRisksLoading(true);
   const response = await fetch(
     '/api/riskManagement/v1/risks?tags=' +
     encodeURIComponent(queryTags.join('___'))
   );
 
+  const allPrecedents = [];
+
   if (response.ok) {
     const results = await response.json();
-    console.log(`results`, results);
 
     const risksToAdd = [];
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
+
       const newRisk = {
         ...emptyRisk(),
         title: abbreviatedTag(result.tag),
-        query_tags: [result.tag],
+        tags: [result.tag],
         precedents: result.precedents,
         description: result.description,
       };
       if (i > 0) {
         newRisk.startClosed = true;
       }
-      if (!values.risks.some(existingRisk => risksEqual(result, newRisk))) {
+      if (!values.risks.some(existingRisk => (existingRisk.tags || []).includes(result.tag))) {
         risksToAdd.push(newRisk);
       }
+      /*allPrecedents = allPrecedents.concat(
+        result.precedents.filter(
+          precedent => !allPrecedents.some(
+            existingPrecedent => existingPrecedent.incident_id == precedent.incident_id
+          )
+        )
+      )*/
+      for (const precedent of result.precedents) {
+        if (allPrecedents.every(p => {
+          return p.incident_id != precedent.incident_id
+        })) {
+          allPrecedents.push(precedent);
+        }
+      }
     }
-    setFieldValue('risks', values.risks.concat(risksToAdd));
+    setFieldValue('risks', values.risks.filter(risk => !risk.generated).concat(risksToAdd));
+    setAllPrecedents(allPrecedents);
      
     // Example result:
     // [ { "tag": "GMF:Failure:Gaming Vulnerability",
@@ -150,7 +187,7 @@ var searchRisks = async ({ values, setFieldValue }) => {
     //         "url": "https://incidentdatabase.ai/cite/146",
     //         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
     //         "description": "A publicly accessible research model[...]moral judgments.",
-    //         "query_tags": [ "GMF:Known AI Technology:Language Modeling", ],
+    //         "tags": [ "GMF:Known AI Technology:Language Modeling", ],
     //         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
     //       },
     //     ]
@@ -159,6 +196,7 @@ var searchRisks = async ({ values, setFieldValue }) => {
   } else {
     // TODO: Handle the error better
     alert("Problem");
-    console.log(`response`, response);
   }
+
+  setRisksLoading(false);
 }

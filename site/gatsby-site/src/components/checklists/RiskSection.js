@@ -8,7 +8,7 @@ import Tags from 'components/forms/Tags';
 import { classy, classyDiv, classySpan } from 'utils/classy';
 import { Label, risksEqual } from 'utils/checklists';
 
-export default function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags, searchTags }) {
+export default function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags, searchTags, allPrecedents }) {
   const updateRisk = (attributeValueMap) => {
 
     const updatedRisks = [...values.risks];
@@ -16,6 +16,9 @@ export default function RiskSection({ risk, values, setRisks, setFieldValue, sub
     const updatedRisk = updatedRisks.find(r => risksEqual(r, risk));
 
     for (const attribute in attributeValueMap) {
+      if (attribute != "precedents") {
+        updatedRisk.generated = false;
+      }
       updatedRisk[attribute] = attributeValueMap[attribute];
     }
 
@@ -23,9 +26,10 @@ export default function RiskSection({ risk, values, setRisks, setFieldValue, sub
     submitForm();
   }
 
+
   useEffect(() => {
-    updatePrecedents({ risk, updateRisk, searchTags }); 
-  }, [risk.query_tags, searchTags]);
+    updatePrecedents({ risk, updateRisk, searchTags, allPrecedents }); 
+  }, [JSON.stringify(risk.tags), JSON.stringify(searchTags)]);
 
   return (
     <RiskDetails open={risk.startClosed ? undefined : true}>
@@ -38,8 +42,8 @@ export default function RiskSection({ risk, values, setRisks, setFieldValue, sub
           <div className="bootstrap" >
             <Tags 
               id="risk_status"
-              value={risk.query_tags}
-              onChange={(value) => updateRisk({ query_tags: value })}
+              value={risk.tags}
+              onChange={(value) => updateRisk({ tags: value })}
               options={tags}
             />
           </div>
@@ -139,25 +143,48 @@ var PrecedentsList = classyDiv(`
   shadow-inner
 `);
 
-var updatePrecedents = async ({ risk, updateRisk, searchTags }) => {
+var updatePrecedents = async ({ risk, updateRisk, allPrecedents, searchTags }) => {
 
-  const riskTags = risk.query_tags;
 
-  const response = await fetch( 
-    '/api/riskManagement/v1/precedents?' + [
-      'searchTags=' + encodeURIComponent(searchTags.join('___')),
-      'riskTags=' + encodeURIComponent(riskTags.join('___'))
-    ].join('&')
-  );
-
-  if (response.ok) {
-    const result = await response.json();
-
-    if (result) {
-      updateRisk({ precedents: result.map(
-        precedent => ({...precedent, _id: undefined })
-      )});
+  const updatedPrecedents = [];
+  for (const precedent of allPrecedents) {
+    
+    for (const tag of precedent.tags) {
+      if ((risk.tags || []).includes(tag)) {
+        updatedPrecedents.push(precedent);
+        break;
+      } else {
+      }
     }
   }
+  updateRisk({ precedents: updatedPrecedents });
+
+//  updateRisk({ 
+//    precedents: allPrecedents.filter(
+//      p => p.tags.some(
+//        tag => risk.tags.includes(tag)
+//      )
+//    )
+//  });
+
+//  const riskTags = risk.tags;
+//
+//  const response = await fetch( 
+//    '/api/riskManagement/v1/precedents?' + [
+//      'searchTags=' + encodeURIComponent(searchTags.join('___')),
+//      'riskTags=' + encodeURIComponent(riskTags.join('___'))
+//    ].join('&')
+//  );
+//
+//  if (response.ok) {
+//    const result = await response.json();
+//
+//    if (result) {
+//      updateRisk({ precedents: result.map(
+//        precedent => ({...precedent, _id: undefined })
+//      )});
+//    }
+//  }
+
 }
 

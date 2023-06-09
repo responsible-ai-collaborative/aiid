@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, createElement } from 'react';
 import Layout from 'components/Layout';
 import { useTranslation } from 'react-i18next';
-import { Button, Select, TextInput, Textarea, Card } from 'flowbite-react';
+import { Button, Select, TextInput, Textarea, Card, Spinner } from 'flowbite-react';
 import { debounce } from 'debounce';
 import { Trans } from 'react-i18next';
 import { Formik, Form } from 'formik';
@@ -16,6 +16,7 @@ import {
   NumberParam,
   BooleanParam
 } from 'use-query-params';
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 import AiidHelmet from 'components/AiidHelmet';
 import Tags from 'components/forms/Tags';
@@ -39,13 +40,105 @@ export default function ChecklistsPage(props) {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  const { data: savedChecklistData, loading: savedChecklistLoading } = useQuery(gql`
+    query findChecklist($query: ChecklistQueryInput) {
+      checklist(query: $query) {
+        id
+        name
+        tags_goals
+        tags_methods
+        tags_other
+        risks {
+          precedents {
+            tags
+            incident_id
+            description
+            title
+          }
+        }
+      }
+    }
+  `, { variables: { query: {id: query.id}}});
+
+
+  const removeTypename = (obj) => {
+    const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '')
+    return JSON.parse(replaced);
+  };
+
+  const savedChecklist = !savedChecklistLoading && removeTypename(savedChecklistData.checklist);
+
+  const [saveChecklist] = useMutation(gql`
+    mutation upsertChecklist(
+      $query: ChecklistQueryInput,
+      $checklist: ChecklistInsertInput!
+    ) {
+      upsertOneChecklist(query: $query, data: $checklist) {
+        id
+        name
+        tags_goals
+        tags_methods
+        tags_other
+        risks {
+          precedents {
+            tags
+            incident_id
+            description
+            title
+          }
+        }
+      }
+    }
+  `);
+  const debouncedSaveChecklist = useRef(debounce(saveChecklist, 3000)).current;
+
   const submit = async (values, { setSubmitting }) => {
     setSubmitting(true);
-    console.log(values);
+    const save = removeTypename({
+      variables: {
+        query: { id: query.id },
+        checklist: { 
+          ...values, 
+          id: query.id,
+          risks: [...values.risks
+//            .filter(
+//              risk => ['title', 'tags', 'severity', 'likelihood', 'notes']
+//                .some((f) => risk.tags[f]?.length > 0)
+//            )
+            .map(
+              risk => {
+                console.log(`risk`, risk);
+                risk.startClosed = undefined;
+                return risk;
+              }
+            )
+          ]
+        },
+      },
+    })
+    await debouncedSaveChecklist(save);
     setSubmitting(false);
   }
 
   const tags = classificationsToTags({ classifications, taxa });
+
+
+  const removeUnderscoreFields = (object) => {
+    const obj = JSON.parse(JSON.stringify(object));
+    if (!obj) return;
+    for (const key of Object.keys(obj)) {
+      if (key[0] == '_') {
+        delete obj[key];
+      } else if ( Array.isArray(obj[key]) ) {
+        for (const item of obj[key]) {
+          removeUnderscoreFields(item);
+        }
+      } else if ( typeof obj[key] === 'object') {
+        removeUnderscoreFields(obj[key]);
+      }
+    }
+    return obj;
+  }
 
   return (
     <Layout {...props} className="w-full md:max-w-5xl">
@@ -53,9 +146,21 @@ export default function ChecklistsPage(props) {
         <title>{t('Risk Checklists')}</title>
       </AiidHelmet>
       {hydrated && query.id ? (
-        <Formik onSubmit={submit} initialValues={{'tags-goals': [], 'tags-methods': [], 'tags-other': [], 'risks': []}}  >
-          {(FormProps) => <CheckListForm {...{...FormProps, tags, t}} /> }
-        </Formik>
+        savedChecklistLoading ? (
+          <Spinner />
+        ) : (
+          <Formik 
+            onSubmit={submit}
+            initialValues={savedChecklist || {
+              'tags_goals': [], 
+              'tags_methods': [], 
+              'tags_other': [], 
+              'risks': []
+            }}  
+          >
+            {(FormProps) => <CheckListForm {...{...FormProps, tags, t}} /> }
+          </Formik>
+        )
       ) : (
         <h1>Risk Checklists</h1>
       )}
@@ -94,8 +199,8 @@ function RiskSection({ risk, values, setRisks, setFieldValue, submitForm, tags }
           <div className="bootstrap" >
             <Tags 
               id="risk_status"
-              value={risk.query_tags}
-              onChange={(value) => updateRisk({ query_tags: value })}
+              value={risk.tags}
+              onChange={(value) => updateRisk({ tags: value })}
               options={tags}
             />
           </div>

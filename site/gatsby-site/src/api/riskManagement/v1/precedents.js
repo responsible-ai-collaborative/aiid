@@ -10,8 +10,12 @@ export default async function handler(req, res) {
   
   const classificationsCollection = mongoClient.db('aiidprod').collection('classifications');
 
+  const classificationsMongoQuery = getRiskClassificationsMongoQuery(req.query);
+
+  console.log(`classificationsMongoQuery`, JSON.stringify(classificationsMongoQuery));
+
   const classificationsMatchingSearchTags = await classificationsCollection.find(
-    getRiskClassificationsMongoQuery(req.query),
+    classificationsMongoQuery,
   ).toArray();
 
   const incidentIdsMatchingSearchTags = classificationsMatchingSearchTags.map(classification => classification.incident_id);
@@ -37,6 +41,8 @@ function getRiskClassificationsMongoQuery(queryParams) {
     Object.keys({ ...searchTagSearch, ...riskTagSearch})
   ));
 
+  const neverMatch = [{short_name: {$in: []}}];
+
   return {
     $or: namespaces.map(
       namespace => ({
@@ -44,8 +50,8 @@ function getRiskClassificationsMongoQuery(queryParams) {
         attributes: {
           $elemMatch: {
             $and: [
-              {$or: searchTagSearch[namespace] || [{}] },
-              {$or: riskTagSearch[namespace] || [{}] }
+              {$or: searchTagSearch[namespace] || neverMatch },
+              {$or: riskTagSearch[namespace]   || neverMatch }
             ]
           }
         }
