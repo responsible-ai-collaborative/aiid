@@ -1,6 +1,8 @@
 import incident from '../../../fixtures/incidents/incident112.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
+import { maybeIt } from '../../../support/utils';
+import { getUnixTime } from 'date-fns';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -15,7 +17,7 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length.at.least', 10);
   });
 
-  it.skip('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -150,6 +152,10 @@ describe('Incidents App', () => {
       }
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('Update').scrollIntoView().click();
 
     cy.wait('@UpsertYoutube')
@@ -165,34 +171,22 @@ describe('Incidents App', () => {
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
-      expect(xhr.request.body.variables.set.title).to.eq('Test title');
-      expect(xhr.request.body.variables.set.description).to.eq('New description');
-      expect(xhr.request.body.variables.set.date).to.eq('2023-05-04');
-
-      expect(xhr.request.body.variables.set.editors).to.have.length(2);
-      expect(xhr.request.body.variables.set.editors).to.contain('Anonymous');
-      expect(xhr.request.body.variables.set.editors).to.contain('Pablo Costa');
-
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.have.length(2);
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain('youtube');
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain(
-        'test-deployer'
-      );
-
-      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.have.length(1);
-      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.contain('youtube');
-
-      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.have.length(
-        1
-      );
-      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.contain(
-        'google'
-      );
-
-      expect(xhr.request.body.variables.set.nlp_similar_incidents).to.have.length(0);
-      expect(xhr.request.body.variables.set.editor_similar_incidents).to.contain(4);
-      expect(xhr.request.body.variables.set.editor_dissimilar_incidents).to.have.length(0);
-      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).to.have.length(0);
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        incident_id: 112,
+        title: 'Test title',
+        description: 'New description',
+        date: '2023-05-04',
+        editors: ['Anonymous', 'Pablo Costa'],
+        AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
+        AllegedDeveloperOfAISystem: { link: ['youtube'] },
+        AllegedHarmedOrNearlyHarmedParties: { link: ['google'] },
+        nlp_similar_incidents: [],
+        editor_similar_incidents: [4],
+        editor_dissimilar_incidents: [],
+        flagged_dissimilar_incidents: [],
+        editor: 'Test User',
+        epoch_date_modified: getUnixTime(now),
+      });
     });
 
     cy.get('[data-cy="incident-form"]').should('not.exist');
