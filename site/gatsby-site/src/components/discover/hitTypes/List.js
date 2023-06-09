@@ -13,7 +13,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
 
   const reportTitle = (
     <>
-      <HeaderTitle item={item} viewType={viewType} className="text-xl" />
+      <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
       <div>
         <TranslationBadge originalLanguage={item.language} />
       </div>

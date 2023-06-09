@@ -38,6 +38,7 @@ export const FIND_INCIDENT = gql`
         from_reports
         vector
       }
+      editor_notes
     }
   }
 `;
@@ -171,6 +172,7 @@ export const UPDATE_INCIDENT = gql`
         from_reports
         vector
       }
+      editor_notes
     }
   }
 `;
@@ -178,6 +180,14 @@ export const UPDATE_INCIDENT = gql`
 export const INSERT_INCIDENT = gql`
   mutation InsertIncident($incident: IncidentInsertInput!) {
     insertOneIncident(data: $incident) {
+      incident_id
+    }
+  }
+`;
+
+export const GET_LATEST_INCIDENT_ID = gql`
+  query FindIncidents {
+    incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
       incident_id
     }
   }

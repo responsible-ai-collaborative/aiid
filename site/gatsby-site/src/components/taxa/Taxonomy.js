@@ -3,8 +3,7 @@ import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
-import Button from 'elements/Button';
-import { Tooltip } from 'flowbite-react';
+import { Button, Tooltip } from 'flowbite-react';
 
 const Taxonomy = ({
   taxonomy,
@@ -37,9 +36,15 @@ const Taxonomy = ({
         </h4>
         <>
           {editing ? (
-            <Button onClick={() => setTaxonomyBeingEdited(null)}>Cancel</Button>
+            <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(null)}>
+              <Trans>Cancel</Trans>
+            </Button>
           ) : (
-            canEdit && <Button onClick={() => setTaxonomyBeingEdited(taxonomy)}>Edit</Button>
+            canEdit && (
+              <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(taxonomy)}>
+                <Trans>Edit</Trans>
+              </Button>
+            )
           )}
         </>
         <a

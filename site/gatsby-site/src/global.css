@@ -54,7 +54,7 @@ html, body, #___gatsby, #gatsby-focus-wrapper {
 
 a {
   transition: color 0.15s;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .outlineDocument ol ol {
@@ -78,7 +78,8 @@ a {
   text-decoration: none;
 }
 a:hover {
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .displayInline {
   display: inline-block;

@@ -86,7 +86,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
                     `/apps/discover?classifications=` +
                     encodeURIComponent(`${namespace}:${short_name}:${item}`)
                   }
-                  className="flex text-black hover:text-primary-blue"
+                  className="hover:no-underline flex text-black hover:text-primary-blue"
                 >
                   {valueStats !== {} ? <StatItem text={item} value={value} /> : <>{`${item}`}</>}
                 </Link>

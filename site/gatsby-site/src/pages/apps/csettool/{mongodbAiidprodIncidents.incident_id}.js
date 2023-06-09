@@ -12,7 +12,7 @@ const allNamespaces = ['CSETv1_Annotator-1', 'CSETv1_Annotator-2', 'CSETv1_Annot
 const ToolPage = (props) => {
   const {
     location: { pathname },
-    params: { id: incident_id },
+    params: { incident_id },
     data: { taxa },
   } = props;
 

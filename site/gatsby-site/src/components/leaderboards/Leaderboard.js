@@ -52,7 +52,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
     <div className={`max-w-full md:max-w-sm flex-1 self-stretch ${className || ''}`}>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-full max-h-[400px]">
         <div className="flex items-center justify-between px-6 pt-6 pb-4 hover:bg-gray-100 dark:hover:bg-gray-700">
-          <LocalizedLink to={`/summaries/leaderboard`}>
+          <LocalizedLink to={`/summaries/leaderboard`} className="hover:no-underline">
             <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
               <Trans ns="landing">{title}</Trans>
             </h5>
@@ -66,7 +66,10 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
                 key={`${item.label}-${item.value}`}
                 data-cy="leaderboard-item"
               >
-                <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
+                <Link
+                  to={`/apps/discover?${item.attribute}=${item.label}`}
+                  className="hover:no-underline"
+                >
                   <div className="flex items-center space-x-4">
                     <div className="shrink-0">
                       <div className="inline-block pr-2">{medalMap(index + 1)}</div>

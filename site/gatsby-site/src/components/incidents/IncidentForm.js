@@ -42,6 +42,7 @@ export const schema = Yup.object().shape({
       message: "Incident Editor can't be longer than 200 characters",
     })
     .required(),
+  editor_notes: Yup.string(),
 });
 
 function IncidentForm() {
@@ -210,6 +211,24 @@ function IncidentForm() {
             name="editors"
             placeHolder={t('Editors')}
             id="editors"
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TextInputGroup
+            name="editor_notes"
+            type="textarea"
+            label={t('Editor Notes')}
+            placeholder={t('Editor Notes')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            showPopover={false}
+            rows={4}
+            data-cy="editor-notes-input"
           />
         </FieldContainer>
 
