@@ -262,6 +262,7 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+      editor_notes
     }
 
     entities: allMongodbAiidprodEntities {

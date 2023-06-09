@@ -1,9 +1,9 @@
-import { faEdit, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus, faSearch, faClone } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, Spinner, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
@@ -18,6 +18,9 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  loadingLastIncident,
+  cloneIncident,
+  cloning,
 }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -113,6 +116,32 @@ function Tools({
               titleId="csettool"
             />
             <Trans>CSET Annotators Table</Trans>
+          </Button>
+        )}
+        {isUserLoggedIn && isRole('incident_editor') && (
+          <Button
+            color="gray"
+            onClick={cloneIncident}
+            disabled={loadingLastIncident || cloning}
+            data-cy="clone-incident-btn"
+          >
+            <div className="flex gap-2 items-center">
+              {cloning ? (
+                <div>
+                  <Spinner size="sm" />
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    className="mr-2"
+                    icon={faClone}
+                    title={t('Clone Incident')}
+                    titleId="clone-incident-icon"
+                  />
+                </>
+              )}
+              <Trans>Clone Incident</Trans>
+            </div>
           </Button>
         )}
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
