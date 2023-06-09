@@ -44,6 +44,7 @@ describe('Admin', () => {
               for (const role of user.roles) {
                 cy.waitForStableDOM();
                 cy.log(`email, ${user.adminData.email}, ${role}`);
+                console.log(`email, ${user.adminData.email}, ${role}`);
                 cy.contains(role).should('be.visible');
               }
             });
