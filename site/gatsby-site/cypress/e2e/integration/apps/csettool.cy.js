@@ -65,14 +65,43 @@ describe('CSET tool', () => {
     getRow('Harm Distribution Basis').within(() => {
       // should merge arrays automatically
       cy.get('[data-cy="column-CSETv1_Annotator-1"]')
-        .should('have.text', '["none"]')
-        .should('have.class', 'bg-red-100');
+        .should('have.class', 'bg-red-100')
+        .find('span[data-cy="item"]')
+        .should(($items) => {
+          const items = ['"none"'];
+
+          expect($items).to.have.length(items.length);
+
+          $items.each((index, $item) => {
+            expect($item).to.have.text(items[index]);
+          });
+        });
+
       cy.get('[data-cy="column-CSETv1_Annotator-2"]')
-        .should('have.text', '["ideology","financial means","disability"]')
-        .should('have.class', 'bg-red-100');
+        .should('have.class', 'bg-red-100')
+        .find('span[data-cy="item"]')
+        .should(($items) => {
+          const items = ['"ideology"', '"financial means"', '"disability"'];
+
+          expect($items).to.have.length(items.length);
+
+          $items.each((index, $item) => {
+            expect($item).to.have.text(items[index]);
+          });
+        });
+
       cy.get('[data-cy="column-result"]')
-        .should('have.text', '["none","ideology","financial means","disability"]')
-        .should('have.class', 'bg-green-100');
+        .should('have.class', 'bg-green-100')
+        .find('span[data-cy="item"]')
+        .should(($items) => {
+          const items = ['"none"', '"ideology"', '"financial means"', '"disability"'];
+
+          expect($items).to.have.length(items.length);
+
+          $items.each((index, $item) => {
+            expect($item).to.have.text(items[index]);
+          });
+        });
     });
 
     getRow('notes').within(() => {
@@ -133,6 +162,7 @@ describe('CSET tool', () => {
 
       cy.get('[data-cy="column-CSETv1_Annotator-2"]')
         .find('[data-cy="entity-Joshua Brown"]')
+        .parent()
         .find('button')
         .click();
 
