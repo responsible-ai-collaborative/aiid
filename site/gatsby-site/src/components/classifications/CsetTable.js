@@ -8,6 +8,8 @@ import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 const notesShortNames = [
   'notes',
@@ -22,42 +24,13 @@ const notesShortNames = [
 
 const skipShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
 
-function Entity({ attributes, cell, setData, enableDelete = false }) {
+function Entity({ attributes }) {
   const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
 
-  const handleClick = () => {
-    if (confirm(`Are you sure you want to remove ${name}?`)) {
-      setData((tableData) => {
-        const updated = tableData.map((row) => {
-          if (row.short_name == 'Entities') {
-            const value_json = row[cell.column.id].filter((entity) => {
-              const target = entity.attributes.find(
-                (a) => a.short_name == 'Entity' && JSON.parse(a.value_json) == name
-              );
-
-              return !target;
-            });
-
-            return { ...row, [cell.column.id]: value_json };
-          }
-
-          return row;
-        });
-
-        return updated;
-      });
-    }
-  };
-
   return (
-    <div className="my-2 border border-gray-400 p-2" data-cy={`entity-${name}`}>
-      <div className="flex justify-between">
+    <>
+      <div className="flex justify-between" data-cy={`entity-${name}`}>
         <h3>{name}</h3>
-        {enableDelete && (
-          <Button size="xs" color="dark" onClick={handleClick}>
-            x
-          </Button>
-        )}
       </div>
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <tbody>
@@ -69,28 +42,69 @@ function Entity({ attributes, cell, setData, enableDelete = false }) {
               >
                 {a.short_name}
               </th>
-              <td className="py-1">{a.value_json}</td>
+              <td className="py-1">{JSON.stringify(a.value_json)}</td>
             </tr>
           ))}
         </tbody>
       </table>
+    </>
+  );
+}
+
+function DeletableItem({ cell, item, setData, children, enableDelete = false }) {
+  const handleClick = () => {
+    setData((tableData) => {
+      const updated = tableData.map((row) => {
+        if (row.short_name == cell.row.values.short_name) {
+          const items = row[cell.column.id].filter((i) => !isEqual(i, item));
+
+          return { ...row, [cell.column.id]: items };
+        }
+
+        return row;
+      });
+
+      return updated;
+    });
+  };
+
+  return (
+    <div className="my-2 border border-gray-400 p-2">
+      <div className="relative">
+        {enableDelete && (
+          <Button className="absolute right-0 top-0" size="xs" color="dark" onClick={handleClick}>
+            <FontAwesomeIcon icon={faClose} />
+          </Button>
+        )}
+        {children}
+      </div>
     </div>
   );
 }
 
 function ValueDisplay({ short_name, cell, setData }) {
-  if (short_name == 'Entities') {
+  if (
+    short_name == 'Entities' ||
+    cell.row.original.display_type == 'list' ||
+    cell.row.original.display_type == 'multi'
+  ) {
     if (cell.value) {
       return (
         <div>
-          {cell.value.map((entity) => (
-            <Entity
+          {cell.value.map((item) => (
+            <DeletableItem
               key={cell.id}
-              attributes={entity.attributes}
+              item={item}
               cell={cell}
               setData={setData}
               enableDelete={cell.column.id !== 'result'}
-            />
+            >
+              {short_name == 'Entities' ? (
+                <Entity attributes={item.attributes} />
+              ) : (
+                <span data-cy="item">{JSON.stringify(item)}</span>
+              )}
+            </DeletableItem>
           ))}
         </div>
       );
