@@ -162,34 +162,30 @@ describe('Edit report', () => {
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
 
-      const date_modified = format(now, 'yyyy-MM-dd');
-
-      const epoch_date_modified = getUnixTime(now);
-
-      expect(xhr.request.body.variables.set.authors).deep.eq(['Test Author']);
-      expect(xhr.request.body.variables.set.cloudinary_id).eq('reports/test.com/test.jpg');
-      expect(xhr.request.body.variables.set.date_downloaded).eq('2022-01-01');
-      expect(xhr.request.body.variables.set.date_modified).eq(date_modified);
-      expect(xhr.request.body.variables.set.date_published).eq('2022-02-02');
-      expect(xhr.request.body.variables.set.epoch_date_downloaded).eq(1640995200);
-      expect(xhr.request.body.variables.set.epoch_date_modified).eq(epoch_date_modified);
-      expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
-      expect(xhr.request.body.variables.set.flag).eq(null);
-      expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
-      expect(xhr.request.body.variables.set.report_number).eq(10);
-      expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
-      expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
-      expect(xhr.request.body.variables.set.text).eq(
-        '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!'
-      );
-      expect(xhr.request.body.variables.set.plain_text).eq(
-        'This is text in English\n\nthat is longer that eighty characters, yes eighty characters!\n'
-      );
-      expect(xhr.request.body.variables.set.title).eq('Test Title');
-      expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
-      expect(xhr.request.body.variables.set.source_domain).eq('test.com');
-      expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
-      expect(xhr.request.body.variables.set.language).eq('en');
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        authors: ['Test Author'],
+        cloudinary_id: 'reports/test.com/test.jpg',
+        date_downloaded: '2022-01-01',
+        date_modified: format(now, 'yyyy-MM-dd'),
+        date_published: '2022-02-02',
+        epoch_date_downloaded: 1640995200,
+        epoch_date_modified: getUnixTime(now),
+        epoch_date_published: 1643760000,
+        flag: null,
+        image_url: 'https://test.com/test.jpg',
+        report_number: 10,
+        submitters: ['Test Submitter'],
+        tags: ['Test Tag', 'New Tag'],
+        text: '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!',
+        plain_text:
+          'This is text in English\n\nthat is longer that eighty characters, yes eighty characters!\n',
+        title: 'Test Title',
+        url: 'https://www.test.com/test',
+        source_domain: 'test.com',
+        editor_notes: 'Pro iustitia tantum',
+        language: 'en',
+        editor: 'Test User',
+      });
     });
 
     cy.wait('@updateOneReportTranslation').then((xhr) => {
@@ -336,35 +332,30 @@ describe('Edit report', () => {
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
 
-      const date_modified = format(now, 'yyyy-MM-dd');
-
-      const epoch_date_modified = getUnixTime(now);
-
-      expect(xhr.request.body.variables.set.authors).deep.eq(['Test Author']);
-      expect(xhr.request.body.variables.set.cloudinary_id).eq('reports/test.com/test.jpg');
-      expect(xhr.request.body.variables.set.date_downloaded).eq('2022-01-01');
-      expect(xhr.request.body.variables.set.date_modified).eq(date_modified);
-      expect(xhr.request.body.variables.set.date_published).eq('2022-02-02');
-      expect(xhr.request.body.variables.set.epoch_date_downloaded).eq(1640995200);
-      expect(xhr.request.body.variables.set.epoch_date_modified).eq(epoch_date_modified);
-      expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
-      expect(xhr.request.body.variables.set.flag).eq(null);
-      expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
-      expect(xhr.request.body.variables.set.report_number).eq(10);
-      expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
-      expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
-      expect(xhr.request.body.variables.set.text).eq(
-        '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!'
-      );
-      expect(xhr.request.body.variables.set.plain_text).eq(
-        'This is text in English\n\nthat is longer that eighty characters, yes eighty characters!\n'
-      );
-      expect(xhr.request.body.variables.set.title).eq('Test Title');
-      expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
-      expect(xhr.request.body.variables.set.source_domain).eq('test.com');
-      expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
-      expect(xhr.request.body.variables.set.language).eq('en');
-      expect(xhr.request.body.variables.set.editor).eq('Test User');
+      expect(xhr.request.body.variables.set).deep.eq({
+        authors: ['Test Author'],
+        cloudinary_id: 'reports/test.com/test.jpg',
+        date_downloaded: '2022-01-01',
+        date_modified: format(now, 'yyyy-MM-dd'),
+        date_published: '2022-02-02',
+        epoch_date_downloaded: 1640995200,
+        epoch_date_modified: getUnixTime(now),
+        epoch_date_published: 1643760000,
+        flag: null,
+        image_url: 'https://test.com/test.jpg',
+        report_number: 10,
+        submitters: ['Test Submitter'],
+        tags: ['Test Tag', 'New Tag'],
+        text: '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!',
+        plain_text:
+          'This is text in English\n\nthat is longer that eighty characters, yes eighty characters!\n',
+        title: 'Test Title',
+        url: 'https://www.test.com/test',
+        source_domain: 'test.com',
+        editor_notes: 'Pro iustitia tantum',
+        language: 'en',
+        editor: 'Test User',
+      });
     });
 
     cy.wait('@updateOneReportTranslation').then((xhr) => {
@@ -562,12 +553,42 @@ describe('Edit report', () => {
       }
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('button', 'Submit').click();
 
     cy.wait('@UpdateReport')
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
+        expect(variables.set).deep.eq({
+          authors: ['Marco Acevedo'],
+          cloudinary_id:
+            'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+          date_downloaded: '2019-04-13',
+          date_modified: format(now, 'yyyy-MM-dd'),
+          date_published: '2015-07-11',
+          editor_notes: '',
+          epoch_date_downloaded: 1555113600,
+          epoch_date_modified: getUnixTime(now),
+          epoch_date_published: 1436572800,
+          flag: null,
+          image_url:
+            'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+          language: 'en',
+          plain_text:
+            'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.\n',
+          report_number: 10,
+          source_domain: 'change.org',
+          submitters: ['Roman Yampolskiy'],
+          tags: ['Test Tag'],
+          text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
+          title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+          url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+          editor: 'Test User',
+        });
       });
 
     cy.wait('@updateOneReportTranslation')
@@ -764,11 +785,45 @@ describe('Edit report', () => {
 
     cy.window().then((win) => cy.stub(win, 'confirm').as('confirm').returns(true));
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('button', 'Submit').click();
 
     cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
 
-    cy.wait('@UpdateReport');
+    cy.wait('@UpdateReport')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.report_number).to.equal(23);
+        expect(variables.set).deep.eq({
+          authors: ['Marco Acevedo'],
+          cloudinary_id:
+            'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+          date_downloaded: '2019-04-13',
+          date_published: '2015-07-11',
+          flag: null,
+          image_url:
+            'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+          report_number: 10,
+          submitters: ['Roman Yampolskiy'],
+          editor: 'Test User',
+          tags: ['Test Tag'],
+          text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
+          plain_text:
+            'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.\n',
+          title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+          url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+          editor_notes: '',
+          language: 'en',
+          source_domain: 'change.org',
+          epoch_date_downloaded: 1555113600,
+          epoch_date_published: 1436572800,
+          date_modified: format(now, 'yyyy-MM-dd'),
+          epoch_date_modified: getUnixTime(now),
+        });
+      });
 
     cy.wait('@UpdateReportTranslation');
 
@@ -890,11 +945,45 @@ describe('Edit report', () => {
 
     cy.window().then((win) => cy.stub(win, 'confirm').as('confirm').returns(true));
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('button', 'Submit').click();
 
     cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
 
-    cy.wait('@UpdateReport');
+    cy.wait('@UpdateReport')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.report_number).to.equal(23);
+        expect(variables.set).deep.eq({
+          authors: ['Marco Acevedo'],
+          cloudinary_id:
+            'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+          date_downloaded: '2019-04-13',
+          date_published: '2015-07-11',
+          flag: null,
+          image_url:
+            'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+          report_number: 10,
+          submitters: ['Roman Yampolskiy'],
+          editor: 'Test User',
+          tags: ['Test Tag'],
+          text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
+          plain_text:
+            'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.\n',
+          title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+          url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+          editor_notes: '',
+          language: 'en',
+          source_domain: 'change.org',
+          epoch_date_downloaded: 1555113600,
+          epoch_date_published: 1436572800,
+          date_modified: format(now, 'yyyy-MM-dd'),
+          epoch_date_modified: getUnixTime(now),
+        });
+      });
 
     cy.wait('@UpdateReportTranslation');
 

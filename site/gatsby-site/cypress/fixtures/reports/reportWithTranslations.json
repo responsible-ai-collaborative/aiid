@@ -32,6 +32,8 @@
         "text": "Este es el texto que tiene un largo mayor a ochenta caracteres en frances!",
         "title": "Este es el Titulo en frances"
       },
+      "date_modified": "2023-01-01",
+      "epoch_date_modified": 1672531200,
       "is_incident_report": true
     }
   }

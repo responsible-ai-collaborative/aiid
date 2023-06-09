@@ -9,8 +9,12 @@ import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
+import { getUnixTime } from 'date-fns';
+import { useUserContext } from 'contexts/userContext';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
 
   const [incident, setIncident] = useState(null);
@@ -82,6 +86,13 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         values.AllegedHarmedOrNearlyHarmedParties,
         createEntityMutation
       );
+
+      updated.epoch_date_modified = getUnixTime(new Date());
+
+      // Set the user as the last editor
+      if (user && user.customData.first_name && user.customData.last_name) {
+        updated.editor = `${user.customData.first_name} ${user.customData.last_name}`;
+      }
 
       await updateIncident({
         variables: {
