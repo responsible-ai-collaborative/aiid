@@ -106,6 +106,9 @@
         },
         "user": {
             "bsonType": "string"
+        },
+        "editor": {
+            "bsonType": "string"
         }
     },
     "required": [

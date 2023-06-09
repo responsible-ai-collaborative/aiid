@@ -11,7 +11,7 @@ import {
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, parse } from 'date-fns';
+import { format, parse, getUnixTime } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
@@ -32,7 +32,6 @@ import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { getUnixTime } from 'date-fns';
 
 const CustomDateParam = {
   encode: encodeDate,

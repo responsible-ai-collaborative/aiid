@@ -364,6 +364,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.source_domain).eq('test.com');
       expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
       expect(xhr.request.body.variables.set.language).eq('en');
+      expect(xhr.request.body.variables.set.editor).eq('Test User');
     });
 
     cy.wait('@updateOneReportTranslation').then((xhr) => {

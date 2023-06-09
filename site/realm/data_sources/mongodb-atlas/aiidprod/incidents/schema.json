@@ -45,6 +45,9 @@
                 "bsonType": "string"
             }
         },
+        "editor": {
+            "bsonType": "string"
+        },
         "embedding": {
             "bsonType": "object",
             "properties": {

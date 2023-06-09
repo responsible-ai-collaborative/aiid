@@ -35,6 +35,7 @@ exports = async (input) => {
         nlp_similar_incidents: submission.nlp_similar_incidents || [],
         editor_similar_incidents: submission.editor_similar_incidents || [],
         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
+        editor: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
       }
       if (submission.embedding) {
         newIncident.embedding = { 
@@ -110,6 +111,7 @@ exports = async (input) => {
     language: submission.language,
     tags: submission.tags,
     user: submission.user,
+    editor: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
   };
   if (submission.embedding) {
     newReport.embedding = submission.embedding;

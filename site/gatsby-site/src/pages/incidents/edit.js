@@ -13,8 +13,12 @@ import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import { getUnixTime } from 'date-fns';
+import { useUserContext } from 'contexts/userContext';
 
 function EditCitePage(props) {
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
 
   const [incident, setIncident] = useState(null);
@@ -90,6 +94,13 @@ function EditCitePage(props) {
         values.AllegedHarmedOrNearlyHarmedParties,
         createEntityMutation
       );
+
+      updated.epoch_date_modified = getUnixTime(new Date());
+
+      // Set the user as the last editor
+      if (user && user.customData.first_name && user.customData.last_name) {
+        updated.editor = `${user.customData.first_name} ${user.customData.last_name}`;
+      }
 
       await updateIncident({
         variables: {

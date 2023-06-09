@@ -3,6 +3,7 @@ import Layout from '../../components/Layout';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useUserContext } from 'contexts/userContext';
 import { Spinner, Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,
@@ -55,9 +56,12 @@ const reportFields = [
   'url',
   'embedding',
   'inputs_outputs',
+  'editor',
 ];
 
 function EditCitePage(props) {
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -179,6 +183,11 @@ function EditCitePage(props) {
       values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(now);
+
+      // Set the user as the last editor
+      if (user && user.customData.first_name && user.customData.last_name) {
+        values.editor = `${user.customData.first_name} ${user.customData.last_name}`;
+      }
 
       const updated = pick(values, reportFields);
 
