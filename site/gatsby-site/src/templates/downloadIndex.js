@@ -18,13 +18,11 @@ const DownloadIndex = (props) => {
   }, [ref]);
 
   return (
-    <>
-      <div className="p-4">
-        <a ref={ref} href="/#" data-cy="download">
-          Download Index
-        </a>
-      </div>
-    </>
+    <div className="p-4">
+      <a ref={ref} href="/#" data-cy="download">
+        Download Index
+      </a>
+    </div>
   );
 };
 

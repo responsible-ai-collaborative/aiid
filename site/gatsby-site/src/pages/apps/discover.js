@@ -271,11 +271,7 @@ function DiscoverApp(props) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div
-      {...props}
-      // sidebarCollapsed={true}
-      className="w-full"
-    >
+    <div className="w-full">
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>

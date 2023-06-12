@@ -22,12 +22,10 @@ const Logout = () => {
   }, []);
 
   return (
-    <>
-      <div className="flex flex-wrap gap-2">
-        <Spinner />
-        <Trans ns="login">Logging you out...</Trans>
-      </div>
-    </>
+    <div className="flex flex-wrap gap-2">
+      <Spinner />
+      <Trans ns="login">Logging you out...</Trans>
+    </div>
   );
 };
 

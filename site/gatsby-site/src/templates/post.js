@@ -47,7 +47,7 @@ export default function Post(props) {
   }, []);
 
   return (
-    <div>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <LocalizedLink to="/blog" className="text-lg">
@@ -81,7 +81,7 @@ export default function Post(props) {
       <div className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>
-    </div>
+    </>
   );
 }
 

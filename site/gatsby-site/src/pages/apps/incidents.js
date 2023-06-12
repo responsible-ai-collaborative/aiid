@@ -46,11 +46,7 @@ const IncidentsPage = ({ data, ...props }) => {
   const { t } = useTranslation();
 
   return (
-    <div
-      {...props}
-      // sidebarCollapsed={true}
-      className="w-full"
-    >
+    <div className="w-full">
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>

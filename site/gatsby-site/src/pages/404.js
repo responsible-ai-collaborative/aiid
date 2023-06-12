@@ -3,7 +3,7 @@ import AiidHelmet from 'components/AiidHelmet';
 
 const Default404 = () => {
   return (
-    <div className={'fullWidth'}>
+    <div className={'w-full'}>
       <AiidHelmet>
         <title>Page not found</title>
       </AiidHelmet>

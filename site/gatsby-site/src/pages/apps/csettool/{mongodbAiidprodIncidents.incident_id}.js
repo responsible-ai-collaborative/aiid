@@ -61,7 +61,7 @@ const ToolPage = (props) => {
   }, [data]);
 
   return (
-    <div {...props} className="w-full">
+    <div className="w-full">
       <AiidHelmet path={pathname}>
         <title>CSET Tool</title>
       </AiidHelmet>

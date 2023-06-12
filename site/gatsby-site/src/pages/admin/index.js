@@ -24,7 +24,7 @@ const AdminPage = (props) => {
   const localizePath = useLocalizePath();
 
   return (
-    <div {...props} className="w-full">
+    <div className="w-full">
       <AiidHelmet path={pathname}>
         <title>Admin</title>
       </AiidHelmet>

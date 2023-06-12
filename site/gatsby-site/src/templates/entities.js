@@ -60,11 +60,7 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
           path: props.location.pathname,
         }}
       />
-      <div
-        {...props}
-        // sidebarCollapsed={true}
-        className="w-full"
-      >
+      <div className="w-full">
         <div className="titleWrapper">
           <h1>{t(metaTitle)}</h1>
         </div>

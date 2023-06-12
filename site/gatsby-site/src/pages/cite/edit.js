@@ -56,7 +56,7 @@ const reportFields = [
   'inputs_outputs',
 ];
 
-function EditCitePage(props) {
+function EditCitePage() {
   const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -257,7 +257,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <div {...props} className={'w-full p-1'}>
+    <div className={'w-full p-1'}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">

@@ -146,8 +146,6 @@ export default function ClassificationsDbView(props) {
 
   const [loading, setLoading] = useState(false);
 
-  // const [collapse, setCollapse] = useState(true);
-
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
   const [tableData, setTableData] = useState([]);
@@ -509,11 +507,7 @@ export default function ClassificationsDbView(props) {
   const fullTextModal = useModal();
 
   return (
-    <div
-      {...props}
-      // menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
-      // sidebarCollapsed={true}
-    >
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
@@ -570,6 +564,6 @@ export default function ClassificationsDbView(props) {
           <Modal.Body>{modalContent.content}</Modal.Body>
         </Modal>
       )}
-    </div>
+    </>
   );
 }

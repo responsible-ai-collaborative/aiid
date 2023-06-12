@@ -33,7 +33,7 @@ export default function Doc(props) {
   }, []);
 
   return (
-    <div>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }} />
       <div className={'titleWrapper'}>
         <h1>{mdx.fields.title}</h1>
@@ -49,7 +49,7 @@ export default function Doc(props) {
       <div className="styled-main-wrapper prose">
         <MDXProvider components={Components}>{children}</MDXProvider>
       </div>
-    </div>
+    </>
   );
 }
 

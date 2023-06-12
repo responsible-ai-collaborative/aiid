@@ -20,7 +20,7 @@ function TsneVisulizationPage(props) {
   const metaDescription = t('Spatial Visualization');
 
   return (
-    <div className="max-w-full w-full" {...props}>
+    <div className="max-w-full w-full">
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
