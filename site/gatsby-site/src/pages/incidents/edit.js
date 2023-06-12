@@ -13,7 +13,7 @@ import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
-function EditCitePage() {
+function EditCitePage(props) {
   const { t, i18n } = useTranslation();
 
   const [incident, setIncident] = useState(null);
@@ -108,7 +108,7 @@ function EditCitePage() {
   };
 
   return (
-    <div className={'w-full'}>
+    <div className={'w-full'} {...props}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">

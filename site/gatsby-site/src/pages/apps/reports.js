@@ -203,7 +203,7 @@ export default function Incidents(props) {
   const { isCollapsed } = useMenuContext();
 
   return (
-    <>
+    <div {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -222,6 +222,6 @@ export default function Incidents(props) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

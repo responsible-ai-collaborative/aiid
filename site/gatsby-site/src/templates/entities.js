@@ -51,7 +51,7 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
   const metaTitle = t('Entities');
 
   return (
-    <>
+    <div {...props}>
       <AiidHelmet
         {...{
           metaTitle,
@@ -66,7 +66,7 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
         </div>
         <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
       </div>
-    </>
+    </div>
   );
 };
 

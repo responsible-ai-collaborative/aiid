@@ -507,7 +507,7 @@ export default function ClassificationsDbView(props) {
   const fullTextModal = useModal();
 
   return (
-    <>
+    <div {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
@@ -564,6 +564,6 @@ export default function ClassificationsDbView(props) {
           <Modal.Body>{modalContent.content}</Modal.Body>
         </Modal>
       )}
-    </>
+    </div>
   );
 }

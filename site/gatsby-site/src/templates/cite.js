@@ -90,7 +90,7 @@ function CitePage(props) {
   });
 
   return (
-    <>
+    <div {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -126,7 +126,7 @@ function CitePage(props) {
           setIsLiveData={setIsLiveData}
         />
       )}
-    </>
+    </div>
   );
 }
 

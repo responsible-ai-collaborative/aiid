@@ -11,7 +11,7 @@ const SubmitPage = (props) => {
   const { t } = useTranslation(['submit']);
 
   return (
-    <div className="md:max-w-5xl">
+    <div className="md:max-w-5xl" {...props}>
       <AiidHelmet path={pathname}>
         <title>{t('New Incident Report')}</title>
       </AiidHelmet>

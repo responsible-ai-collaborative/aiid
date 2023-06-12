@@ -59,7 +59,7 @@ function CiteDynamicPage(props) {
   }, [incidentData]);
 
   return (
-    <>
+    <div {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -80,7 +80,7 @@ function CiteDynamicPage(props) {
       ) : (
         <Trans>Incident {{ incident_id }} not found</Trans>
       )}
-    </>
+    </div>
   );
 }
 

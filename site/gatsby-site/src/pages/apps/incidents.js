@@ -46,7 +46,7 @@ const IncidentsPage = ({ data, ...props }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="w-full">
+    <div className="w-full" {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>

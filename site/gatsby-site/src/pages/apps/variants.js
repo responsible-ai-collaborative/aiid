@@ -71,7 +71,7 @@ export default function IncidentsPage(props) {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Variants')}</title>
       </AiidHelmet>

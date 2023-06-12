@@ -271,7 +271,7 @@ function DiscoverApp(props) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="w-full">
+    <div {...props} className="w-full">
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
