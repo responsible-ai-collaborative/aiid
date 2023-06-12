@@ -5,6 +5,7 @@
     "id":        { "bsonType": "string" },
     "entity_id": { "bsonType": "string" },
     "name":      { "bsonType": "string" },
+    "about":     { "bsonType": "string" },
     "tags_goals": {
       "bsonType": "array",
       "items": {"bsonType": "string"}
