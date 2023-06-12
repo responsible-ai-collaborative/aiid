@@ -50,6 +50,16 @@ const SubmissionEdit = ({ id }) => {
 
   const [saving, setSaving] = useState(false);
 
+  const [submission, setSubmission] = useState(null);
+
+  useEffect(() => {
+    if (data?.submission) {
+      setSubmission({
+        ...data.submission,
+      });
+    }
+  }, [data]);
+
   const handleSubmit = async (values) => {
     try {
       const update = { ...values, __typename: undefined, _id: undefined };
@@ -100,6 +110,7 @@ const SubmissionEdit = ({ id }) => {
       });
 
       setSaving(false);
+      setSubmission(values);
     } catch (e) {
       addToast({
         message: `Error updating submission ${values._id}`,
@@ -108,13 +119,6 @@ const SubmissionEdit = ({ id }) => {
       });
     }
   };
-
-  const saveChanges = (values) => {
-    setSaving(true);
-    handleSubmit(values);
-  };
-
-  console.log('data.submission', data?.submission);
 
   return (
     <div>
@@ -147,110 +151,34 @@ const SubmissionEdit = ({ id }) => {
         <DefaultSkeleton />
       ) : (
         <>
-          {!loading && data?.submission && entitiesData?.entities && (
+          {!loading && submission && entitiesData?.entities && (
             <div className="flex">
-              <Card className="w-3/4 relative">
-                <Badge className="absolute -top-3" color={STATUS[data.submission.status].color}>
-                  {data.submission.status}
-                </Badge>
-                <Formik
-                  validationSchema={schema}
-                  onSubmit={handleSubmit}
-                  initialValues={{
-                    ...data.submission,
-                    developers:
-                      data?.submission.developers === null
-                        ? []
-                        : data?.submission.developers.map((item) => item.name),
-                    deployers:
-                      data?.submission.deployers === null
-                        ? []
-                        : data?.submission.deployers.map((item) => item.name),
-                    harmed_parties:
-                      data?.submission.harmed_parties === null
-                        ? []
-                        : data?.submission.harmed_parties.map((item) => item.name),
-                  }}
-                >
-                  <SubmissionEditForm handleSubmit={handleSubmit} setSaving={setSaving} />
-                </Formik>
-              </Card>
-              <div className="flex w-1/4 py-4 pl-6 items-center flex-col gap-8">
-                <ProgressCircle percentage={77} />
-                <div className="flex flex-col w-full items-center gap-2">
-                  <Label>
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
-                    <Trans>Assignee</Trans>
-                  </Label>
-                  <Select
-                    className="w-full"
-                    onChange={(e) => {
-                      saveChanges({ ...data.submission, editor: e.target.value });
-                    }}
-                    value={data.submission.editor?.userId}
-                  >
-                    <option value={null}>
-                      <Trans>Unassigned</Trans>
-                    </option>
-                    {!userLoading && (
-                      <>
-                        {userData.users.map((user) => {
-                          return (
-                            <option key={user.userId} value={user.userId}>
-                              {user.first_name} {user.last_name}
-                            </option>
-                          );
-                        })}
-                      </>
-                    )}
-                  </Select>
-                </div>
-                <div className="flex flex-col w-full items-center gap-2">
-                  <Label>
-                    <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
-                    <Trans>Status</Trans>
-                  </Label>
-                  <Select
-                    className="w-full"
-                    value={data.submission.status}
-                    onChange={(e) => {
-                      saveChanges({ ...data.submission, status: e.target.value });
-                    }}
-                  >
-                    <option value="In Review">
-                      <Trans>In Review</Trans>
-                    </option>
-                    <option value="Pending Review">
-                      <Trans>Pending Review</Trans>
-                    </option>
-                  </Select>
-                </div>
-                <div className="flex flex-col w-full items-center gap-2">
-                  <Label>
-                    <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
-                    <Trans>Add as</Trans>
-                  </Label>
-                  <Select className="w-full">
-                    <option>
-                      <Trans>New Incident</Trans>
-                    </option>
-                    <option>
-                      <Trans>New Issue</Trans>
-                    </option>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <Button>
-                    <FontAwesomeIcon className="mr-2" icon={faCheck} />
-                    <Trans>Accept</Trans>
-                  </Button>
-                  <Button color={'failure'}>
-                    <FontAwesomeIcon className="mr-2" icon={faXmark} />
-                    <Trans>Reject</Trans>
-                  </Button>
-                </div>
-              </div>
+              <Formik
+                validationSchema={schema}
+                onSubmit={handleSubmit}
+                initialValues={{
+                  ...submission,
+                  developers:
+                    data?.submission.developers === null
+                      ? []
+                      : data?.submission.developers.map((item) => item.name),
+                  deployers:
+                    data?.submission.deployers === null
+                      ? []
+                      : data?.submission.deployers.map((item) => item.name),
+                  harmed_parties:
+                    data?.submission.harmed_parties === null
+                      ? []
+                      : data?.submission.harmed_parties.map((item) => item.name),
+                }}
+              >
+                <SubmissionEditForm
+                  handleSubmit={handleSubmit}
+                  setSaving={setSaving}
+                  userData={userData}
+                  userLoading={userLoading}
+                />
+              </Formik>
             </div>
           )}
         </>
@@ -259,7 +187,7 @@ const SubmissionEdit = ({ id }) => {
   );
 };
 
-const SubmissionEditForm = ({ handleSubmit, setSaving }) => {
+const SubmissionEditForm = ({ handleSubmit, setSaving, userLoading, userData }) => {
   const { values, setFieldValue, isValid, submitForm, isSubmitting } = useFormikContext();
 
   const onChange = () => {
@@ -276,28 +204,115 @@ const SubmissionEditForm = ({ handleSubmit, setSaving }) => {
 
   return (
     <>
-      <SubmissionForm onChange={onChange} />
-      <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-      <div className="flex items-center gap-3 text-red-500">
-        {!isValid && <Trans ns="validation">Please review submission. Some data is missing.</Trans>}
-        <Button
-          onClick={submitForm}
-          className="flex disabled:opacity-50"
-          type="submit"
-          disabled={isSubmitting || !isValid}
-          data-cy="update-btn"
-        >
-          {isSubmitting ? (
-            <>
-              <Spinner size="sm" />
-              <div className="ml-2">
-                <Trans>Updating...</Trans>
-              </div>
-            </>
-          ) : (
-            <Trans>Update</Trans>
+      <Card className="w-3/4 relative">
+        <Badge className="absolute -top-3" color={STATUS[values.status].color}>
+          {values.status}
+        </Badge>
+        <SubmissionForm onChange={onChange} />
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+        <div className="flex items-center gap-3 text-red-500">
+          {!isValid && (
+            <Trans ns="validation">Please review submission. Some data is missing.</Trans>
           )}
-        </Button>
+          <Button
+            onClick={submitForm}
+            className="flex disabled:opacity-50"
+            type="submit"
+            disabled={isSubmitting || !isValid}
+            data-cy="update-btn"
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner size="sm" />
+                <div className="ml-2">
+                  <Trans>Updating...</Trans>
+                </div>
+              </>
+            ) : (
+              <Trans>Update</Trans>
+            )}
+          </Button>
+        </div>
+      </Card>
+      <div className="flex w-1/4 py-4 pl-6 items-center flex-col gap-8">
+        <ProgressCircle percentage={77} />
+        <div className="flex flex-col w-full items-center gap-2">
+          <Label>
+            <FontAwesomeIcon icon={faUser} className="mr-2" />
+            <Trans>Assignee</Trans>
+          </Label>
+          <Select
+            className="w-full"
+            onChange={(e) => {
+              setSaving(true);
+              saveChanges({ ...values, editor: e.target.value });
+              setFieldValue('editor', e.target.value);
+            }}
+            value={values.editor?.userId}
+          >
+            <option value={null}>
+              <Trans>Unassigned</Trans>
+            </option>
+            {!userLoading && (
+              <>
+                {userData.users.map((user) => {
+                  return (
+                    <option key={user.userId} value={user.userId}>
+                      {user.first_name} {user.last_name}
+                    </option>
+                  );
+                })}
+              </>
+            )}
+          </Select>
+        </div>
+        <div className="flex flex-col w-full items-center gap-2">
+          <Label>
+            <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
+            <Trans>Status</Trans>
+          </Label>
+          <Select
+            className="w-full"
+            value={values.status}
+            onChange={(e) => {
+              setSaving(true);
+              saveChanges({ ...values, status: e.target.value });
+              setFieldValue('status', e.target.value);
+            }}
+          >
+            <option value="In Review">
+              <Trans>In Review</Trans>
+            </option>
+            <option value="Pending Review">
+              <Trans>Pending Review</Trans>
+            </option>
+          </Select>
+        </div>
+        <div className="flex flex-col w-full items-center gap-2">
+          <Label>
+            <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
+            <Trans>Add as</Trans>
+          </Label>
+          <Select className="w-full">
+            <option>
+              <Trans>New Incident</Trans>
+            </option>
+            <option>
+              <Trans>New Issue</Trans>
+            </option>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Button>
+            <FontAwesomeIcon className="mr-2" icon={faCheck} />
+            <Trans>Accept</Trans>
+          </Button>
+          <Button color={'failure'}>
+            <FontAwesomeIcon className="mr-2" icon={faXmark} />
+            <Trans>Reject</Trans>
+          </Button>
+        </div>
       </div>
     </>
   );
