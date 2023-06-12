@@ -93,7 +93,11 @@ export const FIND_INCIDENTS = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id

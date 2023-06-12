@@ -105,7 +105,7 @@ function NewIncidentPage(props) {
       {loading && <DefaultSkeleton />}
 
       {!loading && (
-        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={{}}>
+        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={{ editors: [] }}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
               <IncidentForm />

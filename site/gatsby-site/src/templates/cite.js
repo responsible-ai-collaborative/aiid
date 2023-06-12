@@ -258,6 +258,7 @@ export const query = graphql`
       description
       date
       editors {
+        userId
         first_name
         last_name
       }
