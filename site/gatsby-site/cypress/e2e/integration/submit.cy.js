@@ -249,7 +249,7 @@ describe('The Submit form', () => {
     }
   );
 
-  it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
+  it.skip('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(

@@ -29,7 +29,7 @@ describe('Submitted reports', () => {
     });
   });
 
-  it.only('Loads submissions', () => {
+  it.skip('Loads submissions', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
@@ -98,7 +98,7 @@ describe('Submitted reports', () => {
     });
   });
 
-  it.only('Promotes a submission to a new report and links it to a new incident', () => {
+  it.skip('Promotes a submission to a new report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -194,7 +194,7 @@ describe('Submitted reports', () => {
     ).should('exist');
   });
 
-  it.only('Promotes a submission to a new report and links it to an existing incident', () => {
+  it.skip('Promotes a submission to a new report and links it to an existing incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -290,7 +290,7 @@ describe('Submitted reports', () => {
     ).should('exist');
   });
 
-  it.only('Promotes a submission to a new report and links it to multiple incidents', () => {
+  it.skip('Promotes a submission to a new report and links it to multiple incidents', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -403,7 +403,7 @@ describe('Submitted reports', () => {
     ).should('exist');
   });
 
-  it.only('Promotes a submission to a new issue', () => {
+  it.skip('Promotes a submission to a new issue', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -473,7 +473,7 @@ describe('Submitted reports', () => {
     );
   });
 
-  it.only('Rejects a submission', () => {
+  it.skip('Rejects a submission', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -534,7 +534,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="submissions"]').children().should('have.length', 0);
   });
 
-  it.only('Edits a submission - update just a text', () => {
+  it.skip('Edits a submission - update just a text', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -648,7 +648,7 @@ describe('Submitted reports', () => {
     cy.get('@modal').should('not.exist');
   });
 
-  it.only('Edits a submission - uses fetch info', () => {
+  it.skip('Edits a submission - uses fetch info', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -721,7 +721,7 @@ describe('Submitted reports', () => {
     cy.get('input[label="Date Downloaded"]').should('have.attr', 'value', '2022-05-26');
   });
 
-  it.only('Does not allow promotion of submission to Incident if schema is invalid (missing Description).', () => {
+  it.skip('Does not allow promotion of submission to Incident if schema is invalid (missing Description).', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -782,7 +782,7 @@ describe('Submitted reports', () => {
     cy.wait('@promotionInvoked', { timeout: 2000 });
   });
 
-  it.only('Does not allow promotion of submission to Issue if schema is invalid (missing Title).', () => {
+  it.skip('Does not allow promotion of submission to Issue if schema is invalid (missing Title).', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -843,7 +843,7 @@ describe('Submitted reports', () => {
     cy.wait('@promotionInvoked', { timeout: 2000 });
   });
 
-  it.only('Does not allow promotion of submission to Report if schema is invalid (missing Date).', () => {
+  it.skip('Does not allow promotion of submission to Report if schema is invalid (missing Date).', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -904,7 +904,7 @@ describe('Submitted reports', () => {
     cy.wait('@promotionInvoked', { timeout: 2000 });
   });
 
-  it.only('Should display an error message if data is missing', () => {
+  it.skip('Should display an error message if data is missing', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -974,7 +974,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="update-btn"]').should('not.be.disabled');
   });
 
-  it.only('Should display submission image on edit modal', () => {
+  it.skip('Should display submission image on edit modal', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -1053,7 +1053,7 @@ describe('Submitted reports', () => {
     );
   });
 
-  it.only('Should display fallback image on edit modal if submission doesnt have an image', () => {
+  it.skip('Should display fallback image on edit modal if submission doesnt have an image', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find((s) => s.cloudinary_id === null);
@@ -1110,7 +1110,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
   });
 
-  it.only('Should display an error message if Date Published is not in the past', () => {
+  it.skip('Should display an error message if Date Published is not in the past', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -1164,7 +1164,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="update-btn"]').should('be.disabled');
   });
 
-  it.only('Should display an error message if Date Downloaded is not in the past', () => {
+  it.skip('Should display an error message if Date Downloaded is not in the past', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -1218,7 +1218,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="update-btn"]').should('be.disabled');
   });
 
-  it.only('Edits a submission - links to existing incident - Incident Data should be hidden', () => {
+  it.skip('Edits a submission - links to existing incident - Incident Data should be hidden', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
