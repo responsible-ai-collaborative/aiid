@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Spinner, Tooltip } from 'flowbite-react';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { getVariantStatus, VARIANT_STATUS, getVariantStatusText } from 'utils/variants';
+import {
+  getVariantStatus,
+  VARIANT_STATUS,
+  getVariantStatusText,
+  isCompleteReport,
+} from 'utils/variants';
+import { sortIncidentsByDatePublished } from 'utils/cite';
 import VariantForm, { schema } from 'components/variants/VariantForm';
 import { useUserContext } from 'contexts/userContext';
 import VariantEditModal from './VariantEditModal';
 import { Formik } from 'formik';
-import { useMutation } from '@apollo/client';
-import { CREATE_VARIANT } from '../../graphql/variants';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { CREATE_VARIANT, FIND_INCIDENT_VARIANTS } from '../../graphql/variants';
 
 export const VariantStatusBadge = ({ status }) => {
   let badgeClass;
@@ -57,52 +63,74 @@ const VariantCard = ({ variant, incidentId }) => {
         <div className="flex">
           <VariantStatusBadge status={getVariantStatus(variant)} />
         </div>
-        <div className="flex w-full flex-col mt-3 gap-2">
-          <div className="font-bold flex items-center gap-2">
-            <Trans ns="variants">Input and circumstances</Trans>
-            <Tooltip
-              content={
-                <Trans ns="variants">
-                  Provide the relevant details producing the incident. Examples include the input
-                  prompts to a chatbot or a description of the circumstances leading to injuries
-                  sustained from a robot.
-                </Trans>
-              }
-              trigger="click"
-              placement="right"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                className="far fa-question-circle"
-              />
-            </Tooltip>
+        <div className="flex w-full flex-col mt-3 gap-3">
+          <div className="flex items-center gap-2">
+            <div className="font-bold">
+              <Trans>Incident Date</Trans>:
+            </div>
+            <div>{variant.date_published}</div>
           </div>
-          <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
-            <Markdown>{variant.text_inputs}</Markdown>
-          </div>
-          <div className="font-bold flex items-center gap-2">
-            <Trans ns="variants">Output and outcomes</Trans>
-            <Tooltip
-              content={
-                <Trans ns="variants">
-                  Provide the relevant details surrounding the incident. Examples include output
-                  text from a chatbot or the nature of injuries sustained from a robot.
-                </Trans>
-              }
-              trigger="click"
-              placement="right"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                className="far fa-question-circle"
-              />
-            </Tooltip>
-          </div>
-          <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
-            <Markdown>{variant.text_outputs}</Markdown>
-          </div>
+          {variant.text && (
+            <>
+              <div className="font-bold flex items-center gap-2">
+                <Trans ns="variants">Description of Incident Circumstances</Trans>
+                <Tooltip
+                  content={
+                    <Trans ns="variants">
+                      Journalistic reporting on the circumstances of the incident to help inform
+                      people what happened, where, involving who, when, and why.
+                    </Trans>
+                  }
+                  trigger="click"
+                  placement="right"
+                >
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                    className="far fa-question-circle"
+                  />
+                </Tooltip>
+              </div>
+              <div data-cy="variant-text" className="border-1 rounded-lg px-3">
+                <Markdown>{variant.text}</Markdown>
+              </div>
+            </>
+          )}
+          {variant.inputs_outputs &&
+            variant.inputs_outputs.length > 0 &&
+            variant.inputs_outputs.some((io) => io != '') && (
+              <>
+                <div className="font-bold flex items-center gap-2">
+                  <Trans ns="variants">Inputs / Outputs</Trans>
+                  <Tooltip
+                    content={
+                      <Trans ns="variants">
+                        The sequence of data inputs into the intelligent system and outputs produced
+                        by the system involved in the incident. For a chatbot, this will generally
+                        present a back and forth between a human and the chatbot&apos;s responses.
+                      </Trans>
+                    }
+                    trigger="click"
+                    placement="right"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                      className="far fa-question-circle"
+                    />
+                  </Tooltip>
+                </div>
+                {variant.inputs_outputs.map((input_output, index) => (
+                  <div
+                    className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                    key={`inputs_outputs.${index}`}
+                    data-cy="variant-inputs-outputs"
+                  >
+                    <Markdown>{input_output}</Markdown>
+                  </div>
+                ))}
+              </>
+            )}
         </div>
 
         {!loadingUserContext && isRole('incident_editor') && (
@@ -124,12 +152,36 @@ const VariantCard = ({ variant, incidentId }) => {
   );
 };
 
-const VariantList = ({ incidentId, variants }) => {
+const VariantList = ({ liveVersion, incidentId, variants }) => {
   const { t } = useTranslation(['variants']);
 
   const [displayForm, setDisplayForm] = useState(false);
 
+  //Sort variants
+  variants = variants
+    .sort(
+      (a, b) => b.tags.includes(VARIANT_STATUS.approved) - a.tags.includes(VARIANT_STATUS.approved)
+    )
+    .sort(
+      (a, b) => a.tags.includes(VARIANT_STATUS.rejected) - b.tags.includes(VARIANT_STATUS.rejected)
+    );
+
+  const [variantList, setVariantList] = useState(variants);
+
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+
+  const [findIncidentVariants, { data: incidentData, refetch: refetchVariants }] = useLazyQuery(
+    FIND_INCIDENT_VARIANTS,
+    {
+      variables: { incident_id: incidentId },
+    }
+  );
+
+  useEffect(() => {
+    if (liveVersion) {
+      findIncidentVariants();
+    }
+  }, [liveVersion]);
 
   const onAddVariantClick = () => {
     setDisplayForm(!displayForm);
@@ -139,16 +191,43 @@ const VariantList = ({ incidentId, variants }) => {
 
   const [createVariantMutation] = useMutation(CREATE_VARIANT);
 
-  const addVariant = async ({ incidentId, text_inputs, text_outputs }) => {
+  useEffect(() => {
+    if (incidentData?.incident?.reports) {
+      const incidentReports = incidentData.incident.reports;
+
+      const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports.slice());
+
+      const variants = sortedIncidentReports
+        .filter((report) => !isCompleteReport(report))
+        .sort(
+          (a, b) =>
+            b.tags.includes(VARIANT_STATUS.approved) - a.tags.includes(VARIANT_STATUS.approved)
+        )
+        .sort(
+          (a, b) =>
+            a.tags.includes(VARIANT_STATUS.rejected) - b.tags.includes(VARIANT_STATUS.rejected)
+        );
+
+      setVariantList(variants);
+    }
+  }, [incidentData]);
+
+  const addVariant = async ({ incidentId, date_published, submitters, text, inputs_outputs }) => {
     const variant = {
-      text_inputs,
-      text_outputs,
+      date_published,
+      submitters,
+      text,
+      inputs_outputs,
     };
 
     await createVariantMutation({ variables: { input: { incidentId, variant } } });
 
     setDisplayForm(false);
-    setDisplaySuccessMessage(true);
+    if (liveVersion) {
+      refetchVariants();
+    } else {
+      setDisplaySuccessMessage(true);
+    }
   };
 
   return (
@@ -167,7 +246,7 @@ const VariantList = ({ incidentId, variants }) => {
           <a href="https://arxiv.org/abs/2211.10384">Learn more from the research paper.</a>
         </Trans>
         <div className={'flex flex-col gap-3 mt-5'}>
-          {variants.map((variant) => (
+          {variantList.map((variant) => (
             <VariantCard
               variant={variant}
               incidentId={incidentId}
@@ -202,11 +281,14 @@ const VariantList = ({ incidentId, variants }) => {
       {displayForm && (
         <div className="p-4 mt-4 flex border-1 rounded-lg break-words flex-col shadow-md">
           <Formik
-            initialValues={{ text_inputs: '', text_outputs: '' }}
+            initialValues={{ date_published: '', submitters: [], text: '', inputs_outputs: [''] }}
             validationSchema={schema}
-            onSubmit={async ({ text_inputs, text_outputs }, { setSubmitting, resetForm }) => {
+            onSubmit={async (
+              { date_published, submitters, text, inputs_outputs },
+              { setSubmitting, resetForm }
+            ) => {
               try {
-                await addVariant({ incidentId, text_inputs, text_outputs });
+                await addVariant({ incidentId, date_published, submitters, text, inputs_outputs });
 
                 addToast({
                   message: t(
@@ -236,24 +318,22 @@ const VariantList = ({ incidentId, variants }) => {
                 <div>
                   <VariantForm />
                 </div>
-                <div>
-                  <div className="flex justify-end gap-3">
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting || !isValid}
-                      onClick={submitForm}
-                      data-cy="add-variant-submit-btn"
-                    >
-                      <div className="flex gap-2 items-center">
-                        {isSubmitting && (
-                          <div>
-                            <Spinner size="sm" />
-                          </div>
-                        )}
-                        <Trans>Submit</Trans>
-                      </div>
-                    </Button>
-                  </div>
+                <div className="flex justify-end gap-3 mt-3">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    onClick={submitForm}
+                    data-cy="add-variant-submit-btn"
+                  >
+                    <div className="flex gap-2 items-center">
+                      {isSubmitting && (
+                        <div>
+                          <Spinner size="sm" />
+                        </div>
+                      )}
+                      <Trans>Submit</Trans>
+                    </div>
+                  </Button>
                 </div>
               </div>
             )}

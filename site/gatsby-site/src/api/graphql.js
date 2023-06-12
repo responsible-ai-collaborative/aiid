@@ -3,9 +3,8 @@ import { mergeSchemas } from '@graphql-tools/schema';
 import fetch from 'cross-fetch';
 import { print } from 'graphql';
 import Cors from 'cors';
-import config from '../../config';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
+import siteConfig from '../../config';
+import { createHandler } from 'graphql-http/lib/use/express';
 
 const cors = Cors();
 
@@ -16,11 +15,11 @@ async function realmExecutor({ document, variables }) {
   const query = print(document);
 
   const fetchResult = await fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${siteConfig.realm.production_db.realm_app_id}/graphql`,
     {
       method: 'POST',
       headers: {
-        apiKey: config.realm.graphqlApiKey,
+        apiKey: siteConfig.realm.graphqlApiKey,
       },
       body: JSON.stringify({ query, variables }),
     }
@@ -60,11 +59,7 @@ export default async function handler(req, res) {
       },
     });
 
-    const server = new ApolloServer({ schema: gatewaySchema });
-
-    await server.start();
-
-    graphqlMiddleware = expressMiddleware(server);
+    graphqlMiddleware = createHandler({ schema: gatewaySchema });
   }
 
   // Manually run the cors middleware

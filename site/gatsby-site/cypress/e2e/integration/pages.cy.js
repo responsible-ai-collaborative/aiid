@@ -109,6 +109,76 @@ describe('Pages', () => {
             `[rel="alternate"][hrefLang="${language.hrefLang}"][href="${alternateUrl}"]`
           ).should('exist');
         }
+
+        cy.get('body')
+          .then(($body) => {
+            if ($body.find('[data-cy="cloudinary-image-wrapper"]').length) {
+              return true;
+            }
+            return false;
+          })
+          .then((selectorExists) => {
+            if (selectorExists) {
+              cy.get('[data-cy="cloudinary-image-wrapper"]').each(($el) => {
+                cy.wrap($el)
+                  .find('[data-cy="cloudinary-image"]')
+                  .should('have.attr', 'src')
+                  .then(($src) => {
+                    cy.request({
+                      url: $src.toString(),
+                      failOnStatusCode: false,
+                    }).then((resp) => {
+                      if (resp.status !== 200) {
+                        // If image is failing, check if cloudinary image is hidden
+                        cy.wrap($el)
+                          .find('[data-cy="cloudinary-image"]')
+                          .should('have.class', 'hidden');
+                        // Check if placeholder image is displayed instead
+                        cy.wrap($el)
+                          .find('[data-cy="cloudinary-image-placeholder"]')
+                          .should('not.have.class', 'hidden');
+                      }
+                    });
+                  });
+              });
+            } else {
+              cy.log(`No images found on page, skipping image test for path ${path}`);
+            }
+          });
+      });
+    });
+  });
+
+  it('Should generate a valid RSS feed', () => {
+    cy.request('/rss.xml').then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.headers['content-type']).to.include('application/xml');
+
+      const xml = response.body;
+
+      const parsedXml = Cypress.$.parseXML(xml);
+
+      const hasChannelTag = Cypress.$(parsedXml).find('channel').length > 0;
+
+      expect(hasChannelTag).to.be.true;
+
+      const items = Cypress.$(parsedXml).find('channel > item').slice(0, 20);
+
+      expect(items.length).to.be.greaterThan(0);
+
+      items.each((_index, item) => {
+        const description = Cypress.$(item).find('description');
+
+        const title = Cypress.$(item).find('title');
+
+        const pubDate = Cypress.$(item).find('pubDate');
+
+        const guid = Cypress.$(item).find('guid');
+
+        expect(description.length).to.equal(1);
+        expect(title.length).to.equal(1);
+        expect(pubDate.length).to.equal(1);
+        expect(guid.length).to.equal(1);
       });
     });
   });

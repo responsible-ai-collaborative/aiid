@@ -15,15 +15,21 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports')
       .should('exist')
       .and('be.visible');
+
+    cy.waitForStableDOM();
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
 
   it('Performs a search and filters results', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.get('form#searchForm').as('form');
 
@@ -32,9 +38,12 @@ describe('The Discover app', () => {
       .type('starbucks')
       .type('{enter}');
 
+    cy.waitForStableDOM();
+
     cy.url().should('include', 's=starbucks');
 
-    // a flaky assertion here, should improve once a testing enviqronment is set up
+    cy.waitForStableDOM();
+
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 
@@ -56,6 +65,8 @@ describe('The Discover app', () => {
     cy.get('[data-cy="incident_id-item"]:contains("34")', { timeout: 8000 }).first().click();
 
     cy.url().should('include', 'incident_id=34');
+
+    cy.waitForStableDOM();
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
@@ -79,6 +90,8 @@ describe('The Discover app', () => {
 
     cy.url().should('include', 'language=es');
 
+    cy.waitForStableDOM();
+
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 4);
   });
 
@@ -100,6 +113,8 @@ describe('The Discover app', () => {
     cy.get('[data-cy="tags-item"]:contains("response")', { timeout: 8000 }).first().click();
 
     cy.url().should('include', 'tags=response');
+
+    cy.waitForStableDOM();
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 1);
   });
@@ -126,6 +141,8 @@ describe('The Discover app', () => {
       .should('contain.text', '1');
 
     cy.url().should('include', 'incident_id=10');
+
+    cy.waitForStableDOM();
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
@@ -176,30 +193,35 @@ describe('The Discover app', () => {
       },
     });
 
-    cy.get('[data-cy="web-archive-link"] .dropdown-toggle').first().click();
+    cy.get('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();
 
     cy.get('[data-cy="original"]')
       .first()
       .should('be.visible')
-      .should('have.attr', 'target', '_blank')
-      .invoke('attr', 'href')
+      .click()
       .then((href) => {
         expect(href).to.not.contain('web.archive.org');
       });
+
+    cy.get('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();
 
     cy.get('[data-cy="wayback-machine"]').first().should('be.visible').click();
 
     cy.get('@windowOpen').should('be.called');
   });
 
-  it("Let's you filter by type", () => {
+  it('Lets you filter by type', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Issue Reports$/).click();
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
   });
@@ -209,11 +231,15 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Incidents$/).click();
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
 
@@ -221,11 +247,15 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Issue Reports').click();
 
     cy.contains('li', /^Incident and Issue Reports$/).click();
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incident and Issue Reports').click();
 
@@ -297,9 +327,13 @@ describe('The Discover app', () => {
   it('Should display incidents instead of reports when selection Incidents view', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
 
     cy.contains('li', /^Incidents$/).click();
+
+    cy.waitForStableDOM();
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
     cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
@@ -310,12 +344,14 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
   });
 
   it('Should export results to a CSV file', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.get('form#searchForm').as('form');
 
@@ -324,7 +360,7 @@ describe('The Discover app', () => {
       .type('starbucks')
       .type('{enter}');
 
-    cy.url().should('include', 's=starbucks');
+    cy.waitForStableDOM();
 
     cy.get('[data-cy=export-to-csv]').click();
 
@@ -340,12 +376,18 @@ describe('The Discover app', () => {
   it(`Shouldn't export results to a CSV file if no results are displayed`, () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('form#searchForm').as('form');
+
+    cy.waitForStableDOM();
 
     cy.get('@form')
       .get('[data-cy="search-box"] input[placeholder="Type Here"]')
-      .type('xxxxxxxxxxxxx')
-      .type('{enter}');
+      .type('xxxxxxxxxxxxx', { waitForAnimations: false })
+      .type('{enter}', { waitForAnimations: false });
+
+    cy.waitForStableDOM();
 
     cy.url().should('include', 's=xxxxxxxxxxxxx');
 
@@ -357,7 +399,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
@@ -377,5 +419,46 @@ describe('The Discover app', () => {
 
       cy.get(`[data-cy-report-number="${report_number}"]`).should('be.visible');
     }
+  });
+
+  it('Performs a search and filters results by source', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.get('form#searchForm').as('form');
+
+    // Search by text first
+    cy.get('@form')
+      .get('[data-cy="search-box"] input[placeholder="Type Here"]')
+      .type('google')
+      .type('{enter}');
+
+    cy.waitForStableDOM();
+
+    cy.url().should('include', 's=google');
+
+    // Filter by source
+    cy.get('[data-cy=expand-filters]').click();
+
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Source').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="source_domain"] [placeholder="Type Here"]', { timeout: 8000 })
+      .type('theguardian.com')
+      .type('{enter}');
+
+    cy.get('[data-cy="source_domain-item"]:contains("theguardian.com")', { timeout: 8000 })
+      .first()
+      .click();
+
+    cy.url().should('include', 'source_domain=theguardian.com');
+
+    cy.waitForStableDOM();
+
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 });

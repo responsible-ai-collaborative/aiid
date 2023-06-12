@@ -1,18 +1,17 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
 import Label from '../Label';
 import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
-import { dateRegExp } from 'utils/date';
+import { dateRegExp, isPastDate } from 'utils/date';
 import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
-import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import FieldContainer from './FieldContainer';
@@ -26,6 +25,9 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
+import IncidentsField from 'components/incidents/IncidentsField';
+import { arrayToList } from 'utils/typography';
+import { debounce } from 'debounce';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -46,11 +48,13 @@ const StepOne = (props) => {
     date_published: yup
       .string()
       .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+      .test(isPastDate)
       .required('*Date published is required')
       .nullable(),
     date_downloaded: yup
       .string()
       .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+      .test(isPastDate)
       .required('*Date downloaded required')
       .nullable(),
     url: yup
@@ -72,7 +76,7 @@ const StepOne = (props) => {
   };
 
   useEffect(() => {
-    setData(props.data);
+    setData({ ...props.data });
   }, [props.data]);
 
   return (
@@ -91,7 +95,9 @@ const StepOne = (props) => {
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
           submissionComplete={props.submissionComplete}
+          submissionReset={props.submissionReset}
           urlFromQueryString={props.urlFromQueryString}
+          setSavingInLocalStorage={props.setSavingInLocalStorage}
         />
       </Formik>
     </StepContainer>
@@ -106,7 +112,9 @@ const FormDetails = ({
   validateAndSubmitForm,
   submissionFailed,
   submissionComplete,
+  submissionReset,
   urlFromQueryString,
+  setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -127,6 +135,19 @@ const FormDetails = ({
     resetForm,
   } = useFormikContext();
 
+  const saveInLocalStorage = useRef(
+    debounce((values) => {
+      localStorage.setItem('formValues', JSON.stringify(values));
+      setSavingInLocalStorage(false);
+    }, 1000)
+  ).current;
+
+  useEffect(() => {
+    // Save form values to local storage when form values change
+    setSavingInLocalStorage(true);
+    saveInLocalStorage(values);
+  }, [values]);
+
   useEffect(() => {
     if (!values.date_downloaded) {
       setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
@@ -134,15 +155,15 @@ const FormDetails = ({
   }, [values.date_downloaded]);
 
   useEffect(() => {
-    if (submissionFailed || submissionComplete) {
+    if (submissionFailed || submissionComplete || submissionReset.reset) {
       setIsSubmitting(false);
       setSubmitCount(0);
     }
 
-    if (submissionComplete) {
+    if (submissionComplete || submissionReset.reset) {
       resetForm();
     }
-  }, [submissionFailed, submissionComplete]);
+  }, [submissionFailed, submissionComplete, submissionReset]);
 
   useEffect(() => {
     if (urlFromQueryString) {
@@ -163,8 +184,6 @@ const FormDetails = ({
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
-  const incident_id = values.incident_id;
-
   return (
     <>
       {parsingNews && (
@@ -175,13 +194,18 @@ const FormDetails = ({
           </span>
         </>
       )}
-      {incident_id && (
+      {values?.incident_ids?.length > 0 && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
           <Badge>
             {values.tags && values.tags.includes(RESPONSE_TAG) ? (
-              <Trans ns="submit">Adding a new response to incident {{ incident_id }}</Trans>
+              <Trans ns="submit" incident_id={arrayToList(values.incident_ids)}>
+                Adding a new response to incident{' '}
+                {{ incident_id: arrayToList(values.incident_ids) }}
+              </Trans>
             ) : (
-              <Trans ns="submit">Adding a new report to incident {{ incident_id }}</Trans>
+              <Trans ns="submit" incident_id={arrayToList(values.incident_ids)}>
+                Adding a new report to incident {{ incident_id: arrayToList(values.incident_ids) }}
+              </Trans>
             )}
           </Badge>
         </span>
@@ -197,7 +221,7 @@ const FormDetails = ({
               fixedWidth
               icon={faLink}
               title={t('Report Address')}
-              className="mb-2 mr-1"
+              className="mr-1"
             />
             <Label label={'*' + t('Report Address')} popover="url"></Label>
           </div>
@@ -299,12 +323,7 @@ const FormDetails = ({
 
         <FieldContainer>
           <div className="flex items-center mt-3 mb-1">
-            <FontAwesomeIcon
-              fixedWidth
-              icon={faNewspaper}
-              title={t('Text')}
-              className="mb-2 mr-1"
-            />
+            <FontAwesomeIcon fixedWidth icon={faNewspaper} title={t('Text')} className="mr-1" />
             <Label popover="text" label={'*' + t('Text')} />
           </div>
           <div
@@ -346,30 +365,28 @@ const FormDetails = ({
         </FieldContainer>
 
         <FieldContainer>
-          <IncidentIdField
-            name="incident_id"
-            placeHolder={t('Leave empty to report a new incident')}
-            showIncidentData={false}
-            disabled={parsingNews}
-            values={values}
-            errors={errors}
-            touched={touched}
-          />
-          <RelatedIncidents
-            incident={values}
-            setFieldValue={setFieldValue}
-            columns={['byIncidentId']}
-          />
+          <div className={`form-group`}>
+            <div className="flex items-center">
+              <Label popover="incident_id" label={t('Incident IDs')} />
+            </div>
+            <div className="mt-1">
+              <IncidentsField
+                id="incident_ids"
+                name="incident_ids"
+                placeHolder={t('Leave empty to report a new incident')}
+              />
+            </div>
+          </div>
         </FieldContainer>
 
-        {!values.incident_id && (
+        {values?.incident_ids?.length == 0 && (
           <FieldContainer>
             <TextInputGroup
               name="incident_date"
               label={t('Incident Date')}
               placeholder={t('Incident Date')}
               type="date"
-              disabled={values.incident_id || parsingNews}
+              disabled={parsingNews}
               values={values}
               errors={errors}
               touched={touched}

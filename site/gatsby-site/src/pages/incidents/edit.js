@@ -115,7 +115,7 @@ function EditCitePage(props) {
           <h1 className="mb-5">
             <Trans>Editing Incident {{ incidentId }}</Trans>
           </h1>
-          <Link to={`/cite/${incidentId}`} className="mb-5">
+          <Link to={`/cite/${incidentId}`} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
               <Trans>Back to Incident {{ incidentId }}</Trans>
             </Button>
@@ -153,7 +153,7 @@ function EditCitePage(props) {
                 onClick={submitForm}
                 type="submit"
                 disabled={!isValid || isSubmitting}
-                className="mt-3 bootstrap flex disabled:opacity-50"
+                className="mt-3 flex disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>

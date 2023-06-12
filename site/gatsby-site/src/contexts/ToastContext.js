@@ -1,40 +1,7 @@
 import React, { useCallback, useEffect, useState, createContext } from 'react';
-import styled from 'styled-components';
-import { Toast, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { globalHistory } from '@reach/router';
-
-const ToastsWrapper = styled.div`
-  position: fixed;
-  bottom: 2em;
-  left: 2em;
-  max-width: 100% !important;
-  z-index: 1056;
-`;
-
-const CloseButton = styled(Button)`
-  color: white !important;
-`;
-
-const ToastBodyContent = styled.div`
-  svg {
-    margin-right: 0.5em;
-  }
-  a {
-    text-decoration: underline !important;
-    color: white !important;
-  }
-`;
-
-const ToastBody = styled(Toast.Body)`
-  &&& {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
+import { Toast } from 'flowbite-react';
 
 const ToastContext = createContext();
 
@@ -74,31 +41,26 @@ export function ToastContextProvider({ children }) {
   return (
     <ToastContext.Provider value={addToast}>
       {children}
-      <ToastsWrapper className="bootstrap">
+      <div className="fixed bottom-0 left-0 max-w-full z-50 box-conten mb-4 ml-4">
         {toasts.map(({ message, severity, error, id }, index) => {
           if ('Rollbar' in window && error) {
             Rollbar.error(error);
           }
           return (
-            <Toast
-              key={id}
-              className={severity.className}
-              style={{ maxWidth: '100%' }}
-              data-cy="toast"
-            >
-              <ToastBody style={{ color: 'white' }}>
-                <ToastBodyContent>
+            <Toast className="tw-toast" data-cy="toast" key={id}>
+              <div
+                className={`w-full h-full flex ${severity.className} items-center p-4 rounded gap-3 text-white`}
+              >
+                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white">
                   <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
-                  {message}
-                </ToastBodyContent>
-                <CloseButton onClick={(e) => removeToast(e, index)} variant="link">
-                  <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
-                </CloseButton>
-              </ToastBody>
+                </div>
+                <div className="text-sm font-normal">{message}</div>
+                <Toast.Toggle className="mx-0" onClick={(e) => removeToast(e, index)} />
+              </div>
             </Toast>
           );
         })}
-      </ToastsWrapper>
+      </div>
     </ToastContext.Provider>
   );
 }

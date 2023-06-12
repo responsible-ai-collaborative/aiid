@@ -77,7 +77,13 @@ const allSearchColumns = {
       return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
     },
     getQueryVariables: (incident) => {
-      const datePublished = parse(incident.date_published, 'yyyy-MM-dd', new Date());
+      const today = new Date();
+
+      let datePublished = parse(incident.date_published, 'yyyy-MM-dd', today);
+
+      if (datePublished > today) {
+        datePublished = today;
+      }
 
       const epoch_date_published_gt = getUnixTime(subWeeks(datePublished, 2));
 
@@ -103,8 +109,8 @@ const allSearchColumns = {
     getReports: async (result) =>
       result.data.incidents.length ? result.data.incidents[0].reports : [],
     getIncidents: async (result) => result.data.incidents,
-    isSet: (incident) => incident.incident_id,
-    getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
+    isSet: (incident) => incident.incident_ids && incident.incident_ids.length,
+    getQueryVariables: (incident) => ({ incident_id_in: incident.incident_ids }),
     editSimilar: false,
     editId: false,
     showIncidents: true,
@@ -190,7 +196,7 @@ const RelatedIncidents = ({
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident);
-  }, [incident.authors, incident.incident_id, incident.date_published, incident.url]);
+  }, [incident.authors, incident.incident_ids, incident.date_published, incident.url]);
 
   const search = useCallback(
     async (key, column) => {

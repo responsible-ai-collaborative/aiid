@@ -4,7 +4,6 @@ import Layout from 'components/Layout';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
-import WordCounts from 'components/landing/WordCounts';
 import Sponsors from 'components/landing/Sponsors';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
@@ -12,19 +11,16 @@ import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
+import NewsletterSignup from 'components/landing/NewsletterSignup';
 import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
+import config from '../../config';
 
 const LandingPage = (props) => {
-  const {
-    pageContext: { wordCountsSorted },
-    data,
-  } = props;
-
-  const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
+  const { data } = props;
 
   const { latestReport, latestReportIncident, latestPost } = data;
 
@@ -51,12 +47,30 @@ const LandingPage = (props) => {
 
   const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
 
+  const ldJSON = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: config.gatsby.siteUrl,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: config.gatsby.siteUrl + '/apps/discover?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
     <Layout {...props} className="max-w-full 2xl:w-[72rem]">
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJSON) }}
+        />
       </AiidHelmet>
       <Container>
         <div>
@@ -107,10 +121,10 @@ const LandingPage = (props) => {
         </div>
 
         <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%] grow">
-            <WordCounts localWordCounts={localWordCounts} />
+          <div className="flex-1 lg:max-w-[50%]">
+            <NewsletterSignup />
           </div>
-          <div className="flex-1 lg:max-w-[50%] self-stretch">
+          <div className="flex-1 lg:max-w-[50%]">
             <RandomReports />
           </div>
         </div>

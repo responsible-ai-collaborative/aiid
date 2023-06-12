@@ -1,12 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image as CloudinaryImage } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, Tooltip, Badge } from 'flowbite-react';
+import { Tooltip, Badge } from 'flowbite-react';
 import Markdown from 'react-markdown';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
@@ -14,10 +13,15 @@ import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
+import { format, fromUnixTime } from 'date-fns';
 
-const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }) => {
-  const { isRole, loading } = useUserContext();
-
+const ReportCard = ({
+  item,
+  className = '',
+  alwaysExpanded = false,
+  actions = null,
+  reportTitle = null,
+}) => {
   const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(alwaysExpanded);
@@ -31,6 +35,11 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
   const toggleReadMore = () => {
     if (alwaysExpanded) return;
     setExpanded(!expanded);
+    const card = ref.current;
+
+    if (card && expanded) {
+      card.scrollIntoView();
+    }
   };
 
   const toggleReadMoreKeyDown = (e) => {
@@ -39,25 +48,84 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
     }
   };
 
+  const [isBottomReached, setIsBottomReached] = useState(false);
+
+  useEffect(() => {
+    const cardObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsBottomReached(entry.isIntersecting);
+      },
+      { root: null, rootMargin: '0px', threshold: 0.1 }
+    );
+
+    const card = ref.current;
+
+    if (card) {
+      cardObserver.observe(card);
+    }
+
+    const handleScroll = () => {
+      const cardRect = card.getBoundingClientRect();
+
+      setIsBottomReached(
+        cardRect.bottom <= window.innerHeight || cardRect.top >= window.innerHeight
+      );
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      if (card) {
+        cardObserver.unobserve(card);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const [btnRight, setBtnRight] = useState(0);
+
+  useEffect(() => {
+    const card = ref.current;
+
+    const cardRect = card.getBoundingClientRect();
+
+    if (expanded) {
+      setIsBottomReached(
+        cardRect.bottom <= window.innerHeight || cardRect.top >= window.innerHeight
+      );
+
+      const observer = new IntersectionObserver(([entry]) => {
+        const { right } = entry.boundingClientRect;
+
+        setBtnRight(window.innerWidth - right);
+      });
+
+      if (card) {
+        observer.observe(card);
+      }
+
+      // Clean up the observer when the component unmounts
+      return () => {
+        if (card) {
+          observer.unobserve(card);
+        }
+      };
+    }
+  }, [expanded]);
+
   return (
     <>
       <div
-        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer ${
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative ${
           expanded ? 'expanded' : ''
         }`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
-        onClick={toggleReadMore}
-        onKeyDown={toggleReadMoreKeyDown}
-        role="presentation"
       >
         <div
           className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
           ref={imageRef}
-          role="presentation"
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
         >
           <CloudinaryImage
             className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
@@ -69,42 +137,36 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
             }).replace(' ', '.')}
           />
         </div>
-        <div
-          className="mt-0 cursor-default select-text"
-          role="presentation"
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-        >
+        <div className="mt-0 cursor-default select-text">
           <div className="flex">
-            <button
-              className="w-3/4 text-left"
-              onClick={toggleReadMore}
-              onKeyDown={toggleReadMoreKeyDown}
-            >
-              <h5
-                className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
-                  !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
-                }`}
+            {reportTitle ? (
+              <>{reportTitle}</>
+            ) : (
+              <button
+                className="w-3/4 text-left"
+                onClick={toggleReadMore}
+                onKeyDown={toggleReadMoreKeyDown}
               >
-                <Trans ns="landing">{item.title}</Trans>
-              </h5>
-            </button>
+                <h5
+                  className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
+                    !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
+                  }`}
+                >
+                  <Trans ns="landing">{item.title}</Trans>
+                </h5>
+              </button>
+            )}
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between flex-wrap">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
-              {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+              {item.date_published
+                ? item.date_published.substring(0, 4)
+                : item.epoch_date_published
+                ? format(fromUnixTime(item.epoch_date_published), 'yyyy')
+                : 'Needs publish date'}
             </WebArchiveLink>
-            {!loading && isRole('incident_editor') && (
-              <Button
-                data-cy="edit-report"
-                size={'xs'}
-                color="light"
-                href={`/cite/edit?report_number=${item.report_number}&incident_id=${incidentId}`}
-              >
-                <Trans>Edit</Trans>
-              </Button>
-            )}
+            {actions && <>{actions}</>}
           </div>
           <div className="mt-1 flex w-fit">
             <TranslationBadge className="mx-2" originalLanguage={item.language} />
@@ -124,23 +186,18 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
             )}
           </div>
         </div>
-        <div
-          className="cursor-default"
-          role={'presentation'}
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-        >
+        <div className="cursor-default">
           <ReportText text={item.text} maxChars={expanded ? null : 240} />
           {expanded && hasVariantData(item) && (
-            <div className="flex w-full flex-col mt-3 gap-2">
+            <div className="flex w-full flex-col my-4 gap-2">
               <div className="font-bold flex items-center gap-2">
-                <Trans ns="variants">Input and circumstances</Trans>
+                <Trans ns="variants">Inputs / Outputs</Trans>
                 <Tooltip
                   content={
                     <Trans ns="variants">
-                      Provide the relevant details producing the incident. Examples include the
-                      input prompts to a chatbot or a description of the circumstances leading to
-                      injuries sustained from a robot.
+                      The sequence of data inputs into the intelligent system and outputs produced
+                      by the system involved in the incident. For a chatbot, this will generally
+                      present a back and forth between a human and the chatbot&apos;s responses.
                     </Trans>
                   }
                   trigger="click"
@@ -153,39 +210,26 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
                   />
                 </Tooltip>
               </div>
-              <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
-                <Markdown>{item.text_inputs}</Markdown>
-              </div>
-              <div className="font-bold flex items-center gap-2">
-                <Trans ns="variants">Output and outcomes</Trans>
-                <Tooltip
-                  content={
-                    <Trans ns="variants">
-                      Provide the relevant details surrounding the incident. Examples include output
-                      text from a chatbot or the nature of injuries sustained from a robot.
-                    </Trans>
-                  }
-                  trigger="click"
-                  placement="right"
+              {item.inputs_outputs.map((input_output, index) => (
+                <div
+                  className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                  key={`inputs_outputs.${index}`}
+                  data-cy="variant-inputs-outputs"
                 >
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                    className="far fa-question-circle"
-                  />
-                </Tooltip>
-              </div>
-              <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
-                <Markdown>{item.text_outputs}</Markdown>
-              </div>
+                  <Markdown>{input_output}</Markdown>
+                </div>
+              ))}
             </div>
           )}
         </div>
         {!alwaysExpanded && (
-          <div className="flex justify-end">
+          <div className="flex justify-end min-h-[35px]">
             <button
               onClick={toggleReadMore}
-              className="text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+              className={`text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 bg-white ${
+                expanded && !isBottomReached ? 'fixed z-10' : ''
+              }`}
+              style={{ bottom: '35px', right: btnRight }}
               data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
             >
               <Trans>{expanded ? 'Collapse' : 'Read More'}</Trans>
@@ -214,12 +258,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           </div>
         )}
         {expanded && (
-          <div
-            className="flex w-full flex-row justify-around items-center text-dark-gray"
-            role={'presentation'}
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
+          <div className="flex w-full flex-row justify-around items-center text-dark-gray">
             <Actions item={item} />
           </div>
         )}

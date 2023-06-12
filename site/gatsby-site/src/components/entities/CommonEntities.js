@@ -91,6 +91,7 @@ export default function CommonEntities() {
                 lg:flex-col
                 xl:flex-row 
                 relative
+                hover:no-underline
               "
             >
               <div className="shrink-0 w-1/4 lg:w-full xl:w-1/4">
@@ -111,6 +112,7 @@ export default function CommonEntities() {
                       Amazon: amazon,
                     }[entity.name]
                   }
+                  loading="lazy"
                 />
               </div>
               <div className="w-full">

@@ -21,7 +21,7 @@ const Backups = ({ pageContext, ...props }) => {
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
       <div className="titleWrapper">
-        <h1 className="font-karla font-bold flex-1 pt-0">Database Snapshots</h1>
+        <h1>Database Snapshots</h1>
       </div>
       <div className="styled-main-wrapper">
         <h2>Citing the Database as a Whole</h2>

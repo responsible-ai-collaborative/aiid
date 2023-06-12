@@ -115,7 +115,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
       <aside
         id="sidebar"
         aria-label="Sidebar"
-        className={`${sidebarWidth} sticky top-0 flex flex-col md:bg-text-light-gray`}
+        className={`${sidebarWidth} sticky top-0 flex flex-col md:bg-text-light-gray z-2`}
         style={{
           height:
             (headerVisiblePixels && !isMobile) || window.innerWidth > 768

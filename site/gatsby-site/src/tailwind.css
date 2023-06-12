@@ -65,7 +65,7 @@
     }
 
     .tw-content {
-        @apply flex flex-grow p-4 pb-5 md:px-10 md:pb-10 md:pt-6 z-[1] relative overflow-hidden flex-1;
+        @apply flex flex-grow p-4 pb-5 md:px-10 md:pb-10 z-[1] relative overflow-hidden flex-1;
     }
 
     .tw-container {
@@ -290,14 +290,6 @@
         @apply ml-[0.5ch] mr-[0.5ch] text-dark-gray;
     }
 
-    .tw-flag-button {
-        @apply p-0 text-dark-gray hover:text-gray-500;
-    }
-
-    .tw-flag-button.flagged {
-        @apply text-red-50;
-    }
-
     .tw-card-set {
         @apply gap-4 mb-8 grid grid-cols-1 lg:grid-cols-2 1300px:grid-cols-3;
     }
@@ -322,6 +314,10 @@
     where the modal is not scrollable and the top content is not accesible. */
     .submission-modal > div:first-child {
         @apply md:m-auto;
+    }
+
+    .pagination nav ul {
+        margin-top: 0 !important;
     }
 }
 
@@ -555,13 +551,6 @@
 
     /* BOOTSTRAP missing styles */
 
-    .bootstrap .is-invalid~.invalid-feedback, .bootstrap .is-invalid~.invalid-tooltip, .bootstrap .was-validated :invalid~.invalid-feedback, .bootstrap .was-validated :invalid~.invalid-tooltip {
-        display: block;
-    }
-
-    .bootstrap .list-group-item+.list-group-item {
-        border-top-width: 0;
-    }
     .tsne-visualization-wrapper>.react-transform-wrapper {
         @apply w-full h-full !important;
     }
@@ -571,7 +560,8 @@
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply text-inherit
     }
 
     .tsne-visualization-item .incident-card {
@@ -596,7 +586,7 @@
     }
 
     .tsne-visualization-item>a.current {
-        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2 !important;
+        @apply border-[black] shadow-tsne-current !important;
     }
 
     .pagination [aria-current="page"] button {
@@ -609,21 +599,6 @@
 
     .edit-variant-modal > div:first-child {
         @apply flex;
-    }
-    .incidents-table .tr:nth-child(even) {
-        @apply bg-[#f2f2f2];
-    }
-    .incidents-table .tr :last-child .td {
-        @apply border-b-0;
-    }
-    
-    .incidents-table .th,
-    .incidents-table .td {
-        @apply m-0 p-2 relative;
-    }
-    .incidents-table .th :last-child,
-    .incidents-table .td :last-child {
-        @apply border-r-0;
     }
 
    .incidents-pagination [aria-current="page"] button {
@@ -644,6 +619,18 @@
 
   .Typeahead input {
     @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu {
+    @apply bg-white text-gray-800 flex border rounded z-2;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item {
+    @apply text-gray-800 border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 bg-transparent hover:bg-gray-200;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item.active{
+    @apply bg-blue-100 !important;
   }
 
   .floating-label-dropdown button {
@@ -712,8 +699,12 @@
     @apply max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-r border-r-[#ede7f3] h-screen overflow-auto fixed pl-6 pt-0 bg-text-light-gray top-0;
   }
 
+  aside.sidebar.right {
+    @apply sticky max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-none h-screen overflow-auto pl-6 pt-0 bg-none bg-transparent top-0;
+  }
+
   aside.sidebar .rightSideTitle {
-    @apply text-sm font-bold uppercase tracking-[1.2px] py-2 pt-6 pb-4 border-l border-l-[#e6ecf1] text-[#1a1a1a];
+    @apply text-sm leading-4 font-bold uppercase tracking-wider py-2 pr-6 pl-4 border-l border-l-gray-200 text-[rgb(59,69,78)];
   }
 
   aside.sidebar .rightSideBarUL {
@@ -721,11 +712,19 @@
   }
 
   aside.sidebar .rightSideBarUL li {
-    @apply list-none border-l border-l-[#e6ecf1];
+    @apply list-none border-l border-l-[#e6ecf1] py-2 pr-6 pl-4;
   }
 
   aside.sidebar .rightSideBarUL li a {
     @apply font-medium leading-6 py-2 pt-6 pb-4 text-[#1a1a1a];
+  }
+
+  [type='checkbox']:checked, [type='radio']:checked, .dark [type='checkbox']:checked, .dark [type='radio']:checked {
+    border-color: transparent !important;
+    background-color: currentColor  !important;
+    background-size: 100% 100% !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
   }
   
   .reports-table tr td{
@@ -735,5 +734,46 @@
   .reports-table th,
   .reports-table td {
     @apply m-0 p-2 last:border-r-0;
+  }
+
+  .tw-toast {
+    @apply p-0 mb-2 !important;
+  }
+
+  .tw-toast a {
+    @apply underline text-white !important;
+  }
+
+  .taxonomy-markdown {
+    @apply mt-0 !important;
+  }
+
+  .taxonomy-markdown h1 {
+    @apply text-2xl font-extrabold leading-[1.5] mb-4 mt-8 !important;
+  }
+
+  .taxonomy-markdown p {
+    @apply leading-[1.5] first:mt-0 !important;
+  }
+  
+  .react-markdown pre {
+    @apply table table-fixed w-full !important;
+  }
+
+  .react-markdown pre code {
+    @apply block overflow-auto w-full !important;
+  }
+
+  .react-markdown ul {
+    margin-top: 45px !important;
+  }
+
+  .prose a {
+    @apply text-blue-500 no-underline hover:underline !important;
+  }
+
+  .titleWrapper h1 {
+    @apply font-medium m-0 p-0;
+    @apply leading-10 !important;
   }
 }

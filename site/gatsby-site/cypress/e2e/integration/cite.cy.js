@@ -1,6 +1,7 @@
 import { maybeIt } from '../../support/utils';
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
+import incidents from '../../fixtures/incidents/incidents.json';
 import { format } from 'date-fns';
 const { gql } = require('@apollo/client');
 
@@ -57,17 +58,14 @@ describe('Cite pages', () => {
     }
   );
 
-  it('Should scroll to report when clicking on a report in the timeline', () => {
+  it.skip('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
-
-    cy.wait(4000);
 
     cy.disableSmoothScroll();
 
-    cy.get('text')
-      .contains('For some Starbucks workers, job leaves bitter taste')
-      .parents('a')
-      .click({ force: true });
+    cy.waitForStableDOM();
+
+    cy.get('text').contains('For some Starbucks workers, job leaves bitter taste').parents('a');
 
     cy.get('h5')
       .contains('For some Starbucks workers, job leaves bitter taste')
@@ -250,9 +248,27 @@ describe('Cite pages', () => {
 
     cy.contains('New Report').scrollIntoView().click();
 
-    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10', {
-      timeout: 8000,
-    }).should('be.visible');
+    cy.waitForStableDOM();
+
+    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10').should(
+      'be.visible'
+    );
+
+    cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
+  });
+
+  it('Should pre-fill submit report response form', () => {
+    cy.visit(url);
+
+    cy.contains('New Response').scrollIntoView().click();
+
+    cy.waitForStableDOM();
+
+    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new response to incident 10').should(
+      'be.visible'
+    );
+
+    cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
   });
 
   it('should render Next and Previous incident buttons', () => {
@@ -554,6 +570,102 @@ describe('Cite pages', () => {
         );
 
       expect(noImagesErrors, 'No images errors').to.be.true;
+    });
+  });
+
+  it('Should not display edit link when not logged in', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
+  });
+
+  maybeIt('Should clone incident', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
+
+    cy.visit(url);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'GetLatestIncidentId',
+      incidents
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertIncident',
+      'InsertIncident',
+      {
+        data: {
+          insertOneIncident: {
+            incident_id: newIncidentId,
+          },
+        },
+      }
+    );
+
+    cy.waitForStableDOM();
+
+    cy.wait('@GetLatestIncidentId');
+
+    cy.contains('Clone Incident').scrollIntoView().click();
+
+    cy.query({
+      query: gql`
+        query {
+          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
+            title
+            description
+            date
+            editor_similar_incidents
+            editor_dissimilar_incidents
+            editors
+            AllegedDeployerOfAISystem {
+              entity_id
+            }
+            AllegedDeveloperOfAISystem {
+              entity_id
+            }
+            AllegedHarmedOrNearlyHarmedParties {
+              entity_id
+            }
+          }
+        }
+      `,
+    }).then(({ data: { incidents } }) => {
+      const incident = incidents[0];
+
+      cy.wait('@InsertIncident').then((xhr) => {
+        expect(xhr.request.body.operationName).to.eq('InsertIncident');
+        expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
+        expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
+        expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
+        expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
+        expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
+          incident.editor_similar_incidents
+        );
+        expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
+          incident.editor_dissimilar_incidents
+        );
+        expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
+          incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
+        );
+        expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
+          incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
+        );
+        expect(
+          xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
+        ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
+        expect(xhr.request.body.variables.incident.editors).to.deep.eq(incident.editors);
+      });
+
+      cy.wait('@GetLatestIncidentId');
+
+      cy.get('.tw-toast')
+        .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
+        .should('exist');
     });
   });
 

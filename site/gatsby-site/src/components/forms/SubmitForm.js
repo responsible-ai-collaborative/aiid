@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CSVReader } from 'react-papaparse';
-import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
+import {
+  useQueryParams,
+  StringParam,
+  ArrayParam,
+  encodeDate,
+  withDefault,
+  NumericArrayParam,
+} from 'use-query-params';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -10,7 +17,6 @@ import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
-import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
@@ -20,6 +26,12 @@ import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
+import { getCloudinaryPublicID } from 'utils/cloudinary';
+import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -37,13 +49,13 @@ const CustomDateParam = {
 const queryConfig = {
   url: withDefault(StringParam, ''),
   title: withDefault(StringParam, ''),
-  authors: withDefault(StringParam, ''),
-  submitters: withDefault(StringParam, ''),
+  authors: withDefault(ArrayParam, []),
+  submitters: withDefault(ArrayParam, []),
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
   image_url: withDefault(StringParam, ''),
-  incident_id: withDefault(StringParam, ''),
+  incident_ids: withDefault(NumericArrayParam, []),
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
@@ -51,32 +63,19 @@ const queryConfig = {
 };
 
 const SubmitForm = () => {
-  const { isRole, loading } = useUserContext();
+  const { isRole, loading, user } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
-  const initialValues = {
-    url: '',
-    title: '',
-    incident_date: '',
-    date_published: '',
-    date_downloaded: '',
-    image_url: '',
-    incident_id: '',
-    text: '',
-    authors: [],
-    submitters: [],
-    developers: [],
-    deployers: [],
-    harmed_parties: [],
-    editor_notes: '',
-    language: 'en',
-    tags: [],
-  };
-
-  const [submission, setSubmission] = useState(initialValues);
-
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
+
+  const isClient = typeof window !== 'undefined';
+
+  const [submission, setSubmission] = useState({});
+
+  const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
+
+  const [savingInLocalStorage, setSavingInLocalStorage] = useState(false);
 
   const {
     entities: { nodes: allEntities },
@@ -92,20 +91,35 @@ const SubmitForm = () => {
   `);
 
   useEffect(() => {
-    const queryParams = { ...query };
+    let submission = { ...query, cloudinary_id: '' };
 
-    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-      if (queryParams[key] && !Array.isArray(queryParams[key])) {
-        queryParams[key] = [queryParams[key]];
-      }
-    }
-
-    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG)) {
+    if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
       setIsIncidentResponse(true);
     }
 
-    setSubmission(queryParams);
-  }, []);
+    if (submission.image_url) {
+      submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+    }
+
+    if (
+      isEqual(submission, SUBMISSION_INITIAL_VALUES) &&
+      isClient &&
+      localStorage.getItem('formValues')
+    ) {
+      submission = { ...JSON.parse(localStorage.getItem('formValues')) };
+    }
+
+    if (!loading) {
+      if (user?.profile?.email) {
+        submission.user = { link: user.id };
+
+        if (user.customData.first_name && user.customData.last_name) {
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+        }
+      }
+    }
+    setSubmission(submission);
+  }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
 
@@ -161,15 +175,10 @@ const SubmitForm = () => {
       const submission = {
         ...values,
         source_domain,
-        incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
-        submitters: values.submitters
-          ? !isArray(values.submitters)
-            ? values.submitters.split(',').map((s) => s.trim())
-            : values.submitters
-          : ['Anonymous'],
+        submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
       };
@@ -194,7 +203,7 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      setSubmission(initialValues);
+      setSubmission(SUBMISSION_INITIAL_VALUES);
 
       addToast({
         message: (
@@ -205,6 +214,10 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.success,
       });
+
+      if (isClient) {
+        localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
+      }
     } catch (e) {
       addToast({
         message: (
@@ -213,33 +226,82 @@ const SubmitForm = () => {
           </Trans>
         ),
         severity: SEVERITY.warning,
+        error: e,
       });
-      throw e;
     }
   };
 
-  const incident_id = submission.incident_id;
+  const clearForm = () => {
+    const submission = { ...SUBMISSION_INITIAL_VALUES };
+
+    if (user?.profile?.email) {
+      submission.user = { link: user.id };
+
+      if (user.customData.first_name && user.customData.last_name) {
+        submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+      }
+    }
+    setSubmission(submission);
+    setSubmissionReset((prevState) => ({
+      ...prevState,
+      reset: true,
+      forceUpdate: !prevState.forceUpdate, // toggle forceUpdate value
+    }));
+    localStorage.setItem('formValues', JSON.stringify(submission));
+  };
+
+  const submissionRef = useRef(null);
+
+  if (!submission || isEmpty(submission)) return <></>;
 
   return (
     <>
       <Helmet>
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </Helmet>
-      <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0" data-cy="submit-form-title">
+      <div className={'titleWrapper flex flex-row justify-between'}>
+        <h1 data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
         </h1>
+        <div className="flex items-center justify-center mt-2">
+          <span className="text-gray-400 text-sm">
+            {savingInLocalStorage ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
+                <Trans>Saving as draft...</Trans>
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faCheck} className="mr-1" />
+                <Trans>Draft saved</Trans>
+              </>
+            )}
+          </span>
+          <Button
+            color="gray"
+            size={'xs'}
+            className={'ml-2'}
+            onClick={() => clearForm()}
+            data-cy="clear-form"
+          >
+            <Trans i18n={i18n} ns="submit">
+              Clear Form
+            </Trans>
+          </Button>
+        </div>
       </div>
-      <p>
+      <p ref={submissionRef}>
         {isIncidentResponse ? (
           <>
-            {incident_id ? (
+            {submission.incident_ids.length > 0 ? (
               <Trans ns="submit" i18nKey={'submitFormResponseDescription1'}>
                 The following form will create a new incident response {}for incident{' '}
-                <Link to={`/cite/${incident_id}`}>#{{ incident_id }}</Link> for{' '}
-                <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
+                <Link to={`/cite/${submission.incident_ids[0]}`}>
+                  #{{ incident_id: submission.incident_ids[0] }}
+                </Link>{' '}
+                for <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
                 Database.
               </Trans>
             ) : (
@@ -269,12 +331,23 @@ const SubmitForm = () => {
           </Trans>
         )}
       </p>
+
       <div className="my-5">
-        <SubmissionWizard
-          submitForm={handleSubmit}
-          initialValues={submission}
-          urlFromQueryString={query.url}
-        />
+        {submission && (
+          <SubmissionWizard
+            submitForm={handleSubmit}
+            initialValues={submission}
+            urlFromQueryString={query.url}
+            submissionReset={submissionReset}
+            setSavingInLocalStorage={setSavingInLocalStorage}
+            scrollToTop={() => {
+              setTimeout(() => {
+                // This is needed to make it work in Firefox
+                submissionRef.current.scrollIntoView();
+              }, 0);
+            }}
+          />
+        )}
 
         <p className="mt-4">
           <Trans ns="submit" i18nKey="submitReviewDescription">

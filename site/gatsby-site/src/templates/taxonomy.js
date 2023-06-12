@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { graphql } from 'gatsby';
-import styled from 'styled-components';
 import Markdown from 'react-markdown';
-import { Button } from 'react-bootstrap';
 
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -10,35 +8,16 @@ import BillboardJS from '@billboard.js/react';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
-import { Card, Badge } from 'flowbite-react';
+import { Card, Badge, Button } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
-const Description = styled(Markdown)`
-  margin-top: 0rem;
-  h1 {
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    margin-top: 32px;
-  }
-  p {
-    line-height: 1.5;
-  }
-  p:first-child {
-    margin-top: 0rem;
-  }
-`;
-
-const StatItemText = styled.span``;
-
 const StatItem = ({ text, value }) => {
   return (
     <>
-      <StatItemText>{text}</StatItemText>
+      <span>{text}</span>
       <div className="flex ml-4">
         <Badge>{`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}</Badge>
       </div>
@@ -107,7 +86,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
                     `/apps/discover?classifications=` +
                     encodeURIComponent(`${namespace}:${short_name}:${item}`)
                   }
-                  className="flex text-black hover:text-primary-blue"
+                  className="hover:no-underline flex text-black hover:text-primary-blue"
                 >
                   {valueStats !== {} ? <StatItem text={item} value={value} /> : <>{`${item}`}</>}
                 </Link>
@@ -116,7 +95,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
         </ul>
         {sortedStatsArray.length > 5 && (
           <Button
-            variant="link"
+            color="gray"
             className="mb-3 btn btn-sm assignment-button"
             onClick={toggleShowAllStats}
             style={{ padding: '0px', margin: '0px', textDecoration: 'none' }}
@@ -124,7 +103,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
-        <div className="my-3">
+        <div className="my-3 h-[320px]">
           {short_name == 'Location' ? (
             <LocationMap
               data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
@@ -301,22 +280,22 @@ const Taxonomy = (props) => {
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
-    <Layout {...props} className="">
+    <Layout {...props}>
       <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">{namespace}</h1>
+        <h1>{namespace}</h1>
       </div>
-      <Description>{description}</Description>
-      <h1 className="heading1">Taxonomy Fields</h1>
+      <Markdown className="taxonomy-markdown">{description}</Markdown>
+      <h2 className="heading1">Taxonomy Fields</h2>
       <div className="flex gap-9 flex-col">
         {sortedFieldsArray
           .filter((f) => f.short_name !== 'Publish')
           .map(({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
-            <div data-cy={`field-${short_name}`} key={short_name}>
+            <div id={`field-${short_name}`} data-cy={`field-${short_name}`} key={short_name}>
               <Card>
-                <h5
-                  className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative hover:text-primary-blue flex items-center"
+                <h3
+                  className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative flex items-center"
                   data-cy={`title-${short_name}`}
                 >
                   {long_name}{' '}
@@ -325,7 +304,7 @@ const Taxonomy = (props) => {
                       <Badge color="gray">Searchable in Discover App</Badge>
                     </span>
                   )}
-                </h5>
+                </h3>
                 <FacetList
                   namespace={namespace}
                   instant_facet={instant_facet}
@@ -334,7 +313,9 @@ const Taxonomy = (props) => {
                   stats={stats}
                   geocodes={geocodes}
                 />
-                <Description>{'**Definition**: ' + long_description}</Description>
+                <Markdown className="taxonomy-markdown">
+                  {'**Definition**: ' + long_description}
+                </Markdown>
               </Card>
             </div>
           ))}

@@ -17,6 +17,7 @@ let safelist = [
   'tw-tooltip-left',
   'tw-btn-link',
   'bg-amber-400',
+  'tw-toast',
 ];
 
 // Whitelisting level options from ListItem component
@@ -78,7 +79,6 @@ module.exports = {
         'disable-gray': '#dee2e6',
         'primary-blue': '#0d6efd',
         'hover-blue': '#0b5ed7',
-        'gray-500': '#adb5bd',
         'dark-gray': '#6c757d',
         'muted-gray': '#6c757d',
         'deep-blue': '#0a58ca',
@@ -114,7 +114,6 @@ module.exports = {
         table: 'inset 0 0 0 9999px transparent',
         tsne: '0px 0px 2px 2px rgba(0, 0, 0, 0.15)',
         'tsne-current': '0px 0px 3px 3px rgba(255, 255, 255, 0.75)',
-        'incidents-table': '0px 3px 3px #ccc',
       },
       transitionDelay: {},
       transitionDuration: {

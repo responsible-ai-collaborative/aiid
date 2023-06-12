@@ -29,6 +29,11 @@ describe('Signup', () => {
 
     cy.get('[data-cy="signup-btn"]').click();
     cy.wait('@Register');
+
+    cy.getAllLocalStorage().then((result) => {
+      expect(result[Cypress.config().baseUrl.replace(/\/$/, '')].signup).to.not.be.undefined;
+    });
+
     cy.get('[data-cy="toast"]').contains(`Verification email sent to ${email}`).should('exist');
   });
 

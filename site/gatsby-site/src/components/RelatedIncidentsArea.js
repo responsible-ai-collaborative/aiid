@@ -125,7 +125,9 @@ const RelatedIncidentsArea = ({
                     <Button
                       size={'xs'}
                       data-cy="set-id"
-                      onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+                      onClick={() =>
+                        setFieldValue && setFieldValue('incident_ids', [val.incident_id])
+                      }
                     >
                       <p className="m-0 whitespace-nowrap">
                         <Trans>Use ID</Trans> #{val.incident_id}

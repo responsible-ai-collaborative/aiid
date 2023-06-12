@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
@@ -9,6 +9,7 @@ import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
 import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
+import CiteDynamicTemplate from './citeDynamicTemplate';
 
 function CitePage(props) {
   const {
@@ -31,6 +32,8 @@ function CitePage(props) {
       responses,
     },
   } = props;
+
+  const [isLiveData, setIsLiveData] = useState(false);
 
   const { locale } = useLocalization();
 
@@ -93,22 +96,37 @@ function CitePage(props) {
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
-      <CiteTemplate
-        incident={incident}
-        sortedReports={sortedReports}
-        variants={variants}
-        metaTitle={metaTitle}
-        entities={entities}
-        timeline={timeline}
-        locationPathName={props.location.pathname}
-        allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-        allMongodbAiidprodClassifications={allMongodbAiidprodClassifications}
-        nextIncident={nextIncident}
-        prevIncident={prevIncident}
-        nlp_similar_incidents={nlp_similar_incidents}
-        editor_similar_incidents={editor_similar_incidents}
-        editor_dissimilar_incidents={editor_dissimilar_incidents}
-      />
+      {isLiveData ? (
+        <CiteDynamicTemplate
+          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+          entitiesData={entitiesData}
+          incident_id={incident.incident_id}
+          responses={responses}
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          locationPathName={props.location.pathname}
+          setIsLiveData={setIsLiveData}
+        />
+      ) : (
+        <CiteTemplate
+          incident={incident}
+          sortedReports={sortedReports}
+          variants={variants}
+          metaTitle={metaTitle}
+          entities={entities}
+          timeline={timeline}
+          locationPathName={props.location.pathname}
+          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+          allMongodbAiidprodClassifications={allMongodbAiidprodClassifications}
+          nextIncident={nextIncident}
+          prevIncident={prevIncident}
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          setIsLiveData={setIsLiveData}
+        />
+      )}
     </Layout>
   );
 }
@@ -206,8 +224,7 @@ export const query = graphql`
         epoch_date_submitted
         language
         tags
-        text_inputs
-        text_outputs
+        inputs_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
@@ -245,6 +262,7 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+      editor_notes
     }
 
     entities: allMongodbAiidprodEntities {

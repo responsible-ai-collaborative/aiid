@@ -96,8 +96,6 @@ export const schema = yup.object().shape({
   editor_notes: yup.string().nullable(),
   incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
-  text_inputs: yup.string().nullable(),
-  text_outputs: yup.string().nullable(),
 });
 
 const IncidentReportForm = () => {
@@ -308,7 +306,7 @@ const IncidentReportForm = () => {
           data-color-mode="light"
           data-cy="text"
         >
-          <div className="flex items-center">
+          <div className="flex items-center mb-2">
             <FontAwesomeIcon
               fixedWidth
               icon={faNewspaper}
@@ -340,7 +338,7 @@ const IncidentReportForm = () => {
         </div>
 
         <div className="mt-3">
-          <div className="flex items-center">
+          <div className="flex items-center mb-2">
             <FontAwesomeIcon
               fixedWidth
               icon={faLanguage}
@@ -364,13 +362,13 @@ const IncidentReportForm = () => {
         </div>
 
         <div className="mt-3">
-          <div className="flex items-center">
+          <div className="flex items-center mb-2">
             <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} className="mb-2 mr-1" />
             <Label popover="tags" label={t('Tags')} />
           </div>
-          <div className="bootstrap">
+          <div>
             <Typeahead
-              className="Typeahead"
+              className="Typeahead submit-report-tags"
               id="submit-report-tags"
               inputProps={{ id: 'submit-report-tags-input' }}
               allowNew
@@ -390,7 +388,7 @@ const IncidentReportForm = () => {
           </div>
         </div>
 
-        <div className="mt-3 bootstrap">
+        <div className="flex flex-col mt-3">
           <Label popover={'incident_ids'} label="Incident IDs" />
           <IncidentsField id="incident_ids" name="incident_ids" />
         </div>
@@ -457,7 +455,7 @@ const IncidentReportForm = () => {
         <h4 className="mt-3">Variant fields</h4>
 
         <div className="mt-3">
-          <VariantForm />
+          <VariantForm allFieldsForm={false} />
         </div>
       </Form>
     </div>
