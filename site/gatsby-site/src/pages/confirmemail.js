@@ -53,9 +53,6 @@ const ConfirmEmail = () => {
             severity: SEVERITY.danger,
             error: e,
           });
-          if ('Rollbar' in window) {
-            Rollbar.error(e);
-          }
         });
     } else {
       setConfirmed(false);
