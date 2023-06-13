@@ -32,16 +32,7 @@ export const schema = Yup.object().shape({
   AllegedDeployerOfAISystem: Yup.array().required(),
   AllegedDeveloperOfAISystem: Yup.array().required(),
   AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
-  editors: Yup.string()
-    .matches(/^.{3,}$/, {
-      excludeEmptyString: true,
-      message: 'Incident Editor must have at least 3 characters',
-    })
-    .matches(/^.{3,200}$/, {
-      excludeEmptyString: true,
-      message: "Incident Editor can't be longer than 200 characters",
-    })
-    .required(),
+  editors: Yup.array().of(Yup.string()).required(),
   editor_notes: Yup.string(),
 });
 
