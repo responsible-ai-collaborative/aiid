@@ -10,6 +10,7 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import AiidHelmet from 'components/AiidHelmet';
 import CheckListForm from 'components/checklists/CheckListForm';
+import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsPage(props) {
@@ -18,11 +19,23 @@ export default function ChecklistsPage(props) {
     data: { taxa, classifications },
   } = props;
 
+  const { t } = useTranslation();
+
+  return (
+    <Layout {...props} className="w-full md:max-w-5xl">
+      <AiidHelmet path={pathname}>
+        <title>{t('Risk Checklists')}</title>
+      </AiidHelmet>
+      <ChecklistsPageBody {...{ taxa, classifications, t }} />
+    </Layout>
+  );
+}
+
+function ChecklistsPageBody({ taxa, classifications, t }) {
+
   const [query] = useQueryParams({
     id: StringParam,
   });
-
-  const { t } = useTranslation();
 
   const [hydrated, setHydrated] = useState(false);
 
@@ -58,36 +71,37 @@ export default function ChecklistsPage(props) {
 
   const tags = classificationsToTags({ classifications, taxa });
 
-  return (
-    <Layout {...props} className="w-full md:max-w-5xl">
-      <AiidHelmet path={pathname}>
-        <title>{t('Risk Checklists')}</title>
-      </AiidHelmet>
-      {hydrated && query.id ? (
-        savedChecklistLoading ? (
-          <Spinner />
-        ) : (
-          <Formik
-            onSubmit={submit}
-            initialValues={
-              savedChecklist || {
-                name: 'Untitled System',
-                about: '',
-                tags_goals: [],
-                tags_methods: [],
-                tags_other: [],
-                risks: [],
-              }
-            }
-          >
-            {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t }} />}
-          </Formik>
-        )
-      ) : (
-        <h1>Risk Checklists</h1>
-      )}
-    </Layout>
-  );
+  if (!hydrated) return <></>
+
+  if (!query.id) {
+    return (
+      <>
+        <ChecklistsIndex />
+      </>
+    );
+  }
+  if (query.id && savedChecklistLoading) {
+    return <Spinner />
+  }
+  if (query.id && !savedChecklistLoading) {
+    return (
+      <Formik
+        onSubmit={submit}
+        initialValues={
+          savedChecklist || {
+            name: 'Untitled System',
+            about: '',
+            tags_goals: [],
+            tags_methods: [],
+            tags_other: [],
+            risks: [],
+          }
+        }
+      >
+        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t }} />}
+      </Formik>
+    );
+  }
 }
 
 function classificationsToTags({ classifications, taxa }) {

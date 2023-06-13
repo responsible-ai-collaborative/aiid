@@ -29,15 +29,17 @@ export default function CheckListForm({ values, handleSubmit, setFieldValue, sub
 
   return (
     <Form onSubmit={handleSubmit}>
-      <h1>
-        Risk Checklist for “
-        <EditableLabel
-          title={values.name}
-          onChange={(event) => setFieldValue('name', event.target.value)}
-          textClasses="text-3xl"
-        />
-        ”
-      </h1>
+      <div className={'titleWrapper'}>
+        <h1>
+          Risk Checklist for “
+          <EditableLabel
+            title={values.name}
+            onChange={(event) => setFieldValue('name', event.target.value)}
+            textClasses="text-3xl"
+          />
+          ”
+        </h1>
+      </div>
       <section className="flex flex-col gap-4">
         <Row>
           <Label for="about-system">About System</Label>

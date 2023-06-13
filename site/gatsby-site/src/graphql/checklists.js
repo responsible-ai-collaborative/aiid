@@ -26,6 +26,14 @@ const allChecklistFields = `
   }
 `;
 
+export const FIND_CHECKLISTS = gql`
+  query findChecklists {
+    checklists {
+      ${allChecklistFields}
+    }
+  }
+`;
+
 export const FIND_CHECKLIST = gql`
   query findChecklist($query: ChecklistQueryInput) {
     checklist(query: $query) {
@@ -33,6 +41,7 @@ export const FIND_CHECKLIST = gql`
     }
   }
 `;
+
 export const UPDATE_CHECKLIST = gql`
   mutation upsertChecklist(
     $query: ChecklistQueryInput,
@@ -40,6 +49,25 @@ export const UPDATE_CHECKLIST = gql`
   ) {
     upsertOneChecklist(query: $query, data: $checklist) {
       ${allChecklistFields}
+    }
+  }
+`;
+
+export const INSERT_CHECKLIST = gql`
+  mutation insertChecklist(
+    $query: ChecklistQueryInput,
+    $checklist: ChecklistInsertInput!
+  ) {
+    insertOneChecklist(data: $checklist) {
+      ${allChecklistFields}
+    }
+  }
+`;
+
+export const DELETE_CHECKLIST = gql`
+  mutation DeleteOneChecklist($query: ChecklistQueryInput!) {
+    deleteOneChecklist(query: $query) {
+      id
     }
   }
 `;
