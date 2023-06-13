@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../../components/Layout';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -109,7 +108,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full'}>
+    <div className={'w-full'} {...props}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -170,7 +169,7 @@ function EditCitePage(props) {
           )}
         </Formik>
       )}
-    </Layout>
+    </div>
   );
 }
 

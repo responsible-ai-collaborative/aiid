@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
 import AiidHelmet from 'components/AiidHelmet';
 import { useQuery } from '@apollo/client/react';
 import ListSkeleton from 'elements/Skeletons/List';
@@ -62,7 +61,7 @@ const ToolPage = (props) => {
   }, [data]);
 
   return (
-    <Layout {...props} className="w-full">
+    <div {...props} className="w-full">
       <AiidHelmet path={pathname}>
         <title>CSET Tool</title>
       </AiidHelmet>
@@ -84,7 +83,7 @@ const ToolPage = (props) => {
           </>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 

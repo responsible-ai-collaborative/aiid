@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
@@ -52,7 +51,7 @@ export default function Incidents({ data, ...props }) {
   });
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -67,7 +66,7 @@ export default function Incidents({ data, ...props }) {
         </p>
         <IncidentList incidents={incidents} />
       </div>
-    </Layout>
+    </>
   );
 }
 
