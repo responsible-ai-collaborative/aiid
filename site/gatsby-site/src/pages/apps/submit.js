@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from 'components/Layout';
 import SubmitForm from 'components/forms/SubmitForm';
 import AiidHelmet from 'components/AiidHelmet';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +11,12 @@ const SubmitPage = (props) => {
   const { t } = useTranslation(['submit']);
 
   return (
-    <Layout {...props} className="md:max-w-5xl">
+    <div className="md:max-w-5xl" {...props}>
       <AiidHelmet path={pathname}>
         <title>{t('New Incident Report')}</title>
       </AiidHelmet>
       <SubmitForm />
-    </Layout>
+    </div>
   );
 };
 

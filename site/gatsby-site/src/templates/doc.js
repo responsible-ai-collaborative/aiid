@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 
-import Layout from 'components/Layout';
 import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
 import Outline from 'components/Outline';
+import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Doc(props) {
   const {
@@ -26,8 +26,14 @@ export default function Doc(props) {
     </>
   );
 
+  const { displayRightSidebar } = useLayoutContext();
+
+  useEffect(() => {
+    displayRightSidebar(rightSidebar);
+  }, []);
+
   return (
-    <Layout {...{ ...props, rightSidebar }}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }} />
       <div className={'titleWrapper'}>
         <h1>{mdx.fields.title}</h1>
@@ -43,7 +49,7 @@ export default function Doc(props) {
       <div className="styled-main-wrapper prose">
         <MDXProvider components={Components}>{children}</MDXProvider>
       </div>
-    </Layout>
+    </>
   );
 }
 

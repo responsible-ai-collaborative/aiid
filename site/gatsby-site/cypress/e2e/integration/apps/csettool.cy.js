@@ -65,14 +65,43 @@ describe('CSET tool', () => {
     getRow('Harm Distribution Basis').within(() => {
       // should merge arrays automatically
       cy.get('[data-cy="column-CSETv1_Annotator-1"]')
-        .should('have.text', '["none"]')
-        .should('have.class', 'bg-red-100');
+        .should('have.class', 'bg-red-100')
+        .find('span[data-cy="item"]')
+        .should(($items) => {
+          const items = ['"none"'];
+
+          expect($items).to.have.length(items.length);
+
+          $items.each((index, $item) => {
+            expect($item).to.have.text(items[index]);
+          });
+        });
+
       cy.get('[data-cy="column-CSETv1_Annotator-2"]')
-        .should('have.text', '["ideology","financial means","disability"]')
-        .should('have.class', 'bg-red-100');
+        .should('have.class', 'bg-red-100')
+        .find('span[data-cy="item"]')
+        .should(($items) => {
+          const items = ['"ideology"', '"financial means"', '"disability"'];
+
+          expect($items).to.have.length(items.length);
+
+          $items.each((index, $item) => {
+            expect($item).to.have.text(items[index]);
+          });
+        });
+
       cy.get('[data-cy="column-result"]')
-        .should('have.text', '["none","ideology","financial means","disability"]')
-        .should('have.class', 'bg-green-100');
+        .should('have.class', 'bg-green-100')
+        .find('span[data-cy="item"]')
+        .should(($items) => {
+          const items = ['"none"', '"ideology"', '"financial means"', '"disability"'];
+
+          expect($items).to.have.length(items.length);
+
+          $items.each((index, $item) => {
+            expect($item).to.have.text(items[index]);
+          });
+        });
     });
 
     getRow('notes').within(() => {
@@ -88,6 +117,19 @@ describe('CSET tool', () => {
           'have.text',
           'Annotator 1: \n\n This a note from the annotator 1\n\nAnnotator 2: \n\n This a note from the annotator 2'
         )
+        .should('have.class', 'bg-green-100');
+    });
+
+    getRow('Notes (special interest intangible harm)').within(() => {
+      // should not mix annotator numbers
+      cy.get('[data-cy="column-CSETv1_Annotator-1"]')
+        .should('have.text', '')
+        .should('have.class', 'bg-red-100');
+      cy.get('[data-cy="column-CSETv1_Annotator-2"]')
+        .should('have.text', 'This is a note from Annotator 2')
+        .should('have.class', 'bg-red-100');
+      cy.get('[data-cy="column-result"]')
+        .should('have.text', 'Annotator 2: \n\n This is a note from Annotator 2')
         .should('have.class', 'bg-green-100');
     });
 
@@ -120,6 +162,7 @@ describe('CSET tool', () => {
 
       cy.get('[data-cy="column-CSETv1_Annotator-2"]')
         .find('[data-cy="entity-Joshua Brown"]')
+        .parent()
         .find('button')
         .click();
 
@@ -302,7 +345,7 @@ describe('CSET tool', () => {
           },
           {
             short_name: 'Notes (special interest intangible harm)',
-            value_json: '""',
+            value_json: '"Annotator 2: \\n\\n This is a note from Annotator 2"',
           },
           {
             short_name: 'Special Interest Intangible Harm',
