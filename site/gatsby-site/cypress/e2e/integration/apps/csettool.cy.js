@@ -302,7 +302,7 @@ describe('CSET tool', () => {
             value_json: '"yes"',
           },
           {
-            short_name: 'Clear Link to AI',
+            short_name: 'Clear link to technology',
             value_json: '"yes"',
           },
           {
@@ -352,7 +352,7 @@ describe('CSET tool', () => {
             value_json: '"no"',
           },
           {
-            short_name: 'AI Linked to Special Interest Intangible Harm',
+            short_name: 'Clear link to Technology',
             value_json: '"no"',
           },
           {
