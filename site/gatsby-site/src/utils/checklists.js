@@ -30,10 +30,10 @@ const emptyRisk = () => ({
   startClosed: false,
 });
 
-function removeTypename(obj) {
+const removeTypename = (obj) => {
   const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
 
   return JSON.parse(replaced);
-}
+};
 
 export { abbreviatedTag, Label, emptyRisk, risksEqual, removeTypename };
