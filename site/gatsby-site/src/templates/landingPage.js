@@ -1,6 +1,5 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -63,7 +62,7 @@ const LandingPage = (props) => {
 
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
-    <Layout {...props} className="max-w-full 2xl:w-[72rem]">
+    <div className="max-w-full 2xl:w-[72rem]" {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
@@ -133,7 +132,7 @@ const LandingPage = (props) => {
           <Sponsors />
         </div>
       </Container>
-    </Layout>
+    </div>
   );
 };
 

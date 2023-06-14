@@ -5,7 +5,6 @@ import { Trans } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { sortIncidentsByDatePublished } from 'utils/cite';
 import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
@@ -60,7 +59,7 @@ function CiteDynamicPage(props) {
   }, [incidentData]);
 
   return (
-    <Layout {...{ props }} location={props.location}>
+    <div {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -81,7 +80,7 @@ function CiteDynamicPage(props) {
       ) : (
         <Trans>Incident {{ incident_id }} not found</Trans>
       )}
-    </Layout>
+    </div>
   );
 }
 

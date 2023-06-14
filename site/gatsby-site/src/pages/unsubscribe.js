@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '../elements/Button';
 import { Spinner } from 'flowbite-react';
@@ -10,7 +9,7 @@ import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
-const Unsubscribe = (props) => {
+const Unsubscribe = () => {
   const [unsubscribing, setUnsubscribing] = useState(false);
 
   let errorMessage = null;
@@ -82,7 +81,7 @@ const Unsubscribe = (props) => {
   };
 
   return (
-    <Layout {...props}>
+    <>
       {mounted && (
         <>
           {errorMessage ? (
@@ -123,7 +122,7 @@ const Unsubscribe = (props) => {
           )}
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

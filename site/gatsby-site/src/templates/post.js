@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
-import Layout from 'components/Layout';
 import config from '../../config';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
@@ -11,6 +10,7 @@ import { Trans } from 'react-i18next';
 import Outline from 'components/Outline';
 import DateLabel from 'components/ui/DateLabel';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Post(props) {
   const {
@@ -40,8 +40,14 @@ export default function Post(props) {
     </>
   );
 
+  const { displayRightSidebar } = useLayoutContext();
+
+  useEffect(() => {
+    displayRightSidebar(rightSidebar);
+  }, []);
+
   return (
-    <Layout {...{ ...props, rightSidebar }}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <LocalizedLink to="/blog" className="text-lg">
@@ -75,7 +81,7 @@ export default function Post(props) {
       <div className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>
-    </Layout>
+    </>
   );
 }
 

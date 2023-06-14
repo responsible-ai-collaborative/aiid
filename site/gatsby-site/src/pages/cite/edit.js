@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../../components/Layout';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -269,7 +268,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full p-1'}>
+    <div className={'w-full p-1'} {...props}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -355,7 +354,7 @@ function EditCitePage(props) {
           )}
         </>
       )}
-    </Layout>
+    </div>
   );
 }
 
