@@ -39,20 +39,20 @@ describe('Admin', () => {
           cy.contains('[data-cy="cell"]', user.userId)
             .parent()
             .within(() => {
-              cy.contains(user.adminData.email).should('be.visible');
+              cy.contains(user.adminData.email).scrollIntoView().should('be.visible');
 
               for (const role of user.roles) {
-                cy.contains(role).should('be.visible');
+                cy.contains(role).scrollIntoView().should('be.visible');
               }
             });
         } else {
           cy.contains('[data-cy="cell"]', user.userId)
             .parent()
             .within(() => {
-              cy.contains('Not found').should('be.visible');
+              cy.contains('Not found').scrollIntoView().should('be.visible');
 
               for (const role of user.roles) {
-                cy.contains(role).should('be.visible');
+                cy.contains(role).scrollIntoView().should('be.visible');
               }
             });
         }

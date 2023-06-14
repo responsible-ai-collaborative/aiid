@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import { Form, Formik } from 'formik';
@@ -58,7 +57,7 @@ const Login = (props) => {
   };
 
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -176,7 +175,7 @@ const Login = (props) => {
           </div>
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

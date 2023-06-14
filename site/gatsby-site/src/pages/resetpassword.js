@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { useUserContext } from 'contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -22,7 +21,7 @@ const ResetPasswordSchema = Yup.object({
     }),
 });
 
-const ResetPassword = (props) => {
+const ResetPassword = () => {
   const {
     actions: { resetPassword },
     loading,
@@ -38,7 +37,7 @@ const ResetPassword = (props) => {
   });
 
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -126,7 +125,7 @@ const ResetPassword = (props) => {
           )}
         </Formik>
       )}
-    </Layout>
+    </>
   );
 };
 
