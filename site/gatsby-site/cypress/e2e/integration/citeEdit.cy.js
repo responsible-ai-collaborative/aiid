@@ -10,6 +10,8 @@ import reportWithTranslations from '../../fixtures/reports/reportWithTranslation
 
 import issueWithTranslations from '../../fixtures/reports/issueWithTranslations.json';
 
+import report10 from '../../fixtures/reports/report.json';
+
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
 
@@ -27,6 +29,13 @@ describe('Edit report', () => {
       (req) => req.body.operationName == 'FindReportWithTranslations',
       'FindReportWithTranslations',
       reportWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      report10
     );
 
     cy.conditionalIntercept(
@@ -68,9 +77,22 @@ describe('Edit report', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
+        },
+      }
+    );
+
     cy.visit(url);
 
-    cy.wait(['@FindReportWithTranslations', '@FindIncidents']);
+    cy.wait(['@FindReportWithTranslations', '@FindIncidents', '@FindReport']);
 
     [
       'authors',
@@ -159,6 +181,19 @@ describe('Edit report', () => {
 
     cy.contains('button', 'Submit').click();
 
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        let { embedding, user: reportUser, ...expectedReport } = report10.data.report;
+
+        if (reportUser) {
+          expectedReport['user'] = { link: reportUser.userId };
+        }
+
+        expect(input).to.deep.eq(expectedReport);
+      });
+
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
 
@@ -215,6 +250,13 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      report10
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'FindIncidents',
       'FindIncidents',
       {
@@ -241,9 +283,22 @@ describe('Edit report', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
+        },
+      }
+    );
+
     cy.visit(url);
 
-    cy.wait(['@FindIncidents', '@FindReportWithTranslations']);
+    cy.wait(['@FindReportWithTranslations', '@FindIncidents', '@FindReport']);
 
     [
       'authors',
@@ -328,6 +383,19 @@ describe('Edit report', () => {
     cy.clock(now);
 
     cy.contains('button', 'Submit').click();
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        let { embedding, user: reportUser, ...expectedReport } = report10.data.report;
+
+        if (reportUser) {
+          expectedReport['user'] = { link: reportUser.userId };
+        }
+
+        expect(input).to.deep.eq(expectedReport);
+      });
 
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
@@ -454,6 +522,13 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      report10
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'ProbablyRelatedReports',
       'ProbablyRelatedReports',
       {
@@ -516,6 +591,19 @@ describe('Edit report', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
+        },
+      }
+    );
+
     cy.visit(`/cite/edit?report_number=23`);
 
     cy.wait(['@FindReportWithTranslations', '@FindIncidents', '@FindIncidentsTitles']);
@@ -558,6 +646,19 @@ describe('Edit report', () => {
     cy.clock(now);
 
     cy.contains('button', 'Submit').click();
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        let { embedding, user: reportUser, ...expectedReport } = report10.data.report;
+
+        if (reportUser) {
+          expectedReport['user'] = { link: reportUser.userId };
+        }
+
+        expect(input).to.deep.eq(expectedReport);
+      });
 
     cy.wait('@UpdateReport')
       .its('request.body.variables')
@@ -686,6 +787,13 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      report10
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'ProbablyRelatedReports',
       'ProbablyRelatedReports',
       {
@@ -734,6 +842,19 @@ describe('Edit report', () => {
               title: 'Incident 2',
             },
           ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
         },
       }
     );
@@ -793,6 +914,19 @@ describe('Edit report', () => {
 
     cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
 
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        let { embedding, user: reportUser, ...expectedReport } = report10.data.report;
+
+        if (reportUser) {
+          expectedReport['user'] = { link: reportUser.userId };
+        }
+
+        expect(input).to.deep.eq(expectedReport);
+      });
+
     cy.wait('@UpdateReport')
       .its('request.body.variables')
       .then((variables) => {
@@ -841,6 +975,13 @@ describe('Edit report', () => {
 
   maybeIt('Should convert an incident report to an issue', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      report10
+    );
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -906,6 +1047,19 @@ describe('Edit report', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
+        },
+      }
+    );
+
     cy.visit(`/cite/edit?report_number=23`);
 
     cy.wait('@FindIncidents');
@@ -952,6 +1106,19 @@ describe('Edit report', () => {
     cy.contains('button', 'Submit').click();
 
     cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        let { embedding, user: reportUser, ...expectedReport } = report10.data.report;
+
+        if (reportUser) {
+          expectedReport['user'] = { link: reportUser.userId };
+        }
+
+        expect(input).to.deep.eq(expectedReport);
+      });
 
     cy.wait('@UpdateReport')
       .its('request.body.variables')

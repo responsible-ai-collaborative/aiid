@@ -9,6 +9,8 @@ import {
   DELETE_REPORT,
   FIND_REPORT_WITH_TRANSLATIONS,
   LINK_REPORTS_TO_INCIDENTS,
+  LOG_REPORT_HISTORY,
+  FIND_REPORT,
 } from '../../graphql/reports';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
@@ -76,6 +78,12 @@ function EditCitePage(props) {
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
+
+  const { data: currentReportData } = useQuery(FIND_REPORT, {
+    variables: { query: { report_number: reportNumber } },
+  });
+
+  const [logReportHistory] = useMutation(LOG_REPORT_HISTORY);
 
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
@@ -145,6 +153,15 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
+      // eslint-disable-next-line no-unused-vars
+      let { __typename, embedding, user: reportUser, ...report } = currentReportData.report;
+
+      if (reportUser) {
+        report.user = { link: reportUser.userId };
+      }
+
+      await logReportHistory({ variables: { input: report } });
+
       if (
         values.incident_ids.length == 0 &&
         incident_ids.length > 0 &&
