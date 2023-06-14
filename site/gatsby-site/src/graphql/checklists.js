@@ -54,10 +54,7 @@ export const UPDATE_CHECKLIST = gql`
 `;
 
 export const INSERT_CHECKLIST = gql`
-  mutation insertChecklist(
-    $query: ChecklistQueryInput,
-    $checklist: ChecklistInsertInput!
-  ) {
+  mutation insertChecklist($checklist: ChecklistInsertInput!) {
     insertOneChecklist(data: $checklist) {
       ${allChecklistFields}
     }

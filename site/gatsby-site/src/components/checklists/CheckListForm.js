@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'formik';
-import { Button, Textarea, Spinner } from 'flowbite-react';
+import { Button, Dropdown, Textarea, Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
+import { useMutation } from '@apollo/client';
+import { DELETE_CHECKLIST } from '../../graphql/checklists';
 
 import { classyDiv } from 'utils/classy';
 import { Label, abbreviatedTag, emptyRisk } from 'utils/checklists';
@@ -9,7 +11,16 @@ import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
 
-export default function CheckListForm({ values, handleSubmit, setFieldValue, submitForm, tags }) {
+export default function CheckListForm({
+  values,
+  handleSubmit,
+  setFieldValue,
+  submitForm,
+  tags,
+  isSubmitting,
+}) {
+  const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
+
   const [risksLoading, setRisksLoading] = useState(false);
 
   const [allPrecedents, setAllPrecedents] = useState([]);
@@ -30,15 +41,53 @@ export default function CheckListForm({ values, handleSubmit, setFieldValue, sub
   return (
     <Form onSubmit={handleSubmit}>
       <div className={'titleWrapper'}>
-        <h1>
-          Risk Checklist for “
-          <EditableLabel
-            title={values.name}
-            onChange={(event) => setFieldValue('name', event.target.value)}
-            textClasses="text-3xl"
-          />
-          ”
-        </h1>
+        <div className="w-full flex items-center">
+          <h1>
+            Risk Checklist for “
+            <EditableLabel
+              title={values.name}
+              onChange={(event) => setFieldValue('name', event.target.value)}
+              textClasses="text-3xl"
+            />
+            ”
+          </h1>
+          <span>
+            {isSubmitting ? (
+              <>
+                <Spinner /> saving...
+              </>
+            ) : (
+              'saved'
+            )}
+          </span>
+          <Button color="light" onClick={() => alert('Coming soon')}>
+            <Trans>Subscribe</Trans>
+          </Button>
+          <Button
+            color="failure"
+            onClick={async () => {
+              try {
+                await deleteChecklist({ variables: { query: { id: values.id } } });
+                window.location = '/apps/checklists/';
+              } catch (e) {
+                console.log(e);
+              }
+            }}
+          >
+            Delete
+          </Button>
+          <Dropdown label="Export">
+            <Dropdown.Item onClick={() => alert('Coming soon')}>
+              <Trans>JSON</Trans>
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => alert('Coming soon')}>
+              <Trans>HTML</Trans>
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => alert('Coming soon')}>
+              <Trans>CSV</Trans>
+            </Dropdown.Item>
+          </Dropdown>
+        </div>
       </div>
       <section className="flex flex-col gap-4">
         <Row>

@@ -11,6 +11,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import AiidHelmet from 'components/AiidHelmet';
 import CheckListForm from 'components/checklists/CheckListForm';
 import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
+import { removeTypename } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsPage(props) {
@@ -32,7 +33,6 @@ export default function ChecklistsPage(props) {
 }
 
 function ChecklistsPageBody({ taxa, classifications, t }) {
-
   const [query] = useQueryParams({
     id: StringParam,
   });
@@ -71,7 +71,7 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
 
   const tags = classificationsToTags({ classifications, taxa });
 
-  if (!hydrated) return <></>
+  if (!hydrated) return <></>;
 
   if (!query.id) {
     return (
@@ -81,7 +81,7 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
     );
   }
   if (query.id && savedChecklistLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
   if (query.id && !savedChecklistLoading) {
     return (
@@ -129,12 +129,6 @@ function classificationsToTags({ classifications, taxa }) {
     }
   }
   return Array.from(tags);
-}
-
-function removeTypename(obj) {
-  const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
-
-  return JSON.parse(replaced);
 }
 
 export const query = graphql`

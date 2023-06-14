@@ -10,11 +10,11 @@ const risksEqual = (risk1, risk2) => {
     return risk1.title == risk2.title;
   }
   if (!risk1.generated && !risk1.generated) {
-    return risk1.id == risk2.id
+    return risk1.id == risk2.id;
   }
-}
+};
 
-const Label = classy("label", "mb-1 block")
+const Label = classy('label', 'mb-1 block');
 
 const emptyRisk = () => ({
   id: Math.random().toString(36).slice(-10),
@@ -28,6 +28,12 @@ const emptyRisk = () => ({
   touched: false,
   generated: true,
   startClosed: false,
-})
+});
 
-export { abbreviatedTag, Label, emptyRisk, risksEqual };
+function removeTypename(obj) {
+  const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
+
+  return JSON.parse(replaced);
+}
+
+export { abbreviatedTag, Label, emptyRisk, risksEqual, removeTypename };

@@ -46,6 +46,7 @@ export default function RiskSection({
           textClasses="text-lg text-red-700 px-2"
           {...{ updateRisk }}
         />
+        <span>{risk.risk_status || 'Unassessed'}</span>
       </RiskHeaderSummary>
       <RiskLayout>
         <PrecedentsQuery>
