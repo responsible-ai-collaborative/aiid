@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Form, Formik } from 'formik';
@@ -12,7 +11,7 @@ const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
 });
 
-const ForgotPassword = (props) => {
+const ForgotPassword = () => {
   const {
     actions: { sendResetPasswordEmail },
     loading,
@@ -23,7 +22,7 @@ const ForgotPassword = (props) => {
   const addToast = useToastContext();
 
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -88,7 +87,7 @@ const ForgotPassword = (props) => {
           )}
         </Formik>
       )}
-    </Layout>
+    </>
   );
 };
 

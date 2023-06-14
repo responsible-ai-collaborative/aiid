@@ -4,7 +4,6 @@ import { FIND_INCIDENTS_TABLE } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import AiidHelmet from '../../components/AiidHelmet';
-import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
@@ -47,7 +46,7 @@ const IncidentsPage = ({ data, ...props }) => {
   const { t } = useTranslation();
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full">
+    <div className="w-full" {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
@@ -66,7 +65,7 @@ const IncidentsPage = ({ data, ...props }) => {
           </div>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 

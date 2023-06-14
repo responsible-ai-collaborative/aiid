@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from 'components/Layout';
 import AiidHelmet from 'components/AiidHelmet';
 import { FIND_USERS } from '../../graphql/users';
 import { useQuery } from '@apollo/client/react';
@@ -25,7 +24,7 @@ const AdminPage = (props) => {
   const localizePath = useLocalizePath();
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full">
+    <div className="w-full" {...props}>
       <AiidHelmet path={pathname}>
         <title>Admin</title>
       </AiidHelmet>
@@ -43,7 +42,7 @@ const AdminPage = (props) => {
           </>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
