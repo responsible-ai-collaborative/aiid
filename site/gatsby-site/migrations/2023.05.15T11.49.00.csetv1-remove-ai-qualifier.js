@@ -34,7 +34,7 @@ exports.up = async ({ context: { client } }) => {
           attributes: classification.attributes.map((attribute) => {
             let short_name = attribute.short_name;
 
-            if (short_name == 'Clear link to AI') {
+            if (short_name == 'Clear Link to AI') {
               short_name = 'Clear link to technology';
             } else if (short_name == 'AI Linked to Special Interest Intangible Harm') {
               short_name = 'Clear link to Technology';
