@@ -143,22 +143,22 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     for (let i = 0; i < 4; i++) {
       const taxonomySelector = `[data-cy="CSETv1${i == 0 ? '' : '_Annotator-' + i}"]`;
 
       cy.get(taxonomySelector).contains('Edit').click();
 
-      for (const field of CSETv1Fields) {
-        const fieldSelector = `${taxonomySelector} [data-cy="${field}"]`;
+      cy.waitForStableDOM();
 
-        const inputSelector = ['input', 'textarea', 'select', '.form-check', 'button', 'h5']
-          .map((input) => `${fieldSelector} ${input}`)
-          .join(', ');
+      cy.get(taxonomySelector).within(() => {
+        for (const field of CSETv1Fields) {
+          const fieldSelector = `[data-cy="${field}"]`;
 
-        cy.get(inputSelector, { timeout: 30000 }).then((el) => {
-          expect(el).to.exist;
-        });
-      }
+          cy.get(fieldSelector).should('be.visible');
+        }
+      });
     }
   });
 
