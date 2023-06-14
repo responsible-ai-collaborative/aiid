@@ -5,9 +5,7 @@ import { useUserContext } from 'contexts/userContext';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import ProgressCircle from 'elements/ProgessCircle';
-import isEmpty from 'lodash/isEmpty';
-import filter from 'lodash/filter';
-import { STATUS } from 'utils/submissions';
+import { STATUS, getRowCompletionStatus } from 'utils/submissions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const SubmissionList = ({ data }) => {
@@ -32,14 +30,6 @@ const SubmissionList = ({ data }) => {
     []
   );
 
-  const getRowCompletionStatus = (row) => {
-    const properties = Object.values(row.original);
-
-    const nonEmptyCount = filter(properties, (value) => !isEmpty(value)).length;
-
-    return Math.ceil((nonEmptyCount / properties.length) * 100);
-  };
-
   const columns = React.useMemo(() => {
     const columns = [
       {
@@ -48,7 +38,7 @@ const SubmissionList = ({ data }) => {
         accessor: 'completionStatus',
         disableFilters: true,
         Cell: ({ row }) => {
-          const completionStatus = getRowCompletionStatus(row);
+          const completionStatus = getRowCompletionStatus(Object.values(row.original));
 
           return (
             <div className="flex items-center justify-center">
@@ -60,9 +50,9 @@ const SubmissionList = ({ data }) => {
           );
         },
         sortType: (rowA, rowB) => {
-          const completionStatusA = getRowCompletionStatus(rowA);
+          const completionStatusA = getRowCompletionStatus(Object.values(rowA.original));
 
-          const completionStatusB = getRowCompletionStatus(rowB);
+          const completionStatusB = getRowCompletionStatus(Object.values(rowB.original));
 
           return completionStatusA - completionStatusB;
         },

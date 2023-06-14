@@ -1,15 +1,20 @@
-import { Badge, Button, Card, Label, Select, Spinner } from 'flowbite-react';
+import { Badge, Button, Label, Select } from 'flowbite-react';
 import { Link } from 'gatsby';
-import React, { useEffect, useRef, useState } from 'react';
-import { Trans } from 'react-i18next';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import SubmissionForm from './SubmissionForm';
 import { Formik, useFormikContext } from 'formik';
 import RelatedIncidents from 'components/RelatedIncidents';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
-import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
-import { schema } from './schemas';
+import {
+  DELETE_SUBMISSION,
+  FIND_SUBMISSION,
+  PROMOTE_SUBMISSION,
+  UPDATE_SUBMISSION,
+} from '../../graphql/submissions';
+import { incidentSchema, issueSchema, schema } from './schemas';
 import { stripMarkdown } from 'utils/typography';
 import { processEntities } from 'utils/entities';
 import isArray from 'lodash/isArray';
@@ -27,7 +32,12 @@ import {
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { FIND_USERS_BY_ROLE } from '../../graphql/users';
 import { debounce } from 'debounce';
-import { STATUS } from 'utils/submissions';
+import { STATUS, getRowCompletionStatus } from 'utils/submissions';
+import StepContainer from 'components/forms/SubmissionWizard/StepContainer';
+import { useUserContext } from 'contexts/userContext';
+import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import isEmpty from 'lodash/isEmpty';
 
 const SubmissionEdit = ({ id }) => {
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -187,55 +197,243 @@ const SubmissionEdit = ({ id }) => {
   );
 };
 
-const SubmissionEditForm = ({ handleSubmit, setSaving, userLoading, userData }) => {
-  const { values, setFieldValue, isValid, submitForm, isSubmitting } = useFormikContext();
+const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, userData }) => {
+  const [promoType, setPromoType] = useState('incident');
 
-  const onChange = () => {
-    setSaving(true);
-    saveChanges(values);
-  };
+  const [promoting, setPromoting] = useState('');
+
+  const [completion, setCompletion] = useState(0);
+
+  const { values, touched, setFieldValue, isValid } = useFormikContext();
+
+  useEffect(() => {
+    const completion = getRowCompletionStatus(Object.values(values));
+
+    setCompletion(completion);
+    if (!isEmpty(touched)) {
+      setSaving(true);
+      saveChanges(values);
+    }
+  }, [values, touched]);
 
   const saveChanges = useRef(
     debounce(async (values) => {
       await handleSubmit(values);
+      const completion = getRowCompletionStatus(Object.values(values));
+
+      setCompletion(completion);
       setSaving(false);
     }, 1000)
   ).current;
 
+  const addToast = useToastContext();
+
+  const { i18n, t } = useTranslation(['submitted']);
+
+  const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
+    fetchPolicy: 'network-only',
+  });
+
+  const [subscribeToNewReportsMutation] = useMutation(UPSERT_SUBSCRIPTION);
+
+  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
+    update: (cache, { data }) => {
+      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
+      cache.evict({
+        id: cache.identify({
+          __typename: data.deleteOneSubmission.__typename,
+          id: data.deleteOneSubmission._id,
+        }),
+      });
+    },
+  });
+
+  const promoteSubmission = ({ submission, variables }) =>
+    promoteSubmissionToReport({
+      variables,
+      fetchPolicy: 'no-cache',
+      update: (cache) => {
+        cache.modify({
+          fields: {
+            submissions(refs, { readField }) {
+              return refs.filter((s) => submission._id !== readField('_id', s));
+            },
+          },
+        });
+      },
+    });
+
+  const { user } = useUserContext();
+
+  const subscribeToNewReports = async (incident_id) => {
+    if (user) {
+      await subscribeToNewReportsMutation({
+        variables: {
+          query: {
+            type: SUBSCRIPTION_TYPE.incident,
+            userId: { userId: user.id },
+            incident_id: { incident_id: incident_id },
+          },
+          subscription: {
+            type: SUBSCRIPTION_TYPE.incident,
+            userId: {
+              link: user.id,
+            },
+            incident_id: {
+              link: incident_id,
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const validateSchema = async ({ submission, schema }) => {
+    try {
+      await schema.validate(submission);
+    } catch (e) {
+      const [error] = e.errors;
+
+      addToast({
+        message: t(error),
+        severity: SEVERITY.danger,
+        error: e,
+      });
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const promoteToIssue = useCallback(async () => {
+    if (!(await validateSchema({ submission: values, schema: issueSchema }))) {
+      return;
+    }
+
+    if (
+      !confirm(
+        t(
+          'Are you sure this is a new issue? Any data entered that is associated with incident records will not be added'
+        )
+      )
+    ) {
+      return;
+    }
+
+    setPromoting('issue');
+
+    const {
+      data: {
+        promoteSubmissionToReport: { report_number },
+      },
+    } = await promoteSubmission({
+      submission: values,
+      variables: {
+        input: {
+          submission_id: values._id,
+          incident_ids: [],
+          is_incident_report: false,
+        },
+      },
+    });
+
+    addToast({
+      message: (
+        <Trans i18n={i18n} ns="submitted" report_number={report_number}>
+          Successfully promoted submission to Issue {{ report_number }}
+        </Trans>
+      ),
+      severity: SEVERITY.success,
+    });
+
+    setPromoting('');
+  }, [values]);
+
+  const promoteToIncident = useCallback(async () => {
+    if (!(await validateSchema({ submission: values, schema: incidentSchema }))) {
+      return;
+    }
+
+    if (
+      !confirm(
+        t(
+          'Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.'
+        )
+      )
+    ) {
+      return;
+    }
+
+    setPromoting('incident');
+
+    const {
+      data: {
+        promoteSubmissionToReport: { report_number, incident_ids },
+      },
+    } = await promoteSubmission({
+      submission: values,
+      variables: {
+        input: {
+          submission_id: values._id,
+          incident_ids: [],
+          is_incident_report: true,
+        },
+      },
+    });
+
+    const incident_id = incident_ids[0];
+
+    await subscribeToNewReports(incident_id);
+
+    addToast({
+      message: (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+          {{ report_number }}
+        </Trans>
+      ),
+      severity: SEVERITY.success,
+    });
+
+    setPromoting('');
+  }, [values]);
+
+  const rejectReport = async () => {
+    await deleteSubmission({ variables: { _id: values._id } });
+  };
+
+  const promote = () => {
+    if (promoType === 'incident') {
+      promoteToIncident();
+    } else if (promoType === 'issue') {
+      promoteToIssue();
+    }
+  };
+
+  const reject = () => {
+    rejectReport();
+  };
+
   return (
     <>
-      <Card className="w-3/4 relative">
-        <Badge className="absolute -top-3" color={STATUS[values.status].color}>
-          {values.status}
+      <StepContainer className="h-[calc(100vh-230px)] overflow-auto p-6">
+        <Badge
+          className="absolute -top-3 z-10"
+          color={values.status ? STATUS[values.status].color : 'warning'}
+        >
+          {values.status || 'Pending Review'}
         </Badge>
-        <SubmissionForm onChange={onChange} />
+        <SubmissionForm />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
         <div className="flex items-center gap-3 text-red-500">
           {!isValid && (
             <Trans ns="validation">Please review submission. Some data is missing.</Trans>
           )}
-          <Button
-            onClick={submitForm}
-            className="flex disabled:opacity-50"
-            type="submit"
-            disabled={isSubmitting || !isValid}
-            data-cy="update-btn"
-          >
-            {isSubmitting ? (
-              <>
-                <Spinner size="sm" />
-                <div className="ml-2">
-                  <Trans>Updating...</Trans>
-                </div>
-              </>
-            ) : (
-              <Trans>Update</Trans>
-            )}
-          </Button>
         </div>
-      </Card>
+      </StepContainer>
       <div className="flex w-1/4 py-4 pl-6 items-center flex-col gap-8">
-        <ProgressCircle percentage={77} />
+        <ProgressCircle percentage={completion} />
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
             <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -273,7 +471,7 @@ const SubmissionEditForm = ({ handleSubmit, setSaving, userLoading, userData }) 
           </Label>
           <Select
             className="w-full"
-            value={values.status}
+            value={values.status || 'Pending Review'}
             onChange={(e) => {
               setSaving(true);
               saveChanges({ ...values, status: e.target.value });
@@ -293,26 +491,31 @@ const SubmissionEditForm = ({ handleSubmit, setSaving, userLoading, userData }) 
             <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
             <Trans>Add as</Trans>
           </Label>
-          <Select className="w-full">
-            <option>
+          <Select
+            value={promoType}
+            className="w-full"
+            onChange={(e) => setPromoType(e.target.value)}
+          >
+            <option value={'incident'}>
               <Trans>New Incident</Trans>
             </option>
-            <option>
+            <option value={'issue'}>
               <Trans>New Issue</Trans>
             </option>
           </Select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <Button>
+          <Button onClick={promote} disabled={saving}>
             <FontAwesomeIcon className="mr-2" icon={faCheck} />
             <Trans>Accept</Trans>
           </Button>
-          <Button color={'failure'}>
+          <Button color={'failure'} onClick={reject} disabled={saving}>
             <FontAwesomeIcon className="mr-2" icon={faXmark} />
             <Trans>Reject</Trans>
           </Button>
         </div>
+        {promoting !== '' && <Trans>Promoting to {promoting}</Trans>}
       </div>
     </>
   );

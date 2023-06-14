@@ -47,7 +47,7 @@ const StepTwo = (props) => {
   }, [props.data]);
 
   return (
-    <StepContainer name={props.name}>
+    <StepContainer name={props.name} className="p-6">
       <Formik
         initialValues={data}
         onSubmit={() => {}}
