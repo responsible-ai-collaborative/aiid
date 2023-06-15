@@ -213,6 +213,19 @@ describe('Cite pages', () => {
       unflaggedReport
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
+        },
+      }
+    );
+
     cy.visit(url + '#' + _id);
 
     cy.waitForStableDOM();
@@ -237,6 +250,29 @@ describe('Cite pages', () => {
     cy.clock(now);
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        let {
+          // eslint-disable-next-line no-unused-vars
+          _id,
+          // eslint-disable-next-line no-unused-vars
+          __typename,
+          // eslint-disable-next-line no-unused-vars
+          embedding,
+          // eslint-disable-next-line no-unused-vars
+          nlp_similar_incidents,
+          user: reportUser,
+          ...expectedReport
+        } = unflaggedReport.data.report;
+
+        if (reportUser) {
+          expectedReport['user'] = { link: reportUser.userId };
+        }
+
+        expect(input).to.deep.eq(expectedReport);
+      });
 
     cy.wait('@updateReport')
       .its('request.body.variables')

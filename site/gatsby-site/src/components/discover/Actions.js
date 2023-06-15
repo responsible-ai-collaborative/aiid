@@ -9,7 +9,7 @@ import {
   faFlag,
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
-import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
+import { FIND_REPORT, UPDATE_REPORT, LOG_REPORT_HISTORY } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
@@ -26,7 +26,18 @@ function FlagModalContent({ reportNumber }) {
 
   const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
 
+  const [logReportHistory] = useMutation(LOG_REPORT_HISTORY);
+
   const flagReport = async () => {
+    // eslint-disable-next-line no-unused-vars
+    let { __typename, embedding, user: reportUser, ...report } = data.report;
+
+    if (reportUser) {
+      report.user = { link: reportUser.userId };
+    }
+
+    await logReportHistory({ variables: { input: report } });
+
     const now = new Date();
 
     const updated = {
