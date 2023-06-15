@@ -45,7 +45,10 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
     variables: { query: { id: query.id } },
   });
 
-  const savedChecklist = !savedChecklistLoading && removeTypename(savedChecklistData.checklist);
+  const savedChecklist =
+    !savedChecklistLoading &&
+    savedChecklistData.checklist &&
+    removeTypename(savedChecklistData.checklist);
 
   const [saveChecklist] = useMutation(UPDATE_CHECKLIST);
 
