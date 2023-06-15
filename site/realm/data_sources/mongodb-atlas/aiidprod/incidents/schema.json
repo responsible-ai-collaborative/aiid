@@ -24,10 +24,10 @@
         "date": {
             "bsonType": "string"
         },
-        "epoch_date_modified": {
-            "bsonType": "int"
-        },
         "description": {
+            "bsonType": "string"
+        },
+        "editor": {
             "bsonType": "string"
         },
         "editor_dissimilar_incidents": {
@@ -51,9 +51,6 @@
                 "bsonType": "string"
             }
         },
-        "editor": {
-            "bsonType": "string"
-        },
         "embedding": {
             "bsonType": "object",
             "properties": {
@@ -70,6 +67,9 @@
                     }
                 }
             }
+        },
+        "epoch_date_modified": {
+            "bsonType": "int"
         },
         "flagged_dissimilar_incidents": {
             "bsonType": "array",
