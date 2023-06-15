@@ -38,6 +38,8 @@ export default function NewsletterSignup() {
     redirectTo: StringParam,
   });
 
+  if (!hydrated) return <></>;
+
   return (
     <Card className="h-full w-full self-stretch flex justify-center shadow-md">
       <h5 className="text-2xl font-bold tracking-tight p-4 pb-2 text-gray-900 dark:text-white">
