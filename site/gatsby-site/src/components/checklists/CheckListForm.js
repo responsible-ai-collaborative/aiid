@@ -4,9 +4,10 @@ import { Button, Dropdown, Textarea, Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { classyDiv } from 'utils/classy';
-import { Label, abbreviatedTag, emptyRisk } from 'utils/checklists';
+import { Label, abbreviatedTag, emptyRisk, statusLooks } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
@@ -41,15 +42,17 @@ export default function CheckListForm({
   return (
     <Form onSubmit={handleSubmit}>
       <div className={'titleWrapper'}>
+        <LocalizedLink to="/apps/checklists" className="text-lg">
+          <Trans>Risk Checklists</Trans>
+        </LocalizedLink>
         <div className="w-full flex items-center flex-wrap justify-between">
-          <h1 className="">
-            Risk Checklist for “
+          <h1>
             <EditableLabel
               title={values.name}
               onChange={(event) => setFieldValue('name', event.target.value)}
-              textClasses="text-3xl"
+              textClasses="text-2xl"
+              iconClasses="text-lg vertical-align"
             />
-            ”
           </h1>
           <div className="flex flex-nowrap shrink-0 gap-2 items-center">
             <span className="text-lg text-gray-600">
@@ -67,11 +70,13 @@ export default function CheckListForm({
             <Button
               color="failure"
               onClick={async () => {
-                try {
-                  await deleteChecklist({ variables: { query: { id: values.id } } });
-                  window.location = '/apps/checklists/';
-                } catch (e) {
-                  console.log(e);
+                if (window.confirm("Delete this checklist?")) {
+                  try {
+                    await deleteChecklist({ variables: { query: { id: values.id } } });
+                    window.location = '/apps/checklists/';
+                  } catch (e) {
+                    console.log(e);
+                  } 
                 }
               }}
             >

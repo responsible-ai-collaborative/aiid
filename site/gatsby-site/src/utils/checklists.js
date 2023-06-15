@@ -1,4 +1,5 @@
 import { classy } from 'utils/classy';
+import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
 
 const abbreviatedTag = (tag) => tag.replace(/^.*:/g, '');
 
@@ -36,4 +37,16 @@ const removeTypename = (obj) => {
   return JSON.parse(replaced);
 };
 
-export { abbreviatedTag, Label, emptyRisk, risksEqual, removeTypename };
+const statusIcon = (status) => ({
+    'Not Mitigated' : faWarning,
+    'Mitigated'     : faShield,
+    'Prevented'     : faShield
+}[status] || faWarning);
+
+const statusColor = (status) => ({ 
+    'Not Mitigated' : 'text-red-500',
+    'Mitigated'     : 'text-blue-500',
+    'Prevented'     : 'text-green-500',
+}[status]) || 'text-gray-500';
+
+export { abbreviatedTag, Label, emptyRisk, risksEqual, removeTypename, statusIcon, statusColor };

@@ -4,9 +4,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
 
-import { removeTypename } from 'utils/checklists';
+import { classy } from 'utils/classy';
+import { removeTypename, statusIcon, statusColor} from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsIndex() {
@@ -105,14 +105,12 @@ export default function ChecklistsIndex() {
                 </Dropdown.Item>
               </Dropdown>
             </div>
-            <ul className="flex gap-2">
-              {checklist.risks.map((risk) => (
+            <ul className="flex gap-2 flex-wrap">
+              {checklist.risks.filter(r => r.risk_status != 'Not Applicable').map((risk) => (
                 <li key={risk.id} className="flex items-center gap-1 text-gray-600">
                   <FontAwesomeIcon
-                    icon={risk.risk_status == 'Mitigated' ? faShield : faWarning}
-                    className={`-mt-1 ${
-                      risk.risk_status == 'Mitigated' ? 'text-green-500' : 'text-red-500'
-                    }`}
+                    icon={statusIcon(risk.risk_status)}
+                    className={`-mt-1 ${statusColor(risk.risk_status)}`}
                   />
                   {risk.title}
                 </li>
@@ -126,3 +124,5 @@ export default function ChecklistsIndex() {
 }
 
 var generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
+
+var DeleteButton = classy('button', "text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900");

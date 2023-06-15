@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-export default function EditableLabel({ title, onChange, textClasses }) {
+export default function EditableLabel({ title, onChange, textClasses, iconClasses }) {
   const [editingTitle, setEditingTitle] = useState(false);
 
   return (
-    <span className="inline-flex flex-shrink-1 flex-nowrap">
+    <span className="inline-flex flex-shrink-1 flex-nowrap items-center">
       {editingTitle ? (
         <input
           type="text"
@@ -22,7 +22,7 @@ export default function EditableLabel({ title, onChange, textClasses }) {
         className="bg-white px-2"
         onClick={() => setEditingTitle((editingTitle) => !editingTitle)}
       >
-        <FontAwesomeIcon icon={editingTitle ? faCheck : faEdit} />
+        <FontAwesomeIcon className={`${iconClasses} align-baseline`} icon={editingTitle ? faCheck : faEdit} />
       </button>
     </span>
   );

@@ -5,11 +5,10 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import Tags from 'components/forms/Tags';
 import { classy, classyDiv } from 'utils/classy';
-import { Label, risksEqual } from 'utils/checklists';
+import { Label, risksEqual, statusIcon, statusColor } from 'utils/checklists';
 import EditableLabel from 'components/checklists/EditableLabel';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
   risk,
@@ -51,10 +50,8 @@ export default function RiskSection({
         />
         <div className="ml-auto mr-6 px-2 bg-white">
           <FontAwesomeIcon
-            icon={risk.risk_status == 'Mitigated' ? faShield : faWarning}
-            className={`${
-              risk.risk_status == 'Mitigated' ? 'text-green-500' : 'text-red-500'
-            } mr-1`}
+            icon={statusIcon(risk.risk_status)}
+            className={`${statusColor(risk.risk_status)} mr-1`}
           />
           {risk.risk_status || 'Unassessed'}
         </div>
@@ -98,7 +95,7 @@ export default function RiskSection({
               value={risk.risk_status}
               onChange={(event) => updateRisk({ risk_status: event.target.value })}
             >
-              {['Not Mitigated', 'Mitigated'].map((status) => (
+              {['Not Mitigated', 'Mitigated', 'Prevented', 'Not Applicable', 'Unclear'].map((status) => (
                 <option key={status} value={status}>
                   {status}
                 </option>
