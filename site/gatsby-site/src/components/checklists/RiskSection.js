@@ -8,6 +8,9 @@ import { classy, classyDiv } from 'utils/classy';
 import { Label, risksEqual } from 'utils/checklists';
 import EditableLabel from 'components/checklists/EditableLabel';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
+
 export default function RiskSection({
   risk,
   values,
@@ -46,7 +49,15 @@ export default function RiskSection({
           textClasses="text-lg text-red-700 px-2"
           {...{ updateRisk }}
         />
-        <span>{risk.risk_status || 'Unassessed'}</span>
+        <div className="ml-auto mr-6 px-2 bg-white">
+          <FontAwesomeIcon
+            icon={risk.risk_status == 'Mitigated' ? faShield : faWarning}
+            className={`${
+              risk.risk_status == 'Mitigated' ? 'text-green-500' : 'text-red-500'
+            } mr-1`}
+          />
+          {risk.risk_status || 'Unassessed'}
+        </div>
       </RiskHeaderSummary>
       <RiskLayout>
         <PrecedentsQuery>
@@ -138,7 +149,7 @@ var RiskDetails = classy(
 var RiskHeaderSummary = classy(
   'summary',
   `
-  absolute -top-4 left-3 w-full flex px-2 
+  absolute -top-4 left-3 w-full flex px-2 items-center
 
   before:w-4 before:pl-1 before:bg-white 
   before:text-lg before:text-red-700

@@ -41,8 +41,8 @@ export default function CheckListForm({
   return (
     <Form onSubmit={handleSubmit}>
       <div className={'titleWrapper'}>
-        <div className="w-full flex items-center">
-          <h1>
+        <div className="w-full flex items-center flex-wrap justify-between">
+          <h1 className="">
             Risk Checklist for “
             <EditableLabel
               title={values.name}
@@ -51,42 +51,44 @@ export default function CheckListForm({
             />
             ”
           </h1>
-          <span>
-            {isSubmitting ? (
-              <>
-                <Spinner /> saving...
-              </>
-            ) : (
-              'saved'
-            )}
-          </span>
-          <Button color="light" onClick={() => alert('Coming soon')}>
-            <Trans>Subscribe</Trans>
-          </Button>
-          <Button
-            color="failure"
-            onClick={async () => {
-              try {
-                await deleteChecklist({ variables: { query: { id: values.id } } });
-                window.location = '/apps/checklists/';
-              } catch (e) {
-                console.log(e);
-              }
-            }}
-          >
-            Delete
-          </Button>
-          <Dropdown label="Export">
-            <Dropdown.Item onClick={() => alert('Coming soon')}>
-              <Trans>JSON</Trans>
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => alert('Coming soon')}>
-              <Trans>HTML</Trans>
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => alert('Coming soon')}>
-              <Trans>CSV</Trans>
-            </Dropdown.Item>
-          </Dropdown>
+          <div className="flex flex-nowrap shrink-0 gap-2 items-center">
+            <span className="text-lg text-gray-600">
+              {isSubmitting ? (
+                <>
+                  <Spinner /> Saving...
+                </>
+              ) : (
+                'Saved'
+              )}
+            </span>
+            <Button color="light" onClick={() => alert('Coming soon')}>
+              <Trans>Subscribe</Trans>
+            </Button>
+            <Button
+              color="failure"
+              onClick={async () => {
+                try {
+                  await deleteChecklist({ variables: { query: { id: values.id } } });
+                  window.location = '/apps/checklists/';
+                } catch (e) {
+                  console.log(e);
+                }
+              }}
+            >
+              Delete
+            </Button>
+            <Dropdown label="Export">
+              <Dropdown.Item onClick={() => alert('Coming soon')}>
+                <Trans>JSON</Trans>
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => alert('Coming soon')}>
+                <Trans>HTML</Trans>
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => alert('Coming soon')}>
+                <Trans>CSV</Trans>
+              </Dropdown.Item>
+            </Dropdown>
+          </div>
         </div>
       </div>
       <section className="flex flex-col gap-4">

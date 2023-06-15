@@ -46,9 +46,7 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
   });
 
   const savedChecklist =
-    !savedChecklistLoading &&
-    savedChecklistData.checklist &&
-    removeTypename(savedChecklistData.checklist);
+    savedChecklistData?.checklist && removeTypename(savedChecklistData.checklist);
 
   const [saveChecklist] = useMutation(UPDATE_CHECKLIST);
 

@@ -105,12 +105,14 @@ export default function ChecklistsIndex() {
                 </Dropdown.Item>
               </Dropdown>
             </div>
-            <ul className="flex">
+            <ul className="flex gap-2">
               {checklist.risks.map((risk) => (
-                <li key={risk.id} className="flex items-center">
+                <li key={risk.id} className="flex items-center gap-1 text-gray-600">
                   <FontAwesomeIcon
                     icon={risk.risk_status == 'Mitigated' ? faShield : faWarning}
-                    className={risk.risk_status == 'Mitigated' ? 'text-green-500' : 'text-red-500'}
+                    className={`-mt-1 ${
+                      risk.risk_status == 'Mitigated' ? 'text-green-500' : 'text-red-500'
+                    }`}
                   />
                   {risk.title}
                 </li>
