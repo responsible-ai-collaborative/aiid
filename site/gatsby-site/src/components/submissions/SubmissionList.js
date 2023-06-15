@@ -148,7 +148,7 @@ const SubmissionList = ({ data }) => {
         accessor: '_id',
         className: 'min-w-[120px]',
         Cell: ({ row: { values } }) => (
-          <Button color={'gray'} data-cy="edit-incident">
+          <Button color={'gray'} data-cy="review-submission">
             <LocalizedLink to={`?editSubmission=${values._id}`}>
               <Trans>Review</Trans>
             </LocalizedLink>

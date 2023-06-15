@@ -14,7 +14,7 @@ import {
   PROMOTE_SUBMISSION,
   UPDATE_SUBMISSION,
 } from '../../graphql/submissions';
-import { incidentSchema, issueSchema, schema } from './schemas';
+import { incidentSchema, issueSchema, reportSchema, schema } from './schemas';
 import { stripMarkdown } from 'utils/typography';
 import { processEntities } from 'utils/entities';
 import isArray from 'lodash/isArray';
@@ -182,15 +182,15 @@ const SubmissionEdit = ({ id }) => {
                   developers:
                     submission.developers === null
                       ? []
-                      : submission.developers.map((item) => item.name),
+                      : submission.developers.map((item) => item.name || item),
                   deployers:
                     submission.deployers === null
                       ? []
-                      : submission.deployers.map((item) => item.name),
+                      : submission.deployers.map((item) => item.name || item),
                   harmed_parties:
                     submission.harmed_parties === null
                       ? []
-                      : submission.harmed_parties.map((item) => item.name),
+                      : submission.harmed_parties.map((item) => item.name || item),
                 }}
               >
                 <SubmissionEditForm
@@ -218,6 +218,8 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
   const [completion, setCompletion] = useState(0);
 
   const { values, touched, setFieldValue, isValid } = useFormikContext();
+
+  const isNewIncident = values.incident_ids.length === 0;
 
   const localizedPath = useLocalizePath();
 
@@ -365,7 +367,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     });
 
     setPromoting('');
-    window.location.href = localizedPath({ path: '/apps/submitted' });
+    setTimeout(() => {
+      window.location.href = localizedPath({ path: '/apps/submitted' });
+    }, 1000);
   }, [values]);
 
   const promoteToIncident = useCallback(async () => {
@@ -415,7 +419,61 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     });
 
     setPromoting('');
-    window.location.href = localizedPath({ path: '/apps/submitted' });
+    setTimeout(() => {
+      window.location.href = localizedPath({ path: '/apps/submitted' });
+    }, 1000);
+  }, [values]);
+
+  const promoteToReport = useCallback(async () => {
+    if (!(await validateSchema({ submission: values, schema: reportSchema }))) {
+      return;
+    }
+
+    if (
+      !confirm(
+        t('Sure you want to promote this Submission and link it to Incident {{ incident_id }}?', {
+          incident_id: values.incident_id,
+        })
+      )
+    ) {
+      return;
+    }
+
+    setPromoting('incident');
+
+    const {
+      data: {
+        promoteSubmissionToReport: { report_number, incident_ids },
+      },
+    } = await promoteSubmission({
+      submission: values,
+      variables: {
+        input: {
+          submission_id: values._id,
+          incident_ids: values.incident_ids,
+          is_incident_report: true,
+        },
+      },
+    });
+
+    for (const incident_id of incident_ids) {
+      await subscribeToNewReports(incident_id);
+
+      addToast({
+        message: (
+          <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+            Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+            {{ report_number }}
+          </Trans>
+        ),
+        severity: SEVERITY.success,
+      });
+    }
+
+    setPromoting('');
+    setTimeout(() => {
+      window.location.href = localizedPath({ path: '/apps/submitted' });
+    }, 1000);
   }, [values]);
 
   const rejectReport = async () => {
@@ -443,7 +501,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     setDeleting(true);
     await rejectReport();
     setDeleting(false);
-    window.location.href = localizedPath({ path: '/apps/submitted' });
+    setTimeout(() => {
+      window.location.href = localizedPath({ path: '/apps/submitted' });
+    }, 1000);
   };
 
   return (
@@ -516,13 +576,14 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
               saveChanges({ ...values, status: e.target.value });
               setFieldValue('status', e.target.value);
             }}
+            data-cy="status-select"
           >
-            <option value="In Review">
+            <option value="In Review" data-cy="status-in-review">
               <Trans i18n={i18n} ns="submitted">
                 In Review
               </Trans>
             </option>
-            <option value="Pending Review">
+            <option value="Pending Review" data-cy="status-pending-review">
               <Trans i18n={i18n} ns="submitted">
                 Pending Review
               </Trans>
@@ -541,27 +602,48 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
               value={promoType}
               className="w-full"
               onChange={(e) => setPromoType(e.target.value)}
+              data-cy="promote-select"
             >
-              <option value={'incident'}>
-                <Trans>Incident</Trans>
-              </option>
-              <option value={'issue'}>
+              {isNewIncident && (
+                <option value={'incident'} data-cy="promote-incident">
+                  <Trans>Incident</Trans>
+                </option>
+              )}
+              <option value={'issue'} data-cy="promote-issue">
                 <Trans>Issue</Trans>
               </option>
             </Select>
           </div>
 
           <div className="mt-8 flex flex-col gap-2">
-            <Button onClick={promote} disabled={!isSubmitter || deleting || promoting || saving}>
+            <Button
+              onClick={promote}
+              disabled={!isSubmitter || deleting || promoting || saving}
+              data-cy="promote-button"
+            >
               <FontAwesomeIcon className="mr-2" icon={faCheck} />
               <Trans i18n={i18n} ns="submitted">
                 {promoting ? `Adding as ${promoting}...` : 'Accept'}
               </Trans>
             </Button>
+
+            {!isNewIncident && (
+              <Button
+                onClick={promoteToReport}
+                disabled={!isSubmitter || deleting || promoting || saving}
+                data-cy="promote-to-report-button"
+              >
+                <FontAwesomeIcon className="mr-2" icon={faCheck} />
+                <Trans ns="submitted" id={values.incident_ids[0]}>
+                  Add to incident {{ id: values.incident_ids[0] }}
+                </Trans>
+              </Button>
+            )}
             <Button
               color={'failure'}
               onClick={reject}
               disabled={!isSubmitter || deleting || promoting || saving}
+              data-cy="reject-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faXmark} />
               <Trans i18n={i18n} ns="submitted">
