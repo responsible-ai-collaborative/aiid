@@ -1,4 +1,4 @@
-import { Badge, Button, Label, Select } from 'flowbite-react';
+import { Badge, Button, Card, Label, Select } from 'flowbite-react';
 import { Link } from 'gatsby';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -38,6 +38,7 @@ import { useUserContext } from 'contexts/userContext';
 import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import isEmpty from 'lodash/isEmpty';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const SubmissionEdit = ({ id }) => {
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -61,6 +62,8 @@ const SubmissionEdit = ({ id }) => {
   const [saving, setSaving] = useState(false);
 
   const [submission, setSubmission] = useState(null);
+
+  const { i18n } = useTranslation(['submitted']);
 
   useEffect(() => {
     if (data?.submission) {
@@ -134,25 +137,33 @@ const SubmissionEdit = ({ id }) => {
     <div>
       <div className="flex flex-row justify-between flex-wrap">
         <h1 className="mb-5">
-          <Trans>Editing Submission</Trans>
+          <Trans i18n={i18n} ns="submitted">
+            Editing Submission
+          </Trans>
         </h1>
         <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm mb-5">
+          <span className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}>
             {saving ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
-                <Trans>Saving changes...</Trans>
+                <Trans i18n={i18n} ns="submitted">
+                  Saving changes...
+                </Trans>
               </>
             ) : (
               <>
                 <FontAwesomeIcon icon={faCheck} className="mr-1" />
-                <Trans>Changes saved</Trans>
+                <Trans i18n={i18n} ns="submitted">
+                  Changes saved
+                </Trans>
               </>
             )}
           </span>
           <Link to={`/apps/submitted/`} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
-              <Trans>Back to Submission List</Trans>
+              <Trans i18n={i18n} ns="submitted">
+                Back to Submission List
+              </Trans>
             </Button>
           </Link>
         </div>
@@ -169,17 +180,17 @@ const SubmissionEdit = ({ id }) => {
                 initialValues={{
                   ...submission,
                   developers:
-                    data?.submission.developers === null
+                    submission.developers === null
                       ? []
-                      : data?.submission.developers.map((item) => item.name),
+                      : submission.developers.map((item) => item.name),
                   deployers:
-                    data?.submission.deployers === null
+                    submission.deployers === null
                       ? []
-                      : data?.submission.deployers.map((item) => item.name),
+                      : submission.deployers.map((item) => item.name),
                   harmed_parties:
-                    data?.submission.harmed_parties === null
+                    submission.harmed_parties === null
                       ? []
-                      : data?.submission.harmed_parties.map((item) => item.name),
+                      : submission.harmed_parties.map((item) => item.name),
                 }}
               >
                 <SubmissionEditForm
@@ -202,9 +213,13 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const [promoting, setPromoting] = useState('');
 
+  const [deleting, setDeleting] = useState(false);
+
   const [completion, setCompletion] = useState(0);
 
   const { values, touched, setFieldValue, isValid } = useFormikContext();
+
+  const localizedPath = useLocalizePath();
 
   useEffect(() => {
     const completion = getRowCompletionStatus(Object.values(values));
@@ -263,7 +278,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       },
     });
 
-  const { user } = useUserContext();
+  const { user, isRole } = useUserContext();
+
+  const isSubmitter = isRole('submitter');
 
   const subscribeToNewReports = async (incident_id) => {
     if (user) {
@@ -348,6 +365,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     });
 
     setPromoting('');
+    window.location.href = localizedPath({ path: '/apps/submitted' });
   }, [values]);
 
   const promoteToIncident = useCallback(async () => {
@@ -397,6 +415,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     });
 
     setPromoting('');
+    window.location.href = localizedPath({ path: '/apps/submitted' });
   }, [values]);
 
   const rejectReport = async () => {
@@ -411,8 +430,20 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     }
   };
 
-  const reject = () => {
-    rejectReport();
+  const reject = async () => {
+    if (
+      !confirm(
+        t(
+          'Are you sure you want to reject this submission? This will permanently delete the submission.'
+        )
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    await rejectReport();
+    setDeleting(false);
+    window.location.href = localizedPath({ path: '/apps/submitted' });
   };
 
   return (
@@ -422,7 +453,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
           className="absolute -top-3 z-10"
           color={values.status ? STATUS[values.status].color : 'warning'}
         >
-          {values.status || 'Pending Review'}
+          <Trans i18n={i18n} ns="submitted">
+            {values.status || 'Pending Review'}
+          </Trans>
         </Badge>
         <SubmissionForm />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
@@ -432,12 +465,14 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
           )}
         </div>
       </StepContainer>
-      <div className="flex w-1/4 py-4 pl-6 items-center flex-col gap-8">
+      <div className="flex w-1/4 pt-8 pb-6 pl-6 items-center flex-col justify-between">
         <ProgressCircle percentage={completion} />
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
             <FontAwesomeIcon icon={faUser} className="mr-2" />
-            <Trans>Assignee</Trans>
+            <Trans i18n={i18n} ns="submitted">
+              Assignee
+            </Trans>
           </Label>
           <Select
             className="w-full"
@@ -449,7 +484,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             value={values.editor?.userId}
           >
             <option value={null}>
-              <Trans>Unassigned</Trans>
+              <Trans i18n={i18n} ns="submitted">
+                Unassigned
+              </Trans>
             </option>
             {!userLoading && (
               <>
@@ -467,7 +504,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
             <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
-            <Trans>Status</Trans>
+            <Trans i18n={i18n} ns="submitted">
+              Status
+            </Trans>
           </Label>
           <Select
             className="w-full"
@@ -479,43 +518,63 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             }}
           >
             <option value="In Review">
-              <Trans>In Review</Trans>
+              <Trans i18n={i18n} ns="submitted">
+                In Review
+              </Trans>
             </option>
             <option value="Pending Review">
-              <Trans>Pending Review</Trans>
+              <Trans i18n={i18n} ns="submitted">
+                Pending Review
+              </Trans>
             </option>
           </Select>
         </div>
-        <div className="flex flex-col w-full items-center gap-2">
-          <Label>
-            <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
-            <Trans>Add as</Trans>
-          </Label>
-          <Select
-            value={promoType}
-            className="w-full"
-            onChange={(e) => setPromoType(e.target.value)}
-          >
-            <option value={'incident'}>
-              <Trans>New Incident</Trans>
-            </option>
-            <option value={'issue'}>
-              <Trans>New Issue</Trans>
-            </option>
-          </Select>
-        </div>
+        <Card className="w-full">
+          <div className="flex flex-col w-full items-center gap-2">
+            <Label>
+              <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
+              <Trans i18n={i18n} ns="submitted">
+                Add as new
+              </Trans>
+            </Label>
+            <Select
+              value={promoType}
+              className="w-full"
+              onChange={(e) => setPromoType(e.target.value)}
+            >
+              <option value={'incident'}>
+                <Trans>Incident</Trans>
+              </option>
+              <option value={'issue'}>
+                <Trans>Issue</Trans>
+              </option>
+            </Select>
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <Button onClick={promote} disabled={saving}>
-            <FontAwesomeIcon className="mr-2" icon={faCheck} />
-            <Trans>Accept</Trans>
-          </Button>
-          <Button color={'failure'} onClick={reject} disabled={saving}>
-            <FontAwesomeIcon className="mr-2" icon={faXmark} />
-            <Trans>Reject</Trans>
-          </Button>
-        </div>
-        {promoting !== '' && <Trans>Promoting to {promoting}</Trans>}
+          <div className="mt-8 flex flex-col gap-2">
+            <Button onClick={promote} disabled={!isSubmitter || deleting || promoting || saving}>
+              <FontAwesomeIcon className="mr-2" icon={faCheck} />
+              <Trans i18n={i18n} ns="submitted">
+                {promoting ? `Adding as ${promoting}...` : 'Accept'}
+              </Trans>
+            </Button>
+            <Button
+              color={'failure'}
+              onClick={reject}
+              disabled={!isSubmitter || deleting || promoting || saving}
+            >
+              <FontAwesomeIcon className="mr-2" icon={faXmark} />
+              <Trans i18n={i18n} ns="submitted">
+                {deleting ? 'Deleting...' : 'Reject'}
+              </Trans>
+            </Button>
+          </div>
+          {promoting !== '' && (
+            <Trans i18n={i18n} ns="submitted">
+              Promoting to {promoting}
+            </Trans>
+          )}
+        </Card>
       </div>
     </>
   );

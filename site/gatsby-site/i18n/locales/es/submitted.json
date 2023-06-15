@@ -17,5 +17,21 @@
     "Successfully promoted submission to Issue {{report_number}}": "Envío promocionado con éxito al Problema {{report_number}}",
     "Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.": "¿Seguro que desea promocionar este Envío a un nuevo Incidente?",
     "Sure you want to promote this Submission and link it to Incident {{incident_id}}?": "¿Seguro que desea promocionar este Envío y vincularlo al Incidente {{incident_id}}?",
-    "Are you sure you want to delete “{{url}}”?": "¿Estás seguro de que quieres eliminar “{{url}}”?"
+    "Are you sure you want to delete “{{url}}”?": "¿Estás seguro de que quieres eliminar “{{url}}”?",
+    "Editing Submission": "Editando Envío",
+    "Pending Review": "Revisión Pendiente",
+    "Back to Submission List": "Volver a la lista de envíos",
+    "Assignee": "Asignado",
+    "Unassigned": "Sin asignar",
+    "Status": "Estado",
+    "In Review": "En Revisión",
+    "Add as new": "Agregar como nuevo",
+    "Accept": "Aceptar",
+    "Reject": "Rechazar",
+    "Promoting to incident": "Promoviendo a incidente",
+    "Promoting to issue": "Promoviendo a problema",
+    "Adding as incident": "Agregando como incidente",
+    "Adding as issue": "Agregando como problema",
+    "Are you sure you want to reject this submission? This will permanently delete the submission.": "¿Estás seguro de que quieres rechazar este envío? Esto eliminará permanentemente el envío.",
+    "Changes saved": "Cambios guardados"
 }
