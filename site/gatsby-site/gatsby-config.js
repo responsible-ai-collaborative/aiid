@@ -10,6 +10,7 @@ const config = require('./config');
 cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
 const plugins = [
+  'layout',
   {
     resolve: `gatsby-plugin-netlify`,
     options: {
