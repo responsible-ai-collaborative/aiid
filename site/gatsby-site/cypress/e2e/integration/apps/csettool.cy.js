@@ -1,3 +1,4 @@
+import { maybeIt } from '../../../support/utils';
 import cssettool from '../../../fixtures/classifications/cssettool.json';
 import upsertCSETv1merge from '../../../fixtures/classifications/upsertCSETv1merge.json';
 
@@ -8,7 +9,7 @@ describe('CSET tool', () => {
     return cy.get(`[data-cy="column-${short_name}"]`).parent().parent();
   }
 
-  it.only('Successfully loads CSET annotator classifications', () => {
+  maybeIt('Successfully loads CSET annotator classifications', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
