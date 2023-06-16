@@ -7,7 +7,7 @@ import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { classyDiv } from 'utils/classy';
-import { Label, abbreviatedTag, emptyRisk, statusLooks } from 'utils/checklists';
+import { Label, abbreviatedTag, emptyRisk, exportJson } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
@@ -83,7 +83,7 @@ export default function CheckListForm({
               Delete
             </Button>
             <Dropdown label="Export">
-              <Dropdown.Item onClick={() => alert('Coming soon')}>
+              <Dropdown.Item onClick={() => exportJson(values)}>
                 <Trans>JSON</Trans>
               </Dropdown.Item>
               <Dropdown.Item onClick={() => alert('Coming soon')}>

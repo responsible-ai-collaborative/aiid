@@ -42,7 +42,7 @@ const exportJson = (checklist) => {
 
   const a = document.createElement('a');
 
-  a.setAttribute('src', 'data:text/json,' + json);
+  a.setAttribute('href', 'data:text/json,' + json);
   a.setAttribute('download', `${checklist.name} - Risk Checklist.json`);
   a.click();
 };

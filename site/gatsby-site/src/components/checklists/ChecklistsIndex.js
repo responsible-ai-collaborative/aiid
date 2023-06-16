@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { classy } from 'utils/classy';
-import { removeTypename, statusIcon, statusColor} from 'utils/checklists';
+import { removeTypename, statusIcon, statusColor, exportJson } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsIndex() {
@@ -94,7 +94,7 @@ export default function ChecklistsIndex() {
                 <Trans>Delete</Trans>
               </Button>
               <Dropdown label="Export">
-                <Dropdown.Item onClick={() => alert('Coming soon')}>
+                <Dropdown.Item onClick={() => exportJson(checklist)}>
                   <Trans>JSON</Trans>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => alert('Coming soon')}>
