@@ -104,7 +104,7 @@ function getRiskClassificationsMongoQuery(queryParams) {
   for (const tagString of tagStrings) {
     const parts = tagString.split(":");
     const namespace = parts[0];
-    if (tagSearch[namespace]) {
+    if (!tagSearch[namespace]) {
       tagSearch[namespace] = [];
     }
     const tag = {};

@@ -37,16 +37,37 @@ const removeTypename = (obj) => {
   return JSON.parse(replaced);
 };
 
-const statusIcon = (status) => ({
-    'Not Mitigated' : faWarning,
-    'Mitigated'     : faShield,
-    'Prevented'     : faShield
-}[status] || faWarning);
+const exportJson = (checklist) => {
+  const json = JSON.stringify(checklist).replace(/"__typename":"[A-Za-z]*",/g, '');
 
-const statusColor = (status) => ({ 
-    'Not Mitigated' : 'text-red-500',
-    'Mitigated'     : 'text-blue-500',
-    'Prevented'     : 'text-green-500',
-}[status]) || 'text-gray-500';
+  const a = document.createElement('a');
 
-export { abbreviatedTag, Label, emptyRisk, risksEqual, removeTypename, statusIcon, statusColor };
+  a.setAttribute('src', 'data:text/json,' + json);
+  a.setAttribute('download', `${checklist.name} - Risk Checklist.json`);
+  a.click();
+};
+
+const statusIcon = (status) =>
+  ({
+    'Not Mitigated': faWarning,
+    Mitigated: faShield,
+    Prevented: faShield,
+  }[status] || faWarning);
+
+const statusColor = (status) =>
+  ({
+    'Not Mitigated': 'text-red-500',
+    Mitigated: 'text-blue-500',
+    Prevented: 'text-green-500',
+  }[status] || 'text-gray-500');
+
+export {
+  abbreviatedTag,
+  Label,
+  emptyRisk,
+  risksEqual,
+  removeTypename,
+  statusIcon,
+  statusColor,
+  exportJson,
+};
