@@ -39,6 +39,12 @@ export default function RiskSection({
     updatePrecedents({ risk, updateRisk, allPrecedents });
   }, [JSON.stringify(risk.tags), JSON.stringify(searchTags)]);
 
+  const progress =
+    ['risk_notes', 'severity', 'likelihood'].reduce(
+      (sum, item) => sum + (risk[item].length > 1 ? 1 : 0),
+      0
+    ) / 3;
+
   return (
     <RiskDetails open={risk.startClosed ? undefined : true}>
       <RiskHeaderSummary>
@@ -48,12 +54,13 @@ export default function RiskSection({
           textClasses="text-lg text-red-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block"
           {...{ updateRisk }}
         />
-        <div className="hidden md:block ml-auto mr-6 px-2 bg-white">
+        <div className="hidden md:flex ml-auto mr-6 px-2 bg-white items-center">
           <FontAwesomeIcon
             icon={statusIcon(risk.risk_status)}
             className={`${statusColor(risk.risk_status)} mr-1`}
           />
-          {risk.risk_status || 'Unassessed'}
+          <span>{risk.risk_status || 'Unassessed'}</span>
+          <ProgressCircle progress={progress} className="-mb-1 ml-2" />
         </div>
       </RiskHeaderSummary>
       <RiskLayout>
@@ -184,3 +191,31 @@ var updatePrecedents = async ({ risk, updateRisk, allPrecedents }) => {
   }
   updateRisk({ precedents: updatedPrecedents });
 };
+
+function ProgressCircle({ progress, className }) {
+  const r = 20;
+
+  const c = 2 * r * Math.PI;
+
+  const filledLength = c * progress;
+
+  const clearLength = c - filledLength;
+
+  return (
+    <div title={Math.round(progress * 100) + '%'} className={`${className} inline`}>
+      <svg width="20" height="20" viewBox="0 0 60 60">
+        <circle stroke="#d8dadc" strokeWidth="10" fill="transparent" r={r} cx="30" cy="30" />
+        <circle
+          stroke="#4084f8"
+          strokeWidth="10"
+          fill="transparent"
+          r={r}
+          cx="30"
+          cy="30"
+          strokeDasharray={`${filledLength} ${clearLength}`}
+          style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+        />
+      </svg>
+    </div>
+  );
+}
