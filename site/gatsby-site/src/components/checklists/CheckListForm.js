@@ -7,7 +7,7 @@ import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { classyDiv } from 'utils/classy';
-import { Label, abbreviatedTag, emptyRisk, exportJson } from 'utils/checklists';
+import { Label, DeleteButton, abbreviatedTag, emptyRisk, exportJson } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
@@ -54,8 +54,8 @@ export default function CheckListForm({
               iconClasses="text-lg vertical-align"
             />
           </h1>
-          <div className="flex flex-nowrap shrink-0 gap-2 items-center">
-            <span className="text-lg text-gray-600">
+          <div className="flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full">
+            <span className="text-lg text-gray-500 inline-block mx-4">
               {isSubmitting ? (
                 <>
                   <Spinner /> Saving...
@@ -67,21 +67,21 @@ export default function CheckListForm({
             <Button color="light" onClick={() => alert('Coming soon')}>
               <Trans>Subscribe</Trans>
             </Button>
-            <Button
-              color="failure"
+            <DeleteButton
+              type="button"
               onClick={async () => {
-                if (window.confirm("Delete this checklist?")) {
+                if (window.confirm('Delete this checklist?')) {
                   try {
                     await deleteChecklist({ variables: { query: { id: values.id } } });
                     window.location = '/apps/checklists/';
                   } catch (e) {
                     console.log(e);
-                  } 
+                  }
                 }
               }}
             >
               Delete
-            </Button>
+            </DeleteButton>
             <Dropdown label="Export">
               <Dropdown.Item onClick={() => exportJson(values)}>
                 <Trans>JSON</Trans>
@@ -107,8 +107,8 @@ export default function CheckListForm({
             }}
           />
         </Row>
-        <Row className="flex gap-2">
-          <Col className="w-1/2 h-full">
+        <Row className="flex flex-col md:flex-row gap-2">
+          <Col className="w-full md:w-1/2 h-full">
             <QueryTagInput
               {...{
                 title: 'Goals',
@@ -121,7 +121,7 @@ export default function CheckListForm({
               }}
             />
           </Col>
-          <Col className="w-1/2 f-full">
+          <Col className="w-full md:w-1/2 h-full">
             <QueryTagInput
               {...{
                 title: 'Methods',

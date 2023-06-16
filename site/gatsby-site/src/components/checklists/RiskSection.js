@@ -45,10 +45,10 @@ export default function RiskSection({
         <EditableLabel
           title={risk.title}
           onChange={(event) => updateRisk({ title: event.target.value })}
-          textClasses="text-lg text-red-700 px-2"
+          textClasses="text-lg text-red-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block"
           {...{ updateRisk }}
         />
-        <div className="ml-auto mr-6 px-2 bg-white">
+        <div className="hidden md:block ml-auto mr-6 px-2 bg-white">
           <FontAwesomeIcon
             icon={statusIcon(risk.risk_status)}
             className={`${statusColor(risk.risk_status)} mr-1`}
@@ -75,9 +75,9 @@ export default function RiskSection({
           <PrecedentsList>
             {risk.precedents.map((precedent) => (
               <Card key={precedent.incident_id}>
-                <div className="h-64 w-64">
+                <div className="h-64 w-64 overflow-hidden">
                   <LocalizedLink to={`/cite/${precedent.incident_id}`}>
-                    <h3>{precedent.title}</h3>
+                    <h3 className="mt-0">{precedent.title}</h3>
                   </LocalizedLink>
                   <p>{precedent.description}</p>
                 </div>
@@ -85,7 +85,7 @@ export default function RiskSection({
             ))}
           </PrecedentsList>
         </Precedents>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <RiskInfo>
             <label className="-mb-1" htmlFor="risk_status">
               Risk Status
@@ -95,11 +95,13 @@ export default function RiskSection({
               value={risk.risk_status}
               onChange={(event) => updateRisk({ risk_status: event.target.value })}
             >
-              {['Not Mitigated', 'Mitigated', 'Prevented', 'Not Applicable', 'Unclear'].map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
+              {['Not Mitigated', 'Mitigated', 'Prevented', 'Not Applicable', 'Unclear'].map(
+                (status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                )
+              )}
             </Select>
             <div>
               <Label>Severity</Label>
@@ -137,7 +139,7 @@ var RiskDetails = classy(
   `
   relative max-w-full
   border-red-700 border-t-1 open:border-1
-  open:p-6 open:rounded
+  open:p-3 md:open:p-6 open:rounded
   [&[open]>summary]:before:content-['⏷']
         [&>summary]:before:content-['⏵']
 `
@@ -146,7 +148,7 @@ var RiskDetails = classy(
 var RiskHeaderSummary = classy(
   'summary',
   `
-  absolute -top-4 left-3 w-full flex px-2 items-center
+  absolute -top-4 left-1 md:left-3 w-full flex px-2 items-center
 
   before:w-4 before:pl-1 before:bg-white 
   before:text-lg before:text-red-700

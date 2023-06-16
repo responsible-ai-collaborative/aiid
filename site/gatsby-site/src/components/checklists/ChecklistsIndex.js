@@ -5,8 +5,13 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { classy } from 'utils/classy';
-import { removeTypename, statusIcon, statusColor, exportJson } from 'utils/checklists';
+import {
+  DeleteButton,
+  removeTypename,
+  statusIcon,
+  statusColor,
+  exportJson,
+} from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsIndex() {
@@ -43,12 +48,12 @@ export default function ChecklistsIndex() {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4">
         {checklists.map((checklist) => (
           <Card key={checklist.id}>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <LocalizedLink className="mr-auto" to={`/apps/checklists?id=${checklist.id}`}>
-                <h2>{checklist.name}</h2>
+                <h2 className="mb-0">{checklist.name}</h2>
               </LocalizedLink>
               <Button
                 color="light"
@@ -80,8 +85,8 @@ export default function ChecklistsIndex() {
               <Button color="light" onClick={() => alert('Coming soon')}>
                 <Trans>Subscribe</Trans>
               </Button>
-              <Button
-                color="failure"
+              <DeleteButton
+                type="button"
                 onClick={async () => {
                   try {
                     await deleteChecklist({ variables: { query: { id: checklist.id } } });
@@ -92,7 +97,7 @@ export default function ChecklistsIndex() {
                 }}
               >
                 <Trans>Delete</Trans>
-              </Button>
+              </DeleteButton>
               <Dropdown label="Export">
                 <Dropdown.Item onClick={() => exportJson(checklist)}>
                   <Trans>JSON</Trans>
@@ -106,15 +111,18 @@ export default function ChecklistsIndex() {
               </Dropdown>
             </div>
             <ul className="flex gap-2 flex-wrap">
-              {checklist.risks.filter(r => r.risk_status != 'Not Applicable').map((risk) => (
-                <li key={risk.id} className="flex items-center gap-1 text-gray-600">
-                  <FontAwesomeIcon
-                    icon={statusIcon(risk.risk_status)}
-                    className={`-mt-1 ${statusColor(risk.risk_status)}`}
-                  />
-                  {risk.title}
-                </li>
-              ))}
+              {checklist.risks
+                .filter((r) => r.risk_status != 'Not Applicable')
+                .map((risk) => (
+                  <li key={risk.id} className="flex items-center gap-1 text-gray-600">
+                    <FontAwesomeIcon
+                      icon={statusIcon(risk.risk_status)}
+                      className={`-mt-1 ${statusColor(risk.risk_status)}`}
+                      title={risk.risk_status}
+                    />
+                    {risk.title}
+                  </li>
+                ))}
             </ul>
           </Card>
         ))}
@@ -124,5 +132,3 @@ export default function ChecklistsIndex() {
 }
 
 var generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
-
-var DeleteButton = classy('button', "text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900");

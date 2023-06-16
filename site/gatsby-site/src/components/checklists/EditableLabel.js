@@ -6,7 +6,7 @@ export default function EditableLabel({ title, onChange, textClasses, iconClasse
   const [editingTitle, setEditingTitle] = useState(false);
 
   return (
-    <span className="inline-flex flex-shrink-1 flex-nowrap items-center">
+    <span className="inline-flex shrink flex-nowrap items-center">
       {editingTitle ? (
         <input
           type="text"
@@ -22,7 +22,10 @@ export default function EditableLabel({ title, onChange, textClasses, iconClasse
         className="bg-white px-2"
         onClick={() => setEditingTitle((editingTitle) => !editingTitle)}
       >
-        <FontAwesomeIcon className={`${iconClasses} align-baseline`} icon={editingTitle ? faCheck : faEdit} />
+        <FontAwesomeIcon
+          className={`${iconClasses} align-baseline`}
+          icon={editingTitle ? faCheck : faEdit}
+        />
       </button>
     </span>
   );
