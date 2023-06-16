@@ -197,7 +197,8 @@ function ResultCell({ cell, ...props }) {
 function ShortNameCell({ cell }) {
   return (
     <div className="-my-2 -mx-4 p-2" data-cy={`column-${cell.value}`}>
-      {cell.value}
+      <b>{cell.row.original.field_number}</b>
+      <div>{cell.value}</div>
     </div>
   );
 }
