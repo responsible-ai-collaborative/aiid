@@ -25,7 +25,9 @@ const notesShortNames = [
 const skipShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
 
 function Entity({ attributes }) {
-  const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
+  const nameValue = attributes.find((a) => a.short_name == 'Entity')?.value_json;
+
+  const name = nameValue ? JSON.parse(nameValue) : '<missing>';
 
   return (
     <>
