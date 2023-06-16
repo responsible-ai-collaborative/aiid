@@ -104,7 +104,9 @@ function getRiskClassificationsMongoQuery(queryParams) {
   for (const tagString of tagStrings) {
     const parts = tagString.split(":");
     const namespace = parts[0];
-    tagSearch[namespace] ||= [];
+    if (tagSearch[namespace]) {
+      tagSearch[namespace] = [];
+    }
     const tag = {};
     tag.short_name = parts[1];
     if (parts.length > 2) {
@@ -162,7 +164,9 @@ var groupable = (array) => {
     const groups = {};
     for (const element of array) {
       const key = keyFunction(element);
-      groups[key] ||= [];
+      if (!groups[key]) {
+        groups[key] = [];
+      }
       groups[key].push(
         valueFunction ? valueFunction(element) : element
       );
@@ -174,7 +178,9 @@ var groupable = (array) => {
     for (const element of array) {
       const keys = keyFunction(element);
       for (const key of keys) {
-        groups[key] ||= new Set();
+        if (!groups[key]) {
+          groups[key] = new Set();
+        }
         groups[key].add(
           valueFunction ? valueFunction(element) : element
         );
