@@ -436,7 +436,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="edit-similar-incidents"]').should('exist');
   });
 
-  it.only('Should flag an incident as not related (not authenticated)', () => {
+  it('Should flag an incident as not related (not authenticated)', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindIncident',
