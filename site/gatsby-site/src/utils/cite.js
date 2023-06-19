@@ -124,3 +124,43 @@ export const sortIncidentsByDatePublished = (incidentReports) => {
     }
   });
 };
+
+// Transforms the data from the graphql query into a History_incidentInsertInput format
+export const transformIncidentData = (incident) => {
+  const {
+    // eslint-disable-next-line no-unused-vars
+    __typename: incidentType,
+    AllegedDeployerOfAISystem,
+    AllegedDeveloperOfAISystem,
+    AllegedHarmedOrNearlyHarmedParties,
+    reports,
+    embedding,
+    nlp_similar_incidents,
+    tsne,
+    ...result
+  } = incident;
+
+  result.AllegedDeployerOfAISystem = AllegedDeployerOfAISystem.map((e) => e.entity_id);
+  result.AllegedDeveloperOfAISystem = AllegedDeveloperOfAISystem.map((e) => e.entity_id);
+  result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.map(
+    (e) => e.entity_id
+  );
+  result.reports = reports.map((report) => report.report_number);
+  result.nlp_similar_incidents = nlp_similar_incidents.map((nlp) => {
+    // eslint-disable-next-line no-unused-vars
+    const { __typename: nlpType, ...currentNlp } = nlp;
+
+    return currentNlp;
+  });
+  // eslint-disable-next-line no-unused-vars
+  const { __typename: embeddingType, ...currentEmbedding } = embedding;
+
+  result.embedding = currentEmbedding;
+
+  // eslint-disable-next-line no-unused-vars
+  const { __typename: tsneType, ...currentTsne } = tsne;
+
+  result.tsne = currentTsne;
+
+  return result;
+};

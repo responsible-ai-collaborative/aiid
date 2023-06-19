@@ -6,6 +6,8 @@ import { format, getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
+import incident10 from '../../fixtures/incidents/fullIncident10.json';
+import { transformIncidentData } from '../../../src/utils/cite';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -434,12 +436,32 @@ describe('Cite pages', () => {
     cy.get('[data-cy="edit-similar-incidents"]').should('exist');
   });
 
-  it('Should flag an incident as not related (not authenticated)', () => {
+  it.only('Should flag an incident as not related (not authenticated)', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident10
+    );
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
       'updateIncident',
       updateOneIncidentFlagged
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 9,
+          },
+        },
+      }
     );
 
     cy.visit('/cite/9');
@@ -451,6 +473,14 @@ describe('Cite pages', () => {
     cy.clock(now);
 
     cy.get('[data-cy="flag-similar-incident"]').first().click();
+
+    cy.wait('@logIncidentHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = transformIncidentData(incident10.data.incident);
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
 
     cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
@@ -467,9 +497,29 @@ describe('Cite pages', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident10
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
       'updateIncident',
       updateOneIncidentFlagged
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 9,
+          },
+        },
+      }
     );
 
     cy.visit('/cite/9');
@@ -481,6 +531,14 @@ describe('Cite pages', () => {
     cy.clock(now);
 
     cy.get('[data-cy="flag-similar-incident"]').first().click();
+
+    cy.wait('@logIncidentHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = transformIncidentData(incident10.data.incident);
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
 
     cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });

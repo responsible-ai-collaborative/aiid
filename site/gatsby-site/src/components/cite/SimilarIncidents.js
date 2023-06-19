@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { useMutation } from '@apollo/client/react/hooks';
-import { UPDATE_INCIDENT } from '../../graphql/incidents';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
+import { FIND_FULL_INCIDENT, LOG_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -13,6 +13,7 @@ import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import { transformIncidentData } from '../../utils/cite';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -29,9 +30,19 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [updateIncidentMutation] = useMutation(UPDATE_INCIDENT);
 
+  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
+
+  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
+    variables: { query: { incident_id: parentIncident.incident_id } },
+  });
+
   const addToast = useToastContext();
 
   const flagIncident = async () => {
+    const currentIncident = transformIncidentData(incidentData.incident);
+
+    await logIncidentHistory({ variables: { input: currentIncident } });
+
     const now = new Date();
 
     let editor;
