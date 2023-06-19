@@ -772,4 +772,8 @@
     @apply font-medium m-0 p-0;
     @apply leading-10 !important;
   }
+
+  .latest-reports-carousel *[data-testid="carousel-indicator"] {
+    @apply hidden !important;
+  }
 }
