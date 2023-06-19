@@ -128,7 +128,7 @@ export const LINK_REPORTS_TO_INCIDENTS = gql`
 `;
 
 export const LOG_REPORT_HISTORY = gql`
-  mutation logReportHistory($input: ReportInsertInput!) {
+  mutation logReportHistory($input: History_reportInsertInput!) {
     logReportHistory(input: $input) {
       report_number
     }

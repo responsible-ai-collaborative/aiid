@@ -10,7 +10,6 @@ exports = async (input) => {
   const incidentsHistory = context.services.get('mongodb-atlas').db('history').collection("incidents");
 
   const incident = input;
-  incident.user = input.user.link;
 
   await incidentsHistory.insertOne(incident);
 

@@ -27,9 +27,6 @@
         "description": {
             "bsonType": "string"
         },
-        "editor": {
-            "bsonType": "string"
-        },
         "editor_dissimilar_incidents": {
             "bsonType": "array",
             "items": {
