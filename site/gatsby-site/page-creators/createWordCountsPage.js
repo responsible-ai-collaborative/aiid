@@ -90,7 +90,13 @@ const createWordCountsPage = async (graphql, createPage) => {
     }
   }
 
-  const latestReportNumbers = result.data.latestReports.nodes.map((node) => node.report_number);
+  const latestReportNumbers = result.data.latestReports.nodes.map((node) => {
+    const sortedArray = node.reports.sort((a, b) => {
+      return a.epoch_date_submitted - b.epoch_date_submitted;
+    });
+
+    return sortedArray[0].report_number;
+  });
 
   PAGES_WITH_WORDCOUNT.forEach((page) => {
     createPage({
