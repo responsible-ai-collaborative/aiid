@@ -137,7 +137,7 @@ const plugins = [
 
               const matchingIncidents = allMongodbAiidprodIncidents.edges.find((incident) => {
                 return incident.node.reports.find((report) => {
-                  return report === report_number;
+                  return report.report_number === report_number;
                 });
               });
 
@@ -195,7 +195,9 @@ const plugins = [
               edges {
                 node {
                   incident_id
-                  reports
+                  reports { 
+                    report_number
+                  }
                 }
               }
             }

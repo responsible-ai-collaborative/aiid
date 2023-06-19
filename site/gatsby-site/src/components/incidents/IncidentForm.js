@@ -82,7 +82,7 @@ function IncidentForm() {
       ? []
       : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
           incident_id: selectedSimilarId.current,
-          ...report,
+          ...report.report_number,
         }));
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
@@ -103,7 +103,10 @@ function IncidentForm() {
       : editorSimilarIncidentReportsQuery.data.incidents.reduce(
           (reports, incident) =>
             reports.concat(
-              incident.reports.map((report) => ({ ...report, incident_id: incident.incident_id }))
+              incident.reports.map((report) => ({
+                ...report.report_number,
+                incident_id: incident.incident_id,
+              }))
             ),
           []
         );

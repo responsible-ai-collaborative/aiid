@@ -23,7 +23,7 @@ const LandingPage = (props) => {
 
   const { latestReport, latestReportIncident, latestPost } = data;
 
-  latestReport.incident_id = latestReportIncident.incident_id;
+  latestReport.incident_id = latestReportIncident?.edges[0].node.incident_id;
 
   const { locale: language } = useLocalization();
 
@@ -140,8 +140,14 @@ export default LandingPage;
 
 export const query = graphql`
   query LandingPageQuery($latestReportNumber: Int, $locale: String!) {
-    latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
-      incident_id
+    latestReportIncident: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
+    ) {
+      edges {
+        node {
+          incident_id
+        }
+      }
     }
     latestReport: mongodbAiidprodReports(report_number: { eq: $latestReportNumber }) {
       title

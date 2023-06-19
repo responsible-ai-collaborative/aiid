@@ -124,7 +124,9 @@ export const pageQuery = graphql`
         incident_id
         title
         date
-        reports
+        reports {
+          report_number
+        }
       }
     }
     allMongodbAiidprodReports(sort: { date_submitted: ASC }, limit: 9999) {

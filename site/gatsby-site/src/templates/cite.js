@@ -252,7 +252,9 @@ export const query = graphql`
     }
     incident: mongodbAiidprodIncidents(incident_id: { eq: $incident_id }) {
       incident_id
-      reports
+      reports {
+        report_number
+      }
       title
       description
       date

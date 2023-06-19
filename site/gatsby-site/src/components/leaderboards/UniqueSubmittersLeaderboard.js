@@ -11,7 +11,9 @@ const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
       allMongodbAiidprodIncidents {
         nodes {
           incident_id
-          reports
+          reports {
+            report_number
+          }
         }
       }
 
@@ -28,9 +30,9 @@ const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
   const submitters = {};
 
   for (const report of reports) {
-    const { incident_id: id } = incidents.find((incident) =>
-      incident.reports.includes(report.report_number)
-    );
+    const { incident_id: id } = incidents.find((incident) => {
+      return incident.reports.some((r) => r.report_number === report.report_number);
+    });
 
     const {
       submitters: [submitter],
