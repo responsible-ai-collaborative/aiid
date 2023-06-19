@@ -20,6 +20,7 @@ export default function NewsletterSignup() {
   const {
     user,
     actions: { signUp },
+    loading,
   } = useUserContext();
 
   const [emailValue, setEmailValue] = useState('');
@@ -37,6 +38,8 @@ export default function NewsletterSignup() {
   let [{ redirectTo }] = useQueryParams({
     redirectTo: StringParam,
   });
+
+  if (loading) return <></>;
 
   return (
     <Card className="h-full w-full self-stretch flex justify-center shadow-md">
