@@ -26,7 +26,6 @@ const ToolPage = (props) => {
       const rows = [];
 
       for (const attribute of taxa.field_list) {
-        // there are duplicated short_names in the field_list
         const row = {
           short_name: attribute.short_name,
           display_type: attribute.display_type,
