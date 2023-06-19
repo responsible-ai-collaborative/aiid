@@ -64,10 +64,6 @@
         @apply bg-primary-blue text-white;
     }
 
-    .tw-content {
-        @apply flex flex-grow pt-4 pl-4 pb-5 md:pl-10 md:pb-10 z-[1] relative overflow-hidden flex-1;
-    }
-
     .tw-container {
         @apply xl:max-w-[1140px] md:max-w-[520px] lg:max-w-[960px] sm:max-w-[540px];
     }
@@ -775,5 +771,9 @@
   .titleWrapper h1 {
     @apply font-medium m-0 p-0;
     @apply leading-10 !important;
+  }
+
+  .latest-reports-carousel *[data-testid="carousel-indicator"] {
+    @apply hidden !important;
   }
 }

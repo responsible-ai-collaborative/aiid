@@ -21,7 +21,13 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         )}
-        <div id="content" className={'tw-content' + (rightSidebar ? ' xl:pr-5' : '')}>
+        <div
+          id="content"
+          className={
+            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative overflow-hidden flex-1' +
+            (rightSidebar ? ' xl:pr-5' : '')
+          }
+        >
           <div className={`${className ? className : ''} max-w-full`}>{children}</div>
         </div>
         <div
