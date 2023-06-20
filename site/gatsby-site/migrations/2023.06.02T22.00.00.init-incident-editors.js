@@ -34,22 +34,30 @@ const accounts = [
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  const incidentsCollection = client.db(config.realm.production_db.db_name).collection('incidents');
+  async function updateCollection({ name, field }) {
+    const collection = client.db(config.realm.production_db.db_name).collection(name);
 
-  const incidents = incidentsCollection.find({});
+    const items = collection.find({});
 
-  for await (const incident of incidents) {
-    const editors = incident.editors.map((editor) => {
-      const account = accounts.find((account) => account.name === editor);
+    for await (const item of items) {
+      const editors = item[field]?.map((editor) => {
+        const account = accounts.find((account) => account.name === editor);
 
-      return account ? account.userId : editor;
-    });
+        return account ? account.userId : editor;
+      });
 
-    const updateResult = await incidentsCollection.updateOne(
-      { _id: incident._id },
-      { $set: { editors } }
-    );
+      if (editors) {
+        const updateResult = await collection.updateOne(
+          { _id: item._id },
+          { $set: { [field]: editors } }
+        );
 
-    console.log(`${incident.incident_id}, ${editors}, ${updateResult.modifiedCount}`);
+        console.log(`${name} : ${item._id}, ${editors}, ${updateResult.modifiedCount}`);
+      }
+    }
   }
+
+  await updateCollection({ name: 'incidents', field: 'editors' });
+
+  await updateCollection({ name: 'submissions', field: 'incident_editors' });
 };
