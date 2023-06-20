@@ -44,23 +44,15 @@ const LatestIncidentReport = ({ report, key }) => {
       <div className="flex flex-col md:w-2/3 justify-between leading-normal">
         <div className="py-6 pl-6 pr-12">
           <LocalizedLink to={reportLink} className="hover:no-underline max-w-full cursor-pointer">
-            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full p-6 hover:text-primary-blue">
-              <Trans ns="landing">Latest Incident Report</Trans>
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full px-6 pt-6 hover:text-primary-blue">
+              {title}
             </h5>
           </LocalizedLink>
-          <div className="px-6 pb-6">
-            <LocalizedLink to={reportLink} className="hover:no-underline max-w-full cursor-pointer">
-              <h5
-                className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue"
-                data-cy="latest-incident-report-title"
-              >
-                {title}
-              </h5>
-            </LocalizedLink>
-            <DateLabel
-              date={epoch_date_submitted * 1000}
-              className="text-sm text-gray-500 dark:text-gray-400"
-            />
+          <DateLabel
+            date={epoch_date_submitted * 1000}
+            className="text-sm text-gray-500 dark:text-gray-400 pl-6 pb-6"
+          />
+          <div className="px-6 py-6">
             <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
               <ReportText maxChars={240} text={text} />
             </div>
