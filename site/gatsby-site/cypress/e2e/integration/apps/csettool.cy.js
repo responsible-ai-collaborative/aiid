@@ -5,8 +5,8 @@ import upsertCSETv1merge from '../../../fixtures/classifications/upsertCSETv1mer
 describe('CSET tool', () => {
   const url = '/apps/csettool/52/';
 
-  function getRow(short_name) {
-    return cy.get(`[data-cy="column-${short_name}"]`).parent().parent();
+  function getRow(short_name, { index } = { index: 0 }) {
+    return cy.get(`[data-cy="column-${short_name}"]`).eq(index).parent().parent();
   }
 
   maybeIt('Successfully loads CSET annotator classifications', () => {

@@ -26,26 +26,24 @@ const ToolPage = (props) => {
       const rows = [];
 
       for (const attribute of taxa.field_list) {
-        // there are duplicated short_names in the field_list
-        if (!rows.find((row) => row.short_name === attribute.short_name)) {
-          const row = {
-            short_name: attribute.short_name,
-            display_type: attribute.display_type,
-            incident_id: parseInt(incident_id),
-          };
+        const row = {
+          short_name: attribute.short_name,
+          display_type: attribute.display_type,
+          field_number: attribute.field_number,
+          incident_id: parseInt(incident_id),
+        };
 
-          for (const classification of data.classifications) {
-            const json = classification.attributes.find(
-              (a) => a.short_name == attribute.short_name
-            ).value_json;
+        for (const classification of data.classifications) {
+          const json = classification.attributes.find(
+            (a) => a.short_name == attribute.short_name
+          ).value_json;
 
-            const value = JSON.parse(json);
+          const value = JSON.parse(json);
 
-            row[classification.namespace] = value;
-          }
-
-          rows.push(row);
+          row[classification.namespace] = value;
         }
+
+        rows.push(row);
       }
 
       rows.push({
@@ -96,6 +94,7 @@ export const query = graphql`
         short_name
         mongo_type
         display_type
+        field_number
       }
     }
   }
