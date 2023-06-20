@@ -8,7 +8,7 @@ const response = {
           incident_id: 1,
           title: 'Google’s YouTube Kids App Presents Inappropriate Content',
           date: '2015-05-19',
-          reports: [1, 2],
+          reports: [{ report_number: 1 }, { report_number: 2 }],
           editor_similar_incidents: [],
           editor_dissimilar_incidents: [],
           flagged_dissimilar_incidents: [],
