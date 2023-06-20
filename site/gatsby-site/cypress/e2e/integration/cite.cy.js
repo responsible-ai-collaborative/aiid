@@ -8,6 +8,7 @@ const { gql } = require('@apollo/client');
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 import incident10 from '../../fixtures/incidents/fullIncident10.json';
 import { transformIncidentData } from '../../../src/utils/cite';
+import { transformReportData } from '../../../src/utils/reports';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -256,22 +257,12 @@ describe('Cite pages', () => {
     cy.wait('@logReportHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        let {
-          // eslint-disable-next-line no-unused-vars
-          _id,
-          // eslint-disable-next-line no-unused-vars
-          __typename,
-          // eslint-disable-next-line no-unused-vars
-          embedding,
-          // eslint-disable-next-line no-unused-vars
-          nlp_similar_incidents,
-          user: reportUser,
-          ...expectedReport
-        } = unflaggedReport.data.report;
+        // eslint-disable-next-line no-unused-vars
+        const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
 
-        if (reportUser) {
-          expectedReport['user'] = { link: reportUser.userId };
-        }
+        expectedReport.editor = 'Anonymous';
+        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.epoch_date_modified = getUnixTime(now);
 
         expect(input).to.deep.eq(expectedReport);
       });

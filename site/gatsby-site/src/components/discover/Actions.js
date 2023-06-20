@@ -16,6 +16,7 @@ import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import { format, getUnixTime } from 'date-fns';
+import { transformReportData } from '../../utils/reports';
 
 function FlagModalContent({ reportNumber }) {
   const { user } = useUserContext();
@@ -29,15 +30,6 @@ function FlagModalContent({ reportNumber }) {
   const [logReportHistory] = useMutation(LOG_REPORT_HISTORY);
 
   const flagReport = async () => {
-    // eslint-disable-next-line no-unused-vars
-    let { __typename, embedding, user: reportUser, ...report } = data.report;
-
-    if (reportUser) {
-      report.user = { link: reportUser.userId };
-    }
-
-    await logReportHistory({ variables: { input: report } });
-
     const now = new Date();
 
     const updated = {
@@ -63,6 +55,16 @@ function FlagModalContent({ reportNumber }) {
         },
       },
     });
+
+    const report = transformReportData(data.report, user);
+
+    const logReport = {
+      ...report,
+      ...updated,
+    };
+
+    // Log the report history
+    await logReportHistory({ variables: { input: logReport } });
   };
 
   const report = data?.report;
