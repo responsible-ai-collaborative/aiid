@@ -16,6 +16,7 @@ import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
+import { transformReportData } from '../../utils/reports';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -153,15 +154,6 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
-      // eslint-disable-next-line no-unused-vars
-      let { __typename, embedding, user: reportUser, ...report } = currentReportData.report;
-
-      if (reportUser) {
-        report.user = { link: reportUser.userId };
-      }
-
-      await logReportHistory({ variables: { input: report } });
-
       if (
         values.incident_ids.length == 0 &&
         incident_ids.length > 0 &&
@@ -200,11 +192,6 @@ function EditCitePage(props) {
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(now);
 
-      // Set the user as the last editor
-      if (user && user.customData.first_name && user.customData.last_name) {
-        values.editor = `${user.customData.first_name} ${user.customData.last_name}`;
-      }
-
       const updated = pick(values, reportFields);
 
       await updateReport({
@@ -218,6 +205,17 @@ function EditCitePage(props) {
           },
         },
       });
+
+      const report = transformReportData(currentReportData.report, user);
+
+      const logReport = {
+        ...report,
+        ...updated,
+        plain_text: await stripMarkdown(updated.text),
+      };
+
+      // Log the report history
+      await logReportHistory({ variables: { input: logReport } });
 
       for (const { code } of config.filter((c) => c.code !== values.language)) {
         const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
