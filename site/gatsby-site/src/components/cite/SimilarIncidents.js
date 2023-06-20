@@ -13,6 +13,7 @@ import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import TopImageCard from 'elements/Card/TopImageCard';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -32,10 +33,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   return (
-    <div
-      data-cy="similar-incident-card"
-      className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 pb-4"
-    >
+    <TopImageCard data-cy="similar-incident-card">
       <LocalizedLink
         to={`/cite/${incident.incident_id}`}
         data-cy="cite-link"
@@ -110,7 +108,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           </Button>
         )}
       </div>
-    </div>
+    </TopImageCard>
   );
 };
 

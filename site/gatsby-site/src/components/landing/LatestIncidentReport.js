@@ -5,6 +5,7 @@ import ReportText from 'components/reports/ReportText';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
+import LeftImageCard from 'elements/Card/LeftImageCard';
 
 const LatestIncidentReport = ({ report, key }) => {
   const {
@@ -22,10 +23,7 @@ const LatestIncidentReport = ({ report, key }) => {
   const reportLink = `/cite/${incident_id}#r${report_number}`;
 
   return (
-    <div
-      className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800 h-full"
-      key={key}
-    >
+    <LeftImageCard key={key}>
       <div className="flex self-stretch md:w-1/3 justify-center items-center md:border-r md:max-w-sm">
         <LocalizedLink
           to={reportLink}
@@ -88,7 +86,7 @@ const LatestIncidentReport = ({ report, key }) => {
           </div>
         </div>
       </div>
-    </div>
+    </LeftImageCard>
   );
 };
 
