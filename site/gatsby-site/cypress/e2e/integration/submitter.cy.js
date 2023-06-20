@@ -18,7 +18,11 @@ describe('Submitter Selection', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('Submitters').find('span.badge').first().click();
+
+    cy.waitForStableDOM();
 
     cy.get('.shadow-lg.card').find('.list-group-item.active').should('contain.text', 'Anonymous');
   });
