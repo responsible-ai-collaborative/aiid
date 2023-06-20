@@ -32,6 +32,7 @@ export const FIND_REPORT = gql`
       }
       embedding {
         from_text_hash
+        vector
       }
     }
   }
