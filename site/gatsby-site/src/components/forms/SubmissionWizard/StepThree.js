@@ -126,7 +126,7 @@ const StepThree = (props) => {
   }
 
   return (
-    <StepContainer name={props.name} className="p-6">
+    <StepContainer name={props.name} childClassName="p-6">
       <Formik
         initialValues={data}
         onSubmit={() => {}}

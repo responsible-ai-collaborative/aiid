@@ -61,6 +61,8 @@ const SubmissionEdit = ({ id }) => {
 
   const [saving, setSaving] = useState(false);
 
+  const [isValid, setIsValid] = useState(true);
+
   const [submission, setSubmission] = useState(null);
 
   const { i18n } = useTranslation(['submitted']);
@@ -134,7 +136,7 @@ const SubmissionEdit = ({ id }) => {
   };
 
   return (
-    <div>
+    <div data-cy="submission">
       <div className="flex flex-row justify-between flex-wrap">
         <h1 className="mb-5">
           <Trans i18n={i18n} ns="submitted">
@@ -142,12 +144,23 @@ const SubmissionEdit = ({ id }) => {
           </Trans>
         </h1>
         <div className="flex items-center gap-2">
-          <span className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}>
+          <span
+            className={`${
+              saving ? 'text-orange-400' : !isValid ? 'text-red-500' : 'text-gray-400'
+            } text-sm mb-5`}
+          >
             {saving ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
                 <Trans i18n={i18n} ns="submitted">
                   Saving changes...
+                </Trans>
+              </>
+            ) : !isValid ? (
+              <>
+                <FontAwesomeIcon icon={faXmark} className="mr-1" />{' '}
+                <Trans i18n={i18n} ns="submitted">
+                  Changes not saved
                 </Trans>
               </>
             ) : (
@@ -173,7 +186,7 @@ const SubmissionEdit = ({ id }) => {
       ) : (
         <>
           {!loading && submission && entitiesData?.entities && (
-            <div className="flex">
+            <div className="flex" data-cy="submission-form">
               <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
@@ -198,6 +211,7 @@ const SubmissionEdit = ({ id }) => {
                   setSaving={setSaving}
                   userData={userData}
                   userLoading={userLoading}
+                  setIsValid={setIsValid}
                 />
               </Formik>
             </div>
@@ -208,9 +222,14 @@ const SubmissionEdit = ({ id }) => {
   );
 };
 
-const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, userData }) => {
-  const [promoType, setPromoType] = useState('incident');
-
+const SubmissionEditForm = ({
+  handleSubmit,
+  saving,
+  setSaving,
+  userLoading,
+  userData,
+  setIsValid,
+}) => {
   const [promoting, setPromoting] = useState('');
 
   const [deleting, setDeleting] = useState(false);
@@ -220,6 +239,8 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
   const { values, touched, setFieldValue, isValid } = useFormikContext();
 
   const isNewIncident = values.incident_ids.length === 0;
+
+  const [promoType, setPromoType] = useState(isNewIncident ? 'incident' : 'issue');
 
   const localizedPath = useLocalizePath();
 
@@ -231,14 +252,22 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       setSaving(true);
       saveChanges(values);
     }
-  }, [values, touched]);
+  }, [values, touched, isValid]);
 
   const saveChanges = useRef(
     debounce(async (values) => {
+      try {
+        await schema.validate(values);
+      } catch (e) {
+        setSaving(false);
+        setIsValid(false);
+        return;
+      }
       await handleSubmit(values);
       const completion = getRowCompletionStatus(Object.values(values));
 
       setCompletion(completion);
+      setIsValid(true);
       setSaving(false);
     }, 1000)
   ).current;
@@ -508,7 +537,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   return (
     <>
-      <StepContainer className="h-[calc(100vh-230px)] overflow-auto p-6">
+      <StepContainer className="w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
         <Badge
           className="absolute -top-3 z-10"
           color={values.status ? STATUS[values.status].color : 'warning'}
@@ -517,15 +546,16 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             {values.status || 'Pending Review'}
           </Trans>
         </Badge>
-        <SubmissionForm />
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+
         <div className="flex items-center gap-3 text-red-500">
           {!isValid && (
             <Trans ns="validation">Please review submission. Some data is missing.</Trans>
           )}
         </div>
+        <SubmissionForm />
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
-      <div className="flex w-1/4 pt-8 pb-6 pl-6 items-center flex-col justify-between">
+      <div className="flex w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
         <ProgressCircle percentage={completion} />
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
@@ -599,7 +629,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
               </Trans>
             </Label>
             <Select
-              value={promoType}
+              value={!isNewIncident ? 'issue' : promoType}
               className="w-full"
               onChange={(e) => setPromoType(e.target.value)}
               data-cy="promote-select"
