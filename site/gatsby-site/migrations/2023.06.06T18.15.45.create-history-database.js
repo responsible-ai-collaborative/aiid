@@ -22,12 +22,12 @@ exports.up = async ({ context: { client } }) => {
 
   const report = reports[0];
 
-  const reportEditor =
+  const reportModifiedBy =
     report.submitters && report.submitters.length > 0 ? report.submitters[0] : '';
 
-  console.log(`Inserting report ${report.report_number} with editor "${reportEditor}"`);
+  console.log(`Inserting report ${report.report_number} with editor "${reportModifiedBy}"`);
 
-  report.editor = reportEditor;
+  report.modifiedBy = reportModifiedBy;
 
   await reportsHistoryCollection.insertOne(report);
 
@@ -42,13 +42,14 @@ exports.up = async ({ context: { client } }) => {
 
   const incident = incidents[0];
 
-  const incidentEditor = incident.editors && incident.editors.length > 0 ? incident.editors[0] : '';
+  const incidentModifiedBy =
+    incident.editors && incident.editors.length > 0 ? incident.editors[0] : '';
 
   const epoch_date_modified = getUnixTime(new Date(incident.date));
 
-  console.log(`Inserting incident ${incident.incident_id} with editor "${incidentEditor}"`);
+  console.log(`Inserting incident ${incident.incident_id} with editor "${incidentModifiedBy}"`);
 
-  incident.editor = incidentEditor;
+  incident.modifiedBy = incidentModifiedBy;
   incident.epoch_date_modified = epoch_date_modified;
 
   await incidentsHistoryCollection.insertOne(incident);
