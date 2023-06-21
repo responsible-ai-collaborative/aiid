@@ -14,7 +14,7 @@ export default function LatestReports({ latestReports }) {
         </h5>
         <Carousel
           className="latest-reports-carousel"
-          slideInterval={15000}
+          slide={false}
           leftControl={
             <FontAwesomeIcon
               icon={faArrowCircleLeft}
