@@ -17,41 +17,35 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
+import sortBy from 'lodash/sortBy';
 
 const LandingPage = (props) => {
   const { data } = props;
 
-  let { latestPost, latestReports, latestReportIncidents } = data;
+  let { latestPost, latestReportIncidents } = data;
 
   const { locale: language } = useLocalization();
 
-  const filteredReportNumbers = latestReportIncidents.nodes.map((incident) => {
-    return incident.reports[incident.reports.length - 1];
-  });
+  const latestReports = latestReportIncidents.edges.map((incident) => {
+    const sortedReports = sortBy(incident.node.reports, ['epoch_date_submitted'], ['desc']);
 
-  latestReports.nodes = latestReports.nodes.filter((report) => {
-    return filteredReportNumbers.includes(report.report_number);
-  });
+    const report = sortedReports.map((report) => report)[0];
 
-  latestReports = latestReports.nodes
-    .map((report) => {
-      const reportIncident = latestReportIncidents.nodes.filter((incident) =>
-        incident.reports.includes(report.report_number)
+    if (report.language !== language) {
+      const translation = data[`latestReports_${language}`].edges.find(
+        (translation) => translation.node.report_number === report.report_number
       );
 
-      if (reportIncident.length > 0) {
-        report.incident_id = reportIncident[0].incident_id;
-      }
+      report.title = translation.node.title;
+      report.text = translation.node.text;
+    }
+    const updatedIncident = {
+      incident_id: incident.node.incident_id,
+      ...report,
+    };
 
-      if (report.language !== language) {
-        const translation = data[`latestReport_${language}`];
-
-        report.title = translation.title;
-        report.text = translation.text;
-      }
-      return report;
-    })
-    .slice(0, 5);
+    return updatedIncident;
+  });
 
   const { t } = useTranslation(['translation', 'landing']);
 
@@ -159,10 +153,35 @@ export default LandingPage;
 
 export const query = graphql`
   query LandingPageQuery($latestReportNumber: Int, $latestReportNumbers: [Int], $locale: String!) {
-    latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
-      incident_id
+    latestReportIncident: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
+    ) {
+      edges {
+        node {
+          incident_id
+        }
+      }
     }
-    latestReport: mongodbAiidprodReports(report_number: { eq: $latestReportNumber }) {
+    latestReportIncidents: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { report_number: { in: $latestReportNumbers } } } }
+    ) {
+      edges {
+        node {
+          incident_id
+          reports {
+            report_number
+            title
+            text
+            epoch_date_submitted
+            image_url
+            report_number
+            cloudinary_id
+            language
+          }
+        }
+      }
+    }
+    latestReport: mongodbAiidprodReports(report_number: { in: $latestReportNumbers }) {
       title
       text
       epoch_date_submitted
@@ -171,39 +190,38 @@ export const query = graphql`
       cloudinary_id
       language
     }
-    latestReports: allMongodbAiidprodReports(
+    latestReports_es: allMongodbTranslationsReportsEs(
       filter: { report_number: { in: $latestReportNumbers } }
-      sort: { epoch_date_submitted: DESC }
     ) {
-      nodes {
-        title
-        text
-        epoch_date_submitted
-        image_url
-        report_number
-        cloudinary_id
-        language
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
       }
     }
-    latestReportIncidents: allMongodbAiidprodIncidents(
-      filter: { reports: { in: $latestReportNumbers } }
+    latestReports_fr: allMongodbTranslationsReportsFr(
+      filter: { report_number: { in: $latestReportNumbers } }
     ) {
-      nodes {
-        incident_id
-        reports
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
       }
     }
-    latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
-      title
-      text
-    }
-    latestReport_fr: mongodbTranslationsReportsFr(report_number: { eq: $latestReportNumber }) {
-      title
-      text
-    }
-    latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
-      title
-      text
+    latestReports_en: allMongodbTranslationsReportsEn(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
+      }
     }
     latestPost: allMdx(
       filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
