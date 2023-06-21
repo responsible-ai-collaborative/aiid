@@ -26,7 +26,6 @@ export const FIND_REPORT = gql`
       editor_notes
       language
       is_incident_report
-      editor
       user {
         userId
       }

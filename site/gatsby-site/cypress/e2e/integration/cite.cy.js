@@ -254,29 +254,29 @@ describe('Cite pages', () => {
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@logReportHistory')
-      .its('request.body.variables.input')
-      .then((input) => {
-        // eslint-disable-next-line no-unused-vars
-        const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
-
-        expectedReport.editor = 'Anonymous';
-        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
-        expectedReport.epoch_date_modified = getUnixTime(now);
-
-        expect(input).to.deep.eq(expectedReport);
-      });
-
     cy.wait('@updateReport')
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          editor: 'Anonymous',
+          modifiedBy: 'Anonymous',
           date_modified: format(now, 'yyyy-MM-dd'),
           epoch_date_modified: getUnixTime(now),
         });
+      });
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
+
+        expectedReport.modifiedBy = 'Anonymous';
+        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.epoch_date_modified = getUnixTime(now);
+
+        expect(input).to.deep.eq(expectedReport);
       });
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
