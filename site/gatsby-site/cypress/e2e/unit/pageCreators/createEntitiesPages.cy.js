@@ -10,7 +10,7 @@ const response = {
           Alleged_deployer_of_AI_system: ['ai-developer-1'],
           Alleged_developer_of_AI_system: ['ai-developer-1'],
           Alleged_harmed_or_nearly_harmed_parties: ['party-1'],
-          reports: [1, 2],
+          reports: [{ report_number: 1 }, { report_number: 2 }],
         },
         {
           incident_id: 2,
@@ -18,7 +18,7 @@ const response = {
           Alleged_deployer_of_AI_system: ['ai-deployer-1'],
           Alleged_developer_of_AI_system: ['ai-developer-1'],
           Alleged_harmed_or_nearly_harmed_parties: ['party-1', 'party-2'],
-          reports: [3],
+          reports: [{ report_number: 3 }],
         },
         {
           incident_id: 3,
@@ -26,7 +26,7 @@ const response = {
           Alleged_deployer_of_AI_system: ['ai-developer-2', 'ai-deployer-2'],
           Alleged_developer_of_AI_system: ['ai-developer-2'],
           Alleged_harmed_or_nearly_harmed_parties: ['party-2'],
-          reports: [4, 5],
+          reports: [{ report_number: 4 }, { report_number: 5 }],
         },
         {
           incident_id: 4,
@@ -34,7 +34,7 @@ const response = {
           Alleged_deployer_of_AI_system: ['ai-deployer-3'],
           Alleged_developer_of_AI_system: ['ai-developer-1', 'ai-developer-2'],
           Alleged_harmed_or_nearly_harmed_parties: ['party-3'],
-          reports: [6, 7, 8],
+          reports: [{ report_number: 6 }, { report_number: 7 }, { report_number: 8 }],
         },
       ],
     },

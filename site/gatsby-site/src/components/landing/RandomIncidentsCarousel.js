@@ -15,7 +15,9 @@ const RandomIncidentsCarousel = () => {
           allMongodbAiidprodIncidents {
             nodes {
               incident_id
-              reports
+              reports {
+                report_number
+              }
               title
             }
           }
@@ -42,9 +44,9 @@ const RandomIncidentsCarousel = () => {
         for (let i = 0; i < reports.length && selected.length < 5; i++) {
           const report = reports[i];
 
-          const incident = incidents.find((incident) =>
-            incident.reports.includes(report.report_number)
-          );
+          const incident = incidents.find((incident) => {
+            return incident.reports.some((r) => r.report_number === report.report_number);
+          });
 
           if (!selected.some((s) => s.incident_id == incident.incident_id)) {
             selected.push({

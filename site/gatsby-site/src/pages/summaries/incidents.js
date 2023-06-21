@@ -77,7 +77,9 @@ export const pageQuery = graphql`
         incident_id
         title
         date
-        reports
+        reports {
+          report_number
+        }
       }
     }
     allMongodbAiidprodReports {

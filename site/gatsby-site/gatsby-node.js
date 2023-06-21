@@ -211,6 +211,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_similar_incidents: [Int]
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
+      reports: [mongodbAiidprodReports] @link(by: "report_number")
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -225,6 +226,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       plain_text: String
       embedding: reportEmbedding
       inputs_outputs: [String]
+      report_number: Int
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

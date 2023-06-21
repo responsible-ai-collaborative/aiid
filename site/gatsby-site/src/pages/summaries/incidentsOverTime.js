@@ -35,7 +35,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
     .filter((i) => i.reports && i.reports.length > 0)
     .map((incident) => {
       const reports = data.allMongodbAiidprodReports.nodes.filter((report) =>
-        incident.reports.includes(report.report_number)
+        incident.reports.some((r) => report.report_number == r.report_number)
       );
 
       const earliestReport = reports.sort((a, b) => a.date_submitted - b.date_submitted)[0];
@@ -124,7 +124,9 @@ export const pageQuery = graphql`
         incident_id
         title
         date
-        reports
+        reports {
+          report_number
+        }
       }
     }
     allMongodbAiidprodReports(sort: { date_submitted: ASC }, limit: 9999) {
