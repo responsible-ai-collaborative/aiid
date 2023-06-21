@@ -564,7 +564,10 @@ function FormField({
           stayOpen={true}
           onChange={(value) => {
             setFieldTouched(identifier, true);
-            setFieldValue(identifier, value);
+            setFieldValue(
+              identifier,
+              value.map((item) => (item.label ? item.label : item))
+            );
           }}
         />
       )}

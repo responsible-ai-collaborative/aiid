@@ -1,6 +1,5 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -22,18 +21,37 @@ import config from '../../config';
 const LandingPage = (props) => {
   const { data } = props;
 
-  const { latestReport, latestReportIncident, latestPost } = data;
-
-  latestReport.incident_id = latestReportIncident.incident_id;
+  let { latestPost, latestReports, latestReportIncidents } = data;
 
   const { locale: language } = useLocalization();
 
-  if (latestReport.language !== language) {
-    const translation = data[`latestReport_${language}`];
+  const filteredReportNumbers = latestReportIncidents.nodes.map((incident) => {
+    return incident.reports[incident.reports.length - 1];
+  });
 
-    latestReport.title = translation.title;
-    latestReport.text = translation.text;
-  }
+  latestReports.nodes = latestReports.nodes.filter((report) => {
+    return filteredReportNumbers.includes(report.report_number);
+  });
+
+  latestReports = latestReports.nodes
+    .map((report) => {
+      const reportIncident = latestReportIncidents.nodes.filter((incident) =>
+        incident.reports.includes(report.report_number)
+      );
+
+      if (reportIncident.length > 0) {
+        report.incident_id = reportIncident[0].incident_id;
+      }
+
+      if (report.language !== language) {
+        const translation = data[`latestReport_${language}`];
+
+        report.title = translation.title;
+        report.text = translation.text;
+      }
+      return report;
+    })
+    .slice(0, 5);
 
   const { t } = useTranslation(['translation', 'landing']);
 
@@ -63,7 +81,7 @@ const LandingPage = (props) => {
 
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
-    <Layout {...props} className="max-w-full 2xl:w-[72rem]">
+    <div className="max-w-full 2xl:w-[72rem]" {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
@@ -83,7 +101,7 @@ const LandingPage = (props) => {
 
         <div className="mb-5 md:mb-10">
           <div>
-            <LatestReports latestReport={latestReport} />
+            <LatestReports latestReports={latestReports} />
           </div>
         </div>
 
@@ -133,14 +151,14 @@ const LandingPage = (props) => {
           <Sponsors />
         </div>
       </Container>
-    </Layout>
+    </div>
   );
 };
 
 export default LandingPage;
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int, $locale: String!) {
+  query LandingPageQuery($latestReportNumber: Int, $latestReportNumbers: [Int], $locale: String!) {
     latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
       incident_id
     }
@@ -152,6 +170,28 @@ export const query = graphql`
       report_number
       cloudinary_id
       language
+    }
+    latestReports: allMongodbAiidprodReports(
+      filter: { report_number: { in: $latestReportNumbers } }
+      sort: { epoch_date_submitted: DESC }
+    ) {
+      nodes {
+        title
+        text
+        epoch_date_submitted
+        image_url
+        report_number
+        cloudinary_id
+        language
+      }
+    }
+    latestReportIncidents: allMongodbAiidprodIncidents(
+      filter: { reports: { in: $latestReportNumbers } }
+    ) {
+      nodes {
+        incident_id
+        reports
+      }
     }
     latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
       title

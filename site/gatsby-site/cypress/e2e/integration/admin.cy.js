@@ -1,6 +1,6 @@
+import { maybeIt } from '../../support/utils';
+import users from '../../fixtures/users/users.json';
 const { gql } = require('@apollo/client');
-
-const { maybeIt } = require('../../support/utils');
 
 describe('Admin', () => {
   const baseUrl = '/admin';
@@ -39,20 +39,20 @@ describe('Admin', () => {
           cy.contains('[data-cy="cell"]', user.userId)
             .parent()
             .within(() => {
-              cy.contains(user.adminData.email).should('be.visible');
+              cy.contains(user.adminData.email).scrollIntoView().should('be.visible');
 
               for (const role of user.roles) {
-                cy.contains(role).should('be.visible');
+                cy.contains(role).scrollIntoView().should('be.visible');
               }
             });
         } else {
           cy.contains('[data-cy="cell"]', user.userId)
             .parent()
             .within(() => {
-              cy.contains('Not found').should('be.visible');
+              cy.contains('Not found').scrollIntoView().should('be.visible');
 
               for (const role of user.roles) {
-                cy.contains(role).should('be.visible');
+                cy.contains(role).scrollIntoView().should('be.visible');
               }
             });
         }
@@ -158,5 +158,28 @@ describe('Admin', () => {
         });
       });
     });
+  });
+
+  maybeIt('Should display New Incident button', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'findUsers',
+      users
+    );
+
+    cy.visit(baseUrl);
+
+    cy.waitForStableDOM();
+
+    cy.wait('@findUsers');
+
+    cy.contains('New Incident').click();
+
+    cy.waitForStableDOM();
+
+    cy.url({ timeout: 30000 }).should('include', '/incidents/new');
   });
 });

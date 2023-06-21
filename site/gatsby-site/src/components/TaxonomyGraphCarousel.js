@@ -5,6 +5,7 @@ import BillboardJS from '@billboard.js/react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { getClassificationValue } from 'utils/classifications';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   const [hover, setHover] = useState(false);
@@ -101,7 +102,11 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        <Carousel slide={hover ? false : undefined}>
+        <Carousel
+          slide={hover ? false : undefined}
+          leftControl={<CarouselLeftArrow />}
+          rightControl={<CarouselRightArrow />}
+        >
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {

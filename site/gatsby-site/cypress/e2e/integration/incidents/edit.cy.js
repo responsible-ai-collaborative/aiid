@@ -85,6 +85,7 @@ describe('Incidents', () => {
       title: 'Test title',
       description: 'Test description',
       date: '2021-01-02',
+      editor_notes: 'Test editor notes',
     };
 
     Object.keys(values).forEach((key) => {
@@ -128,6 +129,7 @@ describe('Incidents', () => {
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
       expect(xhr.request.body.variables.set.description).to.eq('Test description');
       expect(xhr.request.body.variables.set.date).to.eq('2021-01-02');
+      expect(xhr.request.body.variables.set.editor_notes).to.eq('Test editor notes');
       expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.deep.eq([
         'youtube',
         'test-deployer',
