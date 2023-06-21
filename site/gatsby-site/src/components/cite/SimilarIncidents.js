@@ -199,6 +199,7 @@ const SimilarIncidents = ({
                 incident={similarIncident}
                 flaggable={false}
                 key={similarIncident.incident_id}
+                parentIncident={parentIncident}
               />
             ))}
           </div>
