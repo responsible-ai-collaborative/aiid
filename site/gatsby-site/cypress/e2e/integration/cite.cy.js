@@ -205,7 +205,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="CSETv1"]').should('not.exist');
   });
 
-  it.only('Should flag an incident', () => {
+  it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '23';
 
