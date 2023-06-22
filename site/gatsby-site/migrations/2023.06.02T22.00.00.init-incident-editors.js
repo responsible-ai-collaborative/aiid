@@ -1,3 +1,5 @@
+const { isArray } = require('lodash');
+
 const config = require('../config');
 
 const accounts = [
@@ -40,20 +42,20 @@ exports.up = async ({ context: { client } }) => {
     const items = collection.find({});
 
     for await (const item of items) {
-      const editors = item[field]?.map((editor) => {
-        const account = accounts.find((account) => account.name === editor);
+      const editors = isArray(item[field])
+        ? item[field].map((editor) => {
+            const account = accounts.find((account) => account.name === editor);
 
-        return account ? account.userId : editor;
-      });
+            return account ? account.userId : editor;
+          })
+        : [];
 
-      if (editors) {
-        const updateResult = await collection.updateOne(
-          { _id: item._id },
-          { $set: { [field]: editors } }
-        );
+      const updateResult = await collection.updateOne(
+        { _id: item._id },
+        { $set: { [field]: editors } }
+      );
 
-        console.log(`${name} : ${item._id}, ${editors}, ${updateResult.modifiedCount}`);
-      }
+      console.log(`${name} : ${item._id}, ${editors}, ${updateResult.modifiedCount}`);
     }
   }
 
