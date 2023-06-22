@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, LOG_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner, Modal, Button } from 'flowbite-react';
@@ -9,6 +9,7 @@ import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
+import { transformIncidentData } from '../../utils/cite';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
 
@@ -19,7 +20,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
   const [incident, setIncident] = useState(null);
 
-  const { data: incidentData } = useQuery(FIND_INCIDENT, {
+  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
@@ -28,6 +29,8 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
+  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
 
   const addToast = useToastContext();
 
@@ -89,11 +92,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
       updated.epoch_date_modified = getUnixTime(new Date());
 
-      // Set the user as the last editor
-      if (user && user.customData.first_name && user.customData.last_name) {
-        updated.editor = `${user.customData.first_name} ${user.customData.last_name}`;
-      }
-
       await updateIncident({
         variables: {
           query: {
@@ -104,6 +102,20 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
           },
         },
       });
+
+      const updatedIncident = transformIncidentData(
+        {
+          ...incident,
+          ...updated,
+          reports: incident.reports,
+          embedding: incident.embedding,
+        },
+        user
+      );
+
+      console.log('updatedIncident', updatedIncident);
+
+      await logIncidentHistory({ variables: { input: updatedIncident } });
 
       addToast(updateSuccessToast({ incidentId }));
 

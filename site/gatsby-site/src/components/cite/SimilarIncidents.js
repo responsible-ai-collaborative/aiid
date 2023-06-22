@@ -57,7 +57,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       },
     });
 
-    const currentIncident = transformIncidentData(
+    const updatedIncident = transformIncidentData(
       {
         ...incidentData.incident,
         flagged_dissimilar_incidents,
@@ -66,7 +66,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       user
     );
 
-    await logIncidentHistory({ variables: { input: currentIncident } });
+    await logIncidentHistory({ variables: { input: updatedIncident } });
 
     addToast({
       message: isFlagged

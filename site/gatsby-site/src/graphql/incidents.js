@@ -233,7 +233,7 @@ export const FIND_FULL_INCIDENT = gql`
         from_reports
         vector
       }
-      editor
+      editor_notes
       epoch_date_modified
       tsne {
         x

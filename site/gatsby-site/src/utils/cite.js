@@ -140,29 +140,49 @@ export const transformIncidentData = (incident, user) => {
     ...result
   } = incident;
 
-  result.AllegedDeployerOfAISystem = AllegedDeployerOfAISystem.map((e) => e.entity_id);
-  result.AllegedDeveloperOfAISystem = AllegedDeveloperOfAISystem.map((e) => e.entity_id);
-  result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.map(
-    (e) => e.entity_id
-  );
-  result.reports = reports.map((report) => report.report_number);
-  result.nlp_similar_incidents = nlp_similar_incidents.map((nlp) => {
+  if (AllegedDeployerOfAISystem) {
+    result.AllegedDeployerOfAISystem = AllegedDeployerOfAISystem.link
+      ? AllegedDeployerOfAISystem.link
+      : AllegedDeployerOfAISystem.map((e) => e.entity_id);
+  }
+
+  if (AllegedDeveloperOfAISystem) {
+    result.AllegedDeveloperOfAISystem = AllegedDeveloperOfAISystem.link
+      ? AllegedDeveloperOfAISystem.link
+      : AllegedDeveloperOfAISystem.map((e) => e.entity_id);
+  }
+
+  if (AllegedHarmedOrNearlyHarmedParties) {
+    result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.link
+      ? AllegedHarmedOrNearlyHarmedParties.link
+      : AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
+  }
+
+  result.reports = reports ? reports.map((report) => report.report_number) : [];
+  result.nlp_similar_incidents = nlp_similar_incidents
+    ? nlp_similar_incidents.map((nlp) => {
+        // eslint-disable-next-line no-unused-vars
+        const { __typename: nlpType, ...currentNlp } = nlp;
+
+        return currentNlp;
+      })
+    : [];
+
+  if (embedding) {
     // eslint-disable-next-line no-unused-vars
-    const { __typename: nlpType, ...currentNlp } = nlp;
+    const { __typename: embeddingType, ...currentEmbedding } = embedding;
 
-    return currentNlp;
-  });
-  // eslint-disable-next-line no-unused-vars
-  const { __typename: embeddingType, ...currentEmbedding } = embedding;
+    result.embedding = currentEmbedding;
+  }
 
-  result.embedding = currentEmbedding;
+  if (tsne) {
+    // eslint-disable-next-line no-unused-vars
+    const { __typename: tsneType, ...currentTsne } = tsne;
 
-  // eslint-disable-next-line no-unused-vars
-  const { __typename: tsneType, ...currentTsne } = tsne;
+    result.tsne = currentTsne;
+  }
 
-  result.tsne = currentTsne;
-
-  // Set the user as the last editor
+  // Set the user as the last modifier
   if (user && user.customData.first_name && user.customData.last_name) {
     result.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
   } else {

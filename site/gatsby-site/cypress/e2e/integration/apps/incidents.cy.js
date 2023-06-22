@@ -3,6 +3,7 @@ import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.
 import incidents from '../../../fixtures/incidents/incidents.json';
 import { maybeIt } from '../../../support/utils';
 import { getUnixTime } from 'date-fns';
+import { transformIncidentData } from '../../../../src/utils/cite';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -34,8 +35,6 @@ describe('Incidents App', () => {
       'FindIncident112',
       incident
     );
-
-    // this shuold not be necessary and fixed in the component
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -152,11 +151,26 @@ describe('Incidents App', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 112,
+          },
+        },
+      }
+    );
+
     const now = new Date();
 
     cy.clock(now);
 
     cy.contains('Update').scrollIntoView().click();
+
+    cy.wait(['@FindIncident112']);
 
     cy.wait('@UpsertYoutube')
       .its('request.body.variables.entity.entity_id')
@@ -168,26 +182,41 @@ describe('Incidents App', () => {
       .its('request.body.variables.entity.entity_id')
       .should('eq', 'test-deployer');
 
+    const updatedIncident = {
+      incident_id: 112,
+      title: 'Test title',
+      description: 'New description',
+      date: '2023-05-04',
+      editors: ['Anonymous', 'Pablo Costa'],
+      AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
+      AllegedDeveloperOfAISystem: { link: ['youtube'] },
+      AllegedHarmedOrNearlyHarmedParties: { link: ['google'] },
+      nlp_similar_incidents: [],
+      editor_similar_incidents: [4],
+      editor_dissimilar_incidents: [],
+      flagged_dissimilar_incidents: [],
+      epoch_date_modified: getUnixTime(now),
+      editor_notes: '',
+    };
+
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
-      expect(xhr.request.body.variables.set).to.deep.eq({
-        incident_id: 112,
-        title: 'Test title',
-        description: 'New description',
-        date: '2023-05-04',
-        editors: ['Anonymous', 'Pablo Costa'],
-        AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
-        AllegedDeveloperOfAISystem: { link: ['youtube'] },
-        AllegedHarmedOrNearlyHarmedParties: { link: ['google'] },
-        nlp_similar_incidents: [],
-        editor_similar_incidents: [4],
-        editor_dissimilar_incidents: [],
-        flagged_dissimilar_incidents: [],
-        editor: 'Test User',
-        epoch_date_modified: getUnixTime(now),
-      });
+      expect(xhr.request.body.variables.set).to.deep.eq(updatedIncident);
     });
+
+    cy.wait('@logIncidentHistory', { timeout: 30000 })
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = transformIncidentData({
+          ...incident.data.incident,
+          ...updatedIncident,
+        });
+
+        expectedIncident.modifiedBy = 'Test User';
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
 
     cy.get('[data-cy="incident-form"]').should('not.exist');
 
