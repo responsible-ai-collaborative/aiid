@@ -25,7 +25,9 @@ const notesShortNames = [
 const skipShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
 
 function Entity({ attributes }) {
-  const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
+  const nameValue = attributes.find((a) => a.short_name == 'Entity')?.value_json;
+
+  const name = nameValue ? JSON.parse(nameValue) : '<missing>';
 
   return (
     <>
@@ -195,7 +197,8 @@ function ResultCell({ cell, ...props }) {
 function ShortNameCell({ cell }) {
   return (
     <div className="-my-2 -mx-4 p-2" data-cy={`column-${cell.value}`}>
-      {cell.value}
+      <b>{cell.row.original.field_number}</b>
+      <div>{cell.value}</div>
     </div>
   );
 }
