@@ -58,7 +58,6 @@ const reportFields = [
   'url',
   'embedding',
   'inputs_outputs',
-  'editor',
 ];
 
 function EditCitePage(props) {

@@ -16,7 +16,7 @@ export const transformReportData = (report, user) => {
 
   // Set the user as the last editor
   if (user && user.customData.first_name && user.customData.last_name) {
-    result.editor = `${user.customData.first_name} ${user.customData.last_name}`;
+    result.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
   }
 
   return result;
