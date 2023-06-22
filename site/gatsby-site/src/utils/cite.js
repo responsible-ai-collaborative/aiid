@@ -126,7 +126,7 @@ export const sortIncidentsByDatePublished = (incidentReports) => {
 };
 
 // Transforms the data from the graphql query into a History_incidentInsertInput format
-export const transformIncidentData = (incident) => {
+export const transformIncidentData = (incident, user) => {
   const {
     // eslint-disable-next-line no-unused-vars
     __typename: incidentType,
@@ -161,6 +161,13 @@ export const transformIncidentData = (incident) => {
   const { __typename: tsneType, ...currentTsne } = tsne;
 
   result.tsne = currentTsne;
+
+  // Set the user as the last editor
+  if (user && user.customData.first_name && user.customData.last_name) {
+    result.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
+  } else {
+    result.modifiedBy = 'Anonymous';
+  }
 
   return result;
 };

@@ -39,35 +39,35 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   const flagIncident = async () => {
-    const currentIncident = transformIncidentData(incidentData.incident);
-
-    await logIncidentHistory({ variables: { input: currentIncident } });
-
     const now = new Date();
 
-    let editor;
-
-    // Set the user as the last editor
-    if (user && user.customData.first_name && user.customData.last_name) {
-      editor = `${user.customData.first_name} ${user.customData.last_name}`;
-    } else {
-      editor = 'Anonymous';
-    }
+    const flagged_dissimilar_incidents = isFlagged
+      ? parentIncident.flagged_dissimilar_incidents.filter((e) => e != incident.incident_id)
+      : parentIncident.flagged_dissimilar_incidents
+          .filter((e) => e != incident.incident_id)
+          .concat([incident.incident_id]);
 
     await updateIncidentMutation({
       variables: {
         query: { incident_id: parentIncident.incident_id },
         set: {
-          flagged_dissimilar_incidents: isFlagged
-            ? parentIncident.flagged_dissimilar_incidents.filter((e) => e != incident.incident_id)
-            : parentIncident.flagged_dissimilar_incidents
-                .filter((e) => e != incident.incident_id)
-                .concat([incident.incident_id]),
+          flagged_dissimilar_incidents,
           epoch_date_modified: getUnixTime(now),
-          editor,
         },
       },
     });
+
+    const currentIncident = transformIncidentData(
+      {
+        ...incidentData.incident,
+        flagged_dissimilar_incidents,
+        epoch_date_modified: getUnixTime(now),
+      },
+      user
+    );
+
+    await logIncidentHistory({ variables: { input: currentIncident } });
+
     addToast({
       message: isFlagged
         ? t(`Flag reverted.`)
