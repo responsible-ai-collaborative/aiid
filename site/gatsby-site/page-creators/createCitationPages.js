@@ -6,7 +6,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
       query IncidentIDs {
-        allMongodbAiidprodIncidents {
+        allMongodbAiidprodIncidents(sort: { fields: incident_id, order: ASC }) {
           nodes {
             incident_id
             title
@@ -36,7 +36,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
 
   const pageContexts = [];
 
-  allMongodbAiidprodIncidents.nodes.forEach((incident, i) => {
+  allMongodbAiidprodIncidents.nodes.forEach((incident, index) => {
     const incident_id = incident.incident_id;
 
     const nlp_similar_incidents = incident.nlp_similar_incidents.map(
@@ -61,10 +61,10 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       incident_id,
       report_numbers: incident.reports.map((r) => r.report_number),
       nextIncident:
-        i < allMongodbAiidprodIncidents.nodes.length - 1
-          ? allMongodbAiidprodIncidents.nodes[i + 1]
+        index < allMongodbAiidprodIncidents.nodes.length - 1
+          ? allMongodbAiidprodIncidents.nodes[index + 1].incident_id
           : null,
-      prevIncident: i > 0 ? allMongodbAiidprodIncidents.nodes[i - 1] : null,
+      prevIncident: index > 0 ? allMongodbAiidprodIncidents.nodes[index - 1].incident_id : null,
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
