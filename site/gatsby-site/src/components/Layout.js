@@ -28,7 +28,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
             (rightSidebar ? ' xl:pr-5' : '')
           }
         >
-          <div className={`${className ? className : ''} max-w-full`}>{children}</div>
+          <div className={`${className ? className : ''} w-full max-w-full`}>{children}</div>
         </div>
         <div
           className={

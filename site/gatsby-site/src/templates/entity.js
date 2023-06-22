@@ -358,7 +358,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -373,7 +375,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -388,7 +392,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -403,7 +409,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
