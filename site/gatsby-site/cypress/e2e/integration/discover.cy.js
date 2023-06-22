@@ -3,6 +3,7 @@ import unflaggedReport from '../../fixtures/reports/unflagged.json';
 import config from '../../../config';
 import path from 'path';
 import { format, getUnixTime } from 'date-fns';
+import { transformReportData } from '../../../src/utils/reports';
 
 describe('The Discover app', () => {
   const url = '/apps/discover';
@@ -195,39 +196,28 @@ describe('The Discover app', () => {
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@logReportHistory')
-      .its('request.body.variables.input')
-      .then((input) => {
-        let {
-          // eslint-disable-next-line no-unused-vars
-          _id,
-          // eslint-disable-next-line no-unused-vars
-          __typename,
-          // eslint-disable-next-line no-unused-vars
-          embedding,
-          // eslint-disable-next-line no-unused-vars
-          nlp_similar_incidents,
-          user: reportUser,
-          ...expectedReport
-        } = unflaggedReport.data.report;
-
-        if (reportUser) {
-          expectedReport['user'] = { link: reportUser.userId };
-        }
-
-        expect(input).to.deep.eq(expectedReport);
-      });
-
     cy.wait('@updateReport')
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          editor: 'Anonymous',
           date_modified: format(now, 'yyyy-MM-dd'),
           epoch_date_modified: getUnixTime(now),
         });
+      });
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        // eslint-disable-next-line no-unused-vars
+        const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
+
+        expectedReport.modifiedBy = 'Anonymous';
+        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.epoch_date_modified = getUnixTime(now);
+
+        expect(input).to.deep.eq(expectedReport);
       });
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');

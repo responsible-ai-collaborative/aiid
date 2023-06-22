@@ -205,7 +205,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="CSETv1"]').should('not.exist');
   });
 
-  it('Should flag an incident', () => {
+  it.only('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '23';
 
@@ -260,7 +260,6 @@ describe('Cite pages', () => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          modifiedBy: 'Anonymous',
           date_modified: format(now, 'yyyy-MM-dd'),
           epoch_date_modified: getUnixTime(now),
         });

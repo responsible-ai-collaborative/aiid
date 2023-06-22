@@ -38,13 +38,6 @@ function FlagModalContent({ reportNumber }) {
       epoch_date_modified: getUnixTime(now),
     };
 
-    // Set the user as the last modifier
-    if (user && user.customData.first_name && user.customData.last_name) {
-      updated.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
-    } else {
-      updated.modifiedBy = 'Anonymous';
-    }
-
     await flagReportMutation({
       variables: {
         query: {
@@ -62,6 +55,13 @@ function FlagModalContent({ reportNumber }) {
       ...report,
       ...updated,
     };
+
+    // Set the user as the last modifier
+    if (user && user.customData.first_name && user.customData.last_name) {
+      logReport.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
+    } else {
+      logReport.modifiedBy = 'Anonymous';
+    }
 
     // Log the report history
     await logReportHistory({ variables: { input: logReport } });
