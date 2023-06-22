@@ -8,6 +8,8 @@ exports = async (input) => {
   const submissions = context.services.get('mongodb-atlas').db('aiidprod').collection("submissions");
   const incidents = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   const reports = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
+  const incidentsHistory = context.services.get('mongodb-atlas').db('history').collection("incidents");
+  const reportsHistory = context.services.get('mongodb-atlas').db('history').collection("reports");
   
   const {_id: undefined, ...submission} = await submissions.findOne({_id: input.submission_id});
   
@@ -35,7 +37,6 @@ exports = async (input) => {
         nlp_similar_incidents: submission.nlp_similar_incidents || [],
         editor_similar_incidents: submission.editor_similar_incidents || [],
         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
-        editor: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
       }
       if (submission.embedding) {
         newIncident.embedding = { 
@@ -45,7 +46,12 @@ exports = async (input) => {
       }
       
       await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
-      
+
+      await incidentsHistory.insertOne({
+        ...newIncident,
+        modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
+      });
+
       parentIncidents.push(newIncident);
   
     } else if (submission.embedding) {
@@ -84,6 +90,12 @@ exports = async (input) => {
           { incident_id: BSON.Int32(parentIncident.incident_id) },
           { $set : { ...parentIncident, embedding }}
         );
+
+        await incidentsHistory.insertOne({
+          ...parentIncident,
+          embedding,
+          modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
+        });
       }
     }
   }
@@ -111,7 +123,6 @@ exports = async (input) => {
     language: submission.language,
     tags: submission.tags,
     user: submission.user,
-    editor: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
   };
   if (submission.embedding) {
     newReport.embedding = submission.embedding;
@@ -124,6 +135,10 @@ exports = async (input) => {
   
   await context.functions.execute('linkReportsToIncidents', {incident_ids, report_numbers });
   
+  await reportsHistory.insertOne({
+    ...newReport,
+    modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
+  });
 
   await submissions.deleteOne({_id: input.submission_id});
   
