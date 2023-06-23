@@ -1,6 +1,6 @@
 const logIncidentHistory = require('../../../../../realm/functions/logIncidentHistory');
 
-const incident = {
+const incidentInput = {
   incident_id: 545,
   title: 'Chatbot Tessa gives unauthorized diet advice to users seeking help for eating disorders',
   description:
@@ -8,9 +8,9 @@ const incident = {
   reports: [3103, 3104],
   editors: ['Daniel Atherton'],
   date: '2023-05-29',
-  'Alleged deployer of AI system': ['national-eating-disorders-association', 'cass'],
-  'Alleged developer of AI system': ['cass'],
-  'Alleged harmed or nearly harmed parties': ['people-with-eating-disorders'],
+  AllegedDeployerOfAISystem: ['national-eating-disorders-association', 'cass'],
+  AllegedDeveloperOfAISystem: ['cass'],
+  AllegedHarmedOrNearlyHarmedParties: ['people-with-eating-disorders'],
   nlp_similar_incidents: [
     {
       incident_id: 6,
@@ -63,7 +63,18 @@ describe('Functions', () => {
       },
     };
 
-    cy.wrap(logIncidentHistory(incident)).then(() => {
+    cy.wrap(logIncidentHistory(incidentInput)).then(() => {
+      const {
+        AllegedDeployerOfAISystem,
+        AllegedDeveloperOfAISystem,
+        AllegedHarmedOrNearlyHarmedParties,
+        ...incident
+      } = incidentInput;
+
+      incident['Alleged deployer of AI system'] = AllegedDeployerOfAISystem;
+      incident['Alleged developer of AI system'] = AllegedDeveloperOfAISystem;
+      incident['Alleged harmed or nearly harmed parties'] = AllegedHarmedOrNearlyHarmedParties;
+
       expect(incidentsHistoryCollection.insertOne.firstCall.args[0]).to.deep.equal(incident);
     });
   });

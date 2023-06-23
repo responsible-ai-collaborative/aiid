@@ -9,7 +9,15 @@ exports = async (input) => {
 
   const incidentsHistory = context.services.get('mongodb-atlas').db('history').collection("incidents");
 
-  const incident = input;
+  const {
+    AllegedDeployerOfAISystem,
+    AllegedDeveloperOfAISystem,
+    AllegedHarmedOrNearlyHarmedParties,
+    ...incident } = input;
+
+  incident['Alleged deployer of AI system'] = AllegedDeployerOfAISystem;
+  incident['Alleged developer of AI system'] = AllegedDeveloperOfAISystem;
+  incident['Alleged harmed or nearly harmed parties'] = AllegedHarmedOrNearlyHarmedParties;
 
   await incidentsHistory.insertOne(incident);
 
