@@ -2,7 +2,7 @@ import { maybeIt } from '../../../support/utils';
 
 import incidents from '../../../fixtures/incidents/incidents.json';
 
-import updateOneIncident from '../../../fixtures/incidents/updateOneIncident.json';
+import { getUnixTime } from 'date-fns';
 
 describe('New Incident page', () => {
   const url = '/incidents/new';
@@ -113,8 +113,31 @@ describe('New Incident page', () => {
       '**/graphql',
       (req) => req.body.operationName == 'InsertIncident',
       'InsertIncident',
-      updateOneIncident
+      {
+        data: {
+          insertOneIncident: {
+            incident_id: newIncidentId,
+          },
+        },
+      }
     );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: newIncidentId,
+          },
+        },
+      }
+    );
+
+    const now = new Date();
+
+    cy.clock(now);
 
     cy.contains('button', 'Save').click();
 
@@ -130,26 +153,39 @@ describe('New Incident page', () => {
       .its('request.body.variables.entity.entity_id')
       .should('eq', 'children');
 
+    const newIncident = {
+      title: 'Test title',
+      description: 'Test description',
+      incident_id: newIncidentId,
+      reports: { link: [] },
+      editors: ['Test Editor'],
+      date: '2021-01-02',
+      AllegedDeployerOfAISystem: { link: ['test-deployer'] },
+      AllegedDeveloperOfAISystem: { link: ['youtube'] },
+      AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
+      nlp_similar_incidents: [],
+      editor_similar_incidents: [],
+      editor_dissimilar_incidents: [],
+      embedding: {},
+    };
+
     cy.wait('@InsertIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('InsertIncident');
-      expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
-      expect(xhr.request.body.variables.incident.title).to.eq('Test title');
-      expect(xhr.request.body.variables.incident.description).to.eq('Test description');
-      expect(xhr.request.body.variables.incident.date).to.eq('2021-01-02');
-      expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq([]);
-      expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq([]);
-
-      expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq([
-        'test-deployer',
-      ]);
-      expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq([
-        'youtube',
-      ]);
-      expect(
-        xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
-      ).to.deep.eq(['children']);
-      expect(xhr.request.body.variables.incident.editors).to.deep.eq(['Test Editor']);
+      expect(xhr.request.body.variables.incident).to.deep.eq(newIncident);
     });
+
+    cy.wait('@logIncidentHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = {
+          ...newIncident,
+          epoch_date_modified: getUnixTime(now),
+          modifiedBy: 'Test User',
+          reports: [],
+        };
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
 
     cy.get('.tw-toast')
       .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
