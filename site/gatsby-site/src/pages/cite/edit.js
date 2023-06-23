@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../../components/Layout';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -258,13 +257,13 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full p-1'}>
+    <div className={'w-full p-1'} {...props}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
             <Trans>Editing Incident Report {{ reportNumber }}</Trans>
           </h1>
-          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="mb-5">
+          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
               <Trans>Back to Report {{ reportNumber }}</Trans>
             </Button>
@@ -344,7 +343,7 @@ function EditCitePage(props) {
           )}
         </>
       )}
-    </Layout>
+    </div>
   );
 }
 

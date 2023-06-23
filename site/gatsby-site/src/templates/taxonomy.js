@@ -5,7 +5,6 @@ import Markdown from 'react-markdown';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge, Button } from 'flowbite-react';
@@ -86,7 +85,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
                     `/apps/discover?classifications=` +
                     encodeURIComponent(`${namespace}:${short_name}:${item}`)
                   }
-                  className="flex text-black hover:text-primary-blue"
+                  className="hover:no-underline flex text-black hover:text-primary-blue"
                 >
                   {valueStats !== {} ? <StatItem text={item} value={value} /> : <>{`${item}`}</>}
                 </Link>
@@ -280,7 +279,7 @@ const Taxonomy = (props) => {
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
@@ -320,7 +319,7 @@ const Taxonomy = (props) => {
             </div>
           ))}
       </div>
-    </Layout>
+    </>
   );
 };
 

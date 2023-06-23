@@ -11,7 +11,9 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
             incident_id
             title
             date
-            reports
+            reports {
+              report_number
+            }
             editor_similar_incidents
             editor_dissimilar_incidents
             flagged_dissimilar_incidents
@@ -56,7 +58,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
 
   for (const incident of allMongodbAiidprodIncidents.nodes) {
     incidentReportsMap[incident.incident_id] = incident.reports
-      .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
+      .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r.report_number))
       .map((r) => ({ ...r }));
   }
 
@@ -98,7 +100,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
     pageContexts.push({
       incident,
       incident_id,
-      report_numbers: incident.reports,
+      report_numbers: incident.reports.map((r) => r.report_number),
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
       nlp_similar_incidents,

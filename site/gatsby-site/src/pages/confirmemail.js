@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import { useUserContext } from '../contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
@@ -7,7 +6,7 @@ import Link from '../components/ui/Link';
 import { Spinner } from 'flowbite-react';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
-const ConfirmEmail = (props) => {
+const ConfirmEmail = () => {
   const {
     actions: { confirmEmail },
   } = useUserContext();
@@ -54,9 +53,6 @@ const ConfirmEmail = (props) => {
             severity: SEVERITY.danger,
             error: e,
           });
-          if ('Rollbar' in window) {
-            Rollbar.error(e);
-          }
         });
     } else {
       setConfirmed(false);
@@ -75,7 +71,7 @@ const ConfirmEmail = (props) => {
   }, []);
 
   return (
-    <Layout {...props}>
+    <>
       {confirmed ? (
         <p>
           <Trans>Thank you for verifying your account.</Trans>
@@ -90,7 +86,7 @@ const ConfirmEmail = (props) => {
           <Trans>Loading...</Trans>
         </div>
       )}
-    </Layout>
+    </>
   );
 };
 

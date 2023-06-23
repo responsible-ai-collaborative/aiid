@@ -41,6 +41,7 @@ export const schema = Yup.object().shape({
       message: "Incident Editor can't be longer than 200 characters",
     })
     .required(),
+  editor_notes: Yup.string(),
 });
 
 function IncidentForm() {
@@ -81,7 +82,7 @@ function IncidentForm() {
       ? []
       : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
           incident_id: selectedSimilarId.current,
-          ...report,
+          ...report.report_number,
         }));
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
@@ -102,7 +103,10 @@ function IncidentForm() {
       : editorSimilarIncidentReportsQuery.data.incidents.reduce(
           (reports, incident) =>
             reports.concat(
-              incident.reports.map((report) => ({ ...report, incident_id: incident.incident_id }))
+              incident.reports.map((report) => ({
+                ...report.report_number,
+                incident_id: incident.incident_id,
+              }))
             ),
           []
         );
@@ -211,6 +215,24 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="editors-input"
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TextInputGroup
+            name="editor_notes"
+            type="textarea"
+            label={t('Editor Notes')}
+            placeholder={t('Editor Notes')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            showPopover={false}
+            rows={4}
+            data-cy="editor-notes-input"
           />
         </FieldContainer>
 

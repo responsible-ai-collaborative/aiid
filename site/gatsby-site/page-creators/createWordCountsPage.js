@@ -34,6 +34,17 @@ const createWordCountsPage = async (graphql, createPage) => {
           report_number
         }
       }
+      latestReports: allMongodbAiidprodIncidents(
+        filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+        sort: { reports: { epoch_date_submitted: DESC } }
+        limit: 5
+      ) {
+        nodes {
+          reports {
+            report_number
+          }
+        }
+      }
     }
   `);
 
@@ -79,6 +90,14 @@ const createWordCountsPage = async (graphql, createPage) => {
     }
   }
 
+  const latestReportNumbers = result.data.latestReports.nodes.map((node) => {
+    const sortedArray = node.reports.sort((a, b) => {
+      return a.epoch_date_submitted - b.epoch_date_submitted;
+    });
+
+    return sortedArray[0].report_number;
+  });
+
   PAGES_WITH_WORDCOUNT.forEach((page) => {
     createPage({
       path: page.path,
@@ -88,6 +107,7 @@ const createWordCountsPage = async (graphql, createPage) => {
         wordCountsSorted,
         wordsPerCloud,
         latestReportNumber: result.data.latestReport.nodes[0].report_number,
+        latestReportNumbers,
       },
     });
   });

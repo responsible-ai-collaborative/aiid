@@ -561,7 +561,23 @@ The endpoint is implemented as a Gatsby function. In the context where this func
 ```
 REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
+You can generate a new key following these steps:
+1. Go to your Realm App
+2. Go to `Authentication`
+3. Go to `Authentication Providers`
+4. Go to `API keys`
+5. Click on `Create API key` and copy the key value
+
 About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
+
+In addition to that, you have to add your Netlify site URL to the allowed origins in your Realm App.
+
+1. Go to your Realm app
+2. Go to `App Settings`
+3. Click on `+ Add Allowed Request Origin`
+4. Add your Netlify public site URL (ie: `https://xxxx-xxxxx.netlify.app`)
+5. Click `Save Draft`
+6. Deploy draft
 
 ## Social Networks login integration
 
@@ -688,6 +704,23 @@ For the error logging for the whole site and background processes this project u
 To log the errors a Realm secret value should be set:
 ```
 rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
+In addition to that, this env variable should be set as well:
+```
+GATSBY_ROLLBAR_TOKEN: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
+
+### Restoring Production database to Staging
+
+There is a Github Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
+Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow` 
+
+To enable this workflow these [Github secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
+```
+DB_PRODUCTION_CONNECTION_STRING=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+
+NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
 ```
 
 ## Contact

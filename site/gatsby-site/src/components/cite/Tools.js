@@ -1,9 +1,9 @@
-import { faEdit, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus, faSearch, faClone } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, Spinner, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
@@ -18,6 +18,9 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  loadingLastIncident,
+  cloneIncident,
+  cloning,
 }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -48,6 +51,7 @@ function Tools({
             new Date(),
             'yyyy-MM-dd'
           )}`}
+          className="hover:no-underline"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -59,7 +63,8 @@ function Tools({
         </Button>
         <Button
           color="gray"
-          href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
+          href={`/apps/submit?tags=${RESPONSE_TAG}&incident_ids=${incident.incident_id}`}
+          className="hover:no-underline"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -69,7 +74,11 @@ function Tools({
           />
           <Trans>New Response</Trans>
         </Button>
-        <Button color="gray" href={'/apps/discover?incident_id=' + incident.incident_id}>
+        <Button
+          color="gray"
+          href={'/apps/discover?incident_id=' + incident.incident_id}
+          className="hover:no-underline"
+        >
           <FontAwesomeIcon
             className="mr-2"
             icon={faSearch}
@@ -80,7 +89,11 @@ function Tools({
         </Button>
         <CitationFormat incidentReports={incidentReports} incident={incident} />
         {isUserLoggedIn && isRole('incident_editor') && (
-          <Button color="gray" href={'/incidents/edit?incident_id=' + incident.incident_id}>
+          <Button
+            color="gray"
+            href={'/incidents/edit?incident_id=' + incident.incident_id}
+            className="hover:no-underline"
+          >
             <FontAwesomeIcon
               className="mr-2"
               icon={faEdit}
@@ -91,7 +104,11 @@ function Tools({
           </Button>
         )}
         {isUserLoggedIn && isRole('taxonomy_editor') && (
-          <Button color="gray" href={`/apps/csettool/${incident.incident_id}`}>
+          <Button
+            color="gray"
+            href={`/apps/csettool/${incident.incident_id}`}
+            className="hover:no-underline"
+          >
             <FontAwesomeIcon
               className="mr-2"
               icon={faEdit}
@@ -99,6 +116,32 @@ function Tools({
               titleId="csettool"
             />
             <Trans>CSET Annotators Table</Trans>
+          </Button>
+        )}
+        {isUserLoggedIn && isRole('incident_editor') && (
+          <Button
+            color="gray"
+            onClick={cloneIncident}
+            disabled={loadingLastIncident || cloning}
+            data-cy="clone-incident-btn"
+          >
+            <div className="flex gap-2 items-center">
+              {cloning ? (
+                <div>
+                  <Spinner size="sm" />
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    className="mr-2"
+                    icon={faClone}
+                    title={t('Clone Incident')}
+                    titleId="clone-incident-icon"
+                  />
+                </>
+              )}
+              <Trans>Clone Incident</Trans>
+            </div>
           </Button>
         )}
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (

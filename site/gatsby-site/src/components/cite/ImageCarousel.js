@@ -4,6 +4,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { useTranslation } from 'react-i18next';
 import { Carousel } from 'flowbite-react';
 import { Image } from 'utils/cloudinary';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 /**
  * Get an image carousel of the report images along with their headlines.
@@ -19,8 +20,8 @@ const ImageCarousel = ({ nodes }) => {
       slideInterval={6000}
       slide={false}
       indicators={shouldNavigate}
-      leftControl={shouldNavigate ? null : <></>}
-      rightControl={shouldNavigate ? null : <></>}
+      leftControl={shouldNavigate ? <CarouselLeftArrow /> : <></>}
+      rightControl={shouldNavigate ? <CarouselRightArrow /> : <></>}
     >
       {nodes.map((value, index) => {
         return (
@@ -30,7 +31,7 @@ const ImageCarousel = ({ nodes }) => {
               <h3 className="bg-black/50 px-1 rounded text-center">
                 <a
                   href={value.url}
-                  className="text-white"
+                  className="text-white hover:no-underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

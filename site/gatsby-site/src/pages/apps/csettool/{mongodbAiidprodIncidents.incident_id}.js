@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
 import AiidHelmet from 'components/AiidHelmet';
 import { useQuery } from '@apollo/client/react';
 import ListSkeleton from 'elements/Skeletons/List';
-import { FIND_CLASSIFICATION } from '../../..//graphql/classifications';
+import { FIND_CLASSIFICATION } from '../../../graphql/classifications';
 import CsetTable from 'components/classifications/CsetTable';
 import { graphql } from 'gatsby';
-import { isObject } from 'lodash';
 
 const allNamespaces = ['CSETv1_Annotator-1', 'CSETv1_Annotator-2', 'CSETv1_Annotator-3'];
 
 const ToolPage = (props) => {
   const {
     location: { pathname },
-    params: { id: incident_id },
+    params: { incident_id },
     data: { taxa },
   } = props;
 
@@ -27,44 +25,43 @@ const ToolPage = (props) => {
     if (data?.classifications) {
       const rows = [];
 
-      for (const attribtue of taxa.field_list) {
+      for (const attribute of taxa.field_list) {
         const row = {
-          short_name: attribtue.short_name,
+          short_name: attribute.short_name,
+          display_type: attribute.display_type,
+          field_number: attribute.field_number,
+          incident_id: parseInt(incident_id),
         };
 
         for (const classification of data.classifications) {
-          try {
-            const json = classification.attributes.find(
-              (a) => a.short_name == attribtue.short_name
-            ).value_json;
+          const json = classification.attributes.find(
+            (a) => a.short_name == attribute.short_name
+          ).value_json;
 
-            const value = JSON.parse(json);
+          const value = JSON.parse(json);
 
-            if (isObject(value)) {
-              row[classification.namespace] = JSON.stringify(value);
-            } else if (value === true) {
-              row[classification.namespace] = 'True';
-            } else if (value === false) {
-              row[classification.namespace] = 'False';
-            } else {
-              row[classification.namespace] = value;
-            }
-          } catch (e) {
-            row.value = null;
-          }
+          row[classification.namespace] = value;
         }
 
         rows.push(row);
       }
+
+      rows.push({
+        short_name: 'notes',
+        ...data.classifications.reduce((acc, obj) => {
+          acc[obj.namespace] = obj.notes;
+          return acc;
+        }, {}),
+      });
 
       setTableData(rows);
     }
   }, [data]);
 
   return (
-    <Layout {...props} className="w-full">
+    <div {...props} className="w-full">
       <AiidHelmet path={pathname}>
-        <title>Test</title>
+        <title>CSET Tool</title>
       </AiidHelmet>
       <div className="w-full max-w-full">
         {loading ? (
@@ -72,14 +69,19 @@ const ToolPage = (props) => {
         ) : (
           <>
             {data?.classifications.length > 0 && tableData.length ? (
-              <CsetTable data={tableData} />
+              <CsetTable
+                data={tableData}
+                setTableData={setTableData}
+                taxa={taxa}
+                incident_id={incident_id}
+              />
             ) : (
               <div>No classifications found.</div>
             )}
           </>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
@@ -90,6 +92,9 @@ export const query = graphql`
     taxa: mongodbAiidprodTaxa(namespace: { eq: "CSETv1" }) {
       field_list {
         short_name
+        mongo_type
+        display_type
+        field_number
       }
     }
   }

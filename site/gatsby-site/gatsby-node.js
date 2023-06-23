@@ -1,5 +1,7 @@
 const path = require('path');
 
+const fs = require('fs');
+
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
 const { Translate } = require('@google-cloud/translate').v2;
@@ -196,6 +198,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type mongodbAiidprodIncidents implements Node {
       embedding: incidentEmbedding
+      editor_notes: String
     }
 
     type nlpSimilarIncident {
@@ -208,6 +211,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_similar_incidents: [Int]
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
+      reports: [mongodbAiidprodReports] @link(by: "report_number")
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -222,6 +226,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       plain_text: String
       embedding: reportEmbedding
       inputs_outputs: [String]
+      report_number: Int
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -396,4 +401,15 @@ exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
     reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
+};
+
+exports.onPostBuild = () => {
+  // Replace Env variables on static file
+  const filePath = `${process.cwd()}/public/rollbar.js`;
+
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+
+  const newFileContent = fileContent.replace(/GATSBY_ROLLBAR_TOKEN/g, config.rollbar.token);
+
+  fs.writeFileSync(filePath, newFileContent);
 };

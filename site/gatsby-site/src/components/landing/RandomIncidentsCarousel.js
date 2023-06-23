@@ -5,6 +5,7 @@ import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Carousel } from 'flowbite-react';
 import { useTranslation } from 'react-i18next';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 const RandomIncidentsCarousel = () => {
   return (
@@ -14,7 +15,9 @@ const RandomIncidentsCarousel = () => {
           allMongodbAiidprodIncidents {
             nodes {
               incident_id
-              reports
+              reports {
+                report_number
+              }
               title
             }
           }
@@ -41,9 +44,9 @@ const RandomIncidentsCarousel = () => {
         for (let i = 0; i < reports.length && selected.length < 5; i++) {
           const report = reports[i];
 
-          const incident = incidents.find((incident) =>
-            incident.reports.includes(report.report_number)
-          );
+          const incident = incidents.find((incident) => {
+            return incident.reports.some((r) => r.report_number === report.report_number);
+          });
 
           if (!selected.some((s) => s.incident_id == incident.incident_id)) {
             selected.push({
@@ -60,7 +63,12 @@ const RandomIncidentsCarousel = () => {
                 {/* The carousel insists on using rounded corners, *
                  * so we have to cover them up on top.            */}
               </div>
-              <Carousel slideInterval={6000} slide={false}>
+              <Carousel
+                slideInterval={6000}
+                slide={false}
+                leftControl={<CarouselLeftArrow />}
+                rightControl={<CarouselRightArrow />}
+              >
                 {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
                   <Link
                     to={`/cite/${incident_id}`}

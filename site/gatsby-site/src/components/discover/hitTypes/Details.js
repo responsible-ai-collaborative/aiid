@@ -49,7 +49,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
         />
       </a>
       <Card.Body className="flex flex-col ">
-        <HeaderTitle item={item} viewType={viewType} className="text-xl" />
+        <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">

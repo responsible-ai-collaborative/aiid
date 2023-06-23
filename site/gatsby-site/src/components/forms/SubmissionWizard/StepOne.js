@@ -1,6 +1,6 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -27,6 +27,7 @@ import {
 import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
+import { debounce } from 'debounce';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -75,7 +76,7 @@ const StepOne = (props) => {
   };
 
   useEffect(() => {
-    setData(props.data);
+    setData({ ...props.data });
   }, [props.data]);
 
   return (
@@ -94,7 +95,9 @@ const StepOne = (props) => {
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
           submissionComplete={props.submissionComplete}
+          submissionReset={props.submissionReset}
           urlFromQueryString={props.urlFromQueryString}
+          setSavingInLocalStorage={props.setSavingInLocalStorage}
         />
       </Formik>
     </StepContainer>
@@ -109,7 +112,9 @@ const FormDetails = ({
   validateAndSubmitForm,
   submissionFailed,
   submissionComplete,
+  submissionReset,
   urlFromQueryString,
+  setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -130,6 +135,19 @@ const FormDetails = ({
     resetForm,
   } = useFormikContext();
 
+  const saveInLocalStorage = useRef(
+    debounce((values) => {
+      localStorage.setItem('formValues', JSON.stringify(values));
+      setSavingInLocalStorage(false);
+    }, 1000)
+  ).current;
+
+  useEffect(() => {
+    // Save form values to local storage when form values change
+    setSavingInLocalStorage(true);
+    saveInLocalStorage(values);
+  }, [values]);
+
   useEffect(() => {
     if (!values.date_downloaded) {
       setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
@@ -137,15 +155,15 @@ const FormDetails = ({
   }, [values.date_downloaded]);
 
   useEffect(() => {
-    if (submissionFailed || submissionComplete) {
+    if (submissionFailed || submissionComplete || submissionReset.reset) {
       setIsSubmitting(false);
       setSubmitCount(0);
     }
 
-    if (submissionComplete) {
+    if (submissionComplete || submissionReset.reset) {
       resetForm();
     }
-  }, [submissionFailed, submissionComplete]);
+  }, [submissionFailed, submissionComplete, submissionReset]);
 
   useEffect(() => {
     if (urlFromQueryString) {
@@ -176,7 +194,7 @@ const FormDetails = ({
           </span>
         </>
       )}
-      {values.incident_ids.length > 0 && (
+      {values?.incident_ids?.length > 0 && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
           <Badge>
             {values.tags && values.tags.includes(RESPONSE_TAG) ? (
@@ -361,7 +379,7 @@ const FormDetails = ({
           </div>
         </FieldContainer>
 
-        {values.incident_ids.length == 0 && (
+        {values?.incident_ids?.length == 0 && (
           <FieldContainer>
             <TextInputGroup
               name="incident_date"
