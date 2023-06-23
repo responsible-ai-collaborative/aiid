@@ -5,6 +5,7 @@ export const FIND_REPORT = gql`
     report(query: $query) {
       url
       title
+      description
       authors
       submitters
       date_published
