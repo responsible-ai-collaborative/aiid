@@ -92,11 +92,13 @@ function ResponseCell({ cell }) {
       )
     : cell.value;
 
+  const responseCount = new Set(filtered.map((response) => response.incident_id)).size;
+
   return (
     <div data-cy={`cell-${column.id}`}>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
-        <Trans ns="entities" count={filtered.length}>
-          {{ count: filtered.length }} Incident responses
+        <Trans ns="entities" count={responseCount}>
+          {{ count: responseCount }} Incident responses
         </Trans>
       </div>
       {row.isExpanded && (
