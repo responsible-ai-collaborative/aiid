@@ -752,9 +752,26 @@ describe('Cite pages', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: newIncidentId,
+          },
+        },
+      }
+    );
+
     cy.waitForStableDOM();
 
     cy.wait('@GetLatestIncidentId');
+
+    const now = new Date();
+
+    cy.clock(now);
 
     cy.contains('Clone Incident').scrollIntoView().click();
 
@@ -783,29 +800,43 @@ describe('Cite pages', () => {
     }).then(({ data: { incidents } }) => {
       const incident = incidents[0];
 
+      const newIncident = {
+        title: incident.title,
+        description: incident.description,
+        incident_id: newIncidentId,
+        reports: { link: [] },
+        editors: incident.editors,
+        date: incident.date,
+        AllegedDeployerOfAISystem: {
+          link: incident.AllegedDeployerOfAISystem.map((e) => e.entity_id),
+        },
+        AllegedDeveloperOfAISystem: {
+          link: incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id),
+        },
+        AllegedHarmedOrNearlyHarmedParties: {
+          link: incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id),
+        },
+        nlp_similar_incidents: [],
+        editor_similar_incidents: [],
+        editor_dissimilar_incidents: [],
+      };
+
       cy.wait('@InsertIncident').then((xhr) => {
         expect(xhr.request.body.operationName).to.eq('InsertIncident');
-        expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
-        expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
-        expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
-        expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
-        expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
-          incident.editor_similar_incidents
-        );
-        expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
-          incident.editor_dissimilar_incidents
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
-          incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
-          incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
-        );
-        expect(
-          xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
-        ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
-        expect(xhr.request.body.variables.incident.editors).to.deep.eq(incident.editors);
+        expect(xhr.request.body.variables.incident).to.deep.eq(newIncident);
       });
+
+      cy.wait('@logIncidentHistory')
+        .its('request.body.variables.input')
+        .then((input) => {
+          const expectedIncident = {
+            ...newIncident,
+            epoch_date_modified: getUnixTime(now),
+            modifiedBy: 'Test User',
+          };
+
+          expect(input).to.deep.eq(expectedIncident);
+        });
 
       cy.wait('@GetLatestIncidentId');
 
