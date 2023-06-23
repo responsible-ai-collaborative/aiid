@@ -242,7 +242,7 @@ function CiteTemplate({
 
       newIncident.epoch_date_modified = getUnixTime(new Date());
 
-      await logIncidentHistory({ variables: { input: newIncident } });
+      await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
 
       await refetchLastestIncidentId();
 

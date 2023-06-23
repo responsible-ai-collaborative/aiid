@@ -833,6 +833,7 @@ describe('Cite pages', () => {
             ...newIncident,
             epoch_date_modified: getUnixTime(now),
             modifiedBy: 'Test User',
+            reports: [],
           };
 
           expect(input).to.deep.eq(expectedIncident);
