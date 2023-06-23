@@ -27,7 +27,7 @@
         "description": {
             "bsonType": "string"
         },
-        "editor": {
+        "modifiedBy": {
             "bsonType": "string"
         },
         "editor_dissimilar_incidents": {
