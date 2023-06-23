@@ -150,9 +150,13 @@ describe('Incidents', () => {
       AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
       editors: ['Sean McGregor', 'Test Editor'],
       nlp_similar_incidents: incident.data.incident.nlp_similar_incidents,
+      flagged_dissimilar_incidents: incident.data.incident.flagged_dissimilar_incidents,
+      editor_dissimilar_incidents: incident.data.incident.editor_dissimilar_incidents,
+      editor_similar_incidents: incident.data.incident.editor_similar_incidents,
       embedding: incident.data.incident.embedding,
       editor_notes: 'Test editor notes',
       epoch_date_modified: getUnixTime(now),
+      tsne: incident.data.incident.tsne,
     };
 
     cy.wait('@UpdateIncident').then((xhr) => {

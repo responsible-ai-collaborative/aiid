@@ -74,6 +74,10 @@ function EditCitePage(props) {
           ...values.embedding,
           __typename: undefined,
         },
+        tsne: {
+          ...values.tsne,
+          __typename: undefined,
+        },
         __typename: undefined,
       };
 
