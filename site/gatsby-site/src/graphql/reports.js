@@ -33,7 +33,6 @@ export const FIND_REPORT = gql`
         from_text_hash
         vector
       }
-      nlp_similar_incidents
     }
   }
 `;
