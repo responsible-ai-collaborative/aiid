@@ -28,7 +28,6 @@
                 "Sean McGregor"
             ],
 
-            "editor": "Sean McGregor",
             "editor_notes": "Notes",
             "embedding": {
                 "__typename": "IncidentEmbedding",
