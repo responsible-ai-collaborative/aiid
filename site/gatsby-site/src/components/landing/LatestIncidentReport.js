@@ -5,6 +5,7 @@ import ReportText from 'components/reports/ReportText';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
+import Link from 'components/ui/Link';
 
 const LatestIncidentReport = ({ report, key, isLatest = false }) => {
   const {
@@ -15,6 +16,8 @@ const LatestIncidentReport = ({ report, key, isLatest = false }) => {
     epoch_date_submitted,
     incident_id,
     report_number,
+    source_domain,
+    url,
   } = report;
 
   const { t } = useTranslation();
@@ -57,6 +60,9 @@ const LatestIncidentReport = ({ report, key, isLatest = false }) => {
             date={epoch_date_submitted * 1000}
             className="text-sm text-gray-500 dark:text-gray-400"
           />
+          <Link to={url} className="text-sm ml-2" target="_blank">
+            {source_domain}
+          </Link>
           <div>
             <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
               <ReportText maxChars={240} text={text} />
