@@ -92,7 +92,7 @@ function ResponseCell({ cell }) {
       )
     : cell.value;
 
-  const responseCount = new Set(filtered.map((response) => response.incident_id)).size;
+  const responseCount = getResponseCount(filtered);
 
   return (
     <div data-cy={`cell-${column.id}`}>
@@ -256,7 +256,8 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         accessor: 'responses',
         Cell: ResponseCell,
         filter: responseFilter,
-        sortType: sortByCount,
+        sortType: (rowA, rowB, id) =>
+          getResponseCount(rowA.values[id]) - getResponseCount(rowB.values[id]),
       },
     ];
 
@@ -278,3 +279,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
 
   return <Table table={table} className={className} {...props} />;
 }
+
+var getResponseCount = (responses) =>
+  new Set(responses.map((response) => response.incident_id)).size;
