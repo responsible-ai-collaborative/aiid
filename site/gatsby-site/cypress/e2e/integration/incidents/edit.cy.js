@@ -1,9 +1,8 @@
 import { maybeIt } from '../../../support/utils';
-
 import incident from '../../../fixtures/incidents/incident.json';
-
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident.json';
 import { getUnixTime } from 'date-fns';
+import { transformIncidentData } from '../../../../src/utils/cite';
 
 describe('Incidents', () => {
   const url = '/incidents/edit?incident_id=10';
@@ -106,6 +105,19 @@ describe('Incidents', () => {
       updateOneIncident
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 112,
+          },
+        },
+      }
+    );
+
     const now = new Date();
 
     cy.clock(now);
@@ -128,27 +140,39 @@ describe('Incidents', () => {
       .its('request.body.variables.entity.entity_id')
       .should('eq', 'children');
 
+    const updatedIncident = {
+      incident_id: incident.data.incident.incident_id,
+      title: 'Test title',
+      description: 'Test description',
+      date: '2021-01-02',
+      AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
+      AllegedDeveloperOfAISystem: { link: ['youtube'] },
+      AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
+      editors: ['Sean McGregor', 'Test Editor'],
+      nlp_similar_incidents: incident.data.incident.nlp_similar_incidents,
+      embedding: incident.data.incident.embedding,
+      editor_notes: 'Test editor notes',
+      epoch_date_modified: getUnixTime(now),
+    };
+
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(10);
-      expect(xhr.request.body.variables.set).to.deep.eq({
-        incident_id: incident.data.incident.incident_id,
-        title: 'Test title',
-        description: 'Test description',
-        date: '2021-01-02',
-        AllegedDeployerOfAISystem: {
-          link: ['youtube', 'test-deployer'],
-        },
-        AllegedDeveloperOfAISystem: { link: ['youtube'] },
-        AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
-        editors: ['Sean McGregor', 'Test Editor'],
-        nlp_similar_incidents: incident.data.incident.nlp_similar_incidents,
-        embedding: {},
-        editor_notes: 'Test editor notes',
-        editor: 'Test User',
-        epoch_date_modified: getUnixTime(now),
-      });
+      expect(xhr.request.body.variables.set).to.deep.eq(updatedIncident);
     });
+
+    cy.wait('@logIncidentHistory', { timeout: 30000 })
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = transformIncidentData({
+          ...incident.data.incident,
+          ...updatedIncident,
+        });
+
+        expectedIncident.modifiedBy = 'Test User';
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
 
     cy.get('.tw-toast').contains('Incident 10 updated successfully.').should('exist');
   });
