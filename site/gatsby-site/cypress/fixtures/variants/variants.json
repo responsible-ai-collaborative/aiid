@@ -7,7 +7,6 @@
         "tags": ["variant:unreviewed"],
         "text": "Example text",
         "submitters": ["Pablo Costa"],
-        "editor": "Pablo Costa",
         "inputs_outputs": [
           "**Test input text** _with markdown_",
           "**Test output text** _with markdown_"
@@ -20,7 +19,6 @@
         "tags": ["variant:approved"],
         "text": "Example text",
         "submitters": ["Pablo Costa"],
-        "editor": "Pablo Costa",
         "inputs_outputs": ["Test input text without markdown", "Test output text without markdown"],
         "title": "Variant #2311"
       },
@@ -30,7 +28,6 @@
         "tags": ["variant:rejected"],
         "text": "",
         "submitters": ["Pablo Costa"],
-        "editor": "Pablo Costa",
         "inputs_outputs": [
           "Test input text without markdown (rejected)",
           "Test output text without markdown (rejected)"

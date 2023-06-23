@@ -9,7 +9,6 @@
           "tags": ["variant:unreviewed"],
           "text": "",
           "submitters": ["Pablo Costa"],
-          "editor": "Pablo Costa",
           "inputs_outputs": [
             "**Test input text** _with markdown_",
             "**Test output text** _with markdown_"
@@ -22,7 +21,6 @@
           "tags": ["variant:approved"],
           "text": "Example text",
           "submitters": ["Pablo Costa"],
-          "editor": "Pablo Costa",
           "inputs_outputs": [
             "Test input text without markdown",
             "Test output text without markdown"
@@ -35,7 +33,6 @@
           "tags": ["variant:rejected"],
           "text": "",
           "submitters": ["Pablo Costa"],
-          "editor": "Pablo Costa",
           "inputs_outputs": [
             "Test input text without markdown (rejected)",
             "Test output text without markdown (rejected)"
@@ -48,7 +45,6 @@
           "tags": [],
           "text": "",
           "submitters": ["Pablo Costa"],
-          "editor": "Pablo Costa",
           "inputs_outputs": [],
           "title": "Court clears 39 post office operators convicted due to ‘corrupt data’"
         },
@@ -58,7 +54,6 @@
           "tags": [],
           "text": "",
           "submitters": ["Pablo Costa"],
-          "editor": "Pablo Costa",
           "inputs_outputs": [],
           "title": "After A Wave Of Bad Press, This Controversial Software Company Is Making Changes"
         }
