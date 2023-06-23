@@ -49,6 +49,8 @@ exports = async (input) => {
 
       await incidentsHistory.insertOne({
         ...newIncident,
+        reports: [BSON.Int32(report_number)],
+        incident_id: BSON.Int32(newIncident.incident_id),
         modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
       });
 
@@ -93,6 +95,7 @@ exports = async (input) => {
 
         await incidentsHistory.insertOne({
           ...parentIncident,
+          reports: [...parentIncident.reports, BSON.Int32(report_number)],
           embedding,
           modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
         });
@@ -137,6 +140,7 @@ exports = async (input) => {
   
   await reportsHistory.insertOne({
     ...newReport,
+    report_number: BSON.Int32(newReport.report_number),
     modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
   });
 

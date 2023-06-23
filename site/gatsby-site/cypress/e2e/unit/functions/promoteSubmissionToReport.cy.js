@@ -159,6 +159,7 @@ describe('Functions', () => {
 
       expect(incidentsHistoryCollection.insertOne.firstCall.args[0]).to.deep.equal({
         ...expectedIncident,
+        reports: [2],
         modifiedBy: 'Kate Perkins',
       });
 
