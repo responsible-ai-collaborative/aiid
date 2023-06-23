@@ -18,14 +18,13 @@ describe('Submitted reports', () => {
         {
           users {
             userId
-            adminData {
-              email
-            }
+            first_name
+            last_name
           }
         }
       `,
     }).then(({ data: { users } }) => {
-      user = users.find((u) => u.adminData.email == Cypress.env('e2eUsername'));
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
     });
   });
 

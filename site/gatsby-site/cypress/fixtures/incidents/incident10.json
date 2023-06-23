@@ -35,7 +35,7 @@
       "description": "Kronos’s scheduling algorithm and its use by Starbucks managers allegedly negatively impacted financial and scheduling stability for Starbucks employees, which disadvantaged wage workers. V2",
       "editor_dissimilar_incidents": [],
       "editor_similar_incidents": [],
-      "editors": ["Sean McGregor", "Pablo Costa"],
+      "editors": [ {"userId": 1, "first_name": "Sean", "last_name": "McGregor"}, {"userId": "2", "first_name":  "Pablo", "last_name": "Costa"}] ,
       "embedding": {
         "from_reports": [25, 24, 23, 22, 21, 20, 19, 18, 17, 16],
         "vector": [

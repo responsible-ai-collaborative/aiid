@@ -148,12 +148,13 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
       </div>
 
       <Table table={table} />
-
-      <IncidentEditModal
-        show={incidentIdToEdit !== 0}
-        onClose={() => setIncindentIdToEdit(0)}
-        incidentId={incidentIdToEdit}
-      />
+      {incidentIdToEdit !== 0 && (
+        <IncidentEditModal
+          show={true}
+          onClose={() => setIncindentIdToEdit(0)}
+          incidentId={incidentIdToEdit}
+        />
+      )}
     </>
   );
 }
