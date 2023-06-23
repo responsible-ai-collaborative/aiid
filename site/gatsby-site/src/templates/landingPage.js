@@ -177,6 +177,8 @@ export const query = graphql`
             report_number
             cloudinary_id
             language
+            source_domain
+            url
           }
         }
       }
