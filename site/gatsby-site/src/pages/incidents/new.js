@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../../components/Layout';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
@@ -12,7 +11,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
-function NewIncidentPage(props) {
+function NewIncidentPage() {
   const { t, i18n } = useTranslation();
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
@@ -93,7 +92,7 @@ function NewIncidentPage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full'}>
+    <div className={'w-full'}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -130,7 +129,7 @@ function NewIncidentPage(props) {
           )}
         </Formik>
       )}
-    </Layout>
+    </div>
   );
 }
 
