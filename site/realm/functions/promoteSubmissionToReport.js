@@ -26,7 +26,7 @@ exports = async (input) => {
         description: submission.description,
         incident_id: lastIncident.incident_id + 1,
         reports: [],
-        editors: submission.incident_editors || ["Sean McGregor"],
+        editors: submission.incident_editors || ['619b47ea5eed5334edfa3bbc'],
         date: submission.incident_date,
         "Alleged deployer of AI system": submission.deployers || [],
         "Alleged developer of AI system": submission.developers || [],
