@@ -271,7 +271,7 @@ describe('Cite pages', () => {
     cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
   });
 
-  maybeIt('should render Next and Previous incident buttons', () => {
+  it('should render Next and Previous incident buttons', () => {
     cy.visit(url);
 
     cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
