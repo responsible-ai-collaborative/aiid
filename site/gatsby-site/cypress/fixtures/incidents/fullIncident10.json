@@ -27,7 +27,7 @@
       "description": "A Boeing 737 crashed into the sea, killing 189 people, after faulty sensor data caused an automated manuevering system to repeatedly push the plane's nose downward.",
       "editor_dissimilar_incidents": [],
       "editor_similar_incidents": [],
-      "editors": ["Sean McGregor"],
+      "editors": [{"userId": "1", "first_name": "Sean", "last_name":  "McGregor"}],
       "embedding": {
         "from_reports": [
           1342, 389, 388, 387, 386, 385, 384, 383, 382, 381, 380, 379, 378, 377, 376, 375, 374, 373,
