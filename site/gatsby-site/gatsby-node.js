@@ -196,17 +196,16 @@ exports.createSchemaCustomization = ({ actions }) => {
       from_reports: [Int]
     }
 
-    type mongodbAiidprodIncidents implements Node {
-      embedding: incidentEmbedding
-      editor_notes: String
-    }
-
     type nlpSimilarIncident {
       incident_id: Int
       similarity: Float
     }
 
     type mongodbAiidprodIncidents implements Node {
+      incident_id: Int
+      title: String
+      embedding: incidentEmbedding
+      editor_notes: String
       nlp_similar_incidents: [nlpSimilarIncident]
       editor_similar_incidents: [Int]
       editor_dissimilar_incidents: [Int]
