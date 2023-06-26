@@ -280,5 +280,5 @@ export default function EntitiesTable({ data, className = '', ...props }) {
   return <Table table={table} className={className} {...props} />;
 }
 
-var getResponseCount = (responses) =>
+const getResponseCount = (responses) =>
   new Set(responses.map((response) => response.incident_id)).size;
