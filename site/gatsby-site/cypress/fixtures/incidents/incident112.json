@@ -25,7 +25,15 @@
             "incident_id": 112,
             "nlp_similar_incidents": [],
             "editors": [
-                "Anonymous"
+                {
+                    "__typename": "User",
+                    "first_name": "Test",
+                    "last_name": "User",
+                    "roles": [
+                        "admin"
+                    ],
+                    "userId": "63320ce63ec803072c9f529c"
+                }
             ],
             "editor_similar_incidents": [],
             "editor_dissimilar_incidents": [],

@@ -621,7 +621,11 @@ describe('Cite pages', () => {
             date
             editor_similar_incidents
             editor_dissimilar_incidents
-            editors
+            editors {
+              userId
+              first_name
+              last_name
+            }
             AllegedDeployerOfAISystem {
               entity_id
             }
@@ -658,7 +662,9 @@ describe('Cite pages', () => {
         expect(
           xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
         ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
-        expect(xhr.request.body.variables.incident.editors).to.deep.eq(incident.editors);
+        expect(xhr.request.body.variables.incident.editors).to.deep.eq({
+          link: incident.editors.map((e) => e.userId),
+        });
       });
 
       cy.wait('@GetLatestIncidentId');

@@ -258,7 +258,11 @@ export const query = graphql`
       title
       description
       date
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       flagged_dissimilar_incidents
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
