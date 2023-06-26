@@ -21,7 +21,7 @@ exports = async (input) => {
 
       const lastIncident = await incidents.find({}).sort({ incident_id: -1 }).limit(1).next();
 
-      const editors = (!submission.incident_editors || submission.incident_editors.length == 0)
+      const editors = (!submission.incident_editors || !submission.incident_editors.length)
         ? ["619b47ea5eed5334edfa3bbc"]
         : submission.incident_editors;
 
