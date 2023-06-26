@@ -4,6 +4,7 @@ import incidents from '../../../fixtures/incidents/incidents.json';
 import { maybeIt } from '../../../support/utils';
 import { getUnixTime } from 'date-fns';
 import { transformIncidentData } from '../../../../src/utils/cite';
+import users from '../../../fixtures/users/users.json';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -38,14 +39,6 @@ describe('Incidents App', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 0,
-      'FindIncident0',
-      incident
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindEntities',
       'FindEntities',
       {
@@ -58,11 +51,18 @@ describe('Incidents App', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'findUsers',
+      users
+    );
+
     cy.visit(url);
 
-    cy.waitForStableDOM();
+    cy.wait(['@FindIncidents']);
 
-    cy.wait(['@FindIncident0', '@FindEntities']);
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -71,6 +71,8 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length', 1);
 
     cy.contains('Edit').click();
+
+    cy.wait(['@FindEntities', '@findUsers']);
 
     cy.waitForStableDOM();
 
@@ -88,7 +90,9 @@ describe('Incidents App', () => {
       .first()
       .type('Test Deployer{enter}');
 
-    cy.get('[data-cy=editors-input] input').first().type('Pablo Costa{enter}');
+    cy.get('#input-editors').type('Cesar');
+
+    cy.get('[aria-label="Cesar Varela"]').click();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -187,7 +191,7 @@ describe('Incidents App', () => {
       title: 'Test title',
       description: 'New description',
       date: '2023-05-04',
-      editors: ['Anonymous', 'Pablo Costa'],
+      editors: { link: ['63320ce63ec803072c9f529c', '633b74dc95edb45d34a95895'] },
       AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
       AllegedDeveloperOfAISystem: { link: ['youtube'] },
       AllegedHarmedOrNearlyHarmedParties: { link: ['google'] },

@@ -48,7 +48,8 @@
                 "nlp_similar_incidents": [],
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
-                "tags": []
+                "tags": [],
+                "incident_editors": []
             },
             {
                 "__typename": "Submission",
@@ -202,7 +203,8 @@
                 "tags": [],
                 "developers": [],
                 "deployers": [],
-                "harmed_parties": []
+                "harmed_parties": [],
+                "incident_editors": []
             },
             {
                 "__typename": "Submission",

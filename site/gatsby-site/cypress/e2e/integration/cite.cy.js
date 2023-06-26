@@ -784,7 +784,11 @@ describe('Cite pages', () => {
             date
             editor_similar_incidents
             editor_dissimilar_incidents
-            editors
+            editors {
+              userId
+              first_name
+              last_name
+            }
             AllegedDeployerOfAISystem {
               entity_id
             }
@@ -805,7 +809,7 @@ describe('Cite pages', () => {
         description: incident.description,
         incident_id: newIncidentId,
         reports: { link: [] },
-        editors: incident.editors,
+        editors: { link: incident.editors.map((e) => e.userId) },
         date: incident.date,
         AllegedDeployerOfAISystem: {
           link: incident.AllegedDeployerOfAISystem.map((e) => e.entity_id),

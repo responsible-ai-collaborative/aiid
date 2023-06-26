@@ -68,6 +68,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         reports: undefined,
         __typename: undefined,
         embedding: undefined,
+        editors: { link: values.editors },
       };
 
       const { entities } = entitiesData;
@@ -162,6 +163,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
               incident.AllegedHarmedOrNearlyHarmedParties === null
                 ? []
                 : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+            editors: incident.editors.map((editor) => editor.userId),
           }}
         >
           {({ isValid, isSubmitting, submitForm }) => (

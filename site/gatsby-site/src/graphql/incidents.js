@@ -6,7 +6,11 @@ export const FIND_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -45,7 +49,11 @@ export const FIND_INCIDENTS_TABLE = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -89,7 +97,11 @@ export const FIND_INCIDENTS = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -136,7 +148,11 @@ export const UPDATE_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -191,7 +207,11 @@ export const FIND_FULL_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id

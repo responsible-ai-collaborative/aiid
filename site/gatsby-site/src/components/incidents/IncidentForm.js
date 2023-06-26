@@ -10,6 +10,7 @@ import TextInputGroup from 'components/forms/TextInputGroup';
 import { useTranslation } from 'react-i18next';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
+import UsersField from 'components/users/UsersField';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
@@ -31,16 +32,7 @@ export const schema = Yup.object().shape({
   AllegedDeployerOfAISystem: Yup.array().required(),
   AllegedDeveloperOfAISystem: Yup.array().required(),
   AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
-  editors: Yup.string()
-    .matches(/^.{3,}$/, {
-      excludeEmptyString: true,
-      message: 'Incident Editor must have at least 3 characters',
-    })
-    .matches(/^.{3,200}$/, {
-      excludeEmptyString: true,
-      message: "Incident Editor can't be longer than 200 characters",
-    })
-    .required(),
+  editors: Yup.array().of(Yup.string()).required(),
   editor_notes: Yup.string(),
 });
 
@@ -207,14 +199,12 @@ function IncidentForm() {
         </FieldContainer>
 
         <FieldContainer>
-          <TagsInputGroup
-            name="editors"
-            label={t('Editors')}
-            placeholder={t('Editors')}
-            errors={errors}
-            touched={touched}
-            schema={schema}
+          <Label popover={'editors'} label={t('Editors')} />
+          <UsersField
             data-cy="editors-input"
+            name="editors"
+            placeHolder={t('Editors')}
+            id="editors"
           />
         </FieldContainer>
 

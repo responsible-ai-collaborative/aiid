@@ -59,6 +59,7 @@ const queryConfig = {
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
+  incident_editors: withDefault(ArrayParam, []),
   language: withDefault(StringParam, 'en'),
 };
 

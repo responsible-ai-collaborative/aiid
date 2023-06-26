@@ -16,6 +16,7 @@ const config = {
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_history_name: 'history',
+      db_custom_data: 'customData',
       db_collection: 'incidents',
     },
     graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
