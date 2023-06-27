@@ -7,6 +7,7 @@ const SUBMISSION_INITIAL_VALUES = {
   image_url: '',
   cloudinary_id: '',
   incident_ids: [],
+  incident_editors: [],
   text: '',
   authors: [],
   submitters: [],

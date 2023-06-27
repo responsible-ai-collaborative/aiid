@@ -20,6 +20,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'debounce';
+import UsersInputGroup from '../UsersInputGroup';
 
 const StepThree = (props) => {
   const [data, setData] = useState(props.data);
@@ -27,17 +28,7 @@ const StepThree = (props) => {
   const stepThreeValidationSchema = yup.object().shape({
     editor_notes: yup.string(),
     incident_title: yup.string(),
-    incident_editors: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Incident Editor must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Incident Editor can't be longer than 200 characters",
-      })
-      .nullable(),
+    incident_editors: yup.array().of(yup.string()).nullable(),
     description: yup
       .string()
       .matches(/^[\s\S]{3,}$/, {
@@ -244,16 +235,12 @@ const FormDetails = ({
 
             {isRole('incident_editor') && (
               <FieldContainer>
-                <TagsInputGroup
+                <UsersInputGroup
                   name="incident_editors"
                   label={t('Editors')}
                   placeholder={t('Editors')}
                   icon={faPenNib}
                   schema={schema}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                  touched={touched}
-                  values={values}
                   errors={errors}
                 />
               </FieldContainer>

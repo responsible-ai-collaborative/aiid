@@ -217,6 +217,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       Alleged_developer_of_AI_system: [String]
       Alleged_harmed_or_nearly_harmed_parties: [String]
       editors: [String]
+      editors: [mongodbCustomDataUsers] @link(by: "userId")
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -268,6 +269,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       short_name: String
       value_json: String
     }
+    
     type mongodbAiidprodClassifications implements Node {
       incident_id: Int
       namespace: String

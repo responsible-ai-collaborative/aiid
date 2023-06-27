@@ -41,13 +41,11 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
     setRetrievalString(text);
   }, []);
 
-  const firstEditor = editors[0];
+  const [firstEditor] = editors;
 
-  const nameFragments = firstEditor.split(' ');
+  const { first_name, last_name: editorLastName } = firstEditor;
 
-  const editorLastName = nameFragments[nameFragments.length - 1];
-
-  const editorFirstNameInitial = nameFragments[0][0] + '.';
+  const editorFirstNameInitial = first_name[0] + '.';
 
   const text = t(
     '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',

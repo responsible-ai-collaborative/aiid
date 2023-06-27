@@ -430,6 +430,11 @@ const IncidentReportForm = () => {
                     type="text"
                     value={values[name].title}
                     onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
+                    className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+                      errors && touched && touched[`${name}.title`] && errors[`${name}.title`]
+                        ? 'border-red-600 focus:ring-red-500'
+                        : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+                    }`}
                   />
                 </div>
 
