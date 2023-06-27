@@ -204,6 +204,8 @@ exports.createSchemaCustomization = ({ actions }) => {
     type mongodbAiidprodIncidents implements Node {
       incident_id: Int
       title: String
+      date: String
+      description: String
       embedding: incidentEmbedding
       editor_notes: String
       nlp_similar_incidents: [nlpSimilarIncident]
@@ -211,6 +213,10 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
       reports: [mongodbAiidprodReports] @link(by: "report_number")
+      Alleged_deployer_of_AI_system: [String]
+      Alleged_developer_of_AI_system: [String]
+      Alleged_harmed_or_nearly_harmed_parties: [String]
+      editors: [String]
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -226,6 +232,27 @@ exports.createSchemaCustomization = ({ actions }) => {
       embedding: reportEmbedding
       inputs_outputs: [String]
       report_number: Int
+      is_incident_report: Boolean
+      title: String
+      language: String
+      image_url: String
+      submitters: [String]
+      date_submitted: String
+      source_domain: String
+      authors: [String]
+      flag: Boolean
+      text: String
+      epoch_date_downloaded: Int
+      epoch_date_modified: Int
+      epoch_date_published: Int
+      epoch_date_submitted: Int
+      url: String
+      date_downloaded: String
+      date_modified: String
+      date_published: String
+      date_submitted: String
+      description: String
+      mongodb_id: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -288,6 +315,56 @@ exports.createSchemaCustomization = ({ actions }) => {
       required: Boolean
       public: Boolean
       complete_from: completeFrom
+    }
+
+    type mongodbAiidprodEntities implements Node {
+      entity_id: String
+      name: String
+      true_incident_number: Int
+      duplicate_incident_number: Int
+    }
+
+    type allMongodbAiidprodEntities implements Node @dontInfer {
+      nodes: [mongodbAiidprodEntities]
+    }
+
+    type mongodbAiidprodDuplicates implements Node {
+      duplicate_incident_number: Int
+      true_incident_number: Int
+    }
+
+    type allMongodbAiidprodDuplicates implements Node @dontInfer {
+      nodes: [mongodbAiidprodEntities]
+    }
+
+    type mongodbTranslationsReportsEs implements Node {
+      title: String
+      text: String
+      report_number: Int
+    }
+
+    type allMongodbTranslationsReportsEs implements Node @dontInfer {
+      nodes: [mongodbTranslationsReportsEs]
+    }
+
+    type mongodbTranslationsReportsEn implements Node {
+      title: String
+      text: String
+      report_number: Int
+    }
+
+    type allMongodbTranslationsReportsEn implements Node @dontInfer {
+      nodes: [mongodbTranslationsReportsEn]
+    }
+
+    type mongodbTranslationsReportsFr implements Node {
+      title: String
+      text: String
+      report_number: Int
+    }
+
+    type allMongodbTranslationsReportsFr implements Node @dontInfer {
+      nodes: [mongodbTranslationsReportsFr]
     }
   `;
 

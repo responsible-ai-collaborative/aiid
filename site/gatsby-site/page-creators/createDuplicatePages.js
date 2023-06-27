@@ -16,18 +16,20 @@ const createDuplicatePages = async (graphql, createPage) => {
 
   const { allMongodbAiidprodDuplicates } = result.data;
 
-  for (const {
-    true_incident_number,
-    duplicate_incident_number,
-  } of allMongodbAiidprodDuplicates.nodes) {
-    createPage({
-      path: '/cite/' + duplicate_incident_number,
-      component: path.resolve('./src/templates/cite-duplicate.js'),
-      context: {
-        duplicate_incident_number: parseInt(duplicate_incident_number),
-        true_incident_number: parseInt(true_incident_number),
-      },
-    });
+  if (allMongodbAiidprodDuplicates) {
+    for (const {
+      true_incident_number,
+      duplicate_incident_number,
+    } of allMongodbAiidprodDuplicates.nodes) {
+      createPage({
+        path: '/cite/' + duplicate_incident_number,
+        component: path.resolve('./src/templates/cite-duplicate.js'),
+        context: {
+          duplicate_incident_number: parseInt(duplicate_incident_number),
+          true_incident_number: parseInt(true_incident_number),
+        },
+      });
+    }
   }
 };
 

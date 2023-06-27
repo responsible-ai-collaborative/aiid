@@ -83,10 +83,12 @@ const createWordCountsPage = async (graphql, createPage) => {
 
   let wordClouds = [];
 
-  for (let i = 0; i < numWordClouds; i++) {
-    wordClouds.push([]);
-    for (var j = i * wordsPerCloud; j < (i + 1) * wordsPerCloud; j++) {
-      wordClouds[i].push({ text: wordCountsSorted[j][0], value: wordCountsSorted[j][1] });
+  if (wordCountsSorted.length > 0) {
+    for (let i = 0; i < numWordClouds; i++) {
+      wordClouds.push([]);
+      for (var j = i * wordsPerCloud; j < (i + 1) * wordsPerCloud; j++) {
+        wordClouds[i].push({ text: wordCountsSorted[j][0], value: wordCountsSorted[j][1] });
+      }
     }
   }
 
@@ -106,7 +108,7 @@ const createWordCountsPage = async (graphql, createPage) => {
         wordClouds,
         wordCountsSorted,
         wordsPerCloud,
-        latestReportNumber: result.data.latestReport.nodes[0].report_number,
+        latestReportNumber: result.data.latestReport?.nodes[0]?.report_number,
         latestReportNumbers,
       },
     });
