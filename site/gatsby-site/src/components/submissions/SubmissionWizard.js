@@ -21,7 +21,7 @@ const SubmissionWizard = ({
     setData({ ...initialValues });
   }, [initialValues]);
 
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const [steps, setSteps] = useState([]);
 
