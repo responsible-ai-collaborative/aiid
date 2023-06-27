@@ -104,8 +104,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
-    "we": "node migrator up --name 2023.06.26T21.29.07.fix-gmf-multi.js --rerun ALLOW"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
     "@netlify/plugin-gatsby": "^3.6.2",
