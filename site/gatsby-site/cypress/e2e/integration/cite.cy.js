@@ -493,6 +493,7 @@ describe('Cite pages', () => {
       expect(xhr.request.body.variables.set).to.deep.eq({
         flagged_dissimilar_incidents: [11],
         epoch_date_modified: getUnixTime(now),
+        editors: { link: incident10.data.incident.editors.map((e) => e.userId) },
       });
     });
 
@@ -556,7 +557,7 @@ describe('Cite pages', () => {
       expect(xhr.request.body.variables.set).to.deep.eq({
         flagged_dissimilar_incidents: [],
         epoch_date_modified: getUnixTime(now),
-        editors: [...incident10.data.incident.editors.map((e) => e.userId), user.userId],
+        editors: { link: [...incident10.data.incident.editors.map((e) => e.userId), user.userId] },
       });
     });
 
