@@ -50,10 +50,10 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('query', ({ query, variables }) => {
+Cypress.Commands.add('query', ({ query, variables, timeout = 30000 }) => {
   const client = getApolloClient();
 
-  return cy.wrap(client.query({ query, variables }), { log: true, timeout: 30000 });
+  return cy.wrap(client.query({ query, variables }), { log: true, timeout });
 });
 
 Cypress.Commands.add('clickOutside', () => {

@@ -76,7 +76,11 @@ export const query = graphql`
         incident_id
         title
         description
-        editors
+        editors {
+          userId
+          first_name
+          last_name
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system

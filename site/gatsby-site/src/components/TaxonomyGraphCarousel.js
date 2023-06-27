@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Carousel } from 'flowbite-react';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -8,8 +8,6 @@ import { getClassificationValue } from 'utils/classifications';
 import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
-  const [hover, setHover] = useState(false);
-
   const taxaData = data.allMongodbAiidprodTaxa;
 
   const classificationsData = data.allMongodbAiidprodClassifications;
@@ -97,13 +95,9 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
 
   return (
     !classificationsLoading && (
-      <div
-        className="h-96 dark"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      >
+      <div className="h-96 dark">
         <Carousel
-          slide={hover ? false : undefined}
+          slide={false}
           leftControl={<CarouselLeftArrow />}
           rightControl={<CarouselRightArrow />}
         >
