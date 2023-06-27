@@ -17,6 +17,24 @@ describe('Cite pages', () => {
 
   const url = `/cite/${incidentId}`;
 
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
+
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
@@ -271,7 +289,7 @@ describe('Cite pages', () => {
         // eslint-disable-next-line no-unused-vars
         const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
 
-        expectedReport.modifiedBy = 'Anonymous';
+        expectedReport.modifiedBy = '';
         expectedReport.date_modified = format(now, 'yyyy-MM-dd');
         expectedReport.epoch_date_modified = getUnixTime(now);
 
@@ -481,7 +499,7 @@ describe('Cite pages', () => {
 
         expectedIncident.flagged_dissimilar_incidents = [11];
         expectedIncident.epoch_date_modified = getUnixTime(now);
-        expectedIncident.modifiedBy = 'Anonymous';
+        expectedIncident.modifiedBy = '';
 
         expect(input).to.deep.eq(expectedIncident);
       });
@@ -544,7 +562,7 @@ describe('Cite pages', () => {
 
         expectedIncident.flagged_dissimilar_incidents = [];
         expectedIncident.epoch_date_modified = getUnixTime(now);
-        expectedIncident.modifiedBy = 'Test User';
+        expectedIncident.modifiedBy = user.userId;
 
         expect(input).to.deep.eq(expectedIncident);
       });
@@ -836,7 +854,7 @@ describe('Cite pages', () => {
           const expectedIncident = {
             ...newIncident,
             epoch_date_modified: getUnixTime(now),
-            modifiedBy: 'Test User',
+            modifiedBy: user.userId,
             reports: [],
           };
 

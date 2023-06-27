@@ -3,9 +3,28 @@ import incident from '../../../fixtures/incidents/incident.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident.json';
 import { getUnixTime } from 'date-fns';
 import { transformIncidentData } from '../../../../src/utils/cite';
+const { gql } = require('@apollo/client');
 
 describe('Incidents', () => {
   const url = '/incidents/edit?incident_id=10';
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
 
   maybeIt('Should successfully edit incident fields', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -189,7 +208,7 @@ describe('Incidents', () => {
           ...updatedIncident,
         });
 
-        expectedIncident.modifiedBy = 'Test User';
+        expectedIncident.modifiedBy = user.userId;
 
         expect(input).to.deep.eq(expectedIncident);
       });

@@ -213,7 +213,7 @@ describe('The Discover app', () => {
         // eslint-disable-next-line no-unused-vars
         const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
 
-        expectedReport.modifiedBy = 'Anonymous';
+        expectedReport.modifiedBy = '';
         expectedReport.date_modified = format(now, 'yyyy-MM-dd');
         expectedReport.epoch_date_modified = getUnixTime(now);
 

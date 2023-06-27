@@ -55,7 +55,7 @@ exports = async (input) => {
         ...newIncident,
         reports: [BSON.Int32(report_number)],
         incident_id: BSON.Int32(newIncident.incident_id),
-        modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
+        modifiedBy: submission.user,
       });
 
       parentIncidents.push(newIncident);
@@ -145,7 +145,7 @@ exports = async (input) => {
   await reportsHistory.insertOne({
     ...newReport,
     report_number: BSON.Int32(newReport.report_number),
-    modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
+    modifiedBy: submission.user,
   });
 
   await submissions.deleteOne({ _id: input.submission_id });

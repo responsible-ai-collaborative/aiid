@@ -160,7 +160,7 @@ describe('Functions', () => {
       expect(incidentsHistoryCollection.insertOne.firstCall.args[0]).to.deep.equal({
         ...expectedIncident,
         reports: [2],
-        modifiedBy: 'Kate Perkins',
+        modifiedBy: submission.user,
       });
 
       const expectedReport = {
@@ -199,7 +199,7 @@ describe('Functions', () => {
 
       expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
         ...expectedReport,
-        modifiedBy: 'Kate Perkins',
+        modifiedBy: submission.user,
       });
     });
   });
@@ -331,7 +331,7 @@ describe('Functions', () => {
 
       expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
         ...expectedReport,
-        modifiedBy: 'Kate Perkins',
+        modifiedBy: submission.user,
       });
     });
   });
@@ -463,7 +463,7 @@ describe('Functions', () => {
 
       expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
         ...expectedReport,
-        modifiedBy: 'Kate Perkins',
+        modifiedBy: submission.user,
       });
     });
   });

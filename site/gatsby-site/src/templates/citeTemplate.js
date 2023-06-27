@@ -236,9 +236,8 @@ function CiteTemplate({
       await insertIncidentMutation({ variables: { incident: newIncident } });
 
       // Set the user as the last modifier
-      if (user && user.customData.first_name && user.customData.last_name) {
-        newIncident.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
-      }
+      newIncident.modifiedBy =
+        user && user.customData.first_name && user.customData.last_name ? user.id : '';
 
       newIncident.epoch_date_modified = getUnixTime(new Date());
 

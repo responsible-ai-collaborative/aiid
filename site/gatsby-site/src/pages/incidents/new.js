@@ -65,6 +65,7 @@ function NewIncidentPage() {
         ...values,
         incident_id: newIncidentId,
         reports: { link: [] },
+        editors: { link: values.editors },
         embedding: {
           ...values.embedding,
         },
@@ -96,11 +97,12 @@ function NewIncidentPage() {
       await insertIncident({ variables: { incident: newIncident } });
 
       // Set the user as the last modifier
-      if (user && user.customData.first_name && user.customData.last_name) {
-        newIncident.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
-      }
+      newIncident.modifiedBy =
+        user && user.customData.first_name && user.customData.last_name ? user.id : '';
 
       newIncident.epoch_date_modified = getUnixTime(new Date());
+
+      newIncident.editors = newIncident.editors.link;
 
       await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
 

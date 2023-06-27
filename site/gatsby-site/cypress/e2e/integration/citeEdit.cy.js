@@ -5,9 +5,28 @@ import { format, getUnixTime } from 'date-fns';
 import reportWithTranslations from '../../fixtures/reports/reportWithTranslations.json';
 import issueWithTranslations from '../../fixtures/reports/issueWithTranslations.json';
 import report10 from '../../fixtures/reports/report.json';
+const { gql } = require('@apollo/client');
 
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -211,7 +230,7 @@ describe('Edit report', () => {
         const expectedResult = {
           ...report10.data.report,
           ...expectedReport,
-          modifiedBy: 'Test User',
+          modifiedBy: user.userId,
           user: report10.data.report.user.userId,
         };
 
@@ -415,7 +434,7 @@ describe('Edit report', () => {
         const expectedResult = {
           ...report10.data.report,
           ...expectedReport,
-          modifiedBy: 'Test User',
+          modifiedBy: user.userId,
           user: report10.data.report.user.userId,
         };
 
@@ -682,7 +701,7 @@ describe('Edit report', () => {
         const expectedResult = {
           ...report10.data.report,
           ...expectedReport,
-          modifiedBy: 'Test User',
+          modifiedBy: user.userId,
           user: report10.data.report.user.userId,
         };
 
@@ -950,7 +969,7 @@ describe('Edit report', () => {
         const expectedResult = {
           ...report10.data.report,
           ...expectedReport,
-          modifiedBy: 'Test User',
+          modifiedBy: user.userId,
           user: report10.data.report.user.userId,
         };
 
@@ -1144,7 +1163,7 @@ describe('Edit report', () => {
         const expectedResult = {
           ...report10.data.report,
           ...expectedReport,
-          modifiedBy: 'Test User',
+          modifiedBy: user.userId,
           user: report10.data.report.user.userId,
         };
 

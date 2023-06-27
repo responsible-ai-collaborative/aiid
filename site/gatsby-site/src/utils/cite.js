@@ -137,6 +137,7 @@ export const transformIncidentData = (incident, user) => {
     embedding,
     nlp_similar_incidents,
     tsne,
+    editors,
     ...result
   } = incident;
 
@@ -182,12 +183,13 @@ export const transformIncidentData = (incident, user) => {
     result.tsne = currentTsne;
   }
 
-  // Set the user as the last modifier
-  if (user && user.customData.first_name && user.customData.last_name) {
-    result.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
-  } else {
-    result.modifiedBy = 'Anonymous';
+  if (editors) {
+    result.editors = editors.link ? editors.link : editors.map((editor) => editor.userId);
   }
+
+  // Set the user as the last modifier
+  result.modifiedBy =
+    user && user.customData.first_name && user.customData.last_name ? user.id : '';
 
   return result;
 };

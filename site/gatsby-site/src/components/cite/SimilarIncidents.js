@@ -42,9 +42,9 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
     const now = new Date();
 
     const flagged_dissimilar_incidents = isFlagged
-      ? parentIncident.flagged_dissimilar_incidents.filter((e) => e != incident.incident_id)
+      ? parentIncident.flagged_dissimilar_incidents?.filter((e) => e != incident.incident_id)
       : parentIncident.flagged_dissimilar_incidents
-          .filter((e) => e != incident.incident_id)
+          ?.filter((e) => e != incident.incident_id)
           .concat([incident.incident_id]);
 
     await updateIncidentMutation({

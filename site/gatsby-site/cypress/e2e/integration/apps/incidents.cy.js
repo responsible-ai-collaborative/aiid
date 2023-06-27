@@ -5,9 +5,28 @@ import { maybeIt } from '../../../support/utils';
 import { getUnixTime } from 'date-fns';
 import { transformIncidentData } from '../../../../src/utils/cite';
 import users from '../../../fixtures/users/users.json';
+const { gql } = require('@apollo/client');
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -217,7 +236,7 @@ describe('Incidents App', () => {
           ...updatedIncident,
         });
 
-        expectedIncident.modifiedBy = 'Test User';
+        expectedIncident.modifiedBy = user.userId;
 
         expect(input).to.deep.eq(expectedIncident);
       });

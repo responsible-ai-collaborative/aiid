@@ -1,11 +1,28 @@
 import { maybeIt } from '../../../support/utils';
-
 import incidents from '../../../fixtures/incidents/incidents.json';
-
 import { getUnixTime } from 'date-fns';
+const { gql } = require('@apollo/client');
 
 describe('New Incident page', () => {
   const url = '/incidents/new';
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -174,7 +191,7 @@ describe('New Incident page', () => {
       description: 'Test description',
       incident_id: newIncidentId,
       reports: { link: [] },
-      editors: ['2'],
+      editors: { link: ['2'] },
       date: '2021-01-02',
       AllegedDeployerOfAISystem: { link: ['test-deployer'] },
       AllegedDeveloperOfAISystem: { link: ['youtube'] },
@@ -196,8 +213,9 @@ describe('New Incident page', () => {
         const expectedIncident = {
           ...newIncident,
           epoch_date_modified: getUnixTime(now),
-          modifiedBy: 'Test User',
+          modifiedBy: user.userId,
           reports: [],
+          editors: ['2'],
         };
 
         expect(input).to.deep.eq(expectedIncident);

@@ -57,11 +57,8 @@ function FlagModalContent({ reportNumber }) {
     };
 
     // Set the user as the last modifier
-    if (user && user.customData.first_name && user.customData.last_name) {
-      logReport.modifiedBy = `${user.customData.first_name} ${user.customData.last_name}`;
-    } else {
-      logReport.modifiedBy = 'Anonymous';
-    }
+    logReport.modifiedBy =
+      user && user.customData.first_name && user.customData.last_name ? user.id : '';
 
     // Log the report history
     await logReportHistory({ variables: { input: logReport } });
