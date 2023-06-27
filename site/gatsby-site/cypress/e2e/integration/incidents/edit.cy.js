@@ -183,7 +183,7 @@ describe('Incidents', () => {
       AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
       AllegedDeveloperOfAISystem: { link: ['youtube'] },
       AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
-      editors: { link: ['1', '2'] },
+      editors: { link: ['1', '2', user.userId] },
       nlp_similar_incidents: incident.data.incident.nlp_similar_incidents,
       flagged_dissimilar_incidents: incident.data.incident.flagged_dissimilar_incidents,
       editor_dissimilar_incidents: incident.data.incident.editor_dissimilar_incidents,

@@ -210,7 +210,7 @@ describe('Incidents App', () => {
       title: 'Test title',
       description: 'New description',
       date: '2023-05-04',
-      editors: { link: ['63320ce63ec803072c9f529c', '633b74dc95edb45d34a95895'] },
+      editors: { link: ['619b47ea5eed5334edfa3bbc', '633b74dc95edb45d34a95895', user.userId] },
       AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
       AllegedDeveloperOfAISystem: { link: ['youtube'] },
       AllegedHarmedOrNearlyHarmedParties: { link: ['google'] },

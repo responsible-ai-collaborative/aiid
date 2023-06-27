@@ -104,6 +104,16 @@ function EditCitePage(props) {
 
       updated.epoch_date_modified = getUnixTime(new Date());
 
+      // Add the current user to the list of editors
+      if (
+        user &&
+        user.customData.first_name &&
+        user.customData.last_name &&
+        !updated.editors.link.includes(user.id)
+      ) {
+        updated.editors.link.push(user.id);
+      }
+
       await updateIncident({
         variables: {
           query: {

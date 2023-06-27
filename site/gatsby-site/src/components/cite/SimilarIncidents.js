@@ -47,12 +47,25 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           ?.filter((e) => e != incident.incident_id)
           .concat([incident.incident_id]);
 
+    const editors = incidentData.incident.editors.map((e) => e.userId);
+
+    // Add the current user to the list of editors
+    if (
+      user &&
+      user.customData.first_name &&
+      user.customData.last_name &&
+      !editors.includes(user.id)
+    ) {
+      editors.push(user.id);
+    }
+
     await updateIncidentMutation({
       variables: {
         query: { incident_id: parentIncident.incident_id },
         set: {
           flagged_dissimilar_incidents,
           epoch_date_modified: getUnixTime(now),
+          editors: { link: editors },
         },
       },
     });
@@ -62,6 +75,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         ...incidentData.incident,
         flagged_dissimilar_incidents,
         epoch_date_modified: getUnixTime(now),
+        editors: { link: editors },
       },
       user
     );
