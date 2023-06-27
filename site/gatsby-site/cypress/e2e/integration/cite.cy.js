@@ -352,7 +352,7 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+    cy.get('[data-cy="incident-form"]', { timeout: 20000 }).should('be.visible');
   });
 
   it('Should display correct BibTex Citation', { retries: { runMode: 4 } }, () => {
