@@ -201,6 +201,11 @@ exports.createSchemaCustomization = ({ actions }) => {
       similarity: Float
     }
 
+    type mongodbAiidprodIncidentsTsne {
+      x: Float
+      y: Float
+    }
+
     type mongodbAiidprodIncidents implements Node {
       incident_id: Int
       title: String
@@ -218,6 +223,12 @@ exports.createSchemaCustomization = ({ actions }) => {
       Alleged_harmed_or_nearly_harmed_parties: [String]
       editors: [String]
       editors: [mongodbCustomDataUsers] @link(by: "userId")
+      tsne: mongodbAiidprodIncidentsTsne
+    }
+
+    type mongodbCustomDataUsers implements Node {
+      first_name: String
+      last_name: String
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -326,17 +337,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       duplicate_incident_number: Int
     }
 
-    type allMongodbAiidprodEntities implements Node @dontInfer {
-      nodes: [mongodbAiidprodEntities]
-    }
-
     type mongodbAiidprodDuplicates implements Node {
       duplicate_incident_number: Int
       true_incident_number: Int
-    }
-
-    type allMongodbAiidprodDuplicates implements Node @dontInfer {
-      nodes: [mongodbAiidprodEntities]
     }
 
     type mongodbTranslationsReportsEs implements Node {
@@ -345,28 +348,16 @@ exports.createSchemaCustomization = ({ actions }) => {
       report_number: Int
     }
 
-    type allMongodbTranslationsReportsEs implements Node @dontInfer {
-      nodes: [mongodbTranslationsReportsEs]
-    }
-
     type mongodbTranslationsReportsEn implements Node {
       title: String
       text: String
       report_number: Int
     }
 
-    type allMongodbTranslationsReportsEn implements Node @dontInfer {
-      nodes: [mongodbTranslationsReportsEn]
-    }
-
     type mongodbTranslationsReportsFr implements Node {
       title: String
       text: String
       report_number: Int
-    }
-
-    type allMongodbTranslationsReportsFr implements Node @dontInfer {
-      nodes: [mongodbTranslationsReportsFr]
     }
   `;
 
