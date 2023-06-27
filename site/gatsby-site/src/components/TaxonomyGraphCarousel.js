@@ -106,11 +106,15 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
             axes.map((axis, index) => {
               const dbAxis = axis;
 
-              const columns = Object.keys(categoryCounts[dbAxis])
-                .map((category) => [category, categoryCounts[dbAxis][category]])
-                .sort((a, b) =>
-                  a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
-                );
+              let columns = [];
+
+              if (categoryCounts[dbAxis]) {
+                Object.keys(categoryCounts[dbAxis])
+                  .map((category) => [category, categoryCounts[dbAxis][category]])
+                  .sort((a, b) =>
+                    a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
+                  );
+              }
 
               const options = {
                 data: {
