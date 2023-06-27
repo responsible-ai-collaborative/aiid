@@ -556,7 +556,10 @@ const SubmissionEditForm = ({
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
       <div className="flex w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
-        <ProgressCircle percentage={completion} />
+        <ProgressCircle
+          percentage={completion}
+          color={completion > 60 ? '#22c55e' : completion > 0 ? '#eab308' : null}
+        />
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
             <FontAwesomeIcon icon={faUser} className="mr-2" />
