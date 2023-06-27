@@ -39,7 +39,10 @@ const StepTwo = (props) => {
       ),
     video_url: yup
       .string()
-      .matches(/((https?):\/\/)(\S)*$/, '*Must enter URL in http://www.example.com/videoid format'),
+      .matches(
+        /((https?):\/\/)(\S)*$/,
+        '*Must enter URL in http://www.example.com/videoid format'
+      ),
   });
 
   const handleSubmit = (values, last) => {
@@ -54,7 +57,7 @@ const StepTwo = (props) => {
     <StepContainer name={props.name}>
       <Formik
         initialValues={data}
-        onSubmit={() => {}}
+        onSubmit={() => { }}
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
