@@ -1126,6 +1126,12 @@ describe('The Submit form', () => {
     cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
+
+    const keys = ['url', 'title', 'authors', 'incident_date'];
+
+    keys.forEach((key) => {
+      cy.get(`input[name="${key}"]`).should('have.value', '');
+    });
   });
 
   it('Should submit on step 2', () => {
@@ -1169,6 +1175,14 @@ describe('The Submit form', () => {
     cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
+
+    cy.waitForStableDOM();
+
+    const keys = ['url', 'title', 'authors', 'incident_date'];
+
+    keys.forEach((key) => {
+      cy.get(`input[name="${key}"]`).should('have.value', '');
+    });
   });
 
   it('Should display an error message if data is missing', () => {
