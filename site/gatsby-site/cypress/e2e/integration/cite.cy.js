@@ -346,7 +346,11 @@ describe('Cite pages', () => {
 
     cy.contains('Edit Incident').click();
 
+    cy.waitForStableDOM();
+
     cy.url().should('contain', '/incidents/edit/?incident_id=10');
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
   });
