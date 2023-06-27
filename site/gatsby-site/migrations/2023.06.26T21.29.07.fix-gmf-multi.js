@@ -1,4 +1,4 @@
-const { isArray } = require('lodash');
+const { isArray, isString } = require('lodash');
 
 const config = require('../config');
 
@@ -12,7 +12,10 @@ exports.up = async ({ context: { client } }) => {
   const fixValueJsonOptions = (value_json) => {
     const value = JSON.parse(value_json);
 
-    const newValue = value.map((v) => v.label);
+    const newValue = value
+      .map((v) => v.label)
+      .filter((v) => isString(v))
+      .map((v) => v.trim());
 
     return newValue;
   };
@@ -34,8 +37,6 @@ exports.up = async ({ context: { client } }) => {
           const value = JSON.parse(attribute.value_json);
 
           if (isArray(value) && value?.[0]?.attributes) {
-            // seems to be only with entities
-
             const updated = value.map((v) => {
               const { attributes } = v;
 
@@ -55,13 +56,17 @@ exports.up = async ({ context: { client } }) => {
               };
             });
 
-            return { ...attribute, value_json: updated };
+            const value_json = JSON.stringify(updated);
+
+            return { ...attribute, value_json };
+          } else if (isArray(value)) {
+            const updated = fixValueJsonOptions(attribute.value_json);
+
+            const value_json = JSON.stringify(updated);
+
+            return { ...attribute, value_json };
           } else {
-            const options = fixValueJsonOptions(attribute.value_json);
-
-            const updated = JSON.stringify(options);
-
-            return { ...attribute, value_json: updated };
+            throw 'Unhandled value type';
           }
         } catch (e) {
           console.log(
