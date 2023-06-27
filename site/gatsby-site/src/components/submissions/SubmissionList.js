@@ -128,6 +128,15 @@ const SubmissionList = ({ data }) => {
         title: t('Status'),
         className: 'min-w-[200px]',
         accessor: 'status',
+        filter: (rows, [field], value) =>
+          rows.filter((row) => {
+            let rowValue = row.values[field];
+
+            if (!rowValue) {
+              rowValue = 'pending review';
+            }
+            return rowValue.toString().toLowerCase().includes(value.toLowerCase());
+          }),
         Cell: ({ row: { values } }) => {
           let color = STATUS[values.status]?.color || 'warning';
 
@@ -147,6 +156,8 @@ const SubmissionList = ({ data }) => {
         title: t('Actions'),
         accessor: '_id',
         className: 'min-w-[120px]',
+        disableFilters: true,
+        disableSortBy: true,
         Cell: ({ row: { values } }) => (
           <Button color={'gray'} data-cy="review-submission">
             <LocalizedLink to={`?editSubmission=${values._id}`}>
