@@ -7,19 +7,51 @@ import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/T
 import ProgressCircle from 'elements/ProgessCircle';
 import { STATUS, getRowCompletionStatus } from 'utils/submissions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useMutation } from '@apollo/client';
+import { UPDATE_SUBMISSION } from '../../graphql/submissions';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const SubmissionList = ({ data }) => {
   const { t } = useTranslation();
 
-  const { isLoggedIn, isRole } = useUserContext();
+  const { isLoggedIn, isRole, user } = useUserContext();
 
   const [tableData, setTableData] = useState([]);
+
+  const [claiming, setClaiming] = useState(false);
+
+  const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
+
+  const addToast = useToastContext();
 
   useEffect(() => {
     if (data) {
       setTableData(data.submissions);
     }
   }, [data]);
+
+  const claimSubmission = async (submissionId) => {
+    setClaiming(true);
+    try {
+      await updateSubmission({
+        variables: {
+          query: {
+            _id: submissionId,
+          },
+          set: { editor: { link: user.id } },
+        },
+      });
+
+      setClaiming(false);
+    } catch (error) {
+      addToast({
+        message: t(`There was an error claiming this submission. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+
+      setClaiming(false);
+    }
+  };
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -108,8 +140,6 @@ const SubmissionList = ({ data }) => {
 
           const lastName = editor.last_name || '';
 
-          console.log('editor', editor);
-
           const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
 
           return (
@@ -159,17 +189,29 @@ const SubmissionList = ({ data }) => {
         disableFilters: true,
         disableSortBy: true,
         Cell: ({ row: { values } }) => (
-          <Button color={'gray'} data-cy="review-submission">
-            <LocalizedLink to={`?editSubmission=${values._id}`}>
-              <Trans>Review</Trans>
-            </LocalizedLink>
-          </Button>
+          <div className="flex gap-2">
+            <Button color={'gray'} data-cy="review-submission">
+              <LocalizedLink to={`?editSubmission=${values._id}`}>
+                <Trans>Review</Trans>
+              </LocalizedLink>
+            </Button>
+            {!values.editor && (
+              <Button
+                color={'gray'}
+                data-cy="claim-submission"
+                onClick={() => claimSubmission(values._id)}
+                disabled={claiming}
+              >
+                {claiming ? <Trans>Claiming...</Trans> : <Trans>Claim</Trans>}
+              </Button>
+            )}
+          </div>
         ),
       });
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [isLoggedIn, claiming]);
 
   const table = useTable(
     {
@@ -182,23 +224,9 @@ const SubmissionList = ({ data }) => {
     usePagination
   );
 
+  console.log('claiming', claiming);
+
   return (
-    // <ListGroup className="mb-5" data-cy="submissions">
-    //   {data?.submissions
-    //     .map((submission) => ({ ...submission, __typename: undefined }))
-    //     .sort(
-    //       (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
-    //     )
-    //     .map((submission) => (
-    //       <div
-    //         key={submission._id}
-    //         className="m-0 py-3 border-b last:border-none"
-    //         data-cy="submission"
-    //       >
-    //         <SubmissionReview submission={submission} />
-    //       </div>
-    //     ))}
-    // </ListGroup>
     <div className="rounded-lg border">
       <Table table={table} data-cy="submissions" className="mb-5" />
     </div>

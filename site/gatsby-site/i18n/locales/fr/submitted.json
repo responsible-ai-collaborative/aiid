@@ -33,5 +33,8 @@
     "Adding as incident": "Ajout en tant qu'incident",
     "Adding as issue": "Ajout en tant que problème",
     "Are you sure you want to reject this submission? This will permanently delete the submission.": "Voulez-vous vraiment rejeter cette soumission? Cela supprimera définitivement la soumission.",
-    "Changes saved": "Modifications enregistrées"
+    "Changes saved": "Modifications enregistrées",
+    "There was an error claiming this submission. Please try again.": "Une erreur s'est produite lors de la réclamation de cette soumission. Veuillez réessayer.",
+    "Claim": "Réclamer",
+    "Claiming...": "En cours..."
 }
