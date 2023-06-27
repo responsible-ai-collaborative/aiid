@@ -315,6 +315,10 @@
     .pagination nav ul {
         margin-top: 0 !important;
     }
+
+    .video-preview > div {
+        @apply !w-full lg:!w-[640px] mt-4 mx-auto bg-slate-300;
+    }
 }
 
 @layer utilities {
