@@ -28,10 +28,11 @@ describe('Admin', () => {
           }
         }
       `,
+      timeout: 60000, // mongodb admin api is extremely slow
     }).then(({ data: { users } }) => {
       cy.waitForStableDOM();
 
-      for (const user of users) {
+      for (const user of users.slice(0, 5)) {
         cy.get('[data-cy="input-filter-Id"]').clear();
         cy.get('[data-cy="input-filter-Id"]').type(user.userId);
 

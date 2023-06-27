@@ -17,6 +17,17 @@ export const FIND_USERS = gql`
   }
 `;
 
+export const FIND_USERS_FIELDS_ONLY = gql`
+  query FindUsers {
+    users {
+      roles
+      userId
+      first_name
+      last_name
+    }
+  }
+`;
+
 export const FIND_USER = gql`
   query FindUser($query: UserQueryInput!) {
     user(query: $query) {

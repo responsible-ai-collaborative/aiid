@@ -14,7 +14,7 @@ const submission = {
     'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
   image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
   incident_date: '2015-09-01',
-  incident_editors: ['Sean McGregor', 'Khoa Lam'],
+  incident_editors: ['1', '2'],
   incident_id: 0,
   language: 'en',
   source_domain: 'projects.tampabay.com',
@@ -42,7 +42,7 @@ const incident = {
   date: '2018-11-16',
   description:
     'Twenty-four Amazon workers in New Jersey were hospitalized after a robot punctured a can of bear repellent spray in a warehouse.',
-  editors: ['Sean McGregor', 'Khoa Lam'],
+  editors: ['1', '2'],
   incident_id: 1,
   nlp_similar_incidents: [],
   reports: [1, 2],
@@ -121,7 +121,7 @@ describe('Functions', () => {
           'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
         editor_dissimilar_incidents: [],
         editor_similar_incidents: [],
-        editors: ['Sean McGregor', 'Khoa Lam'],
+        editors: ['1', '2'],
         incident_id: 2,
         nlp_similar_incidents: [],
         reports: [],
@@ -354,6 +354,86 @@ describe('Functions', () => {
       expect(global.context.functions.execute).to.be.calledOnceWith('linkReportsToIncidents', {
         incident_ids: [],
         report_numbers: [2],
+      });
+    });
+  });
+
+  it("Should default to Sean's user id", () => {
+    const submissionsCollection = {
+      findOne: cy.stub().resolves({ ...submission, incident_editors: [] }),
+      deleteOne: cy.stub(),
+    };
+
+    const incidentsCollection = {
+      find: cy
+        .stub()
+        .onFirstCall()
+        .returns({
+          toArray: cy.stub().resolves([]),
+        })
+        .onSecondCall()
+        .returns({
+          sort: cy.stub().returns({
+            limit: cy.stub().returns({
+              next: cy.stub().resolves(incident),
+            }),
+          }),
+        }),
+      insertOne: cy.stub().resolves(),
+    };
+
+    const reportsCollection = {
+      find: cy.stub().returns({
+        sort: cy.stub().returns({
+          limit: cy.stub().returns({
+            next: cy.stub().resolves({ report_number: 1 }),
+          }),
+        }),
+      }),
+      insertOne: cy.stub().resolves(),
+    };
+
+    global.context = {
+      // @ts-ignore
+      services: {
+        get: cy.stub().returns({
+          db: cy.stub().returns({
+            collection: (() => {
+              const stub = cy.stub();
+
+              stub.withArgs('submissions').returns(submissionsCollection);
+              stub.withArgs('incidents').returns(incidentsCollection);
+              stub.withArgs('reports').returns(reportsCollection);
+
+              return stub;
+            })(),
+          }),
+        }),
+      },
+      functions: {
+        execute: cy.stub(),
+      },
+    };
+
+    global.BSON = { Int32: (x) => x };
+
+    cy.wrap(
+      promoteSubmissionToReport({ is_incident_report: true, incident_ids: [], submission_id: 1 })
+    ).then(() => {
+      expect(incidentsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+        'Alleged deployer of AI system': ['Youtube'],
+        'Alleged developer of AI system': ['AI Dev'],
+        'Alleged harmed or nearly harmed parties': ['Adults'],
+        date: '2015-09-01',
+        description:
+          'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
+        editor_dissimilar_incidents: [],
+        editor_similar_incidents: [],
+        editors: ['619b47ea5eed5334edfa3bbc'],
+        incident_id: 2,
+        nlp_similar_incidents: [],
+        reports: [],
+        title: 'Submisssion 1 title',
       });
     });
   });

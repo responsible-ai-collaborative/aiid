@@ -12,7 +12,9 @@
         },
         "first_name": "Test",
         "last_name": "User",
-        "roles": ["admin"],
+        "roles": [
+          "admin"
+        ],
         "userId": "63320ce63ec803072c9f529c"
       },
       {
@@ -26,7 +28,9 @@
         },
         "first_name": null,
         "last_name": null,
-        "roles": ["subscriber"],
+        "roles": [
+          "subscriber"
+        ],
         "userId": "63323eb94c44d44dee0887cd"
       },
       {
@@ -40,7 +44,9 @@
         },
         "first_name": null,
         "last_name": null,
-        "roles": ["subscriber"],
+        "roles": [
+          "subscriber"
+        ],
         "userId": "63332c2ae42c6c12924ffc57"
       },
       {
@@ -52,9 +58,11 @@
           "email": "pablo+2@botsfactory.io",
           "lastAuthenticationDate": "2022-10-03T23:48:58Z"
         },
-        "first_name": null,
-        "last_name": null,
-        "roles": ["subscriber"],
+        "first_name": "Cesar",
+        "last_name": "Varela",
+        "roles": [
+          "subscriber"
+        ],
         "userId": "633b74dc95edb45d34a95895"
       }
     ]

@@ -5,8 +5,9 @@ import ReportText from 'components/reports/ReportText';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
+import Link from 'components/ui/Link';
 
-const LatestIncidentReport = ({ report, key }) => {
+const LatestIncidentReport = ({ report, key, isLatest = false }) => {
   const {
     image_url,
     cloudinary_id,
@@ -15,6 +16,8 @@ const LatestIncidentReport = ({ report, key }) => {
     epoch_date_submitted,
     incident_id,
     report_number,
+    source_domain,
+    url,
   } = report;
 
   const { t } = useTranslation();
@@ -23,17 +26,17 @@ const LatestIncidentReport = ({ report, key }) => {
 
   return (
     <div
-      className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800 h-full"
+      className="flex flex-col items-center bg-white rounded-lg border  shadow-md lg:flex-row dark:border-gray-700 dark:bg-gray-800 h-full"
       key={key}
     >
-      <div className="flex self-stretch md:w-1/3 justify-center items-center md:border-r md:max-w-sm">
+      <div className="lg:flex self-stretch lg:w-1/3 justify-center items-center lg:border-r lg:max-w-sm max-h-240 lg:max-h-[100%]">
         <LocalizedLink
           to={reportLink}
           className="hover:no-underline text-primary-blue max-w-full h-full"
         >
           <Image
             className={
-              'img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover'
+              'img-fluid rounded-start h-full w-full max-w-full rounded-t-lg lg:rounded-l-lg lg:rounded-r-none border-r object-cover max-h-240 lg:max-h-[100%]'
             }
             publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
             alt={title}
@@ -41,18 +44,26 @@ const LatestIncidentReport = ({ report, key }) => {
           />
         </LocalizedLink>
       </div>
-      <div className="flex flex-col md:w-2/3 justify-between leading-normal">
-        <div className="py-6 pl-6 pr-12">
+      <div className="flex flex-col lg:w-2/3 justify-between leading-normal">
+        <div className="py-6 lg:pl-6 px-12">
           <LocalizedLink to={reportLink} className="hover:no-underline max-w-full cursor-pointer">
-            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full px-6 pt-6 hover:text-primary-blue">
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {title}
+              {isLatest && (
+                <span className="bg-blue-100 text-blue-800 text-sm font-semibold whitespace-nowrap ml-2 px-1.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-900">
+                  <Trans ns="landing">Latest Incident Report</Trans>
+                </span>
+              )}
             </h5>
           </LocalizedLink>
           <DateLabel
             date={epoch_date_submitted * 1000}
-            className="text-sm text-gray-500 dark:text-gray-400 pl-6 pb-6"
+            className="text-sm text-gray-500 dark:text-gray-400"
           />
-          <div className="px-6 py-6">
+          <Link to={url} className="text-sm ml-2" target="_blank">
+            {source_domain}
+          </Link>
+          <div>
             <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
               <ReportText maxChars={240} text={text} />
             </div>

@@ -21,6 +21,20 @@ describe('Incidents', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'FindUsers',
+      {
+        data: {
+          users: [
+            { userId: '1', first_name: 'Sean', last_name: 'McGregor' },
+            { userId: '2', first_name: 'Pablo', last_name: 'Costa' },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'IncidentWithReports',
       'IncidentWithReports',
       { data: { incidents: [] } }
@@ -79,7 +93,7 @@ describe('Incidents', () => {
       }
     );
 
-    cy.wait(['@FindIncident', '@FindEntities']);
+    cy.wait(['@FindIncident', '@FindEntities', '@FindUsers']);
 
     const values = {
       title: 'Test title',
@@ -96,7 +110,9 @@ describe('Incidents', () => {
       .first()
       .type('Test Deployer{enter}');
 
-    cy.get('[data-cy="editors-input"] input').first().type('Test Editor{enter}');
+    cy.get('#input-editors').type('Pablo');
+
+    cy.get('[aria-label="Pablo Costa"]').click();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -140,7 +156,7 @@ describe('Incidents', () => {
       expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.deep.eq([
         'children',
       ]);
-      expect(xhr.request.body.variables.set.editors).to.deep.eq(['Sean McGregor', 'Test Editor']);
+      expect(xhr.request.body.variables.set.editors).to.deep.eq({ link: ['1', '2'] });
     });
 
     cy.get('.tw-toast').contains('Incident 10 updated successfully.').should('exist');
