@@ -231,7 +231,7 @@ describe('The Submit form', () => {
           submitters: ['Test User'],
           authors: ['Valentina Palladino'],
           incident_date: '2020-01-01',
-          incident_editors: ['63320ce63ec803072c9f529c'],
+          incident_editors: { link: ['63320ce63ec803072c9f529c'] },
           incident_title: 'Elsagate',
           date_published: '2017-11-10',
           image_url:
