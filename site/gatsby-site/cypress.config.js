@@ -1,10 +1,10 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
-  video: false,
+  video: true,
   videoUploadOnPasses: false,
   chromeWebSecurity: false,
-  screenshotOnRunFailure: false,
+  screenshotOnRunFailure: true,
   retries: {
     runMode: 2,
     openMode: 0,
