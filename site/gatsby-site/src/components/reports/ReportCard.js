@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
 import { format, fromUnixTime } from 'date-fns';
+import ReactPlayer from 'react-player';
 
 const ReportCard = ({
   item,
@@ -188,6 +189,11 @@ const ReportCard = ({
         </div>
         <div className="cursor-default">
           <ReportText text={item.text} maxChars={expanded ? null : 240} />
+          {item.video_url && (
+            <div className="video-preview mb-4">
+              <ReactPlayer url={item.video_url} controls={true} />
+            </div>
+          )}
           {expanded && hasVariantData(item) && (
             <div className="flex w-full flex-col my-4 gap-2">
               <div className="font-bold flex items-center gap-2">

@@ -240,6 +240,7 @@ export const FIND_FULL_INCIDENT = gql`
         description
         url
         image_url
+        video_url
         cloudinary_id
         source_domain
         text
