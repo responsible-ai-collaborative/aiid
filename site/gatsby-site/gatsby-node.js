@@ -467,35 +467,3 @@ exports.onPostBuild = () => {
 
   fs.writeFileSync(filePath, newFileContent);
 };
-
-exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
-  const { createNode } = actions;
-
-  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
-
-  const aiidprod = await mongoClient.db('aiidprod');
-
-  const incidents = await aiidprod.collection('incidents').find().toArray();
-
-  incidents.forEach((incident) => {
-    console.log(incident);
-    const newNode = {
-      ...incident,
-      Alleged_deployer_of_AI_system: incident['Alleged deployer of AI system'] || [],
-      Alleged_developer_of_AI_system: incident['Alleged developer of AI system'] || [],
-      Alleged_harmed_or_nearly_harmed_parties:
-        incident['Alleged harmed or nearly harmed parties'] || [],
-      id: createNodeId(`mongodbAiidprodIncidentsNew-${incident._id}`), // _id from your MongoDB document
-      internal: {
-        type: 'mongodbAiidprodIncidentsNew',
-        contentDigest: createContentDigest(incident),
-      },
-    };
-
-    delete newNode['Alleged deployer of AI system'];
-    delete newNode['Alleged developer of AI system'];
-    delete newNode['Alleged harmed or nearly harmed parties'];
-
-    createNode(newNode);
-  });
-};
