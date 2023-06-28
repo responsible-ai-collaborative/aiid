@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { useField } from 'formik';
 import ReactPlayer from 'react-player';
+import { getThumbnailURL } from 'utils/video';
 
 export default function PreviewVideoInputGroup({
   name,
@@ -23,9 +24,12 @@ export default function PreviewVideoInputGroup({
 
   const [videoError, setVideoError] = useState(false);
 
+  const [thumbnail, setThumbnail] = useState(null);
+
   const handleError = () => {
     if (!error) {
       setVideoError(true);
+      setThumbnail(null);
     }
   };
 
@@ -36,6 +40,14 @@ export default function PreviewVideoInputGroup({
   useEffect(() => {
     if (value == '') {
       setVideoError(false);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (value !== '' && !error) {
+      getThumbnailURL(value).then((url) => {
+        setThumbnail(url);
+      });
     }
   }, [value]);
 
@@ -62,9 +74,17 @@ export default function PreviewVideoInputGroup({
         </span>
       )}
       {value && (
-        <div className="video-preview">
-          <ReactPlayer url={value} onError={handleError} onReady={handleReady} />
-        </div>
+        <>
+          <div className="video-preview">
+            <ReactPlayer url={value} onError={handleError} onReady={handleReady} />
+            {thumbnail && (
+              <div className="flex flex-row gap-2 p-2 bg-slate-200 rounded text-sm">
+                <div className="select-none">Thumbnail:</div>
+                <div className="font-bold">{thumbnail}</div>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </>
   );
