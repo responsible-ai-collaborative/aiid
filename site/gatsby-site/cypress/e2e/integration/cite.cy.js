@@ -344,6 +344,8 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('Edit Incident').click();
 
     cy.waitForStableDOM();
