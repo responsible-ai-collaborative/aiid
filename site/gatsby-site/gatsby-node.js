@@ -218,9 +218,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
       reports: [mongodbAiidprodReports] @link(by: "report_number")
-      Alleged_deployer_of_AI_system: [String]
-      Alleged_developer_of_AI_system: [String]
-      Alleged_harmed_or_nearly_harmed_parties: [String]
       editors: [String]
       editors: [mongodbCustomDataUsers] @link(by: "userId")
       tsne: mongodbAiidprodIncidentsTsne
