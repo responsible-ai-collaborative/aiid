@@ -670,7 +670,7 @@ describe('Submitted reports', () => {
         editor_dissimilar_incidents: [],
         editor_similar_incidents: [],
         tags: [],
-        incident_editors: [],
+        incident_editors: { link: [] },
       });
     });
 
