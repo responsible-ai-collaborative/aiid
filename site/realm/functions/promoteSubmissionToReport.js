@@ -101,7 +101,7 @@ exports = async (input) => {
           ...parentIncident,
           reports: [...parentIncident.reports, BSON.Int32(report_number)],
           embedding,
-          modifiedBy: submission.submitters && submission.submitters.length > 0 ? submission.submitters[0] : '',
+          modifiedBy: submission.user,
         });
       }
     }
