@@ -69,6 +69,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         __typename: undefined,
         embedding: undefined,
         editors: { link: values.editors },
+        tsne: undefined,
       };
 
       const { entities } = entitiesData;
@@ -123,8 +124,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         },
         user
       );
-
-      console.log('updatedIncident', updatedIncident);
 
       await logIncidentHistory({ variables: { input: updatedIncident } });
 
