@@ -216,6 +216,9 @@ describe('New Incident page', () => {
           modifiedBy: user.userId,
           reports: [],
           editors: ['2'],
+          AllegedDeployerOfAISystem: ['test-deployer'],
+          AllegedDeveloperOfAISystem: ['youtube'],
+          AllegedHarmedOrNearlyHarmedParties: ['children'],
         };
 
         expect(input).to.deep.eq(expectedIncident);

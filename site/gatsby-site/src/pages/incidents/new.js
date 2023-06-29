@@ -102,6 +102,10 @@ function NewIncidentPage() {
 
       newIncident.epoch_date_modified = getUnixTime(new Date());
 
+      newIncident.AllegedDeployerOfAISystem = newIncident.AllegedDeployerOfAISystem.link;
+      newIncident.AllegedDeveloperOfAISystem = newIncident.AllegedDeveloperOfAISystem.link;
+      newIncident.AllegedHarmedOrNearlyHarmedParties =
+        newIncident.AllegedHarmedOrNearlyHarmedParties.link;
       newIncident.editors = newIncident.editors.link;
 
       await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
