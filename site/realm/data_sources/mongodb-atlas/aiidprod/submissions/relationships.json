@@ -17,6 +17,12 @@
         "foreign_key": "entity_id",
         "is_list": true
     },
+    "incident_editors": {
+        "ref": "#/relationship/mongodb-atlas/customData/users",
+        "source_key": "incident_editors",
+        "foreign_key": "userId",
+        "is_list": true
+    },
     "user": {
         "ref": "#/relationship/mongodb-atlas/customData/users",
         "source_key": "user",
