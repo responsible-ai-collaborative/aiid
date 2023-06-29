@@ -266,6 +266,29 @@ const plugins = [
       },
     },
   },
+  {
+    resolve: 'gatsby-source-prismic',
+    options: {
+      repositoryName: process.env.GATSBY_PRISMIC_REPO_NAME,
+      accessToken: process.env.PRISMIC_ACCESS_TOKEN,
+      customTypesApiToken: process.env.PRISMIC_CUSTOM_TYPES_API_TOKEN,
+      // schemas: {
+      //   example_type: require('./custom_types/example_type.json'),
+      // },
+      // linkResolver: (doc) => linkResolver(doc),
+      // linkResolver: () => post => `/blog-post/${post.uid}`,
+      routes: [
+        // {
+        //   type: 'blog',
+        //   path: '/blog/:uid',
+        // },
+        {
+          type: 'blog',
+          path: '/blog-post/:uid',
+        },
+      ],
+    },
+  },
 ];
 
 module.exports = {
