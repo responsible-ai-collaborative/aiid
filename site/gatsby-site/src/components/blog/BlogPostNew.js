@@ -1,16 +1,16 @@
 import { PrismicRichText } from '@prismicio/react';
 // import TranslationBadge from 'components/i18n/TranslationBadge';
 import DateLabel from 'components/ui/DateLabel';
-import SocialShareButtons from 'components/ui/SocialShareButtons';
-import { useLayoutContext } from 'contexts/LayoutContext';
+// import SocialShareButtons from 'components/ui/SocialShareButtons';
+// import { useLayoutContext } from 'contexts/LayoutContext';
 // import { Link } from 'gatsby';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Trans } from 'react-i18next';
-import config from '../../../config';
-import Outline from 'components/Outline';
+// import config from '../../../config';
+// import Outline from 'components/Outline';
 
-const BlogPostNew = ({ post, ...props }) => {
+const BlogPostNew = ({ post }) => {
   // const metaTitle = mdx.frontmatter.metaTitle;
 
   // const metaDescription = mdx.frontmatter.metaDescription;
@@ -23,21 +23,21 @@ const BlogPostNew = ({ post, ...props }) => {
   //   metaImage = `${config.gatsby.siteUrl}${postImage}`;
   // }
 
-  const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
+  // const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
 
-  const loc = new URL(canonicalUrl);
+  // const loc = new URL(canonicalUrl);
 
-  const rightSidebar = (
-    <>
-      <Outline location={loc} />
-    </>
-  );
+  // const rightSidebar = (
+  //   <>
+  //     <Outline location={loc} />
+  //   </>
+  // );
 
-  const { displayRightSidebar } = useLayoutContext();
+  // const { displayRightSidebar } = useLayoutContext();
 
-  useEffect(() => {
-    displayRightSidebar(rightSidebar);
-  }, []);
+  // useEffect(() => {
+  //   displayRightSidebar(rightSidebar);
+  // }, []);
 
   return (
     <>
@@ -46,15 +46,15 @@ const BlogPostNew = ({ post, ...props }) => {
         <LocalizedLink to="/blog" className="text-lg">
           <Trans>AIID Blog</Trans>
         </LocalizedLink>
-        <h1>{post.data.title}</h1>
+        <h1>{post.data.title.text}</h1>
       </div>
       <div className="flex items-center mb-6 -mt-1 flex-wrap">
-        <SocialShareButtons
-          // metaTitle={metaTitle}
+        {/* <SocialShareButtons
+          metaTitle={metaTitle}
           path={props.location.pathname}
           page="post"
           className="inline-block"
-        />
+        /> */}
         {/* {mdx.frontmatter.aiTranslated && (
           <>
             <TranslationBadge className="ml-2" />
