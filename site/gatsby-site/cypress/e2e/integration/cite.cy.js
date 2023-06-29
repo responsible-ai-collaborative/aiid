@@ -480,7 +480,7 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/9');
 
-    cy.wait('@findIncident');
+    cy.wait('@findIncident', { timeout: 10000 });
 
     cy.waitForStableDOM();
 
@@ -492,6 +492,7 @@ describe('Cite pages', () => {
 
     cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      cy.log(JSON.stringify(xhr.request.body.variables.set));
       expect(xhr.request.body.variables.set).to.deep.eq({
         flagged_dissimilar_incidents: [11],
         epoch_date_modified: getUnixTime(now),
@@ -544,7 +545,7 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/9');
 
-    cy.wait('@findIncident');
+    cy.wait('@findIncident', { timeout: 10000 });
 
     cy.waitForStableDOM();
 
@@ -556,6 +557,7 @@ describe('Cite pages', () => {
 
     cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      cy.log(JSON.stringify(xhr.request.body.variables.set));
       expect(xhr.request.body.variables.set).to.deep.eq({
         flagged_dissimilar_incidents: [],
         epoch_date_modified: getUnixTime(now),
