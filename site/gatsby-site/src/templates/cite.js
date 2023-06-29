@@ -215,6 +215,7 @@ export const query = graphql`
         description
         url
         image_url
+        video_url
         cloudinary_id
         source_domain
         mongodb_id
