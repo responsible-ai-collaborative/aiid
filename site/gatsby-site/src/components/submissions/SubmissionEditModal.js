@@ -63,6 +63,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                 : values.submitters
               : ['Anonymous'],
             plain_text: await stripMarkdown(update.text),
+            incident_editors: { link: update.incident_editors },
           },
         },
       });
@@ -122,6 +123,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
               data.submission.harmed_parties === null
                 ? []
                 : data.submission.harmed_parties.map((item) => item.name),
+            incident_editors: data.submission.incident_editors.map((e) => e.userId),
           }}
         >
           {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
