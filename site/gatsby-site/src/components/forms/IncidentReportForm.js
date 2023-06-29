@@ -29,11 +29,13 @@ import {
   faNewspaper,
   faAlignLeft,
   faTenge,
+  faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import FlowbiteSearchInput from './FlowbiteSearchInput';
+import PreviewVideoInputGroup from './PreviewVideoInputGroup';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -93,6 +95,9 @@ export const schema = yup.object().shape({
       /((https?):\/\/)(\S)*$/,
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
+  video_url: yup
+    .string()
+    .matches(/((https?):\/\/)(\S)*$/, '*Must enter URL in http://www.example.com/videoid format'),
   editor_notes: yup.string().nullable(),
   incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
@@ -297,6 +302,15 @@ const IncidentReportForm = () => {
           label="Image Address"
           icon={faImage}
           placeholder="Image URL"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <PreviewVideoInputGroup
+          name="video_url"
+          label="Video Address"
+          icon={faVideo}
+          placeholder="Video URL"
           className="mt-3"
           {...TextInputGroupProps}
         />

@@ -43,6 +43,7 @@ const reportFields = [
   'epoch_date_published',
   'flag',
   'image_url',
+  'video_url',
   'language',
   'plain_text',
   'report_number',

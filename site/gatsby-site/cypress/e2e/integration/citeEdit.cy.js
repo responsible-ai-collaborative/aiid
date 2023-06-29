@@ -77,6 +77,7 @@ describe('Edit report', () => {
       'date_downloaded',
       'date_published',
       'image_url',
+      'video_url',
       'submitters',
       'title',
       'editor_notes',
@@ -111,6 +112,7 @@ describe('Edit report', () => {
       date_downloaded: '2022-01-01',
       date_published: '2022-02-02',
       image_url: 'https://test.com/test.jpg',
+      video_url: 'https://example.com/updatedvideo',
       submitters: 'Test Submitter',
       title: 'Test Title',
       url: 'https://www.test.com/test',
@@ -172,6 +174,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
       expect(xhr.request.body.variables.set.flag).eq(null);
       expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
+      expect(xhr.request.body.variables.set.video_url).eq(updates.video_url);
       expect(xhr.request.body.variables.set.report_number).eq(10);
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
       expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
