@@ -17,7 +17,7 @@ export const IndexQuery = graphql`
         node {
           id
           url
-
+          uid
           data {
             title {
               text
