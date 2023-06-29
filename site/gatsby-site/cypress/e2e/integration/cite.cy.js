@@ -868,6 +868,10 @@ describe('Cite pages', () => {
             epoch_date_modified: getUnixTime(now),
             modifiedBy: user.userId,
             reports: [],
+            AllegedDeployerOfAISystem: newIncident.AllegedDeployerOfAISystem.link,
+            AllegedDeveloperOfAISystem: newIncident.AllegedDeveloperOfAISystem.link,
+            AllegedHarmedOrNearlyHarmedParties: newIncident.AllegedHarmedOrNearlyHarmedParties.link,
+            editors: newIncident.editors.link,
           };
 
           expect(input).to.deep.eq(expectedIncident);
