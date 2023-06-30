@@ -11,7 +11,7 @@ export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
   const { t } = useTranslation();
 
   return (
-    <Card className="h-[240px] hover:bg-black animate-all-0">
+    <Card className="h-[240px] animate-all-0">
       <Card.Body className="flex flex-col relative p-0">
         <div className="pl-6 pr-6 pt-3 bg-[#000000b3] text-white bottom-0 absolute left-0 right-0 z-2 min-h-[40%]">
           <HeaderTitle
