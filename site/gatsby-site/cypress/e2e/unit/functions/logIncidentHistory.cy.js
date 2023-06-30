@@ -6,7 +6,7 @@ const incidentInput = {
   description:
     'The National Eating Disorders Association (NEDA) has shut down its chatbot named Tessa after it gave weight-loss advice to users seeking help for eating disorders. The incident has raised concerns about the risks of using chatbots and AI assistants in healthcare settings, particularly in addressing sensitive issues like eating disorders. NEDA is investigating the matter, emphasizing the need for caution and accuracy when utilizing technology to provide mental health support.',
   reports: [3103, 3104],
-  editors: ['Daniel Atherton'],
+  editors: ['63320ce63ec803072c9f529c'],
   date: '2023-05-29',
   AllegedDeployerOfAISystem: ['national-eating-disorders-association', 'cass'],
   AllegedDeveloperOfAISystem: ['cass'],
@@ -35,9 +35,8 @@ const incidentInput = {
     x: -0.28079595740348834,
     y: -0.3189867109991937,
   },
-  editor: 'Daniel Atherton',
+  modifiedBy: '63320ce63ec803072c9f529c',
   epoch_date_modified: 1685318400,
-  user: { link: '63320ce63ec803072c9f529c' },
 };
 
 describe('Functions', () => {

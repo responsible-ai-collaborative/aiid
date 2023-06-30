@@ -26,7 +26,7 @@ const report = {
   language: 'en',
   tags: [],
   user: { link: '63320ce63ec803072c9f529c' },
-  editor: 'Test User',
+  modifiedBy: '63320ce63ec803072c9f529c',
   editor_notes: 'this is an editor note',
 };
 
