@@ -33,7 +33,7 @@ export const schema = Yup.object().shape({
   AllegedDeveloperOfAISystem: Yup.array().required(),
   AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
   editors: Yup.array().of(Yup.string()).required(),
-  editor_notes: Yup.string(),
+  editor_notes: Yup.string().nullable(),
 });
 
 function IncidentForm() {
