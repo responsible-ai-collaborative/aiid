@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { Button, Spinner } from 'flowbite-react';
-import { GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../../graphql/incidents';
+import { FIND_INCIDENT, GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -12,13 +13,21 @@ import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
 function NewIncidentPage() {
+  const [incidentIdToClone] = useQueryParam('incident_id', withDefault(NumberParam, 0));
+
   const { t, i18n } = useTranslation();
+
+  const { data: incidentToCloneData, loading: loadingIncidentToClone } = useQuery(FIND_INCIDENT, {
+    variables: { query: { incident_id: incidentIdToClone } },
+  });
+
+  const [initialValues, setInitialValues] = useState(null);
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
   const { data: lastIncident, loading: loadingLastIncident } = useQuery(GET_LATEST_INCIDENT_ID);
 
-  const loading = loadingLastIncident || loadingEntities;
+  const loading = loadingLastIncident || loadingEntities || loadingIncidentToClone;
 
   const [insertIncident] = useMutation(INSERT_INCIDENT);
 
@@ -91,6 +100,38 @@ function NewIncidentPage() {
     }
   };
 
+  useEffect(() => {
+    if (incidentToCloneData) {
+      if (incidentToCloneData.incident) {
+        const {
+          title,
+          description,
+          date,
+          AllegedDeployerOfAISystem,
+          AllegedDeveloperOfAISystem,
+          AllegedHarmedOrNearlyHarmedParties,
+          editors,
+          editor_notes,
+        } = incidentToCloneData.incident;
+
+        setInitialValues({
+          title,
+          description,
+          date,
+          AllegedDeployerOfAISystem: AllegedDeployerOfAISystem.map((entity) => entity.entity_id),
+          AllegedDeveloperOfAISystem: AllegedDeveloperOfAISystem.map((entity) => entity.entity_id),
+          AllegedHarmedOrNearlyHarmedParties: AllegedHarmedOrNearlyHarmedParties.map(
+            (entity) => entity.entity_id
+          ),
+          editor_notes,
+          editors: editors.map((editor) => editor.userId),
+        });
+      } else {
+        setInitialValues({ editors: [] });
+      }
+    }
+  }, [incidentToCloneData]);
+
   return (
     <div className={'w-full'}>
       {!loading && (
@@ -103,8 +144,8 @@ function NewIncidentPage() {
 
       {loading && <DefaultSkeleton />}
 
-      {!loading && (
-        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={{ editors: [] }}>
+      {!loading && initialValues && (
+        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={initialValues}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
               <IncidentForm />
