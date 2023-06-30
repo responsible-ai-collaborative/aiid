@@ -1,5 +1,9 @@
 const logReportHistory = require('../../../../../realm/functions/logReportHistory');
 
+const reportsSchema = require('../../../../../realm/data_sources/mongodb-atlas/aiidprod/reports/schema.json');
+
+const historyReportsSchema = require('../../../../../realm/data_sources/mongodb-atlas/history/reports/schema.json');
+
 const report = {
   report_number: 3152,
   is_incident_report: true,
@@ -56,5 +60,15 @@ describe('Functions', () => {
     cy.wrap(logReportHistory(report)).then(() => {
       expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.equal(report);
     });
+  });
+
+  it('Reports schema should be the same as History Reports schema', () => {
+    expect(historyReportsSchema.properties).to.deep.equal({
+      ...reportsSchema.properties,
+      modifiedBy: {
+        bsonType: 'string',
+      },
+    });
+    expect(historyReportsSchema.required).to.deep.equal(reportsSchema.required);
   });
 });

@@ -1,5 +1,9 @@
 const logIncidentHistory = require('../../../../../realm/functions/logIncidentHistory');
 
+const incidentsSchema = require('../../../../../realm/data_sources/mongodb-atlas/aiidprod/incidents/schema.json');
+
+const historyIncidentsSchema = require('../../../../../realm/data_sources/mongodb-atlas/history/incidents/schema.json');
+
 const incidentInput = {
   incident_id: 545,
   title: 'Chatbot Tessa gives unauthorized diet advice to users seeking help for eating disorders',
@@ -76,5 +80,15 @@ describe('Functions', () => {
 
       expect(incidentsHistoryCollection.insertOne.firstCall.args[0]).to.deep.equal(incident);
     });
+  });
+
+  it('Incident schema should be the same as History Incident schema', () => {
+    expect(historyIncidentsSchema.properties).to.deep.equal({
+      ...incidentsSchema.properties,
+      modifiedBy: {
+        bsonType: 'string',
+      },
+    });
+    expect(historyIncidentsSchema.required).to.deep.equal(incidentsSchema.required);
   });
 });
