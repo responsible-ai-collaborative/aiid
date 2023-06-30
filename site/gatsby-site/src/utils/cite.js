@@ -188,8 +188,7 @@ export const transformIncidentData = (incident, user) => {
   }
 
   // Set the user as the last modifier
-  result.modifiedBy =
-    user && user.customData.first_name && user.customData.last_name ? user.id : '';
+  result.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
 
   return result;
 };

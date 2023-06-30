@@ -50,12 +50,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
     const editors = incidentData.incident.editors.map((e) => e.userId);
 
     // Add the current user to the list of editors
-    if (
-      user &&
-      user.customData.first_name &&
-      user.customData.last_name &&
-      !editors.includes(user.id)
-    ) {
+    if (user && user.providerType != 'anon-user' && !editors.includes(user.id)) {
       editors.push(user.id);
     }
 

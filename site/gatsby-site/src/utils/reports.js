@@ -14,8 +14,7 @@ export const transformReportData = (report, user) => {
     result.embedding = embeddingData;
   }
 
-  result.modifiedBy =
-    user && user.customData.first_name && user.customData.last_name ? user.id : '';
+  result.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
 
   return result;
 };

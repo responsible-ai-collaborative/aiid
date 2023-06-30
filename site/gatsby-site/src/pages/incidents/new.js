@@ -97,8 +97,7 @@ function NewIncidentPage() {
       await insertIncident({ variables: { incident: newIncident } });
 
       // Set the user as the last modifier
-      newIncident.modifiedBy =
-        user && user.customData.first_name && user.customData.last_name ? user.id : '';
+      newIncident.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
 
       newIncident.epoch_date_modified = getUnixTime(new Date());
 

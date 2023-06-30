@@ -57,8 +57,7 @@ function FlagModalContent({ reportNumber }) {
     };
 
     // Set the user as the last modifier
-    logReport.modifiedBy =
-      user && user.customData.first_name && user.customData.last_name ? user.id : '';
+    logReport.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
 
     // Log the report history
     await logReportHistory({ variables: { input: logReport } });
