@@ -31,13 +31,15 @@ const getVariants = (callback) => {
       }
     `,
   }).then(({ data: { incidents } }) => {
-    const incident = incidents[0];
+    if (incidents.length > 0) {
+      const incident = incidents[0];
 
-    const variants = incident.reports
-      .filter((r) => !isCompleteReport(r))
-      .sort((a, b) => a.report_number - b.report_number);
+      const variants = incident.reports
+        .filter((r) => !isCompleteReport(r))
+        .sort((a, b) => a.report_number - b.report_number);
 
-    callback(variants);
+      callback(variants);
+    }
   });
 };
 
