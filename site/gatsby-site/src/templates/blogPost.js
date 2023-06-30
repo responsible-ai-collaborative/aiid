@@ -1,27 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'gatsby';
 import BlogPostNew from 'components/blog/BlogPostNew';
 
-class Post extends Component {
-  render() {
-    const post = this.props.data.post;
+export default function BlogPost(props) {
+  const post = props.data.post;
 
-    return (
-      <>
-        <BlogPostNew post={post} />
-      </>
-    );
-  }
+  return (
+    <>
+      <BlogPostNew post={post} location={props.location} />
+    </>
+  );
 }
 
-export default Post;
-
-export const postQuery = graphql`
+export const pageQuery = graphql`
   query Post($uid: String) {
+    site {
+      siteMetadata {
+        title
+        docsLocation
+      }
+    }
     post: prismicBlog(uid: { eq: $uid }) {
-      id
       uid
       data {
+        metatitle
+        metadescription
+        slug
+        aitranslated
+        language
         title {
           text
         }

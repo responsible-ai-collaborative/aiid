@@ -2,23 +2,29 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import PostsListingNew from 'components/blog/PostsListingNew';
 
-const BlogPostsPage = (props) => (
-  <div className="page">
-    <PostsListingNew posts={props.data.posts.edges} />
-  </div>
-);
+const BlogPostsPage = (props) => {
+  return (
+    <div className="page">
+      <PostsListingNew posts={props.data.posts.edges} />
+    </div>
+  );
+};
 
 export default BlogPostsPage;
 
 export const IndexQuery = graphql`
-  query BlogPosts {
-    posts: allPrismicBlog {
+  query BlogPosts($locale: String!) {
+    posts: allPrismicBlog(filter: { data: { language: { eq: $locale } } }) {
       edges {
         node {
-          id
-          url
           uid
+          lang
           data {
+            metatitle
+            metadescription
+            slug
+            aitranslated
+            language
             title {
               text
             }

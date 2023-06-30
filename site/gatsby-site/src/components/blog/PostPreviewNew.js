@@ -17,7 +17,7 @@ function PostPreviewNew({ post, latestPost = false }) {
     <>
       <div className="flex flex-col w-full h-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
         <LocalizedLink
-          to={`/blog-post/${post.uid}`}
+          to={`/blog-post/${post.data.slug}`}
           className="hover:no-underline text-primary-blue max-w-full"
         >
           <Img
@@ -29,7 +29,7 @@ function PostPreviewNew({ post, latestPost = false }) {
           />
         </LocalizedLink>
         <div className="p-6">
-          <LocalizedLink to={`/blog-post/${post.uid}`} className="hover:no-underline">
+          <LocalizedLink to={`/blog-post/${post.data.slug}`} className="hover:no-underline">
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {post.data.title.text}
               {latestPost && (
@@ -44,12 +44,12 @@ function PostPreviewNew({ post, latestPost = false }) {
             <DateLabel date={new Date(post.data.date)} />
           </p>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            {post.data.content.text}...{' '}
+            {post.data.content.text.slice(0, 140)}...{' '}
           </p>
         </div>
         <div className="flex items-end flex-1 p-6">
           <a
-            href={`/blog-post/${post.uid}`}
+            href={`/blog-post/${post.data.slug}`}
             className="hover:no-underline inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             <Trans>Read More</Trans>

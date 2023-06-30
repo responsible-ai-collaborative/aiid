@@ -287,6 +287,7 @@ const plugins = [
           path: '/blog-post/:uid',
         },
       ],
+      lang: '*',
     },
   },
 ];
