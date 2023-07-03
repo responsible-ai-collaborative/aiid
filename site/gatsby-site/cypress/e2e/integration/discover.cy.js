@@ -3,7 +3,7 @@ import unflaggedReport from '../../fixtures/reports/unflagged.json';
 import config from '../../../config';
 import path from 'path';
 import { format, getUnixTime } from 'date-fns';
-import { transformReportData } from '../../../src/utils/reports';
+import { deleteReportTypenames, transformReportData } from '../../../src/utils/reports';
 
 describe('The Discover app', () => {
   const url = '/apps/discover';
@@ -210,8 +210,9 @@ describe('The Discover app', () => {
     cy.wait('@logReportHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        // eslint-disable-next-line no-unused-vars
-        const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
+        const expectedReport = deleteReportTypenames(
+          transformReportData(flaggedReport.data.updateOneReport)
+        );
 
         expectedReport.modifiedBy = '';
         expectedReport.date_modified = format(now, 'yyyy-MM-dd');

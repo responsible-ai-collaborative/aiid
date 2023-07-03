@@ -7,8 +7,8 @@ const { gql } = require('@apollo/client');
 
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 import incident10 from '../../fixtures/incidents/fullIncident10.json';
-import { transformIncidentData, deleteTypenames } from '../../../src/utils/cite';
-import { transformReportData } from '../../../src/utils/reports';
+import { transformIncidentData, deleteIncidentTypenames } from '../../../src/utils/cite';
+import { transformReportData, deleteReportTypenames } from '../../../src/utils/reports';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -286,8 +286,9 @@ describe('Cite pages', () => {
     cy.wait('@logReportHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        // eslint-disable-next-line no-unused-vars
-        const { _id, ...expectedReport } = transformReportData(flaggedReport.data.updateOneReport);
+        const expectedReport = deleteReportTypenames(
+          transformReportData(flaggedReport.data.updateOneReport)
+        );
 
         expectedReport.modifiedBy = '';
         expectedReport.date_modified = format(now, 'yyyy-MM-dd');
@@ -502,7 +503,9 @@ describe('Cite pages', () => {
     cy.wait('@logIncidentHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        const expectedIncident = deleteTypenames(transformIncidentData(incident10.data.incident));
+        const expectedIncident = deleteIncidentTypenames(
+          transformIncidentData(incident10.data.incident)
+        );
 
         expectedIncident.flagged_dissimilar_incidents = [11];
         expectedIncident.epoch_date_modified = getUnixTime(now);
@@ -566,7 +569,9 @@ describe('Cite pages', () => {
     cy.wait('@logIncidentHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        const expectedIncident = deleteTypenames(transformIncidentData(incident10.data.incident));
+        const expectedIncident = deleteIncidentTypenames(
+          transformIncidentData(incident10.data.incident)
+        );
 
         expectedIncident.flagged_dissimilar_incidents = [];
         expectedIncident.epoch_date_modified = getUnixTime(now);

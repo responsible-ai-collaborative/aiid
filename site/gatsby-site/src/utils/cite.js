@@ -187,7 +187,7 @@ export const transformIncidentData = (incident, user) => {
 };
 
 // Deletes the __typename field from the incident object
-export const deleteTypenames = (incident) => {
+export const deleteIncidentTypenames = (incident) => {
   delete incident.__typename;
   delete incident.embedding.__typename;
   delete incident.tsne.__typename;

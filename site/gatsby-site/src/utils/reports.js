@@ -1,15 +1,21 @@
 // Transforms the data from the graphql query into a History_reportInsertInput format
 export const transformReportData = (report, user) => {
-  // eslint-disable-next-line no-unused-vars
-  const { __typename, embedding, user: reportUser, ...result } = report;
+  const result = {
+    ...report,
+    __typename: undefined,
+  };
+
+  const { embedding, user: reportUser } = report;
 
   if (reportUser) {
     result.user = reportUser.userId;
   }
 
   if (embedding) {
-    // eslint-disable-next-line no-unused-vars
-    const { __typename, ...embeddingData } = embedding;
+    const embeddingData = {
+      ...embedding,
+      __typename: undefined,
+    };
 
     result.embedding = embeddingData;
   }
@@ -17,4 +23,13 @@ export const transformReportData = (report, user) => {
   result.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
 
   return result;
+};
+
+// Deletes the __typename field from the report object
+export const deleteReportTypenames = (report) => {
+  delete report.__typename;
+  delete report.embedding.__typename;
+  delete report._id;
+
+  return report;
 };
