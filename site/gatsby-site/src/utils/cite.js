@@ -189,9 +189,9 @@ export const transformIncidentData = (incident, user) => {
 // Deletes the __typename field from the incident object
 export const deleteIncidentTypenames = (incident) => {
   delete incident.__typename;
-  delete incident.embedding.__typename;
-  delete incident.tsne.__typename;
-  incident.nlp_similar_incidents.forEach((x) => {
+  delete incident.embedding?.__typename;
+  delete incident.tsne?.__typename;
+  incident.nlp_similar_incidents?.forEach((x) => {
     delete x.__typename;
   });
 

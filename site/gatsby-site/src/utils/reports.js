@@ -28,7 +28,7 @@ export const transformReportData = (report, user) => {
 // Deletes the __typename field from the report object
 export const deleteReportTypenames = (report) => {
   delete report.__typename;
-  delete report.embedding.__typename;
+  delete report.embedding?.__typename;
   delete report._id;
 
   return report;

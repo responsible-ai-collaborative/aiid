@@ -241,6 +241,8 @@ describe('Incidents App', () => {
           )
         );
 
+        expectedIncident.modifiedBy = user.userId;
+
         expect(input).to.deep.eq(expectedIncident);
       });
 
