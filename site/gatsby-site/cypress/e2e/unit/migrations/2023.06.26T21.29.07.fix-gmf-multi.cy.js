@@ -1,7 +1,5 @@
 const { up } = require('../../../../migrations/2023.06.26T21.29.07.fix-gmf-multi');
 
-//should be on its own /cypress/unit folder or something
-
 const classification_1 = {
   _id: { $oid: '63ff9df8b8231a8c28674ad3' },
   notes: '',
