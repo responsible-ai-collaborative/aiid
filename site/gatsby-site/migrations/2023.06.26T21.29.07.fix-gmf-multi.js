@@ -13,7 +13,7 @@ exports.up = async ({ context: { client } }) => {
     const value = JSON.parse(value_json);
 
     const newValue = value
-      .map((v) => v.label)
+      .map((v) => (isString(v) ? v : v.label))
       .filter((v) => isString(v))
       .map((v) => v.trim());
 
