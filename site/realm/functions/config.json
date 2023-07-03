@@ -48,6 +48,10 @@
         "private": true
     },
     {
+        "name": "getEmailTemplateSubmissionApproved",
+        "private": true
+    },
+    {
         "name": "onNewIncident",
         "private": false,
         "disable_arg_logs": true

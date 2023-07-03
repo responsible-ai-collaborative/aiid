@@ -25,8 +25,10 @@ exports = async function (changeEvent) {
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const reportsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
   const subscriptionsToIncident = await subscriptionsCollection.find({ type: 'incident', incident_id: incidentId }).toArray();
+  const subscriptionsToNewPromotions = await subscriptionsCollection.find({ type: 'submission-promoted', incident_id: incidentId }).toArray();
 
   console.log(`There are ${subscriptionsToIncident.length} subscribers to Incident: ${incidentId}`);
+  console.log(`There are ${subscriptionsToNewPromotions.length} subscribers to New Promotions.`);
 
   // Process subscriptions to Incident updates
   try {
@@ -86,6 +88,20 @@ exports = async function (changeEvent) {
         );
       }
     }
+
+    if (subscriptionsToNewPromotions.length > 0) {
+
+      const notificationToNewPromotions = await notificationsCollection.find({ type: 'submission-promoted', incident_id: incidentId, promoted: false }).toArray();
+
+      if (notificationToNewPromotions.length === 0) {
+        await notificationsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: incidentId,
+          processed: false,
+        });
+      }
+    }
+
   } catch (error) {
     error.message = `[On Incident Update event]: ${error.message}`;
     context.functions.execute('logRollbar', { error, data: { incidentId, updateDescription, fullDocument } });

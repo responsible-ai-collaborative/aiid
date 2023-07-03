@@ -268,6 +268,71 @@ exports = async function () {
     context.functions.execute('logRollbar', { error });
   }
 
+
+  // Notifications to New Promotions
+  try {
+    const pendingNotificationsToNewPromotions = await notificationsCollection.find({ processed: false, type: 'submission-promoted' }).toArray();
+
+    if (pendingNotificationsToNewPromotions.length > 0) {
+
+      result += pendingNotificationsToNewPromotions.length;
+
+      const subscriptionsToNewPromotions = await subscriptionsCollection.find({ type: 'submission-promoted' }).toArray();
+
+      // Process subscriptions to New Incidents
+      if (subscriptionsToNewPromotions.length > 0) {
+
+        const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
+
+        const recipients = await getRecipients(userIds);
+
+        for (const pendingNotification of pendingNotificationsToNewPromotions) {
+
+          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+
+          //Send email notification
+          const sendEmailParams = {
+            recipients,
+            subject: 'Your submission has been approved!',
+            dynamicData: {
+              incidentId: `${incident.incident_id}`,
+              incidentTitle: incident.title,
+              incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+              incidentDescription: incident.description,
+              incidentDate: incident.date,
+            },
+            templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
+          };
+          const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+
+          console.log('sendEmailParams', JSON.stringify(sendEmailParams));
+          console.log(JSON.stringify(sendEmailResult));
+
+          //If notification was sucessfully sent > Mark the notification as processed
+          if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
+            await notificationsCollection.updateOne(
+              { _id: pendingNotification._id },
+              { $set: { processed: true, sentDate: new Date() } }
+            );
+          }
+        }
+
+        console.log(`New Promotions: ${pendingNotificationsToNewPromotions.length} pending notifications were processed.`);
+      }
+      else {
+        // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
+        await markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewPromotions);
+      }
+    }
+    else {
+      console.log('Submission Promoted: No pending notifications to process.');
+    }
+
+  } catch (error) {
+    error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
+    context.functions.execute('logRollbar', { error });
+  }
+
   return result;
 };
 
