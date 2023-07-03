@@ -2,7 +2,7 @@ import { maybeIt } from '../../../support/utils';
 import incident from '../../../fixtures/incidents/incident.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident.json';
 import { getUnixTime } from 'date-fns';
-import { deleteTypenames, transformIncidentData } from '../../../../src/utils/cite';
+import { deleteIncidentTypenames, transformIncidentData } from '../../../../src/utils/cite';
 const { gql } = require('@apollo/client');
 
 describe('Incidents', () => {
@@ -203,7 +203,7 @@ describe('Incidents', () => {
     cy.wait('@logIncidentHistory', { timeout: 30000 })
       .its('request.body.variables.input')
       .then((input) => {
-        const expectedIncident = deleteTypenames(
+        const expectedIncident = deleteIncidentTypenames(
           transformIncidentData(
             {
               ...incident.data.incident,
