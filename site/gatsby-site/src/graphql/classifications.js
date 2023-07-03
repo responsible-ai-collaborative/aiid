@@ -34,3 +34,22 @@ export const UPDATE_CLASSIFICATION = gql`
     }
   }
 `;
+
+export const UPDATE_CLASSIFICATIONS = gql`
+  mutation UpdateClassifications(
+    $query: ClassificationQueryInput
+    $data: ClassificationInsertInput!
+  ) {
+    updateManyClassification(query: $query, set: $set) {
+      _id
+      incident_id
+      notes
+      namespace
+      attributes {
+        short_name
+        value_json
+      }
+      publish
+    }
+  }
+`;
