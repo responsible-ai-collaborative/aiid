@@ -23,7 +23,7 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     },
   ];
 
-  urlsToTest.forEach(({ page, url, title, shareButtonSections }) => {
+  urlsToTest.forEach(({ page, url, shareButtonSections }) => {
     it(`${page} page should have ${shareButtonSections} Social Share button sections`, () => {
       cy.visit(url);
 
@@ -53,8 +53,9 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
       cy.get('@popup_twitter', { timeout: 8000 }).should('be.called');
       cy.url().should(
         'contain',
-        `https://twitter.com/intent/tweet?text=${encodeURI(title)}&url=${canonicalUrl}`
+        `https://twitter.com/i/flow/login?redirect_after_login=%2Fintent%2Ftweet%3Ftext%3D`
       );
+      cy.url().should('contain', `url%3D${encodeURIComponent(canonicalUrl)}`);
     });
 
     // LinkedIn share
