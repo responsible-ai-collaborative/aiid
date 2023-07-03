@@ -127,9 +127,12 @@ export const sortIncidentsByDatePublished = (incidentReports) => {
 
 // Transforms the data from the graphql query into a History_incidentInsertInput format
 export const transformIncidentData = (incident, user) => {
+  const result = {
+    ...incident,
+    __typename: undefined,
+  };
+
   const {
-    // eslint-disable-next-line no-unused-vars
-    __typename: incidentType,
     AllegedDeployerOfAISystem,
     AllegedDeveloperOfAISystem,
     AllegedHarmedOrNearlyHarmedParties,
@@ -138,7 +141,6 @@ export const transformIncidentData = (incident, user) => {
     nlp_similar_incidents,
     tsne,
     editors,
-    ...result
   } = incident;
 
   if (AllegedDeployerOfAISystem) {
@@ -162,25 +164,16 @@ export const transformIncidentData = (incident, user) => {
   result.reports = reports ? reports.map((report) => report.report_number) : [];
   result.nlp_similar_incidents = nlp_similar_incidents
     ? nlp_similar_incidents.map((nlp) => {
-        // eslint-disable-next-line no-unused-vars
-        const { __typename: nlpType, ...currentNlp } = nlp;
-
-        return currentNlp;
+        return { ...nlp, __typename: undefined };
       })
     : [];
 
   if (embedding) {
-    // eslint-disable-next-line no-unused-vars
-    const { __typename: embeddingType, ...currentEmbedding } = embedding;
-
-    result.embedding = currentEmbedding;
+    result.embedding = { ...embedding, __typename: undefined };
   }
 
   if (tsne) {
-    // eslint-disable-next-line no-unused-vars
-    const { __typename: tsneType, ...currentTsne } = tsne;
-
-    result.tsne = currentTsne;
+    result.tsne = { ...tsne, __typename: undefined };
   }
 
   if (editors) {
@@ -191,4 +184,16 @@ export const transformIncidentData = (incident, user) => {
   result.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
 
   return result;
+};
+
+// Deletes the __typename field from the incident object
+export const deleteTypenames = (incident) => {
+  delete incident.__typename;
+  delete incident.embedding.__typename;
+  delete incident.tsne.__typename;
+  incident.nlp_similar_incidents.forEach((x) => {
+    delete x.__typename;
+  });
+
+  return incident;
 };

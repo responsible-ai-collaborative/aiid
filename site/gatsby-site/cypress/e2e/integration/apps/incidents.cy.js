@@ -3,7 +3,7 @@ import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.
 import incidents from '../../../fixtures/incidents/incidents.json';
 import { maybeIt } from '../../../support/utils';
 import { getUnixTime } from 'date-fns';
-import { transformIncidentData } from '../../../../src/utils/cite';
+import { transformIncidentData, deleteTypenames } from '../../../../src/utils/cite';
 import users from '../../../fixtures/users/users.json';
 const { gql } = require('@apollo/client');
 
@@ -231,12 +231,15 @@ describe('Incidents App', () => {
     cy.wait('@logIncidentHistory', { timeout: 30000 })
       .its('request.body.variables.input')
       .then((input) => {
-        const expectedIncident = transformIncidentData({
-          ...incident.data.incident,
-          ...updatedIncident,
-        });
-
-        expectedIncident.modifiedBy = user.userId;
+        const expectedIncident = deleteTypenames(
+          transformIncidentData(
+            {
+              ...incident.data.incident,
+              ...updatedIncident,
+            },
+            user
+          )
+        );
 
         expect(input).to.deep.eq(expectedIncident);
       });

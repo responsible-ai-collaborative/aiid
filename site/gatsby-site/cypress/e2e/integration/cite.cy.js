@@ -7,7 +7,7 @@ const { gql } = require('@apollo/client');
 
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 import incident10 from '../../fixtures/incidents/fullIncident10.json';
-import { transformIncidentData } from '../../../src/utils/cite';
+import { transformIncidentData, deleteTypenames } from '../../../src/utils/cite';
 import { transformReportData } from '../../../src/utils/reports';
 
 describe('Cite pages', () => {
@@ -502,7 +502,7 @@ describe('Cite pages', () => {
     cy.wait('@logIncidentHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        const expectedIncident = transformIncidentData(incident10.data.incident);
+        const expectedIncident = deleteTypenames(transformIncidentData(incident10.data.incident));
 
         expectedIncident.flagged_dissimilar_incidents = [11];
         expectedIncident.epoch_date_modified = getUnixTime(now);
@@ -566,7 +566,7 @@ describe('Cite pages', () => {
     cy.wait('@logIncidentHistory')
       .its('request.body.variables.input')
       .then((input) => {
-        const expectedIncident = transformIncidentData(incident10.data.incident);
+        const expectedIncident = deleteTypenames(transformIncidentData(incident10.data.incident));
 
         expectedIncident.flagged_dissimilar_incidents = [];
         expectedIncident.epoch_date_modified = getUnixTime(now);
