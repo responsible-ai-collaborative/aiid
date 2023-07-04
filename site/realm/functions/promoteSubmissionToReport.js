@@ -11,11 +11,7 @@ exports = async (input) => {
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
 
-  console.log('inpput', input)
-
   const { _id: undefined, ...submission } = await submissions.findOne({ _id: input.submission_id });
-
-  console.log('submission', submission)
 
   const parentIncidents = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
@@ -107,20 +103,19 @@ exports = async (input) => {
           { $set: { ...parentIncident, embedding } }
         );
 
-
-        // if (submission.user) {
-        //   await subscriptionsCollection.insertOne({
-        //     type: 'submission-promoted',
-        //     incident_id: newIncident.incident_id,
-        //     userId: submission.user
-        //   });
-
-        //   await notificationsCollection.insertOne({
-        //     type: 'submission-promoted',
-        //     incident_id: newIncident.incident_id,
-        //     processed: false
-        //   });
-        // }
+        if (submission.user) {
+          await subscriptionsCollection.insertOne({
+            type: 'submission-promoted',
+            incident_id: BSON.Int32(newIncident.incident_id),
+            userId: submission.user
+          });
+  
+          await notificationsCollection.insertOne({
+            type: 'submission-promoted',
+            incident_id: BSON.Int32(newIncident.incident_id),
+            processed: false
+          });
+        }
       }
     }
   }
