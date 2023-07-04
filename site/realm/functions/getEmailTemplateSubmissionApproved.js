@@ -160,7 +160,7 @@ exports = function () {
           <td style="padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit">Greetings,</div>
   <div style="font-family: inherit; text-align: inherit"><br></div>
   <div style="font-family: inherit; text-align: inherit">Your submission to the AIID has been approved! </div>
-  <div style="font-family: inherit; text-align: inherit">You can view the new incident "<a href="{{incidentUrl}}">{{incidentTitle}}</a>"</div>
+  <div style="font-family: inherit; text-align: inherit">You can view the new incident: <a href="{{incidentUrl}}">{{incidentTitle}}</a></div>
   <div style="font-family: inherit; text-align: inherit"><br></div>
   <div style="font-family: inherit; text-align: inherit">Sincerely,</div>
   <div style="font-family: inherit; text-align: inherit">Responsible AI Collaborative</div><div></div></div></td>

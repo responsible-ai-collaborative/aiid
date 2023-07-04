@@ -8,8 +8,14 @@ exports = async (input) => {
   const submissions = context.services.get('mongodb-atlas').db('aiidprod').collection("submissions");
   const incidents = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   const reports = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
+  const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
+
+  console.log('inpput', input)
 
   const { _id: undefined, ...submission } = await submissions.findOne({ _id: input.submission_id });
+
+  console.log('submission', submission)
 
   const parentIncidents = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
@@ -47,6 +53,20 @@ exports = async (input) => {
       }
 
       await incidents.insertOne({ ...newIncident, incident_id: BSON.Int32(newIncident.incident_id) });
+
+      if (submission.user) {
+        await subscriptionsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: BSON.Int32(newIncident.incident_id),
+          userId: submission.user
+        });
+
+        await notificationsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: BSON.Int32(newIncident.incident_id),
+          processed: false
+        });
+      }
 
       parentIncidents.push(newIncident);
 
@@ -86,6 +106,21 @@ exports = async (input) => {
           { incident_id: BSON.Int32(parentIncident.incident_id) },
           { $set: { ...parentIncident, embedding } }
         );
+
+
+        // if (submission.user) {
+        //   await subscriptionsCollection.insertOne({
+        //     type: 'submission-promoted',
+        //     incident_id: newIncident.incident_id,
+        //     userId: submission.user
+        //   });
+
+        //   await notificationsCollection.insertOne({
+        //     type: 'submission-promoted',
+        //     incident_id: newIncident.incident_id,
+        //     processed: false
+        //   });
+        // }
       }
     }
   }
