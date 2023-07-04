@@ -62,6 +62,8 @@ const StepTwo = (props) => {
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
           setSavingInLocalStorage={props.setSavingInLocalStorage}
+          submissionComplete={props.submissionComplete}
+          submissionReset={props.submissionReset}
         />
       </Formik>
     </StepContainer>
@@ -75,6 +77,8 @@ const FormDetails = ({
   submitForm,
   validateAndSubmitForm,
   submissionFailed,
+  submissionComplete,
+  submissionReset,
   setSavingInLocalStorage,
 }) => {
   const { t } = useTranslation(['submit']);
@@ -95,6 +99,7 @@ const FormDetails = ({
     setFieldTouched,
     isValid,
     validateForm,
+    resetForm,
   } = useFormikContext();
 
   useEffect(() => {
@@ -108,10 +113,15 @@ const FormDetails = ({
   }, [values.image_url]);
 
   useEffect(() => {
-    if (submissionFailed) {
+    if (submissionFailed || submissionComplete || submissionReset.reset) {
       setIsSubmitting(false);
+      setSubmitCount(0);
     }
-  }, [submissionFailed]);
+
+    if (submissionComplete || submissionReset.reset) {
+      resetForm();
+    }
+  }, [submissionFailed, submissionComplete, submissionReset]);
 
   const saveInLocalStorage = useRef(
     debounce((values) => {
