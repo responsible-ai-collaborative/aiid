@@ -90,7 +90,7 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
         onSubmit={submit}
         initialValues={
           savedChecklist || {
-            name: 'Untitled System',
+            name: 'Unspecified System',
             about: '',
             tags_goals: [],
             tags_methods: [],

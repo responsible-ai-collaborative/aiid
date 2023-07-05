@@ -59,7 +59,7 @@ export default function RiskSection({
             icon={statusIcon(risk.risk_status)}
             className={`${statusColor(risk.risk_status)} mr-1`}
           />
-          <span>{risk.risk_status || 'Unassessed'}</span>
+          <span className="inline-block w-24">{risk.risk_status || 'Unassessed'}</span>
           <ProgressCircle progress={progress} className="-mb-1 ml-2" />
         </div>
       </RiskHeaderSummary>

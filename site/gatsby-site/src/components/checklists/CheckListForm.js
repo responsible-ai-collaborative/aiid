@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'formik';
-import { Button, Dropdown, Textarea, Spinner } from 'flowbite-react';
-import { Trans } from 'react-i18next';
+import { Button, Textarea, Spinner } from 'flowbite-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { classy, classyDiv } from 'utils/classy';
-import { Label, DeleteButton, abbreviatedTag, emptyRisk, exportJson } from 'utils/checklists';
+import { Label, DeleteButton, abbreviatedTag, emptyRisk } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
+import ExportDropdown from 'components/checklists/ExportDropdown';
 
 export default function CheckListForm({
   values,
@@ -20,6 +21,8 @@ export default function CheckListForm({
   tags,
   isSubmitting,
 }) {
+  const { t } = useTranslation();
+
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
   const confirmDeleteChecklist = async (id) => {
@@ -73,13 +76,21 @@ export default function CheckListForm({
             <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
               Delete
             </DeleteButton>
-            <ExportDropdown {...{ values }} />
+            <ExportDropdown checklist={values} />
           </HeaderControls>
         </HeaderRow>
       </Header>
+      <Info className="my-4">
+        <Trans>
+          Describe the system under investigation. Apply machine-readable tags to surface risks
+          associate with likewise-tagged incidents in the database. These are the basis of a risk
+          checklist.
+        </Trans>
+      </Info>
       <section>
         <Label for="about-system">About System</Label>
         <Textarea
+          placeholder={t(`Human-readable notes on the system under investigation`)}
           value={values.about}
           row={4}
           onChange={(event) => {
@@ -88,12 +99,6 @@ export default function CheckListForm({
         />
       </section>
       <section>
-        {/* TODO: This looks weird */}
-        <Info className="my-4">
-          <Trans>
-            Surface known risks by tagging attributes of the system under investigation.
-          </Trans>
-        </Info>
         <SideBySide className="my-4">
           <GoalsTagInput {...{ values, tags, setFieldValue }} />
           <MethodsTagInput {...{ values, tags, setFieldValue }} />
@@ -101,29 +106,55 @@ export default function CheckListForm({
         <OtherTagInput {...{ values, tags, setFieldValue }} />
       </section>
       <section>
-        <header className="flex justify-between mt-6">
+        <header className="flex mt-6">
           <h2>Risks</h2>
-          <Button
-            onClick={() => {
-              setFieldValue('risks', [emptyRisk()].concat(values.risks || []));
-            }}
-          >
-            Add Risk
-          </Button>
+          <div className="flex gap-2 ml-auto">
+            <Button
+              color="light"
+              onClick={() =>
+                setFieldValue(
+                  'risks',
+                  values.risks.map((r) => ({ ...r, startClosed: false }))
+                )
+              }
+            >
+              Expand all
+            </Button>
+            <Button
+              color="light"
+              onClick={() =>
+                setFieldValue(
+                  'risks',
+                  values.risks.map((r) => ({ ...r, startClosed: true }))
+                )
+              }
+            >
+              Collapse all
+            </Button>
+            <Button
+              onClick={() => {
+                setFieldValue('risks', [emptyRisk()].concat(values.risks || []));
+              }}
+            >
+              Add Risk
+            </Button>
+          </div>
         </header>
-        <p>
+        <Info>
           <Trans>
             Risks are surfaced automatically based on the tags applied to the system. They can also
             be added manually. Each risk is associated with a query for precedent incidents, which
             can be modified to suit your needs. You can subscribe both to new risks and new
             precedent incidents.
           </Trans>
-        </p>
+        </Info>
 
         {risksLoading ? (
           <Spinner />
+        ) : values.risks.length == 0 ? (
+          <Trans>No risks yet. Try adding some system tags.</Trans>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8 mt-8">
             {(values.risks || []).map((risk) => (
               <RiskSection
                 key={risk.id}
@@ -137,7 +168,16 @@ export default function CheckListForm({
   );
 }
 
-const QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldValue }) => (
+const QueryTagInput = ({
+  title,
+  id,
+  labelKey,
+  include,
+  values,
+  tags,
+  setFieldValue,
+  placeHolder,
+}) => (
   <div className="bootstrap">
     <Label for={id}>{title}</Label>
     <Tags
@@ -148,6 +188,7 @@ const QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldVal
         setFieldValue(id, value);
       }}
       labelKey={labelKey}
+      placeHolder={placeHolder}
     />
   </div>
 );
@@ -161,6 +202,7 @@ const GoalsTagInput = ({ values, tags, setFieldValue }) => (
       include: (tagParts) =>
         tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
       ...{ values, tags, setFieldValue },
+      placeHolder: 'Goals for which to list associated risks',
     }}
   />
 );
@@ -175,6 +217,7 @@ const MethodsTagInput = ({ values, tags, setFieldValue }) => (
         tagParts[0] == 'GMF' &&
         ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
       ...{ values, tags, setFieldValue },
+      placeHolder: 'Methods for which to list associated risks',
     }}
   />
 );
@@ -194,6 +237,7 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
           'Potential AI Technology',
         ].includes(tagParts[1]),
       ...{ values, tags, setFieldValue },
+      placeHolder: 'Other tags for which to list associated risks',
     }}
   />
 );
@@ -229,25 +273,21 @@ function SavingIndicator({ isSubmitting }) {
   }
 }
 
-const ExportDropdown = ({ values }) => (
-  <Dropdown label="Export">
-    <Dropdown.Item onClick={() => exportJson(values)}>
-      <Trans>JSON</Trans>
-    </Dropdown.Item>
-    <Dropdown.Item onClick={() => alert('Coming soon')}>
-      <Trans>HTML</Trans>
-    </Dropdown.Item>
-    <Dropdown.Item onClick={() => alert('Coming soon')}>
-      <Trans>CSV</Trans>
-    </Dropdown.Item>
-  </Dropdown>
-);
-
 function Info({ children, className }) {
+  //  return <>{children}</>
+  const [hide, setHide] = useState(false);
+
+  if (hide) return <></>;
   return (
     <div
-      className={`${className} bg-orange-100 text-orange-900 border border-orange-300 p-4 rounded shadow-md [&>*:last-child]:mb-0 [&>*:first-child]:mt-0`}
+      className={`${className} bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
     >
+      <button
+        className="border-0 bg-none float-right text-xl pl-4 mt-0 pb-2 -mt-2"
+        onClick={() => setHide(true)}
+      >
+        ×
+      </button>
       <strong>INFO</strong>: {children}
     </div>
   );

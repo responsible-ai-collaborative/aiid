@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Dropdown, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
+import Card from 'elements/Card';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import {
-  DeleteButton,
-  removeTypename,
-  statusIcon,
-  statusColor,
-  exportJson,
-} from 'utils/checklists';
+import ExportDropdown from 'components/checklists/ExportDropdown';
+import { DeleteButton, removeTypename, statusIcon, statusColor } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsIndex() {
@@ -50,8 +45,8 @@ export default function ChecklistsIndex() {
       </div>
       <div className="flex flex-col gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4">
         {checklists.map((checklist) => (
-          <Card key={checklist.id}>
-            <div className="flex items-center gap-2 flex-wrap">
+          <Card className="bg-white shadow" key={checklist.id}>
+            <div className="flex items-center gap-2 flex-wrap border-b border-gray-200 p-4">
               <LocalizedLink className="mr-auto" to={`/apps/checklists?id=${checklist.id}`}>
                 <h2 className="mb-0">{checklist.name}</h2>
               </LocalizedLink>
@@ -98,19 +93,9 @@ export default function ChecklistsIndex() {
               >
                 <Trans>Delete</Trans>
               </DeleteButton>
-              <Dropdown label="Export">
-                <Dropdown.Item onClick={() => exportJson(checklist)}>
-                  <Trans>JSON</Trans>
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => alert('Coming soon')}>
-                  <Trans>HTML</Trans>
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => alert('Coming soon')}>
-                  <Trans>CSV</Trans>
-                </Dropdown.Item>
-              </Dropdown>
+              <ExportDropdown {...{ checklist }} />
             </div>
-            <ul className="flex gap-2 flex-wrap">
+            <ul className="flex gap-2 flex-wrap p-4">
               {checklist.risks
                 .filter((r) => r.risk_status != 'Not Applicable')
                 .map((risk) => (
@@ -131,4 +116,4 @@ export default function ChecklistsIndex() {
   );
 }
 
-var generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
+const generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
