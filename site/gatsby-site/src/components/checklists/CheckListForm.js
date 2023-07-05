@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/client';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
-import { classyDiv } from 'utils/classy';
+import { classy, classyDiv } from 'utils/classy';
 import { Label, DeleteButton, abbreviatedTag, emptyRisk, exportJson } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
@@ -21,6 +21,17 @@ export default function CheckListForm({
   isSubmitting,
 }) {
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
+
+  const confirmDeleteChecklist = async (id) => {
+    if (window.confirm('Delete this checklist?')) {
+      try {
+        await deleteChecklist({ variables: { query: { id } } });
+        window.location = '/apps/checklists/';
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
 
   const [risksLoading, setRisksLoading] = useState(false);
 
@@ -41,11 +52,11 @@ export default function CheckListForm({
 
   return (
     <Form onSubmit={handleSubmit}>
-      <div className={'titleWrapper'}>
+      <Header>
         <LocalizedLink to="/apps/checklists" className="text-lg">
           <Trans>Risk Checklists</Trans>
         </LocalizedLink>
-        <div className="w-full flex items-center flex-wrap justify-between">
+        <HeaderRow>
           <h1>
             <EditableLabel
               title={values.name}
@@ -54,105 +65,40 @@ export default function CheckListForm({
               iconClasses="text-lg vertical-align"
             />
           </h1>
-          <div className="flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full">
-            <span className="text-lg text-gray-500 inline-block mx-4">
-              {isSubmitting ? (
-                <>
-                  <Spinner /> Saving...
-                </>
-              ) : (
-                'Saved'
-              )}
-            </span>
+          <HeaderControls>
+            <SavingIndicator {...{ isSubmitting }} />
             <Button color="light" onClick={() => alert('Coming soon')}>
               <Trans>Subscribe</Trans>
             </Button>
-            <DeleteButton
-              type="button"
-              onClick={async () => {
-                if (window.confirm('Delete this checklist?')) {
-                  try {
-                    await deleteChecklist({ variables: { query: { id: values.id } } });
-                    window.location = '/apps/checklists/';
-                  } catch (e) {
-                    console.log(e);
-                  }
-                }
-              }}
-            >
+            <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
               Delete
             </DeleteButton>
-            <Dropdown label="Export">
-              <Dropdown.Item onClick={() => exportJson(values)}>
-                <Trans>JSON</Trans>
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => alert('Coming soon')}>
-                <Trans>HTML</Trans>
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => alert('Coming soon')}>
-                <Trans>CSV</Trans>
-              </Dropdown.Item>
-            </Dropdown>
-          </div>
-        </div>
-      </div>
-      <section className="flex flex-col gap-4">
-        <Row>
-          <Label for="about-system">About System</Label>
-          <Textarea
-            value={values.about}
-            row={4}
-            onChange={(event) => {
-              setFieldValue('about', event.target.value);
-            }}
-          />
-        </Row>
-        <Row className="flex flex-col md:flex-row gap-2">
-          <Col className="w-full md:w-1/2 h-full">
-            <QueryTagInput
-              {...{
-                title: 'Goals',
-                id: 'tags_goals',
-                labelKey: abbreviatedTag,
-                include: (tagParts) =>
-                  tagParts[0] == 'GMF' &&
-                  ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
-                ...{ values, tags, setFieldValue },
-              }}
-            />
-          </Col>
-          <Col className="w-full md:w-1/2 h-full">
-            <QueryTagInput
-              {...{
-                title: 'Methods',
-                id: 'tags_methods',
-                labelKey: abbreviatedTag,
-                include: (tagParts) =>
-                  tagParts[0] == 'GMF' &&
-                  ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
-                ...{ values, tags, setFieldValue },
-              }}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <QueryTagInput
-            {...{
-              title: 'Other',
-              id: 'tags_other',
-              labelKey: (tag) => tag,
-              include: (tagParts) =>
-                tagParts[0] != 'GMF' ||
-                ![
-                  'Known AI Goal',
-                  'Potential AI Goal',
-                  'Known AI Technology',
-                  'Potential AI Technology',
-                ].includes(tagParts[1]),
-              ...{ values, tags, setFieldValue },
-            }}
-          />
-        </Row>
+            <ExportDropdown {...{ values }} />
+          </HeaderControls>
+        </HeaderRow>
+      </Header>
+      <section>
+        <Label for="about-system">About System</Label>
+        <Textarea
+          value={values.about}
+          row={4}
+          onChange={(event) => {
+            setFieldValue('about', event.target.value);
+          }}
+        />
+      </section>
+      <section>
+        {/* TODO: This looks weird */}
+        <Info className="my-4">
+          <Trans>
+            Surface known risks by tagging attributes of the system under investigation.
+          </Trans>
+        </Info>
+        <SideBySide className="my-4">
+          <GoalsTagInput {...{ values, tags, setFieldValue }} />
+          <MethodsTagInput {...{ values, tags, setFieldValue }} />
+        </SideBySide>
+        <OtherTagInput {...{ values, tags, setFieldValue }} />
       </section>
       <section>
         <header className="flex justify-between mt-6">
@@ -191,7 +137,7 @@ export default function CheckListForm({
   );
 }
 
-var QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldValue }) => (
+const QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldValue }) => (
   <div className="bootstrap">
     <Label for={id}>{title}</Label>
     <Tags
@@ -206,11 +152,108 @@ var QueryTagInput = ({ title, id, labelKey, include, values, tags, setFieldValue
   </div>
 );
 
-var Row = classyDiv();
+const GoalsTagInput = ({ values, tags, setFieldValue }) => (
+  <QueryTagInput
+    {...{
+      title: 'Goals',
+      id: 'tags_goals',
+      labelKey: abbreviatedTag,
+      include: (tagParts) =>
+        tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
+      ...{ values, tags, setFieldValue },
+    }}
+  />
+);
 
-var Col = classyDiv();
+const MethodsTagInput = ({ values, tags, setFieldValue }) => (
+  <QueryTagInput
+    {...{
+      title: 'Methods',
+      id: 'tags_methods',
+      labelKey: abbreviatedTag,
+      include: (tagParts) =>
+        tagParts[0] == 'GMF' &&
+        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
+      ...{ values, tags, setFieldValue },
+    }}
+  />
+);
 
-var searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents }) => {
+const OtherTagInput = ({ values, tags, setFieldValue }) => (
+  <QueryTagInput
+    {...{
+      title: 'Other',
+      id: 'tags_other',
+      labelKey: (tag) => tag,
+      include: (tagParts) =>
+        tagParts[0] != 'GMF' ||
+        ![
+          'Known AI Goal',
+          'Potential AI Goal',
+          'Known AI Technology',
+          'Potential AI Technology',
+        ].includes(tagParts[1]),
+      ...{ values, tags, setFieldValue },
+    }}
+  />
+);
+
+const Header = classy('header', 'titleWrapper');
+
+const HeaderRow = classyDiv('w-full flex items-center flex-wrap justify-between');
+
+const HeaderControls = classyDiv(
+  'flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full'
+);
+
+const SideBySide = classyDiv(
+  'flex flex-col md:flex-row gap-2 [&>*]:w-full [&>*]:md:w-1/2 [&>*]:h-full'
+);
+
+function SavingIndicator({ isSubmitting }) {
+  const className = 'text-lg text-gray-500 inline-block mx-4';
+
+  if (isSubmitting) {
+    return (
+      <span {...{ className }}>
+        <Spinner />
+        <Trans>Saving...</Trans>
+      </span>
+    );
+  } else {
+    return (
+      <span {...{ className }}>
+        <Trans>Saved</Trans>
+      </span>
+    );
+  }
+}
+
+const ExportDropdown = ({ values }) => (
+  <Dropdown label="Export">
+    <Dropdown.Item onClick={() => exportJson(values)}>
+      <Trans>JSON</Trans>
+    </Dropdown.Item>
+    <Dropdown.Item onClick={() => alert('Coming soon')}>
+      <Trans>HTML</Trans>
+    </Dropdown.Item>
+    <Dropdown.Item onClick={() => alert('Coming soon')}>
+      <Trans>CSV</Trans>
+    </Dropdown.Item>
+  </Dropdown>
+);
+
+function Info({ children, className }) {
+  return (
+    <div
+      className={`${className} bg-orange-100 text-orange-900 border border-orange-300 p-4 rounded shadow-md [&>*:last-child]:mb-0 [&>*:first-child]:mt-0`}
+    >
+      <strong>INFO</strong>: {children}
+    </div>
+  );
+}
+
+const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents }) => {
   const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   if (queryTags.length == 0) return;
