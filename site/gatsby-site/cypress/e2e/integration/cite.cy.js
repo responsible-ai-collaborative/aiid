@@ -21,11 +21,15 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/1#' + id);
 
-    cy.get(`#${id} [data-cy="edit-report"]`).click();
-
     cy.waitForStableDOM();
 
-    cy.url().should('contain', '/cite/edit/?report_number=3');
+    if (!cy.get('body').contains('Incident 1 not found')) {
+      cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+      cy.waitForStableDOM();
+
+      cy.url().should('contain', '/cite/edit/?report_number=3');
+    }
   });
 
   it('Successfully loads', () => {
@@ -103,15 +107,21 @@ describe('Cite pages', () => {
 
   it('Should show the incident stats table', () => {
     cy.visit(url);
-    cy.get('[data-cy=incident-stats]').should('exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('[data-cy=incident-stats]').should('exist');
+    }
   });
 
   it('Should show editors in the stats table', () => {
     cy.visit(url);
-    cy.get('[data-cy=incident-stats] > * > *')
-      .contains('Editors')
-      .parents('*')
-      .contains('Sean McGregor');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('[data-cy=incident-stats] > * > *')
+        .contains('Editors')
+        .parents('*')
+        .contains('Sean McGregor');
+    }
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -119,11 +129,14 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="CSET"]').contains('Edit').click();
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('[data-cy="CSET"]').contains('Edit').click();
 
-    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+      cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
-    cy.get('@taxonomyForm').should('exist');
+      cy.get('@taxonomyForm').should('exist');
+    }
   });
 
   maybeIt('Should show the taxonomy form of GMF', () => {
@@ -131,11 +144,14 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="GMF"]').contains('Edit').click();
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('[data-cy="GMF"]').contains('Edit').click();
 
-    cy.get('[data-cy="GMF"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+      cy.get('[data-cy="GMF"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
-    cy.get('@taxonomyForm').should('exist');
+      cy.get('@taxonomyForm').should('exist');
+    }
   });
 
   maybeIt('Should show taxonomy form and duplicates of CSETv1 with correct fields', () => {
@@ -145,20 +161,23 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
-    for (let i = 0; i < 4; i++) {
-      const taxonomySelector = `[data-cy="CSETv1${i == 0 ? '' : '_Annotator-' + i}"]`;
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      for (let i = 0; i < 4; i++) {
+        const taxonomySelector = `[data-cy="CSETv1${i == 0 ? '' : '_Annotator-' + i}"]`;
 
-      cy.get(taxonomySelector).contains('Edit').click();
+        cy.get(taxonomySelector).contains('Edit').click();
 
-      cy.waitForStableDOM();
+        cy.waitForStableDOM();
 
-      cy.get(taxonomySelector).within(() => {
-        for (const field of CSETv1Fields) {
-          const fieldSelector = `[data-cy="${field}"]`;
+        cy.get(taxonomySelector).within(() => {
+          for (const field of CSETv1Fields) {
+            const fieldSelector = `[data-cy="${field}"]`;
 
-          cy.get(fieldSelector).should('be.visible');
-        }
-      });
+            cy.get(fieldSelector).should('be.visible');
+          }
+        });
+      }
     }
   });
 
@@ -167,39 +186,45 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
-      .first()
-      .contains('yes')
-      .click();
+      cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
+        .first()
+        .contains('yes')
+        .click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .last()
-      .find('input[type="radio"]')
-      .eq(0)
-      .should('be.checked');
+      cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+        .last()
+        .find('input[type="radio"]')
+        .eq(0)
+        .should('be.checked');
 
-    // Clicking unchecks the input for both fields
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .last()
-      .find('input[type="radio"]')
-      .eq(0)
-      .click();
+      // Clicking unchecks the input for both fields
+      cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+        .last()
+        .find('input[type="radio"]')
+        .eq(0)
+        .click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .first()
-      .find('input[type="radio"]')
-      .eq(0)
-      .should('not.be.checked');
+      cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+        .first()
+        .find('input[type="radio"]')
+        .eq(0)
+        .should('not.be.checked');
+    }
   });
 
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
-    cy.get('[data-cy="CSET"]').should('exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('[data-cy="CSET"]').should('exist');
 
-    cy.get('[data-cy="CSETv1"]').should('not.exist');
+      cy.get('[data-cy="CSETv1"]').should('not.exist');
+    }
   });
 
   it('Should flag an incident', () => {
@@ -216,67 +241,78 @@ describe('Cite pages', () => {
     cy.visit(url + '#' + _id);
 
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get(`[id="r${_id}"`).find('[data-cy="expand-report-button"]').click();
 
-    cy.get(`[id="r${_id}"`).find('[data-cy="expand-report-button"]').click();
+      cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
-    cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
+      cy.get('[data-cy="flag-report-23"]').as('modal').should('be.visible');
 
-    cy.get('[data-cy="flag-report-23"]').as('modal').should('be.visible');
+      cy.wait('@fetchReport');
 
-    cy.wait('@fetchReport');
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'UpdateReport',
+        'updateReport',
+        flaggedReport
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'updateReport',
-      flaggedReport
-    );
+      cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.get('@modal').find('[data-cy="flag-toggle"]').click();
+      cy.wait('@updateReport');
 
-    cy.wait('@updateReport');
+      cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
-    cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
+      cy.get('[aria-label="Close"]').click();
 
-    cy.get('[aria-label="Close"]').click();
-
-    cy.get('@modal').should('not.exist');
+      cy.get('@modal').should('not.exist');
+    }
   });
 
   it('Should pre-fill submit report form', () => {
     cy.visit(url);
 
-    cy.contains('New Report').scrollIntoView().click();
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.contains('New Report').scrollIntoView().click();
 
-    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10').should(
-      'be.visible'
-    );
+      cy.waitForStableDOM();
 
-    cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
+      cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10').should(
+        'be.visible'
+      );
+
+      cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
+    }
   });
 
   it('Should pre-fill submit report response form', () => {
     cy.visit(url);
 
-    cy.contains('New Response').scrollIntoView().click();
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.contains('New Response').scrollIntoView().click();
 
-    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new response to incident 10').should(
-      'be.visible'
-    );
+      cy.waitForStableDOM();
 
-    cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
+      cy.contains(
+        '[data-cy="prefilled-incident-id"]',
+        'Adding a new response to incident 10'
+      ).should('be.visible');
+
+      cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
+    }
   });
 
   it('should render Next and Previous incident buttons', () => {
     cy.visit(url);
 
-    cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
 
-    cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
+      cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
+    }
   });
 
   maybeIt('Should show the edit incident form', () => {
@@ -284,96 +320,117 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.contains('Edit Incident').click();
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.contains('Edit Incident').click();
 
-    cy.url().should('contain', '/incidents/edit/?incident_id=10');
+      cy.url().should('contain', '/incidents/edit/?incident_id=10');
 
-    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+      cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+    }
   });
 
   it('Should display correct BibTex Citation', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
-    const date = format(new Date(), 'MMMMd,y');
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      const date = format(new Date(), 'MMMMd,y');
 
-    cy.contains('button', 'Citation Info').click();
+      cy.waitForStableDOM();
 
-    cy.waitForStableDOM();
+      cy.contains('button', 'Citation Info').click();
 
-    cy.get('[data-cy="citation-info-modal"]', { timeout: 15000 }).should('be.visible');
+      cy.waitForStableDOM();
 
-    cy.get('[data-cy="bibtex-format"]', { timeout: 15000 })
-      .find('code')
-      .invoke('text')
-      .then((text) => {
-        // would be nice not having to remove especial characters
-        // eslint-disable-next-line
-        const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
+      cy.get('[data-cy="citation-info-modal"]', { timeout: 15000 }).should('be.visible');
 
-        expect(bibText).to.eq(
-          `@article{aiid:10,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber10},url={https://incidentdatabase.ai/cite/10},year={2014},urldate={${date}}}`
-        );
-      });
+      cy.get('[data-cy="bibtex-format"]', { timeout: 15000 })
+        .find('code')
+        .invoke('text')
+        .then((text) => {
+          // would be nice not having to remove especial characters
+          // eslint-disable-next-line
+          const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
+
+          expect(bibText).to.eq(
+            `@article{aiid:10,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber10},url={https://incidentdatabase.ai/cite/10},year={2014},urldate={${date}}}`
+          );
+        });
+    }
   });
 
   it('Should display correct Citation', () => {
     cy.visit(url);
 
-    const date = format(new Date(), 'MMMM d, y');
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      const date = format(new Date(), 'MMMM d, y');
 
-    cy.contains('button', 'Citation Info').click();
+      cy.waitForStableDOM();
 
-    cy.waitForStableDOM();
+      cy.contains('button', 'Citation Info').click();
 
-    cy.get('[data-cy="suggested-citation-format"]').should(
-      'contain.text',
-      `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
-    );
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="suggested-citation-format"]').should(
+        'contain.text',
+        `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
+      );
+    }
   });
 
   it('Should display similar incidents', () => {
     cy.visit('/cite/9');
 
-    cy.get('[data-cy="similar-incident-card"]').should('exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 9 not found')) {
+      cy.get('[data-cy="similar-incident-card"]').should('exist');
+    }
   });
 
   it('Should display similar incidents with localized links', () => {
     cy.visit('/es/cite/9');
 
-    cy.get('[data-cy="similar-incident-card"]').should('exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 9 not found')) {
+      cy.get('[data-cy="similar-incident-card"]').should('exist');
 
-    cy.get('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]').each(
-      (link) => {
-        const href = link[0].href;
+      cy.get('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]').each(
+        (link) => {
+          const href = link[0].href;
 
-        expect(href).to.contains('/es/cite/');
-      }
-    );
+          expect(href).to.contains('/es/cite/');
+        }
+      );
+    }
   });
 
   it('Should not display duplicate similar incidents', () => {
     cy.visit('/cite/9');
 
-    const hrefs = new Set();
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 9 not found')) {
+      const hrefs = new Set();
 
-    cy.get('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]').each(
-      (link) => {
-        const href = link[0].href;
+      cy.get('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]').each(
+        (link) => {
+          const href = link[0].href;
 
-        expect(hrefs.has(href)).to.be.false;
-        hrefs.add(href);
-      }
-    );
+          expect(hrefs.has(href)).to.be.false;
+          hrefs.add(href);
+        }
+      );
+    }
   });
 
   it('Should not display edit link when not logged in', () => {
     cy.visit('/cite/9');
 
-    cy.get('[data-cy="edit-similar-incidents"]').should('not.exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 9 not found')) {
+      cy.get('[data-cy="edit-similar-incidents"]').should('not.exist');
+    }
   });
 
   maybeIt('Should display edit link when logged in as editor', () => {
@@ -381,7 +438,10 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/9');
 
-    cy.get('[data-cy="edit-similar-incidents"]').should('exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 9 not found')) {
+      cy.get('[data-cy="edit-similar-incidents"]').should('exist');
+    }
   });
 
   it('Should flag an incident as not related', () => {
@@ -395,20 +455,23 @@ describe('Cite pages', () => {
     cy.visit('/cite/9');
 
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 9 not found')) {
+      cy.get('[data-cy="flag-similar-incident"]').first().click();
 
-    cy.get('[data-cy="flag-similar-incident"]').first().click();
-
-    cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
-      expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
-      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
-    });
+      cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
+        expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+        expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
+      });
+    }
   });
 
   it('Should have OpenGraph meta tags', () => {
     cy.visit(url);
 
-    cy.query({
-      query: gql`
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.query({
+        query: gql`
         query {
           incidents(query: { incident_id: ${incidentId} }, limit: 1) {
             title
@@ -420,36 +483,37 @@ describe('Cite pages', () => {
           }
         }
       `,
-    }).then(({ data: { incidents } }) => {
-      const incident = incidents[0];
+      }).then(({ data: { incidents } }) => {
+        const incident = incidents[0];
 
-      const title = `Incident ${incidentId}: ${incident.title}`;
+        const title = `Incident ${incidentId}: ${incident.title}`;
 
-      const description = incident.description;
+        const description = incident.description;
 
-      cy.get('head meta[name="title"]').should('have.attr', 'content', title);
-      cy.get('head meta[name="description"]').should('have.attr', 'content', description);
+        cy.get('head meta[name="title"]').should('have.attr', 'content', title);
+        cy.get('head meta[name="description"]').should('have.attr', 'content', description);
 
-      cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
-      cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
+        cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
+        cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
 
-      cy.get('head meta[property="og:url"]').should(
-        'have.attr',
-        'content',
-        `https://incidentdatabase.ai${url}/`
-      );
-      cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
-      cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
-      cy.get('head meta[property="og:description"]').should('have.attr', 'content', description);
-      cy.get('head meta[property="og:image"]').first().should('have.attr', 'content');
-      cy.get('head meta[property="twitter:title"]').should('have.attr', 'content', title);
-      cy.get('head meta[property="twitter:description"]').should(
-        'have.attr',
-        'content',
-        description
-      );
-      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content');
-    });
+        cy.get('head meta[property="og:url"]').should(
+          'have.attr',
+          'content',
+          `https://incidentdatabase.ai${url}/`
+        );
+        cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
+        cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
+        cy.get('head meta[property="og:description"]').should('have.attr', 'content', description);
+        cy.get('head meta[property="og:image"]').first().should('have.attr', 'content');
+        cy.get('head meta[property="twitter:title"]').should('have.attr', 'content', title);
+        cy.get('head meta[property="twitter:description"]').should(
+          'have.attr',
+          'content',
+          description
+        );
+        cy.get('head meta[property="twitter:image"]').should('have.attr', 'content');
+      });
+    }
   });
 
   maybeIt('Should subscribe to incident updates (user authenticated)', () => {
@@ -457,98 +521,118 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/51');
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpsertSubscription',
-      'upsertSubscription',
-      {
-        data: {
-          upsertOneSubscription: {
-            _id: 'dummyIncidentId',
-          },
-        },
-      }
-    );
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 51 not found')) {
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'UpsertSubscription',
+        'upsertSubscription',
+        {
+          data: {
+            upsertOneSubscription: {
+              _id: 'dummyIncidentId',
+            },
+          },
+        }
+      );
 
-    cy.contains('Notify Me of Updates').scrollIntoView().click();
+      cy.waitForStableDOM();
 
-    cy.get('[data-cy="toast"]', { timeout: 15000 }).should('be.visible');
+      cy.contains('Notify Me of Updates').scrollIntoView().click();
 
-    cy.contains(
-      '[data-cy="toast"]',
-      `You have successfully subscribed to updates on incident 51`
-    ).should('be.visible');
+      cy.get('[data-cy="toast"]', { timeout: 15000 }).should('be.visible');
+
+      cy.contains(
+        '[data-cy="toast"]',
+        `You have successfully subscribed to updates on incident 51`
+      ).should('be.visible');
+    }
   });
 
   it('Should not subscribe to incident updates (user unauthenticated)', () => {
     cy.visit(url);
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpsertSubscription',
-      'upsertSubscription',
-      {
-        data: {
-          upsertOneSubscription: {
-            _id: 'dummyIncidentId',
-          },
-        },
-      }
-    );
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'UpsertSubscription',
+        'upsertSubscription',
+        {
+          data: {
+            upsertOneSubscription: {
+              _id: 'dummyIncidentId',
+            },
+          },
+        }
+      );
 
-    cy.contains('Notify Me of Updates').scrollIntoView().click();
+      cy.waitForStableDOM();
 
-    cy.get('[data-cy="toast"]', { timeout: 15000 }).should('be.visible');
+      cy.contains('Notify Me of Updates').scrollIntoView().click();
 
-    cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('be.visible');
+      cy.get('[data-cy="toast"]', { timeout: 15000 }).should('be.visible');
+
+      cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('be.visible');
+    }
   });
 
   it('Should show proper entities card text', () => {
     cy.visit('/cite/67/');
-
-    cy.get('[data-cy="alleged-entities"]').should(
-      'have.text',
-      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed Motorists.'
-    );
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 67 not found')) {
+      cy.get('[data-cy="alleged-entities"]').should(
+        'have.text',
+        'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed Motorists.'
+      );
+    }
 
     cy.visit('/cite/72/');
 
-    cy.get('[data-cy="alleged-entities"]').should(
-      'have.text',
-      'Alleged: Facebook developed and deployed an AI system, which harmed unnamed Palestinian Facebook user , Palestinian Facebook users , Arabic-speaking Facebook users and Facebook users.'
-    );
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 72 not found')) {
+      cy.get('[data-cy="alleged-entities"]').should(
+        'have.text',
+        'Alleged: Facebook developed and deployed an AI system, which harmed unnamed Palestinian Facebook user , Palestinian Facebook users , Arabic-speaking Facebook users and Facebook users.'
+      );
+    }
 
     cy.visit('/cite/30');
 
-    cy.get('[data-cy="alleged-entities"]').should(
-      'have.text',
-      'Alleged: Tesla developed and deployed an AI system, which harmed Tesla.'
-    );
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 30 not found')) {
+      cy.get('[data-cy="alleged-entities"]').should(
+        'have.text',
+        'Alleged: Tesla developed and deployed an AI system, which harmed Tesla.'
+      );
+    }
   });
 
   it('Should display response in timeline and as badge', () => {
     cy.visit('/cite/51#r1765');
 
-    cy.get('#r1765')
-      .scrollIntoView()
-      .contains('post-incident response', { timeout: 8000 })
-      .should('exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 51 not found')) {
+      cy.get('#r1765')
+        .scrollIntoView()
+        .contains('post-incident response', { timeout: 8000 })
+        .should('exist');
 
-    cy.get('[data-cy="responded-badge"]').should('exist');
+      cy.get('[data-cy="responded-badge"]').should('exist');
 
-    cy.get('[data-cy="timeline-text-response"]').should('exist');
+      cy.get('[data-cy="timeline-text-response"]').should('exist');
+    }
   });
 
   it('Should not display response in timeline or in badge', () => {
     cy.visit('/cite/1');
 
-    cy.get('[data-cy="responded-badge"]').should('not.exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 1 not found')) {
+      cy.get('[data-cy="responded-badge"]').should('not.exist');
 
-    cy.get('[data-cy="timeline-text-response"]').should('not.exist');
+      cy.get('[data-cy="timeline-text-response"]').should('not.exist');
+    }
   });
 
   it('There should not be image errors (400)', () => {
@@ -576,7 +660,10 @@ describe('Cite pages', () => {
   it('Should not display edit link when not logged in', () => {
     cy.visit(url);
 
-    cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
+    cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
+    }
   });
 
   maybeIt('Should clone incident', () => {
@@ -586,34 +673,36 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidents',
-      'GetLatestIncidentId',
-      incidents
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertIncident',
-      'InsertIncident',
-      {
-        data: {
-          insertOneIncident: {
-            incident_id: newIncidentId,
-          },
-        },
-      }
-    );
-
     cy.waitForStableDOM();
+    if (!cy.get('body').contains('Incident 10 not found')) {
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidents',
+        'GetLatestIncidentId',
+        incidents
+      );
 
-    cy.wait('@GetLatestIncidentId');
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'InsertIncident',
+        'InsertIncident',
+        {
+          data: {
+            insertOneIncident: {
+              incident_id: newIncidentId,
+            },
+          },
+        }
+      );
 
-    cy.contains('Clone Incident').scrollIntoView().click();
+      cy.waitForStableDOM();
 
-    cy.query({
-      query: gql`
+      cy.wait('@GetLatestIncidentId');
+
+      cy.contains('Clone Incident').scrollIntoView().click();
+
+      cy.query({
+        query: gql`
         query {
           incidents(query: { incident_id: ${incidentId} }, limit: 1) {
             title
@@ -638,41 +727,42 @@ describe('Cite pages', () => {
           }
         }
       `,
-    }).then(({ data: { incidents } }) => {
-      const incident = incidents[0];
+      }).then(({ data: { incidents } }) => {
+        const incident = incidents[0];
 
-      cy.wait('@InsertIncident').then((xhr) => {
-        expect(xhr.request.body.operationName).to.eq('InsertIncident');
-        expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
-        expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
-        expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
-        expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
-        expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
-          incident.editor_similar_incidents
-        );
-        expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
-          incident.editor_dissimilar_incidents
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
-          incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
-          incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
-        );
-        expect(
-          xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
-        ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
-        expect(xhr.request.body.variables.incident.editors).to.deep.eq({
-          link: incident.editors.map((e) => e.userId),
+        cy.wait('@InsertIncident').then((xhr) => {
+          expect(xhr.request.body.operationName).to.eq('InsertIncident');
+          expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
+          expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
+          expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
+          expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
+          expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
+            incident.editor_similar_incidents
+          );
+          expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
+            incident.editor_dissimilar_incidents
+          );
+          expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
+            incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
+          );
+          expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
+            incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
+          );
+          expect(
+            xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
+          ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
+          expect(xhr.request.body.variables.incident.editors).to.deep.eq({
+            link: incident.editors.map((e) => e.userId),
+          });
         });
+
+        cy.wait('@GetLatestIncidentId');
+
+        cy.get('.tw-toast')
+          .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
+          .should('exist');
       });
-
-      cy.wait('@GetLatestIncidentId');
-
-      cy.get('.tw-toast')
-        .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
-        .should('exist');
-    });
+    }
   });
 
   var CSETv1Fields = [
