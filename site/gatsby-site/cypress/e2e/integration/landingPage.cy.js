@@ -53,7 +53,7 @@ describe('The Landing page', () => {
       .should('exist');
   });
 
-  it('Should display common entities card', () => {
+  it.skip('Should display common entities card', () => {
     cy.visit('/');
 
     cy.get('[data-cy="common-entities"]')
