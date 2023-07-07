@@ -284,7 +284,7 @@ const plugins = [
         // },
         {
           type: 'blog',
-          path: '/blog-post/:uid',
+          path: '/blog/:uid',
         },
       ],
       lang: '*',

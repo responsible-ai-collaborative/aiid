@@ -1,6 +1,6 @@
 const path = require('path');
 
-const createBlogPages = async (graphql, createPage, { languages }) => {
+const createBlogPages = async (graphql, createPage, { languages, reporter }) => {
   const result = await graphql(
     `
       query BlogPosts {
@@ -33,32 +33,72 @@ const createBlogPages = async (graphql, createPage, { languages }) => {
             }
           }
         }
+        oldBlogPosts: allFile(
+          filter: { sourceInstanceName: { in: ["blog"] }, ext: { eq: ".mdx" } }
+        ) {
+          nodes {
+            sourceInstanceName
+            absolutePath
+            childMdx {
+              frontmatter {
+                slug
+              }
+              internal {
+                contentFilePath
+              }
+            }
+          }
+        }
       }
     `
   );
 
   const {
     allPrismicBlog: { edges: posts },
+    oldBlogPosts: { nodes: oldPosts },
   } = result.data;
 
   posts.forEach((post) => {
-    const lang = languages.find(
-      (l) =>
-        l.hrefLang.toLowerCase() === post.node.data.language.toLowerCase() ||
-        l.hrefLang.toLowerCase() === post.node.data.language.toLowerCase().slice(0, 2)
-    );
+    let lang = languages[0];
+
+    if (post.node.data.language) {
+      lang = languages.find(
+        (l) =>
+          l.hrefLang.toLowerCase() === post.node.data.language.toLowerCase() ||
+          l.hrefLang.toLowerCase() === post.node.data.language.toLowerCase().slice(0, 2)
+      );
+      if (!lang) {
+        lang = languages[0];
+      }
+    }
 
     createPage({
       path:
-        post.node.lang === 'en-us' && lang?.code
-          ? `/blog-post/${post.node.data.slug}`
-          : `/${lang.code}/blog-post/${post.node.data.slug}`,
+        lang.code === 'en'
+          ? `/blog/${post.node.data.slug}`
+          : `/${lang.code}/blog/${post.node.data.slug}`,
       component: path.resolve('./src/templates/blogPost.js'),
       context: {
         uid: post.node.uid,
         slug: post.node.data.slug,
       },
     });
+  });
+
+  oldPosts.forEach((node) => {
+    if (node.childMdx.frontmatter.slug) {
+      createPage({
+        path: node.childMdx.frontmatter.slug,
+        component: `${path.resolve(`./src/templates/post.js`)}?__contentFilePath=${
+          node.childMdx.internal.contentFilePath
+        }`,
+        context: {
+          slug: node.childMdx.frontmatter.slug,
+        },
+      });
+    } else {
+      reporter.warn(`Missing slug for ${node.absolutePath}`);
+    }
   });
 };
 

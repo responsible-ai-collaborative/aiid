@@ -42,6 +42,11 @@ export const pageQuery = graphql`
         }
         date
         author
+        customcontent {
+          id
+          type
+          uid
+        }
       }
     }
   }

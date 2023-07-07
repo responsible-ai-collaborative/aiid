@@ -72,9 +72,6 @@ const BlogPostNew = ({ post, location }) => {
           </Trans>
         </span>
       </div>
-      {/* <div className={`prose post-styled-main-wrapper`}>
-        <MDXProvider components={MdxComponents}>{children}</MDXProvider>
-      </div> */}
       <PrismicRichText field={post.data.content.richText} />
     </>
   );
