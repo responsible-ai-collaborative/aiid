@@ -44,7 +44,7 @@ const BlogPostNew = ({ post, location }) => {
     <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
-        <LocalizedLink to="/blogPosts" className="text-lg">
+        <LocalizedLink to="/blog" className="text-lg">
           <Trans>AIID Blog</Trans>
         </LocalizedLink>
         <h1>{post.data.title.text}</h1>
