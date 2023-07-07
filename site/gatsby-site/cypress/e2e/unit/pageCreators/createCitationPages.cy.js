@@ -8,7 +8,26 @@ const response = {
           incident_id: 1,
           title: 'Google’s YouTube Kids App Presents Inappropriate Content',
           date: '2015-05-19',
-          reports: [{ report_number: 1 }, { report_number: 2 }],
+          reports: [
+            {
+              title: 'Google’s YouTube Kids App Criticized for ‘Inappropriate Content’',
+              report_number: 1,
+              language: 'en',
+              image_url:
+                'http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_20150518174822.jpg',
+              cloudinary_id:
+                'reports/si.wsj.net/public/resources/images/BN-IM269_YouTub_P_20150518174822.jpg',
+            },
+            {
+              title: 'YouTube Kids app is STILL showing disturbing videos',
+              report_number: 2,
+              language: 'en',
+              image_url:
+                'https://i.dailymail.co.uk/i/pix/2018/02/06/15/48EEE02F00000578-0-image-a-18_1517931140185.jpg',
+              cloudinary_id:
+                'reports/i.dailymail.co.uk/i/pix/2018/02/06/15/48EEE02F00000578-0-image-a-18_1517931140185.jpg',
+            },
+          ],
           editor_similar_incidents: [],
           editor_dissimilar_incidents: [],
           flagged_dissimilar_incidents: [],
@@ -28,28 +47,6 @@ const response = {
               similarity: 0.998900830745697,
             },
           ],
-        },
-      ],
-    },
-    allMongodbAiidprodReports: {
-      nodes: [
-        {
-          title: 'Google’s YouTube Kids App Criticized for ‘Inappropriate Content’',
-          report_number: 1,
-          language: 'en',
-          image_url:
-            'http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_20150518174822.jpg',
-          cloudinary_id:
-            'reports/si.wsj.net/public/resources/images/BN-IM269_YouTub_P_20150518174822.jpg',
-        },
-        {
-          title: 'YouTube Kids app is STILL showing disturbing videos',
-          report_number: 2,
-          language: 'en',
-          image_url:
-            'https://i.dailymail.co.uk/i/pix/2018/02/06/15/48EEE02F00000578-0-image-a-18_1517931140185.jpg',
-          cloudinary_id:
-            'reports/i.dailymail.co.uk/i/pix/2018/02/06/15/48EEE02F00000578-0-image-a-18_1517931140185.jpg',
         },
       ],
     },

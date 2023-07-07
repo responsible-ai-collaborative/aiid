@@ -36,6 +36,7 @@ import {
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
+import UsersInputGroup from 'components/forms/UsersInputGroup';
 
 const SubmissionForm = () => {
   const {
@@ -365,7 +366,7 @@ const SubmissionForm = () => {
               className="mt-3"
               {...TextInputGroupProps}
             />
-            <TagsInputGroup
+            <UsersInputGroup
               name="incident_editors"
               label={t('Editors')}
               icon={faPenNib}

@@ -1,6 +1,8 @@
 import incident from '../../../fixtures/incidents/incident112.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
+import users from '../../../fixtures/users/users.json';
+import { maybeIt } from '../../../support/utils';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -15,7 +17,7 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length.at.least', 10);
   });
 
-  it.skip('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -33,16 +35,6 @@ describe('Incidents App', () => {
       incident
     );
 
-    // this shuold not be necessary and fixed in the component
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 0,
-      'FindIncident0',
-      incident
-    );
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindEntities',
@@ -57,11 +49,18 @@ describe('Incidents App', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'findUsers',
+      users
+    );
+
     cy.visit(url);
 
-    cy.waitForStableDOM();
+    cy.wait(['@FindIncidents']);
 
-    cy.wait(['@FindIncident0', '@FindEntities']);
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -70,6 +69,8 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length', 1);
 
     cy.contains('Edit').click();
+
+    cy.wait(['@FindEntities', '@findUsers']);
 
     cy.waitForStableDOM();
 
@@ -87,7 +88,9 @@ describe('Incidents App', () => {
       .first()
       .type('Test Deployer{enter}');
 
-    cy.get('[data-cy=editors-input] input').first().type('Pablo Costa{enter}');
+    cy.get('#input-editors').type('Cesar');
+
+    cy.get('[aria-label="Cesar Varela"]').click();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -169,9 +172,9 @@ describe('Incidents App', () => {
       expect(xhr.request.body.variables.set.description).to.eq('New description');
       expect(xhr.request.body.variables.set.date).to.eq('2023-05-04');
 
-      expect(xhr.request.body.variables.set.editors).to.have.length(2);
-      expect(xhr.request.body.variables.set.editors).to.contain('Anonymous');
-      expect(xhr.request.body.variables.set.editors).to.contain('Pablo Costa');
+      expect(xhr.request.body.variables.set.editors.link).to.have.length(2);
+      expect(xhr.request.body.variables.set.editors.link).to.contain('63320ce63ec803072c9f529c');
+      expect(xhr.request.body.variables.set.editors.link).to.contain('633b74dc95edb45d34a95895');
 
       expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.have.length(2);
       expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain('youtube');

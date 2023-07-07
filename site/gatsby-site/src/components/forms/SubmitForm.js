@@ -59,6 +59,7 @@ const queryConfig = {
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
+  incident_editors: withDefault(ArrayParam, []),
   language: withDefault(StringParam, 'en'),
 };
 
@@ -106,7 +107,10 @@ const SubmitForm = () => {
       isClient &&
       localStorage.getItem('formValues')
     ) {
-      submission = { ...JSON.parse(localStorage.getItem('formValues')) };
+      submission = {
+        ...SUBMISSION_INITIAL_VALUES,
+        ...JSON.parse(localStorage.getItem('formValues')),
+      };
     }
 
     if (!loading) {
@@ -181,6 +185,7 @@ const SubmitForm = () => {
         submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
+        incident_editors: { link: values.incident_editors },
       };
 
       submission.deployers = await processEntities(

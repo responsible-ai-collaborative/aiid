@@ -21,7 +21,11 @@ export const FIND_SUBMISSIONS = gql`
       image_url
       incident_date
       incident_ids
-      incident_editors
+      incident_editors {
+        first_name
+        last_name
+        userId
+      }
       incident_title
       language
       source_domain
@@ -68,7 +72,11 @@ export const FIND_SUBMISSION = gql`
       image_url
       incident_date
       incident_ids
-      incident_editors
+      incident_editors {
+        first_name
+        last_name
+        userId
+      }
       incident_title
       language
       source_domain
@@ -114,7 +122,11 @@ export const UPDATE_SUBMISSION = gql`
       image_url
       incident_date
       incident_ids
-      incident_editors
+      incident_editors {
+        first_name
+        last_name
+        userId
+      }
       incident_title
       language
       source_domain

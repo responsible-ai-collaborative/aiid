@@ -83,9 +83,23 @@ describe('New Incident page', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'FindUsers',
+      {
+        data: {
+          users: [
+            { userId: '1', first_name: 'Sean', last_name: 'McGregor' },
+            { userId: '2', first_name: 'Pablo', last_name: 'Costa' },
+          ],
+        },
+      }
+    );
+
     cy.visit(url);
 
-    cy.wait(['@GetLatestIncidentId', '@FindEntities'], { timeout: 30000 });
+    cy.wait(['@GetLatestIncidentId', '@FindEntities', '@FindUsers'], { timeout: 30000 });
 
     const values = {
       title: 'Test title',
@@ -107,7 +121,9 @@ describe('New Incident page', () => {
       .first()
       .type('children{enter}');
 
-    cy.get('[data-cy="editors-input"] input').first().type('Test Editor{enter}');
+    cy.get('#input-editors').type('Pablo');
+
+    cy.get('[aria-label="Pablo Costa"]').click();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -148,7 +164,7 @@ describe('New Incident page', () => {
       expect(
         xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
       ).to.deep.eq(['children']);
-      expect(xhr.request.body.variables.incident.editors).to.deep.eq(['Test Editor']);
+      expect(xhr.request.body.variables.incident.editors).to.deep.eq(['2']);
     });
 
     cy.get('.tw-toast')

@@ -4,6 +4,7 @@ import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
 import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
 import probablyRelatedReports from '../../fixtures/reports/probablyRelatedReports.json';
+import users from '../../fixtures/users/users.json';
 
 import { maybeIt } from '../../support/utils';
 
@@ -179,6 +180,13 @@ describe('The Submit form', () => {
         }
       );
 
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindUsers',
+        'findUsers',
+        users
+      );
+
       cy.visit(url);
 
       cy.get('input[name="url"]').type(
@@ -201,11 +209,15 @@ describe('The Submit form', () => {
 
       cy.get('[data-cy="to-step-3"]').click();
 
+      cy.wait('@findUsers');
+
       cy.get('[name="incident_title"]').type('Elsagate');
 
       cy.get('[name="description"]').type('Description');
 
-      cy.get('[name="incident_editors"]').type('Sean McGregor, Khoa Lam');
+      cy.get('#input-incident_editors').type('Test');
+
+      cy.get('[aria-label="Test User"]').click();
 
       cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -219,7 +231,7 @@ describe('The Submit form', () => {
           submitters: ['Test User'],
           authors: ['Valentina Palladino'],
           incident_date: '2020-01-01',
-          incident_editors: ['Sean McGregor', 'Khoa Lam'],
+          incident_editors: { link: ['63320ce63ec803072c9f529c'] },
           incident_title: 'Elsagate',
           date_published: '2017-11-10',
           image_url:
@@ -1114,6 +1126,12 @@ describe('The Submit form', () => {
     cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
+
+    const keys = ['url', 'title', 'authors', 'incident_date'];
+
+    keys.forEach((key) => {
+      cy.get(`input[name="${key}"]`).should('have.value', '');
+    });
   });
 
   it('Should submit on step 2', () => {
@@ -1157,6 +1175,14 @@ describe('The Submit form', () => {
     cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
+
+    cy.waitForStableDOM();
+
+    const keys = ['url', 'title', 'authors', 'incident_date'];
+
+    keys.forEach((key) => {
+      cy.get(`input[name="${key}"]`).should('have.value', '');
+    });
   });
 
   it('Should display an error message if data is missing', () => {
@@ -1687,6 +1713,7 @@ describe('The Submit form', () => {
         cloudinary_id: `reports/test.com/image.jpg`,
         text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
         incident_ids: [],
+        incident_editors: [],
       });
     });
   });

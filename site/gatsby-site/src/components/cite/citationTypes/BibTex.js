@@ -22,20 +22,16 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
 
-  const firstEditor = editors[0];
+  const [firstEditor] = editors;
 
-  const nameFragments = firstEditor.split(' ');
-
-  const editorLastName = nameFragments[nameFragments.length - 1];
-
-  const editorFirstName = nameFragments[0];
+  const { first_name, last_name } = firstEditor;
 
   const bibTex =
     '@article {' +
     `
       aiid:${incident_id},
       author = {${submitterCite}},
-      editor = {${editorLastName}, ${editorFirstName}},
+      editor = {${last_name}, ${first_name}},
       journal = {AI Incident Database},
       publisher = {Responsible AI Collaborative},
       title = {Incident Number ${incident_id}},

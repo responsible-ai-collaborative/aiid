@@ -214,7 +214,7 @@ function CiteTemplate({
         description: incident.description,
         incident_id: newIncidentId,
         reports: { link: [] },
-        editors: incident.editors,
+        editors: { link: incident.editors.map((e) => e.userId) },
         date: incident.date,
         AllegedDeployerOfAISystem: { link: incident.Alleged_deployer_of_AI_system },
         AllegedDeveloperOfAISystem: { link: incident.Alleged_developer_of_AI_system },
@@ -348,7 +348,9 @@ function CiteTemplate({
                       incidentId: incident.incident_id,
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
-                      editors: incident.editors.join(', '),
+                      editors: incident.editors
+                        .map(({ first_name, last_name }) => `${first_name} ${last_name}`)
+                        .join(', '),
                     }}
                   />
                 </div>
