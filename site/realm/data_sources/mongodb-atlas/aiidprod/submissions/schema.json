@@ -144,9 +144,6 @@
         },
         "status": {
             "bsonType": "string"
-        },
-        "editor": {
-            "bsonType": "string"
         }
     },
     "required": [

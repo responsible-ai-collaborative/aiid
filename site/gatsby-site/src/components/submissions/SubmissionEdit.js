@@ -537,7 +537,7 @@ const SubmissionEditForm = ({
     }, 1000);
   };
 
-  const [selectedOptions, setSelectedOptions] = useState(values.incident_editors);
+  const [selectedOptions, setSelectedOptions] = useState(values.incident_editors || []);
 
   const handleSelect = (checked, userId) => {
     let userInfo = userData.users.find((user) => user.userId === userId);

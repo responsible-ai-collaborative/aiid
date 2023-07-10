@@ -28,11 +28,5 @@
         "source_key": "user",
         "foreign_key": "userId",
         "is_list": false
-    },
-    "editor": {
-        "ref": "#/relationship/mongodb-atlas/customData/users",
-        "source_key": "editor",
-        "foreign_key": "userId",
-        "is_list": false
     }
 }

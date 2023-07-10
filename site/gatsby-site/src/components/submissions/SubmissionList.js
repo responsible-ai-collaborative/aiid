@@ -134,7 +134,7 @@ const SubmissionList = ({ data }) => {
         Cell: ({ row: { values } }) => {
           const editors = values.incident_editors;
 
-          if (editors.length <= 0) return <></>;
+          if (!editors || editors.length <= 0) return <></>;
 
           return (
             <div className="flex justify-center gap-1">
