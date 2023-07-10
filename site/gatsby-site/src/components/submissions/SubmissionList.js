@@ -18,7 +18,7 @@ const SubmissionList = ({ data }) => {
 
   const [tableData, setTableData] = useState([]);
 
-  const [claiming, setClaiming] = useState(false);
+  const [claiming, setClaiming] = useState({ submissionId: null, value: false });
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
@@ -31,25 +31,37 @@ const SubmissionList = ({ data }) => {
   }, [data]);
 
   const claimSubmission = async (submissionId) => {
-    setClaiming(true);
+    setClaiming({ submissionId, value: true });
     try {
-      await updateSubmission({
-        variables: {
-          query: {
-            _id: submissionId,
-          },
-          set: { editor: { link: user.id } },
-        },
-      });
+      const submission = data.submissions.find((submission) => submission._id === submissionId);
 
-      setClaiming(false);
+      const incidentEditors = [...submission.incident_editors];
+
+      const isAlreadyEditor = submission.incident_editors.find(
+        (editor) => editor.userId === user.customData.userId
+      );
+
+      if (!isAlreadyEditor) {
+        incidentEditors.push(user.customData.userId);
+
+        await updateSubmission({
+          variables: {
+            query: {
+              _id: submissionId,
+            },
+            set: { incident_editors: { link: incidentEditors } },
+          },
+        });
+      }
+
+      setClaiming({ submissionId: null, value: false });
     } catch (error) {
       addToast({
         message: t(`There was an error claiming this submission. Please try again.`),
         severity: SEVERITY.danger,
       });
 
-      setClaiming(false);
+      setClaiming({ submissionId: null, value: false });
     }
   };
 
@@ -205,9 +217,13 @@ const SubmissionList = ({ data }) => {
                 color={'gray'}
                 data-cy="claim-submission"
                 onClick={() => claimSubmission(values._id)}
-                disabled={claiming}
+                disabled={claiming.value}
               >
-                {claiming ? <Trans>Claiming...</Trans> : <Trans>Claim</Trans>}
+                {claiming.value && values._id === claiming.submissionId ? (
+                  <Trans>Claiming...</Trans>
+                ) : (
+                  <Trans>Claim</Trans>
+                )}
               </Button>
             )}
           </div>
