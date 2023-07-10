@@ -51,6 +51,15 @@ const pendingNotificationsToIncidentUpdates = [
   },
 ];
 
+const pendingNotificationsToPromotedIncidents = [
+  {
+    _id: '63616f82d0db19c07d081306',
+    type: 'submission-promoted',
+    incident_id: 217,
+    processed: false,
+  },
+];
+
 const subscriptionsToNewIncidents = [
   {
     _id: '6356e39e863169c997309586',
@@ -89,6 +98,14 @@ const subscriptionsToIncidentUpdates = [
     userId: '63321072f27421740a80af22',
     type: SUBSCRIPTION_TYPE.incident,
     incident_id: 219,
+  },
+];
+
+const subscriptionsToPromotedIncidents = [
+  {
+    _id: '6356e39e863169c997309586',
+    type: SUBSCRIPTION_TYPE.submissionPromoted,
+    userId: '63320ce63ec803072c9f5291',
   },
 ];
 
@@ -212,6 +229,11 @@ const stubEverything = () => {
         .as(`notifications.find('new-report-incident', 'incident-updated')`)
         .returns({ toArray: () => pendingNotificationsToIncidentUpdates });
 
+      stub
+        .withArgs({ processed: false, type: SUBSCRIPTION_TYPE.submissionPromoted })
+        .as(`notifications.find(${SUBSCRIPTION_TYPE.submissionPromoted})`)
+        .returns({ toArray: () => pendingNotificationsToPromotedIncidents });
+
       return stub;
     })(),
     updateOne: cy.stub().as('notifications.updateOne').resolves(),
@@ -245,6 +267,18 @@ const stubEverything = () => {
             `subscriptions.find("${SUBSCRIPTION_TYPE.incident}", "${pendingNotification.incident_id}")`
           )
           .returns({ toArray: () => subscriptionsToIncidentUpdates });
+      }
+
+      for (const pendingNotification of pendingNotificationsToPromotedIncidents) {
+        stub
+          .withArgs({
+            type: SUBSCRIPTION_TYPE.submissionPromoted,
+            incident_id: pendingNotification.incident_id,
+          })
+          .as(
+            `subscriptions.find("${SUBSCRIPTION_TYPE.submissionPromoted}", "${pendingNotification.incident_id}")`
+          )
+          .returns({ toArray: () => subscriptionsToPromotedIncidents });
       }
 
       return stub;
@@ -345,7 +379,7 @@ describe('Functions', () => {
       stubEverything();
 
     cy.wrap(processNotifications()).then((result) => {
-      expect(result, 'Notifications processed count').to.be.equal(6);
+      expect(result, 'Notifications processed count').to.be.equal(7);
 
       expect(notificationsCollection.find.firstCall.args[0]).to.deep.equal({
         processed: false,
@@ -391,6 +425,71 @@ describe('Functions', () => {
           },
           templateId: 'NewIncident', // Template value from function name sufix from "site/realm/functions/config.json"
         };
+
+        expect(global.context.functions.execute).to.be.calledWith('sendEmail', sendEmailParams);
+
+        expect(notificationsCollection.updateOne.getCall(i).args[0]).to.deep.equal({
+          _id: pendingNotification._id,
+        });
+
+        expect(notificationsCollection.updateOne.getCall(i).args[1].$set.processed).to.be.equal(
+          true
+        );
+        expect(notificationsCollection.updateOne.getCall(i).args[1].$set).to.have.ownProperty(
+          'sentDate'
+        );
+      }
+    });
+  });
+
+  it('New Promotions - Should send pending submissions promoted notifications', () => {
+    const { notificationsCollection, subscriptionsCollection, incidentsCollection } =
+      stubEverything();
+
+    cy.wrap(processNotifications()).then((result) => {
+      console.log('resuuuuult', result);
+      expect(result, 'Notifications processed count').to.be.equal(7);
+
+      expect(notificationsCollection.find.getCall(3).args[0]).to.deep.equal({
+        processed: false,
+        type: SUBSCRIPTION_TYPE.submissionPromoted,
+      });
+
+      expect(subscriptionsCollection.find.getCall(5).args[0]).to.deep.equal({
+        type: SUBSCRIPTION_TYPE.submissionPromoted,
+      });
+
+      for (const subscription of subscriptionsToPromotedIncidents) {
+        expect(global.context.functions.execute).to.be.calledWith('getUser', {
+          userId: subscription.userId,
+        });
+      }
+
+      for (let i = 0; i < pendingNotificationsToPromotedIncidents.length; i++) {
+        const pendingNotification = pendingNotificationsToPromotedIncidents[i];
+
+        expect(incidentsCollection.findOne.getCall(i).args[0]).to.deep.equal({
+          incident_id: pendingNotification.incident_id,
+        });
+
+        const userIds = subscriptionsToPromotedIncidents.map((subscription) => subscription.userId);
+
+        const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
+
+        const sendEmailParams = {
+          recipients: recipients.filter((r) => userIds.includes(r.userId)),
+          subject: 'Your submission has been approved!',
+          dynamicData: {
+            incidentId: `${incident.incident_id}`,
+            incidentTitle: incident.title,
+            incidentUrl: `https://incidentdatabase.ai/cite/${pendingNotification.incident_id}`,
+            incidentDescription: incident.description,
+            incidentDate: incident.date,
+          },
+          templateId: 'SubmissionApproved', // Template value from function name sufix from "site/realm/functions/config.json"
+        };
+
+        console.log('sendEmailParams33333', sendEmailParams);
 
         expect(global.context.functions.execute).to.be.calledWith('sendEmail', sendEmailParams);
 
@@ -603,6 +702,11 @@ describe('Functions', () => {
           .as(`notifications.find('new-report-incident', 'incident-updated')`)
           .returns({ toArray: () => pendingNotificationsToIncidentUpdates });
 
+        stub
+          .withArgs({ processed: false, type: SUBSCRIPTION_TYPE.submissionPromoted })
+          .as(`notifications.find(${SUBSCRIPTION_TYPE.submissionPromoted})`)
+          .returns({ toArray: () => pendingNotificationsToPromotedIncidents });
+
         return stub;
       })(),
       updateOne: cy.stub().as('notifications.updateOne').resolves(),
@@ -651,7 +755,7 @@ describe('Functions', () => {
     global.BSON = { Int32: (x) => x };
 
     cy.wrap(processNotifications()).then((result) => {
-      expect(result, 'Notifications processed count').to.be.equal(6);
+      expect(result, 'Notifications processed count').to.be.equal(7);
 
       expect(notificationsCollection.find.getCall(0).args[0]).to.deep.equal({
         processed: false,
@@ -670,6 +774,11 @@ describe('Functions', () => {
 
       expect(subscriptionsCollection.find.getCall(0).args[0]).to.deep.equal({
         type: SUBSCRIPTION_TYPE.newIncidents,
+      });
+
+      expect(notificationsCollection.find.getCall(3).args[0]).to.deep.equal({
+        processed: false,
+        type: SUBSCRIPTION_TYPE.submissionPromoted,
       });
 
       expect(global.context.functions.execute).not.to.be.called;
@@ -729,7 +838,7 @@ describe('Functions', () => {
       expect(
         notificationsCollection.updateOne.getCalls().length,
         'Notifications marked as processed count'
-      ).to.be.equal(6);
+      ).to.be.equal(7);
     });
   });
 });

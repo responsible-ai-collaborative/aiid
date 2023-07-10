@@ -85,9 +85,6 @@ exports = async function () {
           };
           const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
 
-          console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-          console.log(JSON.stringify(sendEmailResult));
-
           //If notification was sucessfully sent > Mark the notification as processed
           if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
             await notificationsCollection.updateOne(
@@ -165,9 +162,6 @@ exports = async function () {
           };
           const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
 
-          console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-          console.log(JSON.stringify(sendEmailResult));
-
           //If notification was sucessfully sent > Mark the notification as processed
           if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
             await notificationsCollection.updateOne(
@@ -241,9 +235,6 @@ exports = async function () {
 
           const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
 
-          console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-          console.log(JSON.stringify(sendEmailResult));
-
           //If notification was sucessfully sent > Mark the notification as processed
           if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
             await notificationsCollection.updateOne(
@@ -305,9 +296,6 @@ exports = async function () {
           };
           const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
 
-          console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-          console.log(JSON.stringify(sendEmailResult));
-
           //If notification was sucessfully sent > Mark the notification as processed
           if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
             await notificationsCollection.updateOne(
@@ -329,6 +317,7 @@ exports = async function () {
     }
 
   } catch (error) {
+    console.log(`[Process Pending Notifications: Submission Promoted]: ${error.message}`)
     error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
     context.functions.execute('logRollbar', { error });
   }
