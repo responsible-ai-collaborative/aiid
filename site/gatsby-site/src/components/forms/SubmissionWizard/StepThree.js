@@ -133,6 +133,8 @@ const StepThree = (props) => {
           submissionFailed={props.submissionFailed}
           entityNames={entityNames}
           setSavingInLocalStorage={props.setSavingInLocalStorage}
+          submissionComplete={props.submissionComplete}
+          submissionReset={props.submissionReset}
         />
       </Formik>
     </StepContainer>
@@ -146,6 +148,8 @@ const FormDetails = ({
   submitForm,
   validateAndSubmitForm,
   submissionFailed,
+  submissionComplete,
+  submissionReset,
   entityNames,
   setSavingInLocalStorage,
 }) => {
@@ -166,6 +170,7 @@ const FormDetails = ({
     setFieldTouched,
     isValid,
     validateForm,
+    resetForm,
   } = useFormikContext();
 
   useEffect(() => {
@@ -175,10 +180,15 @@ const FormDetails = ({
   }, [data, errors]);
 
   useEffect(() => {
-    if (submissionFailed) {
+    if (submissionFailed || submissionComplete || submissionReset.reset) {
       setIsSubmitting(false);
+      setSubmitCount(0);
     }
-  }, [submissionFailed]);
+
+    if (submissionComplete || submissionReset.reset) {
+      resetForm();
+    }
+  }, [submissionFailed, submissionComplete, submissionReset]);
 
   const saveInLocalStorage = useRef(
     debounce((values) => {
