@@ -15,10 +15,10 @@ const { MongoClient } = require('mongodb');
 
   const incidents = await incidentsCollection.find({}).toArray();
 
-  for (const i of incidents) {
+  for (const incident of incidents) {
     const classifications = await classificationsCollection
       .find({
-        incident_id: i.incident_id,
+        incident_id: incident.incident_id,
         namespace: { $in: ['CSET', 'GMF'] },
       })
       .toArray();
@@ -31,12 +31,13 @@ const { MongoClient } = require('mongodb');
 
     console.log(
       [
-        `https://incidentdatabase.ai/cite/${i.incident_id}`,
-        i.tsne?.x,
-        i.tsne?.y,
+        `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+        incident.tsne?.x,
+        incident.tsne?.y,
+        incident.date,
         tags,
-        i.title,
-        i.description,
+        incident.title,
+        incident.description,
       ]
         .map((field) => `"${String(field).replace(/"/g, '""')}"`)
         .join(',')
