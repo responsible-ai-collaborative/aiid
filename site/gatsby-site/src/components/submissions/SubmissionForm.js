@@ -38,7 +38,7 @@ import { Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 import UsersInputGroup from 'components/forms/UsersInputGroup';
 
-const SubmissionForm = ({ onChange = null }) => {
+const SubmissionForm = ({ onChange = null, hideEditors = false }) => {
   const {
     values,
     errors,
@@ -366,14 +366,16 @@ const SubmissionForm = ({ onChange = null }) => {
               className="mt-3"
               {...TextInputGroupProps}
             />
-            <UsersInputGroup
-              name="incident_editors"
-              label={t('Editors')}
-              icon={faPenNib}
-              className="mt-3"
-              placeholder={t('Editors')}
-              {...TextInputGroupProps}
-            />
+            {!hideEditors && (
+              <UsersInputGroup
+                name="incident_editors"
+                label={t('Editors')}
+                icon={faPenNib}
+                className="mt-3"
+                placeholder={t('Editors')}
+                {...TextInputGroupProps}
+              />
+            )}
             <TagsInputGroup
               name="developers"
               label={t('Alleged developer of AI system')}

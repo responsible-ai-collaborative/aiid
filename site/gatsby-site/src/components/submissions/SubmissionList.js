@@ -129,27 +129,32 @@ const SubmissionList = ({ data }) => {
         },
       },
       {
-        title: t('Assignee'),
-        accessor: 'editor',
+        title: t('Editors'),
+        accessor: 'incident_editors',
         Cell: ({ row: { values } }) => {
-          const editor = values.editor;
+          const editors = values.incident_editors;
 
-          if (!editor) return <></>;
-
-          const firstName = editor.first_name || '';
-
-          const lastName = editor.last_name || '';
-
-          const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+          if (editors.length <= 0) return <></>;
 
           return (
-            <div className="flex justify-center">
-              <div
-                className="!rounded-full w-10 h-10 relative overflow-hidden bg-blue-100 text-blue-800 dark:bg-gray-600 flex justify-center items-center"
-                data-testid="flowbite-avatar-img"
-              >
-                {initials}
-              </div>
+            <div className="flex justify-center gap-1">
+              {editors.map((editor) => {
+                const firstName = editor.first_name || '';
+
+                const lastName = editor.last_name || '';
+
+                const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+
+                return (
+                  <div
+                    className="!rounded-full w-10 h-10 relative overflow-hidden bg-blue-100 text-blue-800 dark:bg-gray-600 flex justify-center items-center"
+                    data-testid="flowbite-avatar-img"
+                    key={`editor-${editor.userId}`}
+                  >
+                    {initials}
+                  </div>
+                );
+              })}
             </div>
           );
         },
@@ -223,8 +228,6 @@ const SubmissionList = ({ data }) => {
     useSortBy,
     usePagination
   );
-
-  console.log('claiming', claiming);
 
   return (
     <div className="rounded-lg border">

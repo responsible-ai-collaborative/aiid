@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Label, Select } from 'flowbite-react';
+import { Badge, Button, Card, Checkbox, Dropdown, Label, Select } from 'flowbite-react';
 import { Link } from 'gatsby';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -18,7 +18,6 @@ import { incidentSchema, issueSchema, reportSchema, schema } from './schemas';
 import { stripMarkdown } from 'utils/typography';
 import { processEntities } from 'utils/entities';
 import isArray from 'lodash/isArray';
-import isString from 'lodash/isString';
 import ProgressCircle from 'elements/ProgessCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -39,6 +38,7 @@ import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import isEmpty from 'lodash/isEmpty';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { DropdownItem } from 'flowbite-react/lib/esm/components/Dropdown/DropdownItem';
 
 const SubmissionEdit = ({ id }) => {
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -97,8 +97,10 @@ const SubmissionEdit = ({ id }) => {
         });
       }
 
-      if (update.editor) {
-        update.editor = { link: isString(update.editor) ? update.editor : update.editor.userId };
+      if (update.incident_editors) {
+        const userIds = update.incident_editors.map((user) => user.userId);
+
+        update.incident_editors = { link: userIds };
       }
 
       const updatedSubmission = {
@@ -236,7 +238,7 @@ const SubmissionEditForm = ({
 
   const [completion, setCompletion] = useState(0);
 
-  const { values, touched, setFieldValue, isValid } = useFormikContext();
+  const { values, touched, setFieldValue, isValid, setFieldTouched } = useFormikContext();
 
   const isNewIncident = values.incident_ids.length === 0;
 
@@ -535,6 +537,29 @@ const SubmissionEditForm = ({
     }, 1000);
   };
 
+  const [selectedOptions, setSelectedOptions] = useState(values.incident_editors);
+
+  const handleSelect = (checked, userId) => {
+    let userInfo = userData.users.find((user) => user.userId === userId);
+
+    userInfo = {
+      userId: userInfo.userId,
+      first_name: userInfo.first_name,
+      last_name: userInfo.last_name,
+    };
+    let selectedOptions = [...values.incident_editors];
+
+    if (checked) {
+      selectedOptions = [...selectedOptions, userInfo];
+    } else {
+      selectedOptions = selectedOptions.filter((option) => option.userId !== userId);
+    }
+    setSelectedOptions(selectedOptions);
+
+    setFieldValue('incident_editors', selectedOptions);
+    setFieldTouched('incident_editors', true);
+  };
+
   return (
     <>
       <StepContainer className="w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
@@ -552,7 +577,7 @@ const SubmissionEditForm = ({
             <Trans ns="validation">Please review submission. Some data is missing.</Trans>
           )}
         </div>
-        <SubmissionForm />
+        <SubmissionForm hideEditors={true} />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
       <div className="flex w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
@@ -564,36 +589,36 @@ const SubmissionEditForm = ({
           <Label>
             <FontAwesomeIcon icon={faUser} className="mr-2" />
             <Trans i18n={i18n} ns="submitted">
-              Assignee
+              Editors
             </Trans>
           </Label>
-          <Select
-            className="w-full"
-            onChange={(e) => {
-              setSaving(true);
-              saveChanges({ ...values, editor: e.target.value });
-              setFieldValue('editor', e.target.value);
-            }}
-            value={values.editor?.userId}
-          >
-            <option value={null}>
-              <Trans i18n={i18n} ns="submitted">
-                Unassigned
-              </Trans>
-            </option>
+          <div className="editors-dropdown">
             {!userLoading && (
-              <>
+              <Dropdown label={t('Editors')} color={'light'}>
                 {userData.users.map((user) => {
+                  const isChecked =
+                    selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
+
                   return (
-                    <option key={user.userId} value={user.userId}>
-                      {user.first_name} {user.last_name}
-                    </option>
+                    <DropdownItem key={`editors-${user.userId}`}>
+                      <div className="flex justify-center items-center gap-2">
+                        <Checkbox
+                          id={`checkbox-${user.userId}`}
+                          checked={isChecked}
+                          onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
+                        />
+                        <Label htmlFor={`checkbox-${user.userId}`}>
+                          {user.first_name} {user.last_name}
+                        </Label>
+                      </div>
+                    </DropdownItem>
                   );
                 })}
-              </>
+              </Dropdown>
             )}
-          </Select>
+          </div>
         </div>
+
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
             <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
