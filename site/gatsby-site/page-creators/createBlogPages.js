@@ -73,13 +73,9 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
     }
 
     createPage({
-      path:
-        lang.code === 'en'
-          ? `/blog/${post.node.data.slug}`
-          : `/${lang.code}/blog/${post.node.data.slug}`,
+      path: `/blog/${post.node.data.slug}`,
       component: path.resolve('./src/templates/blogPost.js'),
       context: {
-        uid: post.node.uid,
         slug: post.node.data.slug,
       },
     });

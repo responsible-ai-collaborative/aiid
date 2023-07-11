@@ -3,24 +3,20 @@ import { graphql } from 'gatsby';
 import BlogPostNew from 'components/blog/BlogPostNew';
 
 export default function BlogPost(props) {
-  const post = props.data.post;
+  const post = props?.data?.post;
 
-  return (
-    <>
-      <BlogPostNew post={post} location={props.location} />
-    </>
-  );
+  return <>{post && <BlogPostNew post={post} location={props.location} />}</>;
 }
 
 export const pageQuery = graphql`
-  query Post($uid: String) {
+  query Post($slug: String!, $locale: String!) {
     site {
       siteMetadata {
         title
         docsLocation
       }
     }
-    post: prismicBlog(uid: { eq: $uid }) {
+    post: prismicBlog(data: { language: { eq: $locale }, slug: { eq: $slug } }) {
       uid
       data {
         metatitle
