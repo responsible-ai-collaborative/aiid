@@ -167,12 +167,15 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
+    cy.waitForStableDOM();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
-      .first()
-      .contains('yes')
-      .click();
+    cy.get('#taxonomy-CSETv1').contains('Edit').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]').first().contains('yes').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
       .last()
@@ -186,6 +189,8 @@ describe('Cite pages', () => {
       .find('input[type="radio"]')
       .eq(0)
       .click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
       .first()
