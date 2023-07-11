@@ -5,6 +5,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
+import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 import { classy, classyDiv } from 'utils/classy';
 import { Label, DeleteButton, abbreviatedTag, emptyRisk } from 'utils/checklists';
@@ -12,6 +14,7 @@ import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
+
 
 export default function CheckListForm({
   values,
@@ -53,6 +56,34 @@ export default function CheckListForm({
     submitForm();
   };
 
+  const columns = React.useMemo(() => {
+    const columns = [
+      {
+        title: t('Title'),
+        accessor: 'title' ,
+        Cell: ({ cell }) => {
+          return <>{cell.value}</>
+        },
+        filter: DefaultColumnFilter,
+        sortType: (rowA, rowB, id) => rowA.values[id].length - rowB.values[id].length
+      }
+    ];
+    return columns;
+  }, []);
+
+
+
+  const table = useTable({
+    columns,
+    data: [{title: 'Kitties'}],
+    defaultColumn: 'title',
+    initialState: { sortBy: [{ id: 'title', desc: true }] },
+    useFilters,
+    useSortBy,
+    useExpanded,
+    usePagination
+  });
+
   return (
     <Form onSubmit={handleSubmit}>
       <Header>
@@ -80,13 +111,13 @@ export default function CheckListForm({
           </HeaderControls>
         </HeaderRow>
       </Header>
-      <Info className="my-4">
+      {/*<Info className="my-4">
         <Trans>
           Describe the system under investigation. Apply machine-readable tags to surface risks
           associate with likewise-tagged incidents in the database. These are the basis of a risk
           checklist.
         </Trans>
-      </Info>
+      </Info>*/}
       <section>
         <Label for="about-system">About System</Label>
         <Textarea
@@ -140,27 +171,32 @@ export default function CheckListForm({
             </Button>
           </div>
         </header>
-        <Info>
+        {/*<Info>
           <Trans>
             Risks are surfaced automatically based on the tags applied to the system. They can also
             be added manually. Each risk is associated with a query for precedent incidents, which
             can be modified to suit your needs. You can subscribe both to new risks and new
             precedent incidents.
           </Trans>
-        </Info>
+        </Info>*/}
 
         {risksLoading ? (
           <Spinner />
         ) : values.risks.length == 0 ? (
           <Trans>No risks yet. Try adding some system tags.</Trans>
         ) : (
-          <div className="flex flex-col gap-8 mt-8">
+          <div>
+          {/*<div className="flex flex-col gap-8 mt-8">
             {(values.risks || []).map((risk) => (
               <RiskSection
                 key={risk.id}
                 {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}
               />
             ))}
+          </div>
+          */}
+
+            <Table table={table} showPagination={false} />
           </div>
         )}
       </section>
