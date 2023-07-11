@@ -201,7 +201,13 @@ export function formatDateField(date) {
   }
 }
 
-export default function Table({ table, showPagination = true, className = '', ...props }) {
+export default function Table({
+  table,
+  showPagination = true,
+  className = '',
+  tableClassName = '',
+  ...props
+}) {
   const { t } = useTranslation(['entities']);
 
   const {
@@ -221,7 +227,7 @@ export default function Table({ table, showPagination = true, className = '', ..
     <div className={`max-w-full ${className}`} {...props}>
       {/* eslint-disable react/jsx-key */}
       <div className="max-w-full overflow-x-scroll">
-        <table {...getTableProps()} className="w-full">
+        <table {...getTableProps()} className={`${tableClassName} w-full`}>
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400 ">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
