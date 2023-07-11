@@ -333,6 +333,34 @@ This project uses Prismic to fetch page content.
 
 Follow instructions on [prismicCustomTypes.md](prismicCustomTypes.md)
 
+#### Adding Prismic documents
+
+1. On the Prismic dashboard left menu click `Documents`
+2. Click `Create new`
+3. Fill in all the mandatory fields
+4. Click `Save`
+5. Keep in mind that the new content won't be available on your page until you Publish it.
+6. In order to publish it, click `Publish`
+
+#### Prismic & Netlify Hook integration
+
+In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
+In order to do this, you need to create a Netlify Build Hook.
+
+1. Login to your Netlify
+2. Go to `Deploys`
+3. Go to `Deploy settings`
+4. Scroll to `Build Hooks`
+5. Click `Add build hook`
+6. Give it a name and assign a branch
+7. Click save
+8. Copy the generated URL
+9. Go to your Prismic repository
+10. Go to  `Settings` > `Webhooks`
+11. Create a new webhook and paste the URL in the URL field
+12. In `Triggers` select `A document is published` and `A document is unpublished`
+13. Click `Add this webhook`
+
 ## Front-end development
 
 ### Tailwind CSS & Flowbite
