@@ -173,6 +173,12 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]').first().contains('yes').click();
+
+    cy.waitForStableDOM();
+
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').first().check();
 
     cy.waitForStableDOM();
