@@ -21,7 +21,10 @@ export default BlogPage;
 
 export const IndexQuery = graphql`
   query BlogPosts($locale: String!) {
-    posts: allPrismicBlog(filter: { data: { language: { eq: $locale } } }) {
+    posts: allPrismicBlog(
+      filter: { data: { language: { eq: $locale } } }
+      sort: { data: { date: DESC } }
+    ) {
       edges {
         node {
           uid

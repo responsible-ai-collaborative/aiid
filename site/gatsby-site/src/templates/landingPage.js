@@ -236,7 +236,7 @@ export const query = graphql`
     }
     latestPost: allPrismicBlog(
       filter: { data: { language: { eq: $locale } } }
-      sort: { last_publication_date: DESC }
+      sort: { data: { date: DESC } }
     ) {
       edges {
         node {

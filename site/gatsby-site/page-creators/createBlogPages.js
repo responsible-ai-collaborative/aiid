@@ -4,7 +4,7 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
   const result = await graphql(
     `
       query BlogPosts {
-        allPrismicBlog {
+        allPrismicBlog(sort: { data: { date: DESC } }) {
           edges {
             node {
               uid
