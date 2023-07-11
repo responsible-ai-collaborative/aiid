@@ -34,17 +34,17 @@ function Entity({ attributes }) {
       <div className="flex justify-between" data-cy={`entity-${name}`}>
         <h3>{name}</h3>
       </div>
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-fixed">
         <tbody>
           {attributes.map((a) => (
             <tr key={a.short_name} className="border-b dark:border-gray-700">
               <th
                 scope="row"
-                className="py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="py-2 font-medium text-gray-900 dark:text-white break-words w-40"
               >
                 {a.short_name}
               </th>
-              <td className="py-1">{JSON.stringify(a.value_json)}</td>
+              <td className="py-1 break-words w-40">{JSON.stringify(a.value_json)}</td>
             </tr>
           ))}
         </tbody>
@@ -274,7 +274,7 @@ function mergeClassification(taxa, row) {
 function TableWrap({ data, setData, className, ...props }) {
   const defaultColumn = useMemo(
     () => ({
-      className: 'w-[20%]',
+      className: 'w-40',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
@@ -284,7 +284,7 @@ function TableWrap({ data, setData, className, ...props }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        className: 'w-[10%]',
+        className: 'w-20',
         accessor: 'short_name',
         title: 'Short Name',
         Cell: ShortNameCell,
@@ -297,12 +297,17 @@ function TableWrap({ data, setData, className, ...props }) {
       for (const key of Object.keys(firstRow).filter((key) =>
         startsWith(key, 'CSETv1_Annotator-')
       )) {
-        columns.push({ accessor: key, title: key, Cell: ValueCell });
+        columns.push({
+          accessor: key,
+          title: key,
+          Cell: ValueCell,
+          className: 'w-[240px]',
+        });
       }
     }
 
     columns.push({
-      className: 'w-[10%]',
+      className: 'w-[240px]',
       accessor: 'result',
       title: 'Result',
       Cell: ResultCell,
@@ -332,7 +337,7 @@ function TableWrap({ data, setData, className, ...props }) {
   );
 }
 
-export default function CsetTable({ data, taxa, incident_id, className = '', ...props }) {
+export default function CsetTable({ data, taxa, incident_id, ...props }) {
   const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
 
   const addToast = useToastContext();
@@ -436,9 +441,7 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
 
   return (
     <>
-      {processed && (
-        <TableWrap data={tableData} setData={setTableData} className={className} {...props} />
-      )}
+      {processed && <TableWrap data={tableData} setData={setTableData} {...props} />}
 
       <div className="mt-4 flex justify-end">
         <SubmitButton disabled={!isValid} loading={submitting} onClick={submit}>
