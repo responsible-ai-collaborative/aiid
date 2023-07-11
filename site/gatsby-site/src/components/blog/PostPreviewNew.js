@@ -22,7 +22,7 @@ function PostPreviewNew({ post, latestPost = false }) {
         >
           <Img
             alt="post-image"
-            className="img-fluid h-full w-full max-w-full max-h-240 rounded-t-lg"
+            className="img-fluid w-full max-w-full max-h-240 h-[240px] rounded-t-lg"
             imgStyle={{ transition: '0.5s all ease-in-out' }}
             imgClassName="hover:scale-110 object-cover"
             image={post.data.image.gatsbyImageData}
