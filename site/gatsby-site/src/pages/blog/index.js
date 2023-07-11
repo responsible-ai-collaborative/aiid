@@ -46,11 +46,6 @@ export const IndexQuery = graphql`
             }
             date
             author
-            customcontent {
-              id
-              type
-              uid
-            }
           }
         }
       }
