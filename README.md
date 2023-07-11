@@ -318,6 +318,21 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
+### Prismic setup
+This project uses Prismic to fetch page content. 
+
+#### Prismic Setup
+
+1. Sign up for a new [Prismic](https://prismic.io/) account or log in to your account if you already have one
+2. In `Create a new repository` section choose `Something else`
+3. Give your repository a name and choose `gatsby` in the technology dropdown
+4. Choose your plan (if you only need one user, the free plan is enough)
+5. Click `Create repository`
+
+#### Adding the Prismic content types
+
+Follow instructions on [prismicCustomTypes.md](prismicCustomTypes.md)
+
 ## Front-end development
 
 ### Tailwind CSS & Flowbite
