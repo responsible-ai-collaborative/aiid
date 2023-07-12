@@ -15,14 +15,15 @@ const classy = (type, classStringOrFunction) => {
         .join(' ') 
     ) || undefined;
 
-    React.createElement(
+    return React.createElement(
       type,
       { ...props, className },
       Array.isArray(props.children) ? props.children : [props.children]
     );
   }
 
-  component.displayName = type;
+  component.displayName = 'Classy' + type.slice(0, 1).toUpperCase() + type.slice(1);
+
   return component;
 };
 

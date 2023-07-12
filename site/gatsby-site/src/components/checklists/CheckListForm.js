@@ -39,6 +39,8 @@ export default function CheckListForm({
     }
   };
 
+  const [saveStatus, setSaveStatus] = useState(null);
+
   const [risksLoading, setRisksLoading] = useState(false);
 
   const [allPrecedents, setAllPrecedents] = useState([]);
@@ -100,7 +102,7 @@ export default function CheckListForm({
             />
           </h1>
           <HeaderControls>
-            <SavingIndicator {...{ isSubmitting }} />
+            <SavingIndicator {...{ saveStatus }} />
             <Button color="light" onClick={() => alert('Coming soon')}>
               <Trans>Subscribe</Trans>
             </Button>
@@ -180,20 +182,32 @@ export default function CheckListForm({
           </Trans>
         </Info>*/}
 
-        {risksLoading ? (
-          <Spinner />
-        ) : values.risks.length == 0 ? (
+        {!risksLoading && values.risks.length == 0 && (
           <Trans>No risks yet. Try adding some system tags.</Trans>
-        ) : (
-          <div className="flex flex-col gap-8 mt-8">
-            {(values.risks || []).map((risk) => (
+        )} 
+
+        <div className="flex flex-col gap-8 mt-8">
+          {}
+          {risksLoading ? ( 
+            <>
+              {(values.risks || []).filter(risk => !risk.generated).map((risk) => (
+                <RiskSection
+                  key={risk.id}
+                  {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}
+                />
+              ))}
+              <Spinner /> 
+            </>
+          ) : (
+            (values.risks || []).map((risk) => (
               <RiskSection
                 key={risk.id}
                 {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}
               />
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
+
       </section>
     </Form>
   );
@@ -285,20 +299,32 @@ const SideBySide = classyDiv(
   'flex flex-col md:flex-row gap-2 [&>*]:w-full [&>*]:md:w-1/2 [&>*]:h-full'
 );
 
-function SavingIndicator({ isSubmitting }) {
+function SavingIndicator({ saveStatus }) {
   const className = 'text-lg text-gray-500 inline-block mx-4';
 
-  if (isSubmitting) {
+  if (!saveStatus) {
+    return <></>
+  }
+  if (saveStatus == 'saving') {
     return (
       <span {...{ className }}>
         <Spinner />
         <Trans>Saving...</Trans>
       </span>
     );
-  } else {
+  }
+  if (saveStatus == 'saved') {
     return (
       <span {...{ className }}>
         <Trans>Saved</Trans>
+      </span>
+    );
+  }
+  if (saveStatus == 'error') {
+    return (
+      <span {...{ className }}>
+        <Spinner />
+        <Trans>Error saving...</Trans>
       </span>
     );
   }
@@ -324,7 +350,7 @@ function Info({ children, className }) {
   );
 }
 
-const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents }) => {
+const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents, setSaveStatus }) => {
   const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   if (queryTags.length == 0) return;
@@ -386,7 +412,7 @@ const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrece
     // ]
   } else {
     // TODO: Handle the error better
-    alert('Submission Failed');
+    setSaveStatus('error');
   }
 
   setRisksLoading(false);
