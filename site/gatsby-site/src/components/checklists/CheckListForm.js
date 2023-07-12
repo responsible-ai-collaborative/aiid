@@ -3,11 +3,11 @@ import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
-import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
+import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { classy, classyDiv } from 'utils/classy';
 import { Label, DeleteButton, abbreviatedTag, emptyRisk } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
@@ -56,33 +56,33 @@ export default function CheckListForm({
     submitForm();
   };
 
-  const columns = React.useMemo(() => {
-    const columns = [
-      {
-        title: t('Title'),
-        accessor: 'title' ,
-        Cell: ({ cell }) => {
-          return <>{cell.value}</>
-        },
-        filter: DefaultColumnFilter,
-        sortType: (rowA, rowB, id) => rowA.values[id].length - rowB.values[id].length
-      }
-    ];
-    return columns;
-  }, []);
+//  const columns = React.useMemo(() => {
+//    const columns = [
+//      {
+//        title: t('Title'),
+//        accessor: 'title' ,
+//        Cell: ({ cell }) => {
+//          return <>{cell.value}</>
+//        },
+//        filter: DefaultColumnFilter,
+//        sortType: (rowA, rowB, id) => rowA.values[id].length - rowB.values[id].length
+//      }
+//    ];
+//    return columns;
+//  }, []);
 
 
 
-  const table = useTable({
-    columns,
-    data: [{title: 'Kitties'}],
-    defaultColumn: 'title',
-    initialState: { sortBy: [{ id: 'title', desc: true }] },
-    useFilters,
-    useSortBy,
-    useExpanded,
-    usePagination
-  });
+//  const table = useTable({
+//    columns,
+//    data: [{title: 'Kitties'}],
+//    defaultColumn: 'title',
+//    initialState: { sortBy: [{ id: 'title', desc: true }] },
+//    useFilters,
+//    useSortBy,
+//    useExpanded,
+//    usePagination
+//  });
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -185,18 +185,13 @@ export default function CheckListForm({
         ) : values.risks.length == 0 ? (
           <Trans>No risks yet. Try adding some system tags.</Trans>
         ) : (
-          <div>
-          {/*<div className="flex flex-col gap-8 mt-8">
+          <div className="flex flex-col gap-8 mt-8">
             {(values.risks || []).map((risk) => (
               <RiskSection
                 key={risk.id}
                 {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}
               />
             ))}
-          </div>
-          */}
-
-            <Table table={table} showPagination={false} />
           </div>
         )}
       </section>

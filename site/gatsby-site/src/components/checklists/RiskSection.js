@@ -46,7 +46,7 @@ export default function RiskSection({
     ) / 3;
 
   return (
-    <RiskDetails open={risk.startClosed ? undefined : true}>
+    <RiskDetails open={risk.startClosed ? undefined : true} generated={risk.generated}>
       <RiskHeaderSummary>
         <EditableLabel
           title={risk.title}
@@ -141,16 +141,14 @@ export default function RiskSection({
 
 var RiskLayout = classyDiv('flex flex-col gap-4');
 
-var RiskDetails = classy(
-  'details',
-  `
+var RiskDetails = classy( 'details', ({ generated }) => `
+  ${generated ? 'border-gray-400' : 'border-red-700'} border-t-1 open:border-1
   relative max-w-full
-  border-red-700 border-t-1 open:border-1
   open:p-3 md:open:p-6 open:rounded
+  cursor-pointer
   [&[open]>summary]:before:content-['⏷']
         [&>summary]:before:content-['⏵']
-`
-);
+`);
 
 var RiskHeaderSummary = classy(
   'summary',

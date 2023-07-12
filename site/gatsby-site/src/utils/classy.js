@@ -1,15 +1,26 @@
 import React from 'react';
 
-const classy = (type, className) => {
-  const component = (props) =>
+const classy = (type, classStringOrFunction) => {
+  const component = (props) => {
+
+    const componentClassName = (
+      typeof classStringOrFunction == 'function'
+        ? classStringOrFunction(props)
+        : classStringOrFunction
+    );
+
+    const className = (
+      [componentClassName, props.className]
+        .filter((e) => e)
+        .join(' ') 
+    ) || undefined;
+
     React.createElement(
       type,
-      {
-        ...props,
-        className: [className || '', props.className || ''].filter((e) => e).join(' ') || undefined,
-      },
+      { ...props, className },
       Array.isArray(props.children) ? props.children : [props.children]
     );
+  }
 
   component.displayName = type;
   return component;
