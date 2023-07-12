@@ -54,7 +54,7 @@ const pendingNotificationsToIncidentUpdates = [
 const pendingNotificationsToPromotedIncidents = [
   {
     _id: '63616f82d0db19c07d081306',
-    type: 'submission-promoted',
+    type: SUBSCRIPTION_TYPE.submissionPromoted,
     incident_id: 217,
     processed: false,
   },
@@ -269,17 +269,12 @@ const stubEverything = () => {
           .returns({ toArray: () => subscriptionsToIncidentUpdates });
       }
 
-      for (const pendingNotification of pendingNotificationsToPromotedIncidents) {
-        stub
-          .withArgs({
-            type: SUBSCRIPTION_TYPE.submissionPromoted,
-            incident_id: pendingNotification.incident_id,
-          })
-          .as(
-            `subscriptions.find("${SUBSCRIPTION_TYPE.submissionPromoted}", "${pendingNotification.incident_id}")`
-          )
-          .returns({ toArray: () => subscriptionsToPromotedIncidents });
-      }
+      stub
+        .withArgs({
+          type: SUBSCRIPTION_TYPE.submissionPromoted,
+        })
+        .as(`subscriptions.find("${SUBSCRIPTION_TYPE.submissionPromoted}")`)
+        .returns({ toArray: () => subscriptionsToPromotedIncidents });
 
       return stub;
     })(),
@@ -447,9 +442,7 @@ describe('Functions', () => {
       stubEverything();
 
     cy.wrap(processNotifications()).then((result) => {
-      console.log('resuuuuult', result);
       expect(result, 'Notifications processed count').to.be.equal(7);
-
       expect(notificationsCollection.find.getCall(3).args[0]).to.deep.equal({
         processed: false,
         type: SUBSCRIPTION_TYPE.submissionPromoted,
@@ -472,6 +465,8 @@ describe('Functions', () => {
           incident_id: pendingNotification.incident_id,
         });
 
+        console.log('subscriptionsToPromotedIncidents', global.context.functions);
+
         const userIds = subscriptionsToPromotedIncidents.map((subscription) => subscription.userId);
 
         const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
@@ -489,11 +484,9 @@ describe('Functions', () => {
           templateId: 'SubmissionApproved', // Template value from function name sufix from "site/realm/functions/config.json"
         };
 
-        console.log('sendEmailParams33333', sendEmailParams);
-
         expect(global.context.functions.execute).to.be.calledWith('sendEmail', sendEmailParams);
 
-        expect(notificationsCollection.updateOne.getCall(i).args[0]).to.deep.equal({
+        expect(notificationsCollection.updateOne.getCall(6).args[0]).to.deep.equal({
           _id: pendingNotification._id,
         });
 
@@ -516,7 +509,7 @@ describe('Functions', () => {
     } = stubEverything();
 
     cy.wrap(processNotifications()).then((result) => {
-      expect(result, 'Notifications processed count').to.be.equal(6);
+      expect(result, 'Notifications processed count').to.be.equal(7);
 
       expect(notificationsCollection.find.secondCall.args[0]).to.deep.equal({
         processed: false,
@@ -611,7 +604,7 @@ describe('Functions', () => {
     } = stubEverything();
 
     cy.wrap(processNotifications()).then((result) => {
-      expect(result, 'Notifications processed count').to.be.equal(6);
+      expect(result, 'Notifications processed count').to.be.equal(7);
 
       expect(notificationsCollection.find.secondCall.args[0]).to.deep.equal({
         processed: false,

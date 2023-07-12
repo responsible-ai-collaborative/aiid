@@ -85,6 +85,14 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const notificationsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
+    const subscriptionsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -96,6 +104,8 @@ describe('Functions', () => {
               stub.withArgs('submissions').returns(submissionsCollection);
               stub.withArgs('incidents').returns(incidentsCollection);
               stub.withArgs('reports').returns(reportsCollection);
+              stub.withArgs('notifications').returns(notificationsCollection);
+              stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
               return stub;
             })(),
@@ -393,6 +403,14 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const notificationsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
+    const subscriptionsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -404,6 +422,8 @@ describe('Functions', () => {
               stub.withArgs('submissions').returns(submissionsCollection);
               stub.withArgs('incidents').returns(incidentsCollection);
               stub.withArgs('reports').returns(reportsCollection);
+              stub.withArgs('notifications').returns(notificationsCollection);
+              stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
               return stub;
             })(),
