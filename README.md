@@ -328,6 +328,8 @@ This project uses Prismic to fetch page content.
 3. Give your repository a name and choose `gatsby` in the technology dropdown
 4. Choose your plan (if you only need one user, the free plan is enough)
 5. Click `Create repository`
+6. Create a new token in Settings > API & Security > Content API tab > Permanent access tokens > Save value for later
+7. Create a new custom type token in Settings > API & Security > Custom types API tab > Tokens > Add new app name and create token > Save value for later
 
 #### Adding the Prismic content types
 
@@ -347,6 +349,14 @@ Follow instructions on [prismicCustomTypes.md](prismicCustomTypes.md)
 In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
 In order to do this, you need to create a Netlify Build Hook.
 
+**Prismic environment variables**
+
+Add the following environment variable on Netlify: 
+`GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
+`PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
+`PRISMIC_CUSTOM_TYPES_API_TOKEN=[you_prismic_custom_types_access_token]` (step 7 from Prismic Setup section)
+
+**Create Prismic/Netlify Hook**
 1. Login to your Netlify
 2. Go to `Deploys`
 3. Go to `Deploy settings`
