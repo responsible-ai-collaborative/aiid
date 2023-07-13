@@ -17,8 +17,11 @@
                 }
             }
         },
-        "incident_id": {
+        "issue_id": {
             "bsonType": "int"
+        },
+        "issue_type": {
+            "bsonType": "string"
         },
         "namespace": {
             "bsonType": "string"
