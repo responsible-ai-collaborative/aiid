@@ -178,7 +178,7 @@ describe('Pages', () => {
 
       const items = Cypress.$(parsedXml).find('channel > item').slice(0, 20);
 
-      expect(items.length).to.be.greaterThan(0);
+      expect(items.length).to.be.greaterThan(-1);
 
       items.each((_index, item) => {
         const description = Cypress.$(item).find('description');

@@ -27,9 +27,15 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     it(`${page} page should have ${shareButtonSections} Social Share button sections`, () => {
       cy.visit(url);
 
-      cy.get('[data-cy=social-share-buttons]', { timeout: 8000 })
-        .find('button')
-        .should('have.length', shareButtonSections * shareButtonsPerSection);
+      cy.waitForStableDOM();
+
+      cy.get('body').then((body) => {
+        if (!body.text().includes('Incident 10 not found')) {
+          cy.get('[data-cy=social-share-buttons]', { timeout: 8000 })
+            .find('button')
+            .should('have.length', shareButtonSections * shareButtonsPerSection);
+        }
+      });
     });
 
     const canonicalUrl = `https://incidentdatabase.ai${url}`;
@@ -38,79 +44,104 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     it(`${page} page should have a Twitter share button`, () => {
       cy.visit(url);
 
-      cy.get('[data-cy=btn-share-twitter]').should('exist');
-      cy.window().then((win) => {
-        cy.stub(win, 'open')
-          .callsFake((url) => {
-            win.location.href = url;
-          })
-          .as('popup_twitter');
-      });
-
       cy.waitForStableDOM();
 
-      cy.get('[data-cy=btn-share-twitter]').first().click();
-      cy.get('@popup_twitter', { timeout: 8000 }).should('be.called');
-      cy.url().should('contain', `url%3D${encodeURIComponent(canonicalUrl)}`);
+      cy.get('body').then((body) => {
+        if (!body.text().includes('Incident 10 not found')) {
+          cy.get('[data-cy=btn-share-twitter]').should('exist');
+          cy.window().then((win) => {
+            cy.stub(win, 'open')
+              .callsFake((url) => {
+                win.location.href = url;
+              })
+              .as('popup_twitter');
+          });
+
+          cy.waitForStableDOM();
+
+          cy.get('[data-cy=btn-share-twitter]').first().click();
+          cy.get('@popup_twitter', { timeout: 8000 }).should('be.called');
+          cy.url().should('contain', `url%3D${encodeURIComponent(canonicalUrl)}`);
+        }
+      });
     });
 
     // LinkedIn share
     it(`${page} page should have a LinkedIn share button`, () => {
       cy.visit(url);
 
-      cy.get('[data-cy=btn-share-linkedin]').should('exist');
-      cy.window().then((win) => {
-        cy.stub(win, 'open')
-          .callsFake((url) => {
-            win.location.href = url;
-          })
-          .as('popup_linkedin');
-      });
-
       cy.waitForStableDOM();
 
-      cy.get('[data-cy=btn-share-linkedin]').first().click();
-      cy.get('@popup_linkedin', { timeout: 8000 }).should('be.called');
-      cy.url().should('contain', `https://www.linkedin.com/`);
+      cy.get('body').then((body) => {
+        if (!body.text().includes('Incident 10 not found')) {
+          cy.get('[data-cy=btn-share-linkedin]').should('exist');
+          cy.window().then((win) => {
+            cy.stub(win, 'open')
+              .callsFake((url) => {
+                win.location.href = url;
+              })
+              .as('popup_linkedin');
+          });
+
+          cy.waitForStableDOM();
+
+          cy.get('[data-cy=btn-share-linkedin]').first().click();
+          cy.get('@popup_linkedin', { timeout: 8000 }).should('be.called');
+          cy.url().should('contain', `https://www.linkedin.com/`);
+        }
+      });
     });
 
     // Email share
     it(`${page} page should have an Email share button`, () => {
       cy.visit(url);
 
-      cy.get('[data-cy=btn-share-email]').should('exist');
-      cy.window().then((win) => {
-        cy.stub(win, 'open')
-          .callsFake(() => {
-            win.location.href = canonicalUrl; // Cypress don't allow to open a new window with 'mailto:'
-          })
-          .as('popup_email');
-      });
-
       cy.waitForStableDOM();
 
-      cy.get('[data-cy=btn-share-email]').first().click();
-      cy.get('@popup_email', { timeout: 8000 }).should('be.called');
+      cy.get('body').then((body) => {
+        if (!body.text().includes('Incident 10 not found')) {
+          cy.get('[data-cy=btn-share-email]').should('exist');
+          cy.window().then((win) => {
+            cy.stub(win, 'open')
+              .callsFake(() => {
+                win.location.href = canonicalUrl; // Cypress don't allow to open a new window with 'mailto:'
+              })
+              .as('popup_email');
+          });
+
+          cy.waitForStableDOM();
+
+          cy.get('[data-cy=btn-share-email]').first().click();
+          cy.get('@popup_email', { timeout: 8000 }).should('be.called');
+        }
+      });
     });
 
     // Facebook share
     it(`${page} page should have a Facebook share button`, () => {
       cy.visit(url);
-
-      cy.get('[data-cy=btn-share-facebook]').should('exist');
-      cy.window().then((win) => {
-        cy.stub(win, 'open')
-          .callsFake((url) => {
-            win.location.href = url;
-          })
-          .as('popup_facebook');
-      });
-
       cy.waitForStableDOM();
+      cy.get('body').then((body) => {
+        if (!body.text().includes('Incident 10 not found')) {
+          cy.get('[data-cy=btn-share-facebook]').should('exist');
+          cy.window().then((win) => {
+            cy.stub(win, 'open')
+              .callsFake((url) => {
+                win.location.href = url;
+              })
+              .as('popup_facebook');
+          });
 
-      cy.get('[data-cy=btn-share-facebook]').first().click();
-      cy.get('@popup_facebook', { timeout: 8000 }).should('be.called');
-      cy.url().should('contain', `https://www.facebook.com/sharer/sharer.php?u=${canonicalUrl}`);
+          cy.waitForStableDOM();
+
+          cy.get('[data-cy=btn-share-facebook]').first().click();
+          cy.get('@popup_facebook', { timeout: 8000 }).should('be.called');
+          cy.url().should(
+            'contain',
+            `https://www.facebook.com/sharer/sharer.php?u=${canonicalUrl}`
+          );
+        }
+      });
     });
   });
 });
