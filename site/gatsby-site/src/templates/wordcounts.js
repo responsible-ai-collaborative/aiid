@@ -50,6 +50,7 @@ const WordCounts = ({ pageContext, ...props }) => {
           </Trans>
         </p>
         <div>
+          {wordClouds.length <= 0 && <Trans>No words found</Trans>}
           <ul className="pl-0 list-revert">
             {wordClouds &&
               wordCountsSorted &&

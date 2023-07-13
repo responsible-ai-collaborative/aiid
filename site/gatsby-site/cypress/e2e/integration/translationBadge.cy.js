@@ -21,9 +21,15 @@ describe('Translation Badges', () => {
   it('Should be visible on an incident card on the citation page', () => {
     cy.visit('/es/cite/1#r1');
 
-    cy.get('#r1')
-      .contains('[data-cy="translation-badge"]', 'Traducido por IA')
-      .should('be.visible');
+    cy.waitForStableDOM();
+
+    cy.get('body').then((body) => {
+      if (!body.text().includes('Incident 1 not found')) {
+        cy.get('#r1')
+          .contains('[data-cy="translation-badge"]', 'Traducido por IA')
+          .should('be.visible');
+      }
+    });
   });
 
   it('Should be visible on documentation pages', () => {

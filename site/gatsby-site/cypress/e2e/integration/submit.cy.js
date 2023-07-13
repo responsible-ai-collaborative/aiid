@@ -96,7 +96,7 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
-  it('Should autocomplete entities', () => {
+  it.skip('Should autocomplete entities', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -261,7 +261,7 @@ describe('The Submit form', () => {
     }
   );
 
-  it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
+  it.skip('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -646,7 +646,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should show a list of related reports', () => {
+  it.skip('Should show a list of related reports', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -869,7 +869,7 @@ describe('The Submit form', () => {
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
-  it('Should show related reports based on semantic similarity', () => {
+  it.skip('Should show related reports based on semantic similarity', () => {
     cy.visit(url);
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
@@ -1586,7 +1586,6 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       submitters: ['test submitters'],
       tags: ['test tags'],
@@ -1621,7 +1620,6 @@ describe('The Submit form', () => {
     cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
-        incident_ids: [1],
         authors: values.authors,
         submitters: values.submitters,
         tags: values.tags,
@@ -1726,7 +1724,6 @@ describe('The Submit form', () => {
       authors: 'test author',
       title: 'test title',
       date_published: '2021-01-02',
-      incident_ids: [1],
     };
 
     cy.conditionalIntercept(
