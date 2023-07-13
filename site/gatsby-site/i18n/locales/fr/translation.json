@@ -256,5 +256,6 @@
   "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement",
   "You have successfully create Incident {{newIncidentId}}. <4>View incident</4>.": "Vous avez réussi à créer l'incident {{newIncidentId}}. <4>Voir l'incident</4>.",
   "New Incident": "Nouvel Incident",
-  "No words found": "Pas de mots trouvés"
+  "No words found": "Pas de mots trouvés",
+  "No incidents found": "Pas d'incidents trouvés"
 }

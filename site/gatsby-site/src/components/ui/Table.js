@@ -304,8 +304,8 @@ export default function Table({
             <span>
               Page{' '}
               <strong>
-                <span data-cy="current-page">{pageIndex + 1}</span> of{' '}
-                <span data-cy="total-pages">{pageOptions.length}</span>
+                <span data-cy="current-page">{pageOptions.length > 0 ? pageIndex + 1 : 1}</span> of{' '}
+                <span data-cy="total-pages">{pageOptions.length > 0 ? pageOptions.length : 1}</span>
               </strong>{' '}
             </span>
             <Dropdown

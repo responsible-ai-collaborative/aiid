@@ -4,6 +4,7 @@ import { graphql } from 'gatsby';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
+import { Trans } from 'react-i18next';
 
 const ReportList = ({ items }) => {
   return (
@@ -64,7 +65,11 @@ export default function Incidents({ data, ...props }) {
           If you would like to explore the contents of the reports, you should work through the
           <Link to="/apps/discover"> Discover app</Link>.
         </p>
-        <IncidentList incidents={incidents} />
+        {incidents.length <= 0 ? (
+          <Trans>No incidents found</Trans>
+        ) : (
+          <IncidentList incidents={incidents} />
+        )}
       </div>
     </>
   );

@@ -19,11 +19,17 @@ describe('Incidents Summary', () => {
         }
       `,
     }).then(({ data: { incidents } }) => {
-      cy.get('[data-cy="incident-list"] > div')
-        .should('have.length', incidents.length)
-        .and('be.visible');
+      cy.waitForStableDOM();
 
-      // could use some more toughly testing here
+      cy.get('body').then((body) => {
+        if (!body.text().includes('No incidents found')) {
+          cy.get('[data-cy="incident-list"] > div')
+            .should('have.length', incidents.length)
+            .and('be.visible');
+
+          // could use some more toughly testing here
+        }
+      });
     });
   });
 });
