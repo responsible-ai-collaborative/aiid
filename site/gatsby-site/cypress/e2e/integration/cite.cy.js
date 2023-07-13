@@ -750,31 +750,31 @@ describe('Cite pages', () => {
 
     const newIncidentId = incidents.data.incidents[0].incident_id + 1;
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'GetLatestIncidentId',
+      incidents
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertIncident',
+      'InsertIncident',
+      {
+        data: {
+          insertOneIncident: {
+            incident_id: newIncidentId,
+          },
+        },
+      }
+    );
     cy.visit(url);
 
     cy.waitForStableDOM();
+
     cy.get('body').then((body) => {
       if (!body.text().includes('Incident 10 not found')) {
-        cy.conditionalIntercept(
-          '**/graphql',
-          (req) => req.body.operationName == 'FindIncidents',
-          'GetLatestIncidentId',
-          incidents
-        );
-
-        cy.conditionalIntercept(
-          '**/graphql',
-          (req) => req.body.operationName == 'InsertIncident',
-          'InsertIncident',
-          {
-            data: {
-              insertOneIncident: {
-                incident_id: newIncidentId,
-              },
-            },
-          }
-        );
-
         cy.waitForStableDOM();
 
         cy.wait('@GetLatestIncidentId');
