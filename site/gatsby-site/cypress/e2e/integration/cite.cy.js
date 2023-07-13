@@ -216,18 +216,23 @@ describe('Cite pages', () => {
           .should('be.checked');
 
         // Clicking unchecks the input for both fields
-        cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-          .last()
-          .find('input[type="radio"]')
-          .eq(0)
-          .click();
+        cy.waitForStableDOM();
+
+        cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').first().check();
 
         cy.waitForStableDOM();
 
-        cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+        cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]')
+          .last()
+          .should('be.checked');
+
+        // Clicking unchecks the input for both fields
+        cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').last().click();
+
+        cy.waitForStableDOM();
+
+        cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]')
           .first()
-          .find('input[type="radio"]')
-          .eq(0)
           .should('not.be.checked');
       }
     });
