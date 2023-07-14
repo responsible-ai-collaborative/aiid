@@ -310,7 +310,8 @@
                     "value_json": "\"\""
                 }
             ],
-            "incident_id": 52,
+            "issue_id": 52,
+            "issue_type": "incident",
             "namespace": "CSETv1",
             "notes": "Annotator 1: \n\n This a note from the annotator 1\n\nAnnotator 2: \n\n This a note from the annotator 2",
             "publish": null

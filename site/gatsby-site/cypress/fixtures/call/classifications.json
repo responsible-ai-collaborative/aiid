@@ -172,7 +172,8 @@
             "value_json": "true"
           }
         ],
-        "incident_id": 2,
+        "issue_id": 2,
+        "issue_type": "incident",
         "namespace": "CSET",
         "notes": "{}"
       },
@@ -347,7 +348,8 @@
             "value_json": null
           }
         ],
-        "incident_id": 3,
+        "issue_id": 3,
+        "issue_type": "incident",
         "namespace": "CSET",
         "notes": ""
       }
