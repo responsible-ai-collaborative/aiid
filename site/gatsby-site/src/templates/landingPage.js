@@ -18,7 +18,7 @@ import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
 import sortBy from 'lodash/sortBy';
-import PostPreviewNew from 'components/blog/PostPreviewNew';
+import PostPreviewNew from 'components/blog/PrismicPostPreview';
 
 const LandingPage = (props) => {
   const { data } = props;

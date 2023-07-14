@@ -33,7 +33,7 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
             }
           }
         }
-        oldBlogPosts: allFile(
+        mdxBlogPosts: allFile(
           filter: { sourceInstanceName: { in: ["blog"] }, ext: { eq: ".mdx" } }
         ) {
           nodes {
@@ -55,7 +55,7 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
 
   const {
     allPrismicBlog: { edges: posts },
-    oldBlogPosts: { nodes: oldPosts },
+    mdxBlogPosts: { nodes: oldPosts },
   } = result.data;
 
   posts.forEach((post) => {

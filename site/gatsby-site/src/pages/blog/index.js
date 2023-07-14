@@ -11,7 +11,7 @@ const BlogPage = (props) => {
         <h1>Blog</h1>
       </div>
       <div className="page">
-        <PostsListing posts={props.data.posts.edges} oldBlogPosts={props.data.oldBlogPosts.nodes} />
+        <PostsListing posts={props.data.posts.edges} mdxBlogPosts={props.data.mdxBlogPosts.nodes} />
       </div>
     </>
   );
@@ -53,7 +53,7 @@ export const IndexQuery = graphql`
         }
       }
     }
-    oldBlogPosts: allMdx(
+    mdxBlogPosts: allMdx(
       filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
       sort: { frontmatter: { date: DESC } }
     ) {

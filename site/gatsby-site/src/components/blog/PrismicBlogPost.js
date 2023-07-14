@@ -11,7 +11,7 @@ import { useLayoutContext } from 'contexts/LayoutContext';
 import Outline from 'components/Outline';
 import AiidHelmet from 'components/AiidHelmet';
 
-const BlogPostNew = ({ post, location }) => {
+const PrismicBlogPost = ({ post, location }) => {
   const metaTitle = post.data.metaTitle;
 
   const metaDescription = post.data.metaDescription;
@@ -79,4 +79,4 @@ const BlogPostNew = ({ post, location }) => {
 
 var Author = ({ name }) => <span>{name}</span>;
 
-export default BlogPostNew;
+export default PrismicBlogPost;

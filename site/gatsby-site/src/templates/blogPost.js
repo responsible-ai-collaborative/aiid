@@ -1,11 +1,11 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import BlogPostNew from 'components/blog/BlogPostNew';
+import PrismicBlogPost from 'components/blog/PrismicBlogPost';
 
 export default function BlogPost(props) {
   const post = props?.data?.post;
 
-  return <>{post && <BlogPostNew post={post} location={props.location} />}</>;
+  return <>{post && <PrismicBlogPost post={post} location={props.location} />}</>;
 }
 
 export const pageQuery = graphql`

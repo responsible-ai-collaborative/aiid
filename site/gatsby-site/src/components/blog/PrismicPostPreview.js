@@ -4,7 +4,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 import DateLabel from 'components/ui/DateLabel';
 
-function PostPreviewNew({ post, latestPost = false }) {
+function PrismicPostPreview({ post, latestPost = false }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -73,4 +73,4 @@ function PostPreviewNew({ post, latestPost = false }) {
   );
 }
 
-export default PostPreviewNew;
+export default PrismicPostPreview;
