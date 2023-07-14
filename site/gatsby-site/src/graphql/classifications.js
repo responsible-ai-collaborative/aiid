@@ -4,7 +4,8 @@ export const FIND_CLASSIFICATION = gql`
   query FindClassifications($query: ClassificationQueryInput) {
     classifications(query: $query) {
       _id
-      incident_id
+      issue_id
+      issue_type
       notes
       namespace
       attributes {
@@ -23,7 +24,8 @@ export const UPDATE_CLASSIFICATION = gql`
   ) {
     upsertOneClassification(query: $query, data: $data) {
       _id
-      incident_id
+      issue_id
+      issue_type
       notes
       namespace
       attributes {
