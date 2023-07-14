@@ -88,7 +88,8 @@ export const pageQuery = graphql`
     }
     allMongodbAiidprodClassifications {
       nodes {
-        incident_id
+        issue_id
+        issue_type
         namespace
         attributes {
           short_name

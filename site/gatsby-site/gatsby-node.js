@@ -245,7 +245,8 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
     
     type mongodbAiidprodClassifications implements Node {
-      incident_id: Int
+      issue_id: Int
+      issue_type: String
       namespace: String
       attributes: [mongodbAiidprodClassificationsAttribute]
     }
