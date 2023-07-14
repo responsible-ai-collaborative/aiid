@@ -239,12 +239,12 @@ describe('CSET tool', () => {
 
     cy.wait('@UpsertClassification').then((xhr) => {
       expect(xhr.request.body.variables.query).to.deep.eq({
-        incident_id: '52',
+        issue_type: 'incident',
+        issue_id: '52',
         namespace: 'CSETv1',
       });
 
       expect(xhr.request.body.variables.data).to.deep.eq({
-        incident_id: '52',
         notes:
           'Annotator 1: \n\n This a note from the annotator 1\n\nAnnotator 2: \n\n This a note from the annotator 2',
         namespace: 'CSETv1',
