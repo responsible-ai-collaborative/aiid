@@ -44,7 +44,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   }));
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { query: { issue_id: incidentId, issue_type: '' } },
     skip: !active,
   });
 
@@ -160,7 +160,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const data = {
         __typename: undefined,
-        incident_id: incidentId,
         notes: values.notes,
         publish: values.publish,
         attributes: attributes.map((a) => a),
@@ -170,7 +169,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       await updateClassification({
         variables: {
           query: {
-            incident_id: incidentId,
+            issue_type: 'incident',
+            issue_id: incidentId,
             namespace,
           },
           data,
