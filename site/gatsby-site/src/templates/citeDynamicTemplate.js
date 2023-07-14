@@ -54,7 +54,7 @@ function CiteDynamicTemplate({
   });
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id, publish: true } },
+    variables: { query: { issue_id: incident_id, issue_type: 'incident', publish: true } },
   });
 
   useEffect(() => {
