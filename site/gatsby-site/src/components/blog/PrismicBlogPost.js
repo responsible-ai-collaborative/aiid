@@ -56,7 +56,7 @@ const PrismicBlogPost = ({ post, location }) => {
           page="post"
           className="inline-block"
         />
-        {post.data.aiTranslated && (
+        {post.data.aitranslated && (
           <>
             <TranslationBadge className="ml-2" />
             <Link className="ml-2" to={post.data.slug}>
