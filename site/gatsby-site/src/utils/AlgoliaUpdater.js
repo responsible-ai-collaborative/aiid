@@ -150,9 +150,9 @@ class AlgoliaUpdater {
     classifications.forEach((classification) => {
       const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
 
-      classificationsHash[classification.incident_id] ||= [];
-      classificationsHash[classification.incident_id] = classificationsHash[
-        classification.incident_id
+      classificationsHash[classification.issue_id] ||= [];
+      classificationsHash[classification.issue_id] = classificationsHash[
+        classification.issue_id
       ].concat(getClassificationArray({ classification, taxonomy }));
     });
 
@@ -191,7 +191,7 @@ class AlgoliaUpdater {
     const classifications = await this.mongoClient
       .db('aiidprod')
       .collection(`classifications`)
-      .find({ publish: true })
+      .find({ publish: true, issue_type: 'incident' })
       .toArray();
 
     return classifications;

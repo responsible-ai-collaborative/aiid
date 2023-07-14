@@ -64,7 +64,8 @@ const reports = [
 const classifications = [
   {
     _id: '60dd465f80935bc89e6f9b00',
-    incident_id: 1,
+    issue_type: 'incident',
+    issue_id: 1,
     namespace: 'CSET',
     attributes: [
       { short_name: 'Annotator', value_json: '"1"' },
