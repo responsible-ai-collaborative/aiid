@@ -206,7 +206,7 @@ function VisualizationView({
                   <PlotPoint
                     classifications={
                       classifications.filter(
-                        (classification) => classification.incident_id == incident.incident_id
+                        (classification) => classification.issue_id == incident.incident_id
                       ) || []
                     }
                     key={incident.incident_id}

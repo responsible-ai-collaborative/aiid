@@ -14,7 +14,7 @@ const styleObject = (styleString) => {
 describe('TSNE Visualization', () => {
   const url = '/summaries/spatial';
 
-  it.skip('Should render the TSNE visualization', () => {
+  it('Should render the TSNE visualization', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"]').should('exist');
   });
@@ -26,7 +26,7 @@ describe('TSNE Visualization', () => {
       .should('be.visible');
   });
 
-  it.skip('Should show an incident card on hover', () => {
+  it('Should show an incident card on hover', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] #spatial-incident-1').trigger('mouseover');
     cy.get('[data-cy="tsne-visualization"] #spatial-incident-1 + [data-cy="incident-card"]').should(
@@ -34,7 +34,7 @@ describe('TSNE Visualization', () => {
     );
   });
 
-  it.skip('Incident card should show title', () => {
+  it('Incident card should show title', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] #spatial-incident-1').trigger('mouseover');
     cy.get(
