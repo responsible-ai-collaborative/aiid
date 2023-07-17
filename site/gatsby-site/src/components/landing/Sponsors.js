@@ -110,8 +110,8 @@ export default function Sponsors({ sponsors = [] }) {
                             key={`sponsor-item-${item.name.text}`}
                             className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center cursor-zoom-in"
                             onClick={() => setModalState(item.name.text)}
-                            onMouseDown={() => setModalState(item.name.text)}
                             role="presentation"
+                            data-cy={`${item.name.text}-modal-click`}
                           >
                             <div className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center">
                               <GatsbyImage
