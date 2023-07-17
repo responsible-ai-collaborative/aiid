@@ -19,6 +19,7 @@ export const FIND_SUBMISSIONS = gql`
       date_submitted
       description
       image_url
+      video_url
       incident_date
       incident_ids
       incident_editors {
@@ -70,6 +71,7 @@ export const FIND_SUBMISSION = gql`
       date_submitted
       description
       image_url
+      video_url
       incident_date
       incident_ids
       incident_editors {
@@ -120,6 +122,7 @@ export const UPDATE_SUBMISSION = gql`
       date_submitted
       description
       image_url
+      video_url
       incident_date
       incident_ids
       incident_editors {

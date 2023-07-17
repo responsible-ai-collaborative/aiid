@@ -141,6 +141,9 @@
         },
         "user": {
             "bsonType": "string"
+        },
+        "video_url": {
+            "bsonType": "string"
         }
     },
     "required": [

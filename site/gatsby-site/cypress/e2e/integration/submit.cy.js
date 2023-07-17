@@ -1170,7 +1170,15 @@ describe('The Submit form', () => {
 
     cy.get('input[name="submitters"]').type('Something');
 
+    cy.get('input[name="video_url"]').type('https://www.youtube.com/watch?v=9bZkp7q19f0');
+
     cy.get('[data-cy="submit-step-2"]').click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        video_url: 'https://www.youtube.com/watch?v=9bZkp7q19f0',
+      });
+    });
 
     cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
@@ -1586,6 +1594,7 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
+      video_url: 'https://www.youtube.com/watch?v=9bZkp7q19f0',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       submitters: ['test submitters'],
@@ -1781,5 +1790,35 @@ describe('The Submit form', () => {
     cy.get('form').contains('*Date must be in the past').should('exist');
 
     cy.contains('Please review. Some data is missing.').should('exist');
+  });
+
+  it('Should update preview video when url is typed', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.visit(url);
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('input[name=video_url]')
+      .scrollIntoView()
+      .type('https://www.youtube.com/watch?v=0bJ_kO12f-I');
+
+    cy.waitForStableDOM();
+
+    cy.contains('http://img.youtube.com/vi/0bJ_kO12f-I/hqdefault.jpg').should('be.visible');
+
+    cy.get('iframe[title="Burger Blast Ad 1995 - AI Generated Commercial"]').should('be.visible');
   });
 });

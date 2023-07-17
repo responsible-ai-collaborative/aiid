@@ -10,6 +10,7 @@ export const FIND_REPORT = gql`
       date_published
       date_downloaded
       image_url
+      video_url
       text
       plain_text
       tags
@@ -31,6 +32,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       date_published
       date_downloaded
       image_url
+      video_url
       text
       plain_text
       tags
@@ -70,6 +72,7 @@ export const UPDATE_REPORT = gql`
       epoch_date_downloaded
       epoch_date_modified
       image_url
+      video_url
       text
       plain_text
       tags

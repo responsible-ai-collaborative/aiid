@@ -11,9 +11,10 @@ import TagsInputGroup from '../TagsInputGroup';
 import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import { faMedal, faImage, faLanguage, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/userContext';
 import { debounce } from 'debounce';
+import PreviewVideoInputGroup from '../PreviewVideoInputGroup';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -36,6 +37,12 @@ const StepTwo = (props) => {
         /((https?):\/\/)(\S)*$/,
         '*Must enter URL in http://www.example.com/images/preview.png format'
       ),
+    video_url: yup
+      .string()
+      .matches(
+        /((https?):\/\/)(\S)*$/,
+        '*Must enter URL in http://www.example.com/videoid format'
+      ),
   });
 
   const handleSubmit = (values, last) => {
@@ -50,7 +57,7 @@ const StepTwo = (props) => {
     <StepContainer name={props.name}>
       <Formik
         initialValues={data}
-        onSubmit={() => {}}
+        onSubmit={() => { }}
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
@@ -169,6 +176,21 @@ const FormDetails = ({
             handleBlur={handleBlur}
             schema={schema}
             icon={faImage}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <PreviewVideoInputGroup
+            name="video_url"
+            label={t('Video Address')}
+            placeholder={t('Video URL')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            icon={faVideo}
           />
         </FieldContainer>
 

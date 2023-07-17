@@ -32,11 +32,13 @@ import {
   faAlignLeft,
   faStickyNote,
   faTenge,
+  faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 import UsersInputGroup from 'components/forms/UsersInputGroup';
+import PreviewVideoInputGroup from 'components/forms/PreviewVideoInputGroup';
 
 const SubmissionForm = () => {
   const {
@@ -240,6 +242,15 @@ const SubmissionForm = () => {
           label={t('Image Address')}
           icon={faImage}
           placeholder={t('Image URL')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <PreviewVideoInputGroup
+          name="video_url"
+          label={t('Video Address')}
+          icon={faVideo}
+          placeholder={t('Video URL')}
           className="mt-3"
           {...TextInputGroupProps}
         />
