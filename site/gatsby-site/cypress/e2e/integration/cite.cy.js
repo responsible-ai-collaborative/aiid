@@ -167,30 +167,31 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
+    cy.waitForStableDOM();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
-      .first()
-      .contains('yes')
-      .click();
+    cy.get('#taxonomy-CSETv1').contains('Edit').click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .last()
-      .find('input[type="radio"]')
-      .eq(0)
-      .should('be.checked');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]').first().contains('yes').click();
+
+    cy.waitForStableDOM();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').first().check();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').last().should('be.checked');
 
     // Clicking unchecks the input for both fields
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .last()
-      .find('input[type="radio"]')
-      .eq(0)
-      .click();
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').last().click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]')
       .first()
-      .find('input[type="radio"]')
-      .eq(0)
       .should('not.be.checked');
   });
 
