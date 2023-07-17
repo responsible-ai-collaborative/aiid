@@ -47,6 +47,13 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
         if (getClassificationValue(classification, 'Publish') === false) {
           continue;
         }
+        if (
+          classification.namespace == 'CSETv2' &&
+          getClassificationValue('AI System') != 'yes' &&
+          getClassificationValue('Clear link to technology') != 'yes'
+        ) {
+          continue;
+        }
         for (const attribute of classification.attributes) {
           const axis = attribute.short_name;
 
