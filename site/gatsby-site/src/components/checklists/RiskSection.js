@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Select, TextInput, Textarea, Card } from 'flowbite-react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
@@ -19,6 +19,8 @@ export default function RiskSection({
   searchTags,
   allPrecedents,
 }) {
+
+  const { t } = useTranslation();
   
   const showPrecedentFilters = useState(false);
 
@@ -60,11 +62,24 @@ export default function RiskSection({
           {...{ updateRisk }}
         />
         <HeaderItemsRight>
-          {risk.precedents?.length && (
+          {risk.generated
+            ? <HeaderTextItem title={t(
+                "This risk was generated according to " +
+                "the tags applied to the system above. " +
+                "If you remove the matching tags, " +
+                "this risk will disappear unless you make a manual change"
+              )}>
+                Auto-generated
+              </HeaderTextItem>
+            : <HeaderTextItem title={t(
+                "This risk is edited manually. It will persist through changes to the applied tags."
+              )}>Manual</HeaderTextItem>
+          }
+          {!!risk.precedents?.length && (
             <HeaderTextItem>{risk.precedents.length} precedents</HeaderTextItem>
           )}
-          {risk.likelihood && <HeaderTextItem>{risk.likelihood}</HeaderTextItem>}
-          {risk.severity && <HeaderTextItem>{risk.severity}</HeaderTextItem>}
+          {!!risk.likelihood && <HeaderTextItem>{risk.likelihood}</HeaderTextItem>}
+          {!!risk.severity && <HeaderTextItem>{risk.severity}</HeaderTextItem>}
           <HeaderTextWithIcon sentiment={
             {
               'Not Mitigated': 'bad', 
@@ -196,11 +211,13 @@ const HeaderTextItem = classyDiv(({ sentiment }) => `
   text-${sentimentColor(sentiment)}-900
 `);
 
-const HeaderTextWithIcon = classyDiv(({ sentiment }) => `
+const HeaderTextWithIcon = classyDiv(({ sentiment }) => {
+  console.log(`sentiment`, sentiment);
+  return `
   inline-flex flex gap-1 items-center
   inline-block bg-${sentimentColor(sentiment)}-200 px-3 py-px rounded-lg 
   text-${sentimentColor(sentiment)}-900
-`);
+`});
 
 const PrecedentsQuery = classyDiv('col-span-2');
 
@@ -209,9 +226,9 @@ const Precedents = classyDiv('col-span-1 flex flex-col h-full');
 const RiskFields = classyDiv('col-span-1 flex flex-col gap-2');
 
 const PrecedentsList = classyDiv(`
-  flex fex-col gap-3 p-2  
-  h-full w-full max-w-full 
-  overflow-x-auto
+  flex flex-col gap-3 p-2  
+  h-full w-full max-w-full max-h-[30rem]
+  overflow-y-auto
   bg-gray-100
   border-1 border-gray-200 
   rounded 
