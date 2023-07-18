@@ -83,10 +83,10 @@ const SubmissionList = ({ data }) => {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        className: 'min-w-[280px]',
+        className: 'min-w-[300px]',
         title: t('Title'),
         accessor: 'title',
-        width: 280,
+        width: 300,
       },
       {
         className: 'min-w-[150px]',
@@ -109,9 +109,9 @@ const SubmissionList = ({ data }) => {
       },
       {
         className: 'min-w-[150px]',
+        width: 150,
         title: t('Dates'),
         accessor: 'incident_date',
-        width: 150,
         filter: (rows, _field, value) =>
           rows.filter((row) => {
             const fields = ['incident_date', 'date_submitted', 'date_published'];
@@ -153,6 +153,20 @@ const SubmissionList = ({ data }) => {
       {
         title: t('Editors'),
         accessor: 'incident_editors',
+        className: 'min-w-[150px]',
+        width: 150,
+        filter: (rows, [field], value) =>
+          rows.filter((row) => {
+            let rowValue = row.values[field];
+
+            const results = rowValue.filter((editor) => {
+              const fullName = `${editor.first_name} ${editor.last_name}`;
+
+              return fullName.toLowerCase().includes(value.toLowerCase());
+            });
+
+            return results.length > 0;
+          }),
         Cell: ({ row: { values } }) => {
           const editors = values.incident_editors;
 
@@ -179,8 +193,9 @@ const SubmissionList = ({ data }) => {
       },
       {
         title: t('Status'),
-        className: 'min-w-[100px]',
+        className: 'min-w-[200px]',
         accessor: 'status',
+        width: 200,
         filter: (rows, [field], value) =>
           rows.filter((row) => {
             let rowValue = row.values[field];
@@ -208,9 +223,11 @@ const SubmissionList = ({ data }) => {
       columns.push({
         title: t('Actions'),
         accessor: '_id',
-        className: 'min-w-[120px]',
+        className: 'min-w-[200px]',
+        width: 200,
         disableFilters: true,
         disableSortBy: true,
+        disableResizing: true,
         Cell: ({ row: { values } }) => (
           <div className="flex gap-2">
             <Button color={'gray'} data-cy="review-submission">
