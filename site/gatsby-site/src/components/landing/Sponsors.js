@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { StyledImageCover } from '../../elements/StyledImage';
+import { StyledImage, StyledImageCover } from '../../elements/StyledImage';
 import { Button, Card, Modal } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
@@ -108,19 +108,14 @@ export default function Sponsors({ sponsors = [] }) {
                         return (
                           <div
                             key={`sponsor-item-${item.name.text}`}
-                            className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center cursor-zoom-in"
-                            onClick={() => setModalState(item.name.text)}
-                            role="presentation"
-                            data-cy={`${item.name.text}-modal-click`}
+                            className="flex-1 max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
                           >
-                            <div className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center">
-                              <GatsbyImage
-                                alt="post-image"
-                                className="img-fluid rounded-lg"
-                                imgClassName="object-cover"
-                                image={item.logo.gatsbyImageData}
-                              />
-                            </div>
+                            <StyledImage
+                              src={`${item.logo.url}`}
+                              onClick={() => setModalState(item.name.text)}
+                              data-cy={`${item.name.text}-modal-click`}
+                              className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
+                            />
                           </div>
                         );
                       })}

@@ -68,6 +68,7 @@ const createWordCountsPage = async (graphql, createPage) => {
                 }
                 logo {
                   gatsbyImageData
+                  url
                 }
                 link {
                   url
