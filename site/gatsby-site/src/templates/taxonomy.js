@@ -165,25 +165,15 @@ const getStats = (taxa, classification) => {
     return 1;
   };
 
-  const filteredClassification = classification.filter((c) => {
-    const res =
+  const filteredClassification = classification.filter(
+    (c) =>
       c.namespace === taxa.namespace &&
       !(
         c.namespace == 'CSETv1' &&
         (getClassificationValue(c, 'AI System') != 'yes' ||
           getClassificationValue(c, 'Clear link to technology') != 'yes')
-      );
-
-    if (!res) {
-      console.log(`c`, c);
-      console.log(`getClassificationValue(c, 'AI System')`, getClassificationValue(c, 'AI System'));
-      console.log(
-        `getClassificationValue(c, 'Clear link to technology')`,
-        getClassificationValue(c, 'Clear link to technology')
-      );
-    }
-    return res;
-  });
+      )
+  );
 
   const stats = {};
 

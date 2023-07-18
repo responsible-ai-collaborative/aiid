@@ -35,7 +35,14 @@ exports.up = async ({ context: { client } }) => {
     });
   }
 
-  await classificationsCollection.updateMany({ public: false }, { $set: { public: true } });
+  const classifications = await classificationsCollection.find({ namespace: 'CSETv1' }).toArray();
+
+  for (const classification of classifications) {
+    classificationsCollection.updateOne(
+      { namespace: 'CSETv1', incident_id: classification.incident_id },
+      { $set: { publish: true } }
+    );
+  }
 };
 
 /** @type {import('umzug').MigrationFn<any>} */

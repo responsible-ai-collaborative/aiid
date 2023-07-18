@@ -76,8 +76,6 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
     }
   }
 
-  console.log(`categoryCounts`, categoryCounts);
-
   for (const axis of Object.keys(categoryCounts)) {
     const categories = Object.keys(categoryCounts[axis]);
 
