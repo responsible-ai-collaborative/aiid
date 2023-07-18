@@ -238,6 +238,12 @@ export default function Table({
                     data-cy={`header-${column.id}`}
                   >
                     {column.render('Header')}
+                    {column.getResizerProps && (
+                      <div
+                        {...column.getResizerProps()}
+                        className="inline-block bg-gray-400 w-1 h-full absolute right-0 top-0 translate-x-1/2 z-2 hover:bg-gray-500"
+                      />
+                    )}
                   </th>
                 ))}
               </tr>

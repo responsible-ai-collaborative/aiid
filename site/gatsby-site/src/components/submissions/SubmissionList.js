@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Badge, Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
-import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
+import {
+  useBlockLayout,
+  useFilters,
+  usePagination,
+  useResizeColumns,
+  useSortBy,
+  useTable,
+} from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
-import ProgressCircle from 'elements/ProgessCircle';
-import { STATUS, getRowCompletionStatus } from 'utils/submissions';
+import { STATUS } from 'utils/submissions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useMutation } from '@apollo/client';
 import { UPDATE_SUBMISSION } from '../../graphql/submissions';
@@ -77,39 +83,16 @@ const SubmissionList = ({ data }) => {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        className: 'min-w-[60px]',
-        title: t('Completion'),
-        accessor: 'completionStatus',
-        disableFilters: true,
-        Cell: ({ row }) => {
-          const completionStatus = getRowCompletionStatus(Object.values(row.original));
-
-          return (
-            <div className="flex items-center justify-center">
-              <ProgressCircle
-                percentage={completionStatus}
-                color={completionStatus > 60 ? '#22c55e' : completionStatus > 0 ? '#eab308' : null}
-              />
-            </div>
-          );
-        },
-        sortType: (rowA, rowB) => {
-          const completionStatusA = getRowCompletionStatus(Object.values(rowA.original));
-
-          const completionStatusB = getRowCompletionStatus(Object.values(rowB.original));
-
-          return completionStatusA - completionStatusB;
-        },
-      },
-      {
-        className: 'min-w-[120px]',
+        className: 'min-w-[280px]',
         title: t('Title'),
         accessor: 'title',
+        width: 280,
       },
       {
-        className: 'min-w-[240px]',
+        className: 'min-w-[150px]',
         title: t('Submitters'),
         accessor: 'submitters',
+        width: 150,
         Cell: ({ row: { values } }) => {
           return (
             <div className="flex justify-center">
@@ -125,15 +108,42 @@ const SubmissionList = ({ data }) => {
         },
       },
       {
-        className: 'min-w-[120px]',
-        title: t('Incident Date'),
+        className: 'min-w-[150px]',
+        title: t('Dates'),
         accessor: 'incident_date',
-        Cell: ({ row: { values } }) => {
+        width: 150,
+        filter: (rows, _field, value) =>
+          rows.filter((row) => {
+            const fields = ['incident_date', 'date_submitted', 'date_published'];
+
+            const matchingFields = fields.filter((field) => {
+              return row.original[field].toString().toLowerCase().includes(value.toLowerCase());
+            });
+
+            return matchingFields.length > 0;
+          }),
+        Cell: ({ row }) => {
+          const values = row.values;
+
+          const dateSubmitted = row.original.date_submitted;
+
+          const datePublished = row.original.date_published;
+
           return (
-            <div className="flex justify-center">
+            <div className="flex justify-center flex-wrap gap-1">
               {values.incident_date && (
                 <Badge key={`incident_date`} className="mr-2 w-fit">
-                  {values.incident_date}
+                  {`Inc: ${values.incident_date}`}
+                </Badge>
+              )}
+              {dateSubmitted && (
+                <Badge key={`dateSubmitted`} className="mr-2 w-fit">
+                  {`Sub: ${dateSubmitted}`}
+                </Badge>
+              )}
+              {datePublished && (
+                <Badge key={`datePublished`} className="mr-2 w-fit">
+                  {`Pub: ${datePublished}`}
                 </Badge>
               )}
             </div>
@@ -149,21 +159,17 @@ const SubmissionList = ({ data }) => {
           if (!editors || editors.length <= 0) return <></>;
 
           return (
-            <div className="flex justify-center gap-1">
+            <div className="flex justify-center gap-1 flex-wrap">
               {editors.map((editor) => {
                 const firstName = editor.first_name || '';
 
                 const lastName = editor.last_name || '';
 
-                const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+                const fullName = `${firstName} ${lastName}`;
 
                 return (
-                  <div
-                    className="!rounded-full w-10 h-10 relative overflow-hidden bg-blue-100 text-blue-800 dark:bg-gray-600 flex justify-center items-center"
-                    data-testid="flowbite-avatar-img"
-                    key={`editor-${editor.userId}`}
-                  >
-                    {initials}
+                  <div className="flex justify-center" key={`editor-${firstName}-${lastName}`}>
+                    <Badge className="mr-2 w-fit">{fullName}</Badge>
                   </div>
                 );
               })}
@@ -173,7 +179,7 @@ const SubmissionList = ({ data }) => {
       },
       {
         title: t('Status'),
-        className: 'min-w-[200px]',
+        className: 'min-w-[100px]',
         accessor: 'status',
         filter: (rows, [field], value) =>
           rows.filter((row) => {
@@ -242,7 +248,9 @@ const SubmissionList = ({ data }) => {
     },
     useFilters,
     useSortBy,
-    usePagination
+    usePagination,
+    useBlockLayout,
+    useResizeColumns
   );
 
   return (

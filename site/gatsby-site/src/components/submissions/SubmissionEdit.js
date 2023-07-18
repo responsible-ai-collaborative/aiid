@@ -18,7 +18,6 @@ import { incidentSchema, issueSchema, reportSchema, schema } from './schemas';
 import { stripMarkdown } from 'utils/typography';
 import { processEntities } from 'utils/entities';
 import isArray from 'lodash/isArray';
-import ProgressCircle from 'elements/ProgessCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsProgress,
@@ -31,7 +30,7 @@ import {
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { FIND_USERS_BY_ROLE } from '../../graphql/users';
 import { debounce } from 'debounce';
-import { STATUS, getRowCompletionStatus } from 'utils/submissions';
+import { STATUS } from 'utils/submissions';
 import StepContainer from 'components/forms/SubmissionWizard/StepContainer';
 import { useUserContext } from 'contexts/userContext';
 import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
@@ -60,8 +59,6 @@ const SubmissionEdit = ({ id }) => {
   }, [id]);
 
   const [saving, setSaving] = useState(false);
-
-  const [isValid, setIsValid] = useState(true);
 
   const [submission, setSubmission] = useState(null);
 
@@ -146,23 +143,12 @@ const SubmissionEdit = ({ id }) => {
           </Trans>
         </h1>
         <div className="flex items-center gap-2">
-          <span
-            className={`${
-              saving ? 'text-orange-400' : !isValid ? 'text-red-500' : 'text-gray-400'
-            } text-sm mb-5`}
-          >
+          <span className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}>
             {saving ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
                 <Trans i18n={i18n} ns="submitted">
                   Saving changes...
-                </Trans>
-              </>
-            ) : !isValid ? (
-              <>
-                <FontAwesomeIcon icon={faXmark} className="mr-1" />{' '}
-                <Trans i18n={i18n} ns="submitted">
-                  Changes not saved
                 </Trans>
               </>
             ) : (
@@ -213,7 +199,6 @@ const SubmissionEdit = ({ id }) => {
                   setSaving={setSaving}
                   userData={userData}
                   userLoading={userLoading}
-                  setIsValid={setIsValid}
                 />
               </Formik>
             </div>
@@ -230,46 +215,30 @@ const SubmissionEditForm = ({
   setSaving,
   userLoading,
   userData,
-  setIsValid,
+  // setIsValid,
 }) => {
   const [promoting, setPromoting] = useState('');
 
   const [deleting, setDeleting] = useState(false);
 
-  const [completion, setCompletion] = useState(0);
-
-  const { values, touched, setFieldValue, isValid, setFieldTouched } = useFormikContext();
+  const { values, touched, setFieldValue, setFieldTouched } = useFormikContext();
 
   const isNewIncident = values.incident_ids.length === 0;
 
-  const [promoType, setPromoType] = useState(isNewIncident ? 'incident' : 'issue');
+  const [promoType, setPromoType] = useState('none');
 
   const localizedPath = useLocalizePath();
 
   useEffect(() => {
-    const completion = getRowCompletionStatus(Object.values(values));
-
-    setCompletion(completion);
     if (!isEmpty(touched)) {
       setSaving(true);
       saveChanges(values);
     }
-  }, [values, touched, isValid]);
+  }, [values, touched]);
 
   const saveChanges = useRef(
     debounce(async (values) => {
-      try {
-        await schema.validate(values);
-      } catch (e) {
-        setSaving(false);
-        setIsValid(false);
-        return;
-      }
       await handleSubmit(values);
-      const completion = getRowCompletionStatus(Object.values(values));
-
-      setCompletion(completion);
-      setIsValid(true);
       setSaving(false);
     }, 1000)
   ).current;
@@ -560,6 +529,8 @@ const SubmissionEditForm = ({
     setFieldTouched('incident_editors', true);
   };
 
+  console.log(promoType);
+
   return (
     <>
       <StepContainer className="w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
@@ -571,20 +542,10 @@ const SubmissionEditForm = ({
             {values.status || 'Pending Review'}
           </Trans>
         </Badge>
-
-        <div className="flex items-center gap-3 text-red-500">
-          {!isValid && (
-            <Trans ns="validation">Please review submission. Some data is missing.</Trans>
-          )}
-        </div>
         <SubmissionForm hideEditors={true} />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
       <div className="flex w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
-        <ProgressCircle
-          percentage={completion}
-          color={completion > 60 ? '#22c55e' : completion > 0 ? '#eab308' : null}
-        />
         <div className="flex flex-col w-full items-center gap-2">
           <Label>
             <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -649,43 +610,8 @@ const SubmissionEditForm = ({
           </Select>
         </div>
         <Card className="w-full">
-          <div className="flex flex-col w-full items-center gap-2">
-            <Label>
-              <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
-              <Trans i18n={i18n} ns="submitted">
-                Add as new
-              </Trans>
-            </Label>
-            <Select
-              value={!isNewIncident ? 'issue' : promoType}
-              className="w-full"
-              onChange={(e) => setPromoType(e.target.value)}
-              data-cy="promote-select"
-            >
-              {isNewIncident && (
-                <option value={'incident'} data-cy="promote-incident">
-                  <Trans>Incident</Trans>
-                </option>
-              )}
-              <option value={'issue'} data-cy="promote-issue">
-                <Trans>Issue</Trans>
-              </option>
-            </Select>
-          </div>
-
-          <div className="mt-8 flex flex-col gap-2">
-            <Button
-              onClick={promote}
-              disabled={!isSubmitter || deleting || promoting || saving}
-              data-cy="promote-button"
-            >
-              <FontAwesomeIcon className="mr-2" icon={faCheck} />
-              <Trans i18n={i18n} ns="submitted">
-                {promoting ? `Adding as ${promoting}...` : 'Accept'}
-              </Trans>
-            </Button>
-
-            {!isNewIncident && (
+          {!isNewIncident && (
+            <div className="flex flex-col gap-2 w-full mb-2">
               <Button
                 onClick={promoteToReport}
                 disabled={!isSubmitter || deleting || promoting || saving}
@@ -696,11 +622,46 @@ const SubmissionEditForm = ({
                   Add to incident {{ id: values.incident_ids[0] }}
                 </Trans>
               </Button>
-            )}
+            </div>
+          )}
+          <div className="flex flex-col gap-3">
+            <Label className="text-center">
+              <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
+              <Trans i18n={i18n} ns="submitted">
+                Add as new
+              </Trans>
+            </Label>
+            <Select
+              defaultValue={promoType}
+              className="w-full"
+              onChange={(e) => setPromoType(e.target.value)}
+              data-cy="promote-select"
+            >
+              <option value={'none'}>Choose an option</option>
+              {isNewIncident && (
+                <option value={'incident'} data-cy="promote-incident">
+                  <Trans>Incident</Trans>
+                </option>
+              )}
+              <option value={'issue'} data-cy="promote-issue">
+                <Trans>Issue</Trans>
+              </option>
+            </Select>
+            <Button
+              onClick={promote}
+              disabled={!isSubmitter || deleting || promoting || saving || promoType === 'none'}
+              data-cy="promote-button"
+            >
+              <FontAwesomeIcon className="mr-2" icon={faCheck} />
+              <Trans i18n={i18n} ns="submitted">
+                {promoting ? `Adding as ${promoting}...` : 'Accept'}
+              </Trans>
+            </Button>
+
             <Button
               color={'failure'}
               onClick={reject}
-              disabled={!isSubmitter || deleting || promoting || saving}
+              disabled={!isSubmitter || deleting || promoting || saving || promoType === 'none'}
               data-cy="reject-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faXmark} />
