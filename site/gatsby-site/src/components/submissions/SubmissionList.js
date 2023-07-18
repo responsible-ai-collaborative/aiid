@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button } from 'flowbite-react';
+import { Badge, Button, Select } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import {
   useBlockLayout,
@@ -10,7 +10,11 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  SelectColumnFilter,
+} from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useMutation } from '@apollo/client';
@@ -80,6 +84,51 @@ const SubmissionList = ({ data }) => {
     []
   );
 
+  function SelectEditorsColumnFilter({
+    column: { filterValue = [], setFilter, preFilteredRows, id },
+  }) {
+    let options;
+
+    options = React.useMemo(() => {
+      let options = [];
+
+      preFilteredRows.forEach((row) => {
+        if (row.values[id]) {
+          let editors = row.values[id].reduce((acc, editor) => {
+            const name = `${editor.first_name} ${editor.last_name}`;
+
+            if (!options.find((e) => e === name)) {
+              acc.push(name);
+            }
+            return acc;
+          }, []);
+
+          options = options.concat(editors);
+        }
+      });
+      return options;
+    }, [id, preFilteredRows]);
+
+    return (
+      <Select
+        style={{ width: '100%' }}
+        className="mt-2"
+        value={filterValue || 'All'}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined);
+        }}
+      >
+        <option value="">All</option>
+        <option value="unassigned">Unassigned</option>
+        {options.map((option, i) => (
+          <option key={i} value={option}>
+            {option}
+          </option>
+        ))}
+      </Select>
+    );
+  }
+
   const columns = React.useMemo(() => {
     const columns = [
       {
@@ -93,6 +142,7 @@ const SubmissionList = ({ data }) => {
         title: t('Submitters'),
         accessor: 'submitters',
         width: 150,
+        Filter: SelectColumnFilter,
         Cell: ({ row: { values } }) => {
           return (
             <div className="flex justify-center">
@@ -155,9 +205,12 @@ const SubmissionList = ({ data }) => {
         accessor: 'incident_editors',
         className: 'min-w-[150px]',
         width: 150,
+        Filter: SelectEditorsColumnFilter,
         filter: (rows, [field], value) =>
           rows.filter((row) => {
             let rowValue = row.values[field];
+
+            if (value === 'unassigned') return rowValue.length === 0;
 
             const results = rowValue.filter((editor) => {
               const fullName = `${editor.first_name} ${editor.last_name}`;
