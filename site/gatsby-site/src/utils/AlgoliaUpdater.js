@@ -59,6 +59,7 @@ const getClassificationArray = ({ classification, taxonomy }) => {
         attribute.value_json &&
         attribute.value_json.length > 0 &&
         field?.display_type != 'long_string' &&
+        !field?.hide_search &&
         (classification.namespace != 'CSET' ||
           includedCSETAttributes.includes(attribute.short_name))
       ) {

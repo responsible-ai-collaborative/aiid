@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { graphql } from 'gatsby';
 import Markdown from 'react-markdown';
+import { getClassificationValue } from 'utils/classifications';
 
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -9,7 +10,6 @@ import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge, Button } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
-import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -165,7 +165,25 @@ const getStats = (taxa, classification) => {
     return 1;
   };
 
-  const filteredClassification = classification.filter((c) => c.namespace === taxa.namespace);
+  const filteredClassification = classification.filter((c) => {
+    const res =
+      c.namespace === taxa.namespace &&
+      !(
+        c.namespace == 'CSETv1' &&
+        (getClassificationValue(c, 'AI System') != 'yes' ||
+          getClassificationValue(c, 'Clear link to technology') != 'yes')
+      );
+
+    if (!res) {
+      console.log(`c`, c);
+      console.log(`getClassificationValue(c, 'AI System')`, getClassificationValue(c, 'AI System'));
+      console.log(
+        `getClassificationValue(c, 'Clear link to technology')`,
+        getClassificationValue(c, 'Clear link to technology')
+      );
+    }
+    return res;
+  });
 
   const stats = {};
 

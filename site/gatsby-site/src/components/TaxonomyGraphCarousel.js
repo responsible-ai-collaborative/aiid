@@ -48,9 +48,9 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           continue;
         }
         if (
-          classification.namespace == 'CSETv2' &&
-          getClassificationValue('AI System') != 'yes' &&
-          getClassificationValue('Clear link to technology') != 'yes'
+          classification.namespace == 'CSETv1' &&
+          getClassificationValue(classification, 'AI System') != 'yes' &&
+          getClassificationValue(classification, 'Clear link to technology') != 'yes'
         ) {
           continue;
         }
@@ -59,6 +59,8 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
 
           categoryCounts[axis] ||= {};
           const value = getClassificationValue(classification, axis);
+
+          if (!value) continue;
 
           if (Array.isArray(value)) {
             for (const category of value) {
@@ -73,6 +75,8 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
       }
     }
   }
+
+  console.log(`categoryCounts`, categoryCounts);
 
   for (const axis of Object.keys(categoryCounts)) {
     const categories = Object.keys(categoryCounts[axis]);
@@ -111,10 +115,8 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis;
-
-              const columns = Object.keys(categoryCounts[dbAxis])
-                .map((category) => [category, categoryCounts[dbAxis][category]])
+              const columns = Object.keys(categoryCounts[axis])
+                .map((category) => [category, categoryCounts[axis][category]])
                 .sort((a, b) =>
                   a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
                 );
