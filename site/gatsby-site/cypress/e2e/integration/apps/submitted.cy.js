@@ -69,7 +69,7 @@ describe('Submitted reports', () => {
       cy.get('[data-cy="submissions"] [data-cy="row"]')
         .eq(index)
         .then((element) => {
-          const keys = ['completion', 'title', 'submitters', 'incident_date', 'editor', 'status'];
+          const keys = ['title', 'submitters', 'incident_date', 'editor', 'status'];
 
           cy.wrap(element)
             .find('[data-cy="cell"]')
@@ -960,7 +960,8 @@ describe('Submitted reports', () => {
     }
   );
 
-  maybeIt('Should display an error message if data is missing', () => {
+  it.skip('Should display an error message if data is missing', () => {
+    // With new submission list, we allow to save changes always
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -1195,12 +1196,6 @@ describe('Submitted reports', () => {
     cy.get('input[name=date_published]').type('3000-01-01');
 
     cy.get('[data-cy="submission-form"]').contains('*Date must be in the past').should('exist');
-
-    cy.get('[data-cy="submission-form"]')
-      .contains('Please review submission. Some data is missing.')
-      .should('exist');
-
-    cy.get('[data-cy="submission"]').contains('Changes not saved').should('exist');
   });
 
   maybeIt('Should display an error message if Date Downloaded is not in the past', () => {
@@ -1243,12 +1238,6 @@ describe('Submitted reports', () => {
     cy.get('input[name=date_downloaded]').type('3000-01-01');
 
     cy.get('[data-cy="submission-form"]').contains('*Date must be in the past').should('exist');
-
-    cy.get('[data-cy="submission-form"]')
-      .contains('Please review submission. Some data is missing.')
-      .should('exist');
-
-    cy.get('[data-cy="submission"]').contains('Changes not saved').should('exist');
   });
 
   maybeIt(

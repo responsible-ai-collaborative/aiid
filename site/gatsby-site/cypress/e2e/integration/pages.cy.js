@@ -121,6 +121,7 @@ describe('Pages', () => {
             if (selectorExists) {
               cy.get('[data-cy="cloudinary-image-wrapper"]').each(($el) => {
                 cy.wrap($el)
+                  .scrollIntoView()
                   .find('[data-cy="cloudinary-image"]')
                   .should('have.attr', 'src')
                   .then(($src) => {

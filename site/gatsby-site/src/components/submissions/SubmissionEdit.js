@@ -661,7 +661,7 @@ const SubmissionEditForm = ({
             <Button
               color={'failure'}
               onClick={reject}
-              disabled={!isSubmitter || deleting || promoting || saving || promoType === 'none'}
+              disabled={!isSubmitter || deleting || promoting || saving}
               data-cy="reject-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faXmark} />
