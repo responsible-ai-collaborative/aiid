@@ -28,7 +28,9 @@ describe('Pages', () => {
     '/entities/',
     '/entities/facebook/',
     '/blog/incident-report-2023-january/',
-    '/taxonomy/cset/',
+    '/taxonomy/gmf/',
+    '/taxonomy/csetv0/',
+    '/taxonomy/csetv1/',
     '/summaries/wordcounts/',
     '/about/', // doc template
   ];

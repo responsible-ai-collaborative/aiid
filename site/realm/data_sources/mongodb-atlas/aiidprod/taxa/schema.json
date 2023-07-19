@@ -148,6 +148,9 @@
                     "public": {
                         "bsonType": "bool"
                     },
+                    "hide_search": {
+                        "bsonType": "bool"
+                    },
                     "required": {
                         "bsonType": "bool"
                     },
