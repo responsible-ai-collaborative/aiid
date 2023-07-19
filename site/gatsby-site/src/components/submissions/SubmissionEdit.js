@@ -537,7 +537,7 @@ const SubmissionEditForm = ({
           color={values.status ? STATUS[values.status].color : 'warning'}
         >
           <Trans i18n={i18n} ns="submitted">
-            {values.status || 'Pending Review'}
+            {values.status ? STATUS[values.status].text : STATUS.pendingReview.text}
           </Trans>
         </Badge>
         <SubmissionForm hideEditors={true} />
@@ -587,7 +587,7 @@ const SubmissionEditForm = ({
           </Label>
           <Select
             className="w-full"
-            value={values.status || 'Pending Review'}
+            value={values.status || 'inReview'}
             onChange={(e) => {
               setSaving(true);
               saveChanges({ ...values, status: e.target.value });
@@ -595,14 +595,14 @@ const SubmissionEditForm = ({
             }}
             data-cy="status-select"
           >
-            <option value="In Review" data-cy="status-in-review">
+            <option value={STATUS.inReview.name} data-cy="status-in-review">
               <Trans i18n={i18n} ns="submitted">
-                In Review
+                {STATUS.inReview.text}
               </Trans>
             </option>
-            <option value="Pending Review" data-cy="status-pending-review">
+            <option value={STATUS.pendingReview.name} data-cy="status-pending-review">
               <Trans i18n={i18n} ns="submitted">
-                Pending Review
+                {STATUS.pendingReview.text}
               </Trans>
             </option>
           </Select>

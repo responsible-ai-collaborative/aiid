@@ -16,7 +16,6 @@ import Table, {
   SelectColumnFilter,
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
-import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useMutation } from '@apollo/client';
 import { UPDATE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
@@ -29,6 +28,8 @@ const SubmissionList = ({ data }) => {
   const [tableData, setTableData] = useState([]);
 
   const [claiming, setClaiming] = useState({ submissionId: null, value: false });
+
+  const [reviewing, setReviewing] = useState({ submissionId: null, value: false });
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
@@ -264,7 +265,7 @@ const SubmissionList = ({ data }) => {
           return (
             <div className="flex justify-center">
               <Badge color={color} className="mr-2">
-                <Trans>{STATUS[values.status]?.text || 'Pending Review'}</Trans>
+                <Trans>{STATUS[values.status]?.text || STATUS.pendingReview.text}</Trans>
               </Badge>
             </div>
           );
@@ -283,10 +284,21 @@ const SubmissionList = ({ data }) => {
         disableResizing: true,
         Cell: ({ row: { values } }) => (
           <div className="flex gap-2">
-            <Button color={'gray'} data-cy="review-submission">
-              <LocalizedLink to={`?editSubmission=${values._id}`}>
+            <Button
+              color={'gray'}
+              data-cy="review-submission"
+              onClick={async (event) => {
+                event.preventDefault();
+                await setSubmissionStatus(values);
+                window.location.href = `?editSubmission=${values._id}`;
+              }}
+              disabled={reviewing.value}
+            >
+              {reviewing.value && values._id === reviewing.submissionId ? (
+                <Trans>Reviewing...</Trans>
+              ) : (
                 <Trans>Review</Trans>
-              </LocalizedLink>
+              )}
             </Button>
             {!values.editor && (
               <Button
@@ -308,7 +320,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [isLoggedIn, claiming]);
+  }, [isLoggedIn, claiming, reviewing]);
 
   const table = useTable(
     {
@@ -322,6 +334,29 @@ const SubmissionList = ({ data }) => {
     useBlockLayout,
     useResizeColumns
   );
+
+  const setSubmissionStatus = async (submission) => {
+    if (submission.status !== STATUS.inReview.name) {
+      setReviewing({ submissionId: submission._id, value: true });
+      try {
+        await updateSubmission({
+          variables: {
+            query: {
+              _id: submission._id,
+            },
+            set: { status: STATUS.inReview.name },
+          },
+        });
+        setReviewing({ submissionId: submission._id, value: false });
+      } catch (error) {
+        addToast({
+          message: t(`There was an error updating this submission. Please try again.`),
+          severity: SEVERITY.danger,
+        });
+        setReviewing({ submissionId: submission._id, value: false });
+      }
+    }
+  };
 
   return (
     <div className="rounded-lg border">

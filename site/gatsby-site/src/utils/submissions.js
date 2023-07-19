@@ -3,8 +3,8 @@ const isEmpty = require('lodash/isEmpty');
 const filter = require('lodash/filter');
 
 module.exports.STATUS = {
-  'In Review': { text: 'In Review', color: 'success' },
-  'Pending Review': { text: 'Pending Review', color: 'warning' },
+  inReview: { name: 'inReview', text: 'In Review', color: 'success' },
+  pendingReview: { name: 'pendingReview', text: 'Pending Review', color: 'warning' },
 };
 
 module.exports.getRowCompletionStatus = (properties) => {
