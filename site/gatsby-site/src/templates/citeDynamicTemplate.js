@@ -89,7 +89,7 @@ function CiteDynamicTemplate({
         locale,
       });
 
-      const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+      const sortedIncidentReports = sortIncidentsByDatePublished([...incidentReports]);
 
       const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
@@ -129,6 +129,9 @@ function CiteDynamicTemplate({
           <Spinner />
         </div>
       )}
+      <div>
+        {String(loading)} : {String(loadingIncident)}
+      </div>
       {!loading && !loadingIncident && !incident ? (
         <Trans>Incident {{ incident_id }} not found</Trans>
       ) : (

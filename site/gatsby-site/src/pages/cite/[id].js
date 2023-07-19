@@ -41,7 +41,7 @@ function CiteDynamicPage(props) {
     if (incidentData?.incident) {
       const incidentTemp = { ...incidentData.incident };
 
-      const sortedIncidentReports = sortIncidentsByDatePublished(incidentTemp.reports);
+      const sortedIncidentReports = sortIncidentsByDatePublished([...incidentTemp.reports]);
 
       const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 

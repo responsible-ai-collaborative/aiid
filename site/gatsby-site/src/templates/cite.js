@@ -52,7 +52,7 @@ function CitePage(props) {
     locale,
   });
 
-  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+  const sortedIncidentReports = sortIncidentsByDatePublished([...incidentReports]);
 
   const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
