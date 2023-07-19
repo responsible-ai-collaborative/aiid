@@ -1,7 +1,7 @@
 const { gql } = require('@apollo/client');
 
 describe('The CSET taxonomy page', () => {
-  const url = '/taxonomy/cset';
+  const url = '/taxonomy/csetv0';
 
   it('successfully loads', () => {
     cy.visit(url);
@@ -15,7 +15,7 @@ describe('The CSET taxonomy page', () => {
     cy.query({
       query: gql`
         {
-          taxa(query: { namespace_in: ["CSET"] }) {
+          taxa(query: { namespace_in: ["CSETv0"] }) {
             namespace
             field_list {
               long_name

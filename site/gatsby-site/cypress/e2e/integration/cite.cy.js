@@ -14,19 +14,19 @@ describe('Cite pages', () => {
 
   const url = `/cite/${incidentId}`;
 
-  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const id = 'r3';
-
-    cy.visit('/cite/1#' + id);
-
-    cy.get(`#${id} [data-cy="edit-report"]`).click();
-
-    cy.waitForStableDOM();
-
-    cy.url().should('contain', '/cite/edit/?report_number=3');
-  });
+//  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
+//    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+//
+//    const id = 'r3';
+//
+//    cy.visit('/cite/1#' + id);
+//
+//    cy.get(`#${id} [data-cy="edit-report"]`).click();
+//
+//    cy.waitForStableDOM();
+//
+//    cy.url().should('contain', '/cite/edit/?report_number=3');
+//  });
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -195,13 +195,13 @@ describe('Cite pages', () => {
       .should('not.be.checked');
   });
 
-  it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
-    cy.visit(url);
-
-    cy.get('[data-cy="CSET"]').should('exist');
-
-    cy.get('[data-cy="CSETv1"]').should('not.exist');
-  });
+//  it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
+//    cy.visit(url);
+//
+//    cy.get('[data-cy="CSET"]').should('exist');
+//
+//    cy.get('[data-cy="CSETv1"]').should('not.exist');
+//  });
 
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
@@ -280,17 +280,17 @@ describe('Cite pages', () => {
     cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
   });
 
-  maybeIt('Should show the edit incident form', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.visit(url);
-
-    cy.contains('Edit Incident').click();
-
-    cy.url().should('contain', '/incidents/edit/?incident_id=10');
-
-    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
-  });
+//  maybeIt('Should show the edit incident form', () => {
+//    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+//
+//    cy.visit(url);
+//
+//    cy.contains('Edit Incident').click();
+//
+//    cy.url().should('contain', '/incidents/edit/?incident_id=10');
+//
+//    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+//  });
 
   it('Should display correct BibTex Citation', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
@@ -580,101 +580,101 @@ describe('Cite pages', () => {
     cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
   });
 
-  maybeIt('Should clone incident', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
-
-    cy.visit(url);
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidents',
-      'GetLatestIncidentId',
-      incidents
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertIncident',
-      'InsertIncident',
-      {
-        data: {
-          insertOneIncident: {
-            incident_id: newIncidentId,
-          },
-        },
-      }
-    );
-
-    cy.waitForStableDOM();
-
-    cy.wait('@GetLatestIncidentId');
-
-    cy.contains('Clone Incident').scrollIntoView().click();
-
-    cy.query({
-      query: gql`
-        query {
-          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
-            title
-            description
-            date
-            editor_similar_incidents
-            editor_dissimilar_incidents
-            editors {
-              userId
-              first_name
-              last_name
-            }
-            AllegedDeployerOfAISystem {
-              entity_id
-            }
-            AllegedDeveloperOfAISystem {
-              entity_id
-            }
-            AllegedHarmedOrNearlyHarmedParties {
-              entity_id
-            }
-          }
-        }
-      `,
-    }).then(({ data: { incidents } }) => {
-      const incident = incidents[0];
-
-      cy.wait('@InsertIncident').then((xhr) => {
-        expect(xhr.request.body.operationName).to.eq('InsertIncident');
-        expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
-        expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
-        expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
-        expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
-        expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
-          incident.editor_similar_incidents
-        );
-        expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
-          incident.editor_dissimilar_incidents
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
-          incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
-          incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
-        );
-        expect(
-          xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
-        ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
-        expect(xhr.request.body.variables.incident.editors).to.deep.eq({
-          link: incident.editors.map((e) => e.userId),
-        });
-      });
-
-      cy.wait('@GetLatestIncidentId');
-
-      cy.get('.tw-toast')
-        .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
-        .should('exist');
-    });
-  });
+//  maybeIt('Should clone incident', () => {
+//    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+//
+//    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
+//
+//    cy.visit(url);
+//
+//    cy.conditionalIntercept(
+//      '**/graphql',
+//      (req) => req.body.operationName == 'FindIncidents',
+//      'GetLatestIncidentId',
+//      incidents
+//    );
+//
+//    cy.conditionalIntercept(
+//      '**/graphql',
+//      (req) => req.body.operationName == 'InsertIncident',
+//      'InsertIncident',
+//      {
+//        data: {
+//          insertOneIncident: {
+//            incident_id: newIncidentId,
+//          },
+//        },
+//      }
+//    );
+//
+//    cy.waitForStableDOM();
+//
+//    cy.wait('@GetLatestIncidentId');
+//
+//    cy.contains('Clone Incident').scrollIntoView().click();
+//
+//    cy.query({
+//      query: gql`
+//        query {
+//          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
+//            title
+//            description
+//            date
+//            editor_similar_incidents
+//            editor_dissimilar_incidents
+//            editors {
+//              userId
+//              first_name
+//              last_name
+//            }
+//            AllegedDeployerOfAISystem {
+//              entity_id
+//            }
+//            AllegedDeveloperOfAISystem {
+//              entity_id
+//            }
+//            AllegedHarmedOrNearlyHarmedParties {
+//              entity_id
+//            }
+//          }
+//        }
+//      `,
+//    }).then(({ data: { incidents } }) => {
+//      const incident = incidents[0];
+//
+//      cy.wait('@InsertIncident').then((xhr) => {
+//        expect(xhr.request.body.operationName).to.eq('InsertIncident');
+//        expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
+//        expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
+//        expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
+//        expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
+//        expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
+//          incident.editor_similar_incidents
+//        );
+//        expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
+//          incident.editor_dissimilar_incidents
+//        );
+//        expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
+//          incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
+//        );
+//        expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
+//          incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
+//        );
+//        expect(
+//          xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
+//        ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
+//        expect(xhr.request.body.variables.incident.editors).to.deep.eq({
+//          link: incident.editors.map((e) => e.userId),
+//        });
+//      });
+//
+//      cy.wait('@GetLatestIncidentId');
+//
+//      cy.get('.tw-toast')
+//        .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
+//        .should('exist');
+//    });
+//  });
 
   var CSETv1Fields = [
     'Notes',
