@@ -65,7 +65,7 @@ const classifications = [
   {
     _id: '60dd465f80935bc89e6f9b00',
     incident_id: 1,
-    namespace: 'CSET',
+    namespace: 'CSETv0',
     attributes: [
       { short_name: 'Annotator', value_json: '"1"' },
       { short_name: 'Annotation Status', value_json: '"6. Complete and final"' },
@@ -284,9 +284,9 @@ describe('Algolia', () => {
         epoch_incident_date: 1592092800,
         incident_date: '2020-06-14',
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
       });
 
@@ -312,9 +312,9 @@ describe('Algolia', () => {
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
       });
 
@@ -340,9 +340,9 @@ describe('Algolia', () => {
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
         featured: 0,
       });
@@ -369,9 +369,9 @@ describe('Algolia', () => {
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
         featured: 2,
       });

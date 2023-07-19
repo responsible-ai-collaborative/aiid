@@ -119,9 +119,9 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="CSET"]').contains('Edit').click();
+    cy.get('[data-cy="CSETv0"]').contains('Edit').click();
 
-    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+    cy.get('[data-cy="CSETv0"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
   });
