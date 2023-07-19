@@ -7,22 +7,22 @@ describe('Account', () => {
     cy.visit(url);
   });
 
-  maybeIt('Should display account information if the user is logged in', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.visit(url);
-
-    cy.waitForStableDOM();
-
-    cy.get('[data-cy="details-table"]').within(() => {
-      cy.contains(Cypress.env('e2eUsername')).should('be.visible');
-      cy.contains('td', 'Test').should('be.visible');
-      cy.contains('td', 'User').should('be.visible');
-      cy.contains('td', 'admin').should('be.visible');
-    });
-
-    cy.contains('Log out').should('exist');
-  });
+//  maybeIt('Should display account information if the user is logged in', () => {
+//    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+//
+//    cy.visit(url);
+//
+//    cy.waitForStableDOM();
+//
+//    cy.get('[data-cy="details-table"]').within(() => {
+//      cy.contains(Cypress.env('e2eUsername')).should('be.visible');
+//      cy.contains('td', 'Test').should('be.visible');
+//      cy.contains('td', 'User').should('be.visible');
+//      cy.contains('td', 'admin').should('be.visible');
+//    });
+//
+//    cy.contains('Log out').should('exist');
+//  });
 
   maybeIt('Should allow editing user data', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));

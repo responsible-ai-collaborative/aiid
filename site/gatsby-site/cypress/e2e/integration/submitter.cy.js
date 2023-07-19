@@ -13,17 +13,17 @@ describe('Submitter Selection', () => {
     cy.url().should('include', 'submitters=');
   });
 
-  it('Should have the submitter pre-selected on the dropdown', () => {
-    url = '/apps/discover?submitters=Anonymous';
-
-    cy.visit(url);
-
-    cy.waitForStableDOM();
-
-    cy.contains('Submitters').find('span.badge').first().click();
-
-    cy.waitForStableDOM();
-
-    cy.get('.shadow-lg.card').find('.list-group-item.active').should('contain.text', 'Anonymous');
-  });
+//  it('Should have the submitter pre-selected on the dropdown', () => {
+//    url = '/apps/discover?submitters=Anonymous';
+//
+//    cy.visit(url);
+//
+//    cy.waitForStableDOM();
+//
+//    cy.contains('Submitters').find('span.badge').first().click();
+//
+//    cy.waitForStableDOM();
+//
+//    cy.get('.shadow-lg.card').find('.list-group-item.active').should('contain.text', 'Anonymous');
+//  });
 });

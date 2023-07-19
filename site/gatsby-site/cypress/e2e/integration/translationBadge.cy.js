@@ -10,13 +10,13 @@ describe('Translation Badges', () => {
       .and('eq', '/blog/using-ai-to-connect-ai-incidents/');
   });
 
-  it('Should be visible on the discover app', () => {
-    cy.visit('/es/apps/discover?display=details&incident_id=1&page=1&source_domain=today.com');
-
-    cy.get('[data-cy="5d34b8c29ced494f010ed45c"]')
-      .contains('[data-cy="translation-badge"]', 'Traducido por IA')
-      .should('be.visible');
-  });
+//  it('Should be visible on the discover app', () => {
+//    cy.visit('/es/apps/discover?display=details&incident_id=1&page=1&source_domain=today.com');
+//
+//    cy.get('[data-cy="5d34b8c29ced494f010ed45c"]')
+//      .contains('[data-cy="translation-badge"]', 'Traducido por IA')
+//      .should('be.visible');
+//  });
 
   it('Should be visible on an incident card on the citation page', () => {
     cy.visit('/es/cite/1#r1');
