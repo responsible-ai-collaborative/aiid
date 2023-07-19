@@ -78,7 +78,7 @@ const SubmissionList = ({ data }) => {
 
   const defaultColumn = React.useMemo(
     () => ({
-      className: 'min-w-[120px]',
+      // className: 'min-w-[120px]',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
@@ -278,7 +278,7 @@ const SubmissionList = ({ data }) => {
         title: t('Actions'),
         accessor: '_id',
         className: 'min-w-[200px]',
-        width: 200,
+        width: 'auto',
         disableFilters: true,
         disableSortBy: true,
         disableResizing: true,
@@ -359,9 +359,12 @@ const SubmissionList = ({ data }) => {
   };
 
   return (
-    <div className="rounded-lg border">
-      <Table table={table} data-cy="submissions" className="mb-5" />
-    </div>
+    <Table
+      table={table}
+      data-cy="submissions"
+      className="mb-5"
+      tableClassName="rounded-lg border"
+    />
   );
 };
 
