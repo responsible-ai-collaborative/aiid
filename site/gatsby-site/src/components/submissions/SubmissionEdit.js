@@ -529,8 +529,6 @@ const SubmissionEditForm = ({
     setFieldTouched('incident_editors', true);
   };
 
-  console.log(promoType);
-
   return (
     <>
       <StepContainer className="w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
