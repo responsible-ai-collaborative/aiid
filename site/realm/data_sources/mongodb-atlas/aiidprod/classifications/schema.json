@@ -34,7 +34,8 @@
         }
     },
     "required": [
-        "incident_id",
+        "issue_id",
+        "issue_type",
         "namespace"
     ],
     "title": "classification"
