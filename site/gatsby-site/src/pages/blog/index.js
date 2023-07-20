@@ -1,29 +1,59 @@
-import { graphql } from 'gatsby';
 import React from 'react';
+import { graphql } from 'gatsby';
 import PostsListing from 'components/blog/PostsListing';
 import AiidHelmet from 'components/AiidHelmet';
 
-export default function BlogPage(props) {
-  const {
-    allMdx: { nodes: posts },
-  } = props.data;
-
+const BlogPage = (props) => {
   return (
     <>
       <AiidHelmet metaTitle={'AIID Blog'} path={props.location.pathname} />
       <div className={'titleWrapper'}>
         <h1>Blog</h1>
       </div>
-      <div>
-        <PostsListing posts={posts} />
+      <div className="page">
+        <PostsListing posts={props.data.posts.edges} mdxBlogPosts={props.data.mdxBlogPosts.nodes} />
       </div>
     </>
   );
-}
+};
 
-export const query = graphql`
-  query BlogQuery($locale: String) {
-    allMdx(
+export default BlogPage;
+
+export const IndexQuery = graphql`
+  query BlogPosts($locale: String!) {
+    posts: allPrismicBlog(
+      filter: { data: { language: { eq: $locale } } }
+      sort: { data: { date: DESC } }
+    ) {
+      edges {
+        node {
+          uid
+          lang
+          data {
+            metatitle
+            metadescription
+            slug
+            aitranslated
+            language
+            title {
+              text
+            }
+            content {
+              richText
+              text
+              html
+            }
+            image {
+              url
+              gatsbyImageData
+            }
+            date
+            author
+          }
+        }
+      }
+    }
+    mdxBlogPosts: allMdx(
       filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
       sort: { frontmatter: { date: DESC } }
     ) {
