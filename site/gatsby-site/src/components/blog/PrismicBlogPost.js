@@ -72,7 +72,9 @@ const PrismicBlogPost = ({ post, location }) => {
           </Trans>
         </span>
       </div>
-      <PrismicRichText field={post.data.content.richText} />
+      <div className="prose">
+        <PrismicRichText field={post.data.content.richText} />
+      </div>
     </>
   );
 };
