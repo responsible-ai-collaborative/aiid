@@ -14,6 +14,7 @@ import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,
   SelectColumnFilter,
+  SelectDatePickerFilter,
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
 import { useMutation } from '@apollo/client';
@@ -130,6 +131,40 @@ const SubmissionList = ({ data }) => {
     );
   }
 
+  const [dateFilter, setDateFilter] = useState('incident_date');
+
+  const [dateValues, setDateValues] = useState([]);
+
+  function SelectDatesColumnFilter({ column }) {
+    return (
+      <div className="flex flex-col">
+        <Select
+          className="mt-2 max-w-[190px]"
+          value={dateFilter}
+          onChange={(e) => {
+            setDateFilter(e.target.value || undefined);
+          }}
+        >
+          <option value="incident_date">Incident date</option>
+          <option value="date_published">Date published</option>
+          <option value="date_submitted">Date submitted</option>
+        </Select>
+        <div className="w-1/2 max-w-[190px]">
+          {
+            <SelectDatePickerFilter
+              column={column}
+              startDate={dateValues.length > 0 ? dateValues[0] : null}
+              endDate={dateValues.length > 1 ? dateValues[1] : null}
+              setDates={(vals) => {
+                setDateValues(vals);
+              }}
+            />
+          }
+        </div>
+      </div>
+    );
+  }
+
   const columns = React.useMemo(() => {
     const columns = [
       {
@@ -159,16 +194,41 @@ const SubmissionList = ({ data }) => {
         },
       },
       {
-        className: 'min-w-[150px]',
-        width: 150,
+        className: 'min-w-[220px]',
+        width: 220,
         title: t('Dates'),
         accessor: 'incident_date',
+        Filter: SelectDatesColumnFilter,
+        sortType: (rowA, rowB) => {
+          if (
+            rowA.original[dateFilter] &&
+            rowA.original[dateFilter] !== '' &&
+            rowB.original[dateFilter] &&
+            rowB.original[dateFilter] !== ''
+          ) {
+            const dateRowA = new Date(rowA.original[dateFilter]);
+
+            const dateRowB = new Date(rowB.original[dateFilter]);
+
+            if (dateRowA > dateRowB) {
+              return 1;
+            }
+
+            if (dateRowA < dateRowB) {
+              return -1;
+            }
+
+            return 0;
+          }
+        },
         filter: (rows, _field, value) =>
           rows.filter((row) => {
-            const fields = ['incident_date', 'date_submitted', 'date_published'];
+            let fields = [dateFilter];
 
             const matchingFields = fields.filter((field) => {
-              return row.original[field].toString().toLowerCase().includes(value.toLowerCase());
+              const rowDate = Date.parse(row.original[field]);
+
+              return value[0] <= rowDate && rowDate <= value[1];
             });
 
             return matchingFields.length > 0;
@@ -320,7 +380,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [isLoggedIn, claiming, reviewing]);
+  }, [isLoggedIn, claiming, reviewing, dateFilter]);
 
   const table = useTable(
     {
