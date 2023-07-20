@@ -6,6 +6,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { getClassificationValue } from 'utils/classifications';
 import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
+import { isAiHarm } from 'utils/cset';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   const taxaData = data.allMongodbAiidprodTaxa;
@@ -47,11 +48,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
         if (getClassificationValue(classification, 'Publish') === false) {
           continue;
         }
-        if (
-          classification.namespace == 'CSETv1' &&
-          getClassificationValue(classification, 'AI System') != 'yes' &&
-          getClassificationValue(classification, 'Clear link to technology') != 'yes'
-        ) {
+        if (classification.namespace == 'CSETv1' && !isAiHarm(classification)) {
           continue;
         }
         for (const attribute of classification.attributes) {
