@@ -211,8 +211,6 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      setSubmission(SUBMISSION_INITIAL_VALUES);
-
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
@@ -223,9 +221,7 @@ const SubmitForm = () => {
         severity: SEVERITY.success,
       });
 
-      if (isClient) {
-        localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
-      }
+      clearForm();
     } catch (e) {
       addToast({
         message: (
@@ -354,6 +350,7 @@ const SubmitForm = () => {
                 submissionRef.current.scrollIntoView();
               }, 0);
             }}
+            clearForm={clearForm}
           />
         )}
 

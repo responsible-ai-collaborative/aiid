@@ -30,6 +30,8 @@ const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
 const createReportPages = require('./page-creators/createReportPages');
 
+const createBlogPages = require('./page-creators/createBlogPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -67,6 +69,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
+    createBlogPages,
     createMdxPages,
     createCitationPages,
     createWordCountsPages,

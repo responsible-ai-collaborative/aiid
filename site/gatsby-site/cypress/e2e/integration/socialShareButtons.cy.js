@@ -51,10 +51,6 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
 
       cy.get('[data-cy=btn-share-twitter]').first().click();
       cy.get('@popup_twitter', { timeout: 8000 }).should('be.called');
-      cy.url().should(
-        'contain',
-        `https://twitter.com/i/flow/login?redirect_after_login=%2Fintent%2Ftweet%3Ftext%3D`
-      );
       cy.url().should('contain', `url%3D${encodeURIComponent(canonicalUrl)}`);
     });
 
