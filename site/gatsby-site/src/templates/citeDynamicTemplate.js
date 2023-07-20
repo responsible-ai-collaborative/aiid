@@ -129,9 +129,6 @@ function CiteDynamicTemplate({
           <Spinner />
         </div>
       )}
-      <div>
-        {String(loading)} : {String(loadingIncident)}
-      </div>
       {!loading && !loadingIncident && !incident ? (
         <Trans>Incident {{ incident_id }} not found</Trans>
       ) : (
