@@ -12,7 +12,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
     <>
       <Header location={location} />
       <div className="tw-layout">
-        <div className="hidden md:block z-2 bg-text-light-gray shadow" data-cy="sidebar-desktop">
+        <div className="hidden md:block z-[1] bg-text-light-gray shadow" data-cy="sidebar-desktop">
           <Sidebar defaultCollapsed={sidebarCollapsed} location={location} />
         </div>
         {config.sidebar.title && (
