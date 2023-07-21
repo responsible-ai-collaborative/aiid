@@ -131,6 +131,37 @@ const SubmissionList = ({ data }) => {
     );
   }
 
+  function SelectStatusFilter({ column: { filterValue = [], setFilter, preFilteredRows, id } }) {
+    let options;
+
+    options = React.useMemo(() => {
+      const options = [];
+
+      Object.values(STATUS).forEach((status) => {
+        options.push(status);
+      });
+      return options;
+    }, [id, preFilteredRows]);
+
+    return (
+      <Select
+        style={{ width: '100%' }}
+        className="mt-2"
+        value={filterValue || 'All'}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined);
+        }}
+      >
+        <option value="">All</option>
+        {options.map((option, i) => (
+          <option key={i} value={option.name}>
+            {option.text}
+          </option>
+        ))}
+      </Select>
+    );
+  }
+
   const [dateFilter, setDateFilter] = useState('incident_date');
 
   const [dateValues, setDateValues] = useState([]);
@@ -310,14 +341,15 @@ const SubmissionList = ({ data }) => {
         className: 'min-w-[200px]',
         accessor: 'status',
         width: 200,
+        Filter: SelectStatusFilter,
         filter: (rows, [field], value) =>
           rows.filter((row) => {
             let rowValue = row.values[field];
 
             if (!rowValue) {
-              rowValue = 'pending review';
+              rowValue = STATUS.pendingReview.name;
             }
-            return rowValue.toString().toLowerCase().includes(value.toLowerCase());
+            return rowValue === value;
           }),
         Cell: ({ row: { values } }) => {
           let color = STATUS[values.status]?.color || 'warning';
