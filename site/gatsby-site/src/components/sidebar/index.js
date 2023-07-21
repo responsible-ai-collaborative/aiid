@@ -10,7 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 
-const Sidebar = ({ defaultCollapsed = false, location = null }) => {
+const Sidebar = ({ defaultCollapsed = false, location = null, items = [] }) => {
+  console.log('items', items);
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -145,6 +146,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
                 items: [],
               },
             ]}
+            items={items}
           />
           {config.sidebar.links && config.sidebar.links?.length > 0 && (
             <li className="tw-li-divider">
