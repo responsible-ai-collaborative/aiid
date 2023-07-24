@@ -1,1 +1,8 @@
-{}
+{
+    "incidents": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/incidents",
+        "source_key": "incidents",
+        "foreign_key": "incident_id",
+        "is_list": true
+    }
+}

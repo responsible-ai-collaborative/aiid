@@ -17,8 +17,11 @@
                 }
             }
         },
-        "incident_id": {
-            "bsonType": "int"
+        "incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
         },
         "namespace": {
             "bsonType": "string"
