@@ -9,9 +9,56 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
+import { graphql, useStaticQuery } from 'gatsby';
 
-const Sidebar = ({ defaultCollapsed = false, location = null, items = [] }) => {
-  console.log('items', items);
+const Sidebar = ({ defaultCollapsed = false, location = null }) => {
+  const { sidebar } = useStaticQuery(graphql`
+    {
+      sidebar: allPrismicSidebar(sort: { data: { order: { text: ASC } } }) {
+        edges {
+          node {
+            data {
+              title {
+                text
+              }
+              label {
+                text
+              }
+              url {
+                url
+              }
+              path {
+                text
+              }
+              items {
+                item_title {
+                  text
+                }
+                item_url {
+                  url
+                }
+                item_path {
+                  text
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  const sidebarItems = sidebar.edges.map((item) => {
+    if (item.node?.data) {
+      return {
+        url: item.node.data.url.url || item.node.data.path.text,
+        title: item.node.data.title.text,
+        label: item.node.data.label?.text,
+        items: [],
+      };
+    }
+  });
+
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -146,7 +193,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, items = [] }) => {
                 items: [],
               },
             ]}
-            items={items}
+            items={sidebarItems}
           />
           {config.sidebar.links && config.sidebar.links?.length > 0 && (
             <li className="tw-li-divider">

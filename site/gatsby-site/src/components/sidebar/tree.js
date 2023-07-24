@@ -64,19 +64,10 @@ const Tree = ({
   const location = useLocation();
 
   const [navSettings, setNavSetting] = useState(
-    []
-    // subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath)
+    subtreeNav([...items, ...additionalNodes], location.pathname, localizePath)
   );
 
   useEffect(() => {
-    items = items.map((item) => {
-      return {
-        url: item.node.data.url.url || item.node.data.path.text,
-        title: item.node.data.title.text,
-        label: item.node.data.title.text.toLowerCase().replace(/\s+/g, '-'),
-        items: [],
-      };
-    });
     const nodes = subtreeNav([...items, ...additionalNodes], location.pathname, localizePath);
 
     setNavSetting(nodes);

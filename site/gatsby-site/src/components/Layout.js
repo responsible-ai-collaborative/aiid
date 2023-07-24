@@ -4,88 +4,42 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 import { useLayoutContext } from 'contexts/LayoutContext';
-import { StaticQuery, graphql } from 'gatsby';
 
 const Layout = ({ children, className, sidebarCollapsed = false, location }) => {
   const { rightSidebar } = useLayoutContext();
 
   return (
-    <StaticQuery
-      query={graphql`
-        query {
-          sidebar: allPrismicSidebar(sort: { data: { order: { text: ASC } } }) {
-            edges {
-              node {
-                data {
-                  title {
-                    text
-                  }
-                  url {
-                    url
-                  }
-                  path {
-                    text
-                  }
-                  items {
-                    item_title {
-                      text
-                    }
-                    item_url {
-                      url
-                    }
-                    item_path {
-                      text
-                    }
-                  }
-                }
-              }
-            }
+    <>
+      <Header location={location} />
+      <div className="tw-layout">
+        <div className="hidden md:block z-2 bg-text-light-gray shadow" data-cy="sidebar-desktop">
+          <Sidebar defaultCollapsed={sidebarCollapsed} location={location} />
+        </div>
+        {config.sidebar.title && (
+          <div
+            className={'tw-side-bar-title tw-side-bar-show'}
+            dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+          />
+        )}
+        <div
+          id="content"
+          className={
+            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative overflow-hidden flex-1' +
+            (rightSidebar ? ' xl:pr-5' : '')
           }
-        }
-      `}
-      render={({ sidebar }) => {
-        return (
-          <>
-            <Header location={location} />
-            <div className="tw-layout">
-              <div
-                className="hidden md:block z-2 bg-text-light-gray shadow"
-                data-cy="sidebar-desktop"
-              >
-                <Sidebar
-                  defaultCollapsed={sidebarCollapsed}
-                  location={location}
-                  items={sidebar.edges}
-                />
-              </div>
-              {config.sidebar.title && (
-                <div
-                  className={'tw-side-bar-title tw-side-bar-show'}
-                  dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-                />
-              )}
-              <div
-                id="content"
-                className={
-                  'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative overflow-hidden flex-1' +
-                  (rightSidebar ? ' xl:pr-5' : '')
-                }
-              >
-                <div className={`${className ? className : ''} w-full max-w-full`}>{children}</div>
-              </div>
-              <div
-                className={
-                  'tw-hidden-mobile tw-[224px] z-0 relative hidden xl:block xl:max-w-sm 2xl:max-w-md'
-                }
-              >
-                {rightSidebar}
-              </div>
-            </div>
-            <Footer />
-          </>
-        );
-      }}
-    />
+        >
+          <div className={`${className ? className : ''} w-full max-w-full`}>{children}</div>
+        </div>
+        <div
+          className={
+            'tw-hidden-mobile tw-[224px] z-0 relative hidden xl:block xl:max-w-sm 2xl:max-w-md'
+          }
+        >
+          {rightSidebar}
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 };
 

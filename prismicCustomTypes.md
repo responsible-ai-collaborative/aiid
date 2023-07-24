@@ -105,3 +105,84 @@ JSON:
   }
 }
 ```
+
+###  2. Sidebar custom type
+
+name: `sidebar`
+
+JSON:
+```
+{
+  "Main" : {
+    "title" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading6",
+        "label" : "Title",
+        "placeholder" : "Menu Item display name"
+      }
+    },
+    "url" : {
+      "type" : "Link",
+      "config" : {
+        "allowTargetBlank" : true,
+        "label" : "URL",
+        "placeholder" : "Menu Item URL if the link is external",
+        "select" : null
+      }
+    },
+    "path" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading6",
+        "label" : "Path",
+        "placeholder" : "Use this if you want the link is relative to your page. Example: /blog"
+      }
+    },
+    "order" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading6",
+        "label" : "Order"
+      }
+    },
+    "items" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "item_title" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "Title"
+            }
+          },
+          "item_url" : {
+            "type" : "Link",
+            "config" : {
+              "allowTargetBlank" : true,
+              "label" : "url",
+              "select" : null
+            }
+          },
+          "item_path" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "path"
+            }
+          },
+          "item_order" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "Item order"
+            }
+          }
+        },
+        "label" : "Menu sub Items"
+      }
+    }
+  }
+}
+```
