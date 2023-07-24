@@ -113,74 +113,89 @@ name: `sidebar`
 JSON:
 ```
 {
-  "Main" : {
-    "title" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading6",
-        "label" : "Title",
-        "placeholder" : "Menu Item display name"
+  "Main": {
+    "title": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "Title",
+        "placeholder": "Menu Item display name"
       }
     },
-    "url" : {
-      "type" : "Link",
-      "config" : {
-        "allowTargetBlank" : true,
-        "label" : "URL",
-        "placeholder" : "Menu Item URL if the link is external",
-        "select" : null
+    "label": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "label",
+        "placeholder": "Identifier used to display a specific icon"
       }
     },
-    "path" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading6",
-        "label" : "Path",
-        "placeholder" : "Use this if you want the link is relative to your page. Example: /blog"
+    "url": {
+      "type": "Link",
+      "config": {
+        "allowTargetBlank": true,
+        "label": "URL",
+        "placeholder": "Menu Item URL if the link is external",
+        "select": null
       }
     },
-    "order" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading6",
-        "label" : "Order"
+    "path": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "Path",
+        "placeholder": "Use this if you want the link is relative to your page. Example: /blog"
       }
     },
-    "items" : {
-      "type" : "Group",
-      "config" : {
-        "fields" : {
-          "item_title" : {
-            "type" : "StructuredText",
-            "config" : {
-              "single" : "heading6",
-              "label" : "Title"
+    "order": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "Order"
+      }
+    },
+    "items": {
+      "type": "Group",
+      "config": {
+        "fields": {
+          "item_title": {
+            "type": "StructuredText",
+            "config": {
+              "single": "heading6",
+              "label": "Title"
             }
           },
-          "item_url" : {
-            "type" : "Link",
-            "config" : {
-              "allowTargetBlank" : true,
-              "label" : "url",
-              "select" : null
+          "item_label": {
+            "type": "StructuredText",
+            "config": {
+              "single": "heading6",
+              "label": "label"
             }
           },
-          "item_path" : {
-            "type" : "StructuredText",
-            "config" : {
-              "single" : "heading6",
-              "label" : "path"
+          "item_url": {
+            "type": "Link",
+            "config": {
+              "allowTargetBlank": true,
+              "label": "url",
+              "select": null
             }
           },
-          "item_order" : {
-            "type" : "StructuredText",
-            "config" : {
-              "single" : "heading6",
-              "label" : "Item order"
+          "item_path": {
+            "type": "StructuredText",
+            "config": {
+              "single": "heading6",
+              "label": "path"
+            }
+          },
+          "item_order": {
+            "type": "StructuredText",
+            "config": {
+              "single": "heading6",
+              "label": "Item order"
             }
           }
         },
-        "label" : "Menu sub Items"
+        "label": "Menu sub Items"
       }
     }
   }

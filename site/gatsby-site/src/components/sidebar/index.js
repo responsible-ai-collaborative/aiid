@@ -34,6 +34,9 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
                 item_title {
                   text
                 }
+                item_label {
+                  text
+                }
                 item_url {
                   url
                 }
@@ -50,11 +53,20 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
 
   const sidebarItems = sidebar.edges.map((item) => {
     if (item.node?.data) {
+      const itemItems = item.node.data.items.map((item) => {
+        return {
+          url: item.item_url.url || item.item_path.text,
+          title: item.item_title.text,
+          label: item.item_label?.text,
+          items: [],
+        };
+      });
+
       return {
         url: item.node.data.url.url || item.node.data.path.text,
         title: item.node.data.title.text,
         label: item.node.data.label?.text,
-        items: [],
+        items: itemItems,
       };
     }
   });
