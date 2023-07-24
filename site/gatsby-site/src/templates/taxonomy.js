@@ -12,6 +12,7 @@ import { Card, Badge, Button } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { isAiHarm } from 'utils/cset';
 
 const StatItem = ({ text, value }) => {
   return (
@@ -166,13 +167,7 @@ const getStats = (taxa, classification) => {
   };
 
   const filteredClassification = classification.filter(
-    (c) =>
-      c.namespace === taxa.namespace &&
-      !(
-        c.namespace == 'CSETv1' &&
-        (getClassificationValue(c, 'AI System') != 'yes' ||
-          getClassificationValue(c, 'Clear link to technology') != 'yes')
-      )
+    (c) => c.namespace === taxa.namespace && !(c.namespace == 'CSETv1' && !isAiHarm(c))
   );
 
   const stats = {};
