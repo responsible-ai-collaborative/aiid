@@ -224,7 +224,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "30"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -236,7 +236,7 @@ var csetV1TaxaEntry = {
         '“Yes” if the AI system(s) is embedded in hardware that can interact with, affect, and change  the physical objects (cars, robots, medical facilities, etc.). Mark “No” if the system cannot. This includes systems that inform, detect, predict, or recommend.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'Context matters. AI systems embedded in hardware that can physically interact are more likely to cause death, injury, or damage.',
@@ -250,7 +250,7 @@ var csetV1TaxaEntry = {
         '“Yes” if the sector in which the AI was used is associated with entertainment. “No” if it was used in a different, clearly identifiable sector.  “Maybe” if the sector of use could not be determined.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'Context matters. AI systems used for entertainment are less likely to result in harm. For example a deepfake used in a movie is less likely to cause harm than a deepfake used for political misinformation.',
@@ -266,7 +266,7 @@ var csetV1TaxaEntry = {
         '“Yes” if the incident is about a report, test, or study of the data and does not discuss an instance of injury, damage, or loss. “Maybe” if it is unclear.  Otherwise mark “No.”',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'Sometimes there are reports about issues with the data that could be used to develop AI systems. Since there are mitigation approaches, data issues do not automatically mean that the associated AI will have issues that lead to harm. A projection or hypothesis of the harm resulting from data issues is not sufficient. There must be harm that can be clearly linked to an AI.',
@@ -282,7 +282,7 @@ var csetV1TaxaEntry = {
         '“Yes” if the involved system was deployed or sold to users. “No” if it was not. “Maybe” if there is not enough information or if the use is unclear.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'Systems that are not deployed or sold to users tend to still be in the development stage and hence are less likely to cause harm. However, harm can still be possible. ',
@@ -298,7 +298,7 @@ var csetV1TaxaEntry = {
         '“Yes” if it was a test/demonstration performed by developers, producers or journalists in controlled conditions. “No” if it was not a test/demonstration. “No” if the test/demonstration was done by a user. “No” if the test/demonstration was in operational or uncontrolled conditions. “Maybe” otherwise.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'AI system tests or demonstrations by developers, producers, or researchers in controlled environments are less likely to expose people, organizations, property, institutions, or the natural environment to harm.  Controlled environments may include situations such as an isolated compute system, a regulatory sandbox, or an autonomous vehicle testing range. ',
@@ -314,7 +314,7 @@ var csetV1TaxaEntry = {
         '“Yes” if it was a test/demonstration performed by developers, producers or journalists in controlled conditions. “No” if it was not a test/demonstration. “No” if the test/demonstration was done by a user. “No” if the test/demonstration was in controlled or non-operational conditions. “Maybe” otherwise.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'While almost every AI system undergoes testing or demonstration in a controlled environment, some also undergo testing  or demonstration in an operational environment. Testing in operational environments still occurs before the system is deployed or sold to end-users. However, relative to controlled environments, operational environments try to closely represent real-world conditions and end-users that affect use of the AI system. Therefore, testing in an operational environment typically poses a heightened risk of harm to people, organizations, property, institutions, or the environment.',
@@ -329,7 +329,7 @@ var csetV1TaxaEntry = {
       ...YesNoMaybe,
       placeholder: '',
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested. Relative to controlled environments, controlled environments try to closely represent real-world conditions and end-users that affect use of the AI system. Therefore, testing in an controlled environment typically poses a heightened risk of harm to people, organizations, property, institutions, or the environment.',
@@ -345,7 +345,7 @@ var csetV1TaxaEntry = {
       ...YesNoMaybe,
       placeholder: '',
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       notes:
         'Sometimes, prior to deployment, the user will perform a test or demonstration of the AI system. The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested in controlled environments.',
@@ -386,7 +386,7 @@ var csetV1TaxaEntry = {
         'unclear',
       ],
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -399,7 +399,7 @@ var csetV1TaxaEntry = {
         'An assessment of whether or not an AI system was involved. It is sometimes difficult to judge between an AI and an automated system or expert rules system. In these cases select “maybe”',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes:
@@ -417,7 +417,7 @@ var csetV1TaxaEntry = {
       hide_search: true,
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -432,7 +432,7 @@ var csetV1TaxaEntry = {
       ...YesNo,
       default: '',
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       hide_search: true,
@@ -453,7 +453,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "150"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     //      {
@@ -473,7 +473,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "80"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -496,7 +496,7 @@ var csetV1TaxaEntry = {
         'unclear',
       ],
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes:
@@ -543,7 +543,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "140"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
 
@@ -557,7 +557,7 @@ var csetV1TaxaEntry = {
         "Did this impact people's access to critical or public services (health care, social services, voting, transportation, etc)?",
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes:
@@ -574,7 +574,7 @@ var csetV1TaxaEntry = {
         'Indicate if a violation of human rights, civil rights, civil liberties, or democratic norms occurred.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes:
@@ -590,7 +590,7 @@ var csetV1TaxaEntry = {
       long_description: 'Indicate if a minor was disproportionately targeted or affected',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes:
@@ -605,7 +605,7 @@ var csetV1TaxaEntry = {
         'Detrimental content can include deepfakes, identity misrepresentation, insults, threats of violence, eating disorder or self harm promotion, extremist content, misinformation, sexual abuse material, and scam emails. Detrimental content in itself is often not harmful, however, it can lead to or instigate injury, damage, or loss.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -620,7 +620,7 @@ var csetV1TaxaEntry = {
         'Protected characteristics include religion, commercial facilities, geography, age, sex, sexual orientation or gender identity, familial status (e.g., having or not having children) or pregnancy, disability, veteran status, genetic information, financial means, race or creed, Ideology, nation of origin, citizenship, and immigrant status.\n\nAt the federal level in the US, age is a protected characteristic for people over the age of 40.  Minors are not considered a protected class.  For this reason the CSET annotation taxonomy  has a separate field to note if a minor was involved.\n\nOnly mark yes if there is clear evidence discrimination occurred. If there are conflicting accounts, mark unsure. Do not mark that discrimination occurred based on expectation alone.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -653,7 +653,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "145"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -686,7 +686,7 @@ var csetV1TaxaEntry = {
         'other',
       ],
       weight: 60,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -732,7 +732,7 @@ var csetV1TaxaEntry = {
         'An assessment of whether or not an AI system was involved. It is sometimes difficult to judge between an AI and an automated system or expert rules system. In these cases select “maybe”',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       hide_search: true,
@@ -749,7 +749,7 @@ var csetV1TaxaEntry = {
       long_description: `An assessment of the technology's involvement in the chain of harm. "Yes" indicates that the technology was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the technology acted differently. "No", indicates that the technology's behavior cannot be linked to the harm outcome. "Maybe" indicates that the link is unclear.`,
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -764,7 +764,7 @@ var csetV1TaxaEntry = {
         'A characterizable class or subgroup are descriptions of different populations of people. Often they are characteristics by which people qualify for special protection by a law, policy, or similar authority.\n\n Sometimes, groups may be characterized by their exposure to the incident via geographical proximity (e.g., ‘visitors to the park’) or participation in an activity (e.g.,‘Twitter users’).',
       ...YesNo,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       hide_search: true,
@@ -781,7 +781,7 @@ var csetV1TaxaEntry = {
         'AI tangible harm is determined in a different field. The determination of a special interest intangible harm is not dependant upon the AI tangible harm level.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes: '',
@@ -889,7 +889,7 @@ var csetV1TaxaEntry = {
       placeholder: 'DD',
       permitted_values: [],
       weight: 5,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       hide_search: true,
@@ -918,7 +918,7 @@ var csetV1TaxaEntry = {
         'This happens very rarely but is possible. Examples include two chatbots having a conversation with each other, or two autonomous vehicles in a crash.',
       ...YesNoMaybe,
       weight: 5,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -932,7 +932,7 @@ var csetV1TaxaEntry = {
         'This question is slightly different from the one in field 2.1.1. That question asks about there being interaction with physical objects–an ability to manipulate or change.  A system can be embedded in a physical object and able to interact with the physical environment, e.g. a vacuum robot.  A system can be embedded in a physical object and not interact with a physical environment, e.g. a camera system that only records images when the AI detects that dogs are present. AI systems that are accessed through API, web-browser, etc by using a mobile device or computer are not considered to be embedded in hardware systems. They are accessed through hardware.',
       ...YesNoMaybe,
       weight: 5,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -950,7 +950,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "105"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1033,7 +1033,7 @@ var csetV1TaxaEntry = {
         'unclear',
       ],
       weight: 5,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -1068,7 +1068,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "65"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1102,7 +1102,7 @@ var csetV1TaxaEntry = {
         'unclear',
       ],
       weight: 5,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -1347,7 +1347,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "100"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     //      {
@@ -1363,7 +1363,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "95"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     //      {
@@ -1379,7 +1379,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "130"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
 
@@ -1396,7 +1396,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "70"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1412,7 +1412,7 @@ var csetV1TaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 5,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -1601,7 +1601,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "125"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1643,7 +1643,7 @@ var csetV1TaxaEntry = {
         'unclear',
       ],
       weight: 60,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -1661,7 +1661,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "45"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1673,7 +1673,7 @@ var csetV1TaxaEntry = {
         'Indicate whether the AI system is deployed in the public sector. The public sector is the part of the economy that is controlled and operated by the government.',
       ...YesNoMaybe,
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -1691,7 +1691,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "35"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1718,7 +1718,7 @@ var csetV1TaxaEntry = {
       placeholder: '',
       permitted_values: ['Autonomy1', 'Autonomy2', 'Autonomy3', 'unclear'],
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
     },
@@ -1753,7 +1753,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "75"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
 
@@ -1776,7 +1776,7 @@ var csetV1TaxaEntry = {
         'unclear',
       ],
       weight: 40,
-      instant_facet: true,
+      instant_facet: false,
       required: false,
       public: true,
       notes:
@@ -1813,7 +1813,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "120"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     //      {
@@ -1829,7 +1829,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "110"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -1879,7 +1879,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "115"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     {
@@ -2007,7 +2007,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "40"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     //      {
@@ -2023,7 +2023,7 @@ var csetV1TaxaEntry = {
     //        weight: {
     //          $numberInt: "25"
     //        },
-    //        instant_facet: true,
+    //        instant_facet: false,
     //        required: false
     //      },
     //      {

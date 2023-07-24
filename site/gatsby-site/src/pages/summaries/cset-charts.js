@@ -67,6 +67,42 @@ export default function CsetChartsPage({ data, ...props }) {
         classifications={classifications}
         namespace="CSETv1"
       />
+      <ul>
+        <li>
+          <b>Autonomy1 (fully autonomous)</b>: Does the system operate independently, without
+          simultaneous human oversight, interaction or intervention?
+        </li>
+
+        <li>
+          <b>Autonomy2 (human-on-loop)</b>: Does the system operate independently but with human
+          oversight, where the system makes decisions or takes actions but a human actively observes
+          the behavior and can override the system in real time?
+        </li>
+
+        <li>
+          <b>Autonomy3 (human-in-the-loop)</b>: Does the system provide inputs and suggested
+          decisions to a human that
+        </li>
+      </ul>
+      {[
+        'Physical Objects',
+        'Entertainment Industry',
+        'Report, Test, or Study of data',
+        'Deployed',
+        'Producer Test in Controlled Conditions',
+        'Producer Test in Operational Conditions',
+        'User Test in Controlled Conditions',
+        'User Test in Operational Conditions',
+      ].map((attributeShortName) => (
+        <GroupBarChart
+          key={attributeShortName}
+          title={`Domain questions – ${attributeShortName}`}
+          groups={allVsHarmDefinition}
+          attributeShortName={attributeShortName}
+          classifications={classifications}
+          namespace="CSETv1"
+        />
+      ))}
     </>
   );
 }
@@ -74,7 +110,7 @@ export default function CsetChartsPage({ data, ...props }) {
 function BarChart({ attributeShortName, classifications, namespace, title, filter = () => true }) {
   title ||= attributeShortName;
 
-  const allValues = new Set();
+  let allValues = new Set();
 
   const valuesCount = {};
 
@@ -95,13 +131,11 @@ function BarChart({ attributeShortName, classifications, namespace, title, filte
     }
   }
 
-  const topValues = Array.from(allValues)
-    .sort((a, b) => valuesCount[a] - valuesCount[b])
-    .slice(0, 10);
+  allValues = Array.from(allValues);
 
   const options = {
     data: {
-      columns: topValues.map((v) => [v, valuesCount[v]]),
+      columns: allValues.map((v) => [v, valuesCount[v]]),
       type: bar(),
     },
     axis: {
@@ -111,6 +145,9 @@ function BarChart({ attributeShortName, classifications, namespace, title, filte
           text: { show: false },
         },
       },
+    },
+    tooltip: {
+      show: false,
     },
   };
 
@@ -128,7 +165,11 @@ function BarChart({ attributeShortName, classifications, namespace, title, filte
 function GroupBarChart({ groups, attributeShortName, classifications, namespace, title }) {
   title ||= attributeShortName;
 
-  const allValues = new Set();
+  for (const groupName in groups) {
+    groups[groupName].valuesCount = {};
+  }
+
+  let allValues = new Set();
 
   for (const classification of classifications) {
     if (classification.namespace != namespace) continue;
@@ -151,34 +192,25 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
     }
   }
 
+  allValues = Array.from(allValues);
+
   const groupNames = Object.keys(groups);
-
-  const occurences = (v) => {
-    let count = 0;
-
-    for (const groupName of groupNames) {
-      const group = groups[groupName];
-
-      count += group.valuesCount[v];
-    }
-    return count;
-  };
-
-  const topValues = Array.from(allValues)
-    .sort((a, b) => occurences(a) - occurences(b))
-    .slice(0, 10);
 
   const options = {
     data: {
+      order:
+        attributeShortName == 'Autonomy Level' ? (a, b) => Number(a[8]) - Number(b[8]) : undefined,
       x: 'x',
       columns: [
         ['x', ...groupNames],
-        ...topValues.map((value) => [
-          value,
-          ...groupNames.map((groupName) => groups[groupName].valuesCount[value] || 0),
-        ]),
+        ...allValues
+          .sort()
+          .map((value) => [
+            value,
+            ...groupNames.map((groupName) => groups[groupName].valuesCount[value] || 0),
+          ]),
       ],
-      groups: [topValues],
+      groups: [allValues],
       type: bar(),
     },
     axis: {
@@ -190,6 +222,9 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
         },
       },
     },
+    tooltip: {
+      show: false,
+    },
   };
 
   return (
@@ -199,6 +234,31 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
         (by Incident Count)
       </div>
       <BillboardJS bb={bb} options={{ ...options }} />
+      <div className="flex gap-2 flex-wrap justify-around">
+        {allValues.length > 5 &&
+          groupNames.map((groupName) => {
+            const byGroupOccurences = (a, b) =>
+              (groups[groupName].valuesCount[b] || 0) - (groups[groupName].valuesCount[a] || 0);
+
+            return (
+              <div key={groupName}>
+                <h3 className="text-lg text-center">{groupName}</h3>
+                <table>
+                  <tr>
+                    <th className="p2 text-left">Category</th>
+                    <th className="p2">Count</th>
+                  </tr>
+                  {allValues.sort(byGroupOccurences).map((value) => (
+                    <tr key={value}>
+                      <td className="p2">{value}</td>
+                      <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
+                    </tr>
+                  ))}
+                </table>
+              </div>
+            );
+          })}
+      </div>
     </>
   );
 }
