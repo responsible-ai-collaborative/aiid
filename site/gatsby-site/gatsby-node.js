@@ -216,6 +216,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
       reports: [mongodbAiidprodReports] @link(by: "report_number")
+      incident_id: Int
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -248,7 +249,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
     
     type mongodbAiidprodClassifications implements Node {
-      incident_id: Int
+      incidents: [mongodbAiidprodIncidents] @link(by: "incident_id")
       namespace: String
       attributes: [mongodbAiidprodClassificationsAttribute]
     }
