@@ -408,16 +408,18 @@ export default function CsetTable({ data, taxa, incident_id, ...props }) {
       const attributes = serializeClassification(values, taxa.field_list);
 
       const data = {
-        incident_id,
         notes: tableData.find((row) => row.short_name == 'notes').result,
-        namespace: 'CSETv1',
         attributes: attributes.map((a) => a),
+        namespace: 'CSETv1',
+        incidents: { link: [parseInt(incident_id)] },
       };
 
       await updateClassification({
         variables: {
           query: {
-            incident_id,
+            incidents: {
+              incident_id: parseInt(incident_id),
+            },
             namespace: 'CSETv1',
           },
           data,
