@@ -82,7 +82,7 @@
     "rehype-truncate": "^1.2.2",
     "remark": "^13.0.0",
     "sass": "^1.54.5",
-    "sharp": "^0.28.3",
+    "sharp": "^0.32.4",
     "slugify": "^1.6.5",
     "stemmer": "^1.0.5",
     "stopword": "^1.0.7",
@@ -145,5 +145,9 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "overrides": {
+    "minimist": "1.2.8",
+    "d3-color": "3.1.0"
   }
 }
