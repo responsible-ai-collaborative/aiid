@@ -5,6 +5,7 @@ import parseNews from '../../../fixtures/api/parseNews.json';
 import { isArray } from 'lodash';
 import { arrayToList } from '../../../../src/utils/typography';
 import { SUBSCRIPTION_TYPE } from '../../../../src/utils/subscriptions';
+import { format, getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
 describe('Submitted reports', () => {
@@ -625,6 +626,9 @@ describe('Submitted reports', () => {
         },
       }
     );
+    const now = new Date();
+
+    cy.clock(now);
 
     cy.get('@modal').contains('Update').click();
 
@@ -637,10 +641,36 @@ describe('Submitted reports', () => {
         _id: submittedReports.data.submissions[0]._id,
       });
 
-      expect(xhr.request.body.variables.set).to.deep.nested.include({
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        authors: ['Nedi Bedi and Kathleen McGrory'],
+        cloudinary_id: 'reports/s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
+        date_downloaded: '2020-10-30',
+        date_modified: format(now, 'yyyy-MM-dd'),
+        date_published: '2017-05-03',
+        date_submitted: '2020-10-30',
+        epoch_date_modified: getUnixTime(now),
+        description:
+          'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
+        image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
+        incident_date: '2015-09-01',
+        incident_ids: [],
+        language: 'en',
+        source_domain: 'projects.tampabay.com',
+        submitters: ['Kate Perkins'],
         text: '## Another one\n\n**More markdown**\n\nAnother paragraph with more text to reach the minimum character count!',
         plain_text:
           'Another one\n\nMore markdown\n\nAnother paragraph with more text to reach the minimum character count!\n',
+        title: 'Submisssion 1 title',
+        url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+        editor_notes: '',
+        developers: { link: ['google'] },
+        deployers: { link: ['google'] },
+        harmed_parties: { link: ['adults'] },
+        nlp_similar_incidents: [],
+        editor_dissimilar_incidents: [],
+        editor_similar_incidents: [],
+        tags: [],
+        incident_editors: { link: [] },
       });
     });
 

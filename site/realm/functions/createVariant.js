@@ -36,20 +36,22 @@ exports = async (input) => {
 
   const report_number = (await reports.find({}).sort({ report_number: -1 }).limit(1).next()).report_number + 1;
 
-  const today = formatDate(new Date(), 'yyyy-MM-dd');
+  const now = new Date();
+
+  const todayFormated = formatDate(now, 'yyyy-MM-dd');
 
   const newReport = {
     report_number,
     is_incident_report: false,
     title: '',
-    date_downloaded: today,
-    date_modified: today,
-    date_published: input.variant.date_published ? input.variant.date_published : today,
-    date_submitted: today,
-    epoch_date_downloaded: getUnixTime(today),
-    epoch_date_modified: getUnixTime(today),
-    epoch_date_published: getUnixTime(input.variant.date_published ? input.variant.date_published : today),
-    epoch_date_submitted: getUnixTime(today),
+    date_downloaded: todayFormated,
+    date_modified: todayFormated,
+    date_published: input.variant.date_published ? input.variant.date_published : todayFormated,
+    date_submitted: todayFormated,
+    epoch_date_downloaded: getUnixTime(todayFormated),
+    epoch_date_modified: getUnixTime(now.toString()),
+    epoch_date_published: getUnixTime(input.variant.date_published ? input.variant.date_published : todayFormated),
+    epoch_date_submitted: getUnixTime(todayFormated),
     image_url: '',
     cloudinary_id: '',
     authors: [],
