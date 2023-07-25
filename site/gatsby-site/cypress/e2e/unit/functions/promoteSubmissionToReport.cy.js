@@ -116,6 +116,15 @@ describe('Functions', () => {
                 stub.withArgs('submissions').returns(submissionsCollection);
                 stub.withArgs('incidents').returns(incidentsCollection);
                 stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('customData').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
                 stub.withArgs('notifications').returns(notificationsCollection);
                 stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
@@ -257,6 +266,14 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const notificationsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
+    const subscriptionsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -271,6 +288,17 @@ describe('Functions', () => {
                 stub.withArgs('submissions').returns(submissionsCollection);
                 stub.withArgs('incidents').returns(incidentsCollection);
                 stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('customData').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('notifications').returns(notificationsCollection);
+                stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
                 return stub;
               })(),
@@ -389,6 +417,14 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const notificationsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
+    const subscriptionsCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -403,6 +439,17 @@ describe('Functions', () => {
                 stub.withArgs('submissions').returns(submissionsCollection);
                 stub.withArgs('incidents').returns(incidentsCollection);
                 stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('customData').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('notifications').returns(notificationsCollection);
+                stub.withArgs('subscriptions').returns(subscriptionsCollection);
 
                 return stub;
               })(),
@@ -521,23 +568,57 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const incidentsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
+    const reportsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
         get: cy.stub().returns({
-          db: cy.stub().returns({
-            collection: (() => {
-              const stub = cy.stub();
+          db: (() => {
+            const stub = cy.stub();
 
-              stub.withArgs('submissions').returns(submissionsCollection);
-              stub.withArgs('incidents').returns(incidentsCollection);
-              stub.withArgs('reports').returns(reportsCollection);
-              stub.withArgs('notifications').returns(notificationsCollection);
-              stub.withArgs('subscriptions').returns(subscriptionsCollection);
+            stub.withArgs('aiidprod').returns({
+              collection: (() => {
+                const stub = cy.stub();
 
-              return stub;
-            })(),
-          }),
+                stub.withArgs('submissions').returns(submissionsCollection);
+                stub.withArgs('incidents').returns(incidentsCollection);
+                stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('customData').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('notifications').returns(notificationsCollection);
+                stub.withArgs('subscriptions').returns(subscriptionsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('history').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('incidents').returns(incidentsHistoryCollection);
+                stub.withArgs('reports').returns(reportsHistoryCollection);
+
+                return stub;
+              })(),
+            });
+
+            return stub;
+          })(),
         }),
       },
       functions: {
