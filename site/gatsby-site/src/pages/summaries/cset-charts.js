@@ -196,10 +196,11 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
 
   const groupNames = Object.keys(groups);
 
+  const autonomySort = (a, b) => Number(a.id[8] || 0) - Number(b.id[8] || 0);
+
   const options = {
     data: {
-      order:
-        attributeShortName == 'Autonomy Level' ? (a, b) => Number(a[8]) - Number(b[8]) : undefined,
+      order: attributeShortName == 'Autonomy Level' ? autonomySort : undefined,
       x: 'x',
       columns: [
         ['x', ...groupNames],
