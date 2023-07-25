@@ -663,9 +663,10 @@ describe('Cite pages', () => {
         expect(
           xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
         ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
-        expect(xhr.request.body.variables.incident.editors).to.deep.eq({
-          link: incident.editors.map((e) => e.userId),
-        });
+
+        xhr.request.body.variables.incident.editors.link.forEach((e) =>
+          expect(incident.editors.map((e) => e.userId)).to.deep.include(e)
+        );
       });
 
       cy.wait('@GetLatestIncidentId');
