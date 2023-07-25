@@ -669,7 +669,6 @@ describe('Submitted reports', () => {
       expect(xhr.request.body.variables.query).to.deep.nested.include({
         _id: submittedReports.data.submissions[0]._id,
       });
-
       expect(xhr.request.body.variables.set).to.deep.eq({
         authors: ['Nedi Bedi and Kathleen McGrory'],
         cloudinary_id: 'reports/s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
@@ -700,6 +699,9 @@ describe('Submitted reports', () => {
         editor_similar_incidents: [],
         tags: [],
         incident_editors: { link: [] },
+        user: {
+          userId: '62cd9520a69a2cdf17fb47db',
+        },
       });
     });
 
