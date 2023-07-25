@@ -142,7 +142,12 @@ GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 SKIP_PAGE_CREATOR=createTsneVisualizationPage
+GATSBY_PRISMIC_REPO_NAME=
+PRISMIC_ACCESS_TOKEN=
+PRISMIC_CUSTOM_TYPES_API_TOKEN=
 ```
+
+For `GATSBY_PRISMIC_REPO_NAME`, `PRISMIC_ACCESS_TOKEN` and `PRISMIC_CUSTOM_TYPES_API_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
