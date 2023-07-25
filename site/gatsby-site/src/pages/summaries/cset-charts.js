@@ -214,6 +214,12 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
       ],
       groups: [allValues],
       type: bar(),
+      color: function (color, d) {
+        if (d.id === 'yes') return '#2ca02c';
+        if (d.id === 'no') return '#d62728';
+        if (d.id === 'maybe') return '#1f77b4';
+        return color;
+      },
     },
     axis: {
       x: {
