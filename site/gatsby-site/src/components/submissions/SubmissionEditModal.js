@@ -12,6 +12,7 @@ import RelatedIncidents from '../../components/RelatedIncidents';
 import { Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { schema } from './schemas';
+import { format, getUnixTime } from 'date-fns';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -46,6 +47,8 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
         createEntityMutation
       );
 
+      const now = new Date();
+
       await updateSubmission({
         variables: {
           query: {
@@ -63,6 +66,8 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                 : values.submitters
               : ['Anonymous'],
             plain_text: await stripMarkdown(update.text),
+            date_modified: format(now, 'yyyy-MM-dd'),
+            epoch_date_modified: getUnixTime(now),
             incident_editors: { link: update.incident_editors },
           },
         },

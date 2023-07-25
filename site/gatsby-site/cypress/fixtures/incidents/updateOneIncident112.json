@@ -3,6 +3,7 @@
         "updateOneIncident": {
             "__typename": "Incident",
             "date": "2015-05-19",
+            "epoch_date_modified": 1623936000,
             "incident_id": 112,
             "nlp_similar_incidents": [],
             "title": "Test title",
@@ -26,6 +27,7 @@
             ],
             "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
             "editors": [],
+            "editor_notes": "",
             "editor_similar_incidents": [],
             "editor_dissimilar_incidents": [],
             "flagged_dissimilar_incidents": [],

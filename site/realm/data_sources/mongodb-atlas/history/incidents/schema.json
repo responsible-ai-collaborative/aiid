@@ -27,6 +27,9 @@
         "description": {
             "bsonType": "string"
         },
+        "modifiedBy": {
+            "bsonType": "string"
+        },
         "editor_dissimilar_incidents": {
             "bsonType": "array",
             "items": {
@@ -119,5 +122,5 @@
         "date",
         "title"
     ],
-    "title": "incident"
+    "title": "history_incident"
 }

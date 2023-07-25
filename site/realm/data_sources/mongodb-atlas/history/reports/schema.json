@@ -24,35 +24,14 @@
         "date_submitted": {
             "bsonType": "string"
         },
-        "deployers": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
         "description": {
             "bsonType": "string"
         },
-        "developers": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
-        "editor_dissimilar_incidents": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "int"
-            }
+        "modifiedBy": {
+            "bsonType": "string"
         },
         "editor_notes": {
             "bsonType": "string"
-        },
-        "editor_similar_incidents": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "int"
-            }
         },
         "embedding": {
             "bsonType": "object",
@@ -68,55 +47,41 @@
                 }
             }
         },
+        "epoch_date_downloaded": {
+            "bsonType": "int"
+        },
         "epoch_date_modified": {
             "bsonType": "int"
         },
-        "harmed_parties": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
+        "epoch_date_published": {
+            "bsonType": "int"
+        },
+        "epoch_date_submitted": {
+            "bsonType": "int"
+        },
+        "flag": {
+            "bsonType": "bool"
         },
         "image_url": {
             "bsonType": "string"
         },
-        "incident_date": {
-            "bsonType": "string"
-        },
-        "incident_editors": {
+        "inputs_outputs": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
         },
-        "incident_ids": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "int"
-            }
-        },
-        "incident_title": {
-            "bsonType": "string"
+        "is_incident_report": {
+            "bsonType": "bool"
         },
         "language": {
             "bsonType": "string"
         },
-        "nlp_similar_incidents": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "object",
-                "properties": {
-                    "incident_id": {
-                        "bsonType": "int"
-                    },
-                    "similarity": {
-                        "bsonType": "double"
-                    }
-                }
-            }
-        },
         "plain_text": {
             "bsonType": "string"
+        },
+        "report_number": {
+            "bsonType": "int"
         },
         "source_domain": {
             "bsonType": "string"
@@ -148,18 +113,25 @@
     },
     "required": [
         "authors",
-        "image_url",
+        "cloudinary_id",
         "date_downloaded",
         "date_modified",
         "date_published",
         "date_submitted",
+        "epoch_date_downloaded",
+        "epoch_date_modified",
+        "epoch_date_published",
+        "epoch_date_submitted",
+        "image_url",
         "language",
+        "plain_text",
+        "report_number",
         "source_domain",
         "submitters",
+        "tags",
         "text",
         "title",
-        "url",
-        "tags"
+        "url"
     ],
-    "title": "submission"
+    "title": "history_report"
 }

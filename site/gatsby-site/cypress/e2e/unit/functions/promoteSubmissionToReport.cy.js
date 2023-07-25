@@ -10,6 +10,7 @@ const submission = {
   date_modified: '2021-07-27',
   date_published: '2017-05-03',
   date_submitted: '2020-10-30',
+  epoch_date_modified: 1686182943,
   description:
     'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
   image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
@@ -74,6 +75,10 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const incidentsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     const reportsCollection = {
       find: cy.stub().returns({
         sort: cy.stub().returns({
@@ -85,21 +90,42 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const reportsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
         get: cy.stub().returns({
-          db: cy.stub().returns({
-            collection: (() => {
-              const stub = cy.stub();
+          db: (() => {
+            const stub = cy.stub();
 
-              stub.withArgs('submissions').returns(submissionsCollection);
-              stub.withArgs('incidents').returns(incidentsCollection);
-              stub.withArgs('reports').returns(reportsCollection);
+            stub.withArgs('aiidprod').returns({
+              collection: (() => {
+                const stub = cy.stub();
 
-              return stub;
-            })(),
-          }),
+                stub.withArgs('submissions').returns(submissionsCollection);
+                stub.withArgs('incidents').returns(incidentsCollection);
+                stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('history').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('incidents').returns(incidentsHistoryCollection);
+                stub.withArgs('reports').returns(reportsHistoryCollection);
+
+                return stub;
+              })(),
+            });
+
+            return stub;
+          })(),
         }),
       },
       functions: {
@@ -112,11 +138,12 @@ describe('Functions', () => {
     cy.wrap(
       promoteSubmissionToReport({ is_incident_report: true, incident_ids: [], submission_id: 1 })
     ).then(() => {
-      expect(incidentsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+      const expectedIncident = {
         'Alleged deployer of AI system': ['Youtube'],
         'Alleged developer of AI system': ['AI Dev'],
         'Alleged harmed or nearly harmed parties': ['Adults'],
         date: '2015-09-01',
+        epoch_date_modified: 1686182943,
         description:
           'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
         editor_dissimilar_incidents: [],
@@ -126,9 +153,17 @@ describe('Functions', () => {
         nlp_similar_incidents: [],
         reports: [],
         title: 'Submisssion 1 title',
+      };
+
+      expect(incidentsCollection.insertOne.firstCall.args[0]).to.deep.equal(expectedIncident);
+
+      expect(incidentsHistoryCollection.insertOne.firstCall.args[0]).to.deep.equal({
+        ...expectedIncident,
+        reports: [2],
+        modifiedBy: submission.user,
       });
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
+      const expectedReport = {
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
@@ -137,7 +172,7 @@ describe('Functions', () => {
         date_published: '2017-05-03',
         date_submitted: '2020-10-30',
         epoch_date_downloaded: 1604016000,
-        epoch_date_modified: 1627344000,
+        epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,
         epoch_date_submitted: 1604016000,
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
@@ -151,13 +186,20 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
-      });
+      };
+
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
 
       expect(global.context.functions.execute).to.be.calledOnceWith('linkReportsToIncidents', {
         incident_ids: [2],
         report_numbers: [2],
+      });
+
+      expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
+        ...expectedReport,
+        modifiedBy: submission.user,
       });
     });
   });
@@ -186,6 +228,10 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const incidentsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     const reportsCollection = {
       find: cy.stub().returns({
         sort: cy.stub().returns({
@@ -197,21 +243,42 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const reportsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
         get: cy.stub().returns({
-          db: cy.stub().returns({
-            collection: (() => {
-              const stub = cy.stub();
+          db: (() => {
+            const stub = cy.stub();
 
-              stub.withArgs('submissions').returns(submissionsCollection);
-              stub.withArgs('incidents').returns(incidentsCollection);
-              stub.withArgs('reports').returns(reportsCollection);
+            stub.withArgs('aiidprod').returns({
+              collection: (() => {
+                const stub = cy.stub();
 
-              return stub;
-            })(),
-          }),
+                stub.withArgs('submissions').returns(submissionsCollection);
+                stub.withArgs('incidents').returns(incidentsCollection);
+                stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('history').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('incidents').returns(incidentsHistoryCollection);
+                stub.withArgs('reports').returns(reportsHistoryCollection);
+
+                return stub;
+              })(),
+            });
+
+            return stub;
+          })(),
         }),
       },
       functions: {
@@ -226,7 +293,9 @@ describe('Functions', () => {
     ).then(() => {
       expect(incidentsCollection.insertOne.callCount).to.eq(0);
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
+      expect(incidentsHistoryCollection.insertOne.callCount).to.eq(0);
+
+      const expectedReport = {
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
@@ -235,7 +304,7 @@ describe('Functions', () => {
         date_published: '2017-05-03',
         date_submitted: '2020-10-30',
         epoch_date_downloaded: 1604016000,
-        epoch_date_modified: 1627344000,
+        epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,
         epoch_date_submitted: 1604016000,
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
@@ -249,13 +318,20 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
-      });
+      };
+
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
 
       expect(global.context.functions.execute).to.be.calledOnceWith('linkReportsToIncidents', {
         incident_ids: [1],
         report_numbers: [2],
+      });
+
+      expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
+        ...expectedReport,
+        modifiedBy: submission.user,
       });
     });
   });
@@ -284,6 +360,10 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const incidentsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     const reportsCollection = {
       find: cy.stub().returns({
         sort: cy.stub().returns({
@@ -295,21 +375,42 @@ describe('Functions', () => {
       insertOne: cy.stub().resolves(),
     };
 
+    const reportsHistoryCollection = {
+      insertOne: cy.stub().resolves(),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
         get: cy.stub().returns({
-          db: cy.stub().returns({
-            collection: (() => {
-              const stub = cy.stub();
+          db: (() => {
+            const stub = cy.stub();
 
-              stub.withArgs('submissions').returns(submissionsCollection);
-              stub.withArgs('incidents').returns(incidentsCollection);
-              stub.withArgs('reports').returns(reportsCollection);
+            stub.withArgs('aiidprod').returns({
+              collection: (() => {
+                const stub = cy.stub();
 
-              return stub;
-            })(),
-          }),
+                stub.withArgs('submissions').returns(submissionsCollection);
+                stub.withArgs('incidents').returns(incidentsCollection);
+                stub.withArgs('reports').returns(reportsCollection);
+
+                return stub;
+              })(),
+            });
+
+            stub.withArgs('history').returns({
+              collection: (() => {
+                const stub = cy.stub();
+
+                stub.withArgs('incidents').returns(incidentsHistoryCollection);
+                stub.withArgs('reports').returns(reportsHistoryCollection);
+
+                return stub;
+              })(),
+            });
+
+            return stub;
+          })(),
         }),
       },
       functions: {
@@ -324,7 +425,9 @@ describe('Functions', () => {
     ).then(() => {
       expect(incidentsCollection.insertOne.callCount).to.equal(0);
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
+      expect(incidentsHistoryCollection.insertOne.callCount).to.equal(0);
+
+      const expectedReport = {
         report_number: 2,
         is_incident_report: false,
         title: 'Submisssion 1 title',
@@ -333,7 +436,7 @@ describe('Functions', () => {
         date_published: '2017-05-03',
         date_submitted: '2020-10-30',
         epoch_date_downloaded: 1604016000,
-        epoch_date_modified: 1627344000,
+        epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,
         epoch_date_submitted: 1604016000,
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
@@ -347,13 +450,20 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
-      });
+      };
+
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
 
       expect(global.context.functions.execute).to.be.calledOnceWith('linkReportsToIncidents', {
         incident_ids: [],
         report_numbers: [2],
+      });
+
+      expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
+        ...expectedReport,
+        modifiedBy: submission.user,
       });
     });
   });
@@ -425,6 +535,7 @@ describe('Functions', () => {
         'Alleged developer of AI system': ['AI Dev'],
         'Alleged harmed or nearly harmed parties': ['Adults'],
         date: '2015-09-01',
+        epoch_date_modified: 1686182943,
         description:
           'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
         editor_dissimilar_incidents: [],
