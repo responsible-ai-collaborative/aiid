@@ -20,7 +20,7 @@
     "@graphql-tools/schema": "^8.3.3",
     "@graphql-tools/wrap": "^8.4.6",
     "@mdx-js/react": "^2.3.0",
-    "@postlight/mercury-parser": "^2.2.1",
+    "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
     "algoliasearch": "^4.10.5",
     "async": "^3.2.2",
