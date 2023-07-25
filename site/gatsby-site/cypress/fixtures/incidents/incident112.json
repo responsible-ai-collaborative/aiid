@@ -27,18 +27,22 @@
             "editors": [
                 {
                     "__typename": "User",
-                    "first_name": "Test",
-                    "last_name": "User",
+                    "first_name": "Sean",
+                    "last_name": "McGregor",
                     "roles": [
                         "admin"
                     ],
-                    "userId": "63320ce63ec803072c9f529c"
+                    "userId": "619b47ea5eed5334edfa3bbc"
                 }
             ],
+            "editor_notes": "",
             "editor_similar_incidents": [],
             "editor_dissimilar_incidents": [],
             "flagged_dissimilar_incidents": [],
-            "embedding": [],
+            "embedding": {
+                "from_reports": [],
+                "vector": []
+            },
             "reports": [
                 {
                     "__typename": "Report",

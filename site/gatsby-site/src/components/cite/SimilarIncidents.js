@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { formatISO, format, parse } from 'date-fns';
+import { formatISO, format, parse, getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { useMutation } from '@apollo/client/react/hooks';
-import { UPDATE_INCIDENT } from '../../graphql/incidents';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
+import { FIND_FULL_INCIDENT, LOG_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -13,13 +13,14 @@ import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import { transformIncidentData } from '../../utils/cite';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
   const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
 
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const { locale } = useLocalization();
 
@@ -27,9 +28,65 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
-  const [updateIncident] = useMutation(UPDATE_INCIDENT);
+  const [updateIncidentMutation] = useMutation(UPDATE_INCIDENT);
+
+  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
+
+  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
+    variables: { query: { incident_id: parentIncident.incident_id } },
+  });
 
   const addToast = useToastContext();
+
+  const flagIncident = async () => {
+    const now = new Date();
+
+    const flagged_dissimilar_incidents = isFlagged
+      ? parentIncident.flagged_dissimilar_incidents?.filter((e) => e != incident.incident_id)
+      : parentIncident.flagged_dissimilar_incidents
+          ?.filter((e) => e != incident.incident_id)
+          .concat([incident.incident_id]);
+
+    const editors = incidentData.incident.editors.map((e) => e.userId);
+
+    // Add the current user to the list of editors
+    if (user && user.providerType != 'anon-user' && !editors.includes(user.id)) {
+      editors.push(user.id);
+    }
+
+    await updateIncidentMutation({
+      variables: {
+        query: { incident_id: parentIncident.incident_id },
+        set: {
+          flagged_dissimilar_incidents,
+          epoch_date_modified: getUnixTime(now),
+          editors: { link: editors },
+        },
+      },
+    });
+
+    const updatedIncident = transformIncidentData(
+      {
+        ...incidentData.incident,
+        flagged_dissimilar_incidents,
+        epoch_date_modified: getUnixTime(now),
+        editors: { link: editors },
+      },
+      user
+    );
+
+    await logIncidentHistory({ variables: { input: updatedIncident } });
+
+    addToast({
+      message: isFlagged
+        ? t(`Flag reverted.`)
+        : t(
+            `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
+          ),
+      severity: SEVERITY.success,
+    });
+    setFlagged(!isFlagged);
+  };
 
   return (
     <div
@@ -80,31 +137,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               isFlagged ? ' text-red-500' : 'text-dark-gray'
             } z-3`}
             data-cy="flag-similar-incident"
-            onClick={async () => {
-              await updateIncident({
-                variables: {
-                  query: { incident_id: parentIncident.incident_id },
-                  set: {
-                    flagged_dissimilar_incidents: isFlagged
-                      ? parentIncident.flagged_dissimilar_incidents.filter(
-                          (e) => e != incident.incident_id
-                        )
-                      : parentIncident.flagged_dissimilar_incidents
-                          .filter((e) => e != incident.incident_id)
-                          .concat([incident.incident_id]),
-                  },
-                },
-              });
-              addToast({
-                message: isFlagged
-                  ? t(`Flag reverted.`)
-                  : t(
-                      `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
-                    ),
-                severity: SEVERITY.success,
-              });
-              setFlagged(!isFlagged);
-            }}
+            onClick={() => flagIncident()}
           >
             <FontAwesomeIcon icon={faFlag} className="hover:text-primary-blue" />
           </Button>
@@ -175,6 +208,7 @@ const SimilarIncidents = ({
                 incident={similarIncident}
                 flaggable={false}
                 key={similarIncident.incident_id}
+                parentIncident={parentIncident}
               />
             ))}
           </div>
