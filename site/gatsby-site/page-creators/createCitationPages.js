@@ -6,7 +6,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
       query IncidentIDs {
-        allMongodbAiidprodIncidents(sort: { fields: incident_id, order: ASC }) {
+        allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
           nodes {
             incident_id
             title
