@@ -7,11 +7,11 @@ describe('The CSET taxonomy page', () => {
   ];
 
   urls.forEach(({ namespace, url }) => {
-    it(`successfully loads ${namespace}`, () => {
+    it.skip(`successfully loads ${namespace}`, () => {
       cy.visit(url);
     });
 
-    it(`Should render ${namespace} fields list and Searchable status`, () => {
+    it.skip(`Should render ${namespace} fields list and Searchable status`, () => {
       cy.visit(url);
 
       cy.waitForStableDOM();

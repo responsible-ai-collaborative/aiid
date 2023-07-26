@@ -7,7 +7,7 @@ import { isAiHarm } from 'utils/cset';
 
 import BillboardJS from '@billboard.js/react';
 import bb, { bar } from 'billboard.js';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 const Taxonomy = (props) => {
   if (!props || !props.pageContext || !props.data) {
@@ -32,6 +32,8 @@ const Taxonomy = (props) => {
   };
 
   const classifications = allMongodbAiidprodClassifications.nodes;
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -104,12 +106,16 @@ const Taxonomy = (props) => {
       </div>
 
       <div className="mt-2">
-        <Trans>
+        <Trans i18nKey={'csetChartDeveloped'}>
           CSET has developed specific definitions for the underlined phrases that may differ from
-          other organizations’ definitions. As a result, other organizations may make different
+          other organizations&apos; definitions. As a result, other organizations may make different
           assessments on whether any particular AI incident is (or is not) AI harm. Details about
-          CSET’s definitions for AI harm can be found{' '}
-          <a href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy" target="_blank" rel="noreferrer">
+          CSET&apos;s definitions for AI harm can be found
+          <a
+            href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy"
+            target="_blank"
+            rel="noreferrer"
+          >
             here
           </a>
           .
@@ -117,7 +123,7 @@ const Taxonomy = (props) => {
       </div>
 
       <div className="mt-2">
-        <Trans>
+        <Trans i18nKey={'csetChartMail'}>
           Every incident is independently classified by two CSET annotators. Annotations are
           peer-reviewed and finally randomly selected for quality control ahead of publication.
           Despite this rigorous process, mistakes do happen, and readers are invited to{' '}
@@ -133,9 +139,21 @@ const Taxonomy = (props) => {
         attributeShortName={'AI System'}
         classifications={classifications}
         namespace={namespace}
+        titleDescription={t(
+          'Does the incident involve a system that meets the CSET definition for an AI system?'
+        )}
+        className="mt-8"
       />
       <GroupBarChart
         title="Basis for differential treatment"
+        titleDescription={t('If there was differential treatment, on what basis?')}
+        subtitle={
+          <Trans>
+            Differential treatment based upon a protected characteristic: This special interest
+            intangible harm covers bias and fairness issues concerning AI. However, the bias must be
+            associated with a group having a protected characteristic.
+          </Trans>
+        }
         attributeShortName={'Harm Distribution Basis'}
         groups={{
           'All AIID Incidents': {
@@ -150,18 +168,60 @@ const Taxonomy = (props) => {
         }}
         classifications={classifications}
         namespace={namespace}
+        className="mt-8"
       />
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'Sector of Deployment'}
         classifications={classifications}
         namespace={namespace}
+        titleDescription={t('In which sector did the incident occur?')}
+        className="mt-8"
       />
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'Autonomy Level'}
         classifications={classifications}
         namespace={namespace}
+        titleDescription={t(
+          'How autonomously did the technology operate at the time of the incident?'
+        )}
+        subtitle={
+          <>
+            <div>
+              <Trans>
+                Autonomy is an AI&apos;s capability to operate independently. Levels of autonomy
+                differ based on whether or not the AI makes independent decisions and the degree of
+                human oversight. The level of autonomy does not depend on the type of input the AI
+                receives, whether it is human- or machine-generated.
+              </Trans>
+              <div>
+                <Trans>Currently, CSET is annotating three levels of autonomy.</Trans>
+              </div>
+              <ul>
+                <li>
+                  <Trans>
+                    Level 1: the system operates independently with no simultaneous human oversight.
+                  </Trans>
+                </li>
+                <li>
+                  <Trans>
+                    Level 2: the system operates independently but with human oversight, where the
+                    system makes a decision or takes an action, but a human actively observes the
+                    behavior and can override the system in real-time.
+                  </Trans>
+                </li>
+                <li>
+                  <Trans>
+                    Level 3: the system provides inputs and suggested decisions or actions to a
+                    human that actively chooses to proceed with the AI&apos;s direction.
+                  </Trans>
+                </li>
+              </ul>
+            </div>
+          </>
+        }
+        className="mt-10"
       />
       <ul>
         <li>
@@ -181,15 +241,106 @@ const Taxonomy = (props) => {
         </li>
       </ul>
       {[
-        'Physical Objects',
-        'Entertainment Industry',
-        'Report, Test, or Study of data',
-        'Deployed',
-        'Producer Test in Controlled Conditions',
-        'Producer Test in Operational Conditions',
-        'User Test in Controlled Conditions',
-        'User Test in Operational Conditions',
-      ].map((attributeShortName) => (
+        {
+          attributeShortName: 'Physical Objects',
+          titleDescription: 'Did the incident occur in a domain with physical objects?',
+          subtitle: (
+            <>
+              <Trans>
+                Incidents that involve physical objects are more likely to have damage or injury.
+                However, AI systems that do not operate in a physical domain can still lead to harm.
+              </Trans>
+            </>
+          ),
+        },
+        {
+          attributeShortName: 'Entertainment Industry',
+          titleDescription: 'Did the incident occur in the entertainment industry?',
+          subtitle: (
+            <Trans>
+              AI systems used for entertainment are less likely to involve physical objects and
+              hence unlikely to be associated with damage, injury, or loss. Additionally, there is a
+              lower expectation for truthful information from entertainment, making detrimental
+              content less likely (but still possible).
+            </Trans>
+          ),
+        },
+        {
+          attributeShortName: 'Report, Test, or Study of data',
+          titleDescription:
+            'Was the incident about a report, test, or study of training data instead of the AI itself?',
+          subtitle: (
+            <Trans>
+              The quality of AI training and deployment data can potentially create harm or risks in
+              AI systems. However, an issue in the data does not necessarily mean the AI will cause
+              harm or increase the risk for harm. It is possible that developers or users apply
+              techniques and processes to mitigate issues with data.
+            </Trans>
+          ),
+        },
+        {
+          attributeShortName: 'Deployed',
+          titleDescription:
+            'Was the reported system (even if AI involvement is unknown) deployed or sold to users?',
+          subtitle: <></>,
+        },
+        {
+          attributeShortName: 'Producer Test in Controlled Conditions',
+          titleDescription:
+            'Was this a test or demonstration of an AI system done by developers, producers, or researchers (versus users) in controlled conditions?',
+          subtitle: (
+            <Trans>
+              AI tests or demonstrations by developers, producers, or researchers in controlled
+              environments are less likely to expose people, organizations, property, institutions,
+              or the natural environment to harm. Controlled environments may include situations
+              such as an isolated compute system, a regulatory sandbox, or an autonomous vehicle
+              testing range.
+            </Trans>
+          ),
+        },
+        {
+          attributeShortName: 'Producer Test in Operational Conditions',
+          titleDescription:
+            'Was this a test or demonstration of an AI system done by developers, producers, or researchers (versus users) in operational conditions?',
+          subtitle: (
+            <Trans>
+              Some AI systems undergo testing or demonstration in an operational environment.
+              Testing in operational environments still occurs before the system is deployed by
+              end-users. However, relative to controlled environments, operational environments try
+              to closely represent real-world conditions that affect use of the AI system.{' '}
+            </Trans>
+          ),
+        },
+        {
+          attributeShortName: 'User Test in Controlled Conditions',
+          titleDescription:
+            'Was this a test or demonstration of an AI system done by users in controlled conditions?',
+          subtitle: (
+            <Trans>
+              Sometimes, prior to deployment, the users will perform a test or demonstration of the
+              AI system. The involvement of a user (versus a developer, producer, or researcher)
+              increases the likelihood that harm can occur even if the AI system is being tested in
+              controlled environments because a user may not be as familiar with the functionality
+              or operation of the AI system.
+            </Trans>
+          ),
+        },
+        {
+          attributeShortName: 'User Test in Operational Conditions',
+          titleDescription:
+            'Was this a test or demonstration of an AI system done by users in operational conditions?',
+          subtitle: (
+            <Trans>
+              The involvement of a user (versus a developer, producer, or researcher) increases the
+              likelihood that harm can occur even if the AI system is being tested. Relative to
+              controlled environments, operational environments try to closely represent real-world
+              conditions and end-users that affect use of the AI system. Therefore, testing in an
+              operational environment typically poses a heightened risk of harm to people,
+              organizations, property, institutions, or the environment.
+            </Trans>
+          ),
+        },
+      ].map(({ attributeShortName, titleDescription, subtitle }) => (
         <GroupBarChart
           key={attributeShortName}
           title={`Domain questions – ${attributeShortName}`}
@@ -197,13 +348,25 @@ const Taxonomy = (props) => {
           attributeShortName={attributeShortName}
           classifications={classifications}
           namespace={namespace}
+          titleDescription={titleDescription}
+          subtitle={subtitle}
+          className="mt-8"
         />
       ))}
     </>
   );
 };
 
-function GroupBarChart({ groups, attributeShortName, classifications, namespace, title }) {
+function GroupBarChart({
+  groups,
+  attributeShortName,
+  classifications,
+  namespace,
+  title,
+  titleDescription = '',
+  subtitle = null,
+  className = '',
+}) {
   title ||= attributeShortName;
 
   for (const groupName in groups) {
@@ -276,7 +439,9 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
   };
 
   return (
-    <>
+    <div className={`${className || ''}`}>
+      <h2 className="text-center">{titleDescription}</h2>
+      {subtitle && <>{subtitle}</>}
       <div className="text-center">
         <h2 className="text-lg mb-0 mt-4">{title}</h2>
         (by Incident Count)
@@ -292,22 +457,24 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
               <div key={groupName}>
                 <h3 className="text-lg text-center">{groupName}</h3>
                 <table>
-                  <tr>
-                    <th className="p2 text-left">Category</th>
-                    <th className="p2">Count</th>
-                  </tr>
-                  {allValues.sort(byGroupOccurences).map((value) => (
-                    <tr key={value}>
-                      <td className="p2">{value}</td>
-                      <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
+                  <tbody>
+                    <tr>
+                      <th className="p2 text-left">Category</th>
+                      <th className="p2">Count</th>
                     </tr>
-                  ))}
+                    {allValues.sort(byGroupOccurences).map((value) => (
+                      <tr key={value}>
+                        <td className="p2">{value}</td>
+                        <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
             );
           })}
       </div>
-    </>
+    </div>
   );
 }
 
