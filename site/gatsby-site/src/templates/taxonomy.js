@@ -134,18 +134,26 @@ const Taxonomy = (props) => {
         </Trans>
       </div>
 
-      {/* <GroupBarChart
+      <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'AI System'}
         classifications={classifications}
         namespace={namespace}
-        titleDescription={t("Does the incident involve a system that meets the CSET definition for an AI system?")}
+        titleDescription={t(
+          'Does the incident involve a system that meets the CSET definition for an AI system?'
+        )}
         className="mt-8"
       />
       <GroupBarChart
         title="Basis for differential treatment"
-        titleDescription={t("If there was differential treatment, on what basis?")}
-        subtitle={<Trans>Differential treatment based upon a protected characteristic: This special interest intangible harm covers bias and fairness issues concerning AI. However, the bias must be associated with a group having a protected characteristic.</Trans>}
+        titleDescription={t('If there was differential treatment, on what basis?')}
+        subtitle={
+          <Trans>
+            Differential treatment based upon a protected characteristic: This special interest
+            intangible harm covers bias and fairness issues concerning AI. However, the bias must be
+            associated with a group having a protected characteristic.
+          </Trans>
+        }
         attributeShortName={'Harm Distribution Basis'}
         groups={{
           'All AIID Incidents': {
@@ -167,9 +175,9 @@ const Taxonomy = (props) => {
         attributeShortName={'Sector of Deployment'}
         classifications={classifications}
         namespace={namespace}
-        titleDescription={t("In which sector did the incident occur?")}
+        titleDescription={t('In which sector did the incident occur?')}
         className="mt-8"
-      /> */}
+      />
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'Autonomy Level'}
