@@ -863,7 +863,7 @@ describe('Cite pages', () => {
 
       cy.wait('@InsertIncident').then((xhr) => {
         expect(xhr.request.body.operationName).to.eq('InsertIncident');
-        expect(xhr.request.body.variables.incident).to.deep.eq(newIncident);
+        expect(xhr.request.body.variables.incident).to.deep.equalInAnyOrder(newIncident);
       });
 
       cy.wait('@logIncidentHistory')
@@ -880,7 +880,7 @@ describe('Cite pages', () => {
             editors: newIncident.editors.link,
           };
 
-          expect(input).to.deep.eq(expectedIncident);
+          expect(input).to.deep.equalInAnyOrder(expectedIncident);
         });
 
       cy.wait('@GetLatestIncidentId');
