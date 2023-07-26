@@ -41,7 +41,7 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
 
   const classificationsQuery = await graphql(`
     query Classifications {
-      allMongodbAiidprodClassifications(filter: { incident_id: { in: [${incidentIds}] } }) {
+      allMongodbAiidprodClassifications(filter: { incident_id: { in: [${incidentIds}] } }, limit: 9999999) {
         nodes {
           incident_id
           namespace
@@ -55,7 +55,25 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
     }
   `);
 
-  const classifications = classificationsQuery.data.allMongodbAiidprodClassifications.nodes;
+  const taxaQuery = await graphql(`
+    query Taxa {
+      allMongodbAiidprodTaxa(limit: 9999999) {
+        nodes {
+          namespace
+          field_list {
+            short_name
+            hide_search
+          }
+        }
+      }
+    }
+  `);
+
+  const classificationNodes = classificationsQuery.data.allMongodbAiidprodClassifications.nodes;
+
+  const classifications = classificationNodes.filter((c) => c.publish);
+
+  const taxa = taxaQuery.data.allMongodbAiidprodTaxa.nodes;
 
   for (const language of config.i18n.availableLanguages) {
     const pagePath = switchLocalizedPath({
@@ -69,6 +87,7 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
       context: {
         spatialIncidents,
         classifications,
+        taxa,
         csetClassifications,
       },
     });

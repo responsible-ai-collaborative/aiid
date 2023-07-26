@@ -6,11 +6,7 @@ const config = require('../../config');
 
 const { isCompleteReport } = require('./variants');
 
-// Reduce this if a subset of the data is needed
-// to fit within the Algolia tier limits.
-//
-// TODO: Put this configuration in a more convenient place.
-const LIMIT = Number.MAX_SAFE_INTEGER;
+const subset = !!process.env.ALGOLIA_SUBSET;
 
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
@@ -59,7 +55,8 @@ const getClassificationArray = ({ classification, taxonomy }) => {
         attribute.value_json &&
         attribute.value_json.length > 0 &&
         field?.display_type != 'long_string' &&
-        (classification.namespace != 'CSET' ||
+        !field?.hide_search &&
+        (classification.namespace != 'CSETv0' ||
           includedCSETAttributes.includes(attribute.short_name))
       ) {
         const value = JSON.parse(attribute.value_json);
@@ -182,7 +179,13 @@ class AlgoliaUpdater {
 
     const truncatedData = downloadData.map(truncate);
 
-    const smallData = truncatedData.slice(0, LIMIT);
+    const smallData = subset
+      ? truncatedData.filter((entry) =>
+          [1, 3, 4, 8, 9, 10, 18, 20, 23, 29, 47, 49, 52, 63, 70, 71, 77, 77, 82, 83, 86].includes(
+            entry.incident_id
+          )
+        )
+      : truncatedData;
 
     return smallData;
   };

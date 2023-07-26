@@ -1,24 +1,15 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { getClassificationValue } from 'utils/classifications';
-
-import AiidHelmet from 'components/AiidHelmet';
-import { isAiHarm } from 'utils/cset';
 
 import BillboardJS from '@billboard.js/react';
 import bb, { bar } from 'billboard.js';
-import { Trans } from 'react-i18next';
 
-const Taxonomy = (props) => {
-  if (!props || !props.pageContext || !props.data) {
-    return null;
-  }
+import AiidHelmet from 'components/AiidHelmet';
+import { getClassificationValue } from 'utils/classifications';
+import { isAiHarm } from 'utils/cset';
 
-  const { allMongodbAiidprodClassifications } = props.data;
-
-  const { namespace } = props.pageContext.taxonomy;
-
-  const metaTitle = `${namespace} Charts`;
+export default function CsetChartsPage({ data, ...props }) {
+  const metaTitle = 'CSET Charts';
 
   const allVsHarmDefinition = {
     'All AIID Incidents': {
@@ -31,7 +22,7 @@ const Taxonomy = (props) => {
     },
   };
 
-  const classifications = allMongodbAiidprodClassifications.nodes;
+  const classifications = data.allMongodbAiidprodClassifications.nodes;
 
   return (
     <>
@@ -42,97 +33,11 @@ const Taxonomy = (props) => {
       <div className={'titleWrapper'}>
         <h1>{metaTitle}</h1>
       </div>
-
-      <div>
-        <Trans i18nKey="csetCharts">
-          The CSET AI Harm Taxonomy for AIID is the second edition of the CSET incident taxonomy. It
-          characterizes the harms, entities, and technologies involved in AI incidents and the
-          circumstances of their occurrence. The charts below show select fields from the CSET AI
-          Harm Taxonomy for AIID. Details about each field can be found{' '}
-          <a
-            href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy"
-            target="_blank"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          . However, brief descriptions of the field are provided above each chart.
-        </Trans>
-      </div>
-
-      <div className="mt-2">
-        <Trans>The taxonomy provides the CSET definition for AI harm.</Trans>
-      </div>
-
-      <div className="mt-2">
-        <Trans>
-          AI harm has four elements which, once appropriately defined, enable the identification of
-          AI harm. These key components serve to distinguish harm from non-harm and AI harm from
-          non-AI harm. To be an AI harm, there must be:
-        </Trans>
-        <ul className="ml-4">
-          <li>
-            <Trans>
-              1) an <u>entity</u> that experienced
-            </Trans>
-          </li>
-          <li>
-            <Trans>
-              2) a <u>harm event</u> or <u>harm issue</u> that
-            </Trans>
-          </li>
-          <li>
-            <Trans>
-              3) can be <u>directly linked</u> to a consequence of the behavior of
-            </Trans>
-          </li>
-          <li>
-            <Trans>
-              4) an <u>AI system</u>.
-            </Trans>
-          </li>
-        </ul>
-        <Trans>All four elements need to be present in order for there to be AI harm.</Trans>
-      </div>
-
-      <div className="mt-2">
-        <Trans>
-          Not every incident in AIID meets this definition of AI harm. The below bar charts show the
-          annotated results for both all AIID incidents and incidents that meet the CSET definition
-          of AI harm.
-        </Trans>
-      </div>
-
-      <div className="mt-2">
-        <Trans>
-          CSET has developed specific definitions for the underlined phrases that may differ from
-          other organizations’ definitions. As a result, other organizations may make different
-          assessments on whether any particular AI incident is (or is not) AI harm. Details about
-          CSET’s definitions for AI harm can be found{' '}
-          <a href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy" target="_blank" rel="noreferrer">
-            here
-          </a>
-          .
-        </Trans>
-      </div>
-
-      <div className="mt-2">
-        <Trans>
-          Every incident is independently classified by two CSET annotators. Annotations are
-          peer-reviewed and finally randomly selected for quality control ahead of publication.
-          Despite this rigorous process, mistakes do happen, and readers are invited to{' '}
-          <a href="mailto:mia.hoffmann@georgetown.edu" target="_blank" rel="noreferrer">
-            report
-          </a>{' '}
-          any errors they might discover while browsing.
-        </Trans>
-      </div>
-
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'AI System'}
         classifications={classifications}
-        namespace={namespace}
+        namespace="CSETv1"
       />
       <GroupBarChart
         title="Basis for differential treatment"
@@ -149,19 +54,19 @@ const Taxonomy = (props) => {
           },
         }}
         classifications={classifications}
-        namespace={namespace}
+        namespace="CSETv1"
       />
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'Sector of Deployment'}
         classifications={classifications}
-        namespace={namespace}
+        namespace="CSETv1"
       />
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'Autonomy Level'}
         classifications={classifications}
-        namespace={namespace}
+        namespace="CSETv1"
       />
       <ul>
         <li>
@@ -196,12 +101,12 @@ const Taxonomy = (props) => {
           groups={allVsHarmDefinition}
           attributeShortName={attributeShortName}
           classifications={classifications}
-          namespace={namespace}
+          namespace="CSETv1"
         />
       ))}
     </>
   );
-};
+}
 
 function GroupBarChart({ groups, attributeShortName, classifications, namespace, title }) {
   title ||= attributeShortName;
@@ -311,28 +216,25 @@ function GroupBarChart({ groups, attributeShortName, classifications, namespace,
   );
 }
 
-export default Taxonomy;
-
 export const pageQuery = graphql`
-  query ($namespace: String!) {
-    allMongodbAiidprodClassifications(
-      filter: { namespace: { eq: $namespace }, incident_id: { lt: 1000 } }
-    ) {
+  query Classifications {
+    allMongodbAiidprodClassifications(limit: 9999999) {
       nodes {
+        incident_id
         namespace
         attributes {
           short_name
           value_json
         }
-        fields {
-          geocode {
-            geometry {
-              location {
-                lat
-                lng
-              }
-            }
-          }
+        publish
+      }
+    }
+    allMongodbAiidprodTaxa(limit: 9999999) {
+      nodes {
+        namespace
+        field_list {
+          short_name
+          hide_search
         }
       }
     }

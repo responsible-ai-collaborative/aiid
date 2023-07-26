@@ -135,14 +135,26 @@ describe('Cite pages', () => {
       .contains('Sean McGregor');
   });
 
-  maybeIt('Should show the taxonomy form of CSET', () => {
+  maybeIt('Should show the taxonomy form of CSETv0', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
 
-    cy.get('[data-cy="CSET"]').contains('Edit').click();
+    cy.get('[data-cy="CSETv0"]').contains('Edit').click();
 
-    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+    cy.get('[data-cy="CSETv0"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+
+    cy.get('@taxonomyForm').should('exist');
+  });
+
+  maybeIt('Should show the taxonomy form of CSETv1', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('[data-cy="CSETv1"]').contains('Edit').click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
   });
@@ -219,7 +231,7 @@ describe('Cite pages', () => {
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
-    cy.get('[data-cy="CSET"]').should('exist');
+    cy.get('[data-cy="CSETv0"]').should('exist');
 
     cy.get('[data-cy="CSETv1"]').should('not.exist');
   });

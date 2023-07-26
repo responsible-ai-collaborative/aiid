@@ -137,7 +137,7 @@
   "Home": "Accueil",
   "Add more info": "Ajouter plus d'informations",
   "Applied Taxonomies": "Taxonomies Appliquées",
-  "<0>Center for Security and Emerging Technology (CSET)</0>. This is a taxonomy detailing many attributes of AI incidents of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0>. Il s'agit d'une taxonomie détaillant de nombreux attributs des incidents d'IA pertinents pour la communauté des politiques publiques.",
+  "<0>Center for Security and Emerging Technology (CSETv1)</0>. This is a taxonomy detailing many attributes of AI incidents of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0>. Il s'agit d'une taxonomie détaillant de nombreux attributs des incidents d'IA pertinents pour la communauté des politiques publiques.",
   "In-Development Taxonomies": "Taxonomies en cours de développement",
   "<0>Resources</0>. This is a taxonomy that will associate incidents with resources that help understand, mitigate, and prevent incidents from recurring in the future.": "<0>Ressources</0>. Il s'agit d'une taxonomie qui associera les incidents à des ressources permettant de comprendre, d'atténuer et d'empêcher les incidents de se reproduire à l'avenir.",
   "About Taxonomies": "À propos des taxonomies",
@@ -255,5 +255,8 @@
   "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.": "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.",
   "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement",
   "You have successfully create Incident {{newIncidentId}}. <4>View incident</4>.": "Vous avez réussi à créer l'incident {{newIncidentId}}. <4>Voir l'incident</4>.",
-  "New Incident": "Nouvel Incident"
+  "New Incident": "Nouvel Incident",
+  "csetCharts": "La taxonomie CSET AI Harm pour AIID est la deuxième édition de la taxonomie CSET incident. Il caractérise les dommages, les entités et les technologies impliquées dans les incidents d'IA et les circonstances de leur apparition. Les graphiques ci-dessous montrent certains champs de la taxonomie CSET AI Harm pour AIID. Des détails sur chaque champ peuvent être trouvés <1>ici</1>. Cependant, de brèves descriptions du champ sont fournies au-dessus de chaque graphique.",
+  "The taxonomy provides the CSET definition for AI harm.": "La taxonomie fournit la définition CSET du préjudice causé par l'IA.",
+  "AI harm has four elements which, once appropriately defined, enable the identification of AI harm. These key components serve to distinguish harm from non-harm and AI harm from non-AI harm. To be an AI harm, there must be:": "Le préjudice causé par l'IA comporte quatre éléments qui, une fois correctement définis, permettent d'identifier le préjudice causé par l'IA. Ces composantes clés servent à distinguer le préjudice du non-préjudice et le préjudice causé par l'IA du préjudice non causé par l'IA. Pour être un préjudice causé par l'IA, il doit y avoir :"
 }
