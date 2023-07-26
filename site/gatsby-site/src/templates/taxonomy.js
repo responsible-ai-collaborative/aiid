@@ -457,16 +457,18 @@ function GroupBarChart({
               <div key={groupName}>
                 <h3 className="text-lg text-center">{groupName}</h3>
                 <table>
-                  <tr>
-                    <th className="p2 text-left">Category</th>
-                    <th className="p2">Count</th>
-                  </tr>
-                  {allValues.sort(byGroupOccurences).map((value) => (
-                    <tr key={value}>
-                      <td className="p2">{value}</td>
-                      <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
+                  <tbody>
+                    <tr>
+                      <th className="p2 text-left">Category</th>
+                      <th className="p2">Count</th>
                     </tr>
-                  ))}
+                    {allValues.sort(byGroupOccurences).map((value) => (
+                      <tr key={value}>
+                        <td className="p2">{value}</td>
+                        <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
             );
