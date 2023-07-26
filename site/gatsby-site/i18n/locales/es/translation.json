@@ -166,7 +166,7 @@
   "List of taxonomies": "Listado de Taxonomías",
   "This is the list of taxonomies supported in AIID": "Esta es la lista de taxonomías soportadas en AIID",
   "Applied Taxonomies": "Taxonomías aplicadas",
-  "<0>Center for Security and Emerging Technology (CSET)</0>. This is a taxonomy detailing many attributes of AI incidents of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0>. Esta es una taxonomía que detalla muchos atributos de incidentes de IA de relevancia para la comunidad de políticas públicas.",
+  "<0>Center for Security and Emerging Technology (CSETv1)</0>. This is a taxonomy detailing many attributes of AI incidents of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0>. Esta es una taxonomía que detalla muchos atributos de incidentes de IA de relevancia para la comunidad de políticas públicas.",
   "In-Development Taxonomies": "Taxonomías en desarrollo",
   "<0>Resources</0>. This is a taxonomy that will associate incidents with resources that help understand, mitigate, and prevent incidents from recurring in the future.": "Esta es una taxonomía que asociará incidentes con recursos que ayudarán a comprender, mitigar y evitar que los incidentes se repitan en el futuro.",
   "About Taxonomies": "Acerca de las taxonomías",

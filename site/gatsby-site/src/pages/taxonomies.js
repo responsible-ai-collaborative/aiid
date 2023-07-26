@@ -33,7 +33,7 @@ export default function Taxonomies({ data, ...props }) {
             <p>
               <Trans>
                 <LocalizedLink to="/taxonomy/csetv1">
-                  Center for Security and Emerging Technology (CSET)
+                  Center for Security and Emerging Technology (CSETv1)
                 </LocalizedLink>{' '}
                 The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of
                 relevance to the public policy community.

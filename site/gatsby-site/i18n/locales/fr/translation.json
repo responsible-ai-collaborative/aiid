@@ -137,7 +137,7 @@
   "Home": "Accueil",
   "Add more info": "Ajouter plus d'informations",
   "Applied Taxonomies": "Taxonomies Appliquées",
-  "<0>Center for Security and Emerging Technology (CSET)</0>. This is a taxonomy detailing many attributes of AI incidents of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0>. Il s'agit d'une taxonomie détaillant de nombreux attributs des incidents d'IA pertinents pour la communauté des politiques publiques.",
+  "<0>Center for Security and Emerging Technology (CSETv1)</0>. This is a taxonomy detailing many attributes of AI incidents of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0>. Il s'agit d'une taxonomie détaillant de nombreux attributs des incidents d'IA pertinents pour la communauté des politiques publiques.",
   "In-Development Taxonomies": "Taxonomies en cours de développement",
   "<0>Resources</0>. This is a taxonomy that will associate incidents with resources that help understand, mitigate, and prevent incidents from recurring in the future.": "<0>Ressources</0>. Il s'agit d'une taxonomie qui associera les incidents à des ressources permettant de comprendre, d'atténuer et d'empêcher les incidents de se reproduire à l'avenir.",
   "About Taxonomies": "À propos des taxonomies",
