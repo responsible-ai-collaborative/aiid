@@ -19,10 +19,7 @@
         "tags": ["variant:approved"],
         "text": "Example text",
         "submitters": ["Pablo Costa"],
-        "inputs_outputs": [
-          "Test input text without markdown",
-          "Test output text without markdown"
-        ],
+        "inputs_outputs": ["Test input text without markdown", "Test output text without markdown"],
         "title": "Variant #2311"
       },
       {

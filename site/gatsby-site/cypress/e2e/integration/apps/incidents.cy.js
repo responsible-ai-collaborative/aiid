@@ -1,11 +1,32 @@
 import incident from '../../../fixtures/incidents/incident112.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
-import users from '../../../fixtures/users/users.json';
 import { maybeIt } from '../../../support/utils';
+import { getUnixTime } from 'date-fns';
+import { transformIncidentData, deleteIncidentTypenames } from '../../../../src/utils/cite';
+import users from '../../../fixtures/users/users.json';
+const { gql } = require('@apollo/client');
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -153,7 +174,26 @@ describe('Incidents App', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 112,
+          },
+        },
+      }
+    );
+
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.contains('Update').scrollIntoView().click();
+
+    cy.wait(['@FindIncident112']);
 
     cy.wait('@UpsertYoutube')
       .its('request.body.variables.entity.entity_id')
@@ -165,38 +205,46 @@ describe('Incidents App', () => {
       .its('request.body.variables.entity.entity_id')
       .should('eq', 'test-deployer');
 
+    const updatedIncident = {
+      incident_id: 112,
+      title: 'Test title',
+      description: 'New description',
+      date: '2023-05-04',
+      editors: { link: ['619b47ea5eed5334edfa3bbc', '633b74dc95edb45d34a95895', user.userId] },
+      AllegedDeployerOfAISystem: { link: ['youtube', 'test-deployer'] },
+      AllegedDeveloperOfAISystem: { link: ['youtube'] },
+      AllegedHarmedOrNearlyHarmedParties: { link: ['google'] },
+      nlp_similar_incidents: [],
+      editor_similar_incidents: [4],
+      editor_dissimilar_incidents: [],
+      flagged_dissimilar_incidents: [],
+      epoch_date_modified: getUnixTime(now),
+      editor_notes: '',
+    };
+
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
-      expect(xhr.request.body.variables.set.title).to.eq('Test title');
-      expect(xhr.request.body.variables.set.description).to.eq('New description');
-      expect(xhr.request.body.variables.set.date).to.eq('2023-05-04');
-
-      expect(xhr.request.body.variables.set.editors.link).to.have.length(2);
-      expect(xhr.request.body.variables.set.editors.link).to.contain('63320ce63ec803072c9f529c');
-      expect(xhr.request.body.variables.set.editors.link).to.contain('633b74dc95edb45d34a95895');
-
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.have.length(2);
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain('youtube');
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.contain(
-        'test-deployer'
-      );
-
-      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.have.length(1);
-      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.contain('youtube');
-
-      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.have.length(
-        1
-      );
-      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.contain(
-        'google'
-      );
-
-      expect(xhr.request.body.variables.set.nlp_similar_incidents).to.have.length(0);
-      expect(xhr.request.body.variables.set.editor_similar_incidents).to.contain(4);
-      expect(xhr.request.body.variables.set.editor_dissimilar_incidents).to.have.length(0);
-      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).to.have.length(0);
+      expect(xhr.request.body.variables.set).to.deep.eq(updatedIncident);
     });
+
+    cy.wait('@logIncidentHistory', { timeout: 30000 })
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = deleteIncidentTypenames(
+          transformIncidentData(
+            {
+              ...incident.data.incident,
+              ...updatedIncident,
+            },
+            user
+          )
+        );
+
+        expectedIncident.modifiedBy = user.userId;
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
 
     cy.get('[data-cy="incident-form"]').should('not.exist');
 

@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { GatsbyImage as Img } from 'gatsby-plugin-image';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 import DateLabel from 'components/ui/DateLabel';
 
 function PrismicPostPreview({ post, latestPost = false }) {
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
-
-  if (!hydrated) return <></>;
-
   return (
     <>
       <div className="flex flex-col w-full h-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">

@@ -17,7 +17,11 @@ import Col from '../elements/Col';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import useLocalizePath from '../components/i18n/useLocalizePath';
 import { FIND_USER_SUBSCRIPTIONS, UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
-import { GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../graphql/incidents';
+import {
+  GET_LATEST_INCIDENT_ID,
+  INSERT_INCIDENT,
+  LOG_INCIDENT_HISTORY,
+} from '../graphql/incidents';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { getTaxonomies } from 'utils/cite';
@@ -29,6 +33,7 @@ import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { getUnixTime } from 'date-fns';
 
 function CiteTemplate({
   incident,
@@ -136,6 +141,8 @@ function CiteTemplate({
 
   const [insertIncidentMutation] = useMutation(INSERT_INCIDENT);
 
+  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
+
   const subscribeToNewReports = async () => {
     if (!isSubscribed) {
       if (isRole('subscriber')) {
@@ -227,6 +234,19 @@ function CiteTemplate({
       };
 
       await insertIncidentMutation({ variables: { incident: newIncident } });
+
+      // Set the user as the last modifier
+      newIncident.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
+
+      newIncident.epoch_date_modified = getUnixTime(new Date());
+
+      newIncident.AllegedDeployerOfAISystem = newIncident.AllegedDeployerOfAISystem.link;
+      newIncident.AllegedDeveloperOfAISystem = newIncident.AllegedDeveloperOfAISystem.link;
+      newIncident.AllegedHarmedOrNearlyHarmedParties =
+        newIncident.AllegedHarmedOrNearlyHarmedParties.link;
+      newIncident.editors = newIncident.editors.link;
+
+      await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
 
       await refetchLastestIncidentId();
 

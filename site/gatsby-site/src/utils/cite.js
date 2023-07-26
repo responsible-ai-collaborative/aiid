@@ -124,3 +124,76 @@ export const sortIncidentsByDatePublished = (incidentReports) => {
     }
   });
 };
+
+// Transforms the data from the graphql query into a History_incidentInsertInput format
+export const transformIncidentData = (incident, user) => {
+  const result = {
+    ...incident,
+    __typename: undefined,
+  };
+
+  const {
+    AllegedDeployerOfAISystem,
+    AllegedDeveloperOfAISystem,
+    AllegedHarmedOrNearlyHarmedParties,
+    reports,
+    embedding,
+    nlp_similar_incidents,
+    tsne,
+    editors,
+  } = incident;
+
+  if (AllegedDeployerOfAISystem) {
+    result.AllegedDeployerOfAISystem = AllegedDeployerOfAISystem.link
+      ? AllegedDeployerOfAISystem.link
+      : AllegedDeployerOfAISystem.map((e) => e.entity_id);
+  }
+
+  if (AllegedDeveloperOfAISystem) {
+    result.AllegedDeveloperOfAISystem = AllegedDeveloperOfAISystem.link
+      ? AllegedDeveloperOfAISystem.link
+      : AllegedDeveloperOfAISystem.map((e) => e.entity_id);
+  }
+
+  if (AllegedHarmedOrNearlyHarmedParties) {
+    result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.link
+      ? AllegedHarmedOrNearlyHarmedParties.link
+      : AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
+  }
+
+  result.reports = reports ? reports.map((report) => report.report_number) : [];
+  result.nlp_similar_incidents = nlp_similar_incidents
+    ? nlp_similar_incidents.map((nlp) => {
+        return { ...nlp, __typename: undefined };
+      })
+    : [];
+
+  if (embedding) {
+    result.embedding = { ...embedding, __typename: undefined };
+  }
+
+  if (tsne) {
+    result.tsne = { ...tsne, __typename: undefined };
+  }
+
+  if (editors) {
+    result.editors = editors.link ? editors.link : editors.map((editor) => editor.userId);
+  }
+
+  // Set the user as the last modifier
+  result.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
+
+  return result;
+};
+
+// Deletes the __typename field from the incident object
+export const deleteIncidentTypenames = (incident) => {
+  delete incident.__typename;
+  delete incident.embedding?.__typename;
+  delete incident.tsne?.__typename;
+  incident.nlp_similar_incidents?.forEach((x) => {
+    delete x.__typename;
+  });
+
+  return incident;
+};

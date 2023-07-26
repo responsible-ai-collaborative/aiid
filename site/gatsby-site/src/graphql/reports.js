@@ -5,18 +5,35 @@ export const FIND_REPORT = gql`
     report(query: $query) {
       url
       title
+      description
       authors
       submitters
       date_published
       date_downloaded
+      date_modified
+      date_submitted
+      epoch_date_downloaded
+      epoch_date_modified
+      epoch_date_published
+      epoch_date_submitted
       image_url
+      cloudinary_id
       text
       plain_text
+      source_domain
       tags
       flag
       report_number
       editor_notes
       language
+      is_incident_report
+      user {
+        userId
+      }
+      embedding {
+        from_text_hash
+        vector
+      }
     }
   }
 `;
@@ -107,6 +124,14 @@ export const LINK_REPORTS_TO_INCIDENTS = gql`
       reports {
         report_number
       }
+    }
+  }
+`;
+
+export const LOG_REPORT_HISTORY = gql`
+  mutation logReportHistory($input: History_reportInsertInput!) {
+    logReportHistory(input: $input) {
+      report_number
     }
   }
 `;
