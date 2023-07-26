@@ -110,42 +110,47 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const columns = Object.keys(categoryCounts[axis])
-                .map((category) => [category, categoryCounts[axis][category]])
-                .sort((a, b) =>
-                  a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
-                );
+              if (categoryCounts[axis]) {
+                const columns = Object.keys(categoryCounts[axis])
+                  .map((category) => [category, categoryCounts[axis][category]])
+                  .sort((a, b) =>
+                    a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
+                  );
 
-              const options = {
-                data: {
-                  columns,
-                  type: donut(),
-                  onclick: (column) => {
-                    if (column.name == 'All Others') {
-                      window.open('/apps/discover');
-                    } else {
-                      window.open(
-                        '/apps/discover?classifications=' + [namespace, axis, column.name].join(':')
-                      );
-                    }
+                const options = {
+                  data: {
+                    columns,
+                    type: donut(),
+                    onclick: (column) => {
+                      if (column.name == 'All Others') {
+                        window.open('/apps/discover');
+                      } else {
+                        window.open(
+                          '/apps/discover?classifications=' +
+                            [namespace, axis, column.name].join(':')
+                        );
+                      }
+                    },
                   },
-                },
-                interaction: {
-                  enabled: false,
-                },
-              };
+                  interaction: {
+                    enabled: false,
+                  },
+                };
 
-              return (
-                <div key={index} className="h-96">
-                  <h3 className="text-base text-center">{axis}</h3>
-                  <LocalizedLink
-                    to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
-                    className="h-96"
-                  >
-                    <BillboardJS bb={bb} options={{ ...options }} />
-                  </LocalizedLink>
-                </div>
-              );
+                return (
+                  <div key={index} className="h-96">
+                    <h3 className="text-base text-center">{axis}</h3>
+                    <LocalizedLink
+                      to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
+                      className="h-96"
+                    >
+                      <BillboardJS bb={bb} options={{ ...options }} />
+                    </LocalizedLink>
+                  </div>
+                );
+              } else {
+                return <></>;
+              }
             })}
         </Carousel>
       </div>

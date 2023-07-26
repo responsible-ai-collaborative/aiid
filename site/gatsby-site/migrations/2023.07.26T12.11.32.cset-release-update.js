@@ -19,7 +19,27 @@ exports.up = async ({ context: { client } }) => {
   randomly selected for quality control ahead of publication. 
   Despite this rigorous process, mistakes do happen, and readers 
   are invited to report any errors they might discover while 
-  browsing. The first version of the CSET taxonomy is available [here](/taxonomy/csetv0/).
+  browsing.
+`),
+      },
+    }
+  );
+  await taxaCollection.updateOne(
+    { namespace: 'CSETv1' },
+    {
+      $set: {
+        description: handleWhitespace(`
+# What is the CSET Taxonomy?
+
+The CSET AI Harm Taxonomy for AIID is the second edition of the 
+CSET incident taxonomy. It characterizes the harms, entities and 
+technologies involved in AI incidents and the circumstances of 
+their occurrence. Every incident is independently classified by 
+two CSET annotators. Annotations are peer reviewed and finally 
+randomly selected for quality control ahead of publication. 
+Despite this rigorous process, mistakes do happen, and readers 
+are invited to report any errors they might discover while 
+browsing. The first version of the CSET taxonomy is available [here](/taxonomy/csetv0/).
 `),
       },
     }
