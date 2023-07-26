@@ -7,6 +7,7 @@ import { isAiHarm } from 'utils/cset';
 
 import BillboardJS from '@billboard.js/react';
 import bb, { bar } from 'billboard.js';
+import { Trans } from 'react-i18next';
 
 const Taxonomy = (props) => {
   if (!props || !props.pageContext || !props.data) {
@@ -40,6 +41,44 @@ const Taxonomy = (props) => {
 
       <div className={'titleWrapper'}>
         <h1>{metaTitle}</h1>
+      </div>
+
+      <div>
+        <Trans i18nKey="csetCharts">
+          The CSET AI Harm Taxonomy for AIID is the second edition of the CSET incident taxonomy. It
+          characterizes the harms, entities, and technologies involved in AI incidents and the
+          circumstances of their occurrence. The charts below show select fields from the CSET AI
+          Harm Taxonomy for AIID. Details about each field can be found{' '}
+          <a href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy" target="_blank" rel="noreferrer">
+            here
+          </a>
+          . However, brief descriptions of the field are provided above each chart.
+        </Trans>
+      </div>
+
+      <div className="mt-2">
+        <Trans>The taxonomy provides the CSET definition for AI harm.</Trans>
+      </div>
+
+      <div className="mt-2">
+        AI harm has four elements which, once appropriately defined, enable the identification of AI
+        harm. These key components serve to distinguish harm from non-harm and AI harm from non-AI
+        harm. To be an AI harm, there must be:
+        <ul>
+          <li>
+            1) an <u>entity</u> that experienced
+          </li>
+          <li>
+            2) a <u>harm event</u> or <u>harm issue</u> that
+          </li>
+          <li>
+            3) can be <u>directly linked</u> to a consequence of the behavior of
+          </li>
+          <li>
+            4) an <u>AI system</u>.
+          </li>
+        </ul>
+        All four elements need to be present in order for there to be AI harm.
       </div>
       <GroupBarChart
         groups={allVsHarmDefinition}
