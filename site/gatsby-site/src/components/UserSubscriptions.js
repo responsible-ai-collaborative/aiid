@@ -122,8 +122,8 @@ const UserSubscriptions = () => {
               {incidentSubscriptions
                 .map((subscription) => ({
                   id: subscription._id,
-                  incidentId: subscription.incident_id.incident_id,
-                  incidentTitle: subscription.incident_id.title,
+                  incidentId: subscription?.incident_id?.incident_id,
+                  incidentTitle: subscription?.incident_id?.title,
                 }))
                 .sort((a, b) => a.incidentId - b.incidentId) // sort subscriptions by Incident ID ascendant
                 .map((subscription, index) => (
