@@ -108,7 +108,11 @@ const Taxonomy = (props) => {
           CSET has developed specific definitions for the underlined phrases that may differ from
           other organizations’ definitions. As a result, other organizations may make different
           assessments on whether any particular AI incident is (or is not) AI harm. Details about
-          CSET’s definitions for AI harm can be found here.
+          CSET’s definitions for AI harm can be found{' '}
+          <a href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy" target="_blank" rel="noreferrer">
+            here
+          </a>
+          .
         </Trans>
       </div>
 
@@ -116,8 +120,11 @@ const Taxonomy = (props) => {
         <Trans>
           Every incident is independently classified by two CSET annotators. Annotations are
           peer-reviewed and finally randomly selected for quality control ahead of publication.
-          Despite this rigorous process, mistakes do happen, and readers are invited to report any
-          errors they might discover while browsing.
+          Despite this rigorous process, mistakes do happen, and readers are invited to{' '}
+          <a href="mailto:mia.hoffmann@georgetown.edu" target="_blank" rel="noreferrer">
+            report
+          </a>{' '}
+          any errors they might discover while browsing.
         </Trans>
       </div>
 

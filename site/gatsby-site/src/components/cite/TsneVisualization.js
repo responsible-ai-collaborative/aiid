@@ -39,8 +39,6 @@ export default function TsneVisualization({
       if (attributeIsNotEmpty(attribute)) {
         const axis = classification.namespace + '::' + attribute.short_name;
 
-        console.log(`attribute.short_name`, attribute.short_name);
-
         const field = taxonomy.field_list.find((field) => {
           return field.short_name == attribute.short_name;
         });
