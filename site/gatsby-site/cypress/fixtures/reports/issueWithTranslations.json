@@ -18,8 +18,8 @@
             "text": "## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.",
             "plain_text": "Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.",
             "title": "Remove YouTube Kids app until it eliminates its inappropriate content",
+            "description": "Description Remove YouTube Kids app until it eliminates its inappropriate content",
             "url": "https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content",
-            "nlp_similar_incidents": [],
             "editor_notes": "",
             "language": "en",
             "translations_es": {
@@ -37,6 +37,8 @@
                 "title": "",
                 "text": ""
             },
+            "date_modified": "2023-01-01",
+            "epoch_date_modified": 1672531200,
             "is_incident_report": false
         }
     }

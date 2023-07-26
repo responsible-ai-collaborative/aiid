@@ -253,6 +253,20 @@ export const FIND_FULL_INCIDENT = gql`
         from_reports
         vector
       }
+      editor_notes
+      epoch_date_modified
+      tsne {
+        x
+        y
+      }
+    }
+  }
+`;
+
+export const LOG_INCIDENT_HISTORY = gql`
+  mutation logIncidentHistory($input: History_incidentInsertInput!) {
+    logIncidentHistory(input: $input) {
+      incident_id
     }
   }
 `;

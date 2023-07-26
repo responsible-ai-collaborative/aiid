@@ -18,6 +18,21 @@
             "search": true
         },
         {
+            "name": "incident_editor",
+            "apply_when": {
+                "%%user.custom_data.roles": "incident_editor"
+            },
+            "document_filters": {
+                "write": true,
+                "read": true
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true
+        },
+        {
             "name": "readOwnWriteOwn",
             "apply_when": {},
             "document_filters": {
