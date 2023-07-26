@@ -2,7 +2,7 @@ const { gql } = require('@apollo/client');
 
 describe('The CSET taxonomy page', () => {
   const urls = [
-    // { namespace: 'CSETv0', url: '/taxonomy/csetv0' },
+    { namespace: 'CSETv0', url: '/taxonomy/csetv0' },
     { namespace: 'CSETv1', url: '/taxonomy/csetv1' },
   ];
 

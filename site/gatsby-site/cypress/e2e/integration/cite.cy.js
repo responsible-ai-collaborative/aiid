@@ -114,7 +114,7 @@ describe('Cite pages', () => {
       .contains('Sean McGregor');
   });
 
-  maybeIt('Should show the taxonomy form of CSET', () => {
+  maybeIt('Should show the taxonomy form of CSETv0', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
@@ -122,6 +122,18 @@ describe('Cite pages', () => {
     cy.get('[data-cy="CSETv0"]').contains('Edit').click();
 
     cy.get('[data-cy="CSETv0"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+
+    cy.get('@taxonomyForm').should('exist');
+  });
+
+  maybeIt('Should show the taxonomy form of CSETv1', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('[data-cy="CSETv1"]').contains('Edit').click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
   });
