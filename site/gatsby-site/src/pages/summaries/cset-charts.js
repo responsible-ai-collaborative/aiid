@@ -108,61 +108,6 @@ export default function CsetChartsPage({ data, ...props }) {
   );
 }
 
-// function BarChart({ attributeShortName, classifications, namespace, title, filter = () => true }) {
-//   title ||= attributeShortName;
-
-//   let allValues = new Set();
-
-//   const valuesCount = {};
-
-//   for (const classification of classifications) {
-//     if (classification.namespace != namespace) continue;
-
-//     const baseValue = getClassificationValue(classification, attributeShortName);
-
-//     const values = Array.isArray(baseValue) ? baseValue : [baseValue];
-
-//     for (const value of values) {
-//       if (value) allValues.add(value);
-
-//       if (filter(classification)) {
-//         valuesCount[value] ||= 0;
-//         valuesCount[value] += 1;
-//       }
-//     }
-//   }
-
-//   allValues = Array.from(allValues);
-
-//   const options = {
-//     data: {
-//       columns: allValues.map((v) => [v, valuesCount[v]]),
-//       type: bar(),
-//     },
-//     axis: {
-//       x: {
-//         tick: {
-//           show: false,
-//           text: { show: false },
-//         },
-//       },
-//     },
-//     tooltip: {
-//       show: false,
-//     },
-//   };
-
-//   return (
-//     <>
-//       <div className="text-center">
-//         <h2 className="text-lg mb-0 mt-4">{title}</h2>
-//         (by Incident Count)
-//       </div>
-//       <BillboardJS bb={bb} options={{ ...options }} />
-//     </>
-//   );
-// }
-
 function GroupBarChart({ groups, attributeShortName, classifications, namespace, title }) {
   title ||= attributeShortName;
 
