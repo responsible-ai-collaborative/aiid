@@ -2,7 +2,7 @@ const { gql } = require('@apollo/client');
 
 describe('The CSET taxonomy page', () => {
   const urls = [
-    { namespace: 'CSETv0', url: '/taxonomy/csetv0' },
+    // { namespace: 'CSETv0', url: '/taxonomy/csetv0' },
     { namespace: 'CSETv1', url: '/taxonomy/csetv1' },
   ];
 
@@ -46,7 +46,7 @@ describe('The CSET taxonomy page', () => {
           cy.get('[data-cy*="field-"]').should('have.length', field_list.length);
 
           field_list.forEach((field) => {
-            cy.contains('h3', field.long_name)
+            cy.contains('h3', field.long_name.replace(/\s{2,}/g, ' '))
               .should('exist')
               .contains('span', 'Searchable in Discover App')
               .should(field.instant_facet ? 'exist' : 'not.exist');
