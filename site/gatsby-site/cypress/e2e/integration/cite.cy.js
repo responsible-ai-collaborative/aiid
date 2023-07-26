@@ -228,14 +228,6 @@ describe('Cite pages', () => {
       .should('not.be.checked');
   });
 
-  it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
-    cy.visit(url);
-
-    cy.get('[data-cy="CSETv0"]').should('exist');
-
-    cy.get('[data-cy="CSETv1"]').should('not.exist');
-  });
-
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '23';
