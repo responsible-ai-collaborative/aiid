@@ -49,7 +49,11 @@ const Taxonomy = (props) => {
           characterizes the harms, entities, and technologies involved in AI incidents and the
           circumstances of their occurrence. The charts below show select fields from the CSET AI
           Harm Taxonomy for AIID. Details about each field can be found{' '}
-          <a href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/georgetown-cset/CSET-AIID-harm-taxonomy"
+            target="_blank"
+            rel="noreferrer"
+          >
             here
           </a>
           . However, brief descriptions of the field are provided above each chart.
@@ -61,25 +65,62 @@ const Taxonomy = (props) => {
       </div>
 
       <div className="mt-2">
-        AI harm has four elements which, once appropriately defined, enable the identification of AI
-        harm. These key components serve to distinguish harm from non-harm and AI harm from non-AI
-        harm. To be an AI harm, there must be:
-        <ul>
+        <Trans>
+          AI harm has four elements which, once appropriately defined, enable the identification of
+          AI harm. These key components serve to distinguish harm from non-harm and AI harm from
+          non-AI harm. To be an AI harm, there must be:
+        </Trans>
+        <ul className="ml-4">
           <li>
-            1) an <u>entity</u> that experienced
+            <Trans>
+              1) an <u>entity</u> that experienced
+            </Trans>
           </li>
           <li>
-            2) a <u>harm event</u> or <u>harm issue</u> that
+            <Trans>
+              2) a <u>harm event</u> or <u>harm issue</u> that
+            </Trans>
           </li>
           <li>
-            3) can be <u>directly linked</u> to a consequence of the behavior of
+            <Trans>
+              3) can be <u>directly linked</u> to a consequence of the behavior of
+            </Trans>
           </li>
           <li>
-            4) an <u>AI system</u>.
+            <Trans>
+              4) an <u>AI system</u>.
+            </Trans>
           </li>
         </ul>
-        All four elements need to be present in order for there to be AI harm.
+        <Trans>All four elements need to be present in order for there to be AI harm.</Trans>
       </div>
+
+      <div className="mt-2">
+        <Trans>
+          Not every incident in AIID meets this definition of AI harm. The below bar charts show the
+          annotated results for both all AIID incidents and incidents that meet the CSET definition
+          of AI harm.
+        </Trans>
+      </div>
+
+      <div className="mt-2">
+        <Trans>
+          CSET has developed specific definitions for the underlined phrases that may differ from
+          other organizations’ definitions. As a result, other organizations may make different
+          assessments on whether any particular AI incident is (or is not) AI harm. Details about
+          CSET’s definitions for AI harm can be found here.
+        </Trans>
+      </div>
+
+      <div className="mt-2">
+        <Trans>
+          Every incident is independently classified by two CSET annotators. Annotations are
+          peer-reviewed and finally randomly selected for quality control ahead of publication.
+          Despite this rigorous process, mistakes do happen, and readers are invited to report any
+          errors they might discover while browsing.
+        </Trans>
+      </div>
+
       <GroupBarChart
         groups={allVsHarmDefinition}
         attributeShortName={'AI System'}
