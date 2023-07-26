@@ -32,8 +32,6 @@ export default function TsneVisualization({
 
   const attributesByAxis = {};
 
-  console.log(`taxa`, taxa);
-
   for (const classification of classificationsWithAttributes) {
     const taxonomy = taxa.find((taxonomy) => taxonomy.namespace == classification.namespace);
 
