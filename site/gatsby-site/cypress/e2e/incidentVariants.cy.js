@@ -180,7 +180,7 @@ describe('Variants pages', () => {
     getVariants((variants) => {
       const variant = variants[0];
 
-      const today = format(new Date(), 'yyyy-MM-dd');
+      const now = new Date();
 
       cy.conditionalIntercept(
         '**/graphql',
@@ -194,8 +194,8 @@ describe('Variants pages', () => {
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-          req.body.variables.set.date_modified == today &&
-          req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
           data: {
@@ -222,6 +222,8 @@ describe('Variants pages', () => {
         cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
         cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
         cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
+
+        cy.clock(now);
 
         cy.get('[data-cy=approve-variant-btn]').click();
 
@@ -255,7 +257,7 @@ describe('Variants pages', () => {
     getVariants((variants) => {
       const variant = variants[0];
 
-      const today = format(new Date(), 'yyyy-MM-dd');
+      const now = new Date();
 
       cy.conditionalIntercept(
         '**/graphql',
@@ -269,8 +271,8 @@ describe('Variants pages', () => {
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
-          req.body.variables.set.date_modified == today &&
-          req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
           data: {
@@ -297,6 +299,8 @@ describe('Variants pages', () => {
         cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
         cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
         cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
+
+        cy.clock(now);
 
         cy.get('[data-cy=reject-variant-btn]').click();
 
@@ -330,7 +334,7 @@ describe('Variants pages', () => {
     getVariants((variants) => {
       const variant = variants[0];
 
-      const today = format(new Date(), 'yyyy-MM-dd');
+      const now = new Date();
 
       cy.conditionalIntercept(
         '**/graphql',
@@ -344,8 +348,8 @@ describe('Variants pages', () => {
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === variant.inputs_outputs[1] &&
           req.body.variables.set.tags == undefined &&
-          req.body.variables.set.date_modified == today &&
-          req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
           data: {
@@ -371,6 +375,8 @@ describe('Variants pages', () => {
         cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
         cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
         cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
+
+        cy.clock(now);
 
         cy.get('[data-cy=save-variant-btn]').click();
 

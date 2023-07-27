@@ -216,6 +216,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
       reports: [mongodbAiidprodReports] @link(by: "report_number")
+      epoch_date_modified: Int
     }
     
     type mongodbAiidprodSubmissions implements Node {
