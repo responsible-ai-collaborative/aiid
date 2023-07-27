@@ -32,17 +32,17 @@ export default function Taxonomies({ data, ...props }) {
           <li>
             <p>
               <Trans>
-                <LocalizedLink to="/taxonomy/cset">
-                  Center for Security and Emerging Technology (CSET)
-                </LocalizedLink>
-                . This is a taxonomy detailing many attributes of AI incidents of relevance to the
-                public policy community.
+                <LocalizedLink to="/taxonomy/csetv1">
+                  Center for Security and Emerging Technology (CSETv1)
+                </LocalizedLink>{' '}
+                The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of
+                relevance to the public policy community.
               </Trans>
             </p>
             <TaxonomyGraphCarousel
               data={data}
-              namespace="CSET"
-              axes={['Harm Distribution Basis', 'Harm Type', 'System Developer', 'Severity']}
+              namespace="CSETv1"
+              axes={['Harm Distribution Basis', 'Sector of Deployment']}
             />
           </li>
           <li>
