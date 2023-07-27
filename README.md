@@ -690,6 +690,13 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
         "entityId": "openai",
     }
     ```
+- **Submission Promoted**: Users that submit a new Incident Report are automatically subscribed to its promotion. Once the submission has been approved by an editor, the user will recieve an email informing that the submission is now an incident/issue/report.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c",
+        "type": "submission-promoted"
+    }
+    ```
 
 These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
 
@@ -714,7 +721,7 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
-Email notifications to New Incidents (subscription type **New Incident**) and Incident updates (subscription type **Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
+Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
 And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
 
@@ -752,6 +759,14 @@ And finally, as part of the site build process, we processed all pending notific
         "incident_id": 374,
         "entity_id": "openai",
         "isUpdate": true,
+        "processed": false
+    }
+    ```
+- **Submission Promoted**
+    ```
+    {
+        "type": "submission-promoted",
+        "incident_id": 374,
         "processed": false
     }
     ```
