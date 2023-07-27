@@ -195,7 +195,7 @@ const Header = ({ location = null }) => {
                   : 'bg-inherit block md:hidden border-none relative z-10 pb-0'
               }
             >
-              <Sidebar />
+              <Sidebar setNavCollapsed={setNavCollapsed} />
             </div>
           </nav>
         );
