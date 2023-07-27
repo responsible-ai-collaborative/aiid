@@ -105,3 +105,95 @@ JSON:
   }
 }
 ```
+
+
+###  2. Footer custom type
+
+name: `footer`
+
+JSON:
+```
+{
+  "Main" : {
+    "title" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading6",
+        "label" : "Title"
+      }
+    },
+    "order" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading6",
+        "label" : "Order"
+      }
+    },
+    "items" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "item_title" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "Title"
+            }
+          },
+          "item_url" : {
+            "type" : "Link",
+            "config" : {
+              "label" : "Item URL",
+              "select" : null,
+              "allowTargetBlank" : true,
+              "placeholder" : "External URL (outside site)"
+            }
+          },
+          "path" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "path",
+              "placeholder" : "Path inside site example: /about"
+            }
+          }
+        },
+        "label" : "Items"
+      }
+    },
+    "social" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "name" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "name",
+              "placeholder" : "twitter/github/facebook/instagram/linkedin"
+            }
+          },
+          "url" : {
+            "type" : "Link",
+            "config" : {
+              "allowTargetBlank" : true,
+              "label" : "url",
+              "placeholder" : "URL to your social media account",
+              "select" : null
+            }
+          },
+          "path" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "heading6",
+              "label" : "path",
+              "placeholder" : "URL to inside the site"
+            }
+          }
+        },
+        "label" : "social"
+      }
+    }
+  }
+}
+```
