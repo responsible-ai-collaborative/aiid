@@ -20,7 +20,7 @@
     "@graphql-tools/schema": "^8.3.3",
     "@graphql-tools/wrap": "^8.4.6",
     "@mdx-js/react": "^2.3.0",
-    "@postlight/mercury-parser": "^2.2.1",
+    "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
     "algoliasearch": "^4.10.5",
     "async": "^3.2.2",
@@ -82,7 +82,7 @@
     "rehype-truncate": "^1.2.2",
     "remark": "^13.0.0",
     "sass": "^1.54.5",
-    "sharp": "^0.28.3",
+    "sharp": "^0.32.4",
     "slugify": "^1.6.5",
     "stemmer": "^1.0.5",
     "stopword": "^1.0.7",
@@ -108,7 +108,7 @@
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
-    "@netlify/plugin-gatsby": "^3.6.2",
+    "@netlify/plugin-gatsby": "^3.7.0",
     "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.7",
     "babel-eslint": "^10.1.0",
@@ -145,5 +145,9 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "overrides": {
+    "minimist": "1.2.8",
+    "d3-color": "3.1.0"
   }
 }
