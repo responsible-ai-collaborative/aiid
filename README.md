@@ -333,7 +333,7 @@ This project uses Prismic to fetch page content.
 3. Give your repository a name and choose `gatsby` in the technology dropdown
 4. Choose your plan (if you only need one user, the free plan is enough)
 5. Click `Create repository`
-6. Create a new token in Settings > API & Security > Content API tab > Permanent access tokens > Save value for later
+6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
 7. Create a new custom type token in Settings > API & Security > Custom types API tab > Tokens > Add new app name and create token > Save value for later
 
 #### Adding the Prismic content types
