@@ -8,8 +8,8 @@ import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
-import { useLogHistoryContext } from 'contexts/LogHistoryContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const addToast = useToastContext();
 
-  const { logIncidentHistory } = useLogHistoryContext();
+  const { logIncidentHistory } = useLogIncidentHistory();
 
   const flagIncident = async () => {
     const now = new Date();

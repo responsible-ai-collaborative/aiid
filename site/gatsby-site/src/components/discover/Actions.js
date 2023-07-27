@@ -15,7 +15,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
-import { useLogHistoryContext } from 'contexts/LogHistoryContext';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import { format, getUnixTime } from 'date-fns';
 
 function FlagModalContent({ reportNumber }) {
@@ -27,7 +27,7 @@ function FlagModalContent({ reportNumber }) {
 
   const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
 
-  const { logReportHistory } = useLogHistoryContext();
+  const { logReportHistory } = useLogReportHistory();
 
   const flagReport = async () => {
     const now = new Date();

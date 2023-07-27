@@ -14,7 +14,7 @@ import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
-import { useLogHistoryContext } from 'contexts/LogHistoryContext';
+import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
@@ -39,7 +39,7 @@ function EditCitePage(props) {
 
   const addToast = useToastContext();
 
-  const { logIncidentHistory } = useLogHistoryContext();
+  const { logIncidentHistory } = useLogIncidentHistory();
 
   const updateSuccessToast = ({ incidentId }) => ({
     message: (

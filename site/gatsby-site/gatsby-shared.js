@@ -4,7 +4,6 @@ import { QueryParamProvider } from 'use-query-params';
 import { UserContextProvider } from 'contexts/userContext';
 import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from 'contexts/ToastContext';
-import { LogHistoryContextProvider } from 'contexts/LogHistoryContext';
 import { Script } from 'gatsby';
 
 export const wrapPageElement = ({ element }) => {
@@ -22,9 +21,7 @@ export const wrapPageElement = ({ element }) => {
   return (
     <QueryParamProvider history={history} location={location}>
       <MenuContextProvider>
-        <UserContextProvider>
-          <LogHistoryContextProvider>{element}</LogHistoryContextProvider>
-        </UserContextProvider>
+        <UserContextProvider>{element}</UserContextProvider>
       </MenuContextProvider>
     </QueryParamProvider>
   );

@@ -2,8 +2,8 @@ import React from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import { useUserContext } from 'contexts/userContext';
-import { useLogHistoryContext } from 'contexts/LogHistoryContext';
 import { Spinner, Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,
@@ -86,7 +86,7 @@ function EditCitePage(props) {
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
-  const { logReportHistory } = useLogHistoryContext();
+  const { logReportHistory } = useLogReportHistory();
 
   const {
     data: incidentsData,
