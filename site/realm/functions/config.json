@@ -48,6 +48,10 @@
         "private": false
     },
     {
+        "name": "getEmailTemplateSubmissionApproved",
+        "private": true
+    },
+    {
         "name": "apiRequest",
         "private": false,
         "disable_arg_logs": true

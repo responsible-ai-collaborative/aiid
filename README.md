@@ -333,7 +333,7 @@ This project uses Prismic to fetch page content.
 3. Give your repository a name and choose `gatsby` in the technology dropdown
 4. Choose your plan (if you only need one user, the free plan is enough)
 5. Click `Create repository`
-6. Create a new token in Settings > API & Security > Content API tab > Permanent access tokens > Save value for later
+6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
 7. Create a new custom type token in Settings > API & Security > Custom types API tab > Tokens > Add new app name and create token > Save value for later
 
 #### Adding the Prismic content types
@@ -690,6 +690,13 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
         "entityId": "openai",
     }
     ```
+- **Submission Promoted**: Users that submit a new Incident Report are automatically subscribed to its promotion. Once the submission has been approved by an editor, the user will recieve an email informing that the submission is now an incident/issue/report.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c",
+        "type": "submission-promoted"
+    }
+    ```
 
 These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
 
@@ -714,7 +721,7 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
-Email notifications to New Incidents (subscription type **New Incident**) and Incident updates (subscription type **Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
+Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
 And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
 
@@ -752,6 +759,14 @@ And finally, as part of the site build process, we processed all pending notific
         "incident_id": 374,
         "entity_id": "openai",
         "isUpdate": true,
+        "processed": false
+    }
+    ```
+- **Submission Promoted**
+    ```
+    {
+        "type": "submission-promoted",
+        "incident_id": 374,
         "processed": false
     }
     ```

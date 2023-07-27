@@ -6,6 +6,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { getClassificationValue } from 'utils/classifications';
 import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
+import { isAiHarm } from 'utils/cset';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   const taxaData = data.allMongodbAiidprodTaxa;
@@ -47,11 +48,16 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
         if (getClassificationValue(classification, 'Publish') === false) {
           continue;
         }
+        if (classification.namespace == 'CSETv1' && !isAiHarm(classification)) {
+          continue;
+        }
         for (const attribute of classification.attributes) {
           const axis = attribute.short_name;
 
           categoryCounts[axis] ||= {};
           const value = getClassificationValue(classification, axis);
+
+          if (!value) continue;
 
           if (Array.isArray(value)) {
             for (const category of value) {
@@ -104,44 +110,47 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis;
+              if (categoryCounts[axis]) {
+                const columns = Object.keys(categoryCounts[axis])
+                  .map((category) => [category, categoryCounts[axis][category]])
+                  .sort((a, b) =>
+                    a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
+                  );
 
-              const columns = Object.keys(categoryCounts[dbAxis])
-                .map((category) => [category, categoryCounts[dbAxis][category]])
-                .sort((a, b) =>
-                  a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
-                );
-
-              const options = {
-                data: {
-                  columns,
-                  type: donut(),
-                  onclick: (column) => {
-                    if (column.name == 'All Others') {
-                      window.open('/apps/discover');
-                    } else {
-                      window.open(
-                        '/apps/discover?classifications=' + [namespace, axis, column.name].join(':')
-                      );
-                    }
+                const options = {
+                  data: {
+                    columns,
+                    type: donut(),
+                    onclick: (column) => {
+                      if (column.name == 'All Others') {
+                        window.open('/apps/discover');
+                      } else {
+                        window.open(
+                          '/apps/discover?classifications=' +
+                            [namespace, axis, column.name].join(':')
+                        );
+                      }
+                    },
                   },
-                },
-                interaction: {
-                  enabled: false,
-                },
-              };
+                  interaction: {
+                    enabled: false,
+                  },
+                };
 
-              return (
-                <div key={index} className="h-96">
-                  <h3 className="text-base text-center">{axis}</h3>
-                  <LocalizedLink
-                    to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
-                    className="h-96"
-                  >
-                    <BillboardJS bb={bb} options={{ ...options }} />
-                  </LocalizedLink>
-                </div>
-              );
+                return (
+                  <div key={index} className="h-96">
+                    <h3 className="text-base text-center">{axis}</h3>
+                    <LocalizedLink
+                      to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
+                      className="h-96"
+                    >
+                      <BillboardJS bb={bb} options={{ ...options }} />
+                    </LocalizedLink>
+                  </div>
+                );
+              } else {
+                return <></>;
+              }
             })}
         </Carousel>
       </div>
