@@ -19,9 +19,8 @@ export default function RiskSection({
   searchTags,
   allPrecedents,
 }) {
-
   const { t } = useTranslation();
-  
+
   const showPrecedentFilters = useState(false);
 
   const updateRisk = (attributeValueMap) => {
@@ -58,38 +57,48 @@ export default function RiskSection({
         <EditableLabel
           title={risk.title}
           onChange={(event) => updateRisk({ title: event.target.value })}
-          textClasses={`text-lg font-500 text-${risk.generated ? 'gray' : 'red'}-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
+          textClasses={`text-lg font-500 text-${
+            risk.generated ? 'gray' : 'red'
+          }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
           {...{ updateRisk }}
         />
         <HeaderItemsRight>
-          {risk.generated
-            ? <HeaderTextItem title={t(
-                "This risk was generated according to " +
-                "the tags applied to the system above. " +
-                "If you remove the matching tags, " +
-                "this risk will disappear unless you make a manual change"
-              )}>
-                Auto-generated
-              </HeaderTextItem>
-            : <HeaderTextItem title={t(
-                "This risk is edited manually. It will persist through changes to the applied tags."
-              )}>Manual</HeaderTextItem>
-          }
+          {risk.generated ? (
+            <HeaderTextItem
+              title={t(
+                'This risk was generated according to ' +
+                  'the tags applied to the system above. ' +
+                  'If you remove the matching tags, ' +
+                  'this risk will disappear unless you make a manual change'
+              )}
+            >
+              Auto-generated
+            </HeaderTextItem>
+          ) : (
+            <HeaderTextItem
+              title={t(
+                'This risk is edited manually. It will persist through changes to the applied tags.'
+              )}
+            >
+              Manual
+            </HeaderTextItem>
+          )}
           {!!risk.precedents?.length && (
             <HeaderTextItem>{risk.precedents.length} precedents</HeaderTextItem>
           )}
           {!!risk.likelihood && <HeaderTextItem>{risk.likelihood}</HeaderTextItem>}
           {!!risk.severity && <HeaderTextItem>{risk.severity}</HeaderTextItem>}
-          <HeaderTextWithIcon sentiment={
-            {
-              'Not Mitigated': 'bad', 
-              'Mitigated': 'good',
-              'Prevented': 'good',
-              'Not Applicable': null, 
-              'Unclear': null
-            }[risk.risk_status]
-
-          }>
+          <HeaderTextWithIcon
+            sentiment={
+              {
+                'Not Mitigated': 'bad',
+                Mitigated: 'good',
+                Prevented: 'good',
+                'Not Applicable': null,
+                Unclear: null,
+              }[risk.risk_status]
+            }
+          >
             <FontAwesomeIcon
               icon={statusIcon(risk.risk_status)}
               className={`${statusColor(risk.risk_status)} mr-1`}
@@ -125,6 +134,11 @@ export default function RiskSection({
                     <h3 className="mt-0">{precedent.title}</h3>
                   </LocalizedLink>
                   <p>{precedent.description}</p>
+                  {precedent.tags.reduce((content, tag) => (
+                    <>
+                      {content}, {tag}
+                    </>
+                  ))}
                 </div>
               </Card>
             ))}
@@ -175,41 +189,47 @@ export default function RiskSection({
   );
 }
 
-const riskColor = (generated) => generated ? 'gray-400' : 'red-700';
+const riskColor = (generated) => (generated ? 'gray-400' : 'red-700');
 
 const RiskBody = classyDiv('grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem]');
 
-const RiskDetails = classy( 'details', ({ generated }) => `
+const RiskDetails = classy(
+  'details',
+  ({ generated }) => `
   border-${riskColor(generated)} border-l-2 border-r-2 border-t-2 open:border-b-2
   h-0 open:h-fit
   relative max-w-full
   open:p-3 md:open:p-6 open:rounded
   cursor-pointer
-`);
+`
+);
 //  [&[open]>summary]:before:content-['⏷']
 //        [&>summary]:before:content-['⏵']
 //  [&[open]>summary]:before:w-4
 //        [&>summary]:before:w-4
 
-const RiskHeaderSummary = classy( 'summary', ({ generated }) => `
+const RiskHeaderSummary = classy(
+  'summary',
+  ({ generated }) => `
   absolute -top-4 left-1 md:left-3 w-full flex px-2 items-center
 
   before:w-4 before:pl-1 before:bg-white 
   before:text-lg before:text-${riskColor(generated)}
-`);
+`
+);
 
 const HeaderItemsRight = classyDiv(`
   hidden md:flex ml-auto mr-6 px-2 gap-2 bg-white items-center
 `);
 
-const sentimentColor = (sentiment) => (
-  { bad: 'red', good: 'green' }[sentiment] || 'gray'
-);
+const sentimentColor = (sentiment) => ({ bad: 'red', good: 'green' }[sentiment] || 'gray');
 
-const HeaderTextItem = classyDiv(({ sentiment }) => `
+const HeaderTextItem = classyDiv(
+  ({ sentiment }) => `
   inline-block bg-${sentimentColor(sentiment)}-200 px-3 py-px rounded-lg
   text-${sentimentColor(sentiment)}-900
-`);
+`
+);
 
 const HeaderTextWithIcon = classyDiv(({ sentiment }) => {
   console.log(`sentiment`, sentiment);
@@ -217,7 +237,8 @@ const HeaderTextWithIcon = classyDiv(({ sentiment }) => {
   inline-flex flex gap-1 items-center
   inline-block bg-${sentimentColor(sentiment)}-200 px-3 py-px rounded-lg 
   text-${sentimentColor(sentiment)}-900
-`});
+`;
+});
 
 const PrecedentsQuery = classyDiv('col-span-2');
 
