@@ -193,16 +193,14 @@ JSON:
 {
   "Main" : {
     "title" : {
-      "type" : "StructuredText",
+      "type" : "Text",
       "config" : {
-        "single" : "heading6",
         "label" : "Title"
       }
     },
     "order" : {
-      "type" : "StructuredText",
+      "type" : "Text",
       "config" : {
-        "single" : "heading6",
         "label" : "Order"
       }
     },
@@ -211,10 +209,9 @@ JSON:
       "config" : {
         "fields" : {
           "item_title" : {
-            "type" : "StructuredText",
+            "type" : "Text",
             "config" : {
-              "single" : "heading6",
-              "label" : "Title"
+              "label" : "Item Title"
             }
           },
           "item_url" : {
@@ -227,11 +224,9 @@ JSON:
             }
           },
           "path" : {
-            "type" : "StructuredText",
+            "type" : "Text",
             "config" : {
-              "single" : "heading6",
-              "label" : "path",
-              "placeholder" : "Path inside site example: /about"
+              "label" : "Path"
             }
           }
         },
@@ -243,11 +238,10 @@ JSON:
       "config" : {
         "fields" : {
           "name" : {
-            "type" : "StructuredText",
+            "type" : "Text",
             "config" : {
-              "single" : "heading6",
-              "label" : "name",
-              "placeholder" : "twitter/github/facebook/instagram/linkedin"
+              "label" : "Name",
+              "placeholder" : "twitter/facebook/github/linked"
             }
           },
           "url" : {
@@ -260,11 +254,9 @@ JSON:
             }
           },
           "path" : {
-            "type" : "StructuredText",
+            "type" : "Text",
             "config" : {
-              "single" : "heading6",
-              "label" : "path",
-              "placeholder" : "URL to inside the site"
+              "label" : "Path"
             }
           }
         },

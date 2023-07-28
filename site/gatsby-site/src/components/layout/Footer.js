@@ -30,28 +30,20 @@ export default function Footer() {
           }
         }
       }
-      allPrismicFooter(sort: { data: { order: { text: ASC } } }) {
+      allPrismicFooter(sort: { data: { order: ASC } }) {
         edges {
           node {
             data {
-              title {
-                text
-              }
+              title
               items {
-                item_title {
-                  text
-                }
+                item_title
                 item_url {
                   url
                 }
-                path {
-                  text
-                }
+                path
               }
               social {
-                name {
-                  text
-                }
+                name
                 url {
                   url
                 }
@@ -74,12 +66,12 @@ export default function Footer() {
 
   if (allPrismicFooter.edges.length > 0) {
     allPrismicFooter.edges.forEach((group) => {
-      const title = group.node.data.title.text;
+      const title = group.node.data.title;
 
       let items = group.node.data.items.map((item) => {
         return {
-          title: item.item_title?.text,
-          url: item.item_url?.url || item.path?.text,
+          title: item.item_title,
+          url: item.item_url?.url || item.path,
         };
       });
 
@@ -88,8 +80,8 @@ export default function Footer() {
         items,
         socialItems: group.node.data.social.map((item) => {
           return {
-            name: item.name?.text,
-            url: item.url?.url || item.path?.text,
+            name: item.name,
+            url: item.url?.url || item.path,
           };
         }),
       });
