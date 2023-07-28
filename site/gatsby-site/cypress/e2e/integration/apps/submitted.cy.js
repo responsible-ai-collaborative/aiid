@@ -700,7 +700,7 @@ describe('Submitted reports', () => {
         tags: [],
         incident_editors: { link: [] },
         user: {
-          userId: '62cd9520a69a2cdf17fb47db',
+          userId: '619737436d52a1795887d3f9',
         },
       });
     });
