@@ -106,8 +106,85 @@ JSON:
 }
 ```
 
+###  2. Sponsor custom type
 
-###  2. Footer custom type
+name: `sponsor`
+
+JSON:
+```
+{
+  "Main": {
+    "title": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "Title",
+        "placeholder": "Sponsor(s) card title"
+      }
+    },
+    "language": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "language",
+        "placeholder": "Language (en, es or fr)"
+      }
+    },
+    "order": {
+      "type": "StructuredText",
+      "config": {
+        "single": "heading6",
+        "label": "Order",
+        "placeholder": "The order you wish the sponsor to appear"
+      }
+    },
+    "items": {
+      "type": "Group",
+      "config": {
+        "fields": {
+          "logo": {
+            "type": "Image",
+            "config": {
+              "constraint": {},
+              "thumbnails": [],
+              "label": "Logo"
+            }
+          },
+          "name": {
+            "type": "StructuredText",
+            "config": {
+              "single": "heading5",
+              "label": "name",
+              "placeholder": "Sponsor's name"
+            }
+          },
+          "description": {
+            "type": "StructuredText",
+            "config": {
+              "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+              "allowTargetBlank": true,
+              "label": "description",
+              "placeholder": "Sponsor's description"
+            }
+          },
+          "link": {
+            "type": "Link",
+            "config": {
+              "label": "link",
+              "select": null,
+              "allowTargetBlank": true,
+              "placeholder": "Logo's link"
+            }
+          }
+        },
+        "label": "Sponsor's info"
+      }
+    }
+  }
+}
+```
+
+###  3. Footer custom type
 
 name: `footer`
 
