@@ -210,7 +210,7 @@ describe('Submitted reports', () => {
       .then((variables) => {
         expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
         expect(variables.query.incident_id.incident_id).to.eq(182);
-        expect(variables.query.userId.userId).to.eq(user.userId);
+        expect(variables.query.userId.userId).to.eq(submission.user.userId);
 
         expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
         expect(variables.subscription.incident_id.link).to.eq(182);
