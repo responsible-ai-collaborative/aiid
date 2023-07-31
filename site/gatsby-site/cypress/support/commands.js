@@ -1,8 +1,5 @@
 import { getApolloClient } from './utils';
 import { registerCommand } from 'cypress-wait-for-stable-dom';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-
-chai.use(deepEqualInAnyOrder);
 
 registerCommand();
 
