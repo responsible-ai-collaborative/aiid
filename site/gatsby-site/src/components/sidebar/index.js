@@ -26,6 +26,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
                 url
               }
               path
+              order
               items {
                 item_title
                 item_label

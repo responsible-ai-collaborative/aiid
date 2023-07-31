@@ -220,7 +220,7 @@ JSON:
       }
     },
     "order" : {
-      "type" : "Text",
+      "type" : "Number",
       "config" : {
         "label" : "Order"
       }
