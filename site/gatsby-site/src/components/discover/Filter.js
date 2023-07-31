@@ -92,7 +92,9 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
           touched
             ? 'focus:ring-green-300 bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
             : 'focus:ring-blue-300 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-        } focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center  w-full justify-between`}
+        } focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center  w-full justify-between ${
+          filterProps.hidden ? 'hidden' : ''
+        }`}
         type="button"
         onClick={toggleDropdown}
       >
@@ -194,7 +196,10 @@ function AccordionFilter({ type, ...filterProps }) {
       alwaysOpen={true}
       collapseAll={true}
     >
-      <Accordion.Title className="tw-accordion text-gray-900" onClick={toggleDropdown}>
+      <Accordion.Title
+        className={`tw-accordion text-gray-900 ${filterProps.hidden ? 'hidden' : ''}`}
+        onClick={toggleDropdown}
+      >
         <ToggleContent
           faIcon={faIcon}
           label={label}
@@ -203,7 +208,11 @@ function AccordionFilter({ type, ...filterProps }) {
           accordion={true}
         />
       </Accordion.Title>
-      <Accordion.Content style={{ visibility: 'visible' }} hidden={toggled}>
+      <Accordion.Content
+        style={{ visibility: 'visible' }}
+        hidden={toggled}
+        className={`${filterProps.hidden ? 'hidden' : ''}`}
+      >
         <FilterContent type={type} filterProps={filterProps} />
       </Accordion.Content>
     </Accordion.Panel>
