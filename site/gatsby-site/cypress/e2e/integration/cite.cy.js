@@ -1,14 +1,12 @@
 import { maybeIt } from '../../support/utils';
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
-import incidents from '../../fixtures/incidents/incidents.json';
 import { format, getUnixTime } from 'date-fns';
-const { gql } = require('@apollo/client');
-
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 import incident10 from '../../fixtures/incidents/fullIncident10.json';
 import { transformIncidentData, deleteIncidentTypenames } from '../../../src/utils/cite';
 import { transformReportData, deleteReportTypenames } from '../../../src/utils/reports';
+const { gql } = require('@apollo/client');
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -765,134 +763,18 @@ describe('Cite pages', () => {
     cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
   });
 
-  maybeIt('Should clone incident', () => {
+  maybeIt('Should clone incident opening the preloaded new Incident form', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
 
     cy.visit(url);
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidents',
-      'GetLatestIncidentId',
-      incidents
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertIncident',
-      'InsertIncident',
-      {
-        data: {
-          insertOneIncident: {
-            incident_id: newIncidentId,
-          },
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'logIncidentHistory',
-      'logIncidentHistory',
-      {
-        data: {
-          logIncidentHistory: {
-            incident_id: newIncidentId,
-          },
-        },
-      }
-    );
+    cy.contains('Clone Incident').click();
 
     cy.waitForStableDOM();
 
-    cy.wait('@GetLatestIncidentId');
+    cy.url().should('contain', `/incidents/new/?incident_id=${incidentId}`);
 
-    const now = new Date();
-
-    cy.clock(now);
-
-    cy.contains('Clone Incident').scrollIntoView().click();
-
-    cy.query({
-      query: gql`
-        query {
-          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
-            title
-            description
-            date
-            editor_similar_incidents
-            editor_dissimilar_incidents
-            editors {
-              userId
-              first_name
-              last_name
-            }
-            AllegedDeployerOfAISystem {
-              entity_id
-            }
-            AllegedDeveloperOfAISystem {
-              entity_id
-            }
-            AllegedHarmedOrNearlyHarmedParties {
-              entity_id
-            }
-          }
-        }
-      `,
-    }).then(({ data: { incidents } }) => {
-      const incident = incidents[0];
-
-      const newIncident = {
-        title: incident.title,
-        description: incident.description,
-        incident_id: newIncidentId,
-        reports: { link: [] },
-        editors: { link: incident.editors.map((e) => e.userId) },
-        date: incident.date,
-        AllegedDeployerOfAISystem: {
-          link: incident.AllegedDeployerOfAISystem.map((e) => e.entity_id),
-        },
-        AllegedDeveloperOfAISystem: {
-          link: incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id),
-        },
-        AllegedHarmedOrNearlyHarmedParties: {
-          link: incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id),
-        },
-        nlp_similar_incidents: [],
-        editor_similar_incidents: [],
-        editor_dissimilar_incidents: [],
-      };
-
-      cy.wait('@InsertIncident').then((xhr) => {
-        expect(xhr.request.body.operationName).to.eq('InsertIncident');
-        expect(xhr.request.body.variables.incident).to.deep.equalInAnyOrder(newIncident);
-      });
-
-      cy.wait('@logIncidentHistory')
-        .its('request.body.variables.input')
-        .then((input) => {
-          const expectedIncident = {
-            ...newIncident,
-            epoch_date_modified: getUnixTime(now),
-            modifiedBy: user.userId,
-            reports: [],
-            AllegedDeployerOfAISystem: newIncident.AllegedDeployerOfAISystem.link,
-            AllegedDeveloperOfAISystem: newIncident.AllegedDeveloperOfAISystem.link,
-            AllegedHarmedOrNearlyHarmedParties: newIncident.AllegedHarmedOrNearlyHarmedParties.link,
-            editors: newIncident.editors.link,
-          };
-
-          expect(input).to.deep.equalInAnyOrder(expectedIncident);
-        });
-
-      cy.wait('@GetLatestIncidentId');
-
-      cy.get('.tw-toast')
-        .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
-        .should('exist');
-    });
+    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
   });
 
   var CSETv1Fields = [

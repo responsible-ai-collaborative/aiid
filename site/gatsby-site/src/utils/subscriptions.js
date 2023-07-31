@@ -18,4 +18,8 @@ export const SUBSCRIPTION_TYPE = {
    * new Incident associated with an specific Entity is created or
    * when an existing Incident is updated to be associated with that Entity. */
   entity: 'entity',
+  /** Submission promoted: Users that create submissions are automatically subscribed to their promotions.
+   * The user with this subscription type will be notified when a
+   * new Incident associated with an specific Submission is created */
+  submissionPromoted: 'submission-promoted',
 };

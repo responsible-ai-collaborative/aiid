@@ -49,7 +49,10 @@
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
                 "tags": [],
-                "incident_editors": []
+                "incident_editors": [],
+                "user": {
+                    "userId": "62cd9520a69a2cdf17fb47db"
+                }
             },
             {
                 "__typename": "Submission",

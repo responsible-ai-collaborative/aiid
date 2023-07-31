@@ -8,6 +8,8 @@ exports = async (input) => {
   const submissions = context.services.get('mongodb-atlas').db('aiidprod').collection("submissions");
   const incidents = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   const reports = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
+  const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const incidentsHistory = context.services.get('mongodb-atlas').db('history').collection("incidents");
   const reportsHistory = context.services.get('mongodb-atlas').db('history').collection("reports");
 
@@ -51,6 +53,19 @@ exports = async (input) => {
 
       await incidents.insertOne({ ...newIncident, incident_id: BSON.Int32(newIncident.incident_id) });
 
+      if (submission.user) {
+        await subscriptionsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: BSON.Int32(newIncident.incident_id),
+          userId: submission.user
+        });
+
+        await notificationsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: BSON.Int32(newIncident.incident_id),
+          processed: false
+        });
+      }
       await incidentsHistory.insertOne({
         ...newIncident,
         reports: [BSON.Int32(report_number)],
@@ -97,6 +112,19 @@ exports = async (input) => {
           { $set: { ...parentIncident, embedding } }
         );
 
+        if (submission.user) {
+          await subscriptionsCollection.insertOne({
+            type: 'submission-promoted',
+            incident_id: BSON.Int32(newIncident.incident_id),
+            userId: submission.user
+          });
+  
+          await notificationsCollection.insertOne({
+            type: 'submission-promoted',
+            incident_id: BSON.Int32(newIncident.incident_id),
+            processed: false
+          });
+        }
         await incidentsHistory.insertOne({
           ...parentIncident,
           reports: [...parentIncident.reports, BSON.Int32(report_number)],
