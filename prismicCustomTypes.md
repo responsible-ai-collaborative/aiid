@@ -115,22 +115,25 @@ JSON:
 {
   "Main" : {
     "title" : {
-      "type" : "Text",
+      "type" : "StructuredText",
       "config" : {
+        "single" : "heading6",
         "label" : "Title",
         "placeholder" : "Sponsor(s) card title"
       }
     },
     "language" : {
-      "type" : "Text",
+      "type" : "StructuredText",
       "config" : {
-        "label" : "Language",
+        "single" : "heading6",
+        "label" : "language",
         "placeholder" : "Language (en, es or fr)"
       }
     },
     "order" : {
-      "type" : "Number",
+      "type" : "StructuredText",
       "config" : {
+        "single" : "heading6",
         "label" : "Order",
         "placeholder" : "The order you wish the sponsor to appear"
       }
@@ -148,9 +151,10 @@ JSON:
             }
           },
           "name" : {
-            "type" : "Text",
+            "type" : "StructuredText",
             "config" : {
-              "label" : "Name",
+              "single" : "heading5",
+              "label" : "name",
               "placeholder" : "Sponsor's name"
             }
           },
