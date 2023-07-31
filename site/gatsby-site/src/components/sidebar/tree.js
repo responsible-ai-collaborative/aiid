@@ -3,8 +3,6 @@ import config from '../../../config';
 import TreeNode from './treeNode';
 import { useLocation } from '@reach/router';
 
-// const navConfig = config.sidebar.navConfig;
-
 const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
   let subs = [];
 
