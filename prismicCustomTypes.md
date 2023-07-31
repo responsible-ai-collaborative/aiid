@@ -113,71 +113,67 @@ name: `sponsor`
 JSON:
 ```
 {
-  "Main": {
-    "title": {
-      "type": "StructuredText",
-      "config": {
-        "single": "heading6",
-        "label": "Title",
-        "placeholder": "Sponsor(s) card title"
+  "Main" : {
+    "title" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Title",
+        "placeholder" : "Sponsor(s) card title"
       }
     },
-    "language": {
-      "type": "StructuredText",
-      "config": {
-        "single": "heading6",
-        "label": "language",
-        "placeholder": "Language (en, es or fr)"
+    "language" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Language",
+        "placeholder" : "Language (en, es or fr)"
       }
     },
-    "order": {
-      "type": "StructuredText",
-      "config": {
-        "single": "heading6",
-        "label": "Order",
-        "placeholder": "The order you wish the sponsor to appear"
+    "order" : {
+      "type" : "Number",
+      "config" : {
+        "label" : "Order",
+        "placeholder" : "The order you wish the sponsor to appear"
       }
     },
-    "items": {
-      "type": "Group",
-      "config": {
-        "fields": {
-          "logo": {
-            "type": "Image",
-            "config": {
-              "constraint": {},
-              "thumbnails": [],
-              "label": "Logo"
+    "items" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "logo" : {
+            "type" : "Image",
+            "config" : {
+              "constraint" : { },
+              "thumbnails" : [ ],
+              "label" : "Logo"
             }
           },
-          "name": {
-            "type": "StructuredText",
-            "config": {
-              "single": "heading5",
-              "label": "name",
-              "placeholder": "Sponsor's name"
+          "name" : {
+            "type" : "Text",
+            "config" : {
+              "label" : "Name",
+              "placeholder" : "Sponsor's name"
             }
           },
-          "description": {
-            "type": "StructuredText",
-            "config": {
-              "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
-              "allowTargetBlank": true,
-              "label": "description",
-              "placeholder": "Sponsor's description"
+          "description" : {
+            "type" : "StructuredText",
+            "config" : {
+              "multi" : "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+              "allowTargetBlank" : true,
+              "label" : "description",
+              "placeholder" : "Sponsor's description"
             }
           },
-          "link": {
-            "type": "Link",
-            "config": {
-              "label": "link",
-              "select": null,
-              "allowTargetBlank": true,
-              "placeholder": "Logo's link"
+          "link" : {
+            "type" : "Link",
+            "config" : {
+              "label" : "link",
+              "select" : null,
+              "allowTargetBlank" : true,
+              "placeholder" : "Logo's link"
             }
           }
         },
-        "label": "Sponsor's info"
+        "label" : "Sponsor's info"
       }
     }
   }
@@ -191,76 +187,76 @@ name: `footer`
 JSON:
 ```
 {
-  "Main" : {
-    "title" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "Title"
+  "Main": {
+    "title": {
+      "type": "Text",
+      "config": {
+        "label": "Title"
       }
     },
-    "order" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "Order"
+    "order": {
+      "type": "Number",
+      "config": {
+        "label": "Order"
       }
     },
-    "items" : {
-      "type" : "Group",
-      "config" : {
-        "fields" : {
-          "item_title" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Item Title"
+    "items": {
+      "type": "Group",
+      "config": {
+        "fields": {
+          "item_title": {
+            "type": "Text",
+            "config": {
+              "label": "Item Title"
             }
           },
-          "item_url" : {
-            "type" : "Link",
-            "config" : {
-              "label" : "Item URL",
-              "select" : null,
-              "allowTargetBlank" : true,
-              "placeholder" : "External URL (outside site)"
+          "item_url": {
+            "type": "Link",
+            "config": {
+              "label": "Item URL",
+              "select": null,
+              "allowTargetBlank": true,
+              "placeholder": "External URL (outside site)"
             }
           },
-          "path" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Path"
+          "path": {
+            "type": "Text",
+            "config": {
+              "label": "Path"
             }
           }
         },
-        "label" : "Items"
+        "label": "Items"
       }
     },
-    "social" : {
-      "type" : "Group",
-      "config" : {
-        "fields" : {
-          "name" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Name",
-              "placeholder" : "twitter/facebook/github/linked"
+    "social": {
+      "type": "Group",
+      "config": {
+        "fields": {
+          "name": {
+            "type": "Text",
+            "config": {
+              "label": "Name",
+              "placeholder": "twitter/facebook/github/linked"
             }
           },
-          "url" : {
-            "type" : "Link",
-            "config" : {
-              "allowTargetBlank" : true,
-              "label" : "url",
-              "placeholder" : "URL to your social media account",
-              "select" : null
+          "url": {
+            "type": "Link",
+            "config": {
+              "allowTargetBlank": true,
+              "label": "url",
+              "placeholder": "URL to your social media account",
+              "select": null
             }
           },
-          "path" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Path"
+          "path": {
+            "type": "Text",
+            "config": {
+              "label": "Path"
             }
           }
         },
-        "label" : "social"
+        "label": "social"
       }
     }
   }

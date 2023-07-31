@@ -42,6 +42,7 @@ export default function Footer() {
                 }
                 path
               }
+              order
               social {
                 name
                 url {
