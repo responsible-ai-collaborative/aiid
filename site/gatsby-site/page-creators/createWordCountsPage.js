@@ -45,24 +45,15 @@ const createWordCountsPage = async (graphql, createPage) => {
           }
         }
       }
-      sponsors: allPrismicSponsor(sort: { data: { order: { text: ASC } } }) {
+      sponsors: allPrismicSponsor(sort: { data: { order: ASC } }) {
         edges {
           node {
             data {
-              title {
-                text
-                richText
-              }
-              order {
-                text
-              }
-              language {
-                text
-              }
+              title
+              order
+              language
               items {
-                name {
-                  text
-                }
+                name
                 description {
                   richText
                 }

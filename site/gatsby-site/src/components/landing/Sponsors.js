@@ -41,7 +41,7 @@ export default function Sponsors({ sponsors = [] }) {
 
   const { locale } = useLocalization();
 
-  sponsors = sponsors.filter((sponsor) => sponsor?.node?.data?.language?.text === locale);
+  sponsors = sponsors.filter((sponsor) => sponsor?.node?.data?.language === locale);
 
   const { t } = useTranslation(['sponsors']);
 
@@ -98,22 +98,22 @@ export default function Sponsors({ sponsors = [] }) {
           <div className="flex justify-center items-center gap-5 md:gap-6 flex-nowrap flex-col flex-1">
             {sponsors.map((sponsor) => {
               return (
-                <div className="flex-1 w-full" key={`sponsor-${sponsor.node.data.title.text}`}>
+                <div className="flex-1 w-full" key={`sponsor-${sponsor.node.data.title}`}>
                   <Card>
                     <h6 className="text-lg dark:text-white mb-0">
-                      <Trans ns="landing">{t(sponsor.node.data.title.text)}</Trans>
+                      <Trans ns="landing">{t(sponsor.node.data.title)}</Trans>
                     </h6>
                     <div className="flex justify-around gap-4 items-center">
                       {sponsor.node.data.items.map((item) => {
                         return (
                           <div
-                            key={`sponsor-item-${item.name.text}`}
+                            key={`sponsor-item-${item.name}`}
                             className="flex-1 max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
                           >
                             <StyledImage
                               src={`${item.logo.url}`}
-                              onClick={() => setModalState(item.name.text)}
-                              data-cy={`${item.name.text}-modal-click`}
+                              onClick={() => setModalState(item.name)}
+                              data-cy={`${item.name}-modal-click`}
                               className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
                             />
                           </div>
@@ -131,17 +131,17 @@ export default function Sponsors({ sponsors = [] }) {
         return sponsor?.node?.data?.items.map((item) => {
           return (
             <SponsorModal
-              key={`sponsor-${item.name.text}`}
+              key={`sponsor-${item.name}`}
               setModalState={setModalState}
               modalState={modalState}
-              modalName={item.name.text}
-              title={item.name.text}
+              modalName={item.name}
+              title={item.name}
             >
               <PrismicRichText field={item.description.richText} />
               <div className="flex justify-center items-center">
                 <Link to={item.link.url} target="_blank">
                   <GatsbyImage
-                    alt={`${item.name.text} Logo`}
+                    alt={`${item.name} Logo`}
                     className="img-fluid rounded-lg w-[85%] max-w-[200px] max-h-[80px]"
                     imgClassName="object-fill"
                     image={item.logo.gatsbyImageData}
