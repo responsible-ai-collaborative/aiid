@@ -2,21 +2,15 @@ import React, { useState } from 'react';
 import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
-import sponsors from './sponsors.json';
+import { StyledImage, StyledImageCover } from '../../elements/StyledImage';
 import { Button, Card, Modal } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
+import { GatsbyImage } from 'gatsby-plugin-image';
+import { PrismicRichText } from '@prismicio/react';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
-const SponsorModal = ({
-  setModalState,
-  modalState,
-  modalName,
-  children,
-  imagePath,
-  title,
-  linkTo,
-}) => {
+const SponsorModal = ({ setModalState, modalState, modalName, children, title }) => {
   return (
     <>
       {modalState === modalName && (
@@ -28,10 +22,7 @@ const SponsorModal = ({
           <Modal.Header>
             <h5>{title}</h5>
           </Modal.Header>
-          <Modal.Body>
-            {children}
-            <StyledImageModal src={imagePath} linkTo={linkTo} />
-          </Modal.Body>
+          <Modal.Body>{children}</Modal.Body>
           <Modal.Footer>
             <div className="flex justify-end w-full">
               <Button color="dark" onClick={() => setModalState('close')} data-cy="close-modal">
@@ -45,8 +36,12 @@ const SponsorModal = ({
   );
 };
 
-export default function Sponsors() {
+export default function Sponsors({ sponsors = [] }) {
   const [modalState, setModalState] = useState('close');
+
+  const { locale } = useLocalization();
+
+  sponsors = sponsors.filter((sponsor) => sponsor?.node?.data?.language?.text === locale);
 
   const { t } = useTranslation(['sponsors']);
 
@@ -103,22 +98,22 @@ export default function Sponsors() {
           <div className="flex justify-center items-center gap-5 md:gap-6 flex-nowrap flex-col flex-1">
             {sponsors.map((sponsor) => {
               return (
-                <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>
+                <div className="flex-1 w-full" key={`sponsor-${sponsor.node.data.title.text}`}>
                   <Card>
                     <h6 className="text-lg dark:text-white mb-0">
-                      <Trans ns="landing">{t(sponsor.name)}</Trans>
+                      <Trans ns="landing">{t(sponsor.node.data.title.text)}</Trans>
                     </h6>
-                    <div className="flex justify-around gap-4">
-                      {sponsor.items.map((item) => {
+                    <div className="flex justify-around gap-4 items-center">
+                      {sponsor.node.data.items.map((item) => {
                         return (
                           <div
-                            key={`sponsor-item-${item.modalName}`}
-                            className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
+                            key={`sponsor-item-${item.name.text}`}
+                            className="flex-1 max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
                           >
                             <StyledImage
-                              src={`/images/${item.logo}`}
-                              onClick={() => setModalState(item.modalName)}
-                              data-cy={item.dataCy ? item.dataCy : ''}
+                              src={`${item.logo.url}`}
+                              onClick={() => setModalState(item.name.text)}
+                              data-cy={`${item.name.text}-modal-click`}
                               className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
                             />
                           </div>
@@ -133,23 +128,26 @@ export default function Sponsors() {
         </div>
       </div>
       {sponsors.map((sponsor) => {
-        return sponsor.items.map((item) => {
-          const text = t(`sponsor-${item.name}`).replace(
-            /\[\[((.*?))\]\]/g,
-            `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
-          );
-
+        return sponsor?.node?.data?.items.map((item) => {
           return (
             <SponsorModal
-              key={`sponsor-${item.name}`}
+              key={`sponsor-${item.name.text}`}
               setModalState={setModalState}
               modalState={modalState}
-              modalName={item.modalName}
-              title={item.name}
-              imagePath={`/images/${item.logo}`}
-              linkTo={item.link}
+              modalName={item.name.text}
+              title={item.name.text}
             >
-              <p dangerouslySetInnerHTML={{ __html: text }} />
+              <PrismicRichText field={item.description.richText} />
+              <div className="flex justify-center items-center">
+                <Link to={item.link.url} target="_blank">
+                  <GatsbyImage
+                    alt={`${item.name.text} Logo`}
+                    className="img-fluid rounded-lg w-[85%] max-w-[200px] max-h-[80px]"
+                    imgClassName="object-fill"
+                    image={item.logo.gatsbyImageData}
+                  />
+                </Link>
+              </div>
             </SponsorModal>
           );
         });

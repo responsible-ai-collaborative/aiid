@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
-
 import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';

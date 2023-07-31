@@ -1,5 +1,7 @@
 import { maybeIt } from '../../../support/utils';
+import incident from '../../../fixtures/incidents/incident.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
+import updateOneIncident from '../../../fixtures/incidents/updateOneIncident.json';
 import { getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
@@ -32,6 +34,17 @@ describe('New Incident page', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const newIncidentId = incidents.data.incidents[0].incident_id + 1;
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      {
+        data: {
+          incident: null,
+        },
+      }
+    );
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -116,7 +129,9 @@ describe('New Incident page', () => {
 
     cy.visit(url);
 
-    cy.wait(['@GetLatestIncidentId', '@FindEntities', '@FindUsers'], { timeout: 30000 });
+    cy.wait(['@GetLatestIncidentId', '@FindEntities', '@FindUsers', '@findIncident'], {
+      timeout: 30000,
+    });
 
     const values = {
       title: 'Test title',
@@ -223,6 +238,141 @@ describe('New Incident page', () => {
 
         expect(input).to.deep.eq(expectedIncident);
       });
+
+    cy.get('.tw-toast')
+      .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
+      .should('exist');
+  });
+
+  maybeIt('Should clone an incident', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'GetLatestIncidentId',
+      incidents
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'IncidentWithReports',
+      'IncidentWithReports',
+      { data: { incidents: [] } }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' &&
+        req.body.variables.entity.entity_id == 'youtube',
+      'UpsertYoutube',
+      { data: { upsertOneEntity: { __typename: 'Entity', entity_id: 'youtube', name: 'YouTube' } } }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' &&
+        req.body.variables.entity.entity_id == 'children',
+      'UpsertChildren',
+      {
+        data: {
+          upsertOneEntity: { __typename: 'Entity', entity_id: 'children', name: 'Children' },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Youtube', name: 'youtube' },
+            { __typename: 'Entity', entity_id: 'Children', name: 'children' },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'FindUsers',
+      {
+        data: {
+          users: [
+            { userId: '1', first_name: 'Sean', last_name: 'McGregor' },
+            { userId: '2', first_name: 'Pablo', last_name: 'Costa' },
+          ],
+        },
+      }
+    );
+
+    cy.visit(`${url}/?incident_id=1`);
+
+    cy.wait(['@GetLatestIncidentId', '@FindEntities', '@FindUsers', '@findIncident'], {
+      timeout: 30000,
+    });
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertIncident',
+      'InsertIncident',
+      { data: { insertOneIncident: updateOneIncident.data.updateOneIncident } }
+    );
+
+    cy.contains('button', 'Save').click();
+
+    cy.wait('@UpsertYoutube')
+      .its('request.body.variables.entity.entity_id')
+      .should('eq', 'youtube');
+
+    cy.wait('@UpsertYoutube')
+      .its('request.body.variables.entity.entity_id')
+      .should('eq', 'youtube');
+
+    cy.wait('@UpsertChildren')
+      .its('request.body.variables.entity.entity_id')
+      .should('eq', 'children');
+
+    cy.wait('@InsertIncident').then((xhr) => {
+      expect(xhr.request.body.operationName).to.eq('InsertIncident');
+      expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
+      expect(xhr.request.body.variables.incident.title).to.eq(incident.data.incident.title);
+      expect(xhr.request.body.variables.incident.description).to.eq(
+        incident.data.incident.description
+      );
+      expect(xhr.request.body.variables.incident.date).to.eq(incident.data.incident.date);
+      expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq([]);
+      expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq([]);
+
+      expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
+        incident.data.incident.AllegedDeployerOfAISystem.map((entity) => entity.entity_id)
+      );
+      expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
+        incident.data.incident.AllegedDeveloperOfAISystem.map((entity) => entity.entity_id)
+      );
+      expect(
+        xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
+      ).to.deep.eq(
+        incident.data.incident.AllegedHarmedOrNearlyHarmedParties.map((entity) => entity.entity_id)
+      );
+      expect(xhr.request.body.variables.incident.editors).to.deep.eq({
+        link: incident.data.incident.editors.map((e) => e.userId),
+      });
+    });
 
     cy.get('.tw-toast')
       .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
