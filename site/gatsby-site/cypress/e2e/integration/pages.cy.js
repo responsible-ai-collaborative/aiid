@@ -7,7 +7,6 @@ describe('Pages', () => {
 
   const paths = [
     '/',
-    '/account/',
     '/taxonomies/',
     '/apps/classifications/',
     '/apps/discover/',
@@ -28,7 +27,9 @@ describe('Pages', () => {
     '/entities/',
     '/entities/facebook/',
     '/blog/incident-report-2023-january/',
-    '/taxonomy/cset/',
+    '/account/',
+    '/taxonomy/csetv0/',
+    '/taxonomy/csetv1/',
     '/summaries/wordcounts/',
     '/about/', // doc template
   ];

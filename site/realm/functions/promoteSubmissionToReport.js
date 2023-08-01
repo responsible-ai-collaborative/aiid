@@ -8,6 +8,10 @@ exports = async (input) => {
   const submissions = context.services.get('mongodb-atlas').db('aiidprod').collection("submissions");
   const incidents = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   const reports = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
+  const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
+  const incidentsHistory = context.services.get('mongodb-atlas').db('history').collection("incidents");
+  const reportsHistory = context.services.get('mongodb-atlas').db('history').collection("reports");
 
   const { _id: undefined, ...submission } = await submissions.findOne({ _id: input.submission_id });
 
@@ -24,7 +28,7 @@ exports = async (input) => {
       const editors = (!submission.incident_editors || !submission.incident_editors.length)
         ? ["619b47ea5eed5334edfa3bbc"]
         : submission.incident_editors;
-
+    
       const newIncident = {
         title: submission.incident_title || submission.title,
         description: submission.description,
@@ -32,6 +36,7 @@ exports = async (input) => {
         reports: [],
         editors,
         date: submission.incident_date,
+        epoch_date_modified: submission.epoch_date_modified,
         "Alleged deployer of AI system": submission.deployers || [],
         "Alleged developer of AI system": submission.developers || [],
         "Alleged harmed or nearly harmed parties": submission.harmed_parties || [],
@@ -47,6 +52,26 @@ exports = async (input) => {
       }
 
       await incidents.insertOne({ ...newIncident, incident_id: BSON.Int32(newIncident.incident_id) });
+
+      if (submission.user) {
+        await subscriptionsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: BSON.Int32(newIncident.incident_id),
+          userId: submission.user
+        });
+
+        await notificationsCollection.insertOne({
+          type: 'submission-promoted',
+          incident_id: BSON.Int32(newIncident.incident_id),
+          processed: false
+        });
+      }
+      await incidentsHistory.insertOne({
+        ...newIncident,
+        reports: [BSON.Int32(report_number)],
+        incident_id: BSON.Int32(newIncident.incident_id),
+        modifiedBy: submission.user,
+      });
 
       parentIncidents.push(newIncident);
 
@@ -86,6 +111,26 @@ exports = async (input) => {
           { incident_id: BSON.Int32(parentIncident.incident_id) },
           { $set: { ...parentIncident, embedding } }
         );
+
+        if (submission.user) {
+          await subscriptionsCollection.insertOne({
+            type: 'submission-promoted',
+            incident_id: BSON.Int32(newIncident.incident_id),
+            userId: submission.user
+          });
+  
+          await notificationsCollection.insertOne({
+            type: 'submission-promoted',
+            incident_id: BSON.Int32(newIncident.incident_id),
+            processed: false
+          });
+        }
+        await incidentsHistory.insertOne({
+          ...parentIncident,
+          reports: [...parentIncident.reports, BSON.Int32(report_number)],
+          embedding,
+          modifiedBy: submission.user,
+        });
       }
     }
   }
@@ -99,7 +144,7 @@ exports = async (input) => {
     date_published: submission.date_published,
     date_submitted: submission.date_submitted,
     epoch_date_downloaded: getUnixTime(submission.date_downloaded),
-    epoch_date_modified: getUnixTime(submission.date_modified),
+    epoch_date_modified: submission.epoch_date_modified,
     epoch_date_published: getUnixTime(submission.date_published),
     epoch_date_submitted: getUnixTime(submission.date_submitted),
     image_url: submission.image_url,
@@ -125,6 +170,11 @@ exports = async (input) => {
 
   await context.functions.execute('linkReportsToIncidents', { incident_ids, report_numbers });
 
+  await reportsHistory.insertOne({
+    ...newReport,
+    report_number: BSON.Int32(newReport.report_number),
+    modifiedBy: submission.user,
+  });
 
   await submissions.deleteOne({ _id: input.submission_id });
 

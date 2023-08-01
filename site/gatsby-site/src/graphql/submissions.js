@@ -56,6 +56,9 @@ export const FIND_SUBMISSIONS = gql`
         name
       }
       status
+      user {
+        userId
+      }
     }
   }
 `;

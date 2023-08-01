@@ -12,6 +12,7 @@
                 "date_modified": "2021-07-27",
                 "date_published": "2017-05-03",
                 "date_submitted": "2020-10-30",
+                "epoch_date_modified": 1686163744,
                 "description": "By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth",
                 "image_url": "https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg",
                 "incident_title": "Submisssion 1 title",
@@ -49,7 +50,10 @@
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
                 "tags": [],
-                "incident_editors": []
+                "incident_editors": [],
+                "user": {
+                    "userId": "62cd9520a69a2cdf17fb47db"
+                }
             },
             {
                 "__typename": "Submission",
@@ -62,6 +66,7 @@
                 "date_modified": "2021-08-23",
                 "date_published": "2019-07-18",
                 "date_submitted": "2021-08-23",
+                "epoch_date_modified": 1686163744,
                 "description": "Read about our Journey of dissecting the brain of a leading AI based Endpoint Protection Product, culminating in the creation of a universal bypass\n\nUpdate: 07/Sep/2019\nWe had the honour to present ou",
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
@@ -113,6 +118,7 @@
                 "date_modified": "2021-08-23",
                 "date_published": "2019-07-18",
                 "date_submitted": "2021-08-23",
+                "epoch_date_modified": 1686163744,
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_title": "Submission 3 title",
                 "incident_date": "2019-07-18",
@@ -146,6 +152,7 @@
                 "date_modified": "2021-08-23",
                 "date_published": "2019-07-18",
                 "date_submitted": "2021-08-23",
+                "epoch_date_modified": 1686163744,
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_ids": [],
@@ -183,6 +190,7 @@
                 "date_modified": "",
                 "date_published": "",
                 "date_submitted": "",
+                "epoch_date_modified": 1686163744,
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_ids": [],
@@ -213,6 +221,7 @@
                 "date_modified": "",
                 "date_published": "",
                 "date_submitted": "",
+                "epoch_date_modified": 1686163744,
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_ids": [
@@ -246,6 +255,7 @@
                 "date_modified": "2021-08-23",
                 "date_published": "2021-08-23",
                 "date_submitted": "2021-08-23",
+                "epoch_date_modified": 1686163744,
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_ids": [
@@ -278,6 +288,7 @@
                 "date_modified": "2021-08-23",
                 "date_published": "2021-08-23",
                 "date_submitted": "2021-08-23",
+                "epoch_date_modified": 1686163744,
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_ids": [

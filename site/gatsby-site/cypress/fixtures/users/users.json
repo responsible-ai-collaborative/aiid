@@ -64,6 +64,22 @@
           "subscriber"
         ],
         "userId": "633b74dc95edb45d34a95895"
+      },
+      {
+        "__typename": "User",
+        "adminData": {
+          "__typename": "UserAdminDatum",
+          "creationDate": "2022-10-03T23:48:44Z",
+          "disabled": false,
+          "email": "sean@mcgregor.com",
+          "lastAuthenticationDate": "2022-10-03T23:48:58Z"
+        },
+        "first_name": "Sean",
+        "last_name": "McGregor",
+        "roles": [
+          "subscriber"
+        ],
+        "userId": "619b47ea5eed5334edfa3bbc"
       }
     ]
   }

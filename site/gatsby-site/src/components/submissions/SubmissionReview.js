@@ -72,6 +72,8 @@ const SubmissionReview = ({ submission }) => {
 
   const [subscribeToNewReportsMutation] = useMutation(UPSERT_SUBSCRIPTION);
 
+  const [subscribeToNewSubmissionPromotionMutation] = useMutation(UPSERT_SUBSCRIPTION);
+
   const promoteSubmission = ({ submission, variables }) =>
     promoteSubmissionToReport({
       variables,
@@ -87,19 +89,33 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-  const subscribeToNewReports = async (incident_id) => {
+  const subscribeToNewReports = async (incident_id, userId = null) => {
+    if (!user && !userId) {
+      return;
+    }
+
+    const subscriptionUsers = [];
+
+    if (userId) {
+      subscriptionUsers.push(userId);
+    }
+
     if (user) {
+      subscriptionUsers.push(user.id);
+    }
+
+    subscriptionUsers.forEach(async (userId) => {
       await subscribeToNewReportsMutation({
         variables: {
           query: {
             type: SUBSCRIPTION_TYPE.incident,
-            userId: { userId: user.id },
+            userId: { userId },
             incident_id: { incident_id: incident_id },
           },
           subscription: {
             type: SUBSCRIPTION_TYPE.incident,
             userId: {
-              link: user.id,
+              link: userId,
             },
             incident_id: {
               link: incident_id,
@@ -107,7 +123,7 @@ const SubmissionReview = ({ submission }) => {
           },
         },
       });
-    }
+    });
   };
 
   const [promoting, setPromoting] = useState('');
@@ -276,6 +292,27 @@ const SubmissionReview = ({ submission }) => {
     const incident_id = incident_ids[0];
 
     await subscribeToNewReports(incident_id);
+
+    if (submission.user) {
+      await subscribeToNewSubmissionPromotionMutation({
+        variables: {
+          query: {
+            type: SUBSCRIPTION_TYPE.submissionPromoted,
+            userId: { userId: submission.user.userId },
+            incident_id: { incident_id: incident_id },
+          },
+          subscription: {
+            type: SUBSCRIPTION_TYPE.submissionPromoted,
+            userId: {
+              link: submission.user.userId,
+            },
+            incident_id: {
+              link: incident_id,
+            },
+          },
+        },
+      });
+    }
 
     addToast({
       message: (

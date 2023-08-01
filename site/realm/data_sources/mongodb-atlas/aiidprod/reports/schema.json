@@ -109,7 +109,8 @@
         }
     },
     "required": [
-        "report_number",
+        "authors",
+        "cloudinary_id",
         "date_downloaded",
         "date_modified",
         "date_published",
@@ -119,16 +120,15 @@
         "epoch_date_published",
         "epoch_date_submitted",
         "image_url",
-        "cloudinary_id",
-        "authors",
-        "submitters",
-        "title",
-        "text",
-        "plain_text",
-        "url",
-        "source_domain",
         "language",
-        "tags"
+        "plain_text",
+        "report_number",
+        "source_domain",
+        "submitters",
+        "tags",
+        "text",
+        "title",
+        "url"
     ],
     "title": "report"
 }

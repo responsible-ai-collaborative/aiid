@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, LOG_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner, Modal, Button } from 'flowbite-react';
@@ -9,13 +9,18 @@ import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
+import { transformIncidentData } from '../../utils/cite';
+import { getUnixTime } from 'date-fns';
+import { useUserContext } from 'contexts/userContext';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
 
   const [incident, setIncident] = useState(null);
 
-  const { data: incidentData } = useQuery(FIND_INCIDENT, {
+  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
@@ -24,6 +29,8 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
+  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
 
   const addToast = useToastContext();
 
@@ -62,6 +69,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         __typename: undefined,
         embedding: undefined,
         editors: { link: values.editors },
+        tsne: undefined,
       };
 
       const { entities } = entitiesData;
@@ -84,6 +92,13 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         createEntityMutation
       );
 
+      updated.epoch_date_modified = getUnixTime(new Date());
+
+      // Add the current user to the list of editors
+      if (user && user.providerType != 'anon-user' && !updated.editors.link.includes(user.id)) {
+        updated.editors.link.push(user.id);
+      }
+
       await updateIncident({
         variables: {
           query: {
@@ -94,6 +109,18 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
           },
         },
       });
+
+      const updatedIncident = transformIncidentData(
+        {
+          ...incident,
+          ...updated,
+          reports: incident.reports,
+          embedding: incident.embedding,
+        },
+        user
+      );
+
+      await logIncidentHistory({ variables: { input: updatedIncident } });
 
       addToast(updateSuccessToast({ incidentId }));
 

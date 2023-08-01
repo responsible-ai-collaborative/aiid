@@ -68,6 +68,9 @@
                 }
             }
         },
+        "epoch_date_modified": {
+            "bsonType": "int"
+        },
         "harmed_parties": {
             "bsonType": "array",
             "items": {

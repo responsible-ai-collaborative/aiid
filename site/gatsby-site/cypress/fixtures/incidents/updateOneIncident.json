@@ -2,10 +2,17 @@
     "data": {
         "updateOneIncident": {
             "__typename": "Incident",
+            "title": "Test Incident",
+            "description": "This is a test description",
             "date": "2015-05-19",
             "nlp_similar_incidents": [],
             "incident_id": 1,
-            "nlp_similar_incidents": [],
+            "editors": [],
+            "editor_notes": "This is a test",
+            "embedding": {
+                "from_reports": [1, 2, 3],
+                "vector": [-0.023964308202266693, 0.05607481673359871, -0.00004077623088960536]
+            },
             "reports": [
                 {
                     "__typename": "Report",
@@ -63,7 +70,13 @@
                     "__typename": "Report",
                     "report_number": 15
                 }
-            ]
+            ],
+            "AllegedDeployerOfAISystem": [],
+            "AllegedDeveloperOfAISystem": [],
+            "AllegedHarmedOrNearlyHarmedParties": [],
+            "editor_similar_incidents": [],
+            "editor_dissimilar_incidents": [],
+            "flagged_dissimilar_incidents": []
         }
     }
 }
