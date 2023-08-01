@@ -18,6 +18,9 @@ const createPrismicDocPages = async (graphql, createPage, { reporter }) => {
                   text {
                     richText
                   }
+                  markdown {
+                    richText
+                  }
                   component
                 }
               }

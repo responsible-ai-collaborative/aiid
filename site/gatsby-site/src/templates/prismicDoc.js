@@ -32,6 +32,9 @@ export const pageQuery = graphql`
           text {
             richText
           }
+          markdown {
+            richText
+          }
           component
         }
       }

@@ -9,6 +9,9 @@ import Outline from 'components/Outline';
 import AiidHelmet from 'components/AiidHelmet';
 import Leaderboards from 'components/landing/Leaderboards';
 import Sponsors from 'components/landing/Sponsors';
+import { RichText } from 'prismic-reactjs';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const PrismicDocPost = ({ doc, location }) => {
   const components = {
@@ -57,6 +60,15 @@ const PrismicDocPost = ({ doc, location }) => {
       {doc.data.content.map((content, index) => {
         return (
           <>
+            {content.markdown && (
+              <div className="prose">
+                {(() => {
+                  const rawMarkdown = RichText.asText(content.markdown.richText);
+
+                  return <ReactMarkdown remarkPlugins={[remarkGfm]}>{rawMarkdown}</ReactMarkdown>;
+                })()}
+              </div>
+            )}
             {content.text && (
               <div className="prose">
                 <PrismicRichText key={index} field={content.text.richText} />
