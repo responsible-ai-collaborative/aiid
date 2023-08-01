@@ -9,14 +9,14 @@ import {
   faFlag,
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
-import { FIND_REPORT, UPDATE_REPORT, LOG_REPORT_HISTORY } from '../../graphql/reports';
+import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import { format, getUnixTime } from 'date-fns';
-import { transformReportData } from '../../utils/reports';
 
 function FlagModalContent({ reportNumber }) {
   const { user } = useUserContext();
@@ -27,7 +27,7 @@ function FlagModalContent({ reportNumber }) {
 
   const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
 
-  const [logReportHistory] = useMutation(LOG_REPORT_HISTORY);
+  const { logReportHistory } = useLogReportHistory();
 
   const flagReport = async () => {
     const now = new Date();
@@ -49,18 +49,7 @@ function FlagModalContent({ reportNumber }) {
       },
     });
 
-    const report = transformReportData(data.report, user);
-
-    const logReport = {
-      ...report,
-      ...updated,
-    };
-
-    // Set the user as the last modifier
-    logReport.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
-
-    // Log the report history
-    await logReportHistory({ variables: { input: logReport } });
+    await logReportHistory(data.report, updated, user);
   };
 
   const report = data?.report;

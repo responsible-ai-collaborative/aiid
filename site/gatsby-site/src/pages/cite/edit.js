@@ -2,6 +2,7 @@ import React from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import { useUserContext } from 'contexts/userContext';
 import { Spinner, Button } from 'flowbite-react';
 import {
@@ -9,14 +10,12 @@ import {
   DELETE_REPORT,
   FIND_REPORT_WITH_TRANSLATIONS,
   LINK_REPORTS_TO_INCIDENTS,
-  LOG_REPORT_HISTORY,
   FIND_REPORT,
 } from '../../graphql/reports';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
-import { transformReportData } from '../../utils/reports';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -83,11 +82,11 @@ function EditCitePage(props) {
     variables: { query: { report_number: reportNumber } },
   });
 
-  const [logReportHistory] = useMutation(LOG_REPORT_HISTORY);
-
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
+
+  const { logReportHistory } = useLogReportHistory();
 
   const {
     data: incidentsData,
@@ -205,16 +204,7 @@ function EditCitePage(props) {
         },
       });
 
-      const report = transformReportData(currentReportData.report, user);
-
-      const logReport = {
-        ...report,
-        ...updated,
-        plain_text: await stripMarkdown(updated.text),
-      };
-
-      // Log the report history
-      await logReportHistory({ variables: { input: logReport } });
+      await logReportHistory(currentReportData.report, updated, user);
 
       for (const { code } of config.filter((c) => c.code !== values.language)) {
         const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
