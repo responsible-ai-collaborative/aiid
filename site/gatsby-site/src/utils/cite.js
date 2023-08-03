@@ -1,4 +1,5 @@
 import { isAfter, isEqual } from 'date-fns';
+import { Operation, diff } from 'json-diff-ts';
 
 export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -196,4 +197,66 @@ export const deleteIncidentTypenames = (incident) => {
   });
 
   return incident;
+};
+
+const INCIDENT_TO_COMPARE = [
+  { key: 'title', label: 'Title' },
+  { key: 'description', label: 'Description' },
+  { key: 'date', label: 'Date' },
+  { key: 'AllegedDeployerOfAISystem', label: 'Alleged Deployer of AI System', isList: true },
+  { key: 'AllegedDeveloperOfAISystem', label: 'Alleged Developer of AI System', isList: true },
+  {
+    key: 'AllegedHarmedOrNearlyHarmedParties',
+    label: 'Alleged Harmed or Nearly Harmed Parties',
+    isList: true,
+  },
+  { key: 'editors', label: 'Editors', isList: true },
+  { key: 'editor_notes', label: 'Editor Notes' },
+  { key: 'reports', label: 'Reports', isList: true },
+];
+
+export const getIncidentChanges = (oldVersion, newVersion) => {
+  const diffData = diff(oldVersion, newVersion);
+
+  console.log('diffData', diffData);
+
+  const result = [];
+
+  for (const field of INCIDENT_TO_COMPARE) {
+    const fieldDiff = diffData.find((diff) => diff.key == field.key);
+
+    if (fieldDiff) {
+      if (fieldDiff.embeddedKey && fieldDiff.changes) {
+        const removed = [];
+
+        const added = [];
+
+        for (const change of fieldDiff.changes) {
+          if (change.type == Operation.UPDATE) {
+            removed.push(change.oldValue);
+            added.push(change.value);
+          } else if (change.type == Operation.ADD) {
+            added.push(change.value);
+          } else if (change.type == Operation.REMOVE) {
+            removed.push(change.oldValue);
+          }
+        }
+        result.push({
+          field: field.label,
+          type: 'list',
+          removed,
+          added,
+        });
+      } else {
+        result.push({
+          field: field.label,
+          type: 'text',
+          oldValue: fieldDiff.oldValue,
+          newValue: fieldDiff.value,
+        });
+      }
+    }
+  }
+
+  return result;
 };
