@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { FIND_INCIDENT_HISTORY } from '../../graphql/incidents';
 import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
+//import { FIND_ENTITIES } from '../../graphql/entities';
 import { useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
@@ -18,6 +19,8 @@ function IncidentHistoryPage() {
   const [incidentHistory, setIncidentHistory] = useState([]);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
+
+  //const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
   const { data: incidentHistoryData, loading: loadingIncidentHistory } = useQuery(
     FIND_INCIDENT_HISTORY,
@@ -48,8 +51,6 @@ function IncidentHistoryPage() {
           modifiedByUser: usersData?.users.find((user) => user.user_id === versionData.modified_by),
         };
 
-        console.log(version);
-
         version.changes = getIncidentChanges(previousVersionData, versionData);
 
         incidentHistory.push(version);
@@ -59,12 +60,12 @@ function IncidentHistoryPage() {
     }
   }, [incidentHistoryData, usersData]);
 
-  const loading = loadingIncidentHistory && loadingUsers;
+  const loading = loadingIncidentHistory && loadingUsers; // && loadingEntities;
 
   return (
     <div className={'w-full p-1'}>
       {!loading && (
-        <div className="flex flex-row justify-between flex-wrap">
+        <div>
           <h1 className="text-2xl mb-5">{incidentTitle}</h1>
         </div>
       )}
@@ -81,6 +82,12 @@ function IncidentHistoryPage() {
             <div>There are no version history records for this incident</div>
           ) : (
             <>
+              <div className="mb-3">
+                <h2 className="text-lg">
+                  <Trans>Version History</Trans>
+                </h2>
+                <hr />
+              </div>
               {incidentHistory.map((version, index) => {
                 return (
                   <div key={`version_${index}`} className="py-3">
@@ -93,27 +100,41 @@ function IncidentHistoryPage() {
                         {version.modifiedByUser?.last_name}
                       </div>
                     </div>
-                    <div className="mb-3">
+                    <div className="flex flex-col flex-nowrap mb-3">
                       {version.changes.map((change, index) => {
                         return (
-                          <div key={`change_${index}`} className="flex">
-                            <div className="mr-5">{t(change.field)}</div>
+                          <div key={`change_${index}`} className="flex flex-row flex-nowrap">
+                            <div className="flex w-64">{t(change.field)}</div>
                             {change.oldValue && change.newValue && (
                               <>
-                                <div className="mr-5 text-red-600">{change.oldValue}</div>
-                                <div className="text-green-500">{change.newValue}</div>
+                                <div className="flex flex-1 text-red-600">{change.oldValue}</div>
+                                <div className="flex flex-1 text-green-500">{change.newValue}</div>
                               </>
                             )}
-                            {change.removed?.map((item, index) => (
-                              <div key={`removed_${index}`} className="mr-5 text-red-600">
-                                {item}
-                              </div>
-                            ))}
-                            {change.added?.map((item, index) => (
-                              <div key={`added_${index}`} className="mr-5 text-green-500">
-                                {item}
-                              </div>
-                            ))}
+                            {change.removed?.length > 0 && change.added?.length > 0 && (
+                              <>
+                                <div className="flex flex-1 flex-wrap">
+                                  {change.removed?.map((item, index) => (
+                                    <div
+                                      key={`removed_${index}`}
+                                      className="inline-block h-6 center bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
+                                    >
+                                      {item}
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="flex flex-1 flex-wrap">
+                                  {change.added?.map((item, index) => (
+                                    <div
+                                      key={`added_${index}`}
+                                      className="inline-block h-6 center bg-green-100 text-green-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
+                                    >
+                                      {item}
+                                    </div>
+                                  ))}
+                                </div>
+                              </>
+                            )}
                           </div>
                         );
                       })}

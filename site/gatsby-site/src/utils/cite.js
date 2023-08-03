@@ -218,8 +218,6 @@ const INCIDENT_TO_COMPARE = [
 export const getIncidentChanges = (oldVersion, newVersion) => {
   const diffData = diff(oldVersion, newVersion);
 
-  console.log('diffData', diffData);
-
   const result = [];
 
   for (const field of INCIDENT_TO_COMPARE) {
@@ -238,7 +236,7 @@ export const getIncidentChanges = (oldVersion, newVersion) => {
           } else if (change.type == Operation.ADD) {
             added.push(change.value);
           } else if (change.type == Operation.REMOVE) {
-            removed.push(change.oldValue);
+            removed.push(change.value);
           }
         }
         result.push({
