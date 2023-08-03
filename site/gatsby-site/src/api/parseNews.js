@@ -1,4 +1,4 @@
-import Mercury from '@postlight/mercury-parser';
+import Parser from '@postlight/parser';
 import { format, parseISO } from 'date-fns';
 
 const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
@@ -6,7 +6,7 @@ const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?
 export default async function handler(req, res) {
   const { url } = req.query;
 
-  const article = await Mercury.parse(url, { contentType: 'markdown' });
+  const article = await Parser.parse(url, { contentType: 'markdown' });
 
   const response = {
     title: article.title,

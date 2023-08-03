@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 
-const Sidebar = ({ defaultCollapsed = false, location = null }) => {
+const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed }) => {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -134,7 +134,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
           className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}
         >
           <Tree
-            setNavCollapsed={() => {}}
+            setNavCollapsed={setNavCollapsed}
             isCollapsed={isCollapsed}
             localizePath={localizePath}
             additionalNodes={[
@@ -167,7 +167,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
         {!isMobile && (
           <div
             className={`
-              ${sidebarWidth} h-12
+              ${sidebarWidth} md:h-12
               flex justify-end items-center
               transition-all duration-500
               border-t-1 border-gray-200

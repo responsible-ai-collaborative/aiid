@@ -12,8 +12,9 @@ export default function TsneVisualization({
   incidents,
   classifications,
   csetClassifications,
+  taxa,
 }) {
-  const [axis, setAxis] = useState('CSET::Sector of Deployment');
+  const [axis, setAxis] = useState('CSETv1::Sector of Deployment');
 
   const [axisNamespace, axisFieldName] = axis.split('::');
 
@@ -32,12 +33,20 @@ export default function TsneVisualization({
   const attributesByAxis = {};
 
   for (const classification of classificationsWithAttributes) {
+    const taxonomy = taxa.find((taxonomy) => taxonomy.namespace == classification.namespace);
+
     for (const attribute of classification.attributes) {
       if (attributeIsNotEmpty(attribute)) {
         const axis = classification.namespace + '::' + attribute.short_name;
 
-        attributesByAxis[axis] ||= [];
-        attributesByAxis[axis].push(attribute);
+        const field = taxonomy.field_list.find((field) => {
+          return field.short_name == attribute.short_name;
+        });
+
+        if (!field?.hide_search) {
+          attributesByAxis[axis] ||= [];
+          attributesByAxis[axis].push(attribute);
+        }
       }
     }
   }

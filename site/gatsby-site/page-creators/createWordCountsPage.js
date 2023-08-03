@@ -45,6 +45,39 @@ const createWordCountsPage = async (graphql, createPage) => {
           }
         }
       }
+      sponsors: allPrismicSponsor(sort: { data: { order: { text: ASC } } }) {
+        edges {
+          node {
+            data {
+              title {
+                text
+                richText
+              }
+              order {
+                text
+              }
+              language {
+                text
+              }
+              items {
+                name {
+                  text
+                }
+                description {
+                  richText
+                }
+                logo {
+                  gatsbyImageData
+                  url
+                }
+                link {
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
     }
   `);
 
@@ -108,6 +141,7 @@ const createWordCountsPage = async (graphql, createPage) => {
         wordsPerCloud,
         latestReportNumber: result.data.latestReport.nodes[0].report_number,
         latestReportNumbers,
+        sponsors: result.data.sponsors.edges,
       },
     });
   });

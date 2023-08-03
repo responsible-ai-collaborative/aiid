@@ -25,6 +25,8 @@ const LandingPage = (props) => {
 
   let { latestPost, latestPostOld, latestReportIncidents } = data;
 
+  let { sponsors } = props.pageContext;
+
   const { locale: language } = useLocalization();
 
   const latestReports = latestReportIncidents.edges.map((incident) => {
@@ -151,7 +153,7 @@ const LandingPage = (props) => {
         </div>
 
         <div>
-          <Sponsors />
+          <Sponsors sponsors={sponsors} />
         </div>
       </Container>
     </div>
