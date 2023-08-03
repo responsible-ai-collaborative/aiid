@@ -221,68 +221,72 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
   const result = [];
 
   for (const field of INCIDENT_TO_COMPARE) {
-    const fieldDiff = diffData.find((diff) => diff.key == field.key);
+    const fieldDiffs = diffData.filter((diff) => diff.key == field.key);
 
-    if (fieldDiff) {
-      if (fieldDiff.embeddedKey && fieldDiff.changes) {
-        const removed = [];
+    if (fieldDiffs && fieldDiffs.length > 0) {
+      for (const fieldDiff of fieldDiffs) {
+        if (fieldDiff.embeddedKey && fieldDiff.changes) {
+          const removed = [];
 
-        const added = [];
+          const added = [];
 
-        for (const change of fieldDiff.changes) {
-          if (change.type == Operation.UPDATE) {
-            removed.push(change.oldValue);
-            added.push(change.value);
-          } else if (change.type == Operation.ADD) {
-            added.push(change.value);
-          } else if (change.type == Operation.REMOVE) {
-            removed.push(change.value);
+          for (const change of fieldDiff.changes) {
+            if (change.type == Operation.UPDATE) {
+              removed.push(change.oldValue);
+              added.push(change.value);
+            } else if (change.type == Operation.ADD) {
+              added.push(change.value);
+            } else if (change.type == Operation.REMOVE) {
+              removed.push(change.value);
+            }
+          }
+
+          let removedLabels = removed;
+
+          let addedLabels = added;
+
+          if (
+            [
+              'AllegedDeployerOfAISystem',
+              'AllegedDeveloperOfAISystem',
+              'AllegedHarmedOrNearlyHarmedParties',
+            ].includes(field.key)
+          ) {
+            removedLabels = removed.map(
+              (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+            );
+            addedLabels = added.map(
+              (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+            );
+          } else if (field.key == 'editors') {
+            removedLabels = removed.map((userId) => {
+              const user = users?.find((u) => u.userId == userId);
+
+              return user ? `${user.first_name} ${user.last_name}` : userId;
+            });
+            addedLabels = added.map((userId) => {
+              const user = users?.find((u) => u.userId == userId);
+
+              return user ? `${user.first_name} ${user.last_name}` : userId;
+            });
+          }
+
+          result.push({
+            field: field.label,
+            type: 'list',
+            removed: removedLabels,
+            added: addedLabels,
+          });
+        } else {
+          if (fieldDiff.value) {
+            result.push({
+              field: field.label,
+              type: 'text',
+              oldValue: fieldDiff.oldValue,
+              newValue: fieldDiff.value,
+            });
           }
         }
-
-        let removedLabels = removed;
-
-        let addedLabels = added;
-
-        if (
-          [
-            'AllegedDeployerOfAISystem',
-            'AllegedDeveloperOfAISystem',
-            'AllegedHarmedOrNearlyHarmedParties',
-          ].includes(field.key)
-        ) {
-          removedLabels = removed.map(
-            (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
-          );
-          addedLabels = added.map(
-            (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
-          );
-        } else if (field.key == 'editors') {
-          removedLabels = removed.map((userId) => {
-            const user = users?.find((u) => u.userId == userId);
-
-            return user ? `${user.first_name} ${user.last_name}` : userId;
-          });
-          addedLabels = added.map((userId) => {
-            const user = users?.find((u) => u.userId == userId);
-
-            return user ? `${user.first_name} ${user.last_name}` : userId;
-          });
-        }
-
-        result.push({
-          field: field.label,
-          type: 'list',
-          removed: removedLabels,
-          added: addedLabels,
-        });
-      } else {
-        result.push({
-          field: field.label,
-          type: 'text',
-          oldValue: fieldDiff.oldValue,
-          newValue: fieldDiff.value,
-        });
       }
     }
   }

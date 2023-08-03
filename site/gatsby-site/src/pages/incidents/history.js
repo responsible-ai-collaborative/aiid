@@ -126,7 +126,7 @@ function IncidentHistoryPage() {
                         return (
                           <div key={`change_${index}`} className="flex flex-row flex-nowrap">
                             <div className="flex w-64">{t(change.field)}</div>
-                            {change.oldValue && change.newValue && (
+                            {(change.oldValue || change.newValue) && (
                               <>
                                 <div className="flex flex-1 m-1 text-red-600">
                                   {change.oldValue}
