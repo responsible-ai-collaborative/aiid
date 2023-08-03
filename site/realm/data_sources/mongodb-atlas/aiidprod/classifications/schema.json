@@ -29,6 +29,12 @@
         "notes": {
             "bsonType": "string"
         },
+        "reports": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
         "publish": {
             "bsonType": "bool"
         }
