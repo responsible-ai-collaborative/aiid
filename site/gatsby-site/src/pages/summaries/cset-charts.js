@@ -220,7 +220,6 @@ export const pageQuery = graphql`
   query Classifications {
     allMongodbAiidprodClassifications(limit: 9999999) {
       nodes {
-        incident_id
         namespace
         attributes {
           short_name
