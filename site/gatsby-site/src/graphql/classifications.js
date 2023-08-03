@@ -18,7 +18,7 @@ export const FIND_CLASSIFICATION = gql`
   }
 `;
 
-export const UPDATE_CLASSIFICATION = gql`
+export const UPSERT_CLASSIFICATION = gql`
   mutation UpsertClassification(
     $query: ClassificationQueryInput
     $data: ClassificationInsertInput!

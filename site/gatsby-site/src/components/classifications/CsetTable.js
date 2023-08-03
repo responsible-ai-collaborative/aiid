@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { startsWith, union, uniqWith, isEqual, filter } from 'lodash';
-import { UPDATE_CLASSIFICATION } from '../../graphql/classifications';
+import { UPSERT_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation } from '@apollo/client';
 import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
@@ -338,7 +338,7 @@ function TableWrap({ data, setData, className, ...props }) {
 }
 
 export default function CsetTable({ data, taxa, incident_id, ...props }) {
-  const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
+  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
 
   const addToast = useToastContext();
 
@@ -412,6 +412,7 @@ export default function CsetTable({ data, taxa, incident_id, ...props }) {
         attributes: attributes.map((a) => a),
         namespace: 'CSETv1',
         incidents: { link: [parseInt(incident_id)] },
+        reports: [],
       };
 
       await updateClassification({
