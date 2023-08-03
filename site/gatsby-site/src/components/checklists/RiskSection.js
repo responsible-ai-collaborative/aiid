@@ -21,7 +21,7 @@ export default function RiskSection({
 }) {
   const { t } = useTranslation();
 
-  const showPrecedentFilters = useState(false);
+  const [showPrecedentFilters, setShowPrecedentFilters] = useState(false);
 
   const updateRisk = (attributeValueMap) => {
     const updatedRisks = [...values.risks];
@@ -125,7 +125,10 @@ export default function RiskSection({
           </PrecedentsQuery>
         )}
         <Precedents>
-          <Label>Precedents</Label>
+          <div className="flex justify-between">
+            <Label>Precedents</Label>
+            <button>Filter</button>
+          </div>
           <PrecedentsList>
             {risk.precedents.map((precedent) => (
               <Card key={precedent.incident_id}>
