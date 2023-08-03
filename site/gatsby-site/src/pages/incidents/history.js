@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { FIND_INCIDENT_HISTORY } from '../../graphql/incidents';
 import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
-//import { FIND_ENTITIES } from '../../graphql/entities';
+import { FIND_ENTITIES } from '../../graphql/entities';
 import { useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
@@ -20,7 +20,7 @@ function IncidentHistoryPage() {
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
-  //const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
   const { data: incidentHistoryData, loading: loadingIncidentHistory } = useQuery(
     FIND_INCIDENT_HISTORY,
@@ -51,16 +51,32 @@ function IncidentHistoryPage() {
           modifiedByUser: usersData?.users.find((user) => user.user_id === versionData.modified_by),
         };
 
-        version.changes = getIncidentChanges(previousVersionData, versionData);
+        version.changes = getIncidentChanges(
+          previousVersionData,
+          versionData,
+          usersData?.users,
+          entitiesData?.entities
+        );
 
         incidentHistory.push(version);
       }
 
+      // The initial version
+      const initialVersionData =
+        incidentHistoryData.history_incidents[incidentHistoryData.history_incidents.length - 1];
+
+      incidentHistory.push({
+        ...initialVersionData,
+        modifiedByUser: usersData?.users.find(
+          (user) => user.user_id === initialVersionData.modified_by
+        ),
+      });
+
       setIncidentHistory(incidentHistory);
     }
-  }, [incidentHistoryData, usersData]);
+  }, [incidentHistoryData, usersData, entitiesData]);
 
-  const loading = loadingIncidentHistory && loadingUsers; // && loadingEntities;
+  const loading = loadingIncidentHistory && loadingUsers && loadingEntities;
 
   return (
     <div className={'w-full p-1'}>
@@ -90,8 +106,8 @@ function IncidentHistoryPage() {
               </div>
               {incidentHistory.map((version, index) => {
                 return (
-                  <div key={`version_${index}`} className="py-3">
-                    <div className="flex">
+                  <div key={`version_${index}`} className="py-2">
+                    <div className="flex font-semibold mb-2">
                       <div className="mr-5">
                         {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                       </div>
@@ -101,17 +117,26 @@ function IncidentHistoryPage() {
                       </div>
                     </div>
                     <div className="flex flex-col flex-nowrap mb-3">
-                      {version.changes.map((change, index) => {
+                      {!version.changes && (
+                        <div>
+                          <Trans>Initial version</Trans>
+                        </div>
+                      )}
+                      {version.changes?.map((change, index) => {
                         return (
                           <div key={`change_${index}`} className="flex flex-row flex-nowrap">
                             <div className="flex w-64">{t(change.field)}</div>
                             {change.oldValue && change.newValue && (
                               <>
-                                <div className="flex flex-1 text-red-600">{change.oldValue}</div>
-                                <div className="flex flex-1 text-green-500">{change.newValue}</div>
+                                <div className="flex flex-1 m-1 text-red-600">
+                                  {change.oldValue}
+                                </div>
+                                <div className="flex flex-1 m-1 text-green-500">
+                                  {change.newValue}
+                                </div>
                               </>
                             )}
-                            {change.removed?.length > 0 && change.added?.length > 0 && (
+                            {(change.removed?.length > 0 || change.added?.length > 0) && (
                               <>
                                 <div className="flex flex-1 flex-wrap">
                                   {change.removed?.map((item, index) => (

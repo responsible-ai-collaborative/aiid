@@ -215,7 +215,7 @@ const INCIDENT_TO_COMPARE = [
   { key: 'reports', label: 'Reports', isList: true },
 ];
 
-export const getIncidentChanges = (oldVersion, newVersion) => {
+export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
   const diffData = diff(oldVersion, newVersion);
 
   const result = [];
@@ -239,11 +239,42 @@ export const getIncidentChanges = (oldVersion, newVersion) => {
             removed.push(change.value);
           }
         }
+
+        let removedLabels = removed;
+
+        let addedLabels = added;
+
+        if (
+          [
+            'AllegedDeployerOfAISystem',
+            'AllegedDeveloperOfAISystem',
+            'AllegedHarmedOrNearlyHarmedParties',
+          ].includes(field.key)
+        ) {
+          removedLabels = removed.map(
+            (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+          );
+          addedLabels = added.map(
+            (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+          );
+        } else if (field.key == 'editors') {
+          removedLabels = removed.map((userId) => {
+            const user = users?.find((u) => u.userId == userId);
+
+            return user ? `${user.first_name} ${user.last_name}` : userId;
+          });
+          addedLabels = added.map((userId) => {
+            const user = users?.find((u) => u.userId == userId);
+
+            return user ? `${user.first_name} ${user.last_name}` : userId;
+          });
+        }
+
         result.push({
           field: field.label,
           type: 'list',
-          removed,
-          added,
+          removed: removedLabels,
+          added: addedLabels,
         });
       } else {
         result.push({
