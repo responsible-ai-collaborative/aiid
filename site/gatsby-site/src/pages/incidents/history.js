@@ -95,9 +95,11 @@ function IncidentHistoryPage() {
       {!loading && (
         <>
           {!(incidentHistoryData?.history_incidents?.length > 0) ? (
-            <div>There are no version history records for this incident</div>
+            <div>
+              <Trans>There are no version history records for this Incident</Trans>
+            </div>
           ) : (
-            <>
+            <div data-cy="history-table">
               <div className="mb-3">
                 <h2 className="text-lg">
                   <Trans>Version History</Trans>
@@ -106,8 +108,8 @@ function IncidentHistoryPage() {
               </div>
               {incidentHistory.map((version, index) => {
                 return (
-                  <div key={`version_${index}`} className="py-2">
-                    <div className="flex font-semibold mb-2">
+                  <div key={`version_${index}`} className="py-2" data-cy="history-row">
+                    <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
                       <div className="mr-5">
                         {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                       </div>
@@ -116,7 +118,7 @@ function IncidentHistoryPage() {
                         {version.modifiedByUser?.last_name}
                       </div>
                     </div>
-                    <div className="flex flex-col flex-nowrap mb-3">
+                    <div className="flex flex-col flex-nowrap mb-3" data-cy="history-row-changes">
                       {!version.changes && (
                         <div>
                           <Trans>Initial version</Trans>
@@ -168,7 +170,7 @@ function IncidentHistoryPage() {
                   </div>
                 );
               })}
-            </>
+            </div>
           )}
         </>
       )}
