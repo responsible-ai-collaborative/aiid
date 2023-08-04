@@ -1,6 +1,11 @@
-[build.environment]
-CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"
-TERM = "xterm"
+[build]
+  base    = "/site/gatsby-site"
+  publish = "/site/gatsby-site/public"
+  command = "npm run test:instrument && npm run build"
+
+  [build.environment]
+  CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"
+  TERM = "xterm"
 
 [[plugins]]
   package = "@netlify/plugin-gatsby"

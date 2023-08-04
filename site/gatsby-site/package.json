@@ -105,7 +105,8 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
+    "test:instrument": "nyc instrument --compact=false src instrumented"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.11.0",
@@ -127,6 +128,7 @@
     "husky": "^4.3.6",
     "lint-staged": "^10.5.3",
     "netlify-plugin-cypress": "^2.2.1",
+    "nyc": "^15.1.0",
     "postcss": "^8.4.14",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
