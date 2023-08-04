@@ -16,7 +16,7 @@ function IncidentHistoryPage() {
 
   const [incidentTitle, setIncidentTitle] = useState(null);
 
-  const [incidentHistory, setIncidentHistory] = useState([]);
+  const [incidentHistory, setIncidentHistory] = useState(null);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
@@ -76,16 +76,11 @@ function IncidentHistoryPage() {
     }
   }, [incidentHistoryData, usersData, entitiesData]);
 
-  const loading = loadingIncidentHistory && loadingUsers && loadingEntities;
+  const loading =
+    loadingIncidentHistory || loadingUsers || loadingEntities || incidentHistory === null;
 
   return (
     <div className={'w-full p-1'}>
-      {!loading && (
-        <div>
-          <h1 className="text-2xl mb-5">{incidentTitle}</h1>
-        </div>
-      )}
-
       {loading && (
         <div className="flex">
           <DefaultSkeleton />
@@ -93,8 +88,14 @@ function IncidentHistoryPage() {
       )}
 
       {!loading && (
+        <div>
+          <h1 className="text-2xl mb-5">{incidentTitle}</h1>
+        </div>
+      )}
+
+      {!loading && (
         <>
-          {!(incidentHistoryData?.history_incidents?.length > 0) ? (
+          {!(incidentHistory.length > 0) ? (
             <div>
               <Trans>There are no version history records for this Incident</Trans>
             </div>
