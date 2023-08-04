@@ -16,7 +16,7 @@ const ToolPage = (props) => {
   } = props;
 
   const { data, loading } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id, namespace_in: allNamespaces } },
+    variables: { query: { incidents_in: { incident_id }, namespace_in: allNamespaces } },
   });
 
   const [tableData, setTableData] = useState([]);

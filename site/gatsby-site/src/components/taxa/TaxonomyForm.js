@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 
-import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications';
+import { FIND_CLASSIFICATION, UPSERT_CLASSIFICATION } from '../../graphql/classifications';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -44,7 +44,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   }));
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { query: { incidents: { incident_id: incidentId } } },
     skip: !active,
   });
 
@@ -84,7 +84,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       (classification) => classification.namespace == taxonomy.namespace
     );
 
-  const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
+  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
 
   const allTaxonomyFields =
     taxonomy &&
@@ -160,17 +160,18 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const data = {
         __typename: undefined,
-        incident_id: incidentId,
+        incidents: { link: [incidentId] },
         notes: values.notes,
         publish: values.publish,
         attributes: attributes.map((a) => a),
         namespace,
+        reports: [],
       };
 
       await updateClassification({
         variables: {
           query: {
-            incident_id: incidentId,
+            incidents: { incident_id: incidentId },
             namespace,
           },
           data,

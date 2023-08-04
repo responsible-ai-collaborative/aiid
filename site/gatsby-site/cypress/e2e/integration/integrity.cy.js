@@ -82,4 +82,27 @@ describe('Integrity', () => {
       });
     }
   );
+
+  it(
+    `Classifications should be linked to one and only one incident`,
+    { requestTimeout: 30000, defaultCommandTimeout: 30000, responseTimeout: 30000 },
+    () => {
+      cy.query({
+        query: gql`
+          query {
+            classifications(limit: 999999) {
+              incidents {
+                incident_id
+              }
+            }
+          }
+        `,
+      }).then(({ data: { classifications } }) => {
+        expect(classifications.every((c) => c.incidents.length == 1)).to.eq(
+          true,
+          'Classification linked to more than one incident'
+        );
+      });
+    }
+  );
 });
