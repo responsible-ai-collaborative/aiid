@@ -67,6 +67,11 @@ describe('Incidents', () => {
           ).should('exist');
         });
     });
+
+    cy.get('[data-cy="history-row"]')
+      .eq(incidentHistory.data.history_incidents.length - 1)
+      .contains('Initial version')
+      .should('exist');
   });
 
   it('Should not display the Version History table data if no data is present', () => {
