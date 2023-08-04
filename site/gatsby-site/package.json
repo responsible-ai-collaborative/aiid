@@ -98,7 +98,7 @@
   "main": "n/a",
   "scripts": {
     "start": "gatsby develop",
-    "build": "gatsby build --prefix-paths",
+    "build": "gatsby build",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "gatsby serve -p 8000",
