@@ -17,8 +17,11 @@
                 }
             }
         },
-        "incident_id": {
-            "bsonType": "int"
+        "incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
         },
         "namespace": {
             "bsonType": "string"
@@ -28,10 +31,17 @@
         },
         "publish": {
             "bsonType": "bool"
+        },
+        "reports": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
         }
     },
     "required": [
-        "incident_id",
+        "incidents",
+        "reports",
         "namespace"
     ],
     "title": "classification"
