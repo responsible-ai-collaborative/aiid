@@ -98,8 +98,8 @@ describe('Integrity', () => {
           }
         `,
       }).then(({ data: { classifications } }) => {
-        expect(classifications.every((c) => c.incidents.length)).to.eq(
-          1,
+        expect(classifications.every((c) => c.incidents.length == 1)).to.eq(
+          true,
           'Classification linked to more than one incident'
         );
       });
