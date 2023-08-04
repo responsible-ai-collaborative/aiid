@@ -38,17 +38,7 @@ const IncidentList = ({ incidents }) => {
 };
 
 export default function Incidents({ data, ...props }) {
-  const incidents = data.allMongodbAiidprodIncidents.nodes.map((incident) => {
-    const reports = incident.reports.map(
-      (report_number) =>
-        data.allMongodbAiidprodReports.nodes.find((r) => r.report_number == report_number) || {
-          report_number,
-          title: `Missing Report ${report_number}`,
-        } // there are missing reports, remove once that's fixed
-    );
-
-    return { ...incident, reports };
-  });
+  const incidents = data.allMongodbAiidprodIncidents.nodes;
 
   return (
     <>
@@ -79,16 +69,10 @@ export const pageQuery = graphql`
         date
         reports {
           report_number
+          title
+          url
+          inputs_outputs
         }
-      }
-    }
-    allMongodbAiidprodReports {
-      nodes {
-        id
-        report_number
-        title
-        url
-        inputs_outputs
       }
     }
   }
