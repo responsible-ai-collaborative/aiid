@@ -29,18 +29,19 @@
         "notes": {
             "bsonType": "string"
         },
+        "publish": {
+            "bsonType": "bool"
+        },
         "reports": {
             "bsonType": "array",
             "items": {
                 "bsonType": "int"
             }
-        },
-        "publish": {
-            "bsonType": "bool"
         }
     },
     "required": [
         "incidents",
+        "reports",
         "namespace"
     ],
     "title": "classification"
