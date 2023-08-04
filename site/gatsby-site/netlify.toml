@@ -1,6 +1,6 @@
 [build]
-  base    = "/site/gatsby-site"
-  publish = "/site/gatsby-site/public"
+  base    = "site/gatsby-site"
+  publish = "site/gatsby-site/public"
   command = "npm run test:instrument && npm run build"
 
   [build.environment]
