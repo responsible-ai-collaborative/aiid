@@ -199,29 +199,25 @@ export const deleteIncidentTypenames = (incident) => {
   return incident;
 };
 
-const INCIDENT_TO_COMPARE = [
-  { key: 'title', label: 'Title' },
-  { key: 'description', label: 'Description' },
-  { key: 'date', label: 'Date' },
-  { key: 'AllegedDeployerOfAISystem', label: 'Alleged Deployer of AI System', isList: true },
-  { key: 'AllegedDeveloperOfAISystem', label: 'Alleged Developer of AI System', isList: true },
-  {
-    key: 'AllegedHarmedOrNearlyHarmedParties',
-    label: 'Alleged Harmed or Nearly Harmed Parties',
-    isList: true,
-  },
-  { key: 'editors', label: 'Editors', isList: true },
-  { key: 'editor_notes', label: 'Editor Notes' },
-  { key: 'reports', label: 'Reports', isList: true },
-];
+const INCIDENT_TO_COMPARE = {
+  title: 'Title',
+  description: 'Description',
+  date: 'Date',
+  AllegedDeployerOfAISystem: 'Alleged Deployer of AI System',
+  AllegedDeveloperOfAISystem: 'Alleged Developer of AI System',
+  AllegedHarmedOrNearlyHarmedParties: 'Alleged Harmed or Nearly Harmed Parties',
+  editors: 'Editors',
+  editor_notes: 'Editor Notes',
+  reports: 'Reports',
+};
 
 export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
   const diffData = diff(oldVersion, newVersion);
 
   const result = [];
 
-  for (const field of INCIDENT_TO_COMPARE) {
-    const fieldDiffs = diffData.filter((diff) => diff.key == field.key);
+  for (const field of Object.keys(INCIDENT_TO_COMPARE)) {
+    const fieldDiffs = diffData.filter((diff) => diff.key == field);
 
     if (fieldDiffs && fieldDiffs.length > 0) {
       for (const fieldDiff of fieldDiffs) {
@@ -250,7 +246,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
               'AllegedDeployerOfAISystem',
               'AllegedDeveloperOfAISystem',
               'AllegedHarmedOrNearlyHarmedParties',
-            ].includes(field.key)
+            ].includes(field)
           ) {
             removedLabels = removed.map(
               (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
@@ -258,7 +254,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
             addedLabels = added.map(
               (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
             );
-          } else if (field.key == 'editors') {
+          } else if (field == 'editors') {
             removedLabels = removed.map((userId) => {
               const user = users?.find((u) => u.userId == userId);
 
@@ -272,7 +268,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
           }
 
           result.push({
-            field: field.label,
+            field: INCIDENT_TO_COMPARE[field],
             type: 'list',
             removed: removedLabels,
             added: addedLabels,
@@ -280,7 +276,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
         } else {
           if (fieldDiff.value) {
             result.push({
-              field: field.label,
+              field: INCIDENT_TO_COMPARE[field],
               type: 'text',
               oldValue: fieldDiff.oldValue,
               newValue: fieldDiff.value,
