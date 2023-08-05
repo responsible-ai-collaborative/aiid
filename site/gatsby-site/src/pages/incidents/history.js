@@ -73,6 +73,8 @@ function IncidentHistoryPage() {
       });
 
       setIncidentHistory(incidentHistory);
+    } else {
+      setIncidentHistory([]);
     }
   }, [incidentHistoryData, usersData, entitiesData]);
 
@@ -95,7 +97,7 @@ function IncidentHistoryPage() {
 
       {!loading && (
         <>
-          {!(incidentHistory.length > 0) ? (
+          {!(incidentHistory?.length > 0) ? (
             <div>
               <Trans>There are no version history records for this Incident</Trans>
             </div>
