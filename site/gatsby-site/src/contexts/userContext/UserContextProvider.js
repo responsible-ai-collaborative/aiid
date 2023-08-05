@@ -41,9 +41,6 @@ const getApolloCLient = (getValidAccessToken) =>
         User: {
           keyFields: ['userId'],
         },
-        Classification: {
-          keyFields: ['incident_id', 'namespace'],
-        },
       },
     }),
   });
