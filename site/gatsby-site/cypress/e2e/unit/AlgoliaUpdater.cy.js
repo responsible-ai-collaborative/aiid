@@ -64,15 +64,14 @@ const reports = [
 const classifications = [
   {
     _id: '60dd465f80935bc89e6f9b00',
-    issue_type: 'incident',
-    issue_id: 1,
-    namespace: 'CSET',
+    incidents: [1],
+    namespace: 'CSETv0',
     attributes: [
-      { short_name: 'Annotator', value_json: '"1"' },
-      { short_name: 'Annotation Status', value_json: '"6. Complete and final"' },
-      { short_name: 'Reviewer', value_json: '"5"' },
-      { short_name: 'Quality Control', value_json: 'false' },
-      { short_name: 'Full Description', value_json: '"On December 5, 2018, a robot punctured."' },
+      // { short_name: 'Annotator', value_json: '"1"' },
+      // { short_name: 'Annotation Status', value_json: '"6. Complete and final"' },
+      // { short_name: 'Reviewer', value_json: '"5"' },
+      // { short_name: 'Quality Control', value_json: 'false' },
+      // { short_name: 'Full Description', value_json: '"On December 5, 2018, a robot punctured."' },
       { short_name: 'Named Entities', value_json: '["Amazon"]' },
       {
         short_name: 'Harm Type',
@@ -81,6 +80,13 @@ const classifications = [
       { short_name: 'Publish', value_json: 'true' },
     ],
     notes: null,
+  },
+  {
+    _id: '60dd465f80935bc89e6f9b01',
+    incidents: [1],
+    namespace: 'SHOULD NOT BE INCLUDED',
+    attributes: [{ short_name: 'Something', value_json: '"Great"' }],
+    notes: 'Nothing to see here',
   },
 ];
 
@@ -285,9 +291,9 @@ describe('Algolia', () => {
         epoch_incident_date: 1592092800,
         incident_date: '2020-06-14',
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
       });
 
@@ -313,9 +319,9 @@ describe('Algolia', () => {
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
       });
 
@@ -341,9 +347,9 @@ describe('Algolia', () => {
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
         featured: 0,
       });
@@ -370,9 +376,9 @@ describe('Algolia', () => {
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Named Entities:Amazon',
-          'CSET:Harm Type:Harm to physical health/safety',
-          'CSET:Harm Type:Harm to physical property',
+          'CSETv0:Named Entities:Amazon',
+          'CSETv0:Harm Type:Harm to physical health/safety',
+          'CSETv0:Harm Type:Harm to physical property',
         ],
         featured: 2,
       });

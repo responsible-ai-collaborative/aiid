@@ -138,10 +138,14 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
-    allMongodbAiidprodClassifications(filter: { issue_id: { eq: $incident_id } }) {
+    allMongodbAiidprodClassifications(
+      filter: { incidents: { elemMatch: { incident_id: { eq: $incident_id } } } }
+    ) {
       nodes {
-        issue_type
-        issue_id
+        incidents {
+          incident_id
+        }
+        id
         namespace
         notes
         attributes {

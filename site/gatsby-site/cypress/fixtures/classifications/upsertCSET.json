@@ -85,8 +85,11 @@
                 ],
                 "__typename": "ClassificationClassification"
             },
-            "issue_id": 10,
-            "issue_type": "incident",
+            "incidents": [
+                {
+                    "incident_id": 10
+                }
+            ],
             "namespace": "CSET",
             "notes": "This is an updated note"
         }

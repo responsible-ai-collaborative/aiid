@@ -4,7 +4,7 @@ const createMdxPages = async (graphql, createPage, { reporter }) => {
   const result = await graphql(
     `
       {
-        allFile(filter: { sourceInstanceName: { in: ["blog", "docs"] }, ext: { eq: ".mdx" } }) {
+        allFile(filter: { sourceInstanceName: { in: ["docs"] }, ext: { eq: ".mdx" } }) {
           nodes {
             sourceInstanceName
             absolutePath

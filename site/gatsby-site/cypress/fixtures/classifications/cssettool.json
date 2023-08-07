@@ -311,8 +311,11 @@
                         "value_json": "\"\""
                     }
                 ],
-                "issue_id": 52,
-                "issue_type": "incident",
+                "incidents": [
+                    {
+                        "incident_id": 52
+                    }
+                ],
                 "namespace": "CSETv1_Annotator-1",
                 "notes": "This a note from the annotator 1",
                 "publish": false
@@ -627,8 +630,11 @@
                         "value_json": null
                     }
                 ],
-                "issue_id": 52,
-                "issue_type": "incident",
+                "incidents": [
+                    {
+                        "incident_id": 52
+                    }
+                ],
                 "namespace": "CSETv1_Annotator-2",
                 "notes": "This a note from the annotator 2",
                 "publish": false

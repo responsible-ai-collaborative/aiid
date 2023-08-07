@@ -30,6 +30,8 @@ const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
 const createReportPages = require('./page-creators/createReportPages');
 
+const createBlogPages = require('./page-creators/createBlogPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -67,6 +69,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
+    createBlogPages,
     createMdxPages,
     createCitationPages,
     createWordCountsPages,
@@ -213,6 +216,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
       reports: [mongodbAiidprodReports] @link(by: "report_number")
+      incident_id: Int
+      epoch_date_modified: Int
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -245,8 +250,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
     
     type mongodbAiidprodClassifications implements Node {
-      issue_id: Int
-      issue_type: String
+      incidents: [mongodbAiidprodIncidents] @link(by: "incident_id")
       namespace: String
       attributes: [mongodbAiidprodClassificationsAttribute]
     }
