@@ -260,7 +260,8 @@ export default function ClassificationsDbView(props) {
       const classificationsToRowsMap = (cObj) => {
         const row = {};
 
-        row['IncidentId'] = cObj.incident_id;
+        row['IncidentId'] = cObj.incidents[0].incident_id;
+
         for (const key in cObj.classifications) {
           row[key.split(' ').join('')] = cObj.classifications[key];
         }

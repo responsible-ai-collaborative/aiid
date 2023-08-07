@@ -26,7 +26,9 @@ export default function CsetTaxonomyPage(props) {
     },
   };
 
-  const classifications = allMongodbAiidprodClassifications.nodes;
+  let classifications = allMongodbAiidprodClassifications.nodes;
+
+  classifications = classifications.filter((c) => c.publish);
 
   const { t } = useTranslation();
 

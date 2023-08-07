@@ -3,7 +3,7 @@ import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_FULL_INCIDENT, LOG_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -11,10 +11,10 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
-import { transformIncidentData } from '../../utils/cite';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
+import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
@@ -37,9 +37,9 @@ function EditCitePage(props) {
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
-  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
-
   const addToast = useToastContext();
+
+  const { logIncidentHistory } = useLogIncidentHistory();
 
   const updateSuccessToast = ({ incidentId }) => ({
     message: (
@@ -120,7 +120,7 @@ function EditCitePage(props) {
         },
       });
 
-      const updatedIncident = transformIncidentData(
+      await logIncidentHistory(
         {
           ...incident,
           ...updated,
@@ -129,8 +129,6 @@ function EditCitePage(props) {
         },
         user
       );
-
-      await logIncidentHistory({ variables: { input: updatedIncident } });
 
       addToast(updateSuccessToast({ incidentId }));
     } catch (error) {

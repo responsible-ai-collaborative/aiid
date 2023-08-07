@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { FIND_FULL_INCIDENT, LOG_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner, Modal, Button } from 'flowbite-react';
@@ -9,9 +9,9 @@ import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
-import { transformIncidentData } from '../../utils/cite';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
+import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();
@@ -30,9 +30,9 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
-  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
-
   const addToast = useToastContext();
+
+  const { logIncidentHistory } = useLogIncidentHistory();
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -110,7 +110,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         },
       });
 
-      const updatedIncident = transformIncidentData(
+      await logIncidentHistory(
         {
           ...incident,
           ...updated,
@@ -119,8 +119,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         },
         user
       );
-
-      await logIncidentHistory({ variables: { input: updatedIncident } });
 
       addToast(updateSuccessToast({ incidentId }));
 
