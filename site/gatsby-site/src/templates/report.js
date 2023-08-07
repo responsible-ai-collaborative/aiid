@@ -113,6 +113,23 @@ export const query = graphql`
       text
       report_number
     }
+    classifications: allMongodbAiidprodClassifications(
+      filter: { reports: { elemMatch: { report_number: { eq: $report_number } } } }
+    ) {
+      nodes {
+        reports {
+          report_number
+        }
+        id
+        namespace
+        notes
+        attributes {
+          short_name
+          value_json
+        }
+        publish
+      }
+    }
   }
 `;
 
