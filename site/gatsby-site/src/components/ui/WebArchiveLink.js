@@ -32,7 +32,7 @@ export default function WebArchiveLink({ url, date, children, className = '' }) 
 
   return (
     <div className={`flex items-center ${className}`} data-cy="web-archive-link">
-      <Link className="text-dark-gray" to={url}>
+      <Link className="text-black" to={url}>
         {children}
       </Link>
       <div data-cy="dropdown-toggle">

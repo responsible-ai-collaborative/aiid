@@ -114,7 +114,12 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         />
       </WebArchiveLink>
 
-      <CustomButton variant="link" title={t('Authors')} onClick={() => setShowAuthors(true)}>
+      <CustomButton
+        variant="link"
+        title={t('Authors')}
+        onClick={() => setShowAuthors(true)}
+        className="text-black"
+      >
         <FontAwesomeIcon title="report-card" icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
@@ -132,7 +137,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
       <CustomButton
         variant="link"
         title={t('Submitters')}
-        className="px-1"
+        className="px-1 text-black"
         onClick={() => setShowSubmitters(true)}
       >
         <FontAwesomeIcon titleId="report-shield" icon={faUserShield} className="fa-user-shield" />
@@ -152,7 +157,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
       <CustomButton
         variant="link"
         title={t('View History')}
-        className="px-1 text-dark-gray"
+        className="px-1 text-black"
         data-cy="report-history-button"
         href={localizePath({ path: `/cite/history?report_number=${item.report_number}` })}
       >
@@ -162,7 +167,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
       <CustomButton
         variant="link"
         title={t('Flag Report')}
-        className="px-1"
+        className="px-1 text-black"
         data-cy="flag-button"
         onClick={() => setShowFlag(true)}
       >
