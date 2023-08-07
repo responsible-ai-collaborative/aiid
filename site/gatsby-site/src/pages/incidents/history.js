@@ -110,9 +110,6 @@ function IncidentHistoryPage() {
                 <hr />
               </div>
               {incidentHistory.map((version, index) => {
-                if (version.changes?.length === 0) {
-                  return null;
-                }
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
                     <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
