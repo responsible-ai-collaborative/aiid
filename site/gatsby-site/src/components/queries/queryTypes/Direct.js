@@ -1,5 +1,7 @@
 import { Textarea } from 'flowbite-react';
 import React from 'react';
+import { QueryEditor } from '@graphiql/react';
+import '@graphiql/react/dist/style.css';
 
 export default function Direct({ id, setFilters, text }) {
 
@@ -19,6 +21,7 @@ export default function Direct({ id, setFilters, text }) {
 
     return <div>
         <Textarea value={text} onChange={handleChange} />
+        <QueryEditor />
     </div>
 }
 
