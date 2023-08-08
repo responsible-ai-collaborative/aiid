@@ -1,4 +1,5 @@
 import { Operation, diff } from 'json-diff-ts';
+import supportedLanguages from '../components/i18n/languages.json';
 
 // Transforms the data from the graphql query into a History_reportInsertInput format
 export const transformReportData = (report, user) => {
@@ -91,6 +92,13 @@ export const getReportChanges = (oldVersion, newVersion) => {
                 type: 'list',
                 removed: [],
                 added: fieldDiff.value,
+              });
+            } else if (field == 'language') {
+              result.push({
+                field: REPORT_FIELDS_TO_COMPARE[field],
+                type: 'text',
+                oldValue: supportedLanguages.find((l) => l.code == fieldDiff.oldValue)?.name,
+                newValue: supportedLanguages.find((l) => l.code == fieldDiff.value)?.name,
               });
             } else if (field == 'cloudinary_id') {
               result.push({
