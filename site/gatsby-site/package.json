@@ -60,6 +60,7 @@
     "graphql-http": "^1.18.0",
     "i18next": "^20.6.1",
     "is-absolute-url": "^3.0.3",
+    "json-diff-ts": "^1.2.6",
     "md5": "^2.3.0",
     "mongodb": "^4.2.1",
     "object-hash": "^3.0.0",
