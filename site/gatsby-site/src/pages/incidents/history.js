@@ -8,6 +8,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { format, fromUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
+import { StringDiff, DiffMethod } from 'react-string-diff';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -131,40 +132,45 @@ function IncidentHistoryPage() {
                         return (
                           <div key={`change_${index}`} className="flex flex-row flex-nowrap">
                             <div className="flex w-64">{t(change.field)}</div>
-                            {(change.oldValue || change.newValue) && (
-                              <>
-                                <div className="flex flex-1 m-1 text-red-600">
-                                  {change.oldValue}
-                                </div>
-                                <div className="flex flex-1 m-1 text-green-500">
-                                  {change.newValue}
-                                </div>
-                              </>
+                            {change.type == 'text' && (change.oldValue || change.newValue) && (
+                              <div className="flex flex-1 m-1">
+                                <StringDiff
+                                  oldValue={change.oldValue ? change.oldValue : ''}
+                                  newValue={change.newValue ? change.newValue : ''}
+                                  method={DiffMethod.Words}
+                                  styles={{
+                                    added: { backgroundColor: '#def7ec', color: '#03543e' },
+                                    removed: { backgroundColor: '#fde8e8', color: '#9b1c1c' },
+                                    default: {},
+                                  }}
+                                />
+                              </div>
                             )}
-                            {(change.removed?.length > 0 || change.added?.length > 0) && (
-                              <>
-                                <div className="flex flex-1 flex-wrap">
-                                  {change.removed?.map((item, index) => (
-                                    <div
-                                      key={`removed_${index}`}
-                                      className="inline-block h-6 center bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
-                                    >
-                                      {item}
-                                    </div>
-                                  ))}
-                                </div>
-                                <div className="flex flex-1 flex-wrap">
-                                  {change.added?.map((item, index) => (
-                                    <div
-                                      key={`added_${index}`}
-                                      className="inline-block h-6 center bg-green-100 text-green-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
-                                    >
-                                      {item}
-                                    </div>
-                                  ))}
-                                </div>
-                              </>
-                            )}
+                            {change.type == 'list' &&
+                              (change.removed?.length > 0 || change.added?.length > 0) && (
+                                <>
+                                  <div className="flex flex-1 flex-wrap">
+                                    {change.removed?.map((item, index) => (
+                                      <div
+                                        key={`removed_${index}`}
+                                        className="inline-block h-6 center bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
+                                      >
+                                        {item}
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div className="flex flex-1 flex-wrap">
+                                    {change.added?.map((item, index) => (
+                                      <div
+                                        key={`added_${index}`}
+                                        className="inline-block h-6 center bg-green-100 text-green-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
+                                      >
+                                        {item}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
                           </div>
                         );
                       })}
