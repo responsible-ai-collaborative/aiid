@@ -8,10 +8,11 @@ import { graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 import { Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
+import TaxonomiesEditor from 'components/taxa/TaxonomiesEditor';
 
 function ReportPage(props) {
   const {
-    data: { report },
+    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications },
     data,
   } = props;
 
@@ -70,6 +71,12 @@ function ReportPage(props) {
         ></SocialShareButtons>
       </div>
 
+      <TaxonomiesEditor
+        classifications={allMongodbAiidprodClassifications}
+        taxa={allMongodbAiidprodTaxa}
+        reportNumber={report.report_number}
+      />
+
       <Container>
         <ReportCard item={report} alwaysExpanded={true} actions={actions} />
       </Container>
@@ -118,7 +125,7 @@ export const query = graphql`
       text
       report_number
     }
-    taxa: allMongodbAiidprodTaxa {
+    allMongodbAiidprodTaxa {
       nodes {
         id
         namespace
@@ -173,7 +180,7 @@ export const query = graphql`
         }
       }
     }
-    classifications: allMongodbAiidprodClassifications(
+    allMongodbAiidprodClassifications(
       filter: { reports: { elemMatch: { report_number: { eq: $report_number } } } }
     ) {
       nodes {

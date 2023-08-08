@@ -6,7 +6,12 @@ import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 import Taxonomy from './Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 
-export default function TaxonomiesEditor({ taxa, classifications, incidentId }) {
+export default function TaxonomiesEditor({
+  taxa,
+  classifications,
+  incidentId = null,
+  reportNumber = null,
+}) {
   const { isRole, user } = useUserContext();
 
   const [query] = useQueryParams({
@@ -66,6 +71,7 @@ export default function TaxonomiesEditor({ taxa, classifications, incidentId }) 
                       id={`taxonomy-${t.namespace}`}
                       taxonomy={t}
                       incidentId={incidentId}
+                      reportNumber={reportNumber}
                       canEdit={t.canEdit}
                       {...{
                         taxonomyBeingEdited,

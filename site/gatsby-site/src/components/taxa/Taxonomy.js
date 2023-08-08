@@ -8,6 +8,7 @@ import { Button, Tooltip } from 'flowbite-react';
 const Taxonomy = ({
   taxonomy,
   incidentId,
+  reportNumber,
   canEdit,
   taxonomyBeingEdited,
   setTaxonomyBeingEdited,
@@ -134,6 +135,7 @@ const Taxonomy = ({
         <TaxonomyForm
           taxonomy={taxonomy}
           incidentId={incidentId}
+          reportNumber={reportNumber}
           onSubmit={handleSubmit}
           active={editing}
         />

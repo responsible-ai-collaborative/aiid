@@ -14,7 +14,7 @@ import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
-  { taxonomy, incidentId, onSubmit, active },
+  { taxonomy, incidentId, reportNumber, onSubmit, active },
   ref
 ) {
   const namespace = taxonomy.namespace;
@@ -43,11 +43,16 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     },
   }));
 
+  const incidentsQuery = incidentId ? { incidents: { incident_id: incidentId } } : {};
+
+  const reportsQuery = reportNumber ? { reports: { report_number: reportNumber } } : {};
+
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incidents: { incident_id: incidentId } } },
+    variables: { query: { ...incidentsQuery, ...reportsQuery }, namespace },
     skip: !active,
   });
 
+  //TODO: why does this fetch every classification? 🤔
   const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { namespace: taxonomy.namespace } },
     skip: !active,
@@ -84,7 +89,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       (classification) => classification.namespace == taxonomy.namespace
     );
 
-  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
+  const [upsertClassification] = useMutation(UPSERT_CLASSIFICATION);
 
   const allTaxonomyFields =
     taxonomy &&
@@ -160,18 +165,23 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const data = {
         __typename: undefined,
-        incidents: { link: [incidentId] },
+        reports: {
+          link: reportNumber ? [reportNumber] : [],
+        },
+        incidents: {
+          link: incidentId ? [incidentId] : [],
+        },
         notes: values.notes,
         publish: values.publish,
         attributes: attributes.map((a) => a),
         namespace,
-        reports: [],
       };
 
-      await updateClassification({
+      await upsertClassification({
         variables: {
           query: {
-            incidents: { incident_id: incidentId },
+            ...incidentsQuery,
+            ...reportsQuery,
             namespace,
           },
           data,

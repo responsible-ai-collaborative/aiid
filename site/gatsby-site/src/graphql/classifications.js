@@ -28,6 +28,9 @@ export const UPSERT_CLASSIFICATION = gql`
       incidents {
         incident_id
       }
+      reports {
+        report_number
+      }
       notes
       namespace
       attributes {
