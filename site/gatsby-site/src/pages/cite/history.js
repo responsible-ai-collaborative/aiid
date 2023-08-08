@@ -50,7 +50,7 @@ function IncidentHistoryPage() {
           modifiedByUser: usersData?.users.find((user) => user.user_id === versionData.modified_by),
         };
 
-        version.changes = getReportChanges(previousVersionData, versionData, usersData?.users);
+        version.changes = getReportChanges(previousVersionData, versionData);
 
         incidentHistory.push(version);
       }
