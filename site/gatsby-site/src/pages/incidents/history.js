@@ -13,7 +13,7 @@ import { StringDiff, DiffMethod } from 'react-string-diff';
 function IncidentHistoryPage() {
   const { t } = useTranslation();
 
-  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
+  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, Number.NaN));
 
   const [incidentTitle, setIncidentTitle] = useState(null);
 
@@ -90,14 +90,17 @@ function IncidentHistoryPage() {
         </div>
       )}
 
-      {!loading && (
+      {!loading && Number.isNaN(incidentId) && (
         <div>
-          <h1 className="text-2xl mb-5">{incidentTitle}</h1>
+          <Trans>Invalid Incident ID</Trans>
         </div>
       )}
 
-      {!loading && (
+      {!loading && !Number.isNaN(incidentId) && (
         <>
+          <div>
+            <h1 className="text-2xl mb-5">{incidentTitle}</h1>
+          </div>
           {!(incidentHistory?.length > 0) ? (
             <div>
               <Trans>There are no version history records for this Incident</Trans>

@@ -123,4 +123,16 @@ describe('Incidents', () => {
 
     cy.contains('There are no version history records for this Incident').should('exist');
   });
+
+  it('Should display an error message if no Incident ID is provided', () => {
+    cy.visit('/incidents/history?incident_id=');
+
+    cy.contains('Invalid Incident ID').should('exist');
+  });
+
+  it('Should display an error message if an invalid Incident ID is provided', () => {
+    cy.visit('/incidents/history?incident_id=xxx');
+
+    cy.contains('Invalid Incident ID').should('exist');
+  });
 });
