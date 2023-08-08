@@ -48,7 +48,7 @@ function IncidentHistoryPage() {
 
         const version = {
           ...versionData,
-          modifiedByUser: usersData?.users.find((user) => user.user_id === versionData.modified_by),
+          modifiedByUser: usersData?.users.find((user) => user.userId === versionData.modifiedBy),
         };
 
         version.changes = getIncidentChanges(
@@ -68,7 +68,7 @@ function IncidentHistoryPage() {
       incidentHistory.push({
         ...initialVersionData,
         modifiedByUser: usersData?.users.find(
-          (user) => user.user_id === initialVersionData.modified_by
+          (user) => user.userId === initialVersionData.modifiedBy
         ),
       });
 
