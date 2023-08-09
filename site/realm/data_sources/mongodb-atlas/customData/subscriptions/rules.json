@@ -5,7 +5,19 @@
         {
             "name": "Owner of the document",
             "apply_when": {
-                "userId": "%%user.id"
+                "%or": [
+                    {
+                        "%%root.userId": "%%user.id"
+                    },
+                    {
+                        "%%user.custom_data.roles": {
+                            "%in": [
+                                "admin",
+                                "incident_editor"
+                            ]
+                        }
+                    }
+                ]
             },
             "read": true,
             "write": true,

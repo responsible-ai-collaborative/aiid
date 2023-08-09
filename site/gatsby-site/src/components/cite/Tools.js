@@ -13,7 +13,9 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { INSERT_DUPLICATE } from '../../graphql/duplicates';
-import { UPDATE_CLASSIFICATIONS_INCIDENT_ID } from '../../graphql/classifications';
+import { UPDATE_CLASSIFICATIONS } from '../../graphql/classifications';
+import IncidentsField from 'components/incidents/IncidentsField';
+import { Form, Formik } from 'formik';
 
 function Tools({
   incident,
@@ -23,9 +25,6 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
-  loadingLastIncident,
-  cloneIncident,
-  cloning,
 }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -157,27 +156,17 @@ function Tools({
         {isUserLoggedIn && isRole('incident_editor') && (
           <Button
             color="gray"
-            onClick={cloneIncident}
-            disabled={loadingLastIncident || cloning}
+            href={`/incidents/new?incident_id=${incident.incident_id}`}
+            className="hover:no-underline"
             data-cy="clone-incident-btn"
           >
-            <div className="flex gap-2 items-center">
-              {cloning ? (
-                <div>
-                  <Spinner size="sm" />
-                </div>
-              ) : (
-                <>
-                  <FontAwesomeIcon
-                    className="mr-2"
-                    icon={faClone}
-                    title={t('Clone Incident')}
-                    titleId="clone-incident-icon"
-                  />
-                </>
-              )}
-              <Trans>Clone Incident</Trans>
-            </div>
+            <FontAwesomeIcon
+              className="mr-2"
+              icon={faClone}
+              title={t('Clone Incident')}
+              titleId="clone-incident-icon"
+            />
+            <Trans>Clone Incident</Trans>
           </Button>
         )}
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
@@ -207,7 +196,7 @@ function RemoveDuplicateModalContents({ incident }) {
 
   const [insertDuplicate] = useMutation(INSERT_DUPLICATE);
 
-  const [updateClassifications] = useMutation(UPDATE_CLASSIFICATIONS_INCIDENT_ID);
+  const [updateClassifications] = useMutation(UPDATE_CLASSIFICATIONS);
 
   const { data: duplicateIncidentData, loading: duplicateIncidentLoading } = useQuery(
     FIND_INCIDENT,
@@ -218,95 +207,102 @@ function RemoveDuplicateModalContents({ incident }) {
 
   return (
     <>
-      <Trans>Transfer reports to incident</Trans>{' '}
-      <input
-        type="number"
-        className="w-20 ml-1"
-        onChange={(event) => setDuplicateIncidentId(event.target.value)}
-        value={duplicateIncidentId}
-      />
-      {duplicateIncidentId && duplicateIncident ? (
-        <>
-          <p>
-            <LocalizedLink to={`/cite/${duplicateIncident.incident_id}`}>
-              Incident {duplicateIncident.incident_id} – {duplicateIncident.title}
-            </LocalizedLink>
-          </p>
-        </>
-      ) : duplicateIncidentLoading ? (
-        <div className="my-4">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="my-8"></div>
-      )}
-      <Button
-        color="failure"
-        disabled={duplicateIncidentLoading || !duplicateIncident || deletingDuplicate}
-        onClick={async () => {
-          setDeletingDuplicate(true);
-          const reportIds = removeTypename(
-            duplicateIncidentData.incident.reports.concat(incident.reports)
-          ).map((report) => report.report_number);
+      <Formik initialValues={{ duplicateIncidentId: [1] }}>
+        <Form>
+          <Trans>Transfer reports to incident</Trans>{' '}
+          <input
+            type="number"
+            className="w-20 ml-1"
+            onChange={(event) => setDuplicateIncidentId(event.target.value)}
+            value={duplicateIncidentId}
+          />
+          <div className="bootstrap">
+            <IncidentsField multiple={false} id="duplicateIncidentId" name="duplicateIncidentId" />
+          </div>
+          {duplicateIncidentId && duplicateIncident ? (
+            <>
+              <p>
+                <LocalizedLink to={`/cite/${duplicateIncident.incident_id}`}>
+                  Incident {duplicateIncident.incident_id} – {duplicateIncident.title}
+                </LocalizedLink>
+              </p>
+            </>
+          ) : duplicateIncidentLoading ? (
+            <div className="my-4">
+              <Spinner />
+            </div>
+          ) : (
+            <div className="my-8"></div>
+          )}
+          <Button
+            color="failure"
+            disabled={duplicateIncidentLoading || !duplicateIncident || deletingDuplicate}
+            onClick={async () => {
+              setDeletingDuplicate(true);
+              const reportIds = removeTypename(
+                duplicateIncidentData.incident.reports.concat(incident.reports)
+              ).map((report) => report.report_number);
 
-          let insertDuplicateResponse;
+              let insertDuplicateResponse;
 
-          try {
-            insertDuplicateResponse = await insertDuplicate({
-              variables: {
-                duplicate: {
-                  duplicate_incident_number: incident.incident_id,
-                  true_incident_number: duplicateIncidentId,
-                },
-              },
-            });
-          } catch (e) {
-            console.error(insertDuplicateResponse);
-            alert(`Could not insert duplicate. Aborting.`);
-            return;
-          }
+              try {
+                insertDuplicateResponse = await insertDuplicate({
+                  variables: {
+                    duplicate: {
+                      duplicate_incident_number: incident.incident_id,
+                      true_incident_number: duplicateIncidentId,
+                    },
+                  },
+                });
+              } catch (e) {
+                console.error(insertDuplicateResponse);
+                alert(`Could not insert duplicate. Aborting.`);
+                return;
+              }
 
-          let updateIncidentResponse;
+              let updateIncidentResponse;
 
-          try {
-            updateIncidentResponse = await updateIncident({
-              variables: {
-                query: { incident_id: duplicateIncidentId },
-                set: { reports: { link: reportIds } },
-              },
-            });
-          } catch (e) {
-            console.error(updateIncidentResponse);
-            alert(`Could not transfer reports to incident ${duplicateIncidentId}.`);
-          }
+              try {
+                updateIncidentResponse = await updateIncident({
+                  variables: {
+                    query: { incident_id: duplicateIncidentId },
+                    set: { reports: { link: reportIds } },
+                  },
+                });
+              } catch (e) {
+                console.error(updateIncidentResponse);
+                alert(`Could not transfer reports to incident ${duplicateIncidentId}.`);
+              }
 
-          let updateClassificationsResponse;
+              let updateClassificationsResponse;
 
-          try {
-            updateClassificationsResponse = await updateClassifications({
-              variables: {
-                query: { incident_id: incident.incident_id },
-                set: { incident_id: duplicateIncidentId },
-              },
-            });
-          } catch (e) {
-            console.error(updateClassificationsResponse);
-            alert(`Could not transfer classifications to incident ${duplicateIncidentId}.`);
-          }
+              try {
+                updateClassificationsResponse = await updateClassifications({
+                  variables: {
+                    query: { incident_id: incident.incident_id },
+                    set: { incident_id: duplicateIncidentId },
+                  },
+                });
+              } catch (e) {
+                console.error(updateClassificationsResponse);
+                alert(`Could not transfer classifications to incident ${duplicateIncidentId}.`);
+              }
 
-          setDeletingDuplicate(false);
-          alert(
-            [
-              `Incident ${incident.incident_id} marked`,
-              `as duplicate of ${duplicateIncidentId}.`,
-              `Its page will updated within 24 hours.`,
-            ].join(' ')
-          );
-          window.location.pathname = '/';
-        }}
-      >
-        Remove Duplicate
-      </Button>
+              setDeletingDuplicate(false);
+              alert(
+                [
+                  `Incident ${incident.incident_id} marked`,
+                  `as duplicate of ${duplicateIncidentId}.`,
+                  `Its page will updated within 24 hours.`,
+                ].join(' ')
+              );
+              window.location.pathname = '/';
+            }}
+          >
+            Remove Duplicate
+          </Button>
+        </Form>
+      </Formik>
     </>
   );
 }

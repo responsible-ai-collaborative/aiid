@@ -9,7 +9,9 @@ function TsneVisulizationPage(props) {
 
   const spatialIncidents = props.pageContext.spatialIncidents;
 
-  const classifications = props.pageContext.classifications.filter((c) => c.publish);
+  const classifications = props.pageContext.classifications;
+
+  const taxa = props.pageContext.taxa;
 
   const csetClassifications = props.pageContext.csetClassifications;
 
@@ -36,8 +38,11 @@ function TsneVisulizationPage(props) {
             : -1
         )}
         incidents={spatialIncidents}
-        classifications={classifications}
-        csetClassifications={csetClassifications}
+        {...{
+          classifications,
+          taxa,
+          csetClassifications,
+        }}
       />
       <p className="mt-4" style={{ maxWidth: '1000px' }}>
         <Trans i18nKey="tsneDescription">

@@ -1,11 +1,12 @@
 import { maybeIt } from '../../support/utils';
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
-import incidents from '../../fixtures/incidents/incidents.json';
-import { format } from 'date-fns';
-const { gql } = require('@apollo/client');
-
+import { format, getUnixTime } from 'date-fns';
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
+import incident10 from '../../fixtures/incidents/fullIncident10.json';
+import { transformIncidentData, deleteIncidentTypenames } from '../../../src/utils/cite';
+import { transformReportData, deleteReportTypenames } from '../../../src/utils/reports';
+const { gql } = require('@apollo/client');
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -13,6 +14,24 @@ describe('Cite pages', () => {
   const incidentId = 10;
 
   const url = `/cite/${incidentId}`;
+
+  let user;
+
+  before('before', () => {
+    cy.query({
+      query: gql`
+        {
+          users {
+            userId
+            first_name
+            last_name
+          }
+        }
+      `,
+    }).then(({ data: { users } }) => {
+      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    });
+  });
 
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -114,14 +133,26 @@ describe('Cite pages', () => {
       .contains('Sean McGregor');
   });
 
-  maybeIt('Should show the taxonomy form of CSET', () => {
+  maybeIt('Should show the taxonomy form of CSETv0', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
 
-    cy.get('[data-cy="CSET"]').contains('Edit').click();
+    cy.get('[data-cy="CSETv0"]').contains('Edit').click();
 
-    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+    cy.get('[data-cy="CSETv0"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+
+    cy.get('@taxonomyForm').should('exist');
+  });
+
+  maybeIt('Should show the taxonomy form of CSETv1', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('[data-cy="CSETv1"]').contains('Edit').click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
   });
@@ -167,39 +198,32 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
+    cy.waitForStableDOM();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
-      .first()
-      .contains('yes')
-      .click();
+    cy.get('#taxonomy-CSETv1').contains('Edit').click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .last()
-      .find('input[type="radio"]')
-      .eq(0)
-      .should('be.checked');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]').first().contains('yes').click();
+
+    cy.waitForStableDOM();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').first().check();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').last().should('be.checked');
 
     // Clicking unchecks the input for both fields
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
-      .last()
-      .find('input[type="radio"]')
-      .eq(0)
-      .click();
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]').last().click();
 
-    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"] [value="yes"]')
       .first()
-      .find('input[type="radio"]')
-      .eq(0)
       .should('not.be.checked');
-  });
-
-  it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
-    cy.visit(url);
-
-    cy.get('[data-cy="CSET"]').should('exist');
-
-    cy.get('[data-cy="CSETv1"]').should('not.exist');
   });
 
   it('Should flag an incident', () => {
@@ -211,6 +235,19 @@ describe('Cite pages', () => {
       (req) => req.body.operationName == 'FindReport',
       'fetchReport',
       unflaggedReport
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logReportHistory',
+      'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
+        },
+      }
     );
 
     cy.visit(url + '#' + _id);
@@ -232,9 +269,36 @@ describe('Cite pages', () => {
       flaggedReport
     );
 
+    const now = new Date();
+
+    cy.clock(now);
+
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@updateReport');
+    cy.wait('@updateReport')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.query.report_number).to.equal(23);
+        expect(variables.set).deep.eq({
+          flag: true,
+          date_modified: format(now, 'yyyy-MM-dd'),
+          epoch_date_modified: getUnixTime(now),
+        });
+      });
+
+    cy.wait('@logReportHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedReport = deleteReportTypenames(
+          transformReportData(flaggedReport.data.updateOneReport)
+        );
+
+        expectedReport.modifiedBy = '';
+        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.epoch_date_modified = getUnixTime(now);
+
+        expect(input).to.deep.eq(expectedReport);
+      });
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
@@ -284,11 +348,17 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('Edit Incident').click();
+
+    cy.waitForStableDOM();
 
     cy.url().should('contain', '/incidents/edit/?incident_id=10');
 
-    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="incident-form"]', { timeout: 20000 }).should('be.visible');
   });
 
   it('Should display correct BibTex Citation', { retries: { runMode: 4 } }, () => {
@@ -384,7 +454,14 @@ describe('Cite pages', () => {
     cy.get('[data-cy="edit-similar-incidents"]').should('exist');
   });
 
-  it('Should flag an incident as not related', () => {
+  it('Should flag an incident as not related (not authenticated)', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident10
+    );
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
@@ -392,16 +469,123 @@ describe('Cite pages', () => {
       updateOneIncidentFlagged
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 9,
+          },
+        },
+      }
+    );
+
     cy.visit('/cite/9');
 
+    cy.wait('@findIncident', { timeout: 10000 });
+
     cy.waitForStableDOM();
+
+    const now = new Date();
+
+    cy.clock(now);
 
     cy.get('[data-cy="flag-similar-incident"]').first().click();
 
     cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
-      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        flagged_dissimilar_incidents: [11],
+        epoch_date_modified: getUnixTime(now),
+        editors: { link: incident10.data.incident.editors.map((e) => e.userId) },
+      });
     });
+
+    cy.wait('@logIncidentHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = deleteIncidentTypenames(
+          transformIncidentData(incident10.data.incident)
+        );
+
+        expectedIncident.flagged_dissimilar_incidents = [11];
+        expectedIncident.epoch_date_modified = getUnixTime(now);
+        expectedIncident.modifiedBy = '';
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
+  });
+
+  maybeIt('Should flag an incident as not related (authenticated)', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident10
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      updateOneIncidentFlagged
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'logIncidentHistory',
+      'logIncidentHistory',
+      {
+        data: {
+          logIncidentHistory: {
+            incident_id: 9,
+          },
+        },
+      }
+    );
+
+    cy.visit('/cite/9');
+
+    cy.wait('@findIncident', { timeout: 10000 });
+
+    cy.waitForStableDOM();
+
+    const now = new Date();
+
+    cy.clock(now);
+
+    cy.get('[data-cy="flag-similar-incident"]').first().click();
+
+    cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        flagged_dissimilar_incidents: [],
+        epoch_date_modified: getUnixTime(now),
+        editors: { link: [...incident10.data.incident.editors.map((e) => e.userId), user.userId] },
+      });
+    });
+
+    cy.wait('@logIncidentHistory')
+      .its('request.body.variables.input')
+      .then((input) => {
+        const expectedIncident = deleteIncidentTypenames(
+          transformIncidentData(incident10.data.incident)
+        );
+
+        expectedIncident.flagged_dissimilar_incidents = [];
+        expectedIncident.epoch_date_modified = getUnixTime(now);
+        expectedIncident.modifiedBy = user.userId;
+        expectedIncident.editors = [
+          ...incident10.data.incident.editors.map((e) => e.userId),
+          user.userId,
+        ];
+
+        expect(input).to.deep.eq(expectedIncident);
+      });
   });
 
   it('Should have OpenGraph meta tags', () => {
@@ -579,100 +763,18 @@ describe('Cite pages', () => {
     cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
   });
 
-  maybeIt('Should clone incident', () => {
+  maybeIt('Should clone incident opening the preloaded new Incident form', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const newIncidentId = incidents.data.incidents[0].incident_id + 1;
 
     cy.visit(url);
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidents',
-      'GetLatestIncidentId',
-      incidents
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertIncident',
-      'InsertIncident',
-      {
-        data: {
-          insertOneIncident: {
-            incident_id: newIncidentId,
-          },
-        },
-      }
-    );
+    cy.contains('Clone Incident').click();
 
     cy.waitForStableDOM();
 
-    cy.wait('@GetLatestIncidentId');
+    cy.url().should('contain', `/incidents/new/?incident_id=${incidentId}`);
 
-    cy.contains('Clone Incident').scrollIntoView().click();
-
-    cy.query({
-      query: gql`
-        query {
-          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
-            title
-            description
-            date
-            editor_similar_incidents
-            editor_dissimilar_incidents
-            editors {
-              userId
-              first_name
-              last_name
-            }
-            AllegedDeployerOfAISystem {
-              entity_id
-            }
-            AllegedDeveloperOfAISystem {
-              entity_id
-            }
-            AllegedHarmedOrNearlyHarmedParties {
-              entity_id
-            }
-          }
-        }
-      `,
-    }).then(({ data: { incidents } }) => {
-      const incident = incidents[0];
-
-      cy.wait('@InsertIncident').then((xhr) => {
-        expect(xhr.request.body.operationName).to.eq('InsertIncident');
-        expect(xhr.request.body.variables.incident.incident_id).to.eq(newIncidentId);
-        expect(xhr.request.body.variables.incident.title).to.eq(incident.title);
-        expect(xhr.request.body.variables.incident.description).to.eq(incident.description);
-        expect(xhr.request.body.variables.incident.date).to.eq(incident.date);
-        expect(xhr.request.body.variables.incident.editor_similar_incidents).to.deep.eq(
-          incident.editor_similar_incidents
-        );
-        expect(xhr.request.body.variables.incident.editor_dissimilar_incidents).to.deep.eq(
-          incident.editor_dissimilar_incidents
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeployerOfAISystem.link).to.deep.eq(
-          incident.AllegedDeployerOfAISystem.map((e) => e.entity_id)
-        );
-        expect(xhr.request.body.variables.incident.AllegedDeveloperOfAISystem.link).to.deep.eq(
-          incident.AllegedDeveloperOfAISystem.map((e) => e.entity_id)
-        );
-        expect(
-          xhr.request.body.variables.incident.AllegedHarmedOrNearlyHarmedParties.link
-        ).to.deep.eq(incident.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id));
-        expect(xhr.request.body.variables.incident.editors).to.deep.eq({
-          link: incident.editors.map((e) => e.userId),
-        });
-      });
-
-      cy.wait('@GetLatestIncidentId');
-
-      cy.get('.tw-toast')
-        .contains(`You have successfully create Incident ${newIncidentId}. View incident`)
-        .should('exist');
-    });
+    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
   });
 
   var CSETv1Fields = [
