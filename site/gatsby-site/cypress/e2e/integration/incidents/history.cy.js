@@ -135,4 +135,14 @@ describe('Incidents', () => {
 
     cy.contains('Invalid Incident ID').should('exist');
   });
+
+  it('Should go back to the Incident', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.contains(`Back to Incident 10`).click();
+
+    cy.url().should('include', '/cite/10');
+  });
 });

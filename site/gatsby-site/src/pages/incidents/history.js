@@ -9,6 +9,8 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import { format, fromUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
+import Link from 'components/ui/Link';
+import { Button } from 'flowbite-react';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -98,8 +100,13 @@ function IncidentHistoryPage() {
 
       {!loading && !Number.isNaN(incidentId) && (
         <>
-          <div>
+          <div className="flex flex-row justify-between flex-wrap">
             <h1 className="text-2xl mb-5">{incidentTitle}</h1>
+            <Link to={`/cite/${incidentId}`} className="hover:no-underline mb-5">
+              <Button outline={true} color={'light'}>
+                <Trans>Back to Incident {{ incidentId }}</Trans>
+              </Button>
+            </Link>
           </div>
           {!(incidentHistory?.length > 0) ? (
             <div>
