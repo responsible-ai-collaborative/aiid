@@ -1,7 +1,7 @@
 import { format, fromUnixTime } from 'date-fns';
 import reportHistory from '../../fixtures/history/reportHistory.json';
 
-describe('Incidents', () => {
+describe('Report History', () => {
   const url = '/cite/history?report_number=3206';
 
   it('Successfully loads', () => {
