@@ -237,9 +237,14 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
             }
           }
 
-          let removedLabels = removed;
+          //Remove duplicates
+          const removedClean = removed.filter((item) => !added.includes(item));
 
-          let addedLabels = added;
+          const addedClean = added.filter((item) => !removed.includes(item));
+
+          let removedLabels = removedClean;
+
+          let addedLabels = addedClean;
 
           if (
             [
@@ -248,31 +253,33 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
               'AllegedHarmedOrNearlyHarmedParties',
             ].includes(field)
           ) {
-            removedLabels = removed.map(
+            removedLabels = removedClean.map(
               (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
             );
-            addedLabels = added.map(
+            addedLabels = addedClean.map(
               (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
             );
           } else if (field == 'editors') {
-            removedLabels = removed.map((userId) => {
+            removedLabels = removedClean.map((userId) => {
               const user = users?.find((u) => u.userId == userId);
 
               return user ? `${user.first_name} ${user.last_name}` : userId;
             });
-            addedLabels = added.map((userId) => {
+            addedLabels = addedClean.map((userId) => {
               const user = users?.find((u) => u.userId == userId);
 
               return user ? `${user.first_name} ${user.last_name}` : userId;
             });
           }
 
-          result.push({
-            field: INCIDENT_TO_COMPARE[field],
-            type: 'list',
-            removed: removedLabels,
-            added: addedLabels,
-          });
+          if (removedLabels.length > 0 || addedLabels.length > 0) {
+            result.push({
+              field: INCIDENT_TO_COMPARE[field],
+              type: 'list',
+              removed: removedLabels,
+              added: addedLabels,
+            });
+          }
         } else {
           if (fieldDiff.value) {
             result.push({

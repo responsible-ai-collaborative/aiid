@@ -159,26 +159,22 @@ function IncidentHistoryPage() {
                             {change.type == 'list' &&
                               (change.removed?.length > 0 || change.added?.length > 0) && (
                                 <>
-                                  <div className="flex flex-1 flex-wrap">
-                                    {change.removed?.map((item, index) => (
-                                      <div
-                                        key={`removed_${index}`}
-                                        className="inline-block h-6 center bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
-                                      >
-                                        {item}
-                                      </div>
-                                    ))}
-                                  </div>
-                                  <div className="flex flex-1 flex-wrap">
-                                    {change.added?.map((item, index) => (
-                                      <div
-                                        key={`added_${index}`}
-                                        className="inline-block h-6 center bg-green-100 text-green-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
-                                      >
-                                        {item}
-                                      </div>
-                                    ))}
-                                  </div>
+                                  {change.removed?.map((item, index) => (
+                                    <div
+                                      key={`removed_${index}`}
+                                      className="inline-block h-6 center bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
+                                    >
+                                      {item}
+                                    </div>
+                                  ))}
+                                  {change.added?.map((item, index) => (
+                                    <div
+                                      key={`added_${index}`}
+                                      className="inline-block h-6 center bg-green-100 text-green-800 text-xs font-semibold m-1 px-2.5 py-1 rounded"
+                                    >
+                                      {item}
+                                    </div>
+                                  ))}
                                 </>
                               )}
                           </div>
