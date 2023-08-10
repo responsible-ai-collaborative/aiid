@@ -124,9 +124,11 @@ function IncidentHistoryPage() {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
                     <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
-                      <div className="mr-5">
-                        {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                      </div>
+                      {version.epoch_date_modified && (
+                        <div className="mr-5">
+                          {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+                        </div>
+                      )}
                       <div>
                         <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
                         {version.modifiedByUser?.last_name}
