@@ -25,7 +25,7 @@ import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import TaxonomiesEditor from 'components/taxa/TaxonomiesEditor';
+import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 
 function CiteTemplate({
   incident,
@@ -250,7 +250,7 @@ function CiteTemplate({
               </Col>
             </Row>
 
-            <TaxonomiesEditor
+            <ClassificationsEditor
               classifications={allMongodbAiidprodClassifications}
               taxa={allMongodbAiidprodTaxa}
               incidentId={incident.incident_id}

@@ -52,7 +52,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     skip: !active,
   });
 
-  //TODO: why does this fetch every classification? 🤔
+  //TODO: why does this fetch all classifications? 🤔
   const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { namespace: taxonomy.namespace } },
     skip: !active,
@@ -89,7 +89,10 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       (classification) => classification.namespace == taxonomy.namespace
     );
 
-  const [upsertClassification] = useMutation(UPSERT_CLASSIFICATION);
+  const [upsertClassification] = useMutation(UPSERT_CLASSIFICATION, {
+    refetchQueries: [FIND_CLASSIFICATION],
+    awaitRefetchQueries: true,
+  });
 
   const allTaxonomyFields =
     taxonomy &&
