@@ -78,12 +78,19 @@ export const getReportChanges = (oldVersion, newVersion) => {
             }
           }
 
-          result.push({
-            field: REPORT_FIELDS_TO_COMPARE[field],
-            type: 'list',
-            removed,
-            added,
-          });
+          //Remove duplicates
+          const removedClean = removed.filter((item) => !added.includes(item));
+
+          const addedClean = added.filter((item) => !removed.includes(item));
+
+          if (addedClean.length > 0 || removedClean.length > 0) {
+            result.push({
+              field: REPORT_FIELDS_TO_COMPARE[field],
+              type: 'list',
+              removed: removedClean,
+              added: addedClean,
+            });
+          }
         } else {
           if (fieldDiff.value) {
             if (Array.isArray(fieldDiff.value)) {
