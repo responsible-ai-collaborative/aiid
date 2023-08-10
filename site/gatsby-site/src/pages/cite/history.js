@@ -12,11 +12,15 @@ import { getReportChanges } from 'utils/reports';
 import { Viewer } from '@bytemd/react';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import diff from 'rich-text-diff';
+import Link from 'components/ui/Link';
+import { Button } from 'flowbite-react';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
+
+  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const [incidentTitle, setIncidentTitle] = useState(null);
 
@@ -75,8 +79,13 @@ function IncidentHistoryPage() {
   return (
     <div className={'w-full p-1'}>
       {!loading && (
-        <div>
+        <div className="flex flex-row justify-between flex-wrap">
           <h1 className="text-2xl mb-5">{incidentTitle}</h1>
+          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
+            <Button outline={true} color={'light'}>
+              <Trans>Back to Report {{ reportNumber }}</Trans>
+            </Button>
+          </Link>
         </div>
       )}
 

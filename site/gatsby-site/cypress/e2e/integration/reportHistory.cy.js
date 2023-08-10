@@ -2,7 +2,7 @@ import { format, fromUnixTime } from 'date-fns';
 import reportHistory from '../../fixtures/history/reportHistory.json';
 
 describe('Report History', () => {
-  const url = '/cite/history?report_number=3206';
+  const url = '/cite/history?report_number=3206&incident_id=563';
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -92,5 +92,15 @@ describe('Report History', () => {
     cy.get('[data-cy="history-table"]').should('not.exist');
 
     cy.contains('There are no version history records for this Report').should('exist');
+  });
+
+  it('Should go back to the Report', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.contains(`Back to Report 3206`).click();
+
+    cy.url().should('include', '/cite/563/#r3206');
   });
 });
