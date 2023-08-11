@@ -5,25 +5,16 @@ import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import { Button, Tooltip } from 'flowbite-react';
 
-const Taxonomy = ({
-  taxonomy,
-  incidentId,
-  reportNumber,
-  canEdit,
-  taxonomyBeingEdited,
-  setTaxonomyBeingEdited,
-  id,
-}) => {
+const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, id }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
 
   const handleSubmit = () => {
-    setTaxonomyBeingEdited(null);
     setShowBanner(true);
   };
 
-  const editing = taxonomyBeingEdited?.namespace == taxonomy?.namespace;
+  const [editing, setEditing] = useState(false);
 
   const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
 
@@ -37,12 +28,12 @@ const Taxonomy = ({
         </h4>
         <>
           {editing ? (
-            <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(null)}>
+            <Button color={'gray'} onClick={() => setEditing(false)}>
               <Trans>Cancel</Trans>
             </Button>
           ) : (
             canEdit && (
-              <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(taxonomy)}>
+              <Button color={'gray'} onClick={() => setEditing(true)}>
                 <Trans>Edit</Trans>
               </Button>
             )

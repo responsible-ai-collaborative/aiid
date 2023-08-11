@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 import { getTaxonomies } from 'utils/cite';
 import Row from '../../elements/Row';
 import Col from '../../elements/Col';
-import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 import Taxonomy from './Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import { Button, Card, Dropdown, Spinner } from 'flowbite-react';
@@ -47,11 +46,15 @@ export default function TaxonomiesEditor({ taxa, incidentId = null, reportNumber
 
   const [taxonomiesList, setTaxonomiesList] = useState([]);
 
+  const taxonomiesListSize = useRef(taxonomiesList.length);
+
   useEffect(() => {
     if (taxonomies.length && user) {
       const list = taxonomies
         .filter((t) => t.classificationsArray.length || t.notes)
-        .map((t) => ({ ...t, canEdit: canEditTaxonomy(t.namespace) }));
+        .map((t) => ({ ...t, canEdit: canEditTaxonomy(t.namespace), ref: createRef() }));
+
+      taxonomiesListSize.current = list.length;
 
       setTaxonomiesList(list);
     }
@@ -64,27 +67,19 @@ export default function TaxonomiesEditor({ taxa, incidentId = null, reportNumber
 
     const canEdit = canEditTaxonomy(namespace);
 
-    setTaxonomiesList((list) => [...list, { ...taxonomy, canEdit }]);
+    setTaxonomiesList((list) => {
+      taxonomiesListSize.current = taxonomiesList.length;
+      return [...list, { ...taxonomy, canEdit, ref: createRef() }];
+    });
+
     setSelectedTaxonomy(null);
   };
 
-  const [query] = useQueryParams({
-    edit_taxonomy: withDefault(StringParam, ''),
-  });
-
-  const taxonomyDiv = useRef(null);
-
   useEffect(() => {
-    if (query.edit_taxonomy?.length > 0 && taxonomyDiv?.current) {
-      if (taxonomyDiv?.current?.scrollIntoView) {
-        taxonomyDiv.current.scrollIntoView();
-      }
+    if (taxonomiesListSize.current < taxonomiesList.length) {
+      taxonomiesList[taxonomiesList.length - 1].ref.current.scrollIntoView();
     }
-  }, []);
-
-  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState(
-    taxonomies.find((taxonomy) => taxonomy.namespace == query.edit_taxonomy)
-  );
+  }, [taxonomiesList]);
 
   return (
     <>
@@ -142,20 +137,14 @@ export default function TaxonomiesEditor({ taxa, incidentId = null, reportNumber
               <Row>
                 <Col>
                   {taxonomiesList.map((t) => {
-                    const inQuery = query.edit_taxonomy == t.namespace;
-
                     return (
-                      <div key={t.namespace} ref={inQuery ? taxonomyDiv : undefined}>
+                      <div key={t.namespace} ref={t.ref}>
                         <Taxonomy
                           id={`taxonomy-${t.namespace}`}
                           taxonomy={t}
                           incidentId={incidentId}
                           reportNumber={reportNumber}
                           canEdit={t.canEdit}
-                          {...{
-                            taxonomyBeingEdited,
-                            setTaxonomyBeingEdited,
-                          }}
                         />
                       </div>
                     );
