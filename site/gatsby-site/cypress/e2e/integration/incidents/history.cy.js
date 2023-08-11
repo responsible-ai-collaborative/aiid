@@ -2,7 +2,7 @@ import { format, fromUnixTime } from 'date-fns';
 import incidentHistory from '../../../fixtures/history/incidentHistory.json';
 
 describe('Incidents', () => {
-  const url = '/incidents/history?incident_id=10';
+  const url = '/incidents/history/?incident_id=10';
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -144,5 +144,34 @@ describe('Incidents', () => {
     cy.contains(`Back to Incident 10`).click();
 
     cy.url().should('include', '/cite/10');
+  });
+
+  it('Should refresh Report history if the user go back on the browser', () => {
+    cy.visit('/cite/10');
+
+    cy.waitForStableDOM();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentHistory',
+      'FindIncidentHistory',
+      incidentHistory
+    );
+
+    cy.get('[data-cy="view-history-btn"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.wait('@FindIncidentHistory');
+
+    cy.url().should('include', url);
+
+    cy.go('back');
+
+    cy.url().should('include', '/cite/10');
+
+    cy.go('forward');
+
+    cy.wait('@FindIncidentHistory');
   });
 });
