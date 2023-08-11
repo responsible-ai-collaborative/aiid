@@ -85,7 +85,8 @@ export default function CheckListForm({
 //    useExpanded,
 //    usePagination
 //  });
-
+//
+  
   return (
     <Form onSubmit={handleSubmit}>
       <Header>
@@ -185,31 +186,57 @@ export default function CheckListForm({
         {!risksLoading && values.risks.length == 0 && (
           <Trans>No risks yet. Try adding some system tags.</Trans>
         )} 
-
-        <div className="flex flex-col gap-8 mt-8">
-          {}
-          {risksLoading ? ( 
-            <>
-              {(values.risks || []).filter(risk => !risk.generated).map((risk) => (
-                <RiskSection
-                  key={risk.id}
-                  {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}
-                />
-              ))}
-              <Spinner /> 
-            </>
-          ) : (
-            (values.risks || []).map((risk) => (
-              <RiskSection
-                key={risk.id}
-                {...{ risk, values, setFieldValue, submitForm, tags, searchTags, allPrecedents }}
-              />
-            ))
-          )}
-        </div>
-
+        <RiskSections {...{
+          values,
+          setFieldValue,
+          submitForm,
+          tags,
+          searchTags,
+          allPrecedents,
+          risksLoading,
+        }} />
       </section>
     </Form>
+  );
+}
+
+const RiskSections = ({
+  values,
+  setFieldValue,
+  submitForm,
+  tags,
+  searchTags,
+  allPrecedents,
+  risksLoading,
+}) => {
+
+  const riskSectionProps = {
+    values,
+    setFieldValue,
+    submitForm,
+    tags,
+    searchTags,
+    allPrecedents,
+  };
+
+  return (
+    <div className="flex flex-col gap-8 mt-8">
+      {risksLoading ? ( 
+        <>
+          {(values.risks || []).filter(risk => !risk.generated).map((risk) => (
+            <RiskSection key={risk.id} {...{...riskSectionProps, risk}} />
+          ))}
+          <div className="flex flex-row">
+            <Spinner />{' '}
+            <Trans>Searching for risks matching tags…</Trans>
+          </div>
+        </>
+      ) : (
+        (values.risks || []).map((risk) => (
+          <RiskSection key={risk.id} {...{...riskSectionProps, risk}} />
+        ))
+      )}
+    </div>
   );
 }
 
@@ -289,7 +316,7 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
 
 const Header = classy('header', 'titleWrapper');
 
-const HeaderRow = classyDiv('w-full flex items-center flex-wrap justify-between');
+const HeaderRow = classyDiv('w-full flex items-center flex-wrap justify-between gap-3');
 
 const HeaderControls = classyDiv(
   'flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full'

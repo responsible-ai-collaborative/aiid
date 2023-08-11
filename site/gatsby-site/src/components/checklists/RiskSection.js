@@ -9,6 +9,7 @@ import { Label, risksEqual, statusIcon, statusColor } from 'utils/checklists';
 import EditableLabel from 'components/checklists/EditableLabel';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPercent, faBolt, faHand, faComputer, faHashtag } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
   risk,
@@ -18,7 +19,9 @@ export default function RiskSection({
   tags,
   searchTags,
   allPrecedents,
+  setRiskSortFunction,
 }) {
+
   const { t } = useTranslation();
 
   const [showPrecedentFilters, setShowPrecedentFilters] = useState(false);
@@ -51,6 +54,7 @@ export default function RiskSection({
 
   console.log(`showPrecedentFilters`, showPrecedentFilters);
 
+
   return (
     <RiskDetails open={risk.startClosed ? undefined : true} generated={risk.generated}>
       <RiskHeaderSummary generated={risk.generated}>
@@ -64,48 +68,91 @@ export default function RiskSection({
         />
         <HeaderItemsRight>
           {risk.generated ? (
-            <HeaderTextItem
+            <HeaderTextWithIcon
               title={t(
                 'This risk was generated according to ' +
                   'the tags applied to the system above. ' +
                   'If you remove the matching tags, ' +
                   'this risk will disappear unless you make a manual change'
               )}
+              onClick={(event) => {
+                event.preventDefault();
+                setFieldValue('risks', values.risks.sort(byProperty('generated')));
+              }}
             >
+              <FontAwesomeIcon icon={faComputer} className="mr-1" />
               Auto-generated
-            </HeaderTextItem>
+            </HeaderTextWithIcon>
           ) : (
-            <HeaderTextItem
+            <HeaderTextWithIcon
               title={t(
                 'This risk is edited manually. It will persist through changes to the applied tags.'
               )}
+              onClick={(event) => {
+                event.preventDefault();
+                setFieldValue('risks', values.risks.sort(byProperty('generated')));
+              }}
             >
+              <FontAwesomeIcon icon={faHand} className="mr-1" />
               Manual
-            </HeaderTextItem>
+            </HeaderTextWithIcon>
           )}
           {!!risk.precedents?.length && (
-            <HeaderTextItem>{risk.precedents.length} precedents</HeaderTextItem>
+            <HeaderTextWithIcon
+              className="hidden 2xl:block"
+              onClick={(event) => {
+                event.preventDefault();
+                setFieldValue('risks', values.risks.sort(byNumPrecedents));
+              }}
+            >
+              <FontAwesomeIcon icon={faHashtag} className="mr-1" />
+              {/* TODO: Translate/pluralize this correctly */}
+              {risk.precedents.length} precedents
+            </HeaderTextWithIcon>
           )}
-          {!!risk.likelihood && <HeaderTextItem>{risk.likelihood}</HeaderTextItem>}
-          {!!risk.severity && <HeaderTextItem>{risk.severity}</HeaderTextItem>}
+          {!!risk.likelihood && 
+            <HeaderTextWithIcon
+              color="purple"
+              className="hidden xl:block"
+              onClick={(event) => {
+                event.preventDefault();
+                setFieldValue('risks', values.risks.sort(byProperty('likelihood')));
+              }}
+            >
+              <FontAwesomeIcon icon={faPercent} className="mr-1" />
+              {risk.likelihood}
+            </HeaderTextWithIcon>
+          }
+          {!!risk.severity && 
+            <HeaderTextWithIcon 
+              color="orange"
+              className="hidden xl:block"
+              onClick={(event) => {
+                event.preventDefault();
+                setFieldValue('risks', values.risks.sort(byProperty('severity')));
+              }}
+            >
+              <FontAwesomeIcon icon={faBolt} className="mr-1" />
+              {risk.severity}
+            </HeaderTextWithIcon>
+          }
           <HeaderTextWithIcon
-            sentiment={
-              {
-                'Not Mitigated': 'bad',
-                Mitigated: 'good',
-                Prevented: 'good',
-                'Not Applicable': null,
-                Unclear: null,
-              }[risk.risk_status]
-            }
+            className="hidden xl:block"
+            color={statusColor(risk.risk_status)}
+            onClick={() => {
+              event.preventDefault();
+
+              // TODO: Order them in a more meaningful way
+              setFieldValue('risks', values.risks.sort(byProperty('risk_status')));
+            }}
           >
             <FontAwesomeIcon
               icon={statusIcon(risk.risk_status)}
-              className={`${statusColor(risk.risk_status)} mr-1`}
+              className={`mr-1`}
             />
             <span className="inline-block">{risk.risk_status || 'Unassessed'}</span>
           </HeaderTextWithIcon>
-          <ProgressCircle progress={progress} className="-mb-1 ml-2" />
+          <ProgressCircle progress={progress} className="-mb-1 hidden xl:block" />
         </HeaderItemsRight>
       </RiskHeaderSummary>
       <RiskBody>
@@ -225,23 +272,11 @@ const HeaderItemsRight = classyDiv(`
   hidden md:flex ml-auto mr-6 px-2 gap-2 bg-white items-center
 `);
 
-const sentimentColor = (sentiment) => ({ bad: 'red', good: 'green' }[sentiment] || 'gray');
-
-const HeaderTextItem = classyDiv(
-  ({ sentiment }) => `
-  inline-block bg-${sentimentColor(sentiment)}-200 px-3 py-px rounded-lg
-  text-${sentimentColor(sentiment)}-900
-`
-);
-
-const HeaderTextWithIcon = classyDiv(({ sentiment }) => {
-  console.log(`sentiment`, sentiment);
-  return `
+const HeaderTextWithIcon = classyDiv(({ color }) => `
   inline-flex flex gap-1 items-center
-  inline-block bg-${sentimentColor(sentiment)}-200 px-3 py-px rounded-lg 
-  text-${sentimentColor(sentiment)}-900
-`;
-});
+  inline-block bg-${color || 'gray'}-200 px-3 rounded-lg 
+  text-${color || 'gray'}-800
+`);
 
 const PrecedentsQuery = classyDiv('col-span-2');
 
@@ -300,3 +335,20 @@ function ProgressCircle({ progress, className }) {
     </div>
   );
 }
+
+const byNumPrecedents = (a, b) => a.precedents.length - b.precedents.length;
+
+const isNullish = (x) => [null, undefined, ''].includes(x)
+
+const byProperty = (p) => (a, b) => {
+  console.log(`p`, p);
+  if ( isNullish(a?.[p]) &&  isNullish(b?.[p])) { return  0; }
+  if (!isNullish(a?.[p]) &&  isNullish(b?.[p])) { return -1; }
+  if ( isNullish(a?.[p]) && !isNullish(b?.[p])) { return  1; }
+
+  const [numA, numB] = [Number(a[p]), Number(b[p])];
+  if (!isNaN(numA) && !isNaN(numB)) return numA - numB
+
+  return String(a[p]).localeCompare(String(b[p]))
+}
+

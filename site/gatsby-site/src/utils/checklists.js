@@ -54,12 +54,13 @@ const statusIcon = (status) =>
     Prevented: faShield,
   }[status] || faWarning);
 
-const statusColor = (status) =>
-  ({
-    'Not Mitigated': 'text-red-500',
-    Mitigated: 'text-blue-500',
-    Prevented: 'text-green-500',
-  }[status] || 'text-gray-500');
+const statusColor = (status) => ({
+  'Not Mitigated': 'red',
+  Mitigated: 'blue',
+  Prevented: 'green',
+  'Not Applicable': 'gray',
+  Unclear: 'gray',
+}[status] || 'gray');
 
 const DeleteButton = classy(
   'button',
