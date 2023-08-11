@@ -120,7 +120,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         onClick={() => setShowAuthors(true)}
         className="text-black"
       >
-        <FontAwesomeIcon title="report-card" icon={faIdCard} className="fa-id-card" />
+        <FontAwesomeIcon title={t('Authors')} icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
       {showAuthors && (
@@ -159,7 +159,9 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         title={t('View History')}
         className="px-1 text-black"
         data-cy="report-history-button"
-        href={localizePath({ path: `/cite/history?report_number=${item.report_number}` })}
+        href={localizePath({
+          path: `/cite/history?report_number=${item.report_number}&incident_id=${item.incident_id}`,
+        })}
       >
         <FontAwesomeIcon titleId="report-history" icon={faClockRotateLeft} />
       </CustomButton>

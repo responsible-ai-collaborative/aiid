@@ -14,6 +14,7 @@ import { StringDiff, DiffMethod } from 'react-string-diff';
 import diff from 'rich-text-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
+import { globalHistory } from '@reach/router';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -28,13 +29,23 @@ function IncidentHistoryPage() {
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
-  const { data: reportHistoryData, loading: loadingReportHistory } = useQuery(FIND_REPORT_HISTORY, {
+  const {
+    data: reportHistoryData,
+    loading: loadingReportHistory,
+    refetch: refetchHistory,
+  } = useQuery(FIND_REPORT_HISTORY, {
     variables: {
       query: {
         report_number: reportNumber,
       },
     },
   });
+
+  useEffect(() => {
+    globalHistory.listen(() => {
+      refetchHistory();
+    });
+  }, []);
 
   useEffect(() => {
     if (reportHistoryData?.history_reports?.length > 0) {

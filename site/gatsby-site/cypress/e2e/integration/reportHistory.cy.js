@@ -103,4 +103,35 @@ describe('Report History', () => {
 
     cy.url().should('include', '/cite/563/#r3206');
   });
+
+  it('Should refresh Report history if the user go back on the browser', () => {
+    cy.visit('/cite/10');
+
+    cy.waitForStableDOM();
+
+    cy.contains('Read More').click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportHistory',
+      'FindReportHistory',
+      reportHistory
+    );
+
+    cy.get('[data-cy="report-history-button"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.wait('@FindReportHistory');
+
+    cy.url().should('include', '/cite/history/?report_number=16&incident_id=10');
+
+    cy.go('back');
+
+    cy.url().should('include', '/cite/10');
+
+    cy.go('forward');
+
+    cy.wait('@FindReportHistory');
+  });
 });
