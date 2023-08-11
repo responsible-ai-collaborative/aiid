@@ -11,6 +11,7 @@ import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
+import { globalHistory } from '@reach/router';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -25,16 +26,23 @@ function IncidentHistoryPage() {
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
-  const { data: incidentHistoryData, loading: loadingIncidentHistory } = useQuery(
-    FIND_INCIDENT_HISTORY,
-    {
-      variables: {
-        query: {
-          incident_id: incidentId,
-        },
+  const {
+    data: incidentHistoryData,
+    loading: loadingIncidentHistory,
+    refetch: refetchHistory,
+  } = useQuery(FIND_INCIDENT_HISTORY, {
+    variables: {
+      query: {
+        incident_id: incidentId,
       },
-    }
-  );
+    },
+  });
+
+  useEffect(() => {
+    globalHistory.listen(() => {
+      refetchHistory();
+    });
+  }, []);
 
   useEffect(() => {
     if (incidentHistoryData?.history_incidents?.length > 0) {
