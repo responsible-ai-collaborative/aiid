@@ -48,7 +48,7 @@ export default function CheckListForm({
   const searchTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents });
+    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, setSaveStatus });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   const oldSetFieldValue = setFieldValue;

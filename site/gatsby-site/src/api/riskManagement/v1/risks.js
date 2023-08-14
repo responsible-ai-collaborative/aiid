@@ -139,9 +139,9 @@ var tagsFromClassification = (classification) => (
   //   ]
   // }
   joinArrays(
-    classification.attributes.map(
+    classification.attributes.filter(a => ![null, undefined].includes(a.value_json)).map(
       attribute => (
-        [].concat(JSON.parse(attribute.value_json))
+        [].concat(parseJson(attribute.value_json))
           .filter(value => Array.isArray(value) || typeof value !== 'object')
           .map(
             value => [
@@ -154,6 +154,14 @@ var tagsFromClassification = (classification) => (
     )
   )
 );
+
+function parseJson(json) {
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    throw new Error('Could not parse ' + json)
+  }
+}
 
 var joinArrays = (arrays) => arrays.reduce(
   (result, array) => result.concat(array), []
