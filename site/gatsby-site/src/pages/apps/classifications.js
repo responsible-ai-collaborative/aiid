@@ -308,6 +308,7 @@ export default function ClassificationsDbView(props) {
       };
 
       tableData = classifications
+        .filter((c) => c.incidents.length > 0)
         .map(classificationsToRowsMap) // should be first map function
         .map(classificationFormatBoolean)
         .map(replaceEmptyValuesMap);
