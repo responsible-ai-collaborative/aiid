@@ -5,7 +5,7 @@ import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import { Button, Tooltip } from 'flowbite-react';
 
-const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, id }) => {
+const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing = false, id }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
@@ -15,7 +15,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, id }) => {
     setEditing(false);
   };
 
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(initialEditing);
 
   const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
 

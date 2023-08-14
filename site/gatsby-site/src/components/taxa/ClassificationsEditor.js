@@ -9,6 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useQuery } from '@apollo/client';
 import Card from 'elements/Card';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 
 export default function TaxonomiesEditor({
   taxa,
@@ -16,6 +17,10 @@ export default function TaxonomiesEditor({
   reportNumber = null,
   className = '',
 }) {
+  const [query] = useQueryParams({
+    edit_taxonomy: withDefault(StringParam, ''),
+  });
+
   const { t } = useTranslation();
 
   const { isRole, user } = useUserContext();
@@ -57,8 +62,15 @@ export default function TaxonomiesEditor({
   useEffect(() => {
     if (taxonomies.length && user) {
       const list = taxonomies
-        .filter((t) => t.classificationsArray.length || t.notes)
-        .map((t) => ({ ...t, canEdit: canEditTaxonomy(t.namespace), ref: createRef() }));
+        .filter(
+          (t) => t.classificationsArray.length || t.notes || query.edit_taxonomy === t.namespace
+        )
+        .map((t) => ({
+          ...t,
+          canEdit: canEditTaxonomy(t.namespace),
+          ref: createRef(),
+          initialEditing: query.edit_taxonomy === t.namespace,
+        }));
 
       taxonomiesListSize.current = list.length;
 
@@ -81,9 +93,19 @@ export default function TaxonomiesEditor({
     setSelectedTaxonomy(null);
   };
 
+  const [scrolledToTaxonomy, setScrolledToTaxonomy] = useState(null);
+
   useEffect(() => {
     if (taxonomiesListSize.current < taxonomiesList.length) {
       taxonomiesList[taxonomiesList.length - 1].ref.current.scrollIntoView();
+    }
+
+    if (
+      scrolledToTaxonomy !== query.edit_taxonomy &&
+      taxonomiesList.some((t) => t.namespace === query.edit_taxonomy)
+    ) {
+      setScrolledToTaxonomy(query.edit_taxonomy);
+      taxonomiesList.find((t) => t.namespace === query.edit_taxonomy).ref.current.scrollIntoView();
     }
   }, [taxonomiesList]);
 
@@ -142,23 +164,20 @@ export default function TaxonomiesEditor({
                 </Col>
               </Row>
 
-              <Row>
-                <Col>
-                  {taxonomiesList.map((t) => {
-                    return (
-                      <div key={t.namespace} ref={t.ref}>
-                        <Taxonomy
-                          id={`taxonomy-${t.namespace}`}
-                          taxonomy={t}
-                          incidentId={incidentId}
-                          reportNumber={reportNumber}
-                          canEdit={t.canEdit}
-                        />
-                      </div>
-                    );
-                  })}
-                </Col>
-              </Row>
+              {taxonomiesList.map((t) => {
+                return (
+                  <div key={t.namespace} ref={t.ref}>
+                    <Taxonomy
+                      id={`taxonomy-${t.namespace}`}
+                      taxonomy={t}
+                      incidentId={incidentId}
+                      reportNumber={reportNumber}
+                      canEdit={t.canEdit}
+                      initialEditing={t.initialEditing}
+                    />
+                  </div>
+                );
+              })}
             </Card.Body>
           )}
         </Card>
