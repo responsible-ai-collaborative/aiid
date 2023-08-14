@@ -24,7 +24,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
         <div
           id="content"
           className={
-            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative overflow-hidden flex-1' +
+            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative flex-1' +
             (rightSidebar ? ' xl:pr-5' : '')
           }
         >

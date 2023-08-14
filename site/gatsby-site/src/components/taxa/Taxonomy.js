@@ -12,6 +12,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, id }) => {
 
   const handleSubmit = () => {
     setShowBanner(true);
+    setEditing(false);
   };
 
   const [editing, setEditing] = useState(false);
@@ -20,7 +21,11 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, id }) => {
 
   return (
     <Card id={id} key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
-      <div className="tw-taxa-card-header tw-card-header">
+      <div
+        className={
+          'tw-taxa-card-header tw-card-header bg-gray-50' + (editing && ' sticky top-0 z-50')
+        }
+      >
         <h4 className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
             {{ namespace: taxonomy.namespace }} Taxonomy Classifications
@@ -28,12 +33,12 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, id }) => {
         </h4>
         <>
           {editing ? (
-            <Button color={'gray'} onClick={() => setEditing(false)}>
+            <Button size="xs" color={'gray'} onClick={() => setEditing(false)}>
               <Trans>Cancel</Trans>
             </Button>
           ) : (
             canEdit && (
-              <Button color={'gray'} onClick={() => setEditing(true)}>
+              <Button size="xs" color={'gray'} onClick={() => setEditing(true)}>
                 <Trans>Edit</Trans>
               </Button>
             )

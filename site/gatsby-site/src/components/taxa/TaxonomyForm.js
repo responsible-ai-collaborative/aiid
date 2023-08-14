@@ -321,9 +321,11 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   <Label htmlFor="publish-no">no</Label>
                 </div>
               </div>
-              <Button onClick={handleSubmit} disabled={isSubmitting}>
-                Submit
-              </Button>
+              <div className="sticky bottom-0 bg-white p-2 border-t-1 -mx-2 z-50">
+                <Button onClick={handleSubmit} disabled={isSubmitting}>
+                  Submit
+                </Button>
+              </div>
             </Form>
           );
         }}
@@ -670,7 +672,9 @@ function ObjectListField({
         }
         return (
           <Card key={id} className="mb-2">
-            <Card.Header className={`${openItemId === id ? '' : 'border-b-0'} cursor-pointer`}>
+            <Card.Header
+              className={`${openItemId === id ? '' : 'border-b-0'} cursor-pointer sticky top-0`}
+            >
               <button
                 type="button"
                 className="border-none bg-none w-full text-left"

@@ -4,12 +4,18 @@ import Row from '../../elements/Row';
 import Col from '../../elements/Col';
 import Taxonomy from './Taxonomy';
 import { useUserContext } from 'contexts/userContext';
-import { Button, Card, Dropdown, Spinner } from 'flowbite-react';
+import { Button, Dropdown, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useQuery } from '@apollo/client';
+import Card from 'elements/Card';
 
-export default function TaxonomiesEditor({ taxa, incidentId = null, reportNumber = null }) {
+export default function TaxonomiesEditor({
+  taxa,
+  incidentId = null,
+  reportNumber = null,
+  className = '',
+}) {
   const { t } = useTranslation();
 
   const { isRole, user } = useUserContext();
@@ -84,18 +90,20 @@ export default function TaxonomiesEditor({ taxa, incidentId = null, reportNumber
   return (
     <>
       {canEditTaxonomies && (
-        <Card className="bg-slate-50">
-          <h3>
-            <Trans>Classifications Editor</Trans>
+        <Card className={'shadow-card ' + className}>
+          <Card.Header className="items-center justify-between">
+            <h4>
+              <Trans>Classifications Editor</Trans>
+            </h4>
             {taxonomies.length == 0 && (
               <>
                 <Spinner className="ml-2" />
               </>
             )}
-          </h3>
+          </Card.Header>
 
           {taxonomies.length > 0 && (
-            <>
+            <Card.Body>
               <Row>
                 <Col className="flex flex-row">
                   <div className="mr-2">
@@ -151,7 +159,7 @@ export default function TaxonomiesEditor({ taxa, incidentId = null, reportNumber
                   })}
                 </Col>
               </Row>
-            </>
+            </Card.Body>
           )}
         </Card>
       )}

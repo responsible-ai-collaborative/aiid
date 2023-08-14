@@ -26,6 +26,7 @@ import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
+import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
 function CiteTemplate({
   incident,
@@ -250,11 +251,20 @@ function CiteTemplate({
               </Col>
             </Row>
 
-            <ClassificationsEditor
-              classifications={allMongodbAiidprodClassifications}
-              taxa={allMongodbAiidprodTaxa}
-              incidentId={incident.incident_id}
-            />
+            <Row className="mt-6">
+              <Col>
+                <ClassificationsEditor
+                  classifications={allMongodbAiidprodClassifications}
+                  taxa={allMongodbAiidprodTaxa}
+                  incidentId={incident.incident_id}
+                />
+
+                <ClassificationsDisplay
+                  classifications={allMongodbAiidprodClassifications}
+                  taxa={allMongodbAiidprodTaxa}
+                />
+              </Col>
+            </Row>
 
             <Row className="mt-6">
               <Col>
