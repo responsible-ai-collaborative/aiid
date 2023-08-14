@@ -12,6 +12,7 @@ import { StringDiff, DiffMethod } from 'react-string-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
 import { globalHistory } from '@reach/router';
+import CustomButton from 'elements/Button';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -92,6 +93,12 @@ function IncidentHistoryPage() {
   const loading =
     loadingIncidentHistory || loadingUsers || loadingEntities || incidentHistory === null;
 
+  const restoreVersion = async (version) => {
+    if (confirm(t('Are you sure you want to restore this version?'))) {
+      console.log('version', version);
+    }
+  };
+
   return (
     <div className={'w-full p-1'}>
       {loading && (
@@ -131,9 +138,9 @@ function IncidentHistoryPage() {
               {incidentHistory.map((version, index) => {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
-                    <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
+                    <div className="flex font-semibold mb-2 gap-5" data-cy="history-row-ribbon">
                       {version.epoch_date_modified && (
-                        <div className="mr-5">
+                        <div>
                           {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                         </div>
                       )}
@@ -141,6 +148,15 @@ function IncidentHistoryPage() {
                         <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
                         {version.modifiedByUser?.last_name}
                       </div>
+                      <CustomButton
+                        variant="link"
+                        title={t('Restore Version')}
+                        className="underline text-black p-0 border-0"
+                        data-cy="restore-button"
+                        onClick={() => restoreVersion(version)}
+                      >
+                        <Trans>Restore Version</Trans>
+                      </CustomButton>
                     </div>
                     <div className="flex flex-col flex-nowrap mb-3" data-cy="history-row-changes">
                       {!version.changes && (
