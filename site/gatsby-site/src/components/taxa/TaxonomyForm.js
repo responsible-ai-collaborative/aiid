@@ -12,6 +12,7 @@ import { debounce } from 'debounce';
 import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
+import SubmitButton from 'components/ui/SubmitButton';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, reportNumber, onSubmit, active },
@@ -322,9 +323,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                 </div>
               </div>
               <div className="sticky bottom-0 bg-white p-2 border-t-1 -mx-2 z-50">
-                <Button onClick={handleSubmit} disabled={isSubmitting}>
+                <SubmitButton loading={isSubmitting} onClick={handleSubmit} disabled={isSubmitting}>
                   Submit
-                </Button>
+                </SubmitButton>
               </div>
             </Form>
           );
