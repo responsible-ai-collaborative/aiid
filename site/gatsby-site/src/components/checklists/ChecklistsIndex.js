@@ -99,10 +99,10 @@ export default function ChecklistsIndex() {
               {checklist.risks
                 .filter((r) => r.risk_status != 'Not Applicable')
                 .map((risk) => (
-                  <li key={risk.id} className="flex items-center gap-1 text-gray-600">
+                  <li key={risk.id} className="flex items-center gap-1 text-gray-600 mx-1">
                     <FontAwesomeIcon
                       icon={statusIcon(risk.risk_status)}
-                      className={`-mt-1 ${statusColor(risk.risk_status)}`}
+                      className={`text-${statusColor(risk.risk_status)}-600`}
                       title={risk.risk_status}
                     />
                     {risk.title}

@@ -73,10 +73,10 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
   const tags = classificationsToTags({ classifications, taxa });
 
   if (!hydrated) {
-    // We need this to convince Tailwind 
+    // We need this to convince Tailwind
     // to include the dynamically-generated color classes in the bundle.
     return (
-      <div className="hidden bg-red-200 text-red-900 bg-orange-200 text-orange-900 bg-purple-200 text-purple-900 bg-green-200 text-green-900"/>
+      <div className="hidden bg-red-200 text-red-900 bg-orange-200 text-orange-900 bg-purple-200 text-purple-900 bg-green-200 text-green-900 bg-lime-200 text-lime-900 text-gray-400 text-red-700" />
     );
   }
 
