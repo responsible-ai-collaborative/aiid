@@ -1,21 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import { FIND_INCIDENT_HISTORY } from '../../graphql/incidents';
+import {
+  FIND_FULL_INCIDENT,
+  FIND_INCIDENT_HISTORY,
+  UPDATE_INCIDENT,
+} from '../../graphql/incidents';
 import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
 import { FIND_ENTITIES } from '../../graphql/entities';
-import { useQuery } from '@apollo/client/react/hooks';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { format, fromUnixTime } from 'date-fns';
+import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
 import { globalHistory } from '@reach/router';
 import CustomButton from 'elements/Button';
+import { useUserContext } from 'contexts/userContext';
+import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
+
+  const { isRole, user } = useUserContext();
+
+  const addToast = useToastContext();
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, Number.NaN));
 
@@ -23,9 +34,23 @@ function IncidentHistoryPage() {
 
   const [incidentHistory, setIncidentHistory] = useState(null);
 
+  const [incident, setIncident] = useState(null);
+
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+
+  const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const { logIncidentHistory } = useLogIncidentHistory();
+
+  const {
+    data: incidentData,
+    loading: loadingIncident,
+    refetch: refetchIncident,
+  } = useQuery(FIND_FULL_INCIDENT, {
+    variables: { query: { incident_id: incidentId } },
+  });
 
   const {
     data: incidentHistoryData,
@@ -42,8 +67,17 @@ function IncidentHistoryPage() {
   useEffect(() => {
     globalHistory.listen(() => {
       refetchHistory();
+      refetchIncident();
     });
   }, []);
+
+  useEffect(() => {
+    if (incidentData?.incident) {
+      setIncident({ ...incidentData.incident });
+    } else {
+      setIncident(undefined);
+    }
+  }, [incidentData]);
 
   useEffect(() => {
     if (incidentHistoryData?.history_incidents?.length > 0) {
@@ -85,17 +119,93 @@ function IncidentHistoryPage() {
       });
 
       setIncidentHistory(incidentHistory);
+
+      console.log('------------');
     } else {
       setIncidentHistory([]);
     }
   }, [incidentHistoryData, usersData, entitiesData]);
 
   const loading =
-    loadingIncidentHistory || loadingUsers || loadingEntities || incidentHistory === null;
+    loadingIncident ||
+    loadingIncidentHistory ||
+    loadingUsers ||
+    loadingEntities ||
+    incidentHistory === null;
 
   const restoreVersion = async (version) => {
     if (confirm(t('Are you sure you want to restore this version?'))) {
-      console.log('version', version);
+      try {
+        const updatedIncident = {
+          ...version,
+          modifiedByUser: undefined,
+          modifiedBy: undefined,
+          __typename: undefined,
+          _id: undefined,
+          changes: undefined,
+          epoch_date_modified: getUnixTime(new Date()),
+          editor_notes: version.editor_notes ? version.editor_notes : '',
+        };
+
+        updatedIncident.reports = { link: version.reports };
+        updatedIncident.AllegedDeployerOfAISystem = { link: version.AllegedDeployerOfAISystem };
+        updatedIncident.AllegedDeveloperOfAISystem = { link: version.AllegedDeveloperOfAISystem };
+        updatedIncident.AllegedHarmedOrNearlyHarmedParties = {
+          link: version.AllegedHarmedOrNearlyHarmedParties,
+        };
+        updatedIncident.editors = { link: version.editors };
+
+        // Add the current user to the list of editors
+        if (
+          user &&
+          user.providerType != 'anon-user' &&
+          !updatedIncident.editors.link.includes(user.id)
+        ) {
+          updatedIncident.editors.link = updatedIncident.editors.link.concat(user.id);
+        }
+
+        updatedIncident.nlp_similar_incidents = version.nlp_similar_incidents
+          ? version.nlp_similar_incidents.map((nlp) => {
+              return { ...nlp, __typename: undefined };
+            })
+          : [];
+
+        if (version.embedding) {
+          updatedIncident.embedding = { ...version.embedding, __typename: undefined };
+        }
+
+        if (version.tsne) {
+          updatedIncident.tsne = { ...version.tsne, __typename: undefined };
+        }
+
+        await updateIncident({
+          variables: {
+            query: { incident_id: incidentId },
+            set: updatedIncident,
+          },
+        });
+
+        await logIncidentHistory(
+          {
+            ...incident,
+            ...updatedIncident,
+          },
+          user
+        );
+
+        refetchHistory();
+
+        addToast({
+          message: t('Incident version restored successfully.'),
+          severity: SEVERITY.success,
+        });
+      } catch (error) {
+        addToast({
+          message: t('Error restoring Incident version.'),
+          severity: SEVERITY.danger,
+          error,
+        });
+      }
     }
   };
 
@@ -148,15 +258,17 @@ function IncidentHistoryPage() {
                         <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
                         {version.modifiedByUser?.last_name}
                       </div>
-                      <CustomButton
-                        variant="link"
-                        title={t('Restore Version')}
-                        className="underline text-black p-0 border-0"
-                        data-cy="restore-button"
-                        onClick={() => restoreVersion(version)}
-                      >
-                        <Trans>Restore Version</Trans>
-                      </CustomButton>
+                      {index > 0 && isRole('incident_editor') && (
+                        <CustomButton
+                          variant="link"
+                          title={t('Restore Version')}
+                          className="underline text-black p-0 border-0"
+                          data-cy="restore-button"
+                          onClick={() => restoreVersion(version)}
+                        >
+                          <Trans>Restore Version</Trans>
+                        </CustomButton>
+                      )}
                     </div>
                     <div className="flex flex-col flex-nowrap mb-3" data-cy="history-row-changes">
                       {!version.changes && (
