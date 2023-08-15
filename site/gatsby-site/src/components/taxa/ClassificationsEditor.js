@@ -112,7 +112,7 @@ export default function TaxonomiesEditor({
   return (
     <>
       {canEditTaxonomies && (
-        <Card className={'shadow-card ' + className}>
+        <Card className={'shadow-card ' + className} data-cy="classifications-editor">
           <Card.Header className="items-center justify-between">
             <h4>
               <Trans>Classifications Editor</Trans>
@@ -130,7 +130,7 @@ export default function TaxonomiesEditor({
                 <Col className="flex flex-row">
                   <div className="mr-2">
                     <Dropdown
-                      label={selectedTaxonomy || t('Please select a taxonomy')}
+                      label={selectedTaxonomy || t('Select a taxonomy')}
                       color={'light'}
                       className="min-w-max mr-4"
                     >

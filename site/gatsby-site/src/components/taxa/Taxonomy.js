@@ -20,7 +20,12 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
   const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
 
   return (
-    <Card id={id} key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
+    <Card
+      id={id}
+      key={taxonomy.namespace}
+      className="mt-6"
+      data-cy={`taxonomy-${taxonomy.namespace}`}
+    >
       <div
         className={
           'tw-taxa-card-header tw-card-header bg-gray-50' + (editing && ' sticky top-0 z-50')

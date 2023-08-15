@@ -13,6 +13,7 @@ import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
 import SubmitButton from 'components/ui/SubmitButton';
+import { uniq } from 'lodash';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, reportNumber, onSubmit, active },
@@ -169,17 +170,34 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const data = {
         __typename: undefined,
-        reports: {
-          link: reportNumber ? [reportNumber] : [],
-        },
-        incidents: {
-          link: incidentId ? [incidentId] : [],
-        },
         notes: values.notes,
         publish: values.publish,
         attributes: attributes.map((a) => a),
         namespace,
       };
+
+      if (classification) {
+        data.reports = {
+          link: reportNumber
+            ? uniq([
+                ...classification.reports.map(({ report_number }) => report_number),
+                reportNumber,
+              ])
+            : classification.reports.map(({ report_number }) => report_number),
+        };
+        data.incidents = {
+          link: incidentId
+            ? uniq([...classification.incidents.map(({ incident_id }) => incident_id), incidentId])
+            : classification.incidents.map(({ incident_id }) => incident_id),
+        };
+      } else {
+        data.reports = {
+          link: reportNumber ? [reportNumber] : [],
+        };
+        data.incidents = {
+          link: incidentId ? [incidentId] : [],
+        };
+      }
 
       await upsertClassification({
         variables: {
