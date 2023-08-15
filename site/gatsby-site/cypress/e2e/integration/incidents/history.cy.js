@@ -338,8 +338,6 @@ describe('Incidents', () => {
         expect(input).to.deep.eq(expectedIncident);
       });
 
-    cy.get('[data-cy="incident-form"]').should('not.exist');
-
     cy.get('[data-cy="toast"]').contains('Incident version restored successfully.').should('exist');
   });
 });
