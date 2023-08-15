@@ -200,7 +200,7 @@ export default function NewsSearchPage(props) {
       <div
         data-cy="results"
         style={{ gridTemplateColumns: 'repeat( auto-fit, minmax(28rem, 1fr) )' }}
-        className="grid gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4"
+        className="flex flex-col lg:grid gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4"
       >
         {loading &&
           Array(24)
@@ -237,7 +237,7 @@ export default function NewsSearchPage(props) {
           <div
             data-cy="dismissed"
             style={{ gridTemplateColumns: 'repeat( auto-fit, minmax(28rem, 1fr) )' }}
-            className="grid gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4"
+            className="flex flex-col lg:grid gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4"
           >
             {displayedDismissed.map((newsArticle) => (
               <CandidateCard
@@ -303,79 +303,78 @@ function CandidateCard({
       data-cy="candidate-card"
       data-id={newsArticle.url}
       style={{ justifyContent: 'flex-start' }}
-      className="gap-0"
+      className="gap-0 max-w-full"
       key={newsArticle.url}
     >
       <div>
         <span className="float-right pt-2">
-          {isRole('incident_editor') ||
-            (!existingSubmissions.includes(newsArticle.url) && (
-              <Dropdown inline label="">
-                {!existingSubmissions.includes(newsArticle.url) && (
+          {(isRole('incident_editor') || !existingSubmissions.includes(newsArticle.url)) && (
+            <Dropdown inline label="">
+              {!existingSubmissions.includes(newsArticle.url) && (
+                <Dropdown.Item
+                  onClick={() => {
+                    window.open(
+                      localizePath({
+                        language: locale,
+                        path:
+                          '/apps/submit/?' +
+                          ['url', 'title', 'text']
+                            .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
+                            .join('&'),
+                      })
+                    );
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
+                  Submit
+                </Dropdown.Item>
+              )}
+              {isRole('incident_editor') &&
+                (dismissed ? (
                   <Dropdown.Item
+                    data-cy="restore-button"
                     onClick={() => {
-                      window.open(
-                        localizePath({
-                          language: locale,
-                          path:
-                            '/apps/submit/?' +
-                            ['url', 'title', 'text']
-                              .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
-                              .join('&'),
-                        })
-                      );
+                      setDismissedArticles((dismissedArticles) => {
+                        const updatedValue = { ...dismissedArticles };
+
+                        updatedValue[newsArticle.url] = false;
+                        return updatedValue;
+                      });
+                      updateCandidate({
+                        variables: {
+                          query: { url: newsArticle.url },
+                          set: { dismissed: false },
+                        },
+                      });
                     }}
                   >
-                    <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
-                    Submit
+                    <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
+                    Restore
                   </Dropdown.Item>
-                )}
-                {isRole('incident_editor') &&
-                  (dismissed ? (
-                    <Dropdown.Item
-                      data-cy="restore-button"
-                      onClick={() => {
-                        setDismissedArticles((dismissedArticles) => {
-                          const updatedValue = { ...dismissedArticles };
+                ) : (
+                  <Dropdown.Item
+                    data-cy="dismiss-button"
+                    onClick={() => {
+                      setDismissedArticles((dismissedArticles) => {
+                        const updatedValue = { ...dismissedArticles };
 
-                          updatedValue[newsArticle.url] = false;
-                          return updatedValue;
-                        });
-                        updateCandidate({
-                          variables: {
-                            query: { url: newsArticle.url },
-                            set: { dismissed: false },
-                          },
-                        });
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
-                      Restore
-                    </Dropdown.Item>
-                  ) : (
-                    <Dropdown.Item
-                      data-cy="dismiss-button"
-                      onClick={() => {
-                        setDismissedArticles((dismissedArticles) => {
-                          const updatedValue = { ...dismissedArticles };
-
-                          updatedValue[newsArticle.url] = true;
-                          return updatedValue;
-                        });
-                        updateCandidate({
-                          variables: {
-                            query: { url: newsArticle.url },
-                            set: { dismissed: true },
-                          },
-                        });
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
-                      Dismiss
-                    </Dropdown.Item>
-                  ))}
-              </Dropdown>
-            ))}
+                        updatedValue[newsArticle.url] = true;
+                        return updatedValue;
+                      });
+                      updateCandidate({
+                        variables: {
+                          query: { url: newsArticle.url },
+                          set: { dismissed: true },
+                        },
+                      });
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
+                    Dismiss
+                  </Dropdown.Item>
+                ))}
+            </Dropdown>
+          )}
         </span>
         <a href={newsArticle.url}>
           <h3 className="text-xl mt-0 mb-0">{newsArticle.title}</h3>
