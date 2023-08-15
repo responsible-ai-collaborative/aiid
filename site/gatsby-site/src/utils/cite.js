@@ -218,8 +218,6 @@ const INCIDENT_TO_COMPARE = {
 export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
   const diffData = diff(oldVersion, newVersion);
 
-  console.log('-- diffData', diffData);
-
   const result = [];
 
   for (const field of Object.keys(INCIDENT_TO_COMPARE)) {
@@ -287,7 +285,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
             });
           }
         } else {
-          if (fieldDiff.value) {
+          if (fieldDiff.value != null && fieldDiff.value != undefined) {
             if (fieldDiff.type === Operation.UPDATE || fieldDiff.type === Operation.ADD) {
               result.push({
                 field: INCIDENT_TO_COMPARE[field],
@@ -308,8 +306,6 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
       }
     }
   }
-
-  console.log('-- result', result);
 
   return result;
 };

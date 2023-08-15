@@ -119,8 +119,6 @@ function IncidentHistoryPage() {
       });
 
       setIncidentHistory(incidentHistory);
-
-      console.log('------------');
     } else {
       setIncidentHistory([]);
     }
