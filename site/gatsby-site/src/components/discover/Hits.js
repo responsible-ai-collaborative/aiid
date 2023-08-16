@@ -26,25 +26,19 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
 
   if (!isMounted) return <></>;
 
-  let gridClasses = ``;
-
   const isLoading = isSearchStalled && isMounted;
-
-  switch (display) {
-    case 'list':
-      gridClasses = `${isLoading ? 'flex flex-wrap' : 'grid grid-cols-1'} gap-2`;
-      break;
-    case 'compact':
-      gridClasses = `${isLoading ? 'flex flex-wrap' : 'grid md:grid-cols-4'} gap-2`;
-      break;
-    case 'details':
-      gridClasses = `${isLoading ? 'flex flex-wrap' : 'grid md:grid-cols-4'} gap-2`;
-      break;
-  }
 
   return (
     <div
-      className={`tw-hits-container ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-4 ${gridClasses}`}
+      data-cy="hits-container"
+      style={{
+        gridTemplateColumns: {
+          compact: 'repeat( auto-fit, minmax(18rem, 1fr) )',
+          details: 'repeat( auto-fit, minmax(18rem, 1fr) )',
+          list: '1fr',
+        }[display],
+      }}
+      className={`grid gap-2 mt-4 mx-auto px-3 w-full lg:max-w-6xl xl:max-w-7xl`}
     >
       {isLoading ? (
         display === 'list' ? (
