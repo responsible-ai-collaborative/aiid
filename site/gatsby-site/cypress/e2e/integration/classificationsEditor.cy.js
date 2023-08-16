@@ -31,6 +31,7 @@ describe('Classifications Editor', () => {
   }
 
   function setField({ short_name, display_type, permitted_values, value }) {
+    //TODO: offset isn't working for some reason, so {click: force} is needed
     cy.get(`[data-cy="${short_name}"]`)
       .first()
       .scrollIntoView({ offset: { top: 200, left: 0 } });
@@ -270,6 +271,7 @@ describe('Classifications Editor', () => {
                 permitted_values
                 display_type
                 short_name
+                mongo_type
               }
             }
           }
@@ -320,11 +322,40 @@ describe('Classifications Editor', () => {
                 expect(xhr.request.body.variables.query.namespace).eq(namespace);
 
                 for (const field of taxa.field_list) {
+                  const value =
+                    field.permitted_values?.length > 0 ? field.permitted_values[0] : 'Test';
+
                   expect(
                     xhr.request.body.variables.data.attributes.filter(
                       (a) => a.short_name == field.short_name
                     )
                   ).to.have.lengthOf(1);
+
+                  const value_json = xhr.request.body.variables.data.attributes.find(
+                    (a) => a.short_name == field.short_name
+                  ).value_json;
+
+                  switch (field.mongo_type) {
+                    case 'bool':
+                      expect(value_json).to.eq(JSON.stringify(true));
+                      break;
+
+                    case 'date':
+                      expect(value_json).to.eq(JSON.stringify('2023-01-01'));
+                      break;
+
+                    case 'array':
+                      //TODO: we'll need to handle this better
+                      if (field.display_type !== 'object-list') {
+                        expect(value_json).to.eq(JSON.stringify([value]), field.short_name);
+                      }
+
+                      break;
+
+                    default:
+                      expect(value_json).to.eq(JSON.stringify(value));
+                      break;
+                  }
                 }
               });
 
