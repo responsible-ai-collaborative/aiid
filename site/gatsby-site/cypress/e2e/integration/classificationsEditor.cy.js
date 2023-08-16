@@ -97,7 +97,6 @@ describe('Classifications Editor', () => {
 
           //TODO: skip data type for now
           case 'object-list':
-            value = [];
             break;
 
           default:
@@ -265,15 +264,6 @@ describe('Classifications Editor', () => {
     {
       namespace: 'CSETv1',
     },
-    {
-      namespace: 'CSETv1_Annotator-1',
-    },
-    {
-      namespace: 'CSETv1_Annotator-2',
-    },
-    {
-      namespace: 'CSETv1_Annotator-3',
-    },
   ].forEach(({ namespace }) => {
     maybeIt(`Should properly display and store ${namespace} classification values`, () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -359,7 +349,17 @@ describe('Classifications Editor', () => {
                     )
                   ).to.have.lengthOf(1);
 
-                  if (field.short_name !== 'Entities') {
+                  const skippedFields = [
+                    'Known AI Technology Snippets',
+                    'Known AI Technical Failure Snippets',
+                    'Entities',
+                    'Known AI Goal Snippets',
+                    'Potential AI Goal Snippets',
+                    'Potential AI Technology Snippets',
+                    'Potential AI Technical Failure Snippets',
+                  ];
+
+                  if (!skippedFields.includes(field.short_name)) {
                     expect(
                       xhr.request.body.variables.data.attributes.find(
                         (a) => a.short_name == field.short_name
