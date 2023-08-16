@@ -307,7 +307,7 @@ function CandidateCard({
       key={newsArticle.url}
     >
       <div>
-        <span className="float-right pt-2">
+        <span className="float-right pt-2" data-cy="candidate-dropdown">
           {(isRole('incident_editor') || !existingSubmissions.includes(newsArticle.url)) && (
             <Dropdown inline label="">
               {!existingSubmissions.includes(newsArticle.url) && (
@@ -325,14 +325,18 @@ function CandidateCard({
                     );
                   }}
                 >
-                  <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
+                  <FontAwesomeIcon
+                    data-cy="submit-icon"
+                    icon={faPlusCircle}
+                    className="pointer fa mr-1"
+                    fixedWidth
+                  />
                   Submit
                 </Dropdown.Item>
               )}
               {isRole('incident_editor') &&
                 (dismissed ? (
                   <Dropdown.Item
-                    data-cy="restore-button"
                     onClick={() => {
                       setDismissedArticles((dismissedArticles) => {
                         const updatedValue = { ...dismissedArticles };
@@ -348,12 +352,16 @@ function CandidateCard({
                       });
                     }}
                   >
-                    <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
+                    <FontAwesomeIcon
+                      data-cy="restore-icon"
+                      icon={faArrowUp}
+                      className="pointer fa mr-1"
+                      fixedWidth
+                    />
                     Restore
                   </Dropdown.Item>
                 ) : (
                   <Dropdown.Item
-                    data-cy="dismiss-button"
                     onClick={() => {
                       setDismissedArticles((dismissedArticles) => {
                         const updatedValue = { ...dismissedArticles };
@@ -369,7 +377,12 @@ function CandidateCard({
                       });
                     }}
                   >
-                    <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
+                    <FontAwesomeIcon
+                      data-cy="dismiss-icon"
+                      icon={faTrash}
+                      className="pointer fa mr-1"
+                      fixedWidth
+                    />
                     Dismiss
                   </Dropdown.Item>
                 ))}

@@ -36,13 +36,16 @@ describe('Incidents App', () => {
       newsArticles
     );
 
-    cy.visit(url);
-    cy.get('[data-cy="candidate-card"] [data-cy="submit-button"]', { timeout: 15000 })
-      .first()
-      .click();
-    cy.location().should((loc) => {
-      expect(loc.pathname).to.equal('/apps/submit/');
+    cy.visit(url, {
+      onBeforeLoad(window) {
+        cy.stub(window, 'open', (url) => {
+          expect(url.slice(0, 12)).to.equal('/apps/submit');
+        });
+      },
     });
+    cy.get('[data-cy="candidate-dropdown"] button').first().click();
+    cy.get('[data-cy="submit-icon"]', { timeout: 15000 }).first().parent().click();
+    cy.window().its('open').should('be.called');
   });
 
   maybeIt('Should dismiss and restore items', () => {
@@ -60,11 +63,18 @@ describe('Incidents App', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="results"] [data-cy="candidate-card"]', { timeout: 15000 })
+    cy.get('[data-cy="results"] [data-cy="candidate-card"] [data-cy="candidate-dropdown"]', {
+      timeout: 15000,
+    })
       .first()
+      .parent()
+      .parent()
+      .parent()
       .invoke('attr', 'data-id')
       .then((dataId) => {
-        cy.get(`[data-id="${dataId}"] [data-cy="dismiss-button"]`).click();
+        cy.get(`[data-id="${dataId}"] [data-cy="candidate-dropdown"]`).click();
+
+        cy.get(`[data-id="${dataId}"] [data-cy="dismiss-icon"]`).parent().click();
 
         cy.get(`[data-cy="dismissed"] [data-id="${dataId}"]`).should('exist');
 
@@ -72,7 +82,9 @@ describe('Incidents App', () => {
 
         cy.get(`[data-cy="dismissed-summary"]`).click();
 
-        cy.get(`[data-cy="dismissed"] [data-id="${dataId}"] [data-cy="restore-button"]`).click();
+        cy.get(`[data-id="${dataId}"] [data-cy="candidate-dropdown"]`).click();
+
+        cy.get(`[data-id="${dataId}"] [data-cy="restore-icon"]`).parent().click();
 
         cy.get(`[data-cy="results"] [data-id="${dataId}"]`, { timeout: 8000 }).should('exist');
 
