@@ -243,7 +243,7 @@ describe('Classifications Editor', () => {
       namespace: 'CSETv1_Annotator-3',
     },
   ].forEach(({ namespace }) => {
-    it.only('Should properly display and store taxonomy values', () => {
+    maybeIt(`Should properly display and store ${namespace} classification values`, () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
       cy.conditionalIntercept(
