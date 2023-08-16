@@ -30,51 +30,82 @@ describe('Classifications Editor', () => {
     });
   }
 
-  function setField({ short_name, display_type, permitted_values, value }) {
+  function setField({ short_name, display_type, permitted_values }) {
+    let value = permitted_values?.length > 0 ? permitted_values[0] : 'Test';
+
     //TODO: offset isn't working for some reason, so {click: force} is needed
     cy.get(`[data-cy="${short_name}"]`)
       .first()
       .scrollIntoView({ offset: { top: 200, left: 0 } });
 
-    cy.get(`[data-cy="${short_name}"]`)
+    return cy
+      .get(`[data-cy="${short_name}"]`)
       .first()
       .within(() => {
         switch (display_type) {
           case 'enum':
-            return permitted_values.length <= 5
-              ? cy.get(`[value="${value}"]`).click({ force: true })
+            permitted_values.length <= 5
+              ? cy.get(`[value="${value}"]`).check({ force: true })
               : cy.get(`select`).select(value, { force: true });
 
+            break;
+
           case 'bool':
-            return cy.get(`[id="${short_name}-yes"]`).click({ force: true });
+            cy.get(`[id="${short_name}-yes"]`).click({ force: true });
+            value = true;
+
+            break;
 
           case 'string':
-            return cy.get(`input`).type(value, { force: true });
+            cy.get(`input`).type(value, { force: true });
+
+            break;
 
           case 'date':
-            return cy.get(`input`).type('2023-01-01', { force: true });
+            cy.get(`input`).type('2023-01-01', { force: true });
+            value = '2023-01-01';
+
+            break;
 
           case 'location':
-            return cy.get(`input`).type(`${value}{enter}`, { force: true });
+            cy.get(`input`).type(`${value}{enter}`, { force: true });
+
+            break;
 
           case 'list':
-            return cy.get(`input[type="text"]`).type(`${value}{enter}`, { force: true });
+            cy.get(`input[type="text"]`).type(`${value}{enter}`, { force: true });
+            value = [value];
+
+            break;
 
           case 'multi':
-            return cy.get(`input[value="${value}"]`).click({ force: true });
+            cy.get(`input[value="${value}"]`).click({ force: true });
+            value = [value];
+
+            break;
 
           case 'long_string':
-            return cy.get(`textarea`).type(value, { force: true });
+            cy.get(`textarea`).type(value, { force: true });
+
+            break;
 
           case 'int':
-            return cy.get(`input`).type(value, { force: true });
+            cy.get(`input`).type('1', { force: true });
+            value = 1;
 
+            break;
+
+          //TODO: skip data type for now
           case 'object-list':
-            break; //TODO: skip this for now
+            value = [];
+            break;
 
           default:
             throw new Error(`Unknown display type: ${display_type} for ${short_name}`);
         }
+      })
+      .then(() => {
+        return cy.wrap(value);
       });
   }
 
@@ -304,15 +335,15 @@ describe('Classifications Editor', () => {
             () => {
               cy.contains('Edit').click();
 
-              for (const field of taxa.field_list) {
-                const value =
-                  field.permitted_values?.length > 0 ? field.permitted_values[0] : 'Test';
+              const selectedValues = {};
 
+              for (const field of taxa.field_list) {
                 setField({
                   short_name: field.short_name,
                   display_type: field.display_type,
                   permitted_values: field.permitted_values,
-                  value,
+                }).then((value) => {
+                  selectedValues[field.short_name] = value;
                 });
               }
 
@@ -322,39 +353,21 @@ describe('Classifications Editor', () => {
                 expect(xhr.request.body.variables.query.namespace).eq(namespace);
 
                 for (const field of taxa.field_list) {
-                  const value =
-                    field.permitted_values?.length > 0 ? field.permitted_values[0] : 'Test';
-
                   expect(
                     xhr.request.body.variables.data.attributes.filter(
                       (a) => a.short_name == field.short_name
                     )
                   ).to.have.lengthOf(1);
 
-                  const value_json = xhr.request.body.variables.data.attributes.find(
-                    (a) => a.short_name == field.short_name
-                  ).value_json;
-
-                  switch (field.mongo_type) {
-                    case 'bool':
-                      expect(value_json).to.eq(JSON.stringify(true));
-                      break;
-
-                    case 'date':
-                      expect(value_json).to.eq(JSON.stringify('2023-01-01'));
-                      break;
-
-                    case 'array':
-                      //TODO: we'll need to handle this better
-                      if (field.display_type !== 'object-list') {
-                        expect(value_json).to.eq(JSON.stringify([value]), field.short_name);
-                      }
-
-                      break;
-
-                    default:
-                      expect(value_json).to.eq(JSON.stringify(value));
-                      break;
+                  if (field.short_name !== 'Entities') {
+                    expect(
+                      xhr.request.body.variables.data.attributes.find(
+                        (a) => a.short_name == field.short_name
+                      )
+                    ).to.deep.eq({
+                      short_name: field.short_name,
+                      value_json: JSON.stringify(selectedValues[field.short_name]),
+                    });
                   }
                 }
               });
