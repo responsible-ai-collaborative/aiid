@@ -34,7 +34,6 @@ describe('Classifications Editor', () => {
   function setField({ short_name, display_type, permitted_values }) {
     let value = permitted_values?.length > 0 ? permitted_values[0] : 'Test';
 
-    //TODO: offset isn't working for some reason, so {click: force} is needed
     cy.get(`[data-cy="${short_name}"]`).first().scrollIntoView();
 
     return cy
