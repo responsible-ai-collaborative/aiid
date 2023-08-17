@@ -1,3 +1,5 @@
+const SEAN_USER_ID = '619b47ea5eed5334edfa3bbc';
+
 function getUnixTime(dateString) {
 
   return BSON.Int32(Math.floor(new Date(dateString).getTime() / 1000));
@@ -15,6 +17,10 @@ exports = async (input) => {
 
   const { _id: undefined, ...submission } = await submissions.findOne({ _id: input.submission_id });
 
+  if(!submission.user) {
+    submission.user = SEAN_USER_ID;
+  }
+
   const parentIncidents = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
   const report_number = (await reports.find({}).sort({ report_number: -1 }).limit(1).next()).report_number + 1;
@@ -26,7 +32,7 @@ exports = async (input) => {
       const lastIncident = await incidents.find({}).sort({ incident_id: -1 }).limit(1).next();
 
       const editors = (!submission.incident_editors || !submission.incident_editors.length)
-        ? ["619b47ea5eed5334edfa3bbc"]
+        ? [SEAN_USER_ID]
         : submission.incident_editors;
     
       const newIncident = {
