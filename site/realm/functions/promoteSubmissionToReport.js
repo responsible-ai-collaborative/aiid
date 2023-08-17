@@ -1,5 +1,3 @@
-const SEAN_USER_ID = '619b47ea5eed5334edfa3bbc';
-
 function getUnixTime(dateString) {
 
   return BSON.Int32(Math.floor(new Date(dateString).getTime() / 1000));
@@ -17,10 +15,6 @@ exports = async (input) => {
 
   const { _id: undefined, ...submission } = await submissions.findOne({ _id: input.submission_id });
 
-  if(!submission.user) {
-    submission.user = SEAN_USER_ID;
-  }
-
   const parentIncidents = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
   const report_number = (await reports.find({}).sort({ report_number: -1 }).limit(1).next()).report_number + 1;
@@ -32,9 +26,9 @@ exports = async (input) => {
       const lastIncident = await incidents.find({}).sort({ incident_id: -1 }).limit(1).next();
 
       const editors = (!submission.incident_editors || !submission.incident_editors.length)
-        ? [SEAN_USER_ID]
+        ? ['619b47ea5eed5334edfa3bbc']
         : submission.incident_editors;
-    
+
       const newIncident = {
         title: submission.incident_title || submission.title,
         description: submission.description,
@@ -72,12 +66,18 @@ exports = async (input) => {
           processed: false
         });
       }
-      await incidentsHistory.insertOne({
+
+      const incidentHistory = {
         ...newIncident,
         reports: [BSON.Int32(report_number)],
         incident_id: BSON.Int32(newIncident.incident_id),
-        modifiedBy: submission.user,
-      });
+      };
+
+      if (submission.user) {
+        incidentHistory.modifiedBy = submission.user;
+      }
+
+      await incidentsHistory.insertOne(incidentHistory);
 
       parentIncidents.push(newIncident);
 
@@ -124,19 +124,22 @@ exports = async (input) => {
             incident_id: BSON.Int32(newIncident.incident_id),
             userId: submission.user
           });
-  
+
           await notificationsCollection.insertOne({
             type: 'submission-promoted',
             incident_id: BSON.Int32(newIncident.incident_id),
             processed: false
           });
         }
-        await incidentsHistory.insertOne({
+        const incidentHistory = {
           ...parentIncident,
           reports: [...parentIncident.reports, BSON.Int32(report_number)],
           embedding,
-          modifiedBy: submission.user,
-        });
+        }
+        if (submission.user) {
+          incidentHistory.modifiedBy = submission.user;
+        }
+        await incidentsHistory.insertOne(incidentHistory);
       }
     }
   }
@@ -163,10 +166,13 @@ exports = async (input) => {
     source_domain: submission.source_domain,
     language: submission.language,
     tags: submission.tags,
-    user: submission.user,
   };
   if (submission.embedding) {
     newReport.embedding = submission.embedding;
+  }
+
+  if (submission.user) {
+    newReport.user = submission.user;
   }
 
   await reports.insertOne({ ...newReport, report_number: BSON.Int32(newReport.report_number) });
@@ -176,11 +182,16 @@ exports = async (input) => {
 
   await context.functions.execute('linkReportsToIncidents', { incident_ids, report_numbers });
 
-  await reportsHistory.insertOne({
+  const reportHistory = {
     ...newReport,
     report_number: BSON.Int32(newReport.report_number),
-    modifiedBy: submission.user,
-  });
+  };
+
+  if (submission.user) {
+    reportHistory.modifiedBy = submission.user;
+  }
+
+  await reportsHistory.insertOne(reportHistory);
 
   await submissions.deleteOne({ _id: input.submission_id });
 
