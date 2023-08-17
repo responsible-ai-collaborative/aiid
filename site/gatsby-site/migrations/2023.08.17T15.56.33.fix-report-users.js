@@ -19,3 +19,6 @@ exports.up = async ({ context: { client } }) => {
 
   console.log('Update result:', updateResult);
 };
+
+/** @type {import('umzug').MigrationFn<any>} */
+exports.down = async () => {};
