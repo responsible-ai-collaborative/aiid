@@ -25,7 +25,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 28);
   });
 
   it('Performs a search and filters results', () => {
@@ -46,7 +46,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
   });
 
   it('Filters by incident Id using top filters', { retries: { runMode: 4 } }, () => {
@@ -70,7 +70,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 28);
   });
 
   it('Filters by Language using top filters', { retries: { runMode: 4 } }, () => {
@@ -94,7 +94,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 4);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 4);
   });
 
   it('Filters by Tags using top filters', { retries: { runMode: 4 } }, () => {
@@ -118,7 +118,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 1);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 1);
   });
 
   it('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
@@ -130,7 +130,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]')
+    cy.get('div[data-cy="hits-container"]')
       .children()
       .get('[title="Filter by Incident ID #10"]')
       .first()
@@ -146,7 +146,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
   });
 
   it('Should flag an incident', () => {
@@ -501,6 +501,6 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
+    cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
   });
 });

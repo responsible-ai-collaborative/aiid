@@ -1,4 +1,5 @@
 import { isAfter, isEqual } from 'date-fns';
+import { Operation, diff } from 'json-diff-ts';
 
 export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -196,4 +197,102 @@ export const deleteIncidentTypenames = (incident) => {
   });
 
   return incident;
+};
+
+const INCIDENT_TO_COMPARE = {
+  title: 'Title',
+  description: 'Description',
+  date: 'Date',
+  AllegedDeployerOfAISystem: 'Alleged Deployer of AI System',
+  AllegedDeveloperOfAISystem: 'Alleged Developer of AI System',
+  AllegedHarmedOrNearlyHarmedParties: 'Alleged Harmed or Nearly Harmed Parties',
+  editors: 'Editors',
+  editor_notes: 'Editor Notes',
+  reports: 'Reports',
+};
+
+export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
+  const diffData = diff(oldVersion, newVersion);
+
+  const result = [];
+
+  for (const field of Object.keys(INCIDENT_TO_COMPARE)) {
+    const fieldDiffs = diffData.filter((diff) => diff.key == field);
+
+    if (fieldDiffs && fieldDiffs.length > 0) {
+      for (const fieldDiff of fieldDiffs) {
+        if (fieldDiff.embeddedKey && fieldDiff.changes) {
+          const removed = [];
+
+          const added = [];
+
+          for (const change of fieldDiff.changes) {
+            if (change.type == Operation.UPDATE) {
+              removed.push(change.oldValue);
+              added.push(change.value);
+            } else if (change.type == Operation.ADD) {
+              added.push(change.value);
+            } else if (change.type == Operation.REMOVE) {
+              removed.push(change.value);
+            }
+          }
+
+          //Remove duplicates
+          const removedClean = removed.filter((item) => !added.includes(item));
+
+          const addedClean = added.filter((item) => !removed.includes(item));
+
+          let removedLabels = removedClean;
+
+          let addedLabels = addedClean;
+
+          if (
+            [
+              'AllegedDeployerOfAISystem',
+              'AllegedDeveloperOfAISystem',
+              'AllegedHarmedOrNearlyHarmedParties',
+            ].includes(field)
+          ) {
+            removedLabels = removedClean.map(
+              (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+            );
+            addedLabels = addedClean.map(
+              (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+            );
+          } else if (field == 'editors') {
+            removedLabels = removedClean.map((userId) => {
+              const user = users?.find((u) => u.userId == userId);
+
+              return user ? `${user.first_name} ${user.last_name}` : userId;
+            });
+            addedLabels = addedClean.map((userId) => {
+              const user = users?.find((u) => u.userId == userId);
+
+              return user ? `${user.first_name} ${user.last_name}` : userId;
+            });
+          }
+
+          if (removedLabels.length > 0 || addedLabels.length > 0) {
+            result.push({
+              field: INCIDENT_TO_COMPARE[field],
+              type: 'list',
+              removed: removedLabels,
+              added: addedLabels,
+            });
+          }
+        } else {
+          if (fieldDiff.value) {
+            result.push({
+              field: INCIDENT_TO_COMPARE[field],
+              type: 'text',
+              oldValue: fieldDiff.oldValue,
+              newValue: fieldDiff.value,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return result;
 };
