@@ -7,6 +7,9 @@ export const FIND_CLASSIFICATION = gql`
       incidents {
         incident_id
       }
+      reports {
+        report_number
+      }
       notes
       namespace
       attributes {
@@ -27,6 +30,9 @@ export const UPSERT_CLASSIFICATION = gql`
       _id
       incidents {
         incident_id
+      }
+      reports {
+        report_number
       }
       notes
       namespace

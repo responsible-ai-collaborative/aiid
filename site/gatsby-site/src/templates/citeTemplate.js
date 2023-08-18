@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Button } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
@@ -7,7 +7,6 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
 import ReportCard from '../components/reports/ReportCard';
-import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
 import Card from '../elements/Card';
@@ -19,15 +18,15 @@ import useLocalizePath from '../components/i18n/useLocalizePath';
 import { FIND_USER_SUBSCRIPTIONS, UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
-import { getTaxonomies } from 'utils/cite';
 import { RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
-import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
+import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
 function CiteTemplate({
   incident,
@@ -55,10 +54,6 @@ function CiteTemplate({
 
   const localizePath = useLocalizePath();
 
-  const [query] = useQueryParams({
-    edit_taxonomy: withDefault(StringParam, ''),
-  });
-
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
@@ -74,43 +69,6 @@ function CiteTemplate({
   });
 
   const addToast = useToastContext();
-
-  const taxonomies = useMemo(
-    () =>
-      getTaxonomies({
-        allMongodbAiidprodTaxa,
-        allMongodbAiidprodClassifications,
-      }),
-    []
-  );
-
-  const [taxonomiesList, setTaxonomiesList] = useState(
-    taxonomies.map((t) => ({ ...t, canEdit: false }))
-  );
-
-  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState(
-    taxonomies.find((taxonomy) => taxonomy.namespace == query.edit_taxonomy)
-  );
-
-  const taxonomyDiv = useRef();
-
-  useEffect(() => {
-    if (query.edit_taxonomy?.length > 0) {
-      if (taxonomyDiv?.current?.scrollIntoView) {
-        taxonomyDiv.current.scrollIntoView();
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    setTaxonomiesList((list) =>
-      list.map((t) => ({
-        ...t,
-        canEdit:
-          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
-      }))
-    );
-  }, [user]);
 
   useEffect(() => {
     if (data) {
@@ -293,32 +251,20 @@ function CiteTemplate({
               </Col>
             </Row>
 
-            {taxonomies.length > 0 && (
-              <Row id="taxa-area">
-                <Col>
-                  {taxonomiesList
-                    .filter((t) => t.canEdit || (t.classificationsArray.length > 0 && t.publish))
-                    .map((t) => {
-                      const inQuery = query.edit_taxonomy == t.namespace;
+            <Row className="mt-6">
+              <Col>
+                <ClassificationsEditor
+                  classifications={allMongodbAiidprodClassifications}
+                  taxa={allMongodbAiidprodTaxa}
+                  incidentId={incident.incident_id}
+                />
 
-                      return (
-                        <div key={t.namespace} ref={inQuery ? taxonomyDiv : undefined}>
-                          <Taxonomy
-                            id={`taxonomy-${t.namespace}`}
-                            taxonomy={t}
-                            incidentId={incident.incident_id}
-                            canEdit={t.canEdit}
-                            {...{
-                              taxonomyBeingEdited,
-                              setTaxonomyBeingEdited,
-                            }}
-                          />
-                        </div>
-                      );
-                    })}
-                </Col>
-              </Row>
-            )}
+                <ClassificationsDisplay
+                  classifications={allMongodbAiidprodClassifications}
+                  taxa={allMongodbAiidprodTaxa}
+                />
+              </Col>
+            </Row>
 
             <Row className="mt-6">
               <Col>

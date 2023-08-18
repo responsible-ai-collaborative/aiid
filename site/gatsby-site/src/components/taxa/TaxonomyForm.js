@@ -12,9 +12,11 @@ import { debounce } from 'debounce';
 import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
+import SubmitButton from 'components/ui/SubmitButton';
+import { uniq } from 'lodash';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
-  { taxonomy, incidentId, onSubmit, active },
+  { taxonomy, incidentId, reportNumber, onSubmit, active },
   ref
 ) {
   const namespace = taxonomy.namespace;
@@ -43,11 +45,16 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     },
   }));
 
+  const incidentsQuery = incidentId ? { incidents: { incident_id: incidentId } } : {};
+
+  const reportsQuery = reportNumber ? { reports: { report_number: reportNumber } } : {};
+
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incidents: { incident_id: incidentId } } },
+    variables: { query: { ...incidentsQuery, ...reportsQuery }, namespace },
     skip: !active,
   });
 
+  //TODO: why does this fetch all classifications? 🤔
   const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { namespace: taxonomy.namespace } },
     skip: !active,
@@ -84,7 +91,10 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       (classification) => classification.namespace == taxonomy.namespace
     );
 
-  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
+  const [upsertClassification] = useMutation(UPSERT_CLASSIFICATION, {
+    refetchQueries: [FIND_CLASSIFICATION],
+    awaitRefetchQueries: true,
+  });
 
   const allTaxonomyFields =
     taxonomy &&
@@ -160,18 +170,40 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const data = {
         __typename: undefined,
-        incidents: { link: [incidentId] },
         notes: values.notes,
         publish: values.publish,
         attributes: attributes.map((a) => a),
         namespace,
-        reports: [],
       };
 
-      await updateClassification({
+      if (classification) {
+        data.reports = {
+          link: reportNumber
+            ? uniq([
+                ...classification.reports.map(({ report_number }) => report_number),
+                reportNumber,
+              ])
+            : classification.reports.map(({ report_number }) => report_number),
+        };
+        data.incidents = {
+          link: incidentId
+            ? uniq([...classification.incidents.map(({ incident_id }) => incident_id), incidentId])
+            : classification.incidents.map(({ incident_id }) => incident_id),
+        };
+      } else {
+        data.reports = {
+          link: reportNumber ? [reportNumber] : [],
+        };
+        data.incidents = {
+          link: incidentId ? [incidentId] : [],
+        };
+      }
+
+      await upsertClassification({
         variables: {
           query: {
-            incidents: { incident_id: incidentId },
+            ...incidentsQuery,
+            ...reportsQuery,
             namespace,
           },
           data,
@@ -308,9 +340,11 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   <Label htmlFor="publish-no">no</Label>
                 </div>
               </div>
-              <Button onClick={handleSubmit} disabled={isSubmitting}>
-                Submit
-              </Button>
+              <div className="sticky bottom-0 bg-white p-2 border-t-1 -mx-2 z-50">
+                <SubmitButton loading={isSubmitting} onClick={handleSubmit} disabled={isSubmitting}>
+                  Submit
+                </SubmitButton>
+              </div>
             </Form>
           );
         }}
@@ -657,7 +691,9 @@ function ObjectListField({
         }
         return (
           <Card key={id} className="mb-2">
-            <Card.Header className={`${openItemId === id ? '' : 'border-b-0'} cursor-pointer`}>
+            <Card.Header
+              className={`${openItemId === id ? '' : 'border-b-0'} cursor-pointer sticky top-0`}
+            >
               <button
                 type="button"
                 className="border-none bg-none w-full text-left"
