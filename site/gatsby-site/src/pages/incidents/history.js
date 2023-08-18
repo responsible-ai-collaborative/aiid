@@ -14,7 +14,7 @@ import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import Link from 'components/ui/Link';
-import { Button } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import { globalHistory } from '@reach/router';
 import CustomButton from 'elements/Button';
 import { useUserContext } from 'contexts/userContext';
@@ -29,6 +29,8 @@ function IncidentHistoryPage() {
   const addToast = useToastContext();
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, Number.NaN));
+
+  const [restoringVersion, setRestoringVersion] = useState(false);
 
   const [incidentTitle, setIncidentTitle] = useState(null);
 
@@ -134,6 +136,8 @@ function IncidentHistoryPage() {
   const restoreVersion = async (version) => {
     if (confirm(t('Are you sure you want to restore this version?'))) {
       try {
+        setRestoringVersion(true);
+
         const updatedIncident = {
           ...version,
           modifiedByUser: undefined,
@@ -191,12 +195,14 @@ function IncidentHistoryPage() {
           user
         );
 
-        refetchHistory();
+        await refetchHistory();
 
         addToast({
           message: t('Incident version restored successfully.'),
           severity: SEVERITY.success,
         });
+
+        setRestoringVersion(false);
       } catch (error) {
         addToast({
           message: t('Error restoring Incident version.'),
@@ -243,6 +249,15 @@ function IncidentHistoryPage() {
                 </h2>
                 <hr />
               </div>
+              {restoringVersion && (
+                <div className="font-semibold mb-2" data-cy="restoring-message">
+                  <div className="flex gap-3 mb-2">
+                    <Trans>Restoring version</Trans>
+                    <Spinner />
+                  </div>
+                  <hr />
+                </div>
+              )}
               {incidentHistory.map((version, index) => {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
@@ -263,6 +278,7 @@ function IncidentHistoryPage() {
                           className="underline text-black p-0 border-0"
                           data-cy="restore-button"
                           onClick={() => restoreVersion(version)}
+                          disabled={restoringVersion}
                         >
                           <Trans>Restore Version</Trans>
                         </CustomButton>

@@ -297,6 +297,8 @@ describe('Incidents', () => {
         cy.get('[data-cy="restore-button"]').click();
       });
 
+    cy.get('[data-cy="restoring-message"]').should('exist');
+
     const initialVersion =
       incidentHistory.data.history_incidents[incidentHistory.data.history_incidents.length - 1];
 
@@ -339,5 +341,7 @@ describe('Incidents', () => {
       });
 
     cy.get('[data-cy="toast"]').contains('Incident version restored successfully.').should('exist');
+
+    cy.get('[data-cy="restoring-message"]').should('not.exist');
   });
 });
