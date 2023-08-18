@@ -110,78 +110,74 @@ export default function TaxonomiesEditor({
   }, [taxonomiesList]);
 
   return (
-    <>
-      {canEditTaxonomies && (
-        <Card className={'shadow-card ' + className} data-cy="classifications-editor">
-          <Card.Header className="items-center justify-between">
-            <h4>
-              <Trans>Classifications Editor</Trans>
-            </h4>
-            {taxonomies.length == 0 && (
-              <>
-                <Spinner className="ml-2" />
-              </>
-            )}
-          </Card.Header>
-
-          {taxonomies.length > 0 && (
-            <Card.Body>
-              <Row>
-                <Col className="flex flex-row">
-                  <div className="mr-2">
-                    <Dropdown
-                      label={selectedTaxonomy || t('Select a taxonomy')}
-                      color={'light'}
-                      className="min-w-max mr-4"
-                    >
-                      {taxonomies
-                        .filter(
-                          (t) => !taxonomiesList.some((item) => item.namespace == t.namespace)
-                        )
-                        .filter(
-                          (t) =>
-                            isRole('taxonomy_editor') ||
-                            isRole('taxonomy_editor_' + t.namespace.toLowerCase())
-                        )
-                        .map(({ namespace }) => (
-                          <Dropdown.Item
-                            key={namespace}
-                            onClick={() => setSelectedTaxonomy(namespace)}
-                            className={`${namespace === selectedTaxonomy ? 'bg-blue-100' : ''}`}
-                          >
-                            <span>{namespace}</span>
-                          </Dropdown.Item>
-                        ))}
-                    </Dropdown>
-                  </div>
-
-                  <Button
-                    onClick={() => handleClickAddTaxonomy(selectedTaxonomy)}
-                    disabled={!selectedTaxonomy}
-                  >
-                    <Trans>Add</Trans>
-                  </Button>
-                </Col>
-              </Row>
-
-              {taxonomiesList.map((t) => {
-                return (
-                  <div key={t.namespace} ref={t.ref}>
-                    <Taxonomy
-                      id={`taxonomy-${t.namespace}`}
-                      taxonomy={t}
-                      incidentId={incidentId}
-                      reportNumber={reportNumber}
-                      canEdit={t.canEdit}
-                      initialEditing={t.initialEditing}
-                    />
-                  </div>
-                );
-              })}
-            </Card.Body>
+    canEditTaxonomies && (
+      <Card className={'shadow-card ' + className} data-cy="classifications-editor">
+        <Card.Header className="items-center justify-between">
+          <h4>
+            <Trans>Classifications Editor</Trans>
+          </h4>
+          {taxonomies.length == 0 && (
+            <>
+              <Spinner className="ml-2" />
+            </>
           )}
-        </Card>
-      )}
-    </>
+        </Card.Header>
+
+        {taxonomies.length > 0 && (
+          <Card.Body>
+            <Row>
+              <Col className="flex flex-row">
+                <div className="mr-2">
+                  <Dropdown
+                    label={selectedTaxonomy || t('Select a taxonomy')}
+                    color={'light'}
+                    className="min-w-max mr-4"
+                  >
+                    {taxonomies
+                      .filter((t) => !taxonomiesList.some((item) => item.namespace == t.namespace))
+                      .filter(
+                        (t) =>
+                          isRole('taxonomy_editor') ||
+                          isRole('taxonomy_editor_' + t.namespace.toLowerCase())
+                      )
+                      .map(({ namespace }) => (
+                        <Dropdown.Item
+                          key={namespace}
+                          onClick={() => setSelectedTaxonomy(namespace)}
+                          className={`${namespace === selectedTaxonomy ? 'bg-blue-100' : ''}`}
+                        >
+                          <span>{namespace}</span>
+                        </Dropdown.Item>
+                      ))}
+                  </Dropdown>
+                </div>
+
+                <Button
+                  onClick={() => handleClickAddTaxonomy(selectedTaxonomy)}
+                  disabled={!selectedTaxonomy}
+                >
+                  <Trans>Add</Trans>
+                </Button>
+              </Col>
+            </Row>
+
+            {taxonomiesList.map((t) => {
+              return (
+                <div key={t.namespace} ref={t.ref}>
+                  <Taxonomy
+                    id={`taxonomy-${t.namespace}`}
+                    taxonomy={t}
+                    incidentId={incidentId}
+                    reportNumber={reportNumber}
+                    canEdit={t.canEdit}
+                    initialEditing={t.initialEditing}
+                  />
+                </div>
+              );
+            })}
+          </Card.Body>
+        )}
+      </Card>
+    )
   );
 }
