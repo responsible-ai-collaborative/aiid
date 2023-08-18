@@ -270,3 +270,38 @@ export const LOG_INCIDENT_HISTORY = gql`
     }
   }
 `;
+
+export const FIND_INCIDENT_HISTORY = gql`
+  query FindIncidentHistory($query: History_incidentQueryInput) {
+    history_incidents(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
+      incident_id
+      AllegedDeployerOfAISystem
+      AllegedDeveloperOfAISystem
+      AllegedHarmedOrNearlyHarmedParties
+      _id
+      date
+      description
+      modifiedBy
+      editor_dissimilar_incidents
+      editor_notes
+      editor_similar_incidents
+      editors
+      embedding {
+        from_reports
+        vector
+      }
+      epoch_date_modified
+      flagged_dissimilar_incidents
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
+      reports
+      title
+      tsne {
+        x
+        y
+      }
+    }
+  }
+`;

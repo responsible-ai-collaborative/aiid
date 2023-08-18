@@ -5,30 +5,32 @@ import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import { Button, Tooltip } from 'flowbite-react';
 
-const Taxonomy = ({
-  taxonomy,
-  incidentId,
-  canEdit,
-  taxonomyBeingEdited,
-  setTaxonomyBeingEdited,
-  id,
-}) => {
+const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing = false, id }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
 
   const handleSubmit = () => {
-    setTaxonomyBeingEdited(null);
     setShowBanner(true);
+    setEditing(false);
   };
 
-  const editing = taxonomyBeingEdited?.namespace == taxonomy?.namespace;
+  const [editing, setEditing] = useState(initialEditing);
 
   const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
 
   return (
-    <Card id={id} key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
-      <div className="tw-taxa-card-header tw-card-header">
+    <Card
+      id={id}
+      key={taxonomy.namespace}
+      className="mt-6"
+      data-cy={`taxonomy-${taxonomy.namespace}`}
+    >
+      <div
+        className={
+          'tw-taxa-card-header tw-card-header bg-gray-50' + (editing && ' sticky top-0 z-50')
+        }
+      >
         <h4 className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
             {{ namespace: taxonomy.namespace }} Taxonomy Classifications
@@ -36,12 +38,12 @@ const Taxonomy = ({
         </h4>
         <>
           {editing ? (
-            <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(null)}>
+            <Button size="xs" color={'gray'} onClick={() => setEditing(false)}>
               <Trans>Cancel</Trans>
             </Button>
           ) : (
             canEdit && (
-              <Button color={'gray'} onClick={() => setTaxonomyBeingEdited(taxonomy)}>
+              <Button size="xs" color={'gray'} onClick={() => setEditing(true)}>
                 <Trans>Edit</Trans>
               </Button>
             )
@@ -134,6 +136,7 @@ const Taxonomy = ({
         <TaxonomyForm
           taxonomy={taxonomy}
           incidentId={incidentId}
+          reportNumber={reportNumber}
           onSubmit={handleSubmit}
           active={editing}
         />
