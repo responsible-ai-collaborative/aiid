@@ -251,6 +251,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     
     type mongodbAiidprodClassifications implements Node {
       incidents: [mongodbAiidprodIncidents] @link(by: "incident_id")
+      reports: [mongodbAiidprodReports] @link(by: "report_number")
       namespace: String
       attributes: [mongodbAiidprodClassificationsAttribute]
     }

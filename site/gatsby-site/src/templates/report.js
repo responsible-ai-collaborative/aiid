@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
@@ -8,10 +8,12 @@ import { graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 import { Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
+import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
+import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
 function ReportPage(props) {
   const {
-    data: { report },
+    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications },
     data,
   } = props;
 
@@ -30,29 +32,34 @@ function ReportPage(props) {
 
   const metaTitle = `Report ${report.report_number}`;
 
-  const metaDescription = report.description;
+  const [actions, setActions] = useState(null);
 
-  const metaImage = report.image_url;
-
-  let actions = <></>;
-
-  if (!loading && isRole('incident_editor')) {
-    actions = (
-      <Button
-        data-cy="edit-report"
-        size={'xs'}
-        color="light"
-        href={`/cite/edit?report_number=${report.report_number}`}
-        className="hover:no-underline "
-      >
-        <Trans>Edit</Trans>
-      </Button>
-    );
-  }
+  useEffect(() => {
+    if (!loading && isRole('incident_editor')) {
+      setActions(
+        <Button
+          data-cy="edit-report"
+          size={'xs'}
+          color="light"
+          href={`/cite/edit?report_number=${report.report_number}`}
+          className="hover:no-underline "
+        >
+          <Trans>Edit</Trans>
+        </Button>
+      );
+    }
+  }, []);
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
+      <AiidHelmet
+        {...{
+          metaTitle,
+          metaDescription: report.description,
+          path: props.location.pathname,
+          metaImage: report.image_url,
+        }}
+      >
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -65,7 +72,18 @@ function ReportPage(props) {
         ></SocialShareButtons>
       </div>
 
-      <Container>
+      <ClassificationsEditor
+        classifications={allMongodbAiidprodClassifications}
+        taxa={allMongodbAiidprodTaxa}
+        reportNumber={report.report_number}
+      />
+
+      <ClassificationsDisplay
+        classifications={allMongodbAiidprodClassifications}
+        taxa={allMongodbAiidprodTaxa}
+      />
+
+      <Container className="mt-4">
         <ReportCard item={report} alwaysExpanded={true} actions={actions} />
       </Container>
     </>
@@ -112,6 +130,81 @@ export const query = graphql`
       title
       text
       report_number
+    }
+    allMongodbAiidprodTaxa {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        complete_entities
+        dummy_fields {
+          field_number
+          short_name
+        }
+        field_list {
+          field_number
+          short_name
+          long_name
+          short_description
+          long_description
+          display_type
+          mongo_type
+          default
+          placeholder
+          permitted_values
+          weight
+          instant_facet
+          required
+          public
+          complete_from {
+            all
+            current
+            entities
+          }
+          subfields {
+            field_number
+            short_name
+            long_name
+            short_description
+            long_description
+            display_type
+            mongo_type
+            default
+            placeholder
+            permitted_values
+            weight
+            instant_facet
+            required
+            public
+            complete_from {
+              all
+              current
+              entities
+            }
+          }
+        }
+      }
+    }
+    allMongodbAiidprodClassifications(
+      filter: {
+        reports: { elemMatch: { report_number: { eq: $report_number } } }
+        publish: { eq: true }
+      }
+    ) {
+      nodes {
+        reports {
+          report_number
+        }
+        id
+        namespace
+        notes
+        attributes {
+          short_name
+          value_json
+        }
+        publish
+      }
     }
   }
 `;
