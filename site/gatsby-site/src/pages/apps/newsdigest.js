@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { gql, useQuery, useMutation } from '@apollo/client';
-import { Card, Button, Badge } from 'flowbite-react';
+import { Card, Badge, Dropdown } from 'flowbite-react';
 import { format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,9 +16,13 @@ import {
 import AiidHelmet from 'components/AiidHelmet';
 import { useUserContext } from 'contexts/userContext';
 import CardSkeleton from 'elements/Skeletons/Card';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 export default function NewsSearchPage(props) {
   const { t } = useTranslation(['submit']);
+
+  const { isRole } = useUserContext();
 
   const [newsArticleUrls, setNewsArticleUrls] = useState([]);
 
@@ -193,11 +197,23 @@ export default function NewsSearchPage(props) {
           database. However, the majority are simply AI-related.
         </Trans>
       </p>
-      <div data-cy="results" className="grid gap-4 grid-cols-1 2xl:grid-cols-2 3xl:grid-cols-3">
+      <div
+        data-cy="results"
+        style={{ gridTemplateColumns: 'repeat( auto-fit, minmax(28rem, 1fr) )' }}
+        className="flex flex-col lg:grid gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4"
+      >
         {loading &&
           Array(24)
             .fill()
-            .map((e, i) => <CardSkeleton image={false} key={i} maxWidthSmall={false} lines={8} />)}
+            .map((e, i) => (
+              <CardSkeleton
+                image={false}
+                key={i}
+                maxWidthSmall={false}
+                lines={8}
+                className="bg-white"
+              />
+            ))}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
           .sort((a, b) => b.ranking - a.ranking)
@@ -213,10 +229,16 @@ export default function NewsSearchPage(props) {
             />
           ))}
       </div>
-      {displayedDismissed.length > 0 && (
-        <details>
-          <summary data-cy="dismissed-summary">Dismissed News Reports</summary>
-          <div data-cy="dismissed" className="tw-card-set mt-2">
+      {displayedDismissed.length > 0 && isRole('incident_editor') && (
+        <details className="mt-4">
+          <summary data-cy="dismissed-summary" className="mb-4">
+            Dismissed News Reports
+          </summary>
+          <div
+            data-cy="dismissed"
+            style={{ gridTemplateColumns: 'repeat( auto-fit, minmax(28rem, 1fr) )' }}
+            className="flex flex-col lg:grid gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4"
+          >
             {displayedDismissed.map((newsArticle) => (
               <CandidateCard
                 dismissed={true}
@@ -245,6 +267,10 @@ function CandidateCard({
 }) {
   const { isRole } = useUserContext();
 
+  const localizePath = useLocalizePath();
+
+  const { locale } = useLocalization();
+
   let date;
 
   try {
@@ -252,6 +278,7 @@ function CandidateCard({
   } catch (e) {
     date = null;
   }
+
   let domain;
 
   try {
@@ -276,10 +303,92 @@ function CandidateCard({
       data-cy="candidate-card"
       data-id={newsArticle.url}
       style={{ justifyContent: 'flex-start' }}
-      className="gap-0"
+      className="gap-0 max-w-full"
       key={newsArticle.url}
     >
       <div>
+        <span className="float-right pt-2" data-cy="candidate-dropdown">
+          {(isRole('incident_editor') || !existingSubmissions.includes(newsArticle.url)) && (
+            <Dropdown inline label="">
+              {!existingSubmissions.includes(newsArticle.url) && (
+                <Dropdown.Item
+                  onClick={() => {
+                    window.open(
+                      localizePath({
+                        language: locale,
+                        path:
+                          '/apps/submit/?' +
+                          ['url', 'title', 'text']
+                            .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
+                            .join('&'),
+                      })
+                    );
+                  }}
+                >
+                  <FontAwesomeIcon
+                    data-cy="submit-icon"
+                    icon={faPlusCircle}
+                    className="pointer fa mr-1"
+                    fixedWidth
+                  />
+                  Submit
+                </Dropdown.Item>
+              )}
+              {isRole('incident_editor') &&
+                (dismissed ? (
+                  <Dropdown.Item
+                    onClick={() => {
+                      setDismissedArticles((dismissedArticles) => {
+                        const updatedValue = { ...dismissedArticles };
+
+                        updatedValue[newsArticle.url] = false;
+                        return updatedValue;
+                      });
+                      updateCandidate({
+                        variables: {
+                          query: { url: newsArticle.url },
+                          set: { dismissed: false },
+                        },
+                      });
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      data-cy="restore-icon"
+                      icon={faArrowUp}
+                      className="pointer fa mr-1"
+                      fixedWidth
+                    />
+                    Restore
+                  </Dropdown.Item>
+                ) : (
+                  <Dropdown.Item
+                    onClick={() => {
+                      setDismissedArticles((dismissedArticles) => {
+                        const updatedValue = { ...dismissedArticles };
+
+                        updatedValue[newsArticle.url] = true;
+                        return updatedValue;
+                      });
+                      updateCandidate({
+                        variables: {
+                          query: { url: newsArticle.url },
+                          set: { dismissed: true },
+                        },
+                      });
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      data-cy="dismiss-icon"
+                      icon={faTrash}
+                      className="pointer fa mr-1"
+                      fixedWidth
+                    />
+                    Dismiss
+                  </Dropdown.Item>
+                ))}
+            </Dropdown>
+          )}
+        </span>
         <a href={newsArticle.url}>
           <h3 className="text-xl mt-0 mb-0">{newsArticle.title}</h3>
         </a>
@@ -288,8 +397,8 @@ function CandidateCard({
           {domain && date && <> • </>}
           {domain}
         </div>
-        <div className="flex flex-wrap">
-          <span className="mb-1 mr-1">
+        <div className="flex flex-wrap gap-2">
+          <span>
             {newsArticle.similaritySigma < 0 ? (
               <Badge color="warning" title={'cosine similarity: ' + greatestSimilarity.similarity}>
                 Weak match
@@ -305,7 +414,7 @@ function CandidateCard({
             )}{' '}
           </span>
           {newsArticle.matching_keywords.map((keyword) => (
-            <span className="inline-block mr-1 mb-1" key={keyword}>
+            <span key={keyword}>
               <Badge>
                 <FontAwesomeIcon icon={faTag} className="pointer fa mr-1" fixedWidth />
                 {keyword}
@@ -339,73 +448,6 @@ function CandidateCard({
           <strong>Matching classification</strong>: {greatestSimilarity.classification}
         </div>
       )}
-      <div className="mt-auto flex">
-        {isRole('incident_editor') &&
-          (dismissed ? (
-            <Button
-              data-cy="restore-button"
-              color="light"
-              onClick={() => {
-                setDismissedArticles((dismissedArticles) => {
-                  const updatedValue = { ...dismissedArticles };
-
-                  updatedValue[newsArticle.url] = false;
-                  return updatedValue;
-                });
-                updateCandidate({
-                  variables: {
-                    query: { url: newsArticle.url },
-                    set: { dismissed: false },
-                  },
-                });
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
-              Restore
-            </Button>
-          ) : (
-            <Button
-              data-cy="dismiss-button"
-              color="light"
-              onClick={() => {
-                setDismissedArticles((dismissedArticles) => {
-                  const updatedValue = { ...dismissedArticles };
-
-                  updatedValue[newsArticle.url] = true;
-                  return updatedValue;
-                });
-                updateCandidate({
-                  variables: {
-                    query: { url: newsArticle.url },
-                    set: { dismissed: true },
-                  },
-                });
-              }}
-            >
-              <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
-              Dismiss
-            </Button>
-          ))}
-
-        {!existingSubmissions.includes(newsArticle.url) && (
-          <LocalizedLink
-            data-cy="submit-button"
-            to={
-              '/apps/submit/?' +
-              ['url', 'title', 'text']
-                .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
-                .join('&')
-            }
-            target="_blank"
-            className="inline ml-1"
-          >
-            <Button color="light">
-              <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
-              Submit
-            </Button>
-          </LocalizedLink>
-        )}
-      </div>
     </Card>
   );
 }
