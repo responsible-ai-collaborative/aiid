@@ -135,3 +135,41 @@ export const LOG_REPORT_HISTORY = gql`
     }
   }
 `;
+
+export const FIND_REPORT_HISTORY = gql`
+  query FindReportHistory($query: History_reportQueryInput) {
+    history_reports(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
+      _id
+      authors
+      cloudinary_id
+      date_downloaded
+      date_modified
+      date_published
+      date_submitted
+      description
+      editor_notes
+      embedding {
+        from_text_hash
+        vector
+      }
+      epoch_date_downloaded
+      epoch_date_modified
+      epoch_date_published
+      epoch_date_submitted
+      flag
+      image_url
+      inputs_outputs
+      is_incident_report
+      language
+      modifiedBy
+      plain_text
+      report_number
+      submitters
+      tags
+      text
+      title
+      url
+      user
+    }
+  }
+`;
