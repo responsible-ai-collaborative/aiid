@@ -15,7 +15,6 @@ import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import Link from 'components/ui/Link';
 import { Button, Spinner } from 'flowbite-react';
-import { globalHistory } from '@reach/router';
 import CustomButton from 'elements/Button';
 import { useUserContext } from 'contexts/userContext';
 import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
@@ -46,12 +45,11 @@ function IncidentHistoryPage() {
 
   const { logIncidentHistory } = useLogIncidentHistory();
 
-  const {
-    data: incidentData,
-    loading: loadingIncident,
-    refetch: refetchIncident,
-  } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: incidentId } },
+  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
+    fetchPolicy: 'network-only',
+    variables: {
+      query: { incident_id: incidentId },
+    },
   });
 
   const {
@@ -59,19 +57,13 @@ function IncidentHistoryPage() {
     loading: loadingIncidentHistory,
     refetch: refetchHistory,
   } = useQuery(FIND_INCIDENT_HISTORY, {
+    fetchPolicy: 'network-only',
     variables: {
       query: {
         incident_id: incidentId,
       },
     },
   });
-
-  useEffect(() => {
-    globalHistory.listen(() => {
-      refetchHistory();
-      refetchIncident();
-    });
-  }, []);
 
   useEffect(() => {
     if (incidentData?.incident) {
