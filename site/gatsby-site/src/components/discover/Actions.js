@@ -8,6 +8,7 @@ import {
   faUserShield,
   faFlag,
   faHashtag,
+  faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
@@ -17,6 +18,7 @@ import { Modal } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import { format, getUnixTime } from 'date-fns';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function FlagModalContent({ reportNumber }) {
   const { user } = useUserContext();
@@ -85,6 +87,8 @@ function FlagModalContent({ reportNumber }) {
 export default function Actions({ item, toggleFilterByIncidentId = null }) {
   const { t } = useTranslation();
 
+  const localizePath = useLocalizePath();
+
   const [showAuthors, setShowAuthors] = useState(false);
 
   const [showSubmitters, setShowSubmitters] = useState(false);
@@ -110,8 +114,13 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         />
       </WebArchiveLink>
 
-      <CustomButton variant="link" title={t('Authors')} onClick={() => setShowAuthors(true)}>
-        <FontAwesomeIcon title="report-card" icon={faIdCard} className="fa-id-card" />
+      <CustomButton
+        variant="link"
+        title={t('Authors')}
+        onClick={() => setShowAuthors(true)}
+        className="text-black"
+      >
+        <FontAwesomeIcon title={t('Authors')} icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
       {showAuthors && (
@@ -128,7 +137,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
       <CustomButton
         variant="link"
         title={t('Submitters')}
-        className="px-1"
+        className="px-1 text-black"
         onClick={() => setShowSubmitters(true)}
       >
         <FontAwesomeIcon titleId="report-shield" icon={faUserShield} className="fa-user-shield" />
@@ -147,8 +156,20 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
 
       <CustomButton
         variant="link"
+        title={t('View History')}
+        className="px-1 text-black"
+        data-cy="report-history-button"
+        href={localizePath({
+          path: `/cite/history?report_number=${item.report_number}&incident_id=${item.incident_id}`,
+        })}
+      >
+        <FontAwesomeIcon titleId="report-history" icon={faClockRotateLeft} />
+      </CustomButton>
+
+      <CustomButton
+        variant="link"
         title={t('Flag Report')}
-        className="px-1"
+        className="px-1 text-black"
         data-cy="flag-button"
         onClick={() => setShowFlag(true)}
       >
