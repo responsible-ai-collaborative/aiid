@@ -39,7 +39,9 @@ function IncidentHistoryPage() {
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
-  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
+    fetchPolicy: 'network-only',
+  });
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
