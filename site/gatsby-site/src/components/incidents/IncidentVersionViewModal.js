@@ -52,7 +52,13 @@ export default function IncidentVersionViewModal({
   }
 
   return (
-    <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
+    <Modal
+      show={show}
+      onClose={onClose}
+      className="submission-modal"
+      size="3xl"
+      data-cy="version-view-modal"
+    >
       <Modal.Header>
         <Trans>View Version details</Trans>
       </Modal.Header>
@@ -153,7 +159,7 @@ export default function IncidentVersionViewModal({
                             <Trans>Reports</Trans>
                           </h4>
                         </Card.Header>
-                        <Card.Body className="max-w-full p-5">
+                        <Card.Body className="max-w-full p-5" cy-data-cy="version-reports">
                           {loadingReports && <DefaultSkeleton />}
                           {!loadingReports && (
                             <div className="flex flex-col gap-2">

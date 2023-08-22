@@ -1,0 +1,16 @@
+{
+  "data": {
+    "reports": [
+      {
+        "__typename": "Report",
+        "report_number": 3205,
+        "title": "Report 3205 title"
+      },
+      {
+        "__typename": "Report",
+        "report_number": 3206,
+        "title": "Report 3206 title"
+      }
+    ]
+  }
+}

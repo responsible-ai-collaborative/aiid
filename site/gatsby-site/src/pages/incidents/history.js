@@ -142,7 +142,7 @@ function IncidentHistoryPage() {
                         variant="link"
                         title={t('View full version')}
                         className="underline text-black p-0 border-0"
-                        data-cy="restore-button"
+                        data-cy="view-full-version-button"
                         onClick={() => setIncidentVersionDetails(version)}
                       >
                         <Trans>View full version</Trans>
