@@ -1,73 +1,68 @@
 import React, { useEffect, useState } from 'react';
+import { Image } from 'utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import { FIND_INCIDENT_HISTORY } from '../../graphql/incidents';
+import { FIND_REPORT_HISTORY } from '../../graphql/reports';
 import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
-import { FIND_ENTITIES } from '../../graphql/entities';
 import { useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { format, fromUnixTime } from 'date-fns';
-import { getIncidentChanges } from 'utils/cite';
+import { getReportChanges } from 'utils/reports';
+import { Viewer } from '@bytemd/react';
 import { StringDiff, DiffMethod } from 'react-string-diff';
+import diff from 'rich-text-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
 
-  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, Number.NaN));
+  const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
+
+  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const [incidentTitle, setIncidentTitle] = useState(null);
 
-  const [incidentHistory, setIncidentHistory] = useState(null);
+  const [incidentHistory, setIncidentHistory] = useState([]);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
-  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
-
-  const { data: incidentHistoryData, loading: loadingIncidentHistory } = useQuery(
-    FIND_INCIDENT_HISTORY,
-    {
-      fetchPolicy: 'network-only',
-      variables: {
-        query: {
-          incident_id: incidentId,
-        },
+  const { data: reportHistoryData, loading: loadingReportHistory } = useQuery(FIND_REPORT_HISTORY, {
+    fetchPolicy: 'network-only',
+    variables: {
+      query: {
+        report_number: reportNumber,
       },
-    }
-  );
+    },
+  });
 
   useEffect(() => {
-    if (incidentHistoryData?.history_incidents?.length > 0) {
-      const lastVersion = incidentHistoryData.history_incidents[0];
+    if (reportHistoryData?.history_reports?.length > 0) {
+      const lastVersion = reportHistoryData.history_reports[0];
 
-      setIncidentTitle(`Incident ${lastVersion.incident_id}: ${lastVersion.title}`);
+      setIncidentTitle(`Report #${lastVersion.report_number}: ${lastVersion.title}`);
 
       const incidentHistory = [];
 
-      for (let index = 0; index < incidentHistoryData.history_incidents.length - 1; index++) {
-        const versionData = incidentHistoryData.history_incidents[index];
+      for (let index = 0; index < reportHistoryData.history_reports.length - 1; index++) {
+        const versionData = reportHistoryData.history_reports[index];
 
-        const previousVersionData = incidentHistoryData.history_incidents[index + 1];
+        const previousVersionData = reportHistoryData.history_reports[index + 1];
 
         const version = {
           ...versionData,
           modifiedByUser: usersData?.users.find((user) => user.userId === versionData.modifiedBy),
         };
 
-        version.changes = getIncidentChanges(
-          previousVersionData,
-          versionData,
-          usersData?.users,
-          entitiesData?.entities
-        );
+        version.changes = getReportChanges(previousVersionData, versionData);
 
         incidentHistory.push(version);
       }
 
       // The initial version
       const initialVersionData =
-        incidentHistoryData.history_incidents[incidentHistoryData.history_incidents.length - 1];
+        reportHistoryData.history_reports[reportHistoryData.history_reports.length - 1];
 
       incidentHistory.push({
         ...initialVersionData,
@@ -77,41 +72,35 @@ function IncidentHistoryPage() {
       });
 
       setIncidentHistory(incidentHistory);
-    } else {
-      setIncidentHistory([]);
     }
-  }, [incidentHistoryData, usersData, entitiesData]);
+  }, [reportHistoryData, usersData]);
 
-  const loading =
-    loadingIncidentHistory || loadingUsers || loadingEntities || incidentHistory === null;
+  const loading = loadingReportHistory || loadingUsers;
 
   return (
     <div className={'w-full p-1'}>
+      {!loading && (
+        <div className="flex flex-row justify-between flex-wrap">
+          <h1 className="text-2xl mb-5">{incidentTitle}</h1>
+          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
+            <Button outline={true} color={'light'}>
+              <Trans>Back to Report {{ reportNumber }}</Trans>
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {loading && (
         <div className="flex">
           <DefaultSkeleton />
         </div>
       )}
 
-      {!loading && Number.isNaN(incidentId) && (
-        <div>
-          <Trans>Invalid Incident ID</Trans>
-        </div>
-      )}
-
-      {!loading && !Number.isNaN(incidentId) && (
+      {!loading && (
         <>
-          <div className="flex flex-row justify-between flex-wrap">
-            <h1 className="text-2xl mb-5">{incidentTitle}</h1>
-            <Link to={`/cite/${incidentId}`} className="hover:no-underline mb-5">
-              <Button outline={true} color={'light'}>
-                <Trans>Back to Incident {{ incidentId }}</Trans>
-              </Button>
-            </Link>
-          </div>
-          {!(incidentHistory?.length > 0) ? (
+          {!(reportHistoryData?.history_reports?.length > 0) ? (
             <div>
-              <Trans>There are no version history records for this Incident</Trans>
+              <Trans>There are no version history records for this Report</Trans>
             </div>
           ) : (
             <div data-cy="history-table">
@@ -125,11 +114,9 @@ function IncidentHistoryPage() {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
                     <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
-                      {version.epoch_date_modified && (
-                        <div className="mr-5">
-                          {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                        </div>
-                      )}
+                      <div className="mr-5">
+                        {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+                      </div>
                       <div>
                         <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
                         {version.modifiedByUser?.last_name}
@@ -158,6 +145,36 @@ function IncidentHistoryPage() {
                                   }}
                                 />
                               </div>
+                            )}
+
+                            {change.type == 'rich_text' && (change.oldValue || change.newValue) && (
+                              <div className="flex flex-1 m-1 richtext-diff">
+                                <Viewer value={diff(change.oldValue, change.newValue)} />
+                              </div>
+                            )}
+                            {change.type == 'image' && (change.oldValue || change.newValue) && (
+                              <>
+                                <div className="flex flex-1 m-1 text-red-600">
+                                  <Image
+                                    className="h-[320px] object-cover w-full"
+                                    publicID={change.oldValue}
+                                    alt="Old Image"
+                                    transformation={fill().height(640)}
+                                    plugins={[]}
+                                    itemIdentifier={`change_${index}`}
+                                  />
+                                </div>
+                                <div className="flex flex-1 m-1 text-green-500">
+                                  <Image
+                                    className="h-[320px] object-cover w-full"
+                                    publicID={change.newValue}
+                                    alt="New Image"
+                                    transformation={fill().height(640)}
+                                    plugins={[]}
+                                    itemIdentifier={`change_${index}`}
+                                  />
+                                </div>
+                              </>
                             )}
                             {change.type == 'list' &&
                               (change.removed?.length > 0 || change.added?.length > 0) && (
