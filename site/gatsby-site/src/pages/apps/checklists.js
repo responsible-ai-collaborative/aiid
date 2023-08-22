@@ -61,7 +61,11 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
         checklist: {
           ...values,
           id: query.id,
-          risks: [...values.risks].map((risk) => ({ ...risk, startClosed: undefined })),
+          risks: (
+            values.risks
+              .filter(risk => !risk.generated)
+              .map((risk) => ({ ...risk, startClosed: undefined }))
+          ),
         },
       },
     });

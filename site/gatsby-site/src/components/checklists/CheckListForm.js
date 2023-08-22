@@ -9,7 +9,7 @@ import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'rea
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { classy, classyDiv } from 'utils/classy';
-import { Label, DeleteButton, abbreviatedTag, emptyRisk } from 'utils/checklists';
+import { Label, DeleteButton, abbreviatedTag, emptyRisk, shouldBeGrouped } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
@@ -57,35 +57,6 @@ export default function CheckListForm({
     oldSetFieldValue(key, value);
     submitForm();
   };
-
-//  const columns = React.useMemo(() => {
-//    const columns = [
-//      {
-//        title: t('Title'),
-//        accessor: 'title' ,
-//        Cell: ({ cell }) => {
-//          return <>{cell.value}</>
-//        },
-//        filter: DefaultColumnFilter,
-//        sortType: (rowA, rowB, id) => rowA.values[id].length - rowB.values[id].length
-//      }
-//    ];
-//    return columns;
-//  }, []);
-
-
-
-//  const table = useTable({
-//    columns,
-//    data: [{title: 'Kitties'}],
-//    defaultColumn: 'title',
-//    initialState: { sortBy: [{ id: 'title', desc: true }] },
-//    useFilters,
-//    useSortBy,
-//    useExpanded,
-//    usePagination
-//  });
-//
   
   return (
     <Form onSubmit={handleSubmit}>
@@ -139,6 +110,15 @@ export default function CheckListForm({
         </SideBySide>
         <OtherTagInput {...{ values, tags, setFieldValue }} />
       </section>
+
+      <section>
+        {/* TODO: Remove me */}
+        <details>
+          <summary>allPrecedents</summary>
+          <pre>{JSON.stringify(allPrecedents, null, 2)}</pre>
+        </details>
+      </section>
+
       <section>
         <header className="flex mt-6">
           <h2>Risks</h2>
@@ -377,6 +357,7 @@ function Info({ children, className }) {
   );
 }
 
+// TODO: Group known and potential in GMF Taxonomy
 const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents, setSaveStatus }) => {
   const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
@@ -397,26 +378,26 @@ const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrece
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
 
+      console.log(`result`, result);
+
       const newRisk = {
         ...emptyRisk(),
         title: abbreviatedTag(result.tag),
         tags: [result.tag],
         precedents: result.precedents,
         description: result.description,
+        startClosed: true,
       };
 
-      if (i > 0) {
-        newRisk.startClosed = true;
-      }
-      if (!values.risks.some((existingRisk) => (existingRisk.tags || []).includes(result.tag))) {
+      const notDuplicate = [...risksToAdd, ...values.risks].every(
+        (existingRisk) => !areDuplicates(existingRisk, newRisk)
+      );
+
+      if (notDuplicate) {
         risksToAdd.push(newRisk);
       }
       for (const precedent of result.precedents) {
-        if (
-          allPrecedents.every((p) => {
-            return p.incident_id != precedent.incident_id;
-          })
-        ) {
+        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
           allPrecedents.push(precedent);
         }
       }
@@ -444,3 +425,20 @@ const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrece
 
   setRisksLoading(false);
 };
+
+function areDuplicates(A, B) {
+  console.log(`A.tags`, A.tags);
+  console.log(`B.tags`, B.tags);
+  return (
+    A.tags.length == B.tags.length &&
+    A.tags.every(aTag => B.tags.some(bTag => shouldBeGrouped(bTag, aTag))) &&
+    B.tags.every(bTag => A.tags.some(aTag => shouldBeGrouped(aTag, bTag)))
+  );
+}
+
+
+
+
+
+
+

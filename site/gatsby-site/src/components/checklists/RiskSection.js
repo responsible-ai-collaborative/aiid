@@ -46,8 +46,10 @@ export default function RiskSection({
     submitForm();
   };
 
+  const [precedents, setPrecedents] = useState([]);
+
   useEffect(() => {
-    updatePrecedents({ risk, updateRisk, allPrecedents });
+    updatePrecedents({ risk, setPrecedents, allPrecedents });
   }, [JSON.stringify(risk.tags), JSON.stringify(searchTags)]);
 
   const progress =
@@ -97,7 +99,7 @@ export default function RiskSection({
               Manual
             </HeaderTextWithIcon>
           )}
-          {!!risk.precedents?.length && (
+          {!!precedents?.length && (
             <HeaderTextWithIcon
               color="lime"
               className="hidden 2xl:block"
@@ -105,7 +107,7 @@ export default function RiskSection({
             >
               <FontAwesomeIcon icon={faHashtag} className="mr-1" />
               {/* TODO: Translate/pluralize this correctly */}
-              {risk.precedents.length} precedents
+              {precedents.length} precedents
             </HeaderTextWithIcon>
           )}
           {!!risk.likelihood && (
@@ -166,7 +168,7 @@ export default function RiskSection({
             </button>
           </div>
           <PrecedentsList>
-            {risk.precedents.map((precedent) => (
+            {precedents.map((precedent) => (
               <Card key={precedent.incident_id}>
                 <div>
                   <LocalizedLink to={`/cite/${precedent.incident_id}`}>
@@ -291,7 +293,7 @@ const PrecedentsList = classyDiv(`
   shadow-inner
 `);
 
-const updatePrecedents = async ({ risk, updateRisk, allPrecedents }) => {
+const updatePrecedents = async ({ risk, setPrecedents, allPrecedents }) => {
   const updatedPrecedents = [];
 
   for (const precedent of allPrecedents) {
@@ -302,7 +304,7 @@ const updatePrecedents = async ({ risk, updateRisk, allPrecedents }) => {
       }
     }
   }
-  updateRisk({ precedents: updatedPrecedents });
+  setPrecedents(updatedPrecedents);
 };
 
 function ProgressCircle({ progress, className }) {
