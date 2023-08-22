@@ -178,11 +178,26 @@ describe('Incidents', () => {
       incidentHistory
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
+            { __typename: 'Entity', entity_id: 'google', name: 'Google' },
+            { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
+          ],
+        },
+      }
+    );
+
     cy.get('[data-cy="view-history-btn"]').click();
 
     cy.waitForStableDOM();
 
-    cy.wait('@FindIncidentHistory');
+    cy.wait(['@FindIncidentHistory', '@FindEntities']);
 
     cy.url().should('include', url);
 
@@ -192,7 +207,7 @@ describe('Incidents', () => {
 
     cy.go('forward');
 
-    cy.wait('@FindIncidentHistory');
+    cy.wait(['@FindIncidentHistory', '@FindEntities']);
   });
 
   it('Should not be able to restore a version if the user does not have the right permissions', () => {
