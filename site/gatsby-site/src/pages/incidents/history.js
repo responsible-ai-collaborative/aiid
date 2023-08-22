@@ -6,11 +6,13 @@ import { FIND_ENTITIES } from '../../graphql/entities';
 import { useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import CustomButton from 'elements/Button';
 import { format, fromUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
+import IncidentVersionViewModal from 'components/incidents/IncidentVersionViewModal';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -20,6 +22,8 @@ function IncidentHistoryPage() {
   const [incidentTitle, setIncidentTitle] = useState(null);
 
   const [incidentHistory, setIncidentHistory] = useState(null);
+
+  const [incidentVersionDetails, setIncidentVersionDetails] = useState(null);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
@@ -124,9 +128,9 @@ function IncidentHistoryPage() {
               {incidentHistory.map((version, index) => {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
-                    <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
+                    <div className="flex font-semibold mb-2 gap-5" data-cy="history-row-ribbon">
                       {version.epoch_date_modified && (
-                        <div className="mr-5">
+                        <div>
                           {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                         </div>
                       )}
@@ -134,6 +138,15 @@ function IncidentHistoryPage() {
                         <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
                         {version.modifiedByUser?.last_name}
                       </div>
+                      <CustomButton
+                        variant="link"
+                        title={t('View full version')}
+                        className="underline text-black p-0 border-0"
+                        data-cy="restore-button"
+                        onClick={() => setIncidentVersionDetails(version)}
+                      >
+                        <Trans>View full version</Trans>
+                      </CustomButton>
                     </div>
                     <div className="flex flex-col flex-nowrap mb-3" data-cy="history-row-changes">
                       {!version.changes && (
@@ -191,6 +204,15 @@ function IncidentHistoryPage() {
             </div>
           )}
         </>
+      )}
+      {incidentVersionDetails && (
+        <IncidentVersionViewModal
+          show={true}
+          onClose={() => setIncidentVersionDetails(null)}
+          entities={entitiesData?.entities}
+          users={usersData?.users}
+          incidentVersionDetails={incidentVersionDetails}
+        />
       )}
     </div>
   );

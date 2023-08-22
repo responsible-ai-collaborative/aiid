@@ -173,3 +173,12 @@ export const FIND_REPORT_HISTORY = gql`
     }
   }
 `;
+
+export const FIND_REPORTS = gql`
+  query FindReports($query: ReportQueryInput!) {
+    reports(query: $query) {
+      report_number
+      title
+    }
+  }
+`;
