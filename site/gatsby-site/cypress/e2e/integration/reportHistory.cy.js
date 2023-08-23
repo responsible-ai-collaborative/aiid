@@ -277,5 +277,7 @@ describe('Report History', () => {
     cy.get('[data-cy="toast"]').contains('Report version restored successfully.').should('exist');
 
     cy.get('[data-cy="restoring-message"]').should('not.exist');
+
+    cy.wait('@FindReportHistory');
   });
 });
