@@ -10,7 +10,7 @@ const filterBy = (option, text) => {
   );
 };
 
-export default function IncidentsField({ id, name, placeHolder = '' }) {
+export default function IncidentsField({ id, name, placeHolder = '', multiple }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
@@ -63,7 +63,7 @@ export default function IncidentsField({ id, name, placeHolder = '' }) {
         inputProps={{ id: 'input-' + id, name }}
         selected={selected}
         options={options}
-        multiple
+        multiple={multiple}
         labelKey={(option) => `${option.id}`}
         isLoading={loading}
         onSearch={handleSearch}

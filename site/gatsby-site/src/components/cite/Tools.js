@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { faEdit, faPlus, faSearch, faTrash, faClone } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faPlus,
+  faSearch,
+  faClone,
+  faTrash,
+  faClockRotateLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
@@ -131,8 +138,12 @@ function Tools({
                 <Modal.Header>
                   <Trans>Remove Duplicate</Trans>
                 </Modal.Header>
-                <Modal.Body>
-                  <RemoveDuplicateModalContents {...{ incident }} />
+                <Modal.Body> 
+                  <Formik initialValues={{ duplicateIncidentId: [] }}>
+                    {(props) => (
+                      <RemoveDuplicateModalContents {...{ ...props, incident }} />
+                    )}
+                  </Formik>
                 </Modal.Body>
               </Modal>
             )}
@@ -169,6 +180,20 @@ function Tools({
             <Trans>Clone Incident</Trans>
           </Button>
         )}
+        <Button
+          color="gray"
+          href={`/incidents/history?incident_id=${incident.incident_id}`}
+          className="hover:no-underline"
+          data-cy="view-history-btn"
+        >
+          <FontAwesomeIcon
+            className="mr-2"
+            icon={faClockRotateLeft}
+            title={t('View History')}
+            titleId="view-history-icon"
+          />
+          <Trans>View History</Trans>
+        </Button>
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
           <div className="flex items-center">
             <ToggleSwitch
@@ -187,8 +212,7 @@ function Tools({
   );
 }
 
-function RemoveDuplicateModalContents({ incident }) {
-  const [duplicateIncidentId, setDuplicateIncidentId] = useState(null);
+function RemoveDuplicateModalContents({ incident, isValid, isSubmitting, submitForm, values }) {
 
   const [deletingDuplicate, setDeletingDuplicate] = useState(false);
 
@@ -200,109 +224,86 @@ function RemoveDuplicateModalContents({ incident }) {
 
   const { data: duplicateIncidentData, loading: duplicateIncidentLoading } = useQuery(
     FIND_INCIDENT,
-    { variables: { query: { incident_id: duplicateIncidentId } } }
+    { variables: { query: { incident_id: values.duplicateIncidentId?.[0] } } }
   );
 
   const duplicateIncident = duplicateIncidentData?.incident;
 
   return (
     <>
-      <Formik initialValues={{ duplicateIncidentId: [1] }}>
-        <Form>
-          <Trans>Transfer reports to incident</Trans>{' '}
-          <input
-            type="number"
-            className="w-20 ml-1"
-            onChange={(event) => setDuplicateIncidentId(event.target.value)}
-            value={duplicateIncidentId}
-          />
-          <div className="bootstrap">
+          <Form>
+            <Trans>Transfer reports to incident</Trans>{' '}
             <IncidentsField multiple={false} id="duplicateIncidentId" name="duplicateIncidentId" />
-          </div>
-          {duplicateIncidentId && duplicateIncident ? (
-            <>
-              <p>
-                <LocalizedLink to={`/cite/${duplicateIncident.incident_id}`}>
-                  Incident {duplicateIncident.incident_id} – {duplicateIncident.title}
-                </LocalizedLink>
-              </p>
-            </>
-          ) : duplicateIncidentLoading ? (
-            <div className="my-4">
-              <Spinner />
-            </div>
-          ) : (
-            <div className="my-8"></div>
-          )}
-          <Button
-            color="failure"
-            disabled={duplicateIncidentLoading || !duplicateIncident || deletingDuplicate}
-            onClick={async () => {
-              setDeletingDuplicate(true);
-              const reportIds = removeTypename(
-                duplicateIncidentData.incident.reports.concat(incident.reports)
-              ).map((report) => report.report_number);
+            <Button
+              color="failure"
+              disabled={duplicateIncidentLoading || !values.duplicateIncidentId || !duplicateIncidentData || deletingDuplicate}
+              onClick={async () => {
+                console.log(`duplicateIncidentData`, duplicateIncidentData);
+                setDeletingDuplicate(true);
+                const reportIds = removeTypename(
+                  duplicateIncidentData.incident.reports.concat(incident.reports)
+                ).map((report) => report.report_number);
 
-              let insertDuplicateResponse;
+                let insertDuplicateResponse;
 
-              try {
-                insertDuplicateResponse = await insertDuplicate({
-                  variables: {
-                    duplicate: {
-                      duplicate_incident_number: incident.incident_id,
-                      true_incident_number: duplicateIncidentId,
+                try {
+                  insertDuplicateResponse = await insertDuplicate({
+                    variables: {
+                      duplicate: {
+                        duplicate_incident_number: incident.incident_id,
+                        true_incident_number: values.duplicateIncidentId[0],
+                      },
                     },
-                  },
-                });
-              } catch (e) {
-                console.error(insertDuplicateResponse);
-                alert(`Could not insert duplicate. Aborting.`);
-                return;
-              }
+                  });
+                } catch (e) {
+                  console.error(insertDuplicateResponse);
+                  alert(`Could not insert duplicate. Aborting.`);
+                  return;
+                }
 
-              let updateIncidentResponse;
+                let updateIncidentResponse;
 
-              try {
-                updateIncidentResponse = await updateIncident({
-                  variables: {
-                    query: { incident_id: duplicateIncidentId },
-                    set: { reports: { link: reportIds } },
-                  },
-                });
-              } catch (e) {
-                console.error(updateIncidentResponse);
-                alert(`Could not transfer reports to incident ${duplicateIncidentId}.`);
-              }
+                try {
+                  updateIncidentResponse = await updateIncident({
+                    variables: {
+                      query: { incident_id: values.duplicateIncidentId[0] },
+                      set: { reports: { link: reportIds } },
+                    },
+                  });
+                } catch (e) {
+                  console.error(updateIncidentResponse);
+                  alert(`Could not transfer reports to incident ${values.duplicateIncidentId[0]}.`);
+                }
 
-              let updateClassificationsResponse;
+                let updateClassificationsResponse;
 
-              try {
-                updateClassificationsResponse = await updateClassifications({
-                  variables: {
-                    query: { incident_id: incident.incident_id },
-                    set: { incident_id: duplicateIncidentId },
-                  },
-                });
-              } catch (e) {
-                console.error(updateClassificationsResponse);
-                alert(`Could not transfer classifications to incident ${duplicateIncidentId}.`);
-              }
+                try {
+                  updateClassificationsResponse = await updateClassifications({
+                    variables: {
+                      query: { incident_id: incident.incident_id },
+                      set: { incident_id: values.duplicateIncidentId[0] },
+                    },
+                  });
+                } catch (e) {
+                  console.error(updateClassificationsResponse);
+                  alert(`Could not transfer classifications to incident ${values.duplicateIncidentId[0]}.`);
+                }
 
-              setDeletingDuplicate(false);
-              alert(
-                [
-                  `Incident ${incident.incident_id} marked`,
-                  `as duplicate of ${duplicateIncidentId}.`,
-                  `Its page will updated within 24 hours.`,
-                ].join(' ')
-              );
-              window.location.pathname = '/';
-            }}
-          >
-            Remove Duplicate
-          </Button>
-        </Form>
-      </Formik>
+                setDeletingDuplicate(false);
+                alert(
+                  [
+                    `Incident ${incident.incident_id} marked`,
+                    `as duplicate of ${values.duplicateIncidentId[0]}.`,
+                    `Its page will updated within 24 hours.`,
+                  ].join(' ')
+                );
+                window.location.pathname = '/';
+              }}
+            >
+              Remove Duplicate
+            </Button>
+          </Form>
+        )}
     </>
   );
 }

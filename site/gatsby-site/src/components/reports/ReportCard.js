@@ -21,7 +21,10 @@ const ReportCard = ({
   alwaysExpanded = false,
   actions = null,
   reportTitle = null,
+  incidentId = null,
 }) => {
+  item.incident_id = incidentId;
+
   const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(alwaysExpanded);
@@ -128,7 +131,7 @@ const ReportCard = ({
           ref={imageRef}
         >
           <CloudinaryImage
-            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
+            className={`img-fluid h-full w-full max-w-full object-cover max-h-full rounded-lg`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
