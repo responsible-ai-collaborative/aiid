@@ -709,3 +709,9 @@ div .bytemd {
   color: #9b1c1c;
   text-decoration: none;
 }
+
+@-moz-document url-prefix() {
+    #content {
+        overflow: hidden !important;
+    }
+}
