@@ -252,6 +252,7 @@ describe('Report History', () => {
 
     delete updatedReport._id;
     delete updatedReport.modifiedBy;
+    delete updatedReport.user;
 
     cy.wait('@UpdateReport').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateReport');
@@ -270,6 +271,7 @@ describe('Report History', () => {
         };
 
         delete expectedReport._id;
+        delete expectedReport.user;
 
         expect(input).to.deep.eq(expectedReport);
       });

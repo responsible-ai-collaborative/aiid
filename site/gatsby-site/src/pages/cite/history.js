@@ -119,6 +119,7 @@ function IncidentHistoryPage() {
 
         const updatedReport = {
           ...version,
+          user: undefined,
           modifiedByUser: undefined,
           modifiedBy: undefined,
           __typename: undefined,
