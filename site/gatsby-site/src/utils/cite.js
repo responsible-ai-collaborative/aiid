@@ -162,7 +162,11 @@ export const transformIncidentData = (incident, user) => {
       : AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
   }
 
-  result.reports = reports ? reports.map((report) => report.report_number) : [];
+  result.reports = reports
+    ? reports.link
+      ? reports.link
+      : reports.map((r) => r.report_number)
+    : [];
   result.nlp_similar_incidents = nlp_similar_incidents
     ? nlp_similar_incidents.map((nlp) => {
         return { ...nlp, __typename: undefined };
@@ -281,13 +285,22 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
             });
           }
         } else {
-          if (fieldDiff.value) {
-            result.push({
-              field: INCIDENT_TO_COMPARE[field],
-              type: 'text',
-              oldValue: fieldDiff.oldValue,
-              newValue: fieldDiff.value,
-            });
+          if (fieldDiff.value != null && fieldDiff.value != undefined) {
+            if (fieldDiff.type === Operation.UPDATE || fieldDiff.type === Operation.ADD) {
+              result.push({
+                field: INCIDENT_TO_COMPARE[field],
+                type: 'text',
+                oldValue: fieldDiff.oldValue,
+                newValue: fieldDiff.value,
+              });
+            } else if (fieldDiff.type === Operation.REMOVE) {
+              result.push({
+                field: INCIDENT_TO_COMPARE[field],
+                type: 'text',
+                oldValue: fieldDiff.value,
+                newValue: fieldDiff.oldValue,
+              });
+            }
           }
         }
       }
