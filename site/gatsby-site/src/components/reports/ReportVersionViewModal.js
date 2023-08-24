@@ -25,6 +25,7 @@ import Row from 'elements/Row';
 import Col from 'elements/Col';
 import supportedLanguages from 'components/i18n/languages.json';
 import { Image } from 'utils/cloudinary';
+import Markdown from 'react-markdown';
 
 export default function IncidentVersionViewModal({ show, onClose, version }) {
   const { t } = useTranslation(['submit']);
@@ -53,9 +54,9 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
                 <Row>
                   <Col className="flex items-center gap-2">
                     <FontAwesomeIcon fixedWidth icon={faUser} title={t('Modified by')} />
-                    <strong>
+                    <div className="font-bold w-36">
                       <Trans ns="submit">Modified by</Trans>:
-                    </strong>
+                    </div>
                     <div>
                       {version.modifiedByUser.first_name} {version.modifiedByUser.last_name}
                     </div>
@@ -66,9 +67,9 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
                 <Row>
                   <Col className="flex items-center gap-2">
                     <FontAwesomeIcon fixedWidth icon={faCalendarDays} title={t('Modified on')} />
-                    <strong>
+                    <div className="font-bold w-36">
                       <Trans ns="submit">Modified on</Trans>:
-                    </strong>
+                    </div>
                     {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                   </Col>
                 </Row>
@@ -76,63 +77,63 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faLink} title={t('Report Address')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Report Address</Trans>:
-                  </strong>
+                  </div>
                   {version.url}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faTenge} title={t('Title')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Title</Trans>:
-                  </strong>
+                  </div>
                   {version.title}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faPenNib} title={t('Author CSV')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Author CSV</Trans>:
-                  </strong>
+                  </div>
                   {version.authors.join(', ')}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faMedal} title={t('Submitter CSV')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Submitter CSV</Trans>:
-                  </strong>
+                  </div>
                   {version.submitters.join(', ')}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faCalendar} title={t('Date Published')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Date Published</Trans>:
-                  </strong>
+                  </div>
                   {version.date_published}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faDownload} title={t('Date Downloaded')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Date Downloaded</Trans>:
-                  </strong>
+                  </div>
                   {version.date_downloaded}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faImage} title={t('Image Address')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Image Address</Trans>:
-                  </strong>
+                  </div>
                   {version.image_url}
                 </Col>
               </Row>
@@ -158,28 +159,30 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
                 <Col className="flex items-start gap-2">
                   <div className="flex items-center gap-2 mt-1">
                     <FontAwesomeIcon fixedWidth icon={faNewspaper} title={t('Text')} />
-                    <strong>
+                    <div className="font-bold w-36">
                       <Trans ns="submit">Text</Trans>:
-                    </strong>
+                    </div>
                   </div>
-                  <div className="h-52 p-2 border rounded-md overflow-scroll">{version.text}</div>
+                  <div className="h-44 p-2 border rounded-md overflow-scroll">
+                    <Markdown>{version.text}</Markdown>
+                  </div>
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faLanguage} title={t('Language')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Language</Trans>:
-                  </strong>
+                  </div>
                   {supportedLanguages.find((l) => l.code == version.language)?.name}
                 </Col>
               </Row>
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Tags</Trans>:
-                  </strong>
+                  </div>
                   <div>
                     {version.tags.map((tag, index) => (
                       <div
@@ -195,9 +198,9 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faAlignLeft} title={t('Editor Notes')} />
-                  <strong>
+                  <div className="font-bold w-36">
                     <Trans ns="submit">Editor Notes</Trans>:
-                  </strong>
+                  </div>
                   {version.editor_notes}
                 </Col>
               </Row>
