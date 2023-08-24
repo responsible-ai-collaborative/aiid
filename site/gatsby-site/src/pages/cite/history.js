@@ -7,6 +7,7 @@ import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
 import { useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import CustomButton from 'elements/Button';
 import { format, fromUnixTime } from 'date-fns';
 import { getReportChanges } from 'utils/reports';
 import { Viewer } from '@bytemd/react';
@@ -14,6 +15,7 @@ import { StringDiff, DiffMethod } from 'react-string-diff';
 import diff from 'rich-text-diff';
 import Link from 'components/ui/Link';
 import { Button } from 'flowbite-react';
+import ReportVersionViewModal from 'components/reports/ReportVersionViewModal';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
@@ -25,6 +27,8 @@ function IncidentHistoryPage() {
   const [incidentTitle, setIncidentTitle] = useState(null);
 
   const [incidentHistory, setIncidentHistory] = useState([]);
+
+  const [reportVersionDetails, setReportVersionDetails] = useState(null);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
@@ -113,14 +117,25 @@ function IncidentHistoryPage() {
               {incidentHistory.map((version, index) => {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
-                    <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
-                      <div className="mr-5">
-                        {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                      </div>
+                    <div className="flex font-semibold mb-2 gap-5" data-cy="history-row-ribbon">
+                      {version.epoch_date_modified && (
+                        <div>
+                          {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+                        </div>
+                      )}
                       <div>
                         <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
                         {version.modifiedByUser?.last_name}
                       </div>
+                      <CustomButton
+                        variant="link"
+                        title={t('View full version')}
+                        className="underline text-black p-0 border-0"
+                        data-cy="view-full-version-button"
+                        onClick={() => setReportVersionDetails(version)}
+                      >
+                        <Trans>View full version</Trans>
+                      </CustomButton>
                     </div>
                     <div className="flex flex-col flex-nowrap mb-3" data-cy="history-row-changes">
                       {!version.changes && (
@@ -208,6 +223,14 @@ function IncidentHistoryPage() {
             </div>
           )}
         </>
+      )}
+      {reportVersionDetails && (
+        <ReportVersionViewModal
+          show={true}
+          onClose={() => setReportVersionDetails(null)}
+          users={usersData?.users}
+          version={reportVersionDetails}
+        />
       )}
     </div>
   );
