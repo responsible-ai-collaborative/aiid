@@ -207,10 +207,13 @@ function IncidentHistoryPage() {
                           {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                         </div>
                       )}
-                      <div>
-                        <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
-                        {version.modifiedByUser?.last_name}
-                      </div>
+                      {(version.modifiedByUser?.first_name ||
+                        version.modifiedByUser?.last_name) && (
+                        <div>
+                          <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
+                          {version.modifiedByUser?.last_name}
+                        </div>
+                      )}
                       {index > 0 && isRole('incident_editor') && (
                         <CustomButton
                           variant="link"
