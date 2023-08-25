@@ -127,6 +127,9 @@ function IncidentHistoryPage() {
           changes: undefined,
           epoch_date_modified: getUnixTime(new Date()),
           editor_notes: version.editor_notes ? version.editor_notes : '',
+          embedding: version.embedding
+            ? { ...version.embedding, __typename: undefined }
+            : undefined,
         };
 
         await updateReport({
