@@ -259,7 +259,13 @@
         "date_submitted": "2023-08-03",
         "description": null,
         "editor_notes": null,
-        "embedding": null,
+        "embedding": {
+          "__typename": "History_reportEmbedding",
+          "from_text_hash": "0cf0b5d5d39e3e9040ce8da9367364511c3e9532",
+          "vector": [
+            -0.09017669409513474, 0.049546271562576294, 0.038945719599723816, -0.1436443030834198
+          ]
+        },
         "epoch_date_downloaded": 1691020800,
         "epoch_date_modified": 1691107596,
         "epoch_date_published": 1691020800,
