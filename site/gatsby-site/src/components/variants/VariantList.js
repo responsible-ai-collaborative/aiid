@@ -152,7 +152,7 @@ const VariantCard = ({ variant, incidentId }) => {
   );
 };
 
-const VariantList = ({ liveVersion, incidentId, variants }) => {
+const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) => {
   const { t } = useTranslation(['variants']);
 
   const [displayForm, setDisplayForm] = useState(false);
@@ -256,17 +256,19 @@ const VariantList = ({ liveVersion, incidentId, variants }) => {
         </div>
       </div>
 
-      <div>
-        <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
-          <FontAwesomeIcon
-            titleId="add-variant"
-            icon={faPlus}
-            title={t('Add Variant')}
-            className="mr-2"
-          />
-          <Trans ns="variants">Add Variant</Trans>
-        </Button>
-      </div>
+      {!readOnly && (
+        <div>
+          <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
+            <FontAwesomeIcon
+              titleId="add-variant"
+              icon={faPlus}
+              title={t('Add Variant')}
+              className="mr-2"
+            />
+            <Trans ns="variants">Add Variant</Trans>
+          </Button>
+        </div>
+      )}
 
       {displaySuccessMessage && (
         <div data-cy="success-message" className="mt-3 font-medium text-green-600">

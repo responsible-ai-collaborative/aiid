@@ -45,6 +45,7 @@ function CiteTemplate({
   editor_dissimilar_incidents,
   liveVersion = false,
   setIsLiveData,
+  readOnly = false,
 }) {
   const { loading, isRole, user } = useUserContext();
 
@@ -174,11 +175,13 @@ function CiteTemplate({
                 </Badge>
               </div>
             )}
-            <SocialShareButtons
-              metaTitle={metaTitle}
-              path={locationPathName}
-              page="cite"
-            ></SocialShareButtons>
+            {!readOnly && (
+              <SocialShareButtons
+                metaTitle={metaTitle}
+                path={locationPathName}
+                page="cite"
+              ></SocialShareButtons>
+            )}
           </div>
         </div>
       </div>
@@ -201,19 +204,21 @@ function CiteTemplate({
             </Row>
           )}
 
-          <Row className="mt-6">
-            <Col>
-              <Tools
-                incident={incident}
-                isSubscribed={isSubscribed}
-                subscribeToNewReports={subscribeToNewReports}
-                incidentReports={sortedReports}
-                subscribing={subscribing}
-                isLiveData={liveVersion}
-                setIsLiveData={setIsLiveData}
-              />
-            </Col>
-          </Row>
+          {!readOnly && (
+            <Row className="mt-6">
+              <Col>
+                <Tools
+                  incident={incident}
+                  isSubscribed={isSubscribed}
+                  subscribeToNewReports={subscribeToNewReports}
+                  incidentReports={sortedReports}
+                  subscribing={subscribing}
+                  isLiveData={liveVersion}
+                  setIsLiveData={setIsLiveData}
+                />
+              </Col>
+            </Row>
+          )}
 
           <Container>
             <Row>
@@ -254,7 +259,6 @@ function CiteTemplate({
             <Row className="mt-6">
               <Col>
                 <ClassificationsEditor
-                  classifications={allMongodbAiidprodClassifications}
                   taxa={allMongodbAiidprodTaxa}
                   incidentId={incident.incident_id}
                 />
@@ -313,7 +317,12 @@ function CiteTemplate({
               return (
                 <Row className="mt-6 mb-4" key={report.report_number}>
                   <Col>
-                    <ReportCard item={report} incidentId={incident.incident_id} actions={actions} />
+                    <ReportCard
+                      item={report}
+                      incidentId={incident.incident_id}
+                      actions={actions}
+                      readOnly={readOnly}
+                    />
                   </Col>
                 </Row>
               );
@@ -323,6 +332,7 @@ function CiteTemplate({
               liveVersion={liveVersion}
               incidentId={incident.incident_id}
               variants={variants}
+              readOnly={readOnly}
             />
 
             <SimilarIncidents
@@ -334,26 +344,28 @@ function CiteTemplate({
               className="xl:hidden"
             />
 
-            <div className="flex justify-between">
-              <Button
-                color={'gray'}
-                href={localizePath({ path: `/cite/${prevIncident}` })}
-                disabled={!prevIncident}
-                className="hover:no-underline"
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-                <Trans>Previous Incident</Trans>
-              </Button>
-              <Button
-                color={'gray'}
-                href={localizePath({ path: `/cite/${nextIncident}` })}
-                disabled={!nextIncident}
-                className="hover:no-underline"
-              >
-                <Trans>Next Incident</Trans>
-                <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-              </Button>
-            </div>
+            {!readOnly && (
+              <div className="flex justify-between">
+                <Button
+                  color={'gray'}
+                  href={localizePath({ path: `/cite/${prevIncident}` })}
+                  disabled={!prevIncident}
+                  className="hover:no-underline"
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                  <Trans>Previous Incident</Trans>
+                </Button>
+                <Button
+                  color={'gray'}
+                  href={localizePath({ path: `/cite/${nextIncident}` })}
+                  disabled={!nextIncident}
+                  className="hover:no-underline"
+                >
+                  <Trans>Next Incident</Trans>
+                  <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                </Button>
+              </div>
+            )}
           </Container>
         </div>
         <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
