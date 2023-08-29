@@ -2,33 +2,56 @@ import React, { useEffect, useState } from 'react';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import { FIND_REPORT_HISTORY } from '../../graphql/reports';
+import { FIND_REPORT, FIND_REPORT_HISTORY, UPDATE_REPORT } from '../../graphql/reports';
 import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
-import { useQuery } from '@apollo/client/react/hooks';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { format, fromUnixTime } from 'date-fns';
+import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import { getReportChanges } from 'utils/reports';
 import { Viewer } from '@bytemd/react';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import diff from 'rich-text-diff';
 import Link from 'components/ui/Link';
-import { Button } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
+import CustomButton from 'elements/Button';
+import { useUserContext } from 'contexts/userContext';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
+
+  const { isRole, user } = useUserContext();
+
+  const addToast = useToastContext();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
+  const [restoringVersion, setRestoringVersion] = useState(false);
+
   const [incidentTitle, setIncidentTitle] = useState(null);
 
   const [incidentHistory, setIncidentHistory] = useState([]);
 
+  const [report, setReport] = useState(null);
+
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
-  const { data: reportHistoryData, loading: loadingReportHistory } = useQuery(FIND_REPORT_HISTORY, {
+  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
+    fetchPolicy: 'network-only',
+    variables: {
+      query: { report_number: reportNumber },
+    },
+  });
+
+  const {
+    data: reportHistoryData,
+    loading: loadingReportHistory,
+    refetch: refetchHistory,
+  } = useQuery(FIND_REPORT_HISTORY, {
     fetchPolicy: 'network-only',
     variables: {
       query: {
@@ -36,6 +59,18 @@ function IncidentHistoryPage() {
       },
     },
   });
+
+  const [updateReport] = useMutation(UPDATE_REPORT);
+
+  const { logReportHistory } = useLogReportHistory();
+
+  useEffect(() => {
+    if (reportData?.report) {
+      setReport({ ...reportData.report });
+    } else {
+      setReport(undefined);
+    }
+  }, [reportData]);
 
   useEffect(() => {
     if (reportHistoryData?.history_reports?.length > 0) {
@@ -75,7 +110,55 @@ function IncidentHistoryPage() {
     }
   }, [reportHistoryData, usersData]);
 
-  const loading = loadingReportHistory || loadingUsers;
+  const loading = loadingReportHistory || loadingUsers || loadingReport;
+
+  const restoreVersion = async (version) => {
+    if (confirm(t('Are you sure you want to restore this version?'))) {
+      try {
+        setRestoringVersion(true);
+
+        const updatedReport = {
+          ...version,
+          user: undefined,
+          modifiedByUser: undefined,
+          modifiedBy: undefined,
+          __typename: undefined,
+          _id: undefined,
+          changes: undefined,
+          epoch_date_modified: getUnixTime(new Date()),
+          editor_notes: version.editor_notes ? version.editor_notes : '',
+          embedding: version.embedding
+            ? { ...version.embedding, __typename: undefined }
+            : undefined,
+        };
+
+        await updateReport({
+          variables: {
+            query: { report_number: reportNumber },
+            set: updatedReport,
+          },
+        });
+
+        await logReportHistory(report, updatedReport, user);
+
+        await refetchHistory();
+
+        addToast({
+          message: t('Report version restored successfully.'),
+          severity: SEVERITY.success,
+        });
+
+        setRestoringVersion(false);
+      } catch (error) {
+        setRestoringVersion(false);
+        addToast({
+          message: t('Error restoring Report version.'),
+          severity: SEVERITY.danger,
+          error,
+        });
+      }
+    }
+  };
 
   return (
     <div className={'w-full p-1'}>
@@ -110,17 +193,43 @@ function IncidentHistoryPage() {
                 </h2>
                 <hr />
               </div>
+              {restoringVersion && (
+                <div className="font-semibold mb-2" data-cy="restoring-message">
+                  <div className="flex gap-3 mb-2">
+                    <Trans>Restoring version</Trans>
+                    <Spinner />
+                  </div>
+                  <hr />
+                </div>
+              )}
               {incidentHistory.map((version, index) => {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
-                    <div className="flex font-semibold mb-2" data-cy="history-row-ribbon">
-                      <div className="mr-5">
-                        {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                      </div>
-                      <div>
-                        <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
-                        {version.modifiedByUser?.last_name}
-                      </div>
+                    <div className="flex font-semibold mb-2 gap-5" data-cy="history-row-ribbon">
+                      {version.epoch_date_modified && (
+                        <div>
+                          {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+                        </div>
+                      )}
+                      {(version.modifiedByUser?.first_name ||
+                        version.modifiedByUser?.last_name) && (
+                        <div>
+                          <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
+                          {version.modifiedByUser?.last_name}
+                        </div>
+                      )}
+                      {index > 0 && isRole('incident_editor') && (
+                        <CustomButton
+                          variant="link"
+                          title={t('Restore Version')}
+                          className="underline text-black p-0 border-0"
+                          data-cy="restore-button"
+                          onClick={() => restoreVersion(version)}
+                          disabled={restoringVersion}
+                        >
+                          <Trans>Restore Version</Trans>
+                        </CustomButton>
+                      )}
                     </div>
                     <div className="flex flex-col flex-nowrap mb-3" data-cy="history-row-changes">
                       {!version.changes && (

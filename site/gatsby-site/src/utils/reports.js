@@ -69,12 +69,12 @@ export const getReportChanges = (oldVersion, newVersion) => {
 
           for (const change of fieldDiff.changes) {
             if (change.type == Operation.UPDATE) {
-              removed.push(change.oldValue);
-              added.push(change.value);
+              removed.push(change.oldValue?.trim());
+              added.push(change.value?.trim());
             } else if (change.type == Operation.ADD) {
-              added.push(change.value);
+              added.push(change.value?.trim());
             } else if (change.type == Operation.REMOVE) {
-              removed.push(change.value);
+              removed.push(change.value?.trim());
             }
           }
 
