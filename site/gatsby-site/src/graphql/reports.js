@@ -169,6 +169,7 @@ export const FIND_REPORT_HISTORY = gql`
       text
       title
       url
+      source_domain
       user
     }
   }
