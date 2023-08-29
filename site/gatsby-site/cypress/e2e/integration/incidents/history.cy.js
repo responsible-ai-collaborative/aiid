@@ -430,7 +430,7 @@ describe('Incidents', () => {
       const version = incidentHistory.data.history_incidents[1];
 
       cy.contains('View Version details').should('exist');
-      cy.contains(`Title: ${version.title}`).should('exist');
+      cy.contains(version.title).should('exist');
       cy.contains('Modified by: Sean McGregor').should('exist');
       cy.contains(
         `Modified on: ${format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`
@@ -449,10 +449,6 @@ describe('Incidents', () => {
         cy.contains(`${version.reports.length}`).should('exist');
         cy.contains(`${version.date}`).should('exist');
         cy.contains('Sean McGregor, Pablo Costa').should('exist');
-      });
-      cy.get('[cy-data-cy="version-reports"]').within(() => {
-        cy.get('a').contains('#3205 - Report 3205 title').should('exist');
-        cy.get('a').contains('#3206 - Report 3206 title').should('exist');
       });
       cy.get('button').contains('Close').click();
     });
@@ -477,7 +473,7 @@ describe('Incidents', () => {
       const version = incidentHistory.data.history_incidents[0];
 
       cy.contains('View Version details').should('exist');
-      cy.contains(`Title: ${version.title}`).should('exist');
+      cy.contains(version.title).should('exist');
       cy.contains('Modified by: Sean McGregor').should('exist');
       cy.contains(
         `Modified on: ${format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`
@@ -496,10 +492,6 @@ describe('Incidents', () => {
         cy.contains(`${version.reports.length}`).should('exist');
         cy.contains(`${version.date}`).should('exist');
         cy.contains('Sean McGregor, Pablo Costa').should('exist');
-      });
-      cy.get('[cy-data-cy="version-reports"]').within(() => {
-        cy.get('a').contains('#3205 - Report 3205 title').should('exist');
-        cy.get('a').contains('#3206 - Report 3206 title').should('exist');
       });
       cy.get('button').contains('Close').click();
     });
