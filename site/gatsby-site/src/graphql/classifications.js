@@ -48,11 +48,11 @@ export const UPSERT_CLASSIFICATION = gql`
 export const UPDATE_CLASSIFICATIONS = gql`
   mutation UpdateClassifications(
     $query: ClassificationQueryInput
-    $data: ClassificationInsertInput!
+    $set: ClassificationInsertInput!
   ) {
     updateManyClassifications(query: $query, set: $set) {
       _id
-      incident_id
+      incidents
       notes
       namespace
       attributes {

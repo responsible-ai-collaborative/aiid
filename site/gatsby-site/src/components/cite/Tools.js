@@ -20,9 +20,10 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { INSERT_DUPLICATE } from '../../graphql/duplicates';
-import { UPDATE_CLASSIFICATIONS } from '../../graphql/classifications';
+import { UPDATE_CLASSIFICATIONS, FIND_CLASSIFICATION } from '../../graphql/classifications';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { Form, Formik } from 'formik';
+import RemoveDuplicateModalContents from 'components/cite/RemoveDuplicateModalContents';
 
 function Tools({
   incident,
@@ -211,107 +212,5 @@ function Tools({
     </Card>
   );
 }
-
-function RemoveDuplicateModalContents({ incident, isValid, isSubmitting, submitForm, values }) {
-
-  const [deletingDuplicate, setDeletingDuplicate] = useState(false);
-
-  const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
-  const [insertDuplicate] = useMutation(INSERT_DUPLICATE);
-
-  const [updateClassifications] = useMutation(UPDATE_CLASSIFICATIONS);
-
-  const { data: duplicateIncidentData, loading: duplicateIncidentLoading } = useQuery(
-    FIND_INCIDENT,
-    { variables: { query: { incident_id: values.duplicateIncidentId?.[0] } } }
-  );
-
-  const duplicateIncident = duplicateIncidentData?.incident;
-
-  return (
-    <>
-          <Form>
-            <Trans>Transfer reports to incident</Trans>{' '}
-            <IncidentsField multiple={false} id="duplicateIncidentId" name="duplicateIncidentId" />
-            <Button
-              color="failure"
-              disabled={duplicateIncidentLoading || !values.duplicateIncidentId || !duplicateIncidentData || deletingDuplicate}
-              onClick={async () => {
-                console.log(`duplicateIncidentData`, duplicateIncidentData);
-                setDeletingDuplicate(true);
-                const reportIds = removeTypename(
-                  duplicateIncidentData.incident.reports.concat(incident.reports)
-                ).map((report) => report.report_number);
-
-                let insertDuplicateResponse;
-
-                try {
-                  insertDuplicateResponse = await insertDuplicate({
-                    variables: {
-                      duplicate: {
-                        duplicate_incident_number: incident.incident_id,
-                        true_incident_number: values.duplicateIncidentId[0],
-                      },
-                    },
-                  });
-                } catch (e) {
-                  console.error(insertDuplicateResponse);
-                  alert(`Could not insert duplicate. Aborting.`);
-                  return;
-                }
-
-                let updateIncidentResponse;
-
-                try {
-                  updateIncidentResponse = await updateIncident({
-                    variables: {
-                      query: { incident_id: values.duplicateIncidentId[0] },
-                      set: { reports: { link: reportIds } },
-                    },
-                  });
-                } catch (e) {
-                  console.error(updateIncidentResponse);
-                  alert(`Could not transfer reports to incident ${values.duplicateIncidentId[0]}.`);
-                }
-
-                let updateClassificationsResponse;
-
-                try {
-                  updateClassificationsResponse = await updateClassifications({
-                    variables: {
-                      query: { incident_id: incident.incident_id },
-                      set: { incident_id: values.duplicateIncidentId[0] },
-                    },
-                  });
-                } catch (e) {
-                  console.error(updateClassificationsResponse);
-                  alert(`Could not transfer classifications to incident ${values.duplicateIncidentId[0]}.`);
-                }
-
-                setDeletingDuplicate(false);
-                alert(
-                  [
-                    `Incident ${incident.incident_id} marked`,
-                    `as duplicate of ${values.duplicateIncidentId[0]}.`,
-                    `Its page will updated within 24 hours.`,
-                  ].join(' ')
-                );
-                window.location.pathname = '/';
-              }}
-            >
-              Remove Duplicate
-            </Button>
-          </Form>
-        )}
-    </>
-  );
-}
-
-const removeTypename = (obj) => {
-  const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
-
-  return JSON.parse(replaced);
-};
 
 export default Tools;
