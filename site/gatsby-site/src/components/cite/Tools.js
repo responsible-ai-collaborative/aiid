@@ -11,19 +11,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, Spinner, ToggleSwitch, Modal } from 'flowbite-react';
+import { Button, ToggleSwitch } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
-import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
-import { INSERT_DUPLICATE } from '../../graphql/duplicates';
-import { UPDATE_CLASSIFICATIONS, FIND_CLASSIFICATION } from '../../graphql/classifications';
-import IncidentsField from 'components/incidents/IncidentsField';
-import { Form, Formik } from 'formik';
-import RemoveDuplicateModalContents from 'components/cite/RemoveDuplicateModalContents';
+import RemoveDuplicateModal from 'components/cite/RemoveDuplicateModal';
 
 function Tools({
   incident,
@@ -132,21 +125,11 @@ function Tools({
               <Trans>Remove Duplicate</Trans>
             </Button>
             {showRemoveDuplicateModal && (
-              <Modal
+              <RemoveDuplicateModal
+                incident={incident}
                 show={showRemoveDuplicateModal}
                 onClose={() => setShowRemoveDuplicateModal(false)}
-              >
-                <Modal.Header>
-                  <Trans>Remove Duplicate</Trans>
-                </Modal.Header>
-                <Modal.Body> 
-                  <Formik initialValues={{ duplicateIncidentId: [] }}>
-                    {(props) => (
-                      <RemoveDuplicateModalContents {...{ ...props, incident }} />
-                    )}
-                  </Formik>
-                </Modal.Body>
-              </Modal>
+              />
             )}
           </>
         )}
