@@ -17,7 +17,6 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@google-cloud/translate": "^6.3.1",
     "@googlemaps/google-maps-services-js": "^3.3.3",
-    "@graphiql/react": "^0.19.3",
     "@graphql-tools/schema": "^8.3.3",
     "@graphql-tools/wrap": "^8.4.6",
     "@mdx-js/react": "^2.3.0",
@@ -79,6 +78,7 @@
     "react-json-to-csv": "^1.2.0",
     "react-markdown": "^6.0.2",
     "react-papaparse": "^3.16.1",
+    "react-querybuilder": "^6.5.1",
     "react-string-diff": "^0.2.0",
     "react-table": "^7.7.0",
     "react-zoom-pan-pinch": "^2.6.1",
@@ -110,7 +110,8 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
+    "bue": "node migrator up --name 2023.08.24T18.18.48.classifications-value.js --rerun ALLOW"
   },
   "devDependencies": {
     "@netlify/plugin-gatsby": "^3.7.0",

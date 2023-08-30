@@ -1,25 +1,7 @@
-import { format, fromUnixTime } from 'date-fns';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Highlight } from 'react-instantsearch-dom';
-import { VIEW_TYPES } from 'utils/discover';
-import WebArchiveLink from '../../../components/ui/WebArchiveLink';
-
-export function citationReportUrl(item, viewType) {
-  let path = null;
-
-  if (viewType === VIEW_TYPES.INCIDENTS) {
-    path = '/cite/' + item.incident_id;
-  } else {
-    if (item.is_incident_report) {
-      path = '/cite/' + item.incident_id + '#r' + item.objectID;
-    } else {
-      path = `/reports/${item.report_number}`;
-    }
-  }
-
-  return path;
-}
+import { VIEW_TYPES, citationReportUrl } from 'utils/discover';
 
 export function HeaderTitle({ item, ...props }) {
   return (
@@ -36,16 +18,6 @@ export function HeaderTitle({ item, ...props }) {
           />
         </LocalizedLink>
       </h5>
-    </div>
-  );
-}
-
-export function SourceDomainSubtitle({ item, className }) {
-  return (
-    <div className={`${className} text-inherit`}>
-      <WebArchiveLink url={item.url} date={item.date_submitted}>
-        {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
-      </WebArchiveLink>
     </div>
   );
 }

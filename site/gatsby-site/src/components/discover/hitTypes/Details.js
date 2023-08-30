@@ -8,13 +8,18 @@ import Actions from '../Actions';
 import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
-import { SourceDomainSubtitle, HeaderTitle } from './shared';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import { VIEW_TYPES } from 'utils/discover';
+import { SourceDomainSubtitle } from '../SourceDomainSubtitle';
 
-export default function Details({ item, toggleFilterByIncidentId, viewType }) {
+export default function Details({
+  item,
+  toggleFilterByIncidentId,
+  viewType,
+  titleComponent: Title,
+}) {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -49,7 +54,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
         />
       </a>
       <Card.Body className="flex flex-col ">
-        <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
+        <Title item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">

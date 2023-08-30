@@ -7,7 +7,7 @@ export default function CardSkeleton({
   image = true,
   avatar = false,
   maxWidthSmall = true,
-  style,
+  style = null,
 }) {
   return (
     <div
