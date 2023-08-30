@@ -198,6 +198,7 @@ function IncidentHistoryPage() {
 
         setRestoringVersion(false);
       } catch (error) {
+        setRestoringVersion(false);
         addToast({
           message: t('Error restoring Incident version.'),
           severity: SEVERITY.danger,

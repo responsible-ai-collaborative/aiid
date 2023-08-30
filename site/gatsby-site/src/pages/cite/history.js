@@ -122,6 +122,7 @@ function IncidentHistoryPage() {
 
         const updatedReport = {
           ...version,
+          user: undefined,
           modifiedByUser: undefined,
           modifiedBy: undefined,
           __typename: undefined,
@@ -129,6 +130,9 @@ function IncidentHistoryPage() {
           changes: undefined,
           epoch_date_modified: getUnixTime(new Date()),
           editor_notes: version.editor_notes ? version.editor_notes : '',
+          embedding: version.embedding
+            ? { ...version.embedding, __typename: undefined }
+            : undefined,
         };
 
         await updateReport({
@@ -149,6 +153,7 @@ function IncidentHistoryPage() {
 
         setRestoringVersion(false);
       } catch (error) {
+        setRestoringVersion(false);
         addToast({
           message: t('Error restoring Report version.'),
           severity: SEVERITY.danger,
@@ -209,10 +214,13 @@ function IncidentHistoryPage() {
                           {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                         </div>
                       )}
-                      <div>
-                        <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
-                        {version.modifiedByUser?.last_name}
-                      </div>
+                      {(version.modifiedByUser?.first_name ||
+                        version.modifiedByUser?.last_name) && (
+                        <div>
+                          <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
+                          {version.modifiedByUser?.last_name}
+                        </div>
+                      )}
                       <CustomButton
                         variant="link"
                         title={t('View full version')}
