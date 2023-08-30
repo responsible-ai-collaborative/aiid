@@ -14,8 +14,6 @@ import {
   faNewspaper,
   faAlignLeft,
   faTenge,
-  faUser,
-  faCalendarDays,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { format, fromUnixTime } from 'date-fns';
@@ -44,36 +42,26 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
     >
       <Modal.Header>
         <Trans>Version details</Trans>
+        <div className="flex gap-5 text-base mt-2">
+          {version.modifiedByUser && (
+            <div>
+              <strong>Modified by</strong>: {version.modifiedByUser.first_name}{' '}
+              {version.modifiedByUser.last_name}
+            </div>
+          )}
+          {version.epoch_date_modified && (
+            <div>
+              <strong>Modified on</strong>:{' '}
+              {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+            </div>
+          )}
+        </div>
       </Modal.Header>
 
       {version && (
         <>
           <Modal.Body>
             <div className="flex flex-col gap-3">
-              {version.modifiedByUser && (
-                <Row>
-                  <Col className="flex items-center gap-2">
-                    <FontAwesomeIcon fixedWidth icon={faUser} title={t('Modified by')} />
-                    <div className="font-bold w-36">
-                      <Trans ns="submit">Modified by</Trans>:
-                    </div>
-                    <div>
-                      {version.modifiedByUser.first_name} {version.modifiedByUser.last_name}
-                    </div>
-                  </Col>
-                </Row>
-              )}
-              {version.epoch_date_modified && (
-                <Row>
-                  <Col className="flex items-center gap-2">
-                    <FontAwesomeIcon fixedWidth icon={faCalendarDays} title={t('Modified on')} />
-                    <div className="font-bold w-36">
-                      <Trans ns="submit">Modified on</Trans>:
-                    </div>
-                    {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                  </Col>
-                </Row>
-              )}
               <Row>
                 <Col className="flex items-center gap-2">
                   <FontAwesomeIcon fixedWidth icon={faLink} title={t('Report Address')} />
