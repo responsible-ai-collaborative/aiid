@@ -54,9 +54,9 @@ const reportsWithIncidentIds = async (reports, client) => {
 
     return {
       ...report,
-      incident_id: incident?.incident_id,
       title: report.title,
       incident_title: incident?.title,
+      incident_id: incident?.incident_id,
     };
   });
 };
