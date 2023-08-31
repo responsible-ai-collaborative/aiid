@@ -7,8 +7,11 @@ import IncidentsField from 'components/incidents/IncidentsField';
 import { Formik, Form } from 'formik';
 import { Button, Modal } from 'flowbite-react';
 import { Trans } from 'react-i18next';
+import useToast, { SEVERITY } from '../../hooks/useToast';
 
 export default function RemoveDuplicateModal({ incident, show, onClose }) {
+  const addToast = useToast();
+
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [insertDuplicate] = useMutation(INSERT_DUPLICATE);
@@ -58,23 +61,27 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   },
                 });
               } catch (e) {
-                console.error(e);
-                alert(`Could not insert duplicate. Aborting.`);
+                addToast({
+                  message: `Could not insert duplicate. Aborting.`,
+                  severity: SEVERITY.danger,
+                  error: e,
+                });
                 return;
               }
 
-              let updateIncidentResponse;
-
               try {
-                updateIncidentResponse = await updateIncident({
+                await updateIncident({
                   variables: {
                     query: { incident_id: values.duplicateIncidentId[0] },
                     set: { reports: { link: reportIds } },
                   },
                 });
               } catch (e) {
-                console.error(updateIncidentResponse);
-                alert(`Could not transfer reports to incident ${values.duplicateIncidentId[0]}.`);
+                addToast({
+                  message: `Could not transfer reports to incident ${values.duplicateIncidentId[0]}.`,
+                  severity: SEVERITY.danger,
+                  error: e,
+                });
               }
 
               try {
@@ -98,20 +105,20 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   });
                 }
               } catch (e) {
-                console.error(e);
-                alert(
-                  `Could not transfer classifications to incident ${values.duplicateIncidentId[0]}.`,
-                  e
-                );
+                addToast({
+                  message: `Could not transfer classifications to incident ${values.duplicateIncidentId[0]}.`,
+                  severity: SEVERITY.danger,
+                  error: e,
+                });
               }
-
-              alert(
-                [
+              addToast({
+                severity: SEVERITY.success,
+                message: [
                   `Incident ${incident.incident_id} marked`,
                   `as duplicate of ${values.duplicateIncidentId[0]}.`,
                   `Its page will updated within 24 hours.`,
-                ].join(' ')
-              );
+                ].join(' '),
+              });
               setSubmitting(false);
               window.location.pathname = '/';
             };
