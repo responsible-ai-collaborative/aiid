@@ -285,10 +285,13 @@ function IncidentHistoryPage(props) {
                           {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                         </div>
                       )}
-                      <div>
-                        <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
-                        {version.modifiedByUser?.last_name}
-                      </div>
+                      {(version.modifiedByUser?.first_name ||
+                        version.modifiedByUser?.last_name) && (
+                        <div>
+                          <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
+                          {version.modifiedByUser?.last_name}
+                        </div>
+                      )}
                       <CustomButton
                         variant="link"
                         title={t('View full version')}
