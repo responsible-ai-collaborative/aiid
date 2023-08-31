@@ -62,7 +62,7 @@
     "is-absolute-url": "^3.0.3",
     "json-diff-ts": "^1.2.6",
     "md5": "^2.3.0",
-    "mongodb": "^4.2.1",
+    "mongodb": "^4.17.0",
     "object-hash": "^3.0.0",
     "query-string": "^7.0.1",
     "react": "^18.2.0",
