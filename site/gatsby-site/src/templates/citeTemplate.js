@@ -335,14 +335,16 @@ function CiteTemplate({
               readOnly={readOnly}
             />
 
-            <SimilarIncidents
-              nlp_similar_incidents={nlp_similar_incidents}
-              editor_similar_incidents={editor_similar_incidents}
-              editor_dissimilar_incidents={editor_dissimilar_incidents}
-              flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
-              parentIncident={incident}
-              className="xl:hidden"
-            />
+            {!readOnly && (
+              <SimilarIncidents
+                nlp_similar_incidents={nlp_similar_incidents}
+                editor_similar_incidents={editor_similar_incidents}
+                editor_dissimilar_incidents={editor_dissimilar_incidents}
+                flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+                parentIncident={incident}
+                className="xl:hidden"
+              />
+            )}
 
             {!readOnly && (
               <div className="flex justify-between">
@@ -368,16 +370,18 @@ function CiteTemplate({
             )}
           </Container>
         </div>
-        <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
-          <SimilarIncidents
-            nlp_similar_incidents={nlp_similar_incidents}
-            editor_similar_incidents={editor_similar_incidents}
-            editor_dissimilar_incidents={editor_dissimilar_incidents}
-            flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
-            parentIncident={incident}
-            orientation="column"
-          />
-        </div>
+        {!readOnly && (
+          <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
+            <SimilarIncidents
+              nlp_similar_incidents={nlp_similar_incidents}
+              editor_similar_incidents={editor_similar_incidents}
+              editor_dissimilar_incidents={editor_dissimilar_incidents}
+              flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+              parentIncident={incident}
+              orientation="column"
+            />
+          </div>
+        )}
       </div>
     </>
   );
