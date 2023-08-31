@@ -37,10 +37,28 @@ const FIND_INCIDENTS = gql`
         text
         epoch_date_published
         date_submitted
+        authors
+        submitters
       }
     }
   }
 `;
+
+const isValidQuery = (q) => {
+  if (q.length == 0) {
+    return false;
+  }
+
+  if (q.some((filter) => !filter.query || filter.query.rules.length == 0)) {
+    return false;
+  }
+
+  if (q.some((filter) => filter.query.rules.some((rule) => !rule.value))) {
+    return false;
+  }
+
+  return true;
+};
 
 export default function Systems() {
   const [findSystems, { loading: loadingSystems, data }] = useLazyQuery(FIND_SYSTEMS);
@@ -50,30 +68,9 @@ export default function Systems() {
 
   const debouncedFindSystems = useCallback(debounce(findSystems, 2000), []);
 
-  const [filters, setFilters] = useState([
-    {
-      type: 'taxonomy',
-      id: 'taxonomy-0',
-      config: {
-        namespace: 'GMF',
-      },
-      query: {
-        combinator: 'and',
-        rules: [
-          {
-            id: '2269034f-181e-40c0-9dcf-8391af6612df',
-            field: 'Full Description',
-            operator: 'contains',
-            valueSource: 'value',
-            value: 'google',
-          },
-        ],
-        id: '888ab004-6285-4b64-8f70-437f3429e292',
-      },
-    },
-  ]);
+  const [filters, setFilters] = useState([]);
 
-  const display = 'details';
+  const display = 'list';
 
   const viewType = 'reports'; // 'incidents';
 
@@ -93,41 +90,43 @@ export default function Systems() {
   );
 
   useEffect(() => {
-    const queries = filters
-      .filter((filter) => filter.query)
-      .map((filter) =>
-        formatQuery(filter.query, {
-          format: 'mongodb',
-          ruleProcessor: (rule) => {
-            const getOperation = (rule) => {
-              switch (rule.operator) {
-                case 'contains':
-                  return { $regex: rule.value, $options: 'i' };
-              }
-            };
+    if (isValidQuery(filters)) {
+      const queries = filters
+        .filter((filter) => filter.query)
+        .map((filter) =>
+          formatQuery(filter.query, {
+            format: 'mongodb',
+            ruleProcessor: (rule) => {
+              const getOperation = (rule) => {
+                switch (rule.operator) {
+                  case 'contains':
+                    return { $regex: rule.value, $options: 'i' };
+                }
+              };
 
-            const updated = {
-              attributes: {
-                $elemMatch: {
-                  short_name: rule.field,
-                  value: getOperation(rule),
+              const updated = {
+                attributes: {
+                  $elemMatch: {
+                    short_name: rule.field,
+                    value: getOperation(rule),
+                  },
                 },
-              },
-            };
+              };
 
-            const stringified = JSON.stringify(updated);
+              const stringified = JSON.stringify(updated);
 
-            return stringified;
-          },
-        })
-      );
+              return stringified;
+            },
+          })
+        );
 
-    const fullQuery = `{"$or": [${queries.join(',')}]}`;
+      const fullQuery = `{"$or": [${queries.join(',')}]}`;
 
-    console.log(JSON.parse(fullQuery));
-    console.log(JSON.stringify(JSON.parse(fullQuery)));
+      console.log(JSON.parse(fullQuery));
+      console.log(JSON.stringify(JSON.parse(fullQuery)));
 
-    debouncedFindSystems({ variables: { input: { query: fullQuery } } });
+      debouncedFindSystems({ variables: { input: { query: fullQuery } } });
+    }
 
     console.log(filters);
   }, [filters]);
@@ -163,6 +162,8 @@ export default function Systems() {
           incident_description: description,
           date_submitted: report.date_submitted,
           epoch_date_published: report.epoch_date_published,
+          authors: report.authors,
+          submitters: report.submitters,
         };
       });
 
@@ -178,17 +179,19 @@ export default function Systems() {
     <>
       <Button onClick={() => setShowTaxonomyModal(true)}>Add Taxonomy</Button>
 
-      <div className="mt-2">
-        <Card>
-          <div>
-            {filters.map((filter) => {
-              const Component = queryTypes[filter.type].default;
+      {filters.length > 0 && (
+        <div className="mt-2">
+          <Card>
+            <div>
+              {filters.map((filter) => {
+                const Component = queryTypes[filter.type].default;
 
-              return <Component key={filter.id} setFilters={setFilters} {...filter} />;
-            })}
-          </div>
-        </Card>
-      </div>
+                return <Component key={filter.id} setFilters={setFilters} {...filter} />;
+              })}
+            </div>
+          </Card>
+        </div>
+      )}
 
       <div
         data-cy="hits-container"
