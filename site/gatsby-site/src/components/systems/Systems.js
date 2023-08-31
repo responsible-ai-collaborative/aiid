@@ -5,9 +5,7 @@ import { formatQuery } from 'react-querybuilder';
 import { gql, useLazyQuery } from '@apollo/client';
 import { debounce } from 'lodash';
 import { Button, Card } from 'flowbite-react';
-import CardSkeleton from 'elements/Skeletons/Card';
-import ListSkeleton from 'elements/Skeletons/List';
-import Hit from './Hit';
+import Results from './Results';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -44,6 +42,29 @@ const FIND_INCIDENTS = gql`
   }
 `;
 
+const defaultQuery = [
+  {
+    type: 'taxonomy',
+    id: 'taxonomy-0',
+    config: {
+      namespace: 'GMF',
+    },
+    query: {
+      combinator: 'and',
+      rules: [
+        {
+          id: '2269034f-181e-40c0-9dcf-8391af6612df',
+          field: 'Full Description',
+          operator: 'contains',
+          valueSource: 'value',
+          value: 'google',
+        },
+      ],
+      id: '888ab004-6285-4b64-8f70-437f3429e292',
+    },
+  },
+];
+
 const isValidQuery = (q) => {
   if (q.length == 0) {
     return false;
@@ -68,13 +89,11 @@ export default function Systems() {
 
   const debouncedFindSystems = useCallback(debounce(findSystems, 2000), []);
 
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState(defaultQuery);
 
   const display = 'list';
 
   const viewType = 'reports'; // 'incidents';
-
-  // const [filters, setFilters] = useState([]);
 
   const [showTaxonomyModal, setShowTaxonomyModal] = useState(false);
 
@@ -137,11 +156,11 @@ export default function Systems() {
 
       findIncidents({ variables: { query: { incident_id_in: incidents } } });
 
-      setResults([]);
+      setIncidentResults([]);
     }
   }, [data]);
 
-  const [results, setResults] = useState([]);
+  const [incidentResults, setIncidentResults] = useState([]);
 
   useEffect(() => {
     if (dataIncidents?.incidents) {
@@ -167,7 +186,7 @@ export default function Systems() {
         };
       });
 
-      setResults(results);
+      setIncidentResults(results);
     }
   }, [dataIncidents]);
 
@@ -193,31 +212,8 @@ export default function Systems() {
         </div>
       )}
 
-      <div
-        data-cy="hits-container"
-        style={{
-          gridTemplateColumns: {
-            compact: 'repeat( auto-fit, minmax(18rem, 1fr) )',
-            details: 'repeat( auto-fit, minmax(18rem, 1fr) )',
-            list: '1fr',
-          }[display],
-        }}
-        className={`grid gap-2 mt-4 mx-auto px-3 w-full lg:max-w-6xl xl:max-w-7xl`}
-      >
-        {loading ? (
-          display === 'list' ? (
-            <ListSkeleton />
-          ) : (
-            Array(24)
-              .fill()
-              .map((_skeleton, i) => (
-                <CardSkeleton key={i} className="m:inline-block ml-3" text={display == 'details'} />
-              ))
-          )
-        ) : (
-          results.map((result) => <Hit key={result.objectID} item={result} viewType={viewType} />)
-        )}
-      </div>
+      <h3 className="mt-3">Incidents</h3>
+      <Results display={display} viewType={viewType} loading={loading} results={incidentResults} />
 
       {showTaxonomyModal && (
         <AddTaxonomyModal

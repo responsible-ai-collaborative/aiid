@@ -6,13 +6,18 @@ import md5 from 'md5';
 import Actions from '../Actions';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
-import { SourceDomainSubtitle, HeaderTitle } from './shared';
+import { SourceDomainSubtitle } from '../SourceDomainSubtitle';
 import { useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import { VIEW_TYPES } from 'utils/discover';
 
-export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
+export default function Compact({
+  item,
+  toggleFilterByIncidentId,
+  viewType,
+  titleComponent: Title,
+}) {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -61,7 +66,7 @@ export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
           "
           >
             <a href={detailsPath}>
-              <HeaderTitle
+              <Title
                 item={item}
                 viewType={viewType}
                 className="mb-1 leading-tight text-xl hover:text-blue-500 text-black hover:text-black"
