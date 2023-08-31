@@ -111,6 +111,8 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   error: e,
                 });
               }
+              setSubmitting(false);
+              onClose();
               addToast({
                 severity: SEVERITY.success,
                 message: [
@@ -119,8 +121,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   `Its page will updated within 24 hours.`,
                 ].join(' '),
               });
-              setSubmitting(false);
-              window.location.pathname = '/';
+              setTimeout(() => (window.location.pathname = '/'), 2000);
             };
 
             return (
@@ -134,7 +135,12 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   name="duplicateIncidentId"
                   className="mb-4 mt-1"
                 />
-                <Button color="failure" disabled={submitBlocked} onClick={submit}>
+                <Button
+                  color="failure"
+                  disabled={submitBlocked}
+                  onClick={submit}
+                  data-cy="confirm-remove-duplicate"
+                >
                   <Trans>Remove Duplicate</Trans>
                 </Button>
               </Form>

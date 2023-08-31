@@ -214,6 +214,46 @@ describe('Cite pages', () => {
     cy.get('@modal').should('not.exist');
   });
 
+  maybeIt('Should remove duplicate', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertClassification',
+      'upsertClassification',
+      ''
+    );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      ''
+    );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertDuplicate',
+      'insertDuplicate',
+      ''
+    );
+
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+    cy.waitForStableDOM();
+
+    cy.visit('/cite/10');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="remove-duplicate"]').click();
+    cy.waitForStableDOM();
+
+    cy.get('#input-duplicateIncidentId').type('1');
+    cy.waitForStableDOM();
+
+    cy.get('#duplicateIncidentId > a[aria-label="1"]').click();
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="confirm-remove-duplicate"]').click();
+
+    cy.contains('Incident 10 marked as duplicate').should('exist');
+  });
+
   it('Should pre-fill submit report form', () => {
     cy.visit(url);
 

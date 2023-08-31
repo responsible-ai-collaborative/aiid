@@ -111,6 +111,7 @@ function Tools({
               <Trans>Edit Incident</Trans>
             </Button>
             <Button
+              data-cy="remove-duplicate"
               color="gray"
               onClick={() => {
                 setShowRemoveDuplicateModal(true);
