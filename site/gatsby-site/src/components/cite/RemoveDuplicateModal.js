@@ -121,7 +121,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   `Its page will updated within 24 hours.`,
                 ].join(' '),
               });
-              setTimeout(() => (window.location.pathname = '/'), 2000);
+              setTimeout(() => (window.location.pathname = '/'), 5000);
             };
 
             return (

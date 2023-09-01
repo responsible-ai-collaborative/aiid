@@ -250,6 +250,7 @@ describe('Cite pages', () => {
     cy.waitForStableDOM();
 
     cy.get('[data-cy="confirm-remove-duplicate"]').click();
+    cy.waitForStableDOM();
 
     cy.contains('Incident 10 marked as duplicate').should('exist');
   });
