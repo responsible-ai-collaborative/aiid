@@ -16,7 +16,7 @@ import config from '../../../config.js';
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 
-const Header = ({ location = null }) => {
+const Header = ({ location = null, className }) => {
   const [navCollapsed, setNavCollapsed] = useState(true);
 
   return (
@@ -155,7 +155,7 @@ const Header = ({ location = null }) => {
         );
 
         return (
-          <nav id="navBarDefault" className="bg-[#001934] shadow">
+          <nav id="navBarDefault" className={`bg-[#001934] shadow ${className}`}>
             <div className=" text-white flex flex-row items-center w-full p-4 md:pl-0 h-[80px]">
               <SkipToContent className="-order-1 mx-2" />
 

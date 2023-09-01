@@ -111,103 +111,101 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
   const sidebarWidth = !isCollapsed ? 'md:w-64' : 'md:w-[3.5rem]';
 
   return (
-    <>
-      <aside
-        id="sidebar"
-        aria-label="Sidebar"
-        className={`${sidebarWidth} sticky top-0 flex flex-col md:bg-text-light-gray z-2`}
-        style={{
-          height:
-            (headerVisiblePixels && !isMobile) || window.innerWidth > 768
-              ? `calc(100vh - ${headerVisiblePixels}px)`
-              : undefined,
-          transition: 'width 500ms ease, height 75ms ease',
-        }}
+    <nav
+      id="sidebar"
+      aria-label="Sidebar"
+      className={`${sidebarWidth} sticky top-0 flex flex-col md:bg-text-light-gray z-2`}
+      style={{
+        height:
+          (headerVisiblePixels && !isMobile) || window.innerWidth > 768
+            ? `calc(100vh - ${headerVisiblePixels}px)`
+            : undefined,
+        transition: 'width 500ms ease, height 75ms ease',
+      }}
+    >
+      <span className="md:border-b-1 md:border-b-gray-200">
+        <QuickAccess isCollapsed={isCollapsed} />
+      </span>
+
+      <ul
+        id="sidebar-tree"
+        data-cy="sidebar-tree"
+        className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}
       >
-        <span className="md:border-b-1 md:border-b-gray-200">
-          <QuickAccess isCollapsed={isCollapsed} />
-        </span>
-
-        <ul
-          id="sidebar-tree"
-          data-cy="sidebar-tree"
-          className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}
-        >
-          <Tree
-            setNavCollapsed={setNavCollapsed}
-            isCollapsed={isCollapsed}
-            localizePath={localizePath}
-            additionalNodes={[
-              {
-                label: 'user',
-                url: isUserLoggedIn ? '/account/' : `/signup/?redirectTo=${redirectTo}`,
-                title: isUserLoggedIn ? t('Account') : t('Subscribe'),
-                items: [],
-              },
-            ]}
-          />
-          {config.sidebar.links && config.sidebar.links?.length > 0 && (
-            <li className="tw-li-divider">
-              <hr />
-            </li>
-          )}
-          {config.sidebar.links?.map((link, key) => {
-            if (link.link !== '' && link.text !== '') {
-              return (
-                <li className={'side-bar-links overflow-hidden w-full'} key={key}>
-                  <a href={link.link} className={``} target="_blank" rel="noopener noreferrer">
-                    <Trans>{link.text}</Trans>
-                    <ExternalLink size={14} />
-                  </a>
-                </li>
-              );
-            }
-          })}
-        </ul>
-        {!isMobile && (
-          <div
-            className={`
-              ${sidebarWidth} md:h-12
-              flex justify-end items-center
-              transition-all duration-500
-              border-t-1 border-gray-200
-              bg-text-light-gray z-40
-              ${atBottom ? 'absolute' : 'fixed'} bottom-0
-              ${isCollapsed ? '' : 'pr-3'}
-            `}
-          >
-            <FontAwesomeIcon
-              data-cy="collapse-button"
-              icon={faChevronLeft}
-              color={'white'}
-              titleId="collapse"
-              className={`
-                w-6 h-6
-                hidden md:inline-block 
-                cursor-pointer fa
-                text-gray-500
-                hover:text-gray-200 
-                ${isCollapsed ? 'rotate-180 -translate-x-3' : ''}
-                transition-transform duration-500 
-              `}
-              title={isCollapsed ? t('Expand') : t('Collapse')}
-              onClick={() => {
-                // If the user, e.g. from the landing page
-                // collapses the sidebar and then uncollapses it,
-                // navigating to /discover
-                // should still cause the sidebar to collapse.
-                // However, when changing the collapsed state
-                // to one that is not its default value,
-                // that state should be preserved across pages.
-                setManual(defaultCollapsed == isCollapsed);
-
-                collapseMenu(!isCollapsed);
-              }}
-            />
-          </div>
+        <Tree
+          setNavCollapsed={setNavCollapsed}
+          isCollapsed={isCollapsed}
+          localizePath={localizePath}
+          additionalNodes={[
+            {
+              label: 'user',
+              url: isUserLoggedIn ? '/account/' : `/signup/?redirectTo=${redirectTo}`,
+              title: isUserLoggedIn ? t('Account') : t('Subscribe'),
+              items: [],
+            },
+          ]}
+        />
+        {config.sidebar.links && config.sidebar.links?.length > 0 && (
+          <li className="tw-li-divider">
+            <hr />
+          </li>
         )}
-      </aside>
-    </>
+        {config.sidebar.links?.map((link, key) => {
+          if (link.link !== '' && link.text !== '') {
+            return (
+              <li className={'side-bar-links overflow-hidden w-full'} key={key}>
+                <a href={link.link} className={``} target="_blank" rel="noopener noreferrer">
+                  <Trans>{link.text}</Trans>
+                  <ExternalLink size={14} />
+                </a>
+              </li>
+            );
+          }
+        })}
+      </ul>
+      {!isMobile && (
+        <div
+          className={`
+            ${sidebarWidth} md:h-12
+            flex justify-end items-center
+            transition-all duration-500
+            border-t-1 border-gray-200
+            bg-text-light-gray z-40
+            ${atBottom ? 'absolute' : 'fixed'} bottom-0
+            ${isCollapsed ? '' : 'pr-3'}
+          `}
+        >
+          <FontAwesomeIcon
+            data-cy="collapse-button"
+            icon={faChevronLeft}
+            color={'white'}
+            titleId="collapse"
+            className={`
+              w-6 h-6
+              hidden md:inline-block 
+              cursor-pointer fa
+              text-gray-500
+              hover:text-gray-200 
+              ${isCollapsed ? 'rotate-180 -translate-x-3' : ''}
+              transition-transform duration-500 
+            `}
+            title={isCollapsed ? t('Expand') : t('Collapse')}
+            onClick={() => {
+              // If the user, e.g. from the landing page
+              // collapses the sidebar and then uncollapses it,
+              // navigating to /discover
+              // should still cause the sidebar to collapse.
+              // However, when changing the collapsed state
+              // to one that is not its default value,
+              // that state should be preserved across pages.
+              setManual(defaultCollapsed == isCollapsed);
+
+              collapseMenu(!isCollapsed);
+            }}
+          />
+        </div>
+      )}
+    </nav>
   );
 };
 

@@ -760,4 +760,10 @@
   .latest-reports-carousel *[data-testid="carousel-indicator"] {
     @apply hidden !important;
   }
+
+  #gatsby-focus-wrapper {
+    display: grid;
+    grid-template-rows: 3;
+    grid-template-columns: 3;
+  }
 }

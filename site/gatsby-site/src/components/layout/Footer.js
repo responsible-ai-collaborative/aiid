@@ -12,7 +12,7 @@ import config from '../../../config';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 
-export default function Footer() {
+export default function Footer({ className }) {
   const data = useStaticQuery(graphql`
     query FooterQuery {
       site {
@@ -44,7 +44,7 @@ export default function Footer() {
   return (
     <footer
       id="main-footer"
-      className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5 z-50"
+      className={`bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5 z-50 ${className}`}
     >
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
