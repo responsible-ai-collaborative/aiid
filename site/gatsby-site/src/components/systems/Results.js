@@ -47,7 +47,7 @@ export default function Results({ display, viewType, loading, results }) {
 
           <button
             onClick={() => setOpen((open) => !open)}
-            className="text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+            className="w-fit text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
           >
             {open ? <Trans>View Less</Trans> : <Trans>View ({{ hidden }}) more</Trans>}
           </button>

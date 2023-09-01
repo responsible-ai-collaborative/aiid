@@ -11,6 +11,7 @@ const FIND_TAXONOMY = gql`
       description
       field_list {
         display_type
+        permitted_values
         mongo_type
         short_name
       }
@@ -42,19 +43,48 @@ export default function Builder({ id, setFilters, config, query = null }) {
       const fields = [];
 
       for (const field of data.taxa.field_list) {
-        const operators = [];
+        let operators = null;
+
+        let values = null;
+
+        let valueEditorType = null;
 
         switch (field.display_type) {
           case 'string':
-            operators.push(...[{ name: 'contains', label: 'contains' }]);
+            operators = [{ name: 'contains', label: 'contains' }];
             break;
+
+          case 'enum':
+            valueEditorType = 'select';
+            operators = [
+              { name: '=', label: 'Equals' },
+              { name: '!=', label: 'Not Equals' },
+            ];
+            values = field.permitted_values.map((value) => ({ name: value, label: value }));
+            break;
+
+          case 'bool':
+            operators = [{ name: '=', label: 'Equals' }];
+            valueEditorType = 'checkbox';
+            break;
+
+          case 'location':
+            operators = [{ name: 'contains', label: 'contains' }];
+            break;
+
+          // TODO: list type needs to fetch every possible value
+          // case 'list':
+          //   operators = [{ name: 'contains', label: 'contains' }];
+          //   break;
         }
 
-        if (operators.length) {
+        if (operators || values || valueEditorType) {
           fields.push({
             name: field.short_name,
             label: field.short_name,
             operators,
+            values,
+            valueEditorType,
           });
         }
       }

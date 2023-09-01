@@ -81,6 +81,19 @@ const isValidQuery = (q) => {
   return true;
 };
 
+const getOperation = (rule) => {
+  switch (rule.operator) {
+    case 'contains':
+      return { $regex: rule.value, $options: 'i' };
+    case '=':
+      return { $eq: rule.value };
+    case '!=':
+      return { $ne: rule.value };
+    default:
+      throw new Error(`Unknown operator ${rule.operator}`);
+  }
+};
+
 export default function Systems() {
   const [findSystems, { loading: loadingSystems, data }] = useLazyQuery(FIND_SYSTEMS);
 
@@ -116,13 +129,6 @@ export default function Systems() {
           formatQuery(filter.query, {
             format: 'mongodb',
             ruleProcessor: (rule) => {
-              const getOperation = (rule) => {
-                switch (rule.operator) {
-                  case 'contains':
-                    return { $regex: rule.value, $options: 'i' };
-                }
-              };
-
               const updated = {
                 attributes: {
                   $elemMatch: {
