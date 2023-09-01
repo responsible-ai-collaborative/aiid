@@ -20,7 +20,6 @@ import { format, fromUnixTime } from 'date-fns';
 import { Modal, Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
-import Col from 'elements/Col';
 import supportedLanguages from 'components/i18n/languages.json';
 import { Image } from 'utils/cloudinary';
 import Markdown from 'react-markdown';
@@ -63,115 +62,137 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
           <Modal.Body>
             <div className="flex flex-col gap-3">
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faLink} title={t('Report Address')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon fixedWidth icon={faLink} title={t('Report Address')} />
                     <Trans ns="submit">Report Address</Trans>:
                   </div>
-                  {version.url}
-                </Col>
+                  <div className="col-span-6">{version.url}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faTenge} title={t('Title')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon fixedWidth icon={faTenge} title={t('Title')} />
                     <Trans ns="submit">Title</Trans>:
                   </div>
-                  {version.title}
-                </Col>
+                  <div className="col-span-6">{version.title}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faPenNib} title={t('Author CSV')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon fixedWidth icon={faPenNib} title={t('Author CSV')} />
                     <Trans ns="submit">Author CSV</Trans>:
                   </div>
-                  {version.authors.join(', ')}
-                </Col>
+                  <div className="col-span-6">{version.authors.join(', ')}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faMedal} title={t('Submitter CSV')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon fixedWidth icon={faMedal} title={t('Submitter CSV')} />
                     <Trans ns="submit">Submitter CSV</Trans>:
                   </div>
-                  {version.submitters.join(', ')}
-                </Col>
+                  <div className="col-span-6">{version.submitters.join(', ')}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faCalendar} title={t('Date Published')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon fixedWidth icon={faCalendar} title={t('Date Published')} />
                     <Trans ns="submit">Date Published</Trans>:
                   </div>
-                  {version.date_published}
-                </Col>
+                  <div className="col-span-6">{version.date_published}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faDownload} title={t('Date Downloaded')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon fixedWidth icon={faDownload} title={t('Date Downloaded')} />
                     <Trans ns="submit">Date Downloaded</Trans>:
                   </div>
-                  {version.date_downloaded}
-                </Col>
+                  <div className="col-span-6">{version.date_downloaded}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faImage} title={t('Image Address')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faImage}
+                      title={t('Image Address')}
+                      className="w-8 border"
+                    />
                     <Trans ns="submit">Image Address</Trans>:
                   </div>
-                  {version.image_url}
-                </Col>
+                  <div className="col-span-6">{version.image_url}</div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center justify-center gap-2">
-                  <div className="h-40 flex justify-center">
-                    <Image
-                      className="h-[320px] object-cover w-full"
-                      publicID={
-                        version.cloudinary_id
-                          ? version.cloudinary_id
-                          : `legacy/${md5(version.image_url)}`
-                      }
-                      alt="Report image"
-                      transformation={fill().height(640)}
-                      plugins={[]}
-                      itemIdentifier="report_image"
-                    />
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Col className="flex items-start gap-2">
-                  <div className="flex items-center gap-2 mt-1">
-                    <FontAwesomeIcon fixedWidth icon={faNewspaper} title={t('Text')} />
-                    <div className="font-bold w-36">
-                      <Trans ns="submit">Text</Trans>:
+                <div className="grid grid-cols-8">
+                  <div className="h-40 flex col-start-3 col-span-6">
+                    <div className="flex">
+                      <Image
+                        className="h-[320px] object-cover w-full"
+                        publicID={
+                          version.cloudinary_id
+                            ? version.cloudinary_id
+                            : `legacy/${md5(version.image_url)}`
+                        }
+                        alt="Report image"
+                        transformation={fill().height(640)}
+                        plugins={[]}
+                        itemIdentifier="report_image"
+                      />
                     </div>
                   </div>
-                  <div className="h-44 p-2 border rounded-md overflow-scroll">
+                </div>
+              </Row>
+              <Row>
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-start gap-2">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faNewspaper}
+                      title={t('Text')}
+                      className="w-8 border"
+                    />
+                    <Trans ns="submit">Text</Trans>:
+                  </div>
+                  <div className="col-span-6 h-44 p-2 border rounded-md overflow-scroll">
                     <Markdown>{version.text}</Markdown>
                   </div>
-                </Col>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faLanguage} title={t('Language')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faLanguage}
+                      title={t('Language')}
+                      className="w-8 border"
+                    />
                     <Trans ns="submit">Language</Trans>:
                   </div>
-                  {supportedLanguages.find((l) => l.code == version.language)?.name}
-                </Col>
+                  <div className="col-span-6">
+                    {supportedLanguages.find((l) => l.code == version.language)?.name}
+                  </div>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faTag}
+                      title={t('Tags')}
+                      className="w-8 border"
+                    />
                     <Trans ns="submit">Tags</Trans>:
                   </div>
-                  <div>
+                  <div className="col-span-6">
                     {version.tags.map((tag, index) => (
                       <div
                         key={`added_${index}`}
@@ -181,16 +202,22 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
                       </div>
                     ))}
                   </div>
-                </Col>
+                </div>
               </Row>
               <Row>
-                <Col className="flex items-center gap-2">
-                  <FontAwesomeIcon fixedWidth icon={faAlignLeft} title={t('Editor Notes')} />
-                  <div className="font-bold w-36">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-bold col-span-2 flex items-center gap-2">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faAlignLeft}
+                      title={t('Editor Notes')}
+                      className="w-8 border"
+                    />
                     <Trans ns="submit">Editor Notes</Trans>:
                   </div>
+                  <div className="col-span-6"></div>
                   {version.editor_notes}
-                </Col>
+                </div>
               </Row>
             </div>
           </Modal.Body>

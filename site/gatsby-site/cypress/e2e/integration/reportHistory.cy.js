@@ -285,7 +285,7 @@ describe('Report History', () => {
     cy.wait('@FindReportHistory');
   });
 
-  it.only('Should display the Report Version History details modal', () => {
+  it('Should display the Report Version History details modal', () => {
     cy.visit(url);
 
     cy.conditionalIntercept(
