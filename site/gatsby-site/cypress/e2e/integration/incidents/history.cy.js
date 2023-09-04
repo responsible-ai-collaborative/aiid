@@ -450,6 +450,7 @@ describe('Incidents', () => {
         cy.contains(`${version.date}`).should('exist');
         cy.contains('Sean McGregor, Pablo Costa').should('exist');
       });
+      cy.get('[data-cy="classifications-editor"]').should('not.exist');
       cy.get('button').contains('Close').click();
     });
     cy.get('[data-cy="version-view-modal"]').should('not.exist');
@@ -493,6 +494,7 @@ describe('Incidents', () => {
         cy.contains(`${version.date}`).should('exist');
         cy.contains('Sean McGregor, Pablo Costa').should('exist');
       });
+      cy.get('[data-cy="classifications-editor"]').should('not.exist');
       cy.get('button').contains('Close').click();
     });
     cy.get('[data-cy="version-view-modal"]').should('not.exist');

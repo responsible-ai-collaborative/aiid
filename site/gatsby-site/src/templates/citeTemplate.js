@@ -258,11 +258,12 @@ function CiteTemplate({
 
             <Row className="mt-6">
               <Col>
-                <ClassificationsEditor
-                  taxa={allMongodbAiidprodTaxa}
-                  incidentId={incident.incident_id}
-                />
-
+                {!readOnly && (
+                  <ClassificationsEditor
+                    taxa={allMongodbAiidprodTaxa}
+                    incidentId={incident.incident_id}
+                  />
+                )}
                 <ClassificationsDisplay
                   classifications={allMongodbAiidprodClassifications}
                   taxa={allMongodbAiidprodTaxa}
