@@ -73,6 +73,18 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
             operators = [{ name: 'contains', label: 'contains' }];
             break;
 
+          case 'multi':
+            valueEditorType = 'multiselect';
+            operators = [
+              { name: 'in', label: 'In' },
+              { name: 'notIn', label: 'Not In' },
+            ];
+            values = field.permitted_values.map((value) => ({ name: value, label: value }));
+            break;
+
+          default:
+            console.log(field.display_type);
+
           // TODO: list type needs to fetch every possible value
           // case 'list':
           //   operators = [{ name: 'contains', label: 'contains' }];
@@ -116,7 +128,12 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
             </Button>
           </div>
           <div className="mt-2">
-            <QueryBuilder fields={fields} query={query} onQueryChange={(q) => handleChange(q)} />
+            <QueryBuilder
+              fields={fields}
+              query={query}
+              onQueryChange={(q) => handleChange(q)}
+              listsAsArrays={true}
+            />
           </div>
         </div>
       )}

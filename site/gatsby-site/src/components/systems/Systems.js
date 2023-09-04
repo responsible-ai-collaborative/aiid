@@ -86,10 +86,19 @@ const getOperation = (rule) => {
   switch (rule.operator) {
     case 'contains':
       return { $regex: rule.value, $options: 'i' };
+
     case '=':
       return { $eq: rule.value };
+
     case '!=':
       return { $ne: rule.value };
+
+    case 'in':
+      return { $in: rule.value };
+
+    case 'notIn':
+      return { $nin: rule.value };
+
     default:
       throw new Error(`Unknown operator ${rule.operator}`);
   }
