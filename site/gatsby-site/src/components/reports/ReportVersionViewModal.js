@@ -118,12 +118,7 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <div className="grid grid-cols-8 gap-2">
                   <div className="font-bold col-span-2 flex items-center gap-2">
-                    <FontAwesomeIcon
-                      fixedWidth
-                      icon={faImage}
-                      title={t('Image Address')}
-                      className="w-8 border"
-                    />
+                    <FontAwesomeIcon fixedWidth icon={faImage} title={t('Image Address')} />
                     <Trans ns="submit">Image Address</Trans>:
                   </div>
                   <div className="col-span-6">{version.image_url}</div>
@@ -152,12 +147,7 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <div className="grid grid-cols-8 gap-2">
                   <div className="font-bold col-span-2 flex items-start gap-2">
-                    <FontAwesomeIcon
-                      fixedWidth
-                      icon={faNewspaper}
-                      title={t('Text')}
-                      className="w-8 border"
-                    />
+                    <FontAwesomeIcon fixedWidth icon={faNewspaper} title={t('Text')} />
                     <Trans ns="submit">Text</Trans>:
                   </div>
                   <div className="col-span-6 h-44 p-2 border rounded-md overflow-scroll">
@@ -168,12 +158,7 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <div className="grid grid-cols-8 gap-2">
                   <div className="font-bold col-span-2 flex items-center gap-2">
-                    <FontAwesomeIcon
-                      fixedWidth
-                      icon={faLanguage}
-                      title={t('Language')}
-                      className="w-8 border"
-                    />
+                    <FontAwesomeIcon fixedWidth icon={faLanguage} title={t('Language')} />
                     <Trans ns="submit">Language</Trans>:
                   </div>
                   <div className="col-span-6">
@@ -184,12 +169,7 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <div className="grid grid-cols-8 gap-2">
                   <div className="font-bold col-span-2 flex items-center gap-2">
-                    <FontAwesomeIcon
-                      fixedWidth
-                      icon={faTag}
-                      title={t('Tags')}
-                      className="w-8 border"
-                    />
+                    <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} />
                     <Trans ns="submit">Tags</Trans>:
                   </div>
                   <div className="col-span-6">
@@ -207,12 +187,7 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               <Row>
                 <div className="grid grid-cols-8 gap-2">
                   <div className="font-bold col-span-2 flex items-center gap-2">
-                    <FontAwesomeIcon
-                      fixedWidth
-                      icon={faAlignLeft}
-                      title={t('Editor Notes')}
-                      className="w-8 border"
-                    />
+                    <FontAwesomeIcon fixedWidth icon={faAlignLeft} title={t('Editor Notes')} />
                     <Trans ns="submit">Editor Notes</Trans>:
                   </div>
                   <div className="col-span-6"></div>
