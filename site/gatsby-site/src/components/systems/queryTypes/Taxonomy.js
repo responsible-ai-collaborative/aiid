@@ -1,8 +1,9 @@
-import { Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import QueryBuilder from 'react-querybuilder';
 import { gql, useQuery } from '@apollo/client';
 import 'react-querybuilder/dist/query-builder.css';
+import { Trans } from 'react-i18next';
 
 const FIND_TAXONOMY = gql`
   query FindTaxonomy($input: TaxaQueryInput) {
@@ -19,7 +20,7 @@ const FIND_TAXONOMY = gql`
   }
 `;
 
-export default function Builder({ id, setFilters, config, query = null }) {
+export default function Builder({ id, setFilters, removeFilter, config, query = null }) {
   const [fields, setFields] = useState(null);
 
   const { data, loading } = useQuery(FIND_TAXONOMY, {
@@ -104,12 +105,19 @@ export default function Builder({ id, setFilters, config, query = null }) {
   }, [data]);
 
   return (
-    <div>
+    <div className="first:mt-0 mt-4">
       {loading && <Spinner />}
       {!loading && fields && (
         <div>
-          <h4>{config.namespace}</h4>
-          <QueryBuilder fields={fields} query={query} onQueryChange={(q) => handleChange(q)} />
+          <div className="flex justify-between">
+            <h4>{config.namespace}</h4>
+            <Button size="sm" onClick={() => removeFilter(id)}>
+              <Trans>Delete</Trans>
+            </Button>
+          </div>
+          <div className="mt-2">
+            <QueryBuilder fields={fields} query={query} onQueryChange={(q) => handleChange(q)} />
+          </div>
         </div>
       )}
     </div>

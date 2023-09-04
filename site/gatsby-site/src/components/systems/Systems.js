@@ -122,6 +122,13 @@ export default function Systems() {
     [filters]
   );
 
+  const removeFilter = useCallback(
+    (id) => {
+      setFilters((filters) => filters.filter((filter) => filter.id !== id));
+    },
+    [filters]
+  );
+
   useEffect(() => {
     if (isValidQuery(filters)) {
       const queries = filters
@@ -212,7 +219,14 @@ export default function Systems() {
               {filters.map((filter) => {
                 const Component = queryTypes[filter.type].default;
 
-                return <Component key={filter.id} setFilters={setFilters} {...filter} />;
+                return (
+                  <Component
+                    key={filter.id}
+                    setFilters={setFilters}
+                    removeFilter={removeFilter}
+                    {...filter}
+                  />
+                );
               })}
             </div>
           </Card>
