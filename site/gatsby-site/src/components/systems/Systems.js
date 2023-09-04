@@ -4,8 +4,9 @@ import AddTaxonomyModal from './AddTaxonomyModal';
 import { formatQuery } from 'react-querybuilder';
 import { gql, useLazyQuery } from '@apollo/client';
 import { debounce } from 'lodash';
-import { Button, Card } from 'flowbite-react';
+import { Button, Card, Spinner } from 'flowbite-react';
 import Results from './Results';
+import { Trans } from 'react-i18next';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -218,7 +219,14 @@ export default function Systems() {
         </div>
       )}
 
-      <h3 className="mt-3">Incidents</h3>
+      <h3 className="mt-3">
+        {loading ? (
+          <Spinner />
+        ) : (
+          <Trans>{{ length: incidentResults.length }} Incidents Found</Trans>
+        )}
+      </h3>
+
       <Results display={display} viewType={viewType} loading={loading} results={incidentResults} />
 
       {showTaxonomyModal && (

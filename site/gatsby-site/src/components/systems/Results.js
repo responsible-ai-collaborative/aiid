@@ -4,12 +4,8 @@ import React, { useState } from 'react';
 import Hit from './Hit';
 import { Trans } from 'react-i18next';
 
-export default function Results({ display, viewType, loading, results }) {
-  const [open, setOpen] = useState(false);
-
-  const visible = 4;
-
-  const hidden = results.length - visible;
+export default function Results({ display, viewType, loading, results, minVisible = 3 }) {
+  const [numVisible, setNumVisible] = useState(minVisible);
 
   return (
     <div
@@ -36,7 +32,7 @@ export default function Results({ display, viewType, loading, results }) {
       ) : (
         <>
           {results.map((result, index) => {
-            if (index >= visible && !open) {
+            if (index >= numVisible) {
               return null;
             }
 
@@ -45,12 +41,25 @@ export default function Results({ display, viewType, loading, results }) {
             );
           })}
 
-          <button
-            onClick={() => setOpen((open) => !open)}
-            className="w-fit text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
-          >
-            {open ? <Trans>View Less</Trans> : <Trans>View ({{ hidden }}) more</Trans>}
-          </button>
+          <div>
+            {numVisible > minVisible && (
+              <button
+                onClick={() => setNumVisible((numVisible) => numVisible - minVisible)}
+                className="w-fit text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+              >
+                <Trans>View Less</Trans>
+              </button>
+            )}
+
+            {numVisible < results.length && (
+              <button
+                onClick={() => setNumVisible((numVisible) => numVisible + minVisible)}
+                className="w-fit text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+              >
+                <Trans>View ({{ minVisible }}) more</Trans>
+              </button>
+            )}
+          </div>
         </>
       )}
     </div>
