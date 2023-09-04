@@ -45,14 +45,20 @@ const reportsWithIncidentIds = async (reports, client) => {
     },
   });
 
-  return reports.map((report) => ({
-    ...report,
-    incident_id: response.data.incidents.filter((incident) =>
+  return reports.map((report) => {
+    const incident = response.data.incidents.find((incident) =>
       incident.reports
         .map((incidentReport) => incidentReport.report_number)
         .includes(report.report_number)
-    )[0]?.incident_id,
-  }));
+    );
+
+    return {
+      ...report,
+      title: report.title,
+      incident_title: incident?.title,
+      incident_id: incident?.incident_id,
+    };
+  });
 };
 
 const allSearchColumns = {

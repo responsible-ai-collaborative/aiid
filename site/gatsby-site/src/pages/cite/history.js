@@ -13,6 +13,7 @@ import { Viewer } from '@bytemd/react';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import diff from 'rich-text-diff';
 import Link from 'components/ui/Link';
+import ReportVersionViewModal from 'components/reports/ReportVersionViewModal';
 import { Button, Spinner } from 'flowbite-react';
 import CustomButton from 'elements/Button';
 import { useUserContext } from 'contexts/userContext';
@@ -35,6 +36,8 @@ function IncidentHistoryPage() {
   const [incidentTitle, setIncidentTitle] = useState(null);
 
   const [incidentHistory, setIncidentHistory] = useState([]);
+
+  const [reportVersionDetails, setReportVersionDetails] = useState(null);
 
   const [report, setReport] = useState(null);
 
@@ -218,6 +221,15 @@ function IncidentHistoryPage() {
                           {version.modifiedByUser?.last_name}
                         </div>
                       )}
+                      <CustomButton
+                        variant="link"
+                        title={t('View full version')}
+                        className="underline text-black p-0 border-0"
+                        data-cy="view-full-version-button"
+                        onClick={() => setReportVersionDetails(version)}
+                      >
+                        <Trans>View full version</Trans>
+                      </CustomButton>
                       {index > 0 && isRole('incident_editor') && (
                         <CustomButton
                           variant="link"
@@ -317,6 +329,13 @@ function IncidentHistoryPage() {
             </div>
           )}
         </>
+      )}
+      {reportVersionDetails && (
+        <ReportVersionViewModal
+          show={true}
+          onClose={() => setReportVersionDetails(null)}
+          version={reportVersionDetails}
+        />
       )}
     </div>
   );
