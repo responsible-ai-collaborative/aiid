@@ -748,6 +748,11 @@
     margin-top: 45px !important;
   }
 
+  .react-markdown p {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
   .prose a {
     @apply text-blue-500 no-underline hover:underline !important;
   }
