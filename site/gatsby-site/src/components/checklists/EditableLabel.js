@@ -19,7 +19,7 @@ export default function EditableLabel({ title, onChange, textClasses, iconClasse
         <span className={`${textClasses} bg-white`}>{title}</span>
       )}
       <button
-        className="bg-white px-2"
+        className="px-2"
         onClick={() => setEditingTitle((editingTitle) => !editingTitle)}
       >
         <FontAwesomeIcon

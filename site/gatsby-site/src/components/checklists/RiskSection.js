@@ -19,32 +19,19 @@ import {
 
 export default function RiskSection({
   risk,
-  values,
   setFieldValue,
   submitForm,
   tags,
   searchTags,
   allPrecedents,
+  removeRisk,
+  updateRisk,
+  changeSort,
 }) {
   const { t } = useTranslation();
 
   const [showPrecedentFilters, setShowPrecedentFilters] = useState(false);
 
-  const updateRisk = (attributeValueMap) => {
-    const updatedRisks = [...values.risks];
-
-    const updatedRisk = updatedRisks.find((r) => risksEqual(r, risk));
-
-    for (const attribute in attributeValueMap) {
-      if (attribute != 'precedents') {
-        updatedRisk.generated = false;
-      }
-      updatedRisk[attribute] = attributeValueMap[attribute];
-    }
-
-    setFieldValue('risks', updatedRisks);
-    submitForm();
-  };
 
   const [precedents, setPrecedents] = useState([]);
 
@@ -58,23 +45,23 @@ export default function RiskSection({
       0
     ) / 3;
 
-  const changeSort = (sortFunction) => (event) => {
-    event.preventDefault();
-    setFieldValue('risks', values.risks.sort(sortFunction));
-  };
-
   return (
     <RiskDetails open={risk.startClosed ? undefined : true} generated={risk.generated}>
       <RiskHeaderSummary generated={risk.generated}>
-        <EditableLabel
-          title={risk.title}
-          onChange={(event) => updateRisk({ title: event.target.value })}
-          textClasses={`text-lg font-500 text-${
-            risk.generated ? 'gray' : 'red'
-          }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
-          {...{ updateRisk }}
-        />
-        <HeaderItemsRight>
+        <HeaderItemsGroup>
+          <EditableLabel
+            title={risk.title}
+            onChange={(event) => updateRisk(risk, { title: event.target.value })}
+            textClasses={`text-lg font-500 text-${
+              risk.generated ? 'gray' : 'red'
+            }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
+            {...{ updateRisk }}
+          />
+          <button onClick={() => {
+
+          }}>Trash</button>
+        </HeaderItemsGroup>
+        <HeaderItemsGroup className="ml-auto mr-6">
           {risk.generated ? (
             <HeaderTextWithIcon
               onClick={changeSort(byProperty('generated'))}
@@ -139,7 +126,7 @@ export default function RiskSection({
             <span className="inline-block">{risk.risk_status || 'Unassessed'}</span>
           </HeaderTextWithIcon>
           <ProgressCircle progress={progress} className="-mb-1 hidden xl:block" />
-        </HeaderItemsRight>
+        </HeaderItemsGroup>
       </RiskHeaderSummary>
       <RiskBody>
         {showPrecedentFilters && (
@@ -151,7 +138,7 @@ export default function RiskSection({
               <Tags
                 id="risk_status"
                 value={risk.tags}
-                onChange={(value) => updateRisk({ tags: value })}
+                onChange={(value) => updateRisk(risk, { tags: value })}
                 options={tags}
               />
             </div>
@@ -194,7 +181,7 @@ export default function RiskSection({
           <Select
             id="risk_status"
             value={risk.risk_status}
-            onChange={(event) => updateRisk({ risk_status: event.target.value })}
+            onChange={(event) => updateRisk(risk, { risk_status: event.target.value })}
           >
             {['Not Mitigated', 'Mitigated', 'Prevented', 'Not Applicable', 'Unclear'].map(
               (status) => (
@@ -208,14 +195,14 @@ export default function RiskSection({
             <Label>Severity</Label>
             <TextInput
               value={risk.severity}
-              onChange={(event) => updateRisk({ severity: event.target.value })}
+              onChange={(event) => updateRisk(risk, { severity: event.target.value })}
             />
           </div>
           <div>
             <Label>Likelihood</Label>
             <TextInput
               value={risk.likelihood}
-              onChange={(event) => updateRisk({ likelihood: event.target.value })}
+              onChange={(event) => updateRisk(risk, { likelihood: event.target.value })}
             />
           </div>
           <div className="md:h-full flex flex-col">
@@ -223,7 +210,7 @@ export default function RiskSection({
             <Textarea
               className="md:h-full shrink-1"
               value={risk.risk_notes}
-              onChange={(event) => updateRisk({ risk_notes: event.target.value })}
+              onChange={(event) => updateRisk(risk, { risk_notes: event.target.value })}
             />
           </div>
         </RiskFields>
@@ -265,8 +252,8 @@ const RiskHeaderSummary = classy(
 `
 );
 
-const HeaderItemsRight = classyDiv(`
-  hidden md:flex ml-auto mr-6 px-2 gap-2 bg-white items-center
+const HeaderItemsGroup = classyDiv(`
+  hidden md:flex px-2 gap-2 bg-white items-center
 `);
 
 const HeaderTextWithIcon = classyDiv(

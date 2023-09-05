@@ -9,12 +9,12 @@ import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'rea
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { classy, classyDiv } from 'utils/classy';
-import { Label, DeleteButton, abbreviatedTag, emptyRisk, shouldBeGrouped } from 'utils/checklists';
+import { Label, DeleteButton, abbreviatedTag, emptyRisk, shouldBeGrouped, risksEqual } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
-
+import RiskSections from 'components/checklists/RiskSections';
 
 export default function CheckListForm({
   values,
@@ -57,6 +57,29 @@ export default function CheckListForm({
     oldSetFieldValue(key, value);
     submitForm();
   };
+ 
+  const removeRisk = (findFunction) => {
+    setFieldValue('risks', values.risks.find(findFunction));
+  };
+  const changeSort = (sortFunction) => (event) => {
+    event.preventDefault();
+    setFieldValue('risks', values.risks.sort(sortFunction));
+  };
+  const updateRisk = (risk, attributeValueMap) => {
+    const updatedRisks = [...values.risks];
+
+    const updatedRisk = updatedRisks.find((r) => risksEqual(r, risk));
+
+    for (const attribute in attributeValueMap) {
+      if (attribute != 'precedents') {
+        updatedRisk.generated = false;
+      }
+      updatedRisk[attribute] = attributeValueMap[attribute];
+    }
+
+    setFieldValue('risks', updatedRisks);
+    submitForm();
+  };
   
   return (
     <Form onSubmit={handleSubmit}>
@@ -85,6 +108,10 @@ export default function CheckListForm({
           </HeaderControls>
         </HeaderRow>
       </Header>
+      <Info>
+        This feature is in development.
+        Data entered will not be retained.
+      </Info>
       {/*<Info className="my-4">
         <Trans>
           Describe the system under investigation. Apply machine-readable tags to surface risks
@@ -111,8 +138,8 @@ export default function CheckListForm({
         <OtherTagInput {...{ values, tags, setFieldValue }} />
       </section>
 
+      {/* TODO: Remove this */}
       <section>
-        {/* TODO: Remove me */}
         <details>
           <summary>allPrecedents</summary>
           <pre>{JSON.stringify(allPrecedents, null, 2)}</pre>
@@ -167,56 +194,19 @@ export default function CheckListForm({
           <Trans>No risks yet. Try adding some system tags.</Trans>
         )} 
         <RiskSections {...{
-          values,
+          risks: values.risks,
           setFieldValue,
           submitForm,
           tags,
           searchTags,
           allPrecedents,
           risksLoading,
+          removeRisk,
+          changeSort,
+          updateRisk
         }} />
       </section>
     </Form>
-  );
-}
-
-const RiskSections = ({
-  values,
-  setFieldValue,
-  submitForm,
-  tags,
-  searchTags,
-  allPrecedents,
-  risksLoading,
-}) => {
-
-  const riskSectionProps = {
-    values,
-    setFieldValue,
-    submitForm,
-    tags,
-    searchTags,
-    allPrecedents,
-  };
-
-  return (
-    <div className="flex flex-col gap-8 mt-8">
-      {risksLoading ? ( 
-        <>
-          {(values.risks || []).filter(risk => !risk.generated).map((risk) => (
-            <RiskSection key={risk.id} {...{...riskSectionProps, risk}} />
-          ))}
-          <div className="flex flex-row">
-            <Spinner />{' '}
-            <Trans>Searching for risks matching tags…</Trans>
-          </div>
-        </>
-      ) : (
-        (values.risks || []).map((risk) => (
-          <RiskSection key={risk.id} {...{...riskSectionProps, risk}} />
-        ))
-      )}
-    </div>
   );
 }
 
@@ -225,7 +215,7 @@ const QueryTagInput = ({
   id,
   labelKey,
   include,
-  values,
+  idValue,
   tags,
   setFieldValue,
   placeHolder,
@@ -234,7 +224,7 @@ const QueryTagInput = ({
     <Label for={id}>{title}</Label>
     <Tags
       id={id}
-      value={values[id]}
+      value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
       onChange={(value) => {
         setFieldValue(id, value);
@@ -250,10 +240,11 @@ const GoalsTagInput = ({ values, tags, setFieldValue }) => (
     {...{
       title: 'Goals',
       id: 'tags_goals',
+      idValue: values['tags_goals'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
         tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
-      ...{ values, tags, setFieldValue },
+      ...{ tags, setFieldValue },
       placeHolder: 'Goals for which to list associated risks',
     }}
   />
@@ -264,11 +255,12 @@ const MethodsTagInput = ({ values, tags, setFieldValue }) => (
     {...{
       title: 'Methods',
       id: 'tags_methods',
+      idValue: values['tags_methods'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
-      ...{ values, tags, setFieldValue },
+      ...{ tags, setFieldValue },
       placeHolder: 'Methods for which to list associated risks',
     }}
   />
@@ -279,6 +271,7 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
     {...{
       title: 'Other',
       id: 'tags_other',
+      idValue: values['tags_other'],
       labelKey: (tag) => tag,
       include: (tagParts) =>
         tagParts[0] != 'GMF' ||
@@ -288,7 +281,7 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
           'Known AI Technology',
           'Potential AI Technology',
         ].includes(tagParts[1]),
-      ...{ values, tags, setFieldValue },
+      ...{ tags, setFieldValue },
       placeHolder: 'Other tags for which to list associated risks',
     }}
   />
