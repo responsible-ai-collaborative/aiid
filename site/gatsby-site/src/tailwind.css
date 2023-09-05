@@ -749,8 +749,7 @@
   }
 
   .react-markdown p {
-    display: flex;
-    flex-wrap: wrap;
+    overflow-wrap: anywhere;
   }
 
   .prose a {
