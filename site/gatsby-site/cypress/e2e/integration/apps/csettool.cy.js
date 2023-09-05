@@ -245,7 +245,7 @@ describe('CSET tool', () => {
 
       expect(xhr.request.body.variables.data).to.deep.eq({
         incidents: { link: [52] },
-        reports: [],
+        reports: { link: [] },
         namespace: 'CSETv1',
         notes:
           'Annotator 1: \n\n This a note from the annotator 1\n\nAnnotator 2: \n\n This a note from the annotator 2',
