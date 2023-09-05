@@ -32,7 +32,7 @@ describe('Find systems', () => {
     cy.wrap(
       findSystems({
         query:
-          '{"$or": [{"$and":[{"attributes":{"$elemMatch":{"short_name":"Full Description","value":{"$regex":"google","$options":"i"}}}},{"attributes":{"$elemMatch":{"short_name":"Beginning Date","value":{"$eq":"ISODate(\\"2023-09-05\\")"}}}}]}]}',
+          '{"$or": [{"$and":[{"attributes":{"$elemMatch":{"short_name":"Full Description","value":{"$regex":"google","$options":"i"}}}},{"attributes":{"$elemMatch":{"short_name":"Beginning Date","value":{"$eq":"2023-09-05"}}}}]}]}',
       })
     ).then(() => {
       const expected = {

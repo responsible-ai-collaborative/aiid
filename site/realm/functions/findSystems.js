@@ -7,9 +7,9 @@ function transformISODateStrings(obj) {
 
       if (typeof value === 'object') {
         newObj[key] = transformISODateStrings(value);
-      } else if (typeof value === 'string' && value.startsWith("ISODate")) {
-        const dateStr = value.match(/ISODate\("([^"]+)"\)/)[1];
-        newObj[key] = new Date(dateStr);
+      }
+      else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        newObj[key] = new Date(value);
       } else {
         newObj[key] = value;
       }

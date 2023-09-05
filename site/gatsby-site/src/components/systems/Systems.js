@@ -82,20 +82,16 @@ const isValidQuery = (q) => {
   return true;
 };
 
-const isDate = (value) => value.match(/^\d{4}-\d{2}-\d{2}$/);
-
-const formatValue = (value) => (isDate(value) ? `ISODate("${value}")` : value);
-
 const getOperation = (rule) => {
   switch (rule.operator) {
     case 'contains':
       return { $regex: rule.value, $options: 'i' };
 
     case '=':
-      return { $eq: formatValue(rule.value) };
+      return { $eq: rule.value };
 
     case '!=':
-      return { $ne: formatValue(rule.value) };
+      return { $ne: rule.value };
 
     case 'in':
       return { $in: rule.value };
@@ -104,16 +100,16 @@ const getOperation = (rule) => {
       return { $nin: rule.value };
 
     case 'between': {
-      const [value1, value2] = rule.value.map((v) => formatValue(v));
+      const [value1, value2] = rule.value;
 
       return { $gt: value1, $lt: value2 };
     }
 
     case '>=':
-      return { $gt: formatValue(rule.value) };
+      return { $gt: rule.value };
 
     case '<=':
-      return { $gt: formatValue(rule.value) };
+      return { $gt: rule.value };
 
     default:
       throw new Error(`Unknown operator ${rule.operator}`);
@@ -174,7 +170,6 @@ export default function Systems() {
               };
 
               const stringified = JSON.stringify(updated);
-              // .replace(/"ISODate\(([^)]+)\)"/g, 'ISODate($1)');
 
               return stringified;
             },
