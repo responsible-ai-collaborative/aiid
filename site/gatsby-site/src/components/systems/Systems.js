@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import queryTypes from 'components/systems/queryTypes';
 import AddTaxonomyModal from './AddTaxonomyModal';
-import { formatQuery } from 'react-querybuilder';
 import { gql, useLazyQuery } from '@apollo/client';
 import { debounce } from 'lodash';
 import { Button, Card, Spinner } from 'flowbite-react';
 import Results from './Results';
 import { Trans } from 'react-i18next';
+import serializeQuery from './serializeQuery';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -82,40 +82,6 @@ const isValidQuery = (q) => {
   return true;
 };
 
-const getOperation = (rule) => {
-  switch (rule.operator) {
-    case 'contains':
-      return { $regex: rule.value, $options: 'i' };
-
-    case '=':
-      return { $eq: rule.value };
-
-    case '!=':
-      return { $ne: rule.value };
-
-    case 'in':
-      return { $in: rule.value };
-
-    case 'notIn':
-      return { $nin: rule.value };
-
-    case 'between': {
-      const [value1, value2] = rule.value;
-
-      return { $gt: value1, $lt: value2 };
-    }
-
-    case '>=':
-      return { $gt: rule.value };
-
-    case '<=':
-      return { $gt: rule.value };
-
-    default:
-      throw new Error(`Unknown operator ${rule.operator}`);
-  }
-};
-
 export default function Systems() {
   const [findSystems, { loading: loadingSystems, data }] = useLazyQuery(FIND_SYSTEMS);
 
@@ -154,36 +120,12 @@ export default function Systems() {
 
   useEffect(() => {
     if (isValidQuery(filters)) {
-      const queries = filters
-        .filter((filter) => filter.query)
-        .map((filter) =>
-          formatQuery(filter.query, {
-            format: 'mongodb',
-            ruleProcessor: (rule) => {
-              const updated = {
-                attributes: {
-                  $elemMatch: {
-                    short_name: rule.field,
-                    value: getOperation(rule),
-                  },
-                },
-              };
-
-              const stringified = JSON.stringify(updated);
-
-              return stringified;
-            },
-          })
-        );
-
-      const fullQuery = `{"$or": [${queries.join(',')}]}`;
+      const fullQuery = serializeQuery(filters);
 
       console.log(JSON.stringify(JSON.parse(fullQuery)));
 
       debouncedFindSystems({ variables: { input: { query: fullQuery } } });
     }
-
-    console.log(filters);
   }, [filters]);
 
   useEffect(() => {
