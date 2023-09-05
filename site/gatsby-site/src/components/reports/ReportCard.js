@@ -21,10 +21,7 @@ const ReportCard = ({
   alwaysExpanded = false,
   actions = null,
   reportTitle = null,
-  incidentId = null,
 }) => {
-  item.incident_id = incidentId;
-
   const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(alwaysExpanded);

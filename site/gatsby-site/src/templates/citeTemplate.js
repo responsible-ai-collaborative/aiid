@@ -313,7 +313,10 @@ function CiteTemplate({
               return (
                 <Row className="mt-6 mb-4" key={report.report_number}>
                   <Col>
-                    <ReportCard item={report} incidentId={incident.incident_id} actions={actions} />
+                    <ReportCard
+                      item={{ ...report, incident_id: incident.incident_id }}
+                      actions={actions}
+                    />
                   </Col>
                 </Row>
               );
