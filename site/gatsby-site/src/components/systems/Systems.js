@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import queryTypes from 'components/systems/queryTypes';
 import AddTaxonomyModal from './AddTaxonomyModal';
 import { gql, useLazyQuery } from '@apollo/client';
@@ -7,6 +7,10 @@ import { Button, Card, Spinner } from 'flowbite-react';
 import Results from './Results';
 import { Trans } from 'react-i18next';
 import serializeQuery from './serializeQuery';
+import encodeQuery from './encodeQuery';
+import decodeQuery from './decodeQuery';
+import { useLocation } from '@reach/router';
+import { navigate } from 'gatsby';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -43,31 +47,18 @@ const FIND_INCIDENTS = gql`
   }
 `;
 
-const defaultQuery = [
-  {
-    type: 'taxonomy',
-    id: 'taxonomy-0',
-    config: {
-      namespace: 'GMF',
-    },
-    query: {
-      combinator: 'and',
-      rules: [
-        {
-          id: '2269034f-181e-40c0-9dcf-8391af6612df',
-          field: 'Full Description',
-          operator: 'contains',
-          valueSource: 'value',
-          value: 'google',
-        },
-      ],
-      id: '888ab004-6285-4b64-8f70-437f3429e292',
-    },
-  },
-];
+const defaultQuery = (location) => {
+  const { filters } = decodeQuery(location.search.substr(1));
+
+  return { filters };
+};
 
 const isValidQuery = (q) => {
-  if (q.length == 0) {
+  if (!q) {
+    return false;
+  }
+
+  if (!q.length) {
     return false;
   }
 
@@ -83,14 +74,14 @@ const isValidQuery = (q) => {
 };
 
 export default function Systems() {
+  const location = useLocation();
+
   const [findSystems, { loading: loadingSystems, data }] = useLazyQuery(FIND_SYSTEMS);
 
   const [findIncidents, { loading: loadingIncidents, data: dataIncidents }] =
     useLazyQuery(FIND_INCIDENTS);
 
-  const debouncedFindSystems = useCallback(debounce(findSystems, 2000), []);
-
-  const [filters, setFilters] = useState(defaultQuery);
+  const [filters, setFilters] = useState(null);
 
   const [incidentResults, setIncidentResults] = useState(null);
 
@@ -118,14 +109,28 @@ export default function Systems() {
     [filters]
   );
 
-  useEffect(() => {
+  const search = (filters) => {
     if (isValidQuery(filters)) {
       const fullQuery = serializeQuery(filters);
 
-      console.log(JSON.stringify(JSON.parse(fullQuery)));
+      findSystems({ variables: { input: { query: fullQuery } } });
 
-      debouncedFindSystems({ variables: { input: { query: fullQuery } } });
+      const encoded = encodeQuery(filters);
+
+      navigate(`?${encoded}`);
     }
+  };
+
+  const debouncedSearch = useMemo(() => debounce(search, 2000), []);
+
+  useEffect(() => {
+    setFilters(defaultQuery(location).filters);
+  }, []);
+
+  useEffect(() => {
+    debouncedSearch(filters);
+
+    return () => debouncedSearch.cancel();
   }, [filters]);
 
   useEffect(() => {
@@ -173,13 +178,11 @@ export default function Systems() {
 
   const loading = loadingSystems || loadingIncidents;
 
-  console.log(incidentResults);
-
   return (
     <>
       <Button onClick={() => setShowTaxonomyModal(true)}>Add Taxonomy</Button>
 
-      {filters.length > 0 && (
+      {filters && filters.length > 0 && (
         <div className="mt-2">
           <Card>
             <div>
