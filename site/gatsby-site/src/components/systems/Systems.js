@@ -82,22 +82,38 @@ const isValidQuery = (q) => {
   return true;
 };
 
+const isDate = (value) => value.match(/^\d{4}-\d{2}-\d{2}$/);
+
+const formatValue = (value) => (isDate(value) ? `ISODate("${value}")` : value);
+
 const getOperation = (rule) => {
   switch (rule.operator) {
     case 'contains':
       return { $regex: rule.value, $options: 'i' };
 
     case '=':
-      return { $eq: rule.value };
+      return { $eq: formatValue(rule.value) };
 
     case '!=':
-      return { $ne: rule.value };
+      return { $ne: formatValue(rule.value) };
 
     case 'in':
       return { $in: rule.value };
 
     case 'notIn':
       return { $nin: rule.value };
+
+    case 'between': {
+      const [value1, value2] = rule.value.map((v) => formatValue(v));
+
+      return { $gt: value1, $lt: value2 };
+    }
+
+    case '>=':
+      return { $gt: formatValue(rule.value) };
+
+    case '<=':
+      return { $gt: formatValue(rule.value) };
 
     default:
       throw new Error(`Unknown operator ${rule.operator}`);
@@ -113,6 +129,8 @@ export default function Systems() {
   const debouncedFindSystems = useCallback(debounce(findSystems, 2000), []);
 
   const [filters, setFilters] = useState(defaultQuery);
+
+  const [incidentResults, setIncidentResults] = useState(null);
 
   const display = 'list';
 
@@ -156,6 +174,7 @@ export default function Systems() {
               };
 
               const stringified = JSON.stringify(updated);
+              // .replace(/"ISODate\(([^)]+)\)"/g, 'ISODate($1)');
 
               return stringified;
             },
@@ -164,7 +183,6 @@ export default function Systems() {
 
       const fullQuery = `{"$or": [${queries.join(',')}]}`;
 
-      console.log(JSON.parse(fullQuery));
       console.log(JSON.stringify(JSON.parse(fullQuery)));
 
       debouncedFindSystems({ variables: { input: { query: fullQuery } } });
@@ -174,20 +192,22 @@ export default function Systems() {
   }, [filters]);
 
   useEffect(() => {
-    if (data?.findSystems?.results?.length) {
+    if (data?.findSystems?.results) {
       const incidents = data.findSystems.results.map((result) => result.incidents).flat();
 
-      findIncidents({ variables: { query: { incident_id_in: incidents } } });
+      if (incidents.length) {
+        findIncidents({ variables: { query: { incident_id_in: incidents } } });
+      }
 
       setIncidentResults([]);
     }
   }, [data]);
 
-  const [incidentResults, setIncidentResults] = useState([]);
-
   useEffect(() => {
     if (dataIncidents?.incidents) {
-      const results = dataIncidents.incidents.map(({ title, description, reports }) => {
+      const results = dataIncidents.incidents.map((incident) => {
+        const { title, description, reports, incident_id } = incident;
+
         const [report] = reports;
 
         return {
@@ -200,6 +220,7 @@ export default function Systems() {
           text: report.text,
           featured: 1,
           is_incident_report: true,
+          incident_id,
           incident_title: title,
           incident_description: description,
           date_submitted: report.date_submitted,
@@ -213,9 +234,9 @@ export default function Systems() {
     }
   }, [dataIncidents]);
 
-  console.log('bue', dataIncidents?.incidents);
-
   const loading = loadingSystems || loadingIncidents;
+
+  console.log(incidentResults);
 
   return (
     <>
@@ -246,11 +267,24 @@ export default function Systems() {
         {loading ? (
           <Spinner />
         ) : (
-          <Trans>{{ length: incidentResults.length }} Incidents Found</Trans>
+          <>
+            {incidentResults?.length ? (
+              <Trans>{{ length: incidentResults.length }} Incidents Found</Trans>
+            ) : (
+              <Trans>No incidents found</Trans>
+            )}
+          </>
         )}
       </h3>
 
-      <Results display={display} viewType={viewType} loading={loading} results={incidentResults} />
+      {incidentResults?.length > 0 && (
+        <Results
+          display={display}
+          viewType={viewType}
+          loading={loading}
+          results={incidentResults}
+        />
+      )}
 
       {showTaxonomyModal && (
         <AddTaxonomyModal

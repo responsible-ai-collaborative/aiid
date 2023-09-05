@@ -15,20 +15,25 @@
     "payload_type": {
         "properties": {
             "results": {
-                "bsonType": "object",
-                "incidents": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "int"
-                    }
-                },
-                "namespace": {
-                    "bsonType": "string"
-                },
-                "reports": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "int"
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "incidents": {
+                            "bsonType": "array",
+                            "items": {
+                                "bsonType": "int"
+                            }
+                        },
+                        "namespace": {
+                            "bsonType": "string"
+                        },
+                        "reports": {
+                            "bsonType": "array",
+                            "items": {
+                                "bsonType": "int"
+                            }
+                        }
                     }
                 }
             }

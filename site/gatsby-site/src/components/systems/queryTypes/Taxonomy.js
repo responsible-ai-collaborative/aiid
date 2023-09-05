@@ -50,6 +50,8 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
 
         let valueEditorType = null;
 
+        let inputType = null;
+
         switch (field.display_type) {
           case 'string':
             operators = [{ name: 'contains', label: 'contains' }];
@@ -82,6 +84,17 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
             values = field.permitted_values.map((value) => ({ name: value, label: value }));
             break;
 
+          case 'date':
+            operators = [
+              { name: '=', label: 'Equals' },
+              { name: '!=', label: 'Not Equals' },
+              { name: '>=', label: 'After' },
+              { name: '<=', label: 'Before' },
+              { name: 'between', label: 'Between' },
+            ];
+            inputType = 'date';
+            break;
+
           default:
             console.log(field.display_type);
 
@@ -91,13 +104,14 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
           //   break;
         }
 
-        if (operators || values || valueEditorType) {
+        if (operators || values || valueEditorType || inputType) {
           fields.push({
             name: field.short_name,
             label: field.short_name,
             operators,
             values,
             valueEditorType,
+            inputType,
           });
         }
       }
