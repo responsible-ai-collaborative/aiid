@@ -22,6 +22,7 @@ const ReportCard = ({
   actions = null,
   reportTitle = null,
   incidentId = null,
+  readOnly = false,
 }) => {
   item.incident_id = incidentId;
 
@@ -169,7 +170,7 @@ const ReportCard = ({
                 ? format(fromUnixTime(item.epoch_date_published), 'yyyy')
                 : 'Needs publish date'}
             </WebArchiveLink>
-            {actions && <>{actions}</>}
+            {actions && !readOnly && <>{actions}</>}
           </div>
           <div className="mt-1 flex w-fit">
             <TranslationBadge className="mx-2" originalLanguage={item.language} />
@@ -260,7 +261,7 @@ const ReportCard = ({
             </button>
           </div>
         )}
-        {expanded && (
+        {expanded && !readOnly && (
           <div className="flex w-full flex-row justify-around items-center text-dark-gray">
             <Actions item={item} />
           </div>

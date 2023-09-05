@@ -7,20 +7,25 @@ import {
 } from '../../graphql/incidents';
 import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
 import { FIND_ENTITIES } from '../../graphql/entities';
+import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import CustomButton from 'elements/Button';
+import Link from 'components/ui/Link';
+import IncidentVersionViewModal from 'components/incidents/IncidentVersionViewModal';
 import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
-import Link from 'components/ui/Link';
 import { Button, Spinner } from 'flowbite-react';
-import CustomButton from 'elements/Button';
 import { useUserContext } from 'contexts/userContext';
 import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { graphql } from 'gatsby';
 
-function IncidentHistoryPage() {
+function IncidentHistoryPage(props) {
+  const allMongodbAiidprodTaxa = props.data.allMongodbAiidprodTaxa;
+
   const { t } = useTranslation();
 
   const { isRole, user } = useUserContext();
@@ -35,7 +40,11 @@ function IncidentHistoryPage() {
 
   const [incidentHistory, setIncidentHistory] = useState(null);
 
+  const [incidentVersionDetails, setIncidentVersionDetails] = useState(null);
+
   const [incident, setIncident] = useState(null);
+
+  const [incidentClassifications, setIncidentClassifications] = useState([]);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
 
@@ -66,6 +75,13 @@ function IncidentHistoryPage() {
       },
     },
   });
+
+  const { data: classificationsData, loading: loadingIncidentClassifications } = useQuery(
+    FIND_CLASSIFICATION,
+    {
+      variables: { query: { incidents: { incident_id: incidentId } } },
+    }
+  );
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -120,11 +136,18 @@ function IncidentHistoryPage() {
     }
   }, [incidentHistoryData, usersData, entitiesData]);
 
+  useEffect(() => {
+    if (classificationsData?.classifications) {
+      setIncidentClassifications(classificationsData.classifications);
+    }
+  }, [classificationsData]);
+
   const loading =
     loadingIncident ||
     loadingIncidentHistory ||
     loadingUsers ||
     loadingEntities ||
+    loadingIncidentClassifications ||
     incidentHistory === null;
 
   const restoreVersion = async (version) => {
@@ -262,10 +285,22 @@ function IncidentHistoryPage() {
                           {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
                         </div>
                       )}
-                      <div>
-                        <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
-                        {version.modifiedByUser?.last_name}
-                      </div>
+                      {(version.modifiedByUser?.first_name ||
+                        version.modifiedByUser?.last_name) && (
+                        <div>
+                          <Trans>Modified by</Trans>: {version.modifiedByUser?.first_name}{' '}
+                          {version.modifiedByUser?.last_name}
+                        </div>
+                      )}
+                      <CustomButton
+                        variant="link"
+                        title={t('View full version')}
+                        className="underline text-black p-0 border-0"
+                        data-cy="view-full-version-button"
+                        onClick={() => setIncidentVersionDetails(version)}
+                      >
+                        <Trans>View full version</Trans>
+                      </CustomButton>
                       {index > 0 && isRole('incident_editor') && (
                         <CustomButton
                           variant="link"
@@ -336,8 +371,79 @@ function IncidentHistoryPage() {
           )}
         </>
       )}
+      {incidentVersionDetails && (
+        <IncidentVersionViewModal
+          show={true}
+          onClose={() => setIncidentVersionDetails(null)}
+          entities={entitiesData?.entities}
+          users={usersData?.users}
+          version={incidentVersionDetails}
+          incidentClassifications={incidentClassifications}
+          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+        />
+      )}
     </div>
   );
 }
+
+export const query = graphql`
+  query CitationPageQuery {
+    allMongodbAiidprodTaxa {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        complete_entities
+        dummy_fields {
+          field_number
+          short_name
+        }
+        field_list {
+          field_number
+          short_name
+          long_name
+          short_description
+          long_description
+          display_type
+          mongo_type
+          default
+          placeholder
+          permitted_values
+          weight
+          instant_facet
+          required
+          public
+          complete_from {
+            all
+            current
+            entities
+          }
+          subfields {
+            field_number
+            short_name
+            long_name
+            short_description
+            long_description
+            display_type
+            mongo_type
+            default
+            placeholder
+            permitted_values
+            weight
+            instant_facet
+            required
+            public
+            complete_from {
+              all
+              current
+              entities
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export default IncidentHistoryPage;
