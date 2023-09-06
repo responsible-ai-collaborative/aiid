@@ -8,9 +8,9 @@ import Results from './Results';
 import { Trans } from 'react-i18next';
 import serializeQuery from './serializeQuery';
 import encodeQuery from './encodeQuery';
-import decodeQuery from './decodeQuery';
 import { useLocation } from '@reach/router';
 import { navigate } from 'gatsby';
+import getInitialQuery from './getInitialQuery';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -46,12 +46,6 @@ const FIND_INCIDENTS = gql`
     }
   }
 `;
-
-const defaultQuery = (location) => {
-  const { filters } = decodeQuery(location.search.substr(1));
-
-  return { filters };
-};
 
 const isValidQuery = (q) => {
   if (!q) {
@@ -124,7 +118,7 @@ export default function Systems() {
   const debouncedSearch = useMemo(() => debounce(search, 2000), []);
 
   useEffect(() => {
-    setFilters(defaultQuery(location).filters);
+    setFilters(getInitialQuery(location).filters);
   }, []);
 
   useEffect(() => {
