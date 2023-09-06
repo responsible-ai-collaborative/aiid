@@ -103,7 +103,14 @@ const RelatedIncidentsArea = ({
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {val.title}
+                  {!val.title && (
+                    <>
+                      <span className="text-xs uppercase text-gray-700">
+                        {t('[Untitled Report]')}
+                      </span>{' '}
+                    </>
+                  )}
+                  {val.title || val.incident_title}
                 </a>
               </span>
               <div className="flex justify-between">

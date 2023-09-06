@@ -1,4 +1,5 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
+import { globalHistory } from '@reach/router';
 
 const LayoutContext = createContext({
   rightSidebar: null,
@@ -11,6 +12,14 @@ export default LayoutContext;
 
 export function LayoutContextProvider({ children }) {
   const [rightSidebar, setRightSidebar] = useState(null);
+
+  useEffect(() => {
+    globalHistory.listen(({ action }) => {
+      if (action === 'PUSH') {
+        setRightSidebar(null);
+      }
+    });
+  }, []);
 
   const displayRightSidebar = (value) => {
     setRightSidebar(value);
