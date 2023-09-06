@@ -21,7 +21,11 @@ describe('The Landing page', () => {
   it('Loads the sponsor modals', () => {
     cy.visit('/');
     cy.waitForStableDOM();
-    cy.get('[data-cy="Waking Up Foundation-modal-click"]').click();
+
+    cy.get('[data-cy="Waking Up Foundation-image"]').scrollIntoView();
+
+    cy.get('[data-cy="Waking Up Foundation-image"]').click();
+
     cy.get('[data-cy="sponsor-modal"]', { timeout: 15000 }).should('be.visible');
   });
 

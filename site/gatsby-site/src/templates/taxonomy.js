@@ -17,7 +17,10 @@ export default Taxonomy;
 export const pageQuery = graphql`
   query ($namespace: String!) {
     allMongodbAiidprodClassifications(
-      filter: { namespace: { eq: $namespace }, incident_id: { lt: 1000 } }
+      filter: {
+        namespace: { eq: $namespace }
+        incidents: { elemMatch: { incident_id: { lt: 1000 } } }
+      }
     ) {
       nodes {
         namespace
@@ -35,6 +38,7 @@ export const pageQuery = graphql`
             }
           }
         }
+        publish
       }
     }
   }
