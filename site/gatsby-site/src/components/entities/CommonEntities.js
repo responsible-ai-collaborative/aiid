@@ -20,7 +20,9 @@ export default function CommonEntities() {
       incidents: allMongodbAiidprodIncidents {
         nodes {
           incident_id
-          reports
+          reports {
+            report_number
+          }
           title
           description
           Alleged_deployer_of_AI_system

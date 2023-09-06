@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { graphql } from 'gatsby';
 import { TextInput, Label } from 'flowbite-react';
 import { format } from 'date-fns';
@@ -36,7 +35,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
     .filter((i) => i.reports && i.reports.length > 0)
     .map((incident) => {
       const reports = data.allMongodbAiidprodReports.nodes.filter((report) =>
-        incident.reports.includes(report.report_number)
+        incident.reports.some((r) => report.report_number == r.report_number)
       );
 
       const earliestReport = reports.sort((a, b) => a.date_submitted - b.date_submitted)[0];
@@ -66,7 +65,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
   };
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -114,7 +113,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
           <Label htmlFor="start-at-zero">y-axis starts at zero</Label>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 
@@ -125,7 +124,9 @@ export const pageQuery = graphql`
         incident_id
         title
         date
-        reports
+        reports {
+          report_number
+        }
       }
     }
     allMongodbAiidprodReports(sort: { date_submitted: ASC }, limit: 9999) {

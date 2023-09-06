@@ -30,6 +30,8 @@ const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
 const createReportPages = require('./page-creators/createReportPages');
 
+const createBlogPages = require('./page-creators/createBlogPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -67,6 +69,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
+    createBlogPages,
     createMdxPages,
     createCitationPages,
     createWordCountsPages,
@@ -198,6 +201,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type mongodbAiidprodIncidents implements Node {
       embedding: incidentEmbedding
+      editors: [mongodbCustomDataUsers] @link(by: "userId")
       editor_notes: String
     }
 
@@ -211,6 +215,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       editor_similar_incidents: [Int]
       editor_dissimilar_incidents: [Int]
       flagged_dissimilar_incidents: [Int]
+      reports: [mongodbAiidprodReports] @link(by: "report_number")
+      incident_id: Int
+      epoch_date_modified: Int
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -225,6 +232,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       plain_text: String
       embedding: reportEmbedding
       inputs_outputs: [String]
+      report_number: Int
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -240,8 +248,10 @@ exports.createSchemaCustomization = ({ actions }) => {
       short_name: String
       value_json: String
     }
+    
     type mongodbAiidprodClassifications implements Node {
-      incident_id: Int
+      incidents: [mongodbAiidprodIncidents] @link(by: "incident_id")
+      reports: [mongodbAiidprodReports] @link(by: "report_number")
       namespace: String
       attributes: [mongodbAiidprodClassificationsAttribute]
     }

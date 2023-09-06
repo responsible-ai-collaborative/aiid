@@ -63,5 +63,3 @@ exports.up = async ({ context: { client } }) => {
 
   await updateCollection({ name: 'submissions', field: 'incident_editors' });
 };
-
-exports.down = async () => { }

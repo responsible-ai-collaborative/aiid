@@ -1,14 +1,16 @@
 import React from 'react';
-import Layout from '../../components/Layout';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
+import { useUserContext } from 'contexts/userContext';
 import { Spinner, Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
   FIND_REPORT_WITH_TRANSLATIONS,
   LINK_REPORTS_TO_INCIDENTS,
+  FIND_REPORT,
 } from '../../graphql/reports';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
@@ -58,6 +60,8 @@ const reportFields = [
 ];
 
 function EditCitePage(props) {
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -74,9 +78,15 @@ function EditCitePage(props) {
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
+  const { data: currentReportData } = useQuery(FIND_REPORT, {
+    variables: { query: { report_number: reportNumber } },
+  });
+
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
+
+  const { logReportHistory } = useLogReportHistory();
 
   const {
     data: incidentsData,
@@ -172,11 +182,13 @@ function EditCitePage(props) {
         values.submitters = values.submitters.split(',').map((s) => s.trim());
       }
 
-      values.date_modified = format(new Date(), 'yyyy-MM-dd');
+      const now = new Date();
+
+      values.date_modified = format(now, 'yyyy-MM-dd');
 
       values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
-      values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
+      values.epoch_date_modified = getUnixTime(now);
 
       const updated = pick(values, reportFields);
 
@@ -191,6 +203,8 @@ function EditCitePage(props) {
           },
         },
       });
+
+      await logReportHistory(currentReportData.report, updated, user);
 
       for (const { code } of config.filter((c) => c.code !== values.language)) {
         const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
@@ -258,7 +272,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full p-1'}>
+    <div className={'w-full p-1'} {...props}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -344,7 +358,7 @@ function EditCitePage(props) {
           )}
         </>
       )}
-    </Layout>
+    </div>
   );
 }
 

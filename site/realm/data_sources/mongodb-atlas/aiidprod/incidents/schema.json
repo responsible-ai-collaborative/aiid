@@ -65,6 +65,9 @@
                 }
             }
         },
+        "epoch_date_modified": {
+            "bsonType": "int"
+        },
         "flagged_dissimilar_incidents": {
             "bsonType": "array",
             "items": {

@@ -181,7 +181,7 @@ const Header = ({ location = null }) => {
                 />
               </div>
               <LoginSignup
-                className="hidden lg:flex ml-2"
+                className="hidden lg:flex ml-4"
                 logoutClassName="text-white hover:text-primary-blue"
                 loginClassName="text-white hover:text-primary-blue"
                 location={location}
@@ -195,7 +195,7 @@ const Header = ({ location = null }) => {
                   : 'bg-inherit block md:hidden border-none relative z-10 pb-0'
               }
             >
-              <Sidebar />
+              <Sidebar setNavCollapsed={setNavCollapsed} />
             </div>
           </nav>
         );

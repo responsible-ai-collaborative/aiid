@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../../components/Layout';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -13,15 +12,20 @@ import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import { getUnixTime } from 'date-fns';
+import { useUserContext } from 'contexts/userContext';
+import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 function EditCitePage(props) {
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
 
   const [incident, setIncident] = useState(null);
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
-  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_INCIDENT, {
+  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
@@ -34,6 +38,8 @@ function EditCitePage(props) {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
+
+  const { logIncidentHistory } = useLogIncidentHistory();
 
   const updateSuccessToast = ({ incidentId }) => ({
     message: (
@@ -63,9 +69,14 @@ function EditCitePage(props) {
     try {
       const updated = {
         ...values,
+        editors: { link: values.editors },
         reports: undefined,
         embedding: {
           ...values.embedding,
+          __typename: undefined,
+        },
+        tsne: {
+          ...values.tsne,
           __typename: undefined,
         },
         __typename: undefined,
@@ -91,6 +102,13 @@ function EditCitePage(props) {
         createEntityMutation
       );
 
+      updated.epoch_date_modified = getUnixTime(new Date());
+
+      // Add the current user to the list of editors
+      if (user && user.providerType != 'anon-user' && !updated.editors.link.includes(user.id)) {
+        updated.editors.link.push(user.id);
+      }
+
       await updateIncident({
         variables: {
           query: {
@@ -102,6 +120,16 @@ function EditCitePage(props) {
         },
       });
 
+      await logIncidentHistory(
+        {
+          ...incident,
+          ...updated,
+          reports: incident.reports,
+          embedding: incident.embedding,
+        },
+        user
+      );
+
       addToast(updateSuccessToast({ incidentId }));
     } catch (error) {
       addToast(updateErrorToast({ incidentId, error }));
@@ -109,7 +137,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full'}>
+    <div className={'w-full'} {...props}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -144,6 +172,7 @@ function EditCitePage(props) {
               incident.AllegedHarmedOrNearlyHarmedParties === null
                 ? []
                 : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+            editors: incident.editors.map((user) => user.userId),
           }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
@@ -170,7 +199,7 @@ function EditCitePage(props) {
           )}
         </Formik>
       )}
-    </Layout>
+    </div>
   );
 }
 

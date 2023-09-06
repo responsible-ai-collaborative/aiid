@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
 import AiidHelmet from 'components/AiidHelmet';
 import { useQuery } from '@apollo/client/react';
 import ListSkeleton from 'elements/Skeletons/List';
@@ -17,7 +16,7 @@ const ToolPage = (props) => {
   } = props;
 
   const { data, loading } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id, namespace_in: allNamespaces } },
+    variables: { query: { incidents_in: { incident_id }, namespace_in: allNamespaces } },
   });
 
   const [tableData, setTableData] = useState([]);
@@ -27,26 +26,24 @@ const ToolPage = (props) => {
       const rows = [];
 
       for (const attribute of taxa.field_list) {
-        // there are duplicated short_names in the field_list
-        if (!rows.find((row) => row.short_name === attribute.short_name)) {
-          const row = {
-            short_name: attribute.short_name,
-            display_type: attribute.display_type,
-            incident_id: parseInt(incident_id),
-          };
+        const row = {
+          short_name: attribute.short_name,
+          display_type: attribute.display_type,
+          field_number: attribute.field_number,
+          incident_id: parseInt(incident_id),
+        };
 
-          for (const classification of data.classifications) {
-            const json = classification.attributes.find(
-              (a) => a.short_name == attribute.short_name
-            ).value_json;
+        for (const classification of data.classifications) {
+          const json = classification.attributes.find(
+            (a) => a.short_name == attribute.short_name
+          ).value_json;
 
-            const value = JSON.parse(json);
+          const value = JSON.parse(json);
 
-            row[classification.namespace] = value;
-          }
-
-          rows.push(row);
+          row[classification.namespace] = value;
         }
+
+        rows.push(row);
       }
 
       rows.push({
@@ -62,7 +59,7 @@ const ToolPage = (props) => {
   }, [data]);
 
   return (
-    <Layout {...props} className="w-full">
+    <div {...props} className="w-full">
       <AiidHelmet path={pathname}>
         <title>CSET Tool</title>
       </AiidHelmet>
@@ -84,7 +81,7 @@ const ToolPage = (props) => {
           </>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
@@ -97,6 +94,7 @@ export const query = graphql`
         short_name
         mongo_type
         display_type
+        field_number
       }
     }
   }

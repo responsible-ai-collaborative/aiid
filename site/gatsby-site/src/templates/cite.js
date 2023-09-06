@@ -3,7 +3,6 @@ import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
@@ -91,7 +90,7 @@ function CitePage(props) {
   });
 
   return (
-    <Layout {...{ props }} location={props.location}>
+    <div {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -127,7 +126,7 @@ function CitePage(props) {
           setIsLiveData={setIsLiveData}
         />
       )}
-    </Layout>
+    </div>
   );
 }
 
@@ -139,9 +138,13 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
-    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
+    allMongodbAiidprodClassifications(
+      filter: { incidents: { elemMatch: { incident_id: { eq: $incident_id } } } }
+    ) {
       nodes {
-        incident_id
+        incidents {
+          incident_id
+        }
         id
         namespace
         notes
@@ -253,11 +256,17 @@ export const query = graphql`
     }
     incident: mongodbAiidprodIncidents(incident_id: { eq: $incident_id }) {
       incident_id
-      reports
+      reports {
+        report_number
+      }
       title
       description
       date
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       flagged_dissimilar_incidents
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system

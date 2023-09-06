@@ -5,8 +5,7 @@ import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Carousel } from 'flowbite-react';
 import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleLeft, faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 const RandomIncidentsCarousel = () => {
   return (
@@ -16,7 +15,9 @@ const RandomIncidentsCarousel = () => {
           allMongodbAiidprodIncidents {
             nodes {
               incident_id
-              reports
+              reports {
+                report_number
+              }
               title
             }
           }
@@ -43,9 +44,9 @@ const RandomIncidentsCarousel = () => {
         for (let i = 0; i < reports.length && selected.length < 5; i++) {
           const report = reports[i];
 
-          const incident = incidents.find((incident) =>
-            incident.reports.includes(report.report_number)
-          );
+          const incident = incidents.find((incident) => {
+            return incident.reports.some((r) => r.report_number === report.report_number);
+          });
 
           if (!selected.some((s) => s.incident_id == incident.incident_id)) {
             selected.push({
@@ -65,18 +66,8 @@ const RandomIncidentsCarousel = () => {
               <Carousel
                 slideInterval={6000}
                 slide={false}
-                leftControl={
-                  <FontAwesomeIcon
-                    icon={faArrowCircleLeft}
-                    className="h-8 w-8 text-white bg-gray-500 shadow rounded-full"
-                  />
-                }
-                rightControl={
-                  <FontAwesomeIcon
-                    icon={faArrowCircleRight}
-                    className="h-8 w-8 text-white bg-gray-500 shadow rounded-full"
-                  />
-                }
+                leftControl={<CarouselLeftArrow />}
+                rightControl={<CarouselRightArrow />}
               >
                 {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
                   <Link

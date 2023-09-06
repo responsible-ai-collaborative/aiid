@@ -1,9 +1,14 @@
-import React from 'react';
-import Layout from '../../components/Layout';
+import React, { useEffect, useState } from 'react';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { Button, Spinner } from 'flowbite-react';
-import { GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../../graphql/incidents';
+import {
+  FIND_INCIDENT,
+  GET_LATEST_INCIDENT_ID,
+  INSERT_INCIDENT,
+  LOG_INCIDENT_HISTORY,
+} from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -11,17 +16,31 @@ import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import { useUserContext } from '../../contexts/userContext';
+import { getUnixTime } from 'date-fns';
 
-function NewIncidentPage(props) {
+function NewIncidentPage() {
+  const [incidentIdToClone] = useQueryParam('incident_id', withDefault(NumberParam, 0));
+
+  const { user } = useUserContext();
+
   const { t, i18n } = useTranslation();
+
+  const { data: incidentToCloneData, loading: loadingIncidentToClone } = useQuery(FIND_INCIDENT, {
+    variables: { query: { incident_id: incidentIdToClone } },
+  });
+
+  const [initialValues, setInitialValues] = useState(null);
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
   const { data: lastIncident, loading: loadingLastIncident } = useQuery(GET_LATEST_INCIDENT_ID);
 
-  const loading = loadingLastIncident || loadingEntities;
+  const loading = loadingLastIncident || loadingEntities || loadingIncidentToClone;
 
   const [insertIncident] = useMutation(INSERT_INCIDENT);
+
+  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -56,6 +75,7 @@ function NewIncidentPage(props) {
         ...values,
         incident_id: newIncidentId,
         reports: { link: [] },
+        editors: { link: values.editors },
         embedding: {
           ...values.embedding,
         },
@@ -86,14 +106,59 @@ function NewIncidentPage(props) {
 
       await insertIncident({ variables: { incident: newIncident } });
 
+      // Set the user as the last modifier
+      newIncident.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
+
+      newIncident.epoch_date_modified = getUnixTime(new Date());
+
+      newIncident.AllegedDeployerOfAISystem = newIncident.AllegedDeployerOfAISystem.link;
+      newIncident.AllegedDeveloperOfAISystem = newIncident.AllegedDeveloperOfAISystem.link;
+      newIncident.AllegedHarmedOrNearlyHarmedParties =
+        newIncident.AllegedHarmedOrNearlyHarmedParties.link;
+      newIncident.editors = newIncident.editors.link;
+
+      await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
+
       addToast(insertSuccessToast({ newIncidentId }));
     } catch (error) {
       addToast(updateErrorToast({ newIncidentId, error }));
     }
   };
 
+  useEffect(() => {
+    if (incidentToCloneData) {
+      if (incidentToCloneData.incident) {
+        const {
+          title,
+          description,
+          date,
+          AllegedDeployerOfAISystem,
+          AllegedDeveloperOfAISystem,
+          AllegedHarmedOrNearlyHarmedParties,
+          editors,
+          editor_notes,
+        } = incidentToCloneData.incident;
+
+        setInitialValues({
+          title,
+          description,
+          date,
+          AllegedDeployerOfAISystem: AllegedDeployerOfAISystem.map((entity) => entity.entity_id),
+          AllegedDeveloperOfAISystem: AllegedDeveloperOfAISystem.map((entity) => entity.entity_id),
+          AllegedHarmedOrNearlyHarmedParties: AllegedHarmedOrNearlyHarmedParties.map(
+            (entity) => entity.entity_id
+          ),
+          editor_notes,
+          editors: editors.map((editor) => editor.userId),
+        });
+      } else {
+        setInitialValues({ editors: [] });
+      }
+    }
+  }, [incidentToCloneData]);
+
   return (
-    <Layout {...props} className={'w-full'}>
+    <div className={'w-full'}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -104,8 +169,8 @@ function NewIncidentPage(props) {
 
       {loading && <DefaultSkeleton />}
 
-      {!loading && (
-        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={{}}>
+      {!loading && initialValues && (
+        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={initialValues}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
               <IncidentForm />
@@ -130,7 +195,7 @@ function NewIncidentPage(props) {
           )}
         </Formik>
       )}
-    </Layout>
+    </div>
   );
 }
 

@@ -142,7 +142,12 @@ GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 SKIP_PAGE_CREATOR=createTsneVisualizationPage
+GATSBY_PRISMIC_REPO_NAME=
+PRISMIC_ACCESS_TOKEN=
+PRISMIC_CUSTOM_TYPES_API_TOKEN=
 ```
+
+For `GATSBY_PRISMIC_REPO_NAME`, `PRISMIC_ACCESS_TOKEN` and `PRISMIC_CUSTOM_TYPES_API_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
@@ -317,6 +322,59 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 ```
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
+
+### Prismic setup
+This project uses Prismic to fetch page content. 
+
+#### Prismic Setup
+
+1. Sign up for a new [Prismic](https://prismic.io/) account or log in to your account if you already have one
+2. In `Create a new repository` section choose `Something else`
+3. Give your repository a name and choose `gatsby` in the technology dropdown
+4. Choose your plan (if you only need one user, the free plan is enough)
+5. Click `Create repository`
+6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
+7. Create a new custom type token in Settings > API & Security > Custom types API tab > Tokens > Add new app name and create token > Save value for later
+
+#### Adding the Prismic content types
+
+Follow instructions on [prismicCustomTypes.md](prismicCustomTypes.md)
+
+#### Adding Prismic documents
+
+1. On the Prismic dashboard left menu click `Documents`
+2. Click `Create new`
+3. Fill in all the mandatory fields
+4. Click `Save`
+5. Keep in mind that the new content won't be available on your page until you Publish it.
+6. In order to publish it, click `Publish`
+
+#### Prismic & Netlify Hook integration
+
+In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
+In order to do this, you need to create a Netlify Build Hook.
+
+**Prismic environment variables**
+
+Add the following environment variable on Netlify: 
+`GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
+`PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
+`PRISMIC_CUSTOM_TYPES_API_TOKEN=[you_prismic_custom_types_access_token]` (step 7 from Prismic Setup section)
+
+**Create Prismic/Netlify Hook**
+1. Login to your Netlify
+2. Go to `Deploys`
+3. Go to `Deploy settings`
+4. Scroll to `Build Hooks`
+5. Click `Add build hook`
+6. Give it a name and assign a branch
+7. Click save
+8. Copy the generated URL
+9. Go to your Prismic repository
+10. Go to  `Settings` > `Webhooks`
+11. Create a new webhook and paste the URL in the URL field
+12. In `Triggers` select `A document is published` and `A document is unpublished`
+13. Click `Add this webhook`
 
 ## Front-end development
 
@@ -632,6 +690,13 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
         "entityId": "openai",
     }
     ```
+- **Submission Promoted**: Users that submit a new Incident Report are automatically subscribed to its promotion. Once the submission has been approved by an editor, the user will recieve an email informing that the submission is now an incident/issue/report.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c",
+        "type": "submission-promoted"
+    }
+    ```
 
 These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
 
@@ -656,7 +721,7 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
-Email notifications to New Incidents (subscription type **New Incident**) and Incident updates (subscription type **Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
+Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
 And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
 
@@ -694,6 +759,14 @@ And finally, as part of the site build process, we processed all pending notific
         "incident_id": 374,
         "entity_id": "openai",
         "isUpdate": true,
+        "processed": false
+    }
+    ```
+- **Submission Promoted**
+    ```
+    {
+        "type": "submission-promoted",
+        "incident_id": 374,
         "processed": false
     }
     ```

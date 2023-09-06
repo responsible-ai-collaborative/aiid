@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
@@ -39,20 +38,10 @@ const IncidentList = ({ incidents }) => {
 };
 
 export default function Incidents({ data, ...props }) {
-  const incidents = data.allMongodbAiidprodIncidents.nodes.map((incident) => {
-    const reports = incident.reports.map(
-      (report_number) =>
-        data.allMongodbAiidprodReports.nodes.find((r) => r.report_number == report_number) || {
-          report_number,
-          title: `Missing Report ${report_number}`,
-        } // there are missing reports, remove once that's fixed
-    );
-
-    return { ...incident, reports };
-  });
+  const incidents = data.allMongodbAiidprodIncidents.nodes;
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -67,7 +56,7 @@ export default function Incidents({ data, ...props }) {
         </p>
         <IncidentList incidents={incidents} />
       </div>
-    </Layout>
+    </>
   );
 }
 
@@ -78,16 +67,12 @@ export const pageQuery = graphql`
         incident_id
         title
         date
-        reports
-      }
-    }
-    allMongodbAiidprodReports {
-      nodes {
-        id
-        report_number
-        title
-        url
-        inputs_outputs
+        reports {
+          report_number
+          title
+          url
+          inputs_outputs
+        }
       }
     }
   }

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { startsWith, union, uniqWith, isEqual, filter } from 'lodash';
-import { UPDATE_CLASSIFICATION } from '../../graphql/classifications';
+import { UPSERT_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation } from '@apollo/client';
 import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
@@ -25,24 +25,26 @@ const notesShortNames = [
 const skipShortNames = ['Annotator', 'Annotation Status', 'Peer Reviewer'];
 
 function Entity({ attributes }) {
-  const name = JSON.parse(attributes.find((a) => a.short_name == 'Entity').value_json);
+  const nameValue = attributes.find((a) => a.short_name == 'Entity')?.value_json;
+
+  const name = nameValue ? JSON.parse(nameValue) : '<missing>';
 
   return (
     <>
       <div className="flex justify-between" data-cy={`entity-${name}`}>
         <h3>{name}</h3>
       </div>
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-fixed">
         <tbody>
           {attributes.map((a) => (
             <tr key={a.short_name} className="border-b dark:border-gray-700">
               <th
                 scope="row"
-                className="py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="py-2 font-medium text-gray-900 dark:text-white break-words w-40"
               >
                 {a.short_name}
               </th>
-              <td className="py-1">{JSON.stringify(a.value_json)}</td>
+              <td className="py-1 break-words w-40">{JSON.stringify(a.value_json)}</td>
             </tr>
           ))}
         </tbody>
@@ -195,7 +197,8 @@ function ResultCell({ cell, ...props }) {
 function ShortNameCell({ cell }) {
   return (
     <div className="-my-2 -mx-4 p-2" data-cy={`column-${cell.value}`}>
-      {cell.value}
+      <b>{cell.row.original.field_number}</b>
+      <div>{cell.value}</div>
     </div>
   );
 }
@@ -271,7 +274,7 @@ function mergeClassification(taxa, row) {
 function TableWrap({ data, setData, className, ...props }) {
   const defaultColumn = useMemo(
     () => ({
-      className: 'w-[20%]',
+      className: 'w-40',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
@@ -281,7 +284,7 @@ function TableWrap({ data, setData, className, ...props }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        className: 'w-[10%]',
+        className: 'w-20',
         accessor: 'short_name',
         title: 'Short Name',
         Cell: ShortNameCell,
@@ -294,12 +297,17 @@ function TableWrap({ data, setData, className, ...props }) {
       for (const key of Object.keys(firstRow).filter((key) =>
         startsWith(key, 'CSETv1_Annotator-')
       )) {
-        columns.push({ accessor: key, title: key, Cell: ValueCell });
+        columns.push({
+          accessor: key,
+          title: key,
+          Cell: ValueCell,
+          className: 'w-[240px]',
+        });
       }
     }
 
     columns.push({
-      className: 'w-[10%]',
+      className: 'w-[240px]',
       accessor: 'result',
       title: 'Result',
       Cell: ResultCell,
@@ -329,8 +337,8 @@ function TableWrap({ data, setData, className, ...props }) {
   );
 }
 
-export default function CsetTable({ data, taxa, incident_id, className = '', ...props }) {
-  const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
+export default function CsetTable({ data, taxa, incident_id, ...props }) {
+  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
 
   const addToast = useToastContext();
 
@@ -400,16 +408,19 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
       const attributes = serializeClassification(values, taxa.field_list);
 
       const data = {
-        incident_id,
         notes: tableData.find((row) => row.short_name == 'notes').result,
-        namespace: 'CSETv1',
         attributes: attributes.map((a) => a),
+        namespace: 'CSETv1',
+        incidents: { link: [parseInt(incident_id)] },
+        reports: { link: [] },
       };
 
       await updateClassification({
         variables: {
           query: {
-            incident_id,
+            incidents: {
+              incident_id: parseInt(incident_id),
+            },
             namespace: 'CSETv1',
           },
           data,
@@ -424,7 +435,7 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
       setSubmitting(false);
     } catch (error) {
       addToast({
-        message: 'Classification updated',
+        message: 'Could not update classification',
         severity: SEVERITY.danger,
         error,
       });
@@ -433,9 +444,7 @@ export default function CsetTable({ data, taxa, incident_id, className = '', ...
 
   return (
     <>
-      {processed && (
-        <TableWrap data={tableData} setData={setTableData} className={className} {...props} />
-      )}
+      {processed && <TableWrap data={tableData} setData={setTableData} {...props} />}
 
       <div className="mt-4 flex justify-end">
         <SubmitButton disabled={!isValid} loading={submitting} onClick={submit}>

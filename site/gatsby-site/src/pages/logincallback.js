@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import * as Realm from 'realm-web';
 
 const LoginCallback = (props) => {
@@ -7,7 +6,7 @@ const LoginCallback = (props) => {
     Realm.handleAuthRedirect();
   }
 
-  return <Layout {...props}>Logging in...</Layout>;
+  return <>Logging in...</>;
 };
 
 export default LoginCallback;

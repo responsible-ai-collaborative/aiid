@@ -92,11 +92,13 @@ function ResponseCell({ cell }) {
       )
     : cell.value;
 
+  const responseCount = getResponseCount(filtered);
+
   return (
     <div data-cy={`cell-${column.id}`}>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
-        <Trans ns="entities" count={filtered.length}>
-          {{ count: filtered.length }} Incident responses
+        <Trans ns="entities" count={responseCount}>
+          {{ count: responseCount }} Incident responses
         </Trans>
       </div>
       {row.isExpanded && (
@@ -254,7 +256,8 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         accessor: 'responses',
         Cell: ResponseCell,
         filter: responseFilter,
-        sortType: sortByCount,
+        sortType: (rowA, rowB, id) =>
+          getResponseCount(rowA.values[id]) - getResponseCount(rowB.values[id]),
       },
     ];
 
@@ -276,3 +279,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
 
   return <Table table={table} className={className} {...props} />;
 }
+
+const getResponseCount = (responses) =>
+  new Set(responses.map((response) => response.incident_id)).size;

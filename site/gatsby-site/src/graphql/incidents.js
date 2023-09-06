@@ -6,7 +6,11 @@ export const FIND_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -45,7 +49,11 @@ export const FIND_INCIDENTS_TABLE = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -89,7 +97,11 @@ export const FIND_INCIDENTS = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -136,7 +148,11 @@ export const UPDATE_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -191,7 +207,11 @@ export const FIND_FULL_INCIDENT = gql`
       incident_id
       title
       description
-      editors
+      editors {
+        userId
+        first_name
+        last_name
+      }
       date
       AllegedDeployerOfAISystem {
         entity_id
@@ -232,6 +252,55 @@ export const FIND_FULL_INCIDENT = gql`
       embedding {
         from_reports
         vector
+      }
+      editor_notes
+      epoch_date_modified
+      tsne {
+        x
+        y
+      }
+    }
+  }
+`;
+
+export const LOG_INCIDENT_HISTORY = gql`
+  mutation logIncidentHistory($input: History_incidentInsertInput!) {
+    logIncidentHistory(input: $input) {
+      incident_id
+    }
+  }
+`;
+
+export const FIND_INCIDENT_HISTORY = gql`
+  query FindIncidentHistory($query: History_incidentQueryInput) {
+    history_incidents(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
+      incident_id
+      AllegedDeployerOfAISystem
+      AllegedDeveloperOfAISystem
+      AllegedHarmedOrNearlyHarmedParties
+      _id
+      date
+      description
+      modifiedBy
+      editor_dissimilar_incidents
+      editor_notes
+      editor_similar_incidents
+      editors
+      embedding {
+        from_reports
+        vector
+      }
+      epoch_date_modified
+      flagged_dissimilar_incidents
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
+      reports
+      title
+      tsne {
+        x
+        y
       }
     }
   }

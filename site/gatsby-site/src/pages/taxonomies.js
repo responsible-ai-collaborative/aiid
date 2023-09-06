@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
 import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -17,7 +16,7 @@ export default function Taxonomies({ data, ...props }) {
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
         <title>{title}</title>
       </AiidHelmet>
@@ -33,17 +32,17 @@ export default function Taxonomies({ data, ...props }) {
           <li>
             <p>
               <Trans>
-                <LocalizedLink to="/taxonomy/cset">
-                  Center for Security and Emerging Technology (CSET)
-                </LocalizedLink>
-                . This is a taxonomy detailing many attributes of AI incidents of relevance to the
-                public policy community.
+                <LocalizedLink to="/taxonomy/csetv1">
+                  Center for Security and Emerging Technology (CSETv1)
+                </LocalizedLink>{' '}
+                The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of
+                relevance to the public policy community.
               </Trans>
             </p>
             <TaxonomyGraphCarousel
               data={data}
-              namespace="CSET"
-              axes={['Harm Distribution Basis', 'Harm Type', 'System Developer', 'Severity']}
+              namespace="CSETv1"
+              axes={['Harm Distribution Basis', 'Sector of Deployment']}
             />
           </li>
           <li>
@@ -72,7 +71,7 @@ export default function Taxonomies({ data, ...props }) {
           </Trans>
         </p>
       </div>
-    </Layout>
+    </>
   );
 }
 
@@ -89,7 +88,6 @@ export const pageQuery = graphql`
     }
     allMongodbAiidprodClassifications {
       nodes {
-        incident_id
         namespace
         attributes {
           short_name

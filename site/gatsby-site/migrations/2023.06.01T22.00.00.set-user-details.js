@@ -32,34 +32,20 @@ exports.up = async ({ context: { client } }) => {
 
   const usersCollection = client.db(config.realm.production_db.db_custom_data).collection('users');
 
-  const users = await usersCollection.find({
+  const users = usersCollection.find({
     userId: { $in: accounts.map((account) => account.userId) },
-  }).toArray();
+  });
 
-  for (const account of accounts) {
-    const user = users.find(user => user.userId == account.userID);
+  for await (const user of users) {
+    const account = accounts.find((account) => account.userId === user.userId);
 
     const [first_name, last_name] = account.name.split(' ');
 
-    if (user) {
+    const updateResult = await usersCollection.updateOne(
+      { _id: user._id },
+      { $set: { first_name, last_name } }
+    );
 
-      const updateResult = await usersCollection.updateOne(
-        { _id: user._id },
-        { $set: { first_name, last_name } }
-      );
-
-    } else {
-
-      const insertResult = await usersCollection.insertOne({
-        userId: account.userId,
-        roles: [],
-        first_name,
-        last_name,
-      });
-    }
+    console.log(`${user.userId}, ${account.name}, ${updateResult.modifiedCount}`);
   }
 };
-
-exports.down = async () => { }
-
-

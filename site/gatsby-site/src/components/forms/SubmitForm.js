@@ -11,7 +11,7 @@ import {
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, parse } from 'date-fns';
+import { format, parse, getUnixTime } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
@@ -59,6 +59,7 @@ const queryConfig = {
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
+  incident_editors: withDefault(ArrayParam, []),
   language: withDefault(StringParam, 'en'),
 };
 
@@ -106,7 +107,10 @@ const SubmitForm = () => {
       isClient &&
       localStorage.getItem('formValues')
     ) {
-      submission = { ...JSON.parse(localStorage.getItem('formValues')) };
+      submission = {
+        ...SUBMISSION_INITIAL_VALUES,
+        ...JSON.parse(localStorage.getItem('formValues')),
+      };
     }
 
     if (!loading) {
@@ -166,7 +170,9 @@ const SubmitForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const date_submitted = format(new Date(), 'yyyy-MM-dd');
+      const now = new Date();
+
+      const date_submitted = format(now, 'yyyy-MM-dd');
 
       const url = new URL(values?.url);
 
@@ -177,10 +183,12 @@ const SubmitForm = () => {
         source_domain,
         date_submitted,
         date_modified: date_submitted,
+        epoch_date_modified: getUnixTime(now),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
+        incident_editors: { link: values.incident_editors },
       };
 
       submission.deployers = await processEntities(
@@ -203,8 +211,6 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      setSubmission(SUBMISSION_INITIAL_VALUES);
-
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
@@ -215,9 +221,7 @@ const SubmitForm = () => {
         severity: SEVERITY.success,
       });
 
-      if (isClient) {
-        localStorage.setItem('formValues', JSON.stringify(SUBMISSION_INITIAL_VALUES));
-      }
+      clearForm();
     } catch (e) {
       addToast({
         message: (
@@ -346,6 +350,7 @@ const SubmitForm = () => {
                 submissionRef.current.scrollIntoView();
               }, 0);
             }}
+            clearForm={clearForm}
           />
         )}
 

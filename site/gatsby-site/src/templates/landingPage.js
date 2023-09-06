@@ -1,6 +1,5 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -18,22 +17,38 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
+import sortBy from 'lodash/sortBy';
+import PostPreviewNew from 'components/blog/PrismicPostPreview';
 
 const LandingPage = (props) => {
   const { data } = props;
 
-  const { latestReport, latestReportIncident, latestPost } = data;
+  let { latestPost, latestPostOld, latestReportIncidents } = data;
 
-  latestReport.incident_id = latestReportIncident.incident_id;
+  let { sponsors } = props.pageContext;
 
   const { locale: language } = useLocalization();
 
-  if (latestReport.language !== language) {
-    const translation = data[`latestReport_${language}`];
+  const latestReports = latestReportIncidents.edges.map((incident) => {
+    const sortedReports = sortBy(incident.node.reports, ['epoch_date_submitted'], ['desc']);
 
-    latestReport.title = translation.title;
-    latestReport.text = translation.text;
-  }
+    const report = sortedReports.map((report) => report)[0];
+
+    if (report.language !== language) {
+      const translation = data[`latestReports_${language}`].edges.find(
+        (translation) => translation.node.report_number === report.report_number
+      );
+
+      report.title = translation.node.title;
+      report.text = translation.node.text;
+    }
+    const updatedIncident = {
+      incident_id: incident.node.incident_id,
+      ...report,
+    };
+
+    return updatedIncident;
+  });
 
   const { t } = useTranslation(['translation', 'landing']);
 
@@ -63,7 +78,7 @@ const LandingPage = (props) => {
 
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
-    <Layout {...props} className="max-w-full 2xl:w-[72rem]">
+    <div className="max-w-full 2xl:w-[72rem]" {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
@@ -83,7 +98,7 @@ const LandingPage = (props) => {
 
         <div className="mb-5 md:mb-10">
           <div>
-            <LatestReports latestReport={latestReport} />
+            <LatestReports latestReports={latestReports} />
           </div>
         </div>
 
@@ -103,9 +118,17 @@ const LandingPage = (props) => {
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
-          <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-            <Blog post={latestPost.nodes[0]} />
-          </div>
+          {(latestPost?.edges?.length > 0 || latestPostOld?.nodes?.length > 0) && (
+            <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
+              {latestPost.edges.length > 0 ? (
+                <PostPreviewNew post={latestPost.edges[0].node} latestPost={true} />
+              ) : latestPostOld.nodes.length > 0 ? (
+                <Blog post={latestPostOld.nodes[0]} />
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mb-10 md:mb-16">
@@ -130,21 +153,48 @@ const LandingPage = (props) => {
         </div>
 
         <div>
-          <Sponsors />
+          <Sponsors sponsors={sponsors} />
         </div>
       </Container>
-    </Layout>
+    </div>
   );
 };
 
 export default LandingPage;
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int, $locale: String!) {
-    latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
-      incident_id
+  query LandingPageQuery($latestReportNumber: Int, $latestReportNumbers: [Int], $locale: String!) {
+    latestReportIncident: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
+    ) {
+      edges {
+        node {
+          incident_id
+        }
+      }
     }
-    latestReport: mongodbAiidprodReports(report_number: { eq: $latestReportNumber }) {
+    latestReportIncidents: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { report_number: { in: $latestReportNumbers } } } }
+    ) {
+      edges {
+        node {
+          incident_id
+          reports {
+            report_number
+            title
+            text
+            epoch_date_submitted
+            image_url
+            report_number
+            cloudinary_id
+            language
+            source_domain
+            url
+          }
+        }
+      }
+    }
+    latestReport: mongodbAiidprodReports(report_number: { in: $latestReportNumbers }) {
       title
       text
       epoch_date_submitted
@@ -153,19 +203,72 @@ export const query = graphql`
       cloudinary_id
       language
     }
-    latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
-      title
-      text
+    latestReports_es: allMongodbTranslationsReportsEs(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
+      }
     }
-    latestReport_fr: mongodbTranslationsReportsFr(report_number: { eq: $latestReportNumber }) {
-      title
-      text
+    latestReports_fr: allMongodbTranslationsReportsFr(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
+      }
     }
-    latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
-      title
-      text
+    latestReports_en: allMongodbTranslationsReportsEn(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
+      }
     }
-    latestPost: allMdx(
+    latestPost: allPrismicBlog(
+      filter: { data: { language: { eq: $locale } } }
+      sort: { data: { date: DESC } }
+    ) {
+      edges {
+        node {
+          uid
+          lang
+          data {
+            metatitle
+            metadescription
+            slug
+            aitranslated
+            language
+            title {
+              text
+            }
+            content {
+              richText
+              text
+              html
+            }
+            image {
+              url
+              gatsbyImageData
+            }
+            date
+            author
+          }
+        }
+      }
+    }
+    latestPostOld: allMdx(
       filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
       sort: { frontmatter: { date: DESC } }
       limit: 1

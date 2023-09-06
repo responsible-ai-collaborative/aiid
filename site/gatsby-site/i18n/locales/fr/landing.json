@@ -4,6 +4,7 @@
   "The starting point for information about the AI Incident Database": "Le point de départ des informations sur la base de données des incidents AI",
   "Search reports": "Rechercher des rapports",
   "Latest Incident Report": "Dernier rapport",
+  "Latest Incident Reports": "Derniers rapports",
   "Quick Add New Report URL": "Ajout rapide d'un nouveau rapport",
   "quickaddDescription": "Les liens soumis sont ajoutés à une <2>file d'attente de révision </2> pour être résolus en créant un nouvel incident ou en ajoutant le rapport sur un incident existant. Les incidents soumis avec <4> tous les détails </4> sont traités en priorité par rapport à ceux qui n'ont pas tous les détails complets.",
   "About the Database": "A propos de la base de données",

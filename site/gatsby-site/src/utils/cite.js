@@ -1,4 +1,5 @@
 import { isAfter, isEqual } from 'date-fns';
+import { Operation, diff } from 'json-diff-ts';
 
 export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -123,4 +124,188 @@ export const sortIncidentsByDatePublished = (incidentReports) => {
       return -1;
     }
   });
+};
+
+// Transforms the data from the graphql query into a History_incidentInsertInput format
+export const transformIncidentData = (incident, user) => {
+  const result = {
+    ...incident,
+    __typename: undefined,
+  };
+
+  const {
+    AllegedDeployerOfAISystem,
+    AllegedDeveloperOfAISystem,
+    AllegedHarmedOrNearlyHarmedParties,
+    reports,
+    embedding,
+    nlp_similar_incidents,
+    tsne,
+    editors,
+  } = incident;
+
+  if (AllegedDeployerOfAISystem) {
+    result.AllegedDeployerOfAISystem = AllegedDeployerOfAISystem.link
+      ? AllegedDeployerOfAISystem.link
+      : AllegedDeployerOfAISystem.map((e) => e.entity_id);
+  }
+
+  if (AllegedDeveloperOfAISystem) {
+    result.AllegedDeveloperOfAISystem = AllegedDeveloperOfAISystem.link
+      ? AllegedDeveloperOfAISystem.link
+      : AllegedDeveloperOfAISystem.map((e) => e.entity_id);
+  }
+
+  if (AllegedHarmedOrNearlyHarmedParties) {
+    result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.link
+      ? AllegedHarmedOrNearlyHarmedParties.link
+      : AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
+  }
+
+  result.reports = reports
+    ? reports.link
+      ? reports.link
+      : reports.map((r) => r.report_number)
+    : [];
+  result.nlp_similar_incidents = nlp_similar_incidents
+    ? nlp_similar_incidents.map((nlp) => {
+        return { ...nlp, __typename: undefined };
+      })
+    : [];
+
+  if (embedding) {
+    result.embedding = { ...embedding, __typename: undefined };
+  }
+
+  if (tsne) {
+    result.tsne = { ...tsne, __typename: undefined };
+  }
+
+  if (editors) {
+    result.editors = editors.link ? editors.link : editors.map((editor) => editor.userId);
+  }
+
+  // Set the user as the last modifier
+  result.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
+
+  return result;
+};
+
+// Deletes the __typename field from the incident object
+export const deleteIncidentTypenames = (incident) => {
+  delete incident.__typename;
+  delete incident.embedding?.__typename;
+  delete incident.tsne?.__typename;
+  incident.nlp_similar_incidents?.forEach((x) => {
+    delete x.__typename;
+  });
+
+  return incident;
+};
+
+const INCIDENT_TO_COMPARE = {
+  title: 'Title',
+  description: 'Description',
+  date: 'Date',
+  AllegedDeployerOfAISystem: 'Alleged Deployer of AI System',
+  AllegedDeveloperOfAISystem: 'Alleged Developer of AI System',
+  AllegedHarmedOrNearlyHarmedParties: 'Alleged Harmed or Nearly Harmed Parties',
+  editors: 'Editors',
+  editor_notes: 'Editor Notes',
+  reports: 'Reports',
+};
+
+export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
+  const diffData = diff(oldVersion, newVersion);
+
+  const result = [];
+
+  for (const field of Object.keys(INCIDENT_TO_COMPARE)) {
+    const fieldDiffs = diffData.filter((diff) => diff.key == field);
+
+    if (fieldDiffs && fieldDiffs.length > 0) {
+      for (const fieldDiff of fieldDiffs) {
+        if (fieldDiff.embeddedKey && fieldDiff.changes) {
+          const removed = [];
+
+          const added = [];
+
+          for (const change of fieldDiff.changes) {
+            if (change.type == Operation.UPDATE) {
+              removed.push(change.oldValue);
+              added.push(change.value);
+            } else if (change.type == Operation.ADD) {
+              added.push(change.value);
+            } else if (change.type == Operation.REMOVE) {
+              removed.push(change.value);
+            }
+          }
+
+          //Remove duplicates
+          const removedClean = removed.filter((item) => !added.includes(item));
+
+          const addedClean = added.filter((item) => !removed.includes(item));
+
+          let removedLabels = removedClean;
+
+          let addedLabels = addedClean;
+
+          if (
+            [
+              'AllegedDeployerOfAISystem',
+              'AllegedDeveloperOfAISystem',
+              'AllegedHarmedOrNearlyHarmedParties',
+            ].includes(field)
+          ) {
+            removedLabels = removedClean.map(
+              (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+            );
+            addedLabels = addedClean.map(
+              (entityId) => entities?.find((e) => e.entity_id == entityId)?.name
+            );
+          } else if (field == 'editors') {
+            removedLabels = removedClean.map((userId) => {
+              const user = users?.find((u) => u.userId == userId);
+
+              return user ? `${user.first_name} ${user.last_name}` : userId;
+            });
+            addedLabels = addedClean.map((userId) => {
+              const user = users?.find((u) => u.userId == userId);
+
+              return user ? `${user.first_name} ${user.last_name}` : userId;
+            });
+          }
+
+          if (removedLabels.length > 0 || addedLabels.length > 0) {
+            result.push({
+              field: INCIDENT_TO_COMPARE[field],
+              type: 'list',
+              removed: removedLabels,
+              added: addedLabels,
+            });
+          }
+        } else {
+          if (fieldDiff.value != null && fieldDiff.value != undefined) {
+            if (fieldDiff.type === Operation.UPDATE || fieldDiff.type === Operation.ADD) {
+              result.push({
+                field: INCIDENT_TO_COMPARE[field],
+                type: 'text',
+                oldValue: fieldDiff.oldValue,
+                newValue: fieldDiff.value,
+              });
+            } else if (fieldDiff.type === Operation.REMOVE) {
+              result.push({
+                field: INCIDENT_TO_COMPARE[field],
+                type: 'text',
+                oldValue: fieldDiff.value,
+                newValue: fieldDiff.oldValue,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return result;
 };

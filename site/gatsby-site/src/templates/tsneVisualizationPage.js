@@ -1,6 +1,5 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -10,7 +9,9 @@ function TsneVisulizationPage(props) {
 
   const spatialIncidents = props.pageContext.spatialIncidents;
 
-  const classifications = props.pageContext.classifications.filter((c) => c.publish);
+  const classifications = props.pageContext.classifications;
+
+  const taxa = props.pageContext.taxa;
 
   const csetClassifications = props.pageContext.csetClassifications;
 
@@ -21,7 +22,7 @@ function TsneVisulizationPage(props) {
   const metaDescription = t('Spatial Visualization');
 
   return (
-    <Layout className="max-w-full w-full" {...props}>
+    <div className="max-w-full w-full" {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -37,8 +38,11 @@ function TsneVisulizationPage(props) {
             : -1
         )}
         incidents={spatialIncidents}
-        classifications={classifications}
-        csetClassifications={csetClassifications}
+        {...{
+          classifications,
+          taxa,
+          csetClassifications,
+        }}
       />
       <p className="mt-4" style={{ maxWidth: '1000px' }}>
         <Trans i18nKey="tsneDescription">
@@ -54,7 +58,7 @@ function TsneVisulizationPage(props) {
           .
         </Trans>
       </p>
-    </Layout>
+    </div>
   );
 }
 

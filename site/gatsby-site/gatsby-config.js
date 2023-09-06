@@ -10,6 +10,7 @@ const config = require('./config');
 cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
 const plugins = [
+  'layout',
   {
     resolve: `gatsby-plugin-netlify`,
     options: {
@@ -110,6 +111,14 @@ const plugins = [
     },
   },
   {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'customData',
+      collection: ['users'],
+      connectionString: config.mongodb.connectionString,
+    },
+  },
+  {
     resolve: 'gatsby-plugin-feed',
     options: {
       query: `
@@ -136,7 +145,7 @@ const plugins = [
 
               const matchingIncidents = allMongodbAiidprodIncidents.edges.find((incident) => {
                 return incident.node.reports.find((report) => {
-                  return report === report_number;
+                  return report.report_number === report_number;
                 });
               });
 
@@ -194,7 +203,9 @@ const plugins = [
               edges {
                 node {
                   incident_id
-                  reports
+                  reports { 
+                    report_number
+                  }
                 }
               }
             }
@@ -253,6 +264,21 @@ const plugins = [
         nsSeparator: false,
         keySeparator: '.',
       },
+    },
+  },
+  {
+    resolve: 'gatsby-source-prismic',
+    options: {
+      repositoryName: process.env.GATSBY_PRISMIC_REPO_NAME,
+      accessToken: process.env.PRISMIC_ACCESS_TOKEN,
+      customTypesApiToken: process.env.PRISMIC_CUSTOM_TYPES_API_TOKEN,
+      routes: [
+        {
+          type: 'blog',
+          path: '/blog/:uid',
+        },
+      ],
+      lang: '*',
     },
   },
 ];

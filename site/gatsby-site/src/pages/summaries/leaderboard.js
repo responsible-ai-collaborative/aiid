@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
@@ -12,7 +11,7 @@ import { Trans } from 'react-i18next';
 
 export default function Authors(props) {
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Submissions Leaderboard</title>
       </AiidHelmet>
@@ -35,6 +34,6 @@ export default function Authors(props) {
           <DomainsLeaderboard />
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

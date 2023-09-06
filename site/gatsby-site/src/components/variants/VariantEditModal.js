@@ -72,8 +72,10 @@ export default function VariantEditModal({
         updated.tags = newTags;
       }
 
-      updated.date_modified = format(new Date(), 'yyyy-MM-dd');
-      updated.epoch_date_modified = getUnixTime(new Date(updated.date_modified));
+      const today = new Date();
+
+      updated.date_modified = format(today, 'yyyy-MM-dd');
+      updated.epoch_date_modified = getUnixTime(today);
 
       await updateVariant({
         variables: {
