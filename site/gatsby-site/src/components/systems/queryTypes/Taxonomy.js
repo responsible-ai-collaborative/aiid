@@ -4,6 +4,7 @@ import QueryBuilder from 'react-querybuilder';
 import { gql, useQuery } from '@apollo/client';
 import 'react-querybuilder/dist/query-builder.css';
 import { Trans } from 'react-i18next';
+import isValidFilter from '../isValidFilter';
 
 const FIND_TAXONOMY = gql`
   query FindTaxonomy($input: TaxaQueryInput) {
@@ -130,8 +131,10 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
     }
   }, [data]);
 
+  const valid = isValidFilter(query);
+
   return (
-    <div className="first:mt-0 mt-4">
+    <div className={'first:mt-0 mt-4 p-2' + (valid ? '' : ' bg-red-300')}>
       {loading && <Spinner />}
       {!loading && fields && (
         <div>

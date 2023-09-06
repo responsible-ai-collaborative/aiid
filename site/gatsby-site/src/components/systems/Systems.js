@@ -11,6 +11,7 @@ import encodeQuery from './encodeQuery';
 import { useLocation } from '@reach/router';
 import { navigate } from 'gatsby';
 import getInitialQuery from './getInitialQuery';
+import isValidFilter from './isValidFilter';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -56,11 +57,7 @@ const isValidQuery = (q) => {
     return false;
   }
 
-  if (q.some((filter) => !filter.query || filter.query.rules.length == 0)) {
-    return false;
-  }
-
-  if (q.some((filter) => filter.query.rules.some((rule) => !rule.value))) {
+  if (q.some((filter) => !isValidFilter(filter.query))) {
     return false;
   }
 
