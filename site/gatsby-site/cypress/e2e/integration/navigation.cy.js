@@ -36,4 +36,24 @@ describe('Navigation', { retries: { runMode: 4 } }, () => {
         .then((href) => expect(page.prop('href').endsWith(href)).to.be.true);
     });
   };
+
+  it('Check right sidebar "Contents" layout', () => {
+    cy.viewport(1280, 800);
+    cy.visit('/');
+
+    cy.get('#main-footer').contains('About').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('.rightSideTitle').contains('CONTENTS').should('be.visible');
+    cy.get('.rightSideBarUL li').should('have.length.at.least', 1);
+
+    cy.get(
+      '[data-cy="sidebar-desktop"] > #sidebar > [data-cy="sidebar-tree"] > [data-cy="sidebar-welcome"] > [data-cy="sidebar-link"]'
+    ).click();
+
+    cy.waitForStableDOM();
+
+    cy.get('.rightSideTitle').should('not.exist');
+  });
 });

@@ -214,8 +214,8 @@ function VisualizationView({
                 return (
                   <PlotPoint
                     classifications={
-                      classifications.filter(
-                        (classification) => classification.incident_id == incident.incident_id
+                      classifications.filter((classification) =>
+                        classification.incidents.find((i) => i.incident_id == incident.incident_id)
                       ) || []
                     }
                     key={incident.incident_id}

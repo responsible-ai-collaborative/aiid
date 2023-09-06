@@ -4,7 +4,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import config from '../../../config';
 
-const SocialShareButtons = ({ metaTitle, path, page, className }) => {
+const SocialShareButtons = ({ metaTitle, path, page, className = '' }) => {
   const canonicalUrl = config.gatsby.siteUrl + path;
 
   return (

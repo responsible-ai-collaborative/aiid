@@ -376,8 +376,25 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'UpsertSubscription',
-      'UpsertSubscription',
+      (req) =>
+        req.body.operationName == 'UpsertSubscription' &&
+        req.body.variables.query.incident_id.incident_id == 52,
+      'UpsertSubscription1',
+      {
+        data: {
+          upsertOneSubscription: {
+            _id: 'dummyIncidentId',
+          },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertSubscription' &&
+        req.body.variables.query.incident_id.incident_id == 53,
+      'UpsertSubscription2',
       {
         data: {
           upsertOneSubscription: {
@@ -397,7 +414,7 @@ describe('Submitted reports', () => {
         expect(input.is_incident_report).to.eq(true);
       });
 
-    cy.wait('@UpsertSubscription')
+    cy.wait('@UpsertSubscription1')
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.incident);
@@ -409,7 +426,7 @@ describe('Submitted reports', () => {
         expect(variables.subscription.userId.link).to.eq(user.userId);
       });
 
-    cy.wait('@UpsertSubscription')
+    cy.wait('@UpsertSubscription2')
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.incident);
