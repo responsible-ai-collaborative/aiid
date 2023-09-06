@@ -1,5 +1,8 @@
 import { getApolloClient } from './utils';
 import { registerCommand } from 'cypress-wait-for-stable-dom';
+import deepEqualInAnyOrder from 'deep-equal-in-any-order';
+
+chai.use(deepEqualInAnyOrder);
 
 registerCommand();
 
@@ -50,10 +53,10 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('query', ({ query, variables }) => {
+Cypress.Commands.add('query', ({ query, variables, timeout = 30000 }) => {
   const client = getApolloClient();
 
-  return cy.wrap(client.query({ query, variables }), { log: true, timeout: 30000 });
+  return cy.wrap(client.query({ query, variables }), { log: true, timeout });
 });
 
 Cypress.Commands.add('clickOutside', () => {
