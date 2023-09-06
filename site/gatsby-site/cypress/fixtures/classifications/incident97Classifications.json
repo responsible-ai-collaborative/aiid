@@ -66,7 +66,11 @@
                     ],
                     "__typename": "ClassificationClassification"
                 },
-                "incident_id": 97,
+                "incidents": [
+                    {
+                        "incident_id": 97
+                    }
+                ],
                 "namespace": "CSET",
                 "notes": ""
             }

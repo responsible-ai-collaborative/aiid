@@ -697,3 +697,21 @@ div .bytemd {
   background-color: rgba(0, 0, 0, .5);
   -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
 }
+
+.richtext-diff ins {
+  background-color: #def7ec;
+  color: #03543e;
+  text-decoration: none;
+}
+
+.richtext-diff del {
+  background-color: #fde8e8;
+  color: #9b1c1c;
+  text-decoration: none;
+}
+
+@-moz-document url-prefix() {
+    #content {
+        overflow: hidden !important;
+    }
+}

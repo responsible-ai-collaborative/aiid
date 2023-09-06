@@ -2,8 +2,6 @@
 
 The AIID is stored on MongoDB as document collections and hosted in [MongoDB Realm](https://www.mongodb.com/realm). MongoDB is responsible for managing the availability and backups of the database, as well as presenting web-accessible APIs for the content. This document details the database structure as is present on the MongoDB servers. Database exports are available upon request to `aiid.export@incidentdatabase.ai`, but for most database development needs you should be able to interface with the production database.
 
-See also: [MongoDB Realm Serverless Functions](realm.md).
-
 # Administering Data
 
 Administering data requires administrative access to the database. This access is presently limited, but through additional functionality that can protect data from vandalism, we may open it to less privileged parties.
@@ -126,31 +124,31 @@ Systems
 **Top Level Attributes**
 
 * `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
-* namespace: this determines how things are presented to users as facets within the Algolia index and determines the named path to the taxonomy's detail page.
-* weight: this determines the priority of displaying the taxonomy when multiple taxonomies are entered in the system.
-* description: this is a markdown description of the taxonomy that is presented on the taxonomy detail page
-* field_list: a list detailing the classifications within the taxonomy
+* `namespace`: this determines how things are presented to users as facets within the Algolia index and determines the named path to the taxonomy's detail page.
+* `weight`: this determines the priority of displaying the taxonomy when multiple taxonomies are entered in the system.
+* `description`: this is a markdown description of the taxonomy that is presented on the taxonomy detail page
+* `field_list`: a list detailing the classifications within the taxonomy
 
 **Field Description List**
 
-* "short_name": "" # the display name for the field when it is presented as a facet. (e.g., "intent" would be presented as `CSET:intent`)
-* "long_name": "" # the display name for the field as presented to users.
-* "short_description": "This goes in tooltips and other short descriptions" # Must be defined
-* "long_description":"This goes in the documentation page for the taxonomy"
-* "display_type": "string" # values are in {"string", "text", "multi", "date",  "enum", "bool", "list", "location"}
-* "mongo_type": "" # MongoDB datatype see "alias" [here](https://docs.mongodb.com/manual/reference/operator/query/type/#available-types) for acceptable values.
-* "default": "" # the values that sit in the form as a starting value when applying a taxonomy. Default: `nil`
-* "placeholder": "" # that to place in the form when classifying according to this taxonomy. Default: `nil`
-* "permitted_values": [] # optional, only used with `multi` and `enum` display types
-* "weight": 0 # Determines presentation order of the classification
-* "instant_facet": false # Determines whether the taxonomy item will be exported to the Algolia instant search index
-* "required": false # indicates whether the namespace may have classifications associated with it, but without this particular field
-* "public": true # indicates that the field should not be displayed to the general public. It will be displayed to authenticated users
-* "render_as": string # optional, overwrites the `display_type` property when rendering. The only supported value is `description_toggle` which shows the field's description if its value is `true`.
+* `short_name`: "" # the display name for the field when it is presented as a facet. (e.g., "intent" would be presented as `CSET:intent`)
+* `long_name`: "" # the display name for the field as presented to users.
+* `short_description`: "This goes in tooltips and other short descriptions" # Must be defined
+* `long_description`: "This goes in the documentation page for the taxonomy"
+* `display_type`: "string" # values are in {"string", "text", "multi", "date",  "enum", "bool", "list", "location"}
+* `mongo_type`: "" # MongoDB datatype see "alias" [here](https://docs.mongodb.com/manual/reference/operator/query/type/#available-types) for acceptable values.
+* `default`: "" # the values that sit in the form as a starting value when applying a taxonomy. Default: `nil`
+* `placeholder`: "" # that to place in the form when classifying according to this taxonomy. Default: `nil`
+* `permitted_values`: [] # optional, only used with `multi` and `enum` display types
+* `weight`: 0 # Determines presentation order of the classification
+* `instant_facet`: false # Determines whether the taxonomy item will be exported to the Algolia instant search index
+* `required`: false # indicates whether the namespace may have classifications associated with it, but without this particular field
+* `public`: true # indicates that the field should not be displayed to the general public. It will be displayed to authenticated users
+* `render_as`: string # optional, overwrites the `display_type` property when rendering. The only supported value is `description_toggle` which shows the field's description if its value is `true`.
 
 **Additional notes**
 
-* display_type's values have these additional notes for determining how the mongo_type will be displayed.
+* `display_type`'s values have these additional notes for determining how the mongo_type will be displayed.
   * string: short text of approximately 140 characters
   * text: textual input potentially of arbitrary length
   * multi: multiple selectable short values

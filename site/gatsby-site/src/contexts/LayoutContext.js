@@ -15,7 +15,6 @@ export function LayoutContextProvider({ children }) {
 
   useEffect(() => {
     globalHistory.listen(({ action }) => {
-      console.log('globalHistory.listen', action);
       if (action === 'PUSH') {
         setRightSidebar(null);
       }

@@ -64,7 +64,7 @@ const reports = [
 const classifications = [
   {
     _id: '60dd465f80935bc89e6f9b00',
-    incident_id: 1,
+    incidents: [1],
     namespace: 'CSETv0',
     attributes: [
       // { short_name: 'Annotator', value_json: '"1"' },
@@ -80,6 +80,13 @@ const classifications = [
       { short_name: 'Publish', value_json: 'true' },
     ],
     notes: null,
+  },
+  {
+    _id: '60dd465f80935bc89e6f9b01',
+    incidents: [1],
+    namespace: 'SHOULD NOT BE INCLUDED',
+    attributes: [{ short_name: 'Something', value_json: '"Great"' }],
+    notes: 'Nothing to see here',
   },
 ];
 

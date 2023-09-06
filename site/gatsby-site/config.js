@@ -97,6 +97,7 @@ const config = {
         items: [],
       },
       { title: 'Blog', label: 'blog', url: '/blog/', items: [] },
+      { title: 'AI News Digest', label: 'newsdigest', url: '/apps/newsdigest/', items: [] },
     ],
     frontline: true,
     ignoreIndex: false,

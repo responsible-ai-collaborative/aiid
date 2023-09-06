@@ -11,7 +11,7 @@ export const UPSERT_ENTITY = gql`
 
 export const FIND_ENTITIES = gql`
   query FindEntities {
-    entities {
+    entities(limit: 9999) {
       entity_id
       name
     }

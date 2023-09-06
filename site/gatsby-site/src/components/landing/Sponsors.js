@@ -144,10 +144,11 @@ export default function Sponsors({ sponsors = [] }) {
                           <div
                             key={`sponsor-item-${item.name}`}
                             className="flex-1 max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
+                            data-cy={`${item.name.text}-image`}
                           >
                             <StyledImage
                               src={`${item.logo?.url ? item.logo.url : '/images/' + item.logo}`}
-                              onClick={() => setModalState(item.name)}
+                              onClick={() => setModalState(item.name.text)}
                               data-cy={`${item.name}-modal-click`}
                               className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
                             />

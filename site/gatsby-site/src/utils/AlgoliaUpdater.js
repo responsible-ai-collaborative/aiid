@@ -142,16 +142,17 @@ class AlgoliaUpdater {
   }
 
   generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
-    let classificationsHash = {};
+    const classificationsHash = {};
 
-    classifications.forEach((classification) => {
-      const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
+    for (const classification of classifications) {
+      for (const incident_id of classification.incidents) {
+        const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
 
-      classificationsHash[classification.incident_id] ||= [];
-      classificationsHash[classification.incident_id] = classificationsHash[
-        classification.incident_id
-      ].concat(getClassificationArray({ classification, taxonomy }));
-    });
+        if (!classificationsHash[incident_id]) {
+          classificationsHash[incident_id] = getClassificationArray({ classification, taxonomy });
+        }
+      }
+    }
 
     const downloadData = [];
 

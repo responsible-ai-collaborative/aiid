@@ -4,7 +4,12 @@ export const FIND_CLASSIFICATION = gql`
   query FindClassifications($query: ClassificationQueryInput) {
     classifications(query: $query) {
       _id
-      incident_id
+      incidents {
+        incident_id
+      }
+      reports {
+        report_number
+      }
       notes
       namespace
       attributes {
@@ -16,14 +21,19 @@ export const FIND_CLASSIFICATION = gql`
   }
 `;
 
-export const UPDATE_CLASSIFICATION = gql`
+export const UPSERT_CLASSIFICATION = gql`
   mutation UpsertClassification(
     $query: ClassificationQueryInput
     $data: ClassificationInsertInput!
   ) {
     upsertOneClassification(query: $query, data: $data) {
       _id
-      incident_id
+      incidents {
+        incident_id
+      }
+      reports {
+        report_number
+      }
       notes
       namespace
       attributes {

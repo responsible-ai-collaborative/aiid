@@ -1,4 +1,10 @@
-import { faEdit, faPlus, faSearch, faClone } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faPlus,
+  faSearch,
+  faClone,
+  faClockRotateLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
@@ -131,6 +137,20 @@ function Tools({
             <Trans>Clone Incident</Trans>
           </Button>
         )}
+        <Button
+          color="gray"
+          href={`/incidents/history?incident_id=${incident.incident_id}`}
+          className="hover:no-underline"
+          data-cy="view-history-btn"
+        >
+          <FontAwesomeIcon
+            className="mr-2"
+            icon={faClockRotateLeft}
+            title={t('View History')}
+            titleId="view-history-icon"
+          />
+          <Trans>View History</Trans>
+        </Button>
         {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
           <div className="flex items-center">
             <ToggleSwitch

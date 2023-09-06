@@ -32,7 +32,9 @@ export default function WebArchiveLink({ url, date, children, className = '' }) 
 
   return (
     <div className={`flex items-center ${className}`} data-cy="web-archive-link">
-      <Link to={url}>{children}</Link>
+      <Link className="text-black" to={url}>
+        {children}
+      </Link>
       <div data-cy="dropdown-toggle">
         <Dropdown inline={true} label="" className="-ml-3">
           <Dropdown.Item onClick={() => navigateToUrl(url)} data-cy="original">
