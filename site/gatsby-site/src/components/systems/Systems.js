@@ -208,11 +208,10 @@ export default function Systems() {
           <Spinner />
         ) : (
           <>
-            {incidentResults?.length ? (
+            {incidentResults?.length && (
               <Trans>{{ length: incidentResults.length }} Incidents Found</Trans>
-            ) : (
-              <Trans>No incidents found</Trans>
             )}
+            {incidentResults?.length == 0 && <Trans>No incidents found</Trans>}
           </>
         )}
       </h3>
