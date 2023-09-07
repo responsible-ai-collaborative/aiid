@@ -129,7 +129,7 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
         <div>
           <div className="flex justify-between">
             <h4>{config.namespace}</h4>
-            <Button size="sm" onClick={() => removeFilter(id)}>
+            <Button size="xs" onClick={() => removeFilter(id)}>
               <Trans>Delete</Trans>
             </Button>
           </div>

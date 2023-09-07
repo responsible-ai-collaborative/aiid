@@ -3,9 +3,8 @@ import queryTypes from 'components/systems/queryTypes';
 import AddTaxonomyModal from './AddTaxonomyModal';
 import { gql, useLazyQuery } from '@apollo/client';
 import { debounce } from 'lodash';
-import { Button, Card, Spinner } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import Results from './Results';
-import { Trans } from 'react-i18next';
 import serializeQuery from './serializeQuery';
 import encodeQuery from './encodeQuery';
 import { useLocation } from '@reach/router';
@@ -79,6 +78,8 @@ export default function Systems() {
   const display = 'list';
 
   const viewType = 'reports'; // 'incidents';
+
+  const [collapsed, setCollapsed] = useState(false);
 
   const [showTaxonomyModal, setShowTaxonomyModal] = useState(false);
 
@@ -173,56 +174,58 @@ export default function Systems() {
 
   return (
     <>
-      <Button onClick={() => setShowTaxonomyModal(true)}>Add Taxonomy</Button>
-
-      {filters?.length == 0 && (
-        <div className="mt-2">
-          <h4>Please start by adding a Taxonomy</h4>
+      <div className="border">
+        <div className="flex justify-between p-2">
+          <h4>Search</h4>
+          <Button size="xs" onClick={() => setCollapsed((c) => !c)}>
+            collapse
+          </Button>
         </div>
-      )}
 
-      {filters?.length > 0 && (
-        <div className="mt-2">
-          <Card>
-            <div>
-              {filters.map((filter) => {
-                const Component = queryTypes[filter.type].default;
-
-                return (
-                  <Component
-                    key={filter.id}
-                    id={filter.id}
-                    setFilters={setFilters}
-                    removeFilter={removeFilter}
-                    config={filter.config}
-                  />
-                );
-              })}
-            </div>
-          </Card>
-        </div>
-      )}
-
-      <h3 className="mt-3">
-        {loading && <Spinner />}
-        {!loading && filters?.length > 0 && (
+        {!collapsed && (
           <>
-            {incidentResults?.length > 0 && (
-              <Trans>{{ length: incidentResults.length }} Incidents Found</Trans>
+            {filters?.length > 0 && (
+              <div>
+                {filters.map((filter) => {
+                  const Component = queryTypes[filter.type].default;
+
+                  return (
+                    <Component
+                      key={filter.id}
+                      id={filter.id}
+                      setFilters={setFilters}
+                      removeFilter={removeFilter}
+                      config={filter.config}
+                    />
+                  );
+                })}
+              </div>
             )}
-            {incidentResults?.length == 0 && <Trans>No incidents found</Trans>}
+
+            <div className="p-2">
+              <Button size="xs" onClick={() => setShowTaxonomyModal(true)}>
+                Add Taxonomy
+              </Button>
+            </div>
           </>
         )}
-      </h3>
+      </div>
 
-      {incidentResults?.length > 0 && (
-        <Results
-          display={display}
-          viewType={viewType}
-          loading={loading}
-          results={incidentResults}
-        />
-      )}
+      <div className="mt-2">
+        {filters?.length == 0 && (
+          <div className="mt-2">
+            <h4>No filters set</h4>
+          </div>
+        )}
+      </div>
+
+      <Results
+        display={display}
+        viewType={viewType}
+        filters={filters}
+        loading={loading}
+        results={incidentResults}
+      />
 
       {showTaxonomyModal && (
         <AddTaxonomyModal
