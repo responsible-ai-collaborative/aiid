@@ -28,6 +28,8 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
     variables: { query: { input: { namespace: config.namespace } } },
   });
 
+  const [collapsed, setCollapsed] = useState(false);
+
   const handleChange = (query) => {
     setFilters((filters) =>
       filters.map((filter) => {
@@ -123,17 +125,22 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
   const valid = isValidFilter(config.query);
 
   return (
-    <div className={'first:mt-0 mt-4 p-2' + (valid ? '' : ' bg-red-300')}>
+    <div className={'first:mt-0 border p-2' + (valid ? '' : ' bg-red-300')}>
       {loading && <Spinner />}
       {!loading && fields && (
         <div>
           <div className="flex justify-between">
             <h4>{config.namespace}</h4>
-            <Button size="xs" onClick={() => removeFilter(id)}>
-              <Trans>Delete</Trans>
-            </Button>
+            <div className=" flex gap-2">
+              <Button size="xs" onClick={() => setCollapsed((c) => !c)}>
+                <Trans>collapse</Trans>
+              </Button>
+              <Button size="xs" onClick={() => removeFilter(id)}>
+                <Trans>Delete</Trans>
+              </Button>
+            </div>
           </div>
-          <div className="mt-2">
+          <div className={'mt-2' + (collapsed ? ' hidden' : '')}>
             <QueryBuilder
               fields={fields}
               query={config.query}
