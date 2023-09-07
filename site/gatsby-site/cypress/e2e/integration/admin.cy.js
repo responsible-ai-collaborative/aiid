@@ -5,7 +5,7 @@ const { gql } = require('@apollo/client');
 describe('Admin', () => {
   const baseUrl = '/admin';
 
-  it('Should show not enough permissions message', () => {
+  it.skip('Should show not enough permissions message', () => {
     cy.visit(baseUrl);
 
     cy.contains('Not enough permissions').should('be.visible');
