@@ -22,7 +22,7 @@ export default function Results({ display, viewType, filters, loading, results }
           collapse
         </Button>
       </div>
-      {collapsed && (
+      {!collapsed && (
         <Hits display={display} viewType={viewType} loading={loading} results={results} />
       )}
     </div>
