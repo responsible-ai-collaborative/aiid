@@ -2,6 +2,7 @@ import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import reportHistory from '../../fixtures/history/reportHistory.json';
 import updateOneReport from '../../fixtures/reports/updateOneReport.json';
 import { maybeIt } from '../../support/utils';
+import supportedLanguages from '../../../src/components/i18n/languages.json';
 const { gql } = require('@apollo/client');
 
 describe('Report History', () => {
@@ -282,5 +283,157 @@ describe('Report History', () => {
     cy.get('[data-cy="restoring-message"]').should('not.exist');
 
     cy.wait('@FindReportHistory');
+  });
+
+  it('Should display the Report Version History details modal', () => {
+    cy.visit(url);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      {
+        data: {
+          report: reportHistory.data.history_reports[0],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportHistory',
+      'FindReportHistory',
+      reportHistory
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUsers',
+      'FindUsers',
+      {
+        data: {
+          users: [
+            { userId: '1', first_name: 'Sean', last_name: 'McGregor', roles: [] },
+            { userId: '2', first_name: 'Pablo', last_name: 'Costa', roles: [] },
+          ],
+        },
+      }
+    );
+
+    cy.wait(['@FindReport', '@FindReportHistory', '@FindUsers']);
+
+    cy.waitForStableDOM();
+
+    // Click the 2nd version
+    cy.get('[data-cy="history-row"]')
+      .eq(1)
+      .within(() => {
+        cy.get('[data-cy="view-full-version-button"]').click();
+      });
+
+    cy.get('[data-cy="version-view-modal"]').as('modal').should('be.visible');
+
+    cy.get('[data-cy="version-view-modal"]').within(() => {
+      const version = reportHistory.data.history_reports[1];
+
+      cy.contains('Version details').should('exist');
+      cy.contains(
+        `Modified on: ${format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`
+      ).should('exist');
+      cy.contains('Modified by: Sean McGregor').should('exist');
+      let index = 0;
+
+      cy.get('.tw-row').eq(index).contains('Report Address:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.url).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Title:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.title).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Author CSV:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.authors.join(', ')).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Submitter CSV:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.submitters.join(', ')).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Date Published:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.date_published).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Date Downloaded:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.date_downloaded).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Image Address:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.image_url).should('exist');
+      cy.get('.tw-row')
+        .eq(++index)
+        .find('[data-cy="cloudinary-image"]')
+        .should('have.attr', 'src')
+        .and('include', version.cloudinary_id);
+      cy.get('.tw-row').eq(++index).contains('Text:').should('exist');
+      cy.get('.tw-row').eq(index).contains('By Aimee Picchi').should('exist');
+      cy.get('.tw-row').eq(++index).contains('Language:').should('exist');
+      cy.get('.tw-row')
+        .eq(index)
+        .contains(supportedLanguages.find((l) => l.code == version.language)?.name)
+        .should('exist');
+      cy.get('.tw-row').eq(++index).contains('Tags:').should('exist');
+      for (const tag of version.tags) {
+        cy.get('.tw-row').eq(index).contains(tag).should('exist');
+      }
+      cy.get('.tw-row').eq(++index).contains('Editor Notes:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.editor_notes).should('exist');
+
+      cy.get('button').contains('Close').click();
+    });
+    cy.get('[data-cy="version-view-modal"]').should('not.exist');
+
+    // Click the latest version
+    cy.get('[data-cy="history-row"]')
+      .eq(0)
+      .within(() => {
+        cy.get('[data-cy="view-full-version-button"]').click();
+      });
+
+    cy.get('[data-cy="version-view-modal"]').as('modal').should('be.visible');
+
+    cy.get('[data-cy="version-view-modal"]').within(() => {
+      const version = reportHistory.data.history_reports[0];
+
+      cy.contains('Version details').should('exist');
+      cy.contains(
+        `Modified on: ${format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`
+      ).should('exist');
+      cy.contains('Modified by: Sean McGregor').should('exist');
+      let index = 0;
+
+      cy.get('.tw-row').eq(index).contains('Report Address:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.url).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Title:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.title).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Author CSV:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.authors.join(', ')).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Submitter CSV:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.submitters.join(', ')).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Date Published:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.date_published).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Date Downloaded:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.date_downloaded).should('exist');
+      cy.get('.tw-row').eq(++index).contains('Image Address:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.image_url).should('exist');
+      cy.get('.tw-row')
+        .eq(++index)
+        .find('[data-cy="cloudinary-image"]')
+        .should('have.attr', 'src')
+        .and('include', version.cloudinary_id);
+      cy.get('.tw-row').eq(++index).contains('Text:').should('exist');
+      cy.get('.tw-row').eq(index).contains('By Aimee Picchi').should('exist');
+      cy.get('.tw-row').eq(++index).contains('Language:').should('exist');
+      cy.get('.tw-row')
+        .eq(index)
+        .contains(supportedLanguages.find((l) => l.code == version.language)?.name)
+        .should('exist');
+      cy.get('.tw-row').eq(++index).contains('Tags:').should('exist');
+      for (const tag of version.tags) {
+        cy.get('.tw-row').eq(index).contains(tag).should('exist');
+      }
+      cy.get('.tw-row').eq(++index).contains('Editor Notes:').should('exist');
+      cy.get('.tw-row').eq(index).contains(version.editor_notes).should('exist');
+
+      cy.get('button').contains('Close').click();
+    });
+    cy.get('[data-cy="version-view-modal"]').should('not.exist');
   });
 });

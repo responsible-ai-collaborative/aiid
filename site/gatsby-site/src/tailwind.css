@@ -748,6 +748,10 @@
     margin-top: 45px !important;
   }
 
+  .react-markdown p {
+    overflow-wrap: anywhere;
+  }
+
   .prose a {
     @apply text-blue-500 no-underline hover:underline !important;
   }

@@ -34,7 +34,9 @@
         },
         {
             "name": "readOwnWriteOwn",
-            "apply_when": {},
+            "apply_when": {
+                "userId": "%%user.id"
+            },
             "document_filters": {
                 "write": {
                     "userId": "%%user.id"
@@ -60,6 +62,19 @@
                 "write": true,
                 "read": true
             }
+        },
+        {
+            "name": "default",
+            "apply_when": {},
+            "document_filters": {
+                "write": {},
+                "read": {}
+            },
+            "read": true,
+            "write": false,
+            "insert": false,
+            "delete": false,
+            "search": true
         }
     ]
 }

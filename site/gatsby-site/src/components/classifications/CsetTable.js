@@ -412,7 +412,7 @@ export default function CsetTable({ data, taxa, incident_id, ...props }) {
         attributes: attributes.map((a) => a),
         namespace: 'CSETv1',
         incidents: { link: [parseInt(incident_id)] },
-        reports: [],
+        reports: { link: [] },
       };
 
       await updateClassification({
@@ -435,7 +435,7 @@ export default function CsetTable({ data, taxa, incident_id, ...props }) {
       setSubmitting(false);
     } catch (error) {
       addToast({
-        message: 'Classification updated',
+        message: 'Could not update classification',
         severity: SEVERITY.danger,
         error,
       });
