@@ -726,6 +726,7 @@ describe('Submitted reports', () => {
         description:
           'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
+        incident_title: 'Submisssion 1 title',
         incident_date: '2015-09-01',
         incident_ids: [],
         language: 'en',

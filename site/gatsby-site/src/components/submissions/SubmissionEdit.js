@@ -8,6 +8,7 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
+import { format, getUnixTime } from 'date-fns';
 import {
   DELETE_SUBMISSION,
   FIND_SUBMISSION,
@@ -100,6 +101,8 @@ const SubmissionEdit = ({ id }) => {
         update.incident_editors = { link: userIds };
       }
 
+      const now = new Date();
+
       const updatedSubmission = {
         ...update,
         incident_id: update.incident_id === '' ? 0 : update.incident_id,
@@ -112,6 +115,8 @@ const SubmissionEdit = ({ id }) => {
             : values.submitters
           : ['Anonymous'],
         plain_text: await stripMarkdown(update.text),
+        date_modified: format(now, 'yyyy-MM-dd'),
+        epoch_date_modified: getUnixTime(now),
       };
 
       await updateSubmission({
@@ -228,6 +233,8 @@ const SubmissionEditForm = ({
   const [promoType, setPromoType] = useState('none');
 
   const localizedPath = useLocalizePath();
+
+  const [subscribeToNewSubmissionPromotionMutation] = useMutation(UPSERT_SUBSCRIPTION);
 
   useEffect(() => {
     if (!isEmpty(touched)) {
@@ -407,6 +414,27 @@ const SubmissionEditForm = ({
     const incident_id = incident_ids[0];
 
     await subscribeToNewReports(incident_id);
+
+    if (values.user) {
+      await subscribeToNewSubmissionPromotionMutation({
+        variables: {
+          query: {
+            type: SUBSCRIPTION_TYPE.submissionPromoted,
+            userId: { userId: values.user.userId },
+            incident_id: { incident_id: incident_id },
+          },
+          subscription: {
+            type: SUBSCRIPTION_TYPE.submissionPromoted,
+            userId: {
+              link: values.user.userId,
+            },
+            incident_id: {
+              link: incident_id,
+            },
+          },
+        },
+      });
+    }
 
     addToast({
       message: (
