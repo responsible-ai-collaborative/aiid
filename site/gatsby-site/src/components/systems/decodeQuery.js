@@ -1,30 +1,28 @@
 import qs from 'qs';
 
-function createTransformFunction() {
-  let counter = 0;
+function createTransform() {
+  let taxonomyCounter = 0;
 
-  function transformObject(obj) {
+  return function recursiveTransform(obj) {
     if (Array.isArray(obj)) {
-      return obj.map((item) => transformObject(item));
+      return obj.map(recursiveTransform);
     }
 
     if (typeof obj === 'object' && obj !== null) {
-      const newObj = {};
+      let newObj = {};
 
-      if (obj.type === 'taxonomy') {
-        newObj['id'] = `taxonomy-${counter++}`;
+      if ('type' in obj && obj.type === 'taxonomy') {
+        newObj['id'] = `taxonomy-${taxonomyCounter++}`;
       }
 
       for (const [key, value] of Object.entries(obj)) {
-        if (key === 'rules') {
-          newObj[key] = value.map((rule) => {
-            return {
-              ...rule,
-              valueSource: 'value',
-            };
-          });
+        if (key.startsWith('[') && key.endsWith(']')) {
+          const newKey = key.slice(1, -1);
+
+          newObj[newKey] = recursiveTransform(value);
+          newObj['valueSource'] = 'value';
         } else {
-          newObj[key] = transformObject(value);
+          newObj[key] = recursiveTransform(value);
         }
       }
 
@@ -32,17 +30,13 @@ function createTransformFunction() {
     }
 
     return obj;
-  }
-
-  return transformObject;
+  };
 }
 
-export default function (query) {
-  const transform = createTransformFunction();
+export default function (queryString) {
+  const parsed = qs.parse(queryString, { parseArrays: true });
 
-  const parsed = qs.parse(query, { parseArrays: true });
-
-  const updated = transform(parsed);
+  const updated = createTransform()(parsed);
 
   return updated;
 }

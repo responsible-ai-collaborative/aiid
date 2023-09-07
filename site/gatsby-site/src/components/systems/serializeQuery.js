@@ -37,7 +37,7 @@ const getOperation = (rule) => {
 export default function (filters) {
   const queries = filters
     .map((filter) => {
-      const formatted = formatQuery(filter.query, {
+      const formatted = formatQuery(filter.config.query, {
         format: 'mongodb',
         ruleProcessor: (rule) => {
           const updated = {

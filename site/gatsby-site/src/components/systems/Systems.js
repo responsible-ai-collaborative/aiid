@@ -57,7 +57,7 @@ const isValidQuery = (q) => {
     return false;
   }
 
-  if (q.some((filter) => !isValidFilter(filter.query))) {
+  if (q.some((filter) => !isValidFilter(filter.config.query))) {
     return false;
   }
 
@@ -101,15 +101,9 @@ export default function Systems() {
   );
 
   const search = (filters) => {
-    if (isValidQuery(filters)) {
-      const fullQuery = serializeQuery(filters);
+    const serialized = serializeQuery(filters);
 
-      findSystems({ variables: { input: { query: fullQuery } } });
-
-      const encoded = encodeQuery(filters);
-
-      navigate(`?${encoded}`);
-    }
+    findSystems({ variables: { input: { query: serialized } } });
   };
 
   const debouncedSearch = useMemo(() => debounce(search, 2000), []);
@@ -119,7 +113,15 @@ export default function Systems() {
   }, []);
 
   useEffect(() => {
-    debouncedSearch(filters);
+    if (isValidQuery(filters)) {
+      const encoded = encodeQuery(filters);
+
+      navigate(`?${encoded}`);
+
+      debouncedSearch(filters);
+    } else if (filters?.length == 0) {
+      navigate(`?`);
+    }
 
     return () => debouncedSearch.cancel();
   }, [filters]);
@@ -173,7 +175,13 @@ export default function Systems() {
     <>
       <Button onClick={() => setShowTaxonomyModal(true)}>Add Taxonomy</Button>
 
-      {filters && filters.length > 0 && (
+      {filters?.length == 0 && (
+        <div className="mt-2">
+          <h4>Please start by adding a Taxonomy</h4>
+        </div>
+      )}
+
+      {filters?.length > 0 && (
         <div className="mt-2">
           <Card>
             <div>
@@ -183,9 +191,10 @@ export default function Systems() {
                 return (
                   <Component
                     key={filter.id}
+                    id={filter.id}
                     setFilters={setFilters}
                     removeFilter={removeFilter}
-                    {...filter}
+                    config={filter.config}
                   />
                 );
               })}
@@ -195,11 +204,10 @@ export default function Systems() {
       )}
 
       <h3 className="mt-3">
-        {loading ? (
-          <Spinner />
-        ) : (
+        {loading && <Spinner />}
+        {!loading && filters?.length > 0 && (
           <>
-            {incidentResults?.length && (
+            {incidentResults?.length > 0 && (
               <Trans>{{ length: incidentResults.length }} Incidents Found</Trans>
             )}
             {incidentResults?.length == 0 && <Trans>No incidents found</Trans>}
@@ -219,7 +227,9 @@ export default function Systems() {
       {showTaxonomyModal && (
         <AddTaxonomyModal
           onClose={() => setShowTaxonomyModal(false)}
-          onTaxonomySelected={(taxonomy) => addFilter('taxonomy', { namespace: taxonomy })}
+          onTaxonomySelected={(namespace) =>
+            addFilter('taxonomy', { namespace, query: { combinator: 'and', rules: [] } })
+          }
         />
       )}
     </>

@@ -21,7 +21,7 @@ const FIND_TAXONOMY = gql`
   }
 `;
 
-export default function Builder({ id, setFilters, removeFilter, config, query = null }) {
+export default function Builder({ id, setFilters, removeFilter, config }) {
   const [fields, setFields] = useState(null);
 
   const { data, loading } = useQuery(FIND_TAXONOMY, {
@@ -32,9 +32,8 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
     setFilters((filters) =>
       filters.map((filter) => {
         if (filter.id === id) {
-          return { ...filter, query };
+          return { ...filter, config: { ...filter.config, query } };
         }
-
         return filter;
       })
     );
@@ -118,20 +117,10 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
       }
 
       setFields(fields);
-
-      setFilters((filters) =>
-        filters.map((filter) => {
-          if (filter.id === id) {
-            return { ...filter, query: query ?? { combinator: 'and', rules: [] } };
-          }
-
-          return filter;
-        })
-      );
     }
   }, [data]);
 
-  const valid = isValidFilter(query);
+  const valid = isValidFilter(config.query);
 
   return (
     <div className={'first:mt-0 mt-4 p-2' + (valid ? '' : ' bg-red-300')}>
@@ -147,7 +136,7 @@ export default function Builder({ id, setFilters, removeFilter, config, query = 
           <div className="mt-2">
             <QueryBuilder
               fields={fields}
-              query={query}
+              query={config.query}
               onQueryChange={(q) => handleChange(q)}
               listsAsArrays={true}
             />

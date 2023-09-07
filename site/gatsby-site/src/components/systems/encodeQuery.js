@@ -23,5 +23,7 @@ function stripProperties(obj, propertiesToStrip = ['id', 'valueSource']) {
 export default function (filters) {
   const updated = stripProperties(filters);
 
-  return qs.stringify({ filters: updated }, { encodeValuesOnly: true });
+  const encoded = qs.stringify({ filters: updated }, { encodeValuesOnly: true });
+
+  return encoded;
 }
