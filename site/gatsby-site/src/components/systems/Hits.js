@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Hit from './Hit';
 import { Trans } from 'react-i18next';
 
-export default function Results({ display, viewType, loading, results, minVisible = 3 }) {
+export default function Hits({ display, viewType, loading, results, minVisible = 3 }) {
   const [numVisible, setNumVisible] = useState(minVisible);
 
   return (
@@ -19,8 +19,8 @@ export default function Results({ display, viewType, loading, results, minVisibl
       }}
       className={`grid gap-2 mt-4 mx-auto px-3 w-full lg:max-w-6xl xl:max-w-7xl`}
     >
-      {loading ? (
-        display === 'list' ? (
+      {loading &&
+        (display === 'list' ? (
           <ListSkeleton />
         ) : (
           Array(24)
@@ -28,8 +28,9 @@ export default function Results({ display, viewType, loading, results, minVisibl
             .map((_skeleton, i) => (
               <CardSkeleton key={i} className="m:inline-block ml-3" text={display == 'details'} />
             ))
-        )
-      ) : (
+        ))}
+
+      {!loading && results?.length > 0 && (
         <>
           {results.map((result, index) => {
             if (index >= numVisible) {

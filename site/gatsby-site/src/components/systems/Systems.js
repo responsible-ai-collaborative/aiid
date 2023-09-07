@@ -66,7 +66,7 @@ const isValidQuery = (q) => {
 export default function Systems() {
   const location = useLocation();
 
-  const [findSystems, { loading: loadingSystems, data }] = useLazyQuery(FIND_SYSTEMS);
+  const [findSystems, { loading: searching, data }] = useLazyQuery(FIND_SYSTEMS);
 
   const [findIncidents, { loading: loadingIncidents, data: dataIncidents }] =
     useLazyQuery(FIND_INCIDENTS);
@@ -105,6 +105,8 @@ export default function Systems() {
     const serialized = serializeQuery(filters);
 
     findSystems({ variables: { input: { query: serialized } } });
+
+    setIncidentResults(null);
   };
 
   const debouncedSearch = useMemo(() => debounce(search, 2000), []);
@@ -170,8 +172,6 @@ export default function Systems() {
     }
   }, [dataIncidents]);
 
-  const loading = loadingSystems || loadingIncidents;
-
   return (
     <>
       <div className="border">
@@ -182,33 +182,31 @@ export default function Systems() {
           </Button>
         </div>
 
-        {!collapsed && (
-          <>
-            {filters?.length > 0 && (
-              <div>
-                {filters.map((filter) => {
-                  const Component = queryTypes[filter.type].default;
+        <div className={collapsed ? 'hidden' : ''}>
+          {filters?.length > 0 && (
+            <div>
+              {filters.map((filter) => {
+                const Component = queryTypes[filter.type].default;
 
-                  return (
-                    <Component
-                      key={filter.id}
-                      id={filter.id}
-                      setFilters={setFilters}
-                      removeFilter={removeFilter}
-                      config={filter.config}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            <div className="p-2">
-              <Button size="xs" onClick={() => setShowTaxonomyModal(true)}>
-                Add Taxonomy
-              </Button>
+                return (
+                  <Component
+                    key={filter.id}
+                    id={filter.id}
+                    setFilters={setFilters}
+                    removeFilter={removeFilter}
+                    config={filter.config}
+                  />
+                );
+              })}
             </div>
-          </>
-        )}
+          )}
+
+          <div className="p-2">
+            <Button size="xs" onClick={() => setShowTaxonomyModal(true)}>
+              Add Taxonomy
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="mt-2">
@@ -223,7 +221,8 @@ export default function Systems() {
         display={display}
         viewType={viewType}
         filters={filters}
-        loading={loading}
+        searching={searching}
+        loading={loadingIncidents}
         results={incidentResults}
       />
 
