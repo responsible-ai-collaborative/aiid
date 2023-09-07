@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
-import Table, {
-  DefaultColumnFilter,
-  DefaultColumnHeader,
-  DefaultDateCell,
-} from 'components/ui/Table';
+import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { Badge, Button } from 'flowbite-react';
 import UserEditModal from './UserEditModal';
+import UserEmailCell from './UserEmailCell';
+import UserCreationDateCell from './UserCreationDateCell';
+import UserLastAuthDateCell from './UserLastAuthDateCell';
 
 function RolesCell({ cell }) {
   return (
@@ -35,7 +34,7 @@ export default function UsersTable({ data, className = '', ...props }) {
       {
         title: 'Email',
         accessor: 'adminData.email',
-        Cell: ({ cell }) => cell.value || <Badge color="grey">Not found</Badge>,
+        Cell: ({ row: { values } }) => <UserEmailCell userId={values.userId} />,
       },
       {
         title: 'Id',
@@ -57,12 +56,12 @@ export default function UsersTable({ data, className = '', ...props }) {
       {
         title: 'Creation Date',
         accessor: 'adminData.creationDate',
-        Cell: DefaultDateCell,
+        Cell: ({ row: { values } }) => <UserCreationDateCell userId={values.userId} />,
       },
       {
         title: 'Last Login Date',
         accessor: 'adminData.lastAuthenticationDate',
-        Cell: DefaultDateCell,
+        Cell: ({ row: { values } }) => <UserLastAuthDateCell userId={values.userId} />,
       },
       {
         id: 'actions',
@@ -88,7 +87,6 @@ export default function UsersTable({ data, className = '', ...props }) {
       columns,
       data,
       defaultColumn,
-      initialState: { sortBy: [{ id: 'email', desc: true }] },
     },
     useFilters,
     useSortBy,
