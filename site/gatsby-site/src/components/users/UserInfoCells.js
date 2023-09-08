@@ -11,7 +11,11 @@ const UserCreationDateCell = ({ userId }) => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {loading && (
+        <div className="flex justify-center">
+          <Spinner />
+        </div>
+      )}
       {!loading &&
         data?.user?.adminData?.creationDate &&
         format(new Date(data.user.adminData.creationDate), 'yyyy-MM-dd')}
@@ -26,7 +30,11 @@ const UserLastAuthDateCell = ({ userId }) => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {loading && (
+        <div className="flex justify-center">
+          <Spinner />
+        </div>
+      )}
       {!loading &&
         data?.user?.adminData?.lastAuthenticationDate &&
         format(new Date(data.user.adminData.lastAuthenticationDate), 'yyyy-MM-dd')}
@@ -41,7 +49,11 @@ const UserEmailCell = ({ userId }) => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {loading && (
+        <div className="flex justify-center">
+          <Spinner />
+        </div>
+      )}
       {!loading &&
         data &&
         data.user &&

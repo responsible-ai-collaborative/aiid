@@ -32,6 +32,7 @@ export default function UsersTable({ data, className = '', ...props }) {
       {
         title: 'Email',
         accessor: 'adminData.email',
+        className: 'min-w-[240px]',
         Cell: ({ row: { values } }) => <UserEmailCell userId={values.userId} />,
       },
       {
