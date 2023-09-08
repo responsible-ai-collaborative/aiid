@@ -169,7 +169,31 @@ export const FIND_REPORT_HISTORY = gql`
       text
       title
       url
+      source_domain
       user
+    }
+  }
+`;
+
+export const FIND_REPORTS = gql`
+  query FindReports($query: ReportQueryInput!) {
+    reports(query: $query) {
+      _id
+      submitters
+      date_published
+      report_number
+      title
+      description
+      url
+      image_url
+      cloudinary_id
+      source_domain
+      text
+      authors
+      epoch_date_submitted
+      language
+      tags
+      inputs_outputs
     }
   }
 `;
