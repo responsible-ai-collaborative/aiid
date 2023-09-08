@@ -5,8 +5,7 @@ const { gql } = require('@apollo/client');
 describe('Admin', () => {
   const baseUrl = '/admin';
 
-  //TODO: (Issue #2272): Temporarily skip flaky test.
-  it.skip('Should show not enough permissions message', () => {
+  it('Should show not enough permissions message', () => {
     cy.visit(baseUrl);
 
     cy.contains('Not enough permissions').should('be.visible');
