@@ -3,9 +3,7 @@ import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { Badge, Button } from 'flowbite-react';
 import UserEditModal from './UserEditModal';
-import UserEmailCell from './UserEmailCell';
-import UserCreationDateCell from './UserCreationDateCell';
-import UserLastAuthDateCell from './UserLastAuthDateCell';
+import { UserCreationDateCell, UserEmailCell, UserLastAuthDateCell } from './UserInfoCells';
 
 function RolesCell({ cell }) {
   return (
