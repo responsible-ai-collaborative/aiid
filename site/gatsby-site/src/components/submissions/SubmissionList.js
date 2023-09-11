@@ -455,11 +455,11 @@ const SubmissionList = ({ data }) => {
   };
 
   return (
-    <div className="w-fit">
+    <div className="">
       <Table
         table={table}
         data-cy="submissions"
-        className="mb-5"
+        className="mb-5 w-fit"
         tableClassName="rounded-lg border"
       />
     </div>
