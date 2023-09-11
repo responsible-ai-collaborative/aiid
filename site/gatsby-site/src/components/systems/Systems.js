@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import queryTypes from 'components/systems/queryTypes';
 import AddTaxonomyModal from './AddTaxonomyModal';
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
 import { debounce } from 'lodash';
 import { Button } from 'flowbite-react';
 import Results from './Results';
@@ -68,16 +68,43 @@ const isValidQuery = (q) => {
 export default function Systems() {
   const location = useLocation();
 
-  const [aborter, setAborter] = useState(new AbortController());
+  const client = useApolloClient();
 
-  const [findSystems, { loading: searching, data }] = useLazyQuery(FIND_SYSTEMS, {
-    context: { fetchOptions: { signal: aborter.signal } },
-  });
+  const [searching, setSearching] = useState(false);
 
-  const [findIncidents, { loading: loadingIncidents, data: dataIncidents }] = useLazyQuery(
-    FIND_INCIDENTS,
-    { context: { fetchOptions: { signal: aborter.signal } } }
-  );
+  const [data, setData] = useState(null);
+
+  const findSystems = async (options) => {
+    console.log('findSystems', options);
+
+    setSearching(true);
+    setData(null);
+
+    const result = await client.query({ query: FIND_SYSTEMS, ...options });
+
+    console.log('findSystems result', result);
+
+    setData(result.data);
+    setSearching(false);
+  };
+
+  const [loadingIncidents, setLoadingIncidents] = useState(false);
+
+  const [dataIncidents, setDataIncidents] = useState(null);
+
+  const findIncidents = async (options) => {
+    console.log('findIncidents', options);
+
+    setLoadingIncidents(true);
+    setDataIncidents(null);
+
+    const result = await client.query({ query: FIND_INCIDENTS, ...options });
+
+    console.log('findIncidents result', result);
+
+    setDataIncidents(result.data);
+    setLoadingIncidents(false);
+  };
 
   const [filters, setFilters] = useState(null);
 
@@ -91,31 +118,22 @@ export default function Systems() {
 
   const [showTaxonomyModal, setShowTaxonomyModal] = useState(false);
 
-  const addFilter = useCallback(
-    (type, config) => {
-      const count = filters.filter((filter) => filter.type === type).length;
+  const addFilter = (type, config) =>
+    setFilters((filters) => {
+      const count = filters.length + 1;
 
       const id = `${type}-${count}`;
 
-      setFilters((filters) => [...filters, { type, id, config }]);
-    },
-    [filters]
-  );
+      return [...filters, { type, id, config }];
+    });
 
-  const removeFilter = useCallback(
-    (id) => {
-      setFilters((filters) => filters.filter((filter) => filter.id !== id));
-    },
-    [filters]
-  );
+  const removeFilter = (id) =>
+    setFilters((filters) => filters.filter((filter) => filter.id !== id));
 
   const search = (filters) => {
     const serialized = serializeQuery(filters);
 
     console.log('perform search');
-
-    aborter.abort();
-    setAborter(new AbortController());
 
     setIncidentResults(null);
 
@@ -147,7 +165,7 @@ export default function Systems() {
   }, [filters]);
 
   useEffect(() => {
-    if (data?.findSystems?.results) {
+    if (!searching && data?.findSystems?.results) {
       const incidents = data.findSystems.results.map((result) => result.incidents).flat();
 
       if (incidents.length) {
@@ -160,9 +178,11 @@ export default function Systems() {
         setIncidentResults([]);
       }
     }
-  }, [data]);
+  }, [data, searching]);
 
   useEffect(() => {
+    console.log('dataIncidents', dataIncidents);
+
     if (dataIncidents?.incidents) {
       const results = dataIncidents.incidents.map((incident) => {
         const { title, description, reports, incident_id } = incident;

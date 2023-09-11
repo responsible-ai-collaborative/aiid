@@ -128,7 +128,7 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
   const valid = isValidFilter(config.query);
 
   return (
-    <div className={'first:mt-0 border p-2' + (valid ? '' : ' bg-red-300')}>
+    <div className={'first:mt-0 border p-2' + (valid ? '' : ' bg-red-300')} data-cy={id}>
       {loading && <Spinner />}
       {!loading && fields && (
         <div>

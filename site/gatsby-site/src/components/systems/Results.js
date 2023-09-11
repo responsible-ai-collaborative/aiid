@@ -9,8 +9,8 @@ export default function Results({ display, viewType, filters, searching, fetchin
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="mt-2">
-      <div className="flex justify-between">
+    <div className="mt-4">
+      <div className="flex justify-between px-2">
         <h3>
           {(searching || fetching) && <Spinner />}
           {(!searching || !fetching) && filters?.length > 0 && (
