@@ -216,7 +216,7 @@ const SubmissionList = ({ data }) => {
         Filter: SelectColumnFilter,
         Cell: ({ row: { values } }) => {
           return (
-            <div className="flex justify-center">
+            <div className="flex justify-center flex-wrap gap-1">
               {values.submitters.map((submitter, index) => {
                 return (
                   <Badge key={`submitter-${index}`} className="w-fit">
