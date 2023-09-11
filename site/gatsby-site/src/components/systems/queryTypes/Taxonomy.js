@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import QueryBuilder from 'react-querybuilder';
 import { gql, useQuery } from '@apollo/client';
 import 'react-querybuilder/dist/query-builder.css';
-import { Trans } from 'react-i18next';
 import isValidFilter from '../isValidFilter';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
 const FIND_TAXONOMY = gql`
   query FindTaxonomy($input: TaxaQueryInput) {
@@ -31,10 +32,12 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleChange = (query) => {
+    console.log('changecito', query);
+
     setFilters((filters) =>
       filters.map((filter) => {
         if (filter.id === id) {
-          return { ...filter, config: { ...filter.config, query } };
+          return { ...filter, initialized: true, config: { ...filter.config, query } };
         }
         return filter;
       })
@@ -129,14 +132,14 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
       {loading && <Spinner />}
       {!loading && fields && (
         <div>
-          <div className="flex justify-between">
-            <h4>{config.namespace}</h4>
+          <div className="flex justify-between align-middle">
+            <div>{config.namespace}</div>
             <div className=" flex gap-2">
-              <Button size="xs" onClick={() => setCollapsed((c) => !c)}>
-                <Trans>collapse</Trans>
+              <Button size="xs" onClick={() => setCollapsed((c) => !c)} color="light">
+                <FontAwesomeIcon icon={collapsed ? faAngleDown : faAngleUp} />
               </Button>
-              <Button size="xs" onClick={() => removeFilter(id)}>
-                <Trans>Delete</Trans>
+              <Button size="xs" onClick={() => removeFilter(id)} color="light">
+                <FontAwesomeIcon icon={faTrash} />
               </Button>
             </div>
           </div>

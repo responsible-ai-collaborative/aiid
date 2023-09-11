@@ -11,6 +11,8 @@ import { useLocation } from '@reach/router';
 import { navigate } from 'gatsby';
 import getInitialQuery from './getInitialQuery';
 import isValidFilter from './isValidFilter';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -104,19 +106,25 @@ export default function Systems() {
   const search = (filters) => {
     const serialized = serializeQuery(filters);
 
-    findSystems({ variables: { input: { query: serialized } } });
+    console.log('perform search');
 
     setIncidentResults(null);
+
+    findSystems({ variables: { input: { query: serialized } } });
   };
 
   const debouncedSearch = useMemo(() => debounce(search, 2000), []);
 
   useEffect(() => {
+    console.log('init');
+
     setFilters(getInitialQuery(location).filters);
   }, []);
 
   useEffect(() => {
-    if (isValidQuery(filters)) {
+    if (isValidQuery(filters) && filters?.every((filter) => filter.initialized)) {
+      console.log('debounced search', filters);
+
       const encoded = encodeQuery(filters);
 
       navigate(`?${encoded}`);
@@ -134,10 +142,14 @@ export default function Systems() {
       const incidents = data.findSystems.results.map((result) => result.incidents).flat();
 
       if (incidents.length) {
-        findIncidents({ variables: { query: { incident_id_in: incidents } } });
-      }
+        console.log('fetch', incidents);
 
-      setIncidentResults([]);
+        findIncidents({ variables: { query: { incident_id_in: incidents } } });
+      } else {
+        console.log('no results', incidents);
+
+        setIncidentResults([]);
+      }
     }
   }, [data]);
 
@@ -176,9 +188,9 @@ export default function Systems() {
     <>
       <div className="border">
         <div className="flex justify-between p-2">
-          <h4>Search</h4>
-          <Button size="xs" onClick={() => setCollapsed((c) => !c)}>
-            collapse
+          <div>Search</div>
+          <Button size="xs" onClick={() => setCollapsed((c) => !c)} color="light">
+            <FontAwesomeIcon icon={collapsed ? faAngleDown : faAngleUp} />
           </Button>
         </div>
 
@@ -222,7 +234,7 @@ export default function Systems() {
         viewType={viewType}
         filters={filters}
         searching={searching}
-        loading={loadingIncidents}
+        fetching={loadingIncidents}
         results={incidentResults}
       />
 
