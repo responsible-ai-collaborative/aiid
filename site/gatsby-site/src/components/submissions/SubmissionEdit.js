@@ -572,68 +572,70 @@ const SubmissionEditForm = ({
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
       <div className="flex w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
-        <div className="flex flex-col w-full items-center gap-2">
-          <Label>
-            <FontAwesomeIcon icon={faUser} className="mr-2" />
-            <Trans i18n={i18n} ns="submitted">
-              Editors
-            </Trans>
-          </Label>
-          <div className="editors-dropdown">
-            {!userLoading && (
-              <Dropdown label={t('Editors')} color={'light'}>
-                {userData.users.map((user) => {
-                  const isChecked =
-                    selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
+        <div className="flex w-full flex-col gap-6">
+          <div className="flex flex-col w-full items-center gap-2">
+            <Label>
+              <FontAwesomeIcon icon={faUser} className="mr-2" />
+              <Trans i18n={i18n} ns="submitted">
+                Editors
+              </Trans>
+            </Label>
+            <div className="editors-dropdown">
+              {!userLoading && (
+                <Dropdown label={t('Editors')} color={'light'}>
+                  {userData.users.map((user) => {
+                    const isChecked =
+                      selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
 
-                  return (
-                    <DropdownItem key={`editors-${user.userId}`}>
-                      <div className="flex justify-center items-center gap-2">
-                        <Checkbox
-                          id={`checkbox-${user.userId}`}
-                          checked={isChecked}
-                          onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
-                        />
-                        <Label htmlFor={`checkbox-${user.userId}`}>
-                          {user.first_name} {user.last_name}
-                        </Label>
-                      </div>
-                    </DropdownItem>
-                  );
-                })}
-              </Dropdown>
-            )}
+                    return (
+                      <DropdownItem key={`editors-${user.userId}`}>
+                        <div className="flex justify-center items-center gap-2">
+                          <Checkbox
+                            id={`checkbox-${user.userId}`}
+                            checked={isChecked}
+                            onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
+                          />
+                          <Label htmlFor={`checkbox-${user.userId}`}>
+                            {user.first_name} {user.last_name}
+                          </Label>
+                        </div>
+                      </DropdownItem>
+                    );
+                  })}
+                </Dropdown>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-col w-full items-center gap-2">
-          <Label>
-            <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
-            <Trans i18n={i18n} ns="submitted">
-              Status
-            </Trans>
-          </Label>
-          <Select
-            className="w-full"
-            value={values.status || 'inReview'}
-            onChange={(e) => {
-              setSaving(true);
-              saveChanges({ ...values, status: e.target.value });
-              setFieldValue('status', e.target.value);
-            }}
-            data-cy="status-select"
-          >
-            <option value={STATUS.inReview.name} data-cy="status-in-review">
+          <div className="flex flex-col w-full items-center gap-2">
+            <Label>
+              <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
               <Trans i18n={i18n} ns="submitted">
-                {STATUS.inReview.text}
+                Status
               </Trans>
-            </option>
-            <option value={STATUS.pendingReview.name} data-cy="status-pending-review">
-              <Trans i18n={i18n} ns="submitted">
-                {STATUS.pendingReview.text}
-              </Trans>
-            </option>
-          </Select>
+            </Label>
+            <Select
+              className="w-full"
+              value={values.status || 'inReview'}
+              onChange={(e) => {
+                setSaving(true);
+                saveChanges({ ...values, status: e.target.value });
+                setFieldValue('status', e.target.value);
+              }}
+              data-cy="status-select"
+            >
+              <option value={STATUS.inReview.name} data-cy="status-in-review">
+                <Trans i18n={i18n} ns="submitted">
+                  {STATUS.inReview.text}
+                </Trans>
+              </option>
+              <option value={STATUS.pendingReview.name} data-cy="status-pending-review">
+                <Trans i18n={i18n} ns="submitted">
+                  {STATUS.pendingReview.text}
+                </Trans>
+              </option>
+            </Select>
+          </div>
         </div>
         <Card className="w-full">
           {!isNewIncident && (
