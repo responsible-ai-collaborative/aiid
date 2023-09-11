@@ -179,7 +179,7 @@ const SubmissionEdit = ({ id }) => {
       ) : (
         <>
           {!loading && submission && entitiesData?.entities && (
-            <div className="flex" data-cy="submission-form">
+            <div className="flex md:flex-row flex-col" data-cy="submission-form">
               <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
@@ -214,14 +214,7 @@ const SubmissionEdit = ({ id }) => {
   );
 };
 
-const SubmissionEditForm = ({
-  handleSubmit,
-  saving,
-  setSaving,
-  userLoading,
-  userData,
-  // setIsValid,
-}) => {
+const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, userData }) => {
   const [promoting, setPromoting] = useState('');
 
   const [deleting, setDeleting] = useState(false);
@@ -559,7 +552,7 @@ const SubmissionEditForm = ({
 
   return (
     <>
-      <StepContainer className="w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
+      <StepContainer className="md:w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
         <Badge
           className="absolute -top-3 z-10"
           color={values.status ? STATUS[values.status].color : 'warning'}
@@ -571,7 +564,7 @@ const SubmissionEditForm = ({
         <SubmissionForm hideEditors={true} />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
-      <div className="flex w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
+      <div className="flex md:w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
         <div className="flex w-full flex-col gap-6">
           <div className="flex flex-col w-full items-center gap-2">
             <Label>
@@ -637,7 +630,7 @@ const SubmissionEditForm = ({
             </Select>
           </div>
         </div>
-        <Card className="w-full">
+        <Card className="w-full mt-4">
           {!isNewIncident && (
             <div className="flex flex-col gap-2 w-full mb-2">
               <Button
