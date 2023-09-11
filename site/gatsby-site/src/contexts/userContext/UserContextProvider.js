@@ -9,6 +9,13 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { navigate } from 'gatsby';
 import useLocalizePath from '../../components/i18n/useLocalizePath';
+import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
+
+if (process.env.NODE_ENV !== 'production') {
+  // Adds messages only in a dev environment
+  loadDevMessages();
+  loadErrorMessages();
+}
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
