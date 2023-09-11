@@ -96,14 +96,18 @@ const SubmissionList = ({ data }) => {
 
       preFilteredRows.forEach((row) => {
         if (row.values[id]) {
-          let editors = row.values[id].reduce((acc, editor) => {
-            const name = `${editor.first_name} ${editor.last_name}`;
+          let editors = row.values[id]
+            .filter((editor) => {
+              return editor.first_name && editor.last_name;
+            })
+            .reduce((acc, editor) => {
+              const name = `${editor.first_name} ${editor.last_name}`;
 
-            if (!options.find((e) => e === name)) {
-              acc.push(name);
-            }
-            return acc;
-          }, []);
+              if (!options.find((e) => e === name)) {
+                acc.push(name);
+              }
+              return acc;
+            }, []);
 
           options = options.concat(editors);
         }
