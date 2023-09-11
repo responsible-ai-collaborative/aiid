@@ -356,11 +356,13 @@ const SubmissionList = ({ data }) => {
             return rowValue === value;
           }),
         Cell: ({ row: { values } }) => {
-          let color = STATUS[values.status]?.color || 'warning';
+          let color =
+            STATUS[values.status]?.color ||
+            'bg-orange-100 text-orange-800 dark:bg-orange-200 dark:text-orange-900';
 
           return (
             <div className="flex justify-center">
-              <Badge color={color} className="mr-2">
+              <Badge className={`mr-2 ${color}`}>
                 <Trans>{STATUS[values.status]?.text || STATUS.pendingReview.text}</Trans>
               </Badge>
             </div>
