@@ -451,12 +451,14 @@ const SubmissionList = ({ data }) => {
   };
 
   return (
-    <Table
-      table={table}
-      data-cy="submissions"
-      className="mb-5"
-      tableClassName="rounded-lg border"
-    />
+    <div className="w-fit">
+      <Table
+        table={table}
+        data-cy="submissions"
+        className="mb-5"
+        tableClassName="rounded-lg border"
+      />
+    </div>
   );
 };
 
