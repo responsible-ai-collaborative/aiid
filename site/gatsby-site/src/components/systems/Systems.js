@@ -68,10 +68,16 @@ const isValidQuery = (q) => {
 export default function Systems() {
   const location = useLocation();
 
-  const [findSystems, { loading: searching, data }] = useLazyQuery(FIND_SYSTEMS);
+  const [aborter, setAborter] = useState(new AbortController());
 
-  const [findIncidents, { loading: loadingIncidents, data: dataIncidents }] =
-    useLazyQuery(FIND_INCIDENTS);
+  const [findSystems, { loading: searching, data }] = useLazyQuery(FIND_SYSTEMS, {
+    context: { fetchOptions: { signal: aborter.signal } },
+  });
+
+  const [findIncidents, { loading: loadingIncidents, data: dataIncidents }] = useLazyQuery(
+    FIND_INCIDENTS,
+    { context: { fetchOptions: { signal: aborter.signal } } }
+  );
 
   const [filters, setFilters] = useState(null);
 
@@ -107,6 +113,9 @@ export default function Systems() {
     const serialized = serializeQuery(filters);
 
     console.log('perform search');
+
+    aborter.abort();
+    setAborter(new AbortController());
 
     setIncidentResults(null);
 
