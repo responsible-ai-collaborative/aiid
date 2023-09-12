@@ -458,14 +458,14 @@ describe('The Submit form', () => {
 
   it('Should pull parameters form the query string and auto-fill fields', () => {
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       submitters: 'test submitter',
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
@@ -482,7 +482,7 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       incident_date: '2022-01-01',
       incident_ids: [1],
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
       editor_notes: 'Here are some notes',
@@ -544,8 +544,8 @@ describe('The Submit form', () => {
         tags: [values.tags],
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        source_domain: `incidentdatabase.ai`,
+        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
         editor_notes: 'Here are some notes',
       });
 
@@ -557,13 +557,13 @@ describe('The Submit form', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
@@ -577,7 +577,7 @@ describe('The Submit form', () => {
       authors: 'test author',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
     }).as('parseNews');
 
@@ -637,8 +637,8 @@ describe('The Submit form', () => {
         tags: [values.tags],
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        source_domain: `incidentdatabase.ai`,
+        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
         editor_notes: 'Here are some notes',
       });
 
@@ -897,7 +897,7 @@ describe('The Submit form', () => {
 
   it('Should show fallback preview image on initial load', () => {
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       submitters: 'test submitter',
@@ -930,7 +930,7 @@ describe('The Submit form', () => {
 
   it('Should update preview image when url is typed', () => {
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       submitters: 'test submitter',
@@ -976,7 +976,7 @@ describe('The Submit form', () => {
     cy.visit(url);
 
     const valuesStep1 = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       date_published: '2021-01-02',
@@ -999,7 +999,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
     };
 
     for (const key in valuesStep2) {
@@ -1203,14 +1203,14 @@ describe('The Submit form', () => {
 
   it('Should submit a new report response', () => {
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       submitters: 'test submitter',
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'response',
@@ -1281,8 +1281,8 @@ describe('The Submit form', () => {
         tags: [values.tags],
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        source_domain: `incidentdatabase.ai`,
+        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
         editor_notes: 'Here are some notes',
       });
     });
@@ -1317,7 +1317,7 @@ describe('The Submit form', () => {
     cy.visit(url);
 
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'BBC News',
       incident_date: '2022-01-01',
@@ -1366,7 +1366,7 @@ describe('The Submit form', () => {
         authors: [values.authors],
         plain_text:
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `test.com`,
+        source_domain: `incidentdatabase.ai`,
         editor_dissimilar_incidents: [2],
         editor_similar_incidents: [3],
       });
@@ -1424,7 +1424,7 @@ describe('The Submit form', () => {
     cy.visit(url);
 
     const valuesStep1 = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       date_published: '2021-01-02',
@@ -1457,7 +1457,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
     };
 
     for (const key in valuesStep2) {
@@ -1492,8 +1492,8 @@ describe('The Submit form', () => {
         tags: [],
         plain_text:
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        source_domain: `incidentdatabase.ai`,
+        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
         editor_notes: 'Here are some notes',
       });
     });
@@ -1580,18 +1580,18 @@ describe('The Submit form', () => {
 
   it('Should load from localstorage', () => {
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       authors: ['test author'],
       title: 'test title',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       submitters: ['test submitters'],
       tags: ['test tags'],
-      source_domain: `test.com`,
-      cloudinary_id: `reports/test.com/image.jpg`,
+      source_domain: `incidentdatabase.ai`,
+      cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
       editor_notes: 'Here are some notes',
     };
 
@@ -1627,8 +1627,8 @@ describe('The Submit form', () => {
         tags: values.tags,
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `test.com`,
-        cloudinary_id: `reports/test.com/image.jpg`,
+        source_domain: `incidentdatabase.ai`,
+        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
         editor_notes: 'Here are some notes',
       });
     });
@@ -1638,7 +1638,7 @@ describe('The Submit form', () => {
     cy.visit(url);
 
     const valuesStep1 = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       title: 'test title',
       authors: 'test author',
       date_published: '2021-01-02',
@@ -1671,7 +1671,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
+      image_url: 'https://incidentdatabase.ai/image.jpg',
       language: 'en',
     };
 
@@ -1710,7 +1710,7 @@ describe('The Submit form', () => {
         deployers: [valuesStep3.deployers],
         harmed_parties: [valuesStep3.harmed_parties],
         nlp_similar_incidents: [],
-        cloudinary_id: `reports/test.com/image.jpg`,
+        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
         text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
         incident_ids: [],
         incident_editors: [],
@@ -1722,7 +1722,7 @@ describe('The Submit form', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     const values = {
-      url: 'https://test.com',
+      url: 'https://incidentdatabase.ai',
       authors: 'test author',
       title: 'test title',
       date_published: '2021-01-02',
