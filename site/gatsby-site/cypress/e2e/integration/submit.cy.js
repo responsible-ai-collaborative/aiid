@@ -647,6 +647,8 @@ describe('The Submit form', () => {
   });
 
   it('Should show a list of related reports', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     const relatedReports = {
       byURL: {
         data: {
@@ -871,6 +873,9 @@ describe('The Submit form', () => {
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it('Should show related reports based on semantic similarity', () => {
     cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -887,6 +892,8 @@ describe('The Submit form', () => {
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
     cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
@@ -975,6 +982,8 @@ describe('The Submit form', () => {
   it('Should show the editor notes field', () => {
     cy.visit(url);
 
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     const valuesStep1 = {
       url: 'https://incidentdatabase.ai',
       title: 'test title',
@@ -1022,6 +1031,8 @@ describe('The Submit form', () => {
   it('Should show a popover', () => {
     cy.visit(url);
 
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.get('[data-cy="label-title"]').trigger('mouseenter');
 
     cy.get('[data-cy="popover-title"]').should('be.visible');
@@ -1033,6 +1044,8 @@ describe('The Submit form', () => {
 
   it('Should show a translated popover', () => {
     cy.visit(`/es/apps/submit/`);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('[data-cy="label-title"]').trigger('mouseenter');
 
@@ -1194,6 +1207,8 @@ describe('The Submit form', () => {
       { data: { incident: null } }
     );
 
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.visit(url);
 
     cy.contains('button', 'Submit').click();
@@ -1314,6 +1329,8 @@ describe('The Submit form', () => {
       probablyRelatedReports
     );
 
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.visit(url);
 
     const values = {
@@ -1376,6 +1393,8 @@ describe('The Submit form', () => {
   it('Should *not* show related reports based on author', () => {
     cy.visit(url);
 
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     const valuesStep1 = {
       authors: 'test author',
     };
@@ -1420,6 +1439,8 @@ describe('The Submit form', () => {
         },
       }
     );
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.visit(url);
 
@@ -1635,6 +1656,8 @@ describe('The Submit form', () => {
   });
 
   it('Should save form data in local storage', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.visit(url);
 
     const valuesStep1 = {
@@ -1756,6 +1779,8 @@ describe('The Submit form', () => {
   });
 
   it('Should display an error message if Date Published is not in the past', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.visit(url);
 
     cy.waitForStableDOM();
@@ -1770,6 +1795,8 @@ describe('The Submit form', () => {
   });
 
   it('Should display an error message if Date Downloaded is not in the past', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
     cy.visit(url);
 
     cy.waitForStableDOM();
