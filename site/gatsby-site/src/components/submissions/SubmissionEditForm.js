@@ -366,8 +366,11 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     <>
       <StepContainer className="md:w-2/3" childClassName="h-[calc(100vh-230px)] overflow-auto p-6">
         <Badge
-          className={`absolute -top-3 z-10 ${STATUS[values.status].color}`}
-          //   color={values.status ? STATUS[values.status].color : 'warning'}
+          className={`absolute -top-3 z-10 ${
+            values.status
+              ? STATUS[values.status].color
+              : 'bg-orange-100 text-orange-800 dark:bg-orange-200 dark:text-orange-900'
+          }`}
         >
           <Trans i18n={i18n} ns="submitted">
             {values.status ? STATUS[values.status].text : STATUS.pendingReview.text}
