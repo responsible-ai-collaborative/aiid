@@ -6,6 +6,6 @@ declare namespace Cypress {
         clickOutside(): Chainable<Promise>;
         setEditorText(value: string, index?: string): Chainable<Promise>;
         getEditorText(index?: string): Chainable<Promise>;
-        query({ query, variables, timeout }): Chainable<Promise>;
+        query({ query, variables, timeout = 30000 }): Chainable<Promise>;
     }
 }

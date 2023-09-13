@@ -163,6 +163,28 @@ function getIcon(label, current = false) {
         <circle id="c5" cx="6.1704326" cy="1.5272532" r="1.2797676" />
       </svg>
     ),
+    newsdigest: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        viewBox="0 0 12 12"
+        fill="currentColor"
+        stroke="none"
+        className={`
+          w-6 h-6 shrink-0
+          ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
+          group-hover:text-white dark:group-hover:text-white
+        `}
+      >
+        <rect x="0" y="2" width="5.5" height="2" rx="1" />
+        <rect x="0" y="5" width="5.5" height="2" rx="1" />
+        <rect x="0" y="8" width="5.5" height="2" rx="1" />
+
+        <rect x="6.5" y="2" width="5.5" height="2" rx="1" />
+        <rect x="6.5" y="5" width="5.5" height="2" rx="1" />
+        <rect x="6.5" y="8" width="5.5" height="2" rx="1" />
+      </svg>
+    ),
   }[label];
 }
 

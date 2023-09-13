@@ -7,12 +7,6 @@ export const FIND_USERS = gql`
       userId
       first_name
       last_name
-      adminData {
-        email
-        disabled
-        creationDate
-        lastAuthenticationDate
-      }
     }
   }
 `;
