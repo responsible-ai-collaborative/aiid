@@ -26,7 +26,7 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
   const [fields, setFields] = useState(null);
 
   const { data, loading } = useQuery(FIND_TAXONOMY, {
-    variables: { query: { input: { namespace: config.namespace } } },
+    variables: { input: { namespace: config.namespace } },
   });
 
   const [collapsed, setCollapsed] = useState(false);
@@ -59,6 +59,11 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
 
         switch (field.display_type) {
           case 'string':
+            operators = [{ name: 'contains', label: 'contains' }];
+            break;
+
+          case 'text':
+          case 'long_string':
             operators = [{ name: 'contains', label: 'contains' }];
             break;
 
