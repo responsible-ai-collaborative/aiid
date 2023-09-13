@@ -274,78 +274,79 @@ name: `sidebar`
 JSON:
 ```
 {
-  "Main" : {
-    "title" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "Title"
+  "Main": {
+    "title": {
+      "type": "Text",
+      "config": {
+        "label": "Title"
       }
     },
-    "label" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "Label"
+    "label": {
+      "type": "Text",
+      "config": {
+        "label": "Label",
+        "placeholder": "Used to fetch the corresponding icon. This should be defined in treeNode.js (getIcon function). If left empty no icon will be displayed"
       }
     },
-    "url" : {
-      "type" : "Link",
-      "config" : {
-        "allowTargetBlank" : true,
-        "label" : "URL",
-        "placeholder" : "Menu Item URL if the link is external",
-        "select" : null
+    "url": {
+      "type": "Link",
+      "config": {
+        "allowTargetBlank": true,
+        "label": "URL",
+        "placeholder": "Menu Item URL if the link is external",
+        "select": null
       }
     },
-    "path" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "Path"
+    "path": {
+      "type": "Text",
+      "config": {
+        "label": "Path"
       }
     },
-    "order" : {
-      "type" : "Number",
-      "config" : {
-        "label" : "Order"
+    "order": {
+      "type": "Number",
+      "config": {
+        "label": "Order"
       }
     },
-    "items" : {
-      "type" : "Group",
-      "config" : {
-        "fields" : {
-          "item_title" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Item title"
+    "items": {
+      "type": "Group",
+      "config": {
+        "fields": {
+          "item_title": {
+            "type": "Text",
+            "config": {
+              "label": "Item title"
             }
           },
-          "item_label" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Item Label"
+          "item_label": {
+            "type": "Text",
+            "config": {
+              "label": "Item Label"
             }
           },
-          "item_url" : {
-            "type" : "Link",
-            "config" : {
-              "allowTargetBlank" : true,
-              "label" : "url",
-              "select" : null
+          "item_url": {
+            "type": "Link",
+            "config": {
+              "allowTargetBlank": true,
+              "label": "url",
+              "select": null
             }
           },
-          "item_path" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Item path"
+          "item_path": {
+            "type": "Text",
+            "config": {
+              "label": "Item path"
             }
           },
-          "item_order" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "Item order"
+          "item_order": {
+            "type": "Text",
+            "config": {
+              "label": "Item order"
             }
           }
         },
-        "label" : "Menu sub Items"
+        "label": "Menu sub Items"
       }
     }
   }
