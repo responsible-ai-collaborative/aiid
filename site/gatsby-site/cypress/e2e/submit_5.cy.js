@@ -54,7 +54,7 @@ describe('The Submit form', () => {
       }
     );
 
-    cy.intercept('GET', parserURL).as('parseNews');
+    cy.intercept('GET', parserURL, values).as('parseNews');
 
     cy.visit(url + `?${params.toString()}`);
 
