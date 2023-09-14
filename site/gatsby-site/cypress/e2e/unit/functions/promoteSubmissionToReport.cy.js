@@ -525,7 +525,7 @@ describe('Functions', () => {
     });
   });
 
-  it("Should default to Sean's user id", () => {
+  it("Should default to Anonymous's user id", () => {
     const submissionsCollection = {
       findOne: cy.stub().resolves({ ...submission, incident_editors: [] }),
       deleteOne: cy.stub(),
