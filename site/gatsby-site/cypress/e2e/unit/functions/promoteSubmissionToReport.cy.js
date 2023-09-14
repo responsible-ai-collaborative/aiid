@@ -641,7 +641,7 @@ describe('Functions', () => {
           'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
         editor_dissimilar_incidents: [],
         editor_similar_incidents: [],
-        editors: ['619b47ea5eed5334edfa3bbc'],
+        editors: ['65031f49ec066d7c64380f5c'],
         incident_id: 2,
         nlp_similar_incidents: [],
         reports: [],
