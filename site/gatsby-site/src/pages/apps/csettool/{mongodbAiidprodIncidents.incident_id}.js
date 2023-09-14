@@ -34,13 +34,15 @@ const ToolPage = (props) => {
         };
 
         for (const classification of data.classifications) {
-          const json = classification.attributes.find(
-            (a) => a.short_name == attribute.short_name
-          ).value_json;
+          const item = classification.attributes.find((a) => a.short_name == attribute.short_name);
 
-          const value = JSON.parse(json);
+          if (item) {
+            const value = JSON.parse(item.value_json);
 
-          row[classification.namespace] = value;
+            row[classification.namespace] = value;
+          } else {
+            row[classification.namespace] = null;
+          }
         }
 
         rows.push(row);
