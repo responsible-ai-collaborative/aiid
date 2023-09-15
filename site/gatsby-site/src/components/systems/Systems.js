@@ -13,6 +13,7 @@ import getInitialQuery from './getInitialQuery';
 import isValidFilter from './isValidFilter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { Trans } from 'react-i18next';
 
 const FIND_SYSTEMS = gql`
   query FindSystems($input: FindSystemsQueryInput) {
@@ -44,6 +45,44 @@ const FIND_INCIDENTS = gql`
         date_submitted
         authors
         submitters
+      }
+    }
+  }
+`;
+
+const FIND_REPORTS = gql`
+  query FindReports($query: ReportQueryInput!) {
+    reports(query: $query) {
+      url
+      title
+      description
+      authors
+      submitters
+      date_published
+      date_downloaded
+      date_modified
+      date_submitted
+      epoch_date_downloaded
+      epoch_date_modified
+      epoch_date_published
+      epoch_date_submitted
+      image_url
+      cloudinary_id
+      text
+      plain_text
+      source_domain
+      tags
+      flag
+      report_number
+      editor_notes
+      language
+      is_incident_report
+      user {
+        userId
+      }
+      embedding {
+        from_text_hash
+        vector
       }
     }
   }
@@ -88,6 +127,8 @@ export default function Systems() {
     setSearching(false);
   };
 
+  const [incidentResults, setIncidentResults] = useState(null);
+
   const [loadingIncidents, setLoadingIncidents] = useState(false);
 
   const [dataIncidents, setDataIncidents] = useState(null);
@@ -106,9 +147,27 @@ export default function Systems() {
     setLoadingIncidents(false);
   };
 
-  const [filters, setFilters] = useState(null);
+  const [reportResults, setReportResults] = useState(null);
 
-  const [incidentResults, setIncidentResults] = useState(null);
+  const [loadingReports, setLoadingReports] = useState(false);
+
+  const [dataReports, setDataReports] = useState(null);
+
+  const findReports = async (options) => {
+    console.log('findReports', options);
+
+    setLoadingReports(true);
+    setDataReports(null);
+
+    const result = await client.query({ query: FIND_REPORTS, ...options });
+
+    console.log('findReports result', result);
+
+    setDataReports(result.data);
+    setLoadingReports(false);
+  };
+
+  const [filters, setFilters] = useState(null);
 
   const display = 'list';
 
@@ -136,6 +195,7 @@ export default function Systems() {
     console.log('perform search');
 
     setIncidentResults(null);
+    setReportResults(null);
 
     findSystems({ variables: { input: { query: serialized } } });
   };
@@ -168,14 +228,26 @@ export default function Systems() {
     if (!searching && data?.findSystems?.results) {
       const incidents = data.findSystems.results.map((result) => result.incidents).flat();
 
+      const reports = data.findSystems.results.map((result) => result.reports).flat();
+
       if (incidents.length) {
         console.log('fetch', incidents);
 
         findIncidents({ variables: { query: { incident_id_in: incidents } } });
       } else {
-        console.log('no results', incidents);
+        console.log('no incident results', incidents);
 
         setIncidentResults([]);
+      }
+
+      if (reports.length) {
+        console.log('fetch', reports);
+
+        findReports({ variables: { query: { report_number_in: reports } } });
+      } else {
+        console.log('no report results', reports);
+
+        setReportResults([]);
       }
     }
   }, [data, searching]);
@@ -212,6 +284,36 @@ export default function Systems() {
       setIncidentResults(results);
     }
   }, [dataIncidents]);
+
+  useEffect(() => {
+    console.log('dataReports', dataReports);
+
+    if (dataReports?.reports) {
+      const results = dataReports.reports.map((report) => {
+        return {
+          description: report.description,
+          report_number: report.report_number,
+          source_domain: report.source_domain,
+          title: report.title,
+          url: report.url,
+          cloudinary_id: report.cloudinary_id,
+          image_url: report.image_url,
+          text: report.text,
+          featured: 1,
+          is_incident_report: false,
+          incident_id: 0,
+          incident_title: report.title,
+          incident_description: report.description,
+          date_submitted: report.date_submitted,
+          epoch_date_published: report.epoch_date_published,
+          authors: report.authors,
+          submitters: report.submitters,
+        };
+      });
+
+      setReportResults(results);
+    }
+  }, [dataReports]);
 
   return (
     <>
@@ -265,6 +367,27 @@ export default function Systems() {
         searching={searching}
         fetching={loadingIncidents}
         results={incidentResults}
+        headingComponent={({ results }) => (
+          <>
+            {results.length > 0 && <Trans>{{ length: results.length }} Incidents found</Trans>}
+            {results.length == 0 && <Trans>No Incidents found</Trans>}
+          </>
+        )}
+      />
+
+      <Results
+        display={display}
+        viewType={viewType}
+        filters={filters}
+        searching={searching}
+        fetching={loadingReports}
+        results={reportResults}
+        headingComponent={({ results }) => (
+          <>
+            {results.length > 0 && <Trans>{{ length: results.length }} Reports found</Trans>}
+            {results.length == 0 && <Trans>No Reports found</Trans>}
+          </>
+        )}
       />
 
       {showTaxonomyModal && (
