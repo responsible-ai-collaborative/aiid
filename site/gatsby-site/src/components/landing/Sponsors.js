@@ -77,7 +77,7 @@ export default function Sponsors({ sponsors = [] }) {
                 <Trans i18nKey="forms" ns="landing">
                   View the Responsible AI Collaborative’s{' '}
                   <a
-                    href="https://drive.google.com/file/d/1mTgbaDIbvNQU8PRaz7yG_pP7ibsqNNo9/view?usp=sharing"
+                    href="https://res.cloudinary.com/pai/image/upload/v1694177803/Responsible_AI_Collaborative_Inc_Form990-PF_hlpusu.pdf"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -85,7 +85,7 @@ export default function Sponsors({ sponsors = [] }) {
                   </a>{' '}
                   and{' '}
                   <a
-                    href="https://drive.google.com/file/d/1Gj0DnBKYJF2jO59MeymW8R1SCv60m6Jb/view?usp=share_link"
+                    href="https://res.cloudinary.com/pai/image/upload/v1694177781/Form_1023_-_Application_-_Responsible_AI_Collaborative_-_EIN_88-1046583_qnfgfb.pdf"
                     target="_blank"
                     rel="noreferrer"
                   >
