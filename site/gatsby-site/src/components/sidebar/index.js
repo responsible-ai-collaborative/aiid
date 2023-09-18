@@ -46,23 +46,21 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
 
   if (sidebar.edges.length > 0) {
     sidebarItems = sidebar.edges.map((item) => {
-      if (item.node?.data) {
-        const itemItems = item.node.data.items.map((item) => {
-          return {
-            url: item.item_url.url || item.item_path,
-            title: item.item_title,
-            label: item.item_label,
-            items: [],
-          };
-        });
-
+      const itemItems = item.node.data.items.map((item) => {
         return {
-          url: item.node.data.url.url || item.node.data.path,
-          title: item.node.data.title,
-          label: item.node.data.label,
-          items: itemItems,
+          url: item.item_url.url || item.item_path,
+          title: item.item_title,
+          label: item.item_label,
+          items: [],
         };
-      }
+      });
+
+      return {
+        url: item.node.data.url.url || item.node.data.path,
+        title: item.node.data.title,
+        label: item.node.data.label,
+        items: itemItems,
+      };
     });
   } else {
     sidebarItems = navConfig;
