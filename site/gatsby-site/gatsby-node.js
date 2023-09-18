@@ -298,6 +298,111 @@ exports.createSchemaCustomization = ({ actions }) => {
       public: Boolean
       complete_from: completeFrom
     }
+
+    type PrismicBlog implements Node {
+      uid: String
+      metadescription: String
+      metatitle: String
+      slug: String!
+      language: String!
+      aitranslated: Boolean!
+      title: PrismicStructuredTextType
+      date: Date @dateformat
+      author: String
+      content: PrismicStructuredTextType
+      image: PrismicImageType
+    }
+
+    type PrismicGenericDoc implements Node {
+      title: String
+      language: String
+      slug: String
+      metatitle: String
+      metadescription: String
+      aitranslated: Boolean
+      content: [PrismicGenericDocContent!]
+    }
+
+    type PrismicGenericDocContent {
+      text: PrismicStructuredTextType
+      component: String
+    }
+
+    type PrismicNavigation implements Node {
+      title: String!
+      order: Int
+      items: [PrismicNavigationItem!]!
+      social: [PrismicSocialLink!]!
+    }
+
+    type PrismicNavigationItem {
+      item_title: String!
+      item_url: PrismicLinkType
+      path: String
+    }
+
+    type PrismicSocialLink {
+      name: String!
+      url: PrismicLinkType
+      path: String
+    }
+
+    type PrismicLinkType {
+      url: String
+      target: String
+      link_type: String
+    }
+
+    type PrismicSidebar implements Node {
+      title: String!
+      label: String
+      url: PrismicLinkType
+      path: String
+      order: Int
+      items: [PrismicSidebarItem!]!
+    }
+
+    type PrismicSidebarItem {
+      item_title: String!
+      item_label: String!
+      item_url: PrismicLinkType
+      item_path: String
+      item_order: Int
+    }
+
+    type PrismicSponsor implements Node {
+      title: PrismicStructuredText!
+      language: PrismicStructuredText!
+      order: PrismicStructuredText!
+      items: [PrismicSponsorItem!]!
+    }
+
+    type PrismicSponsorItem {
+      logo: PrismicImageType
+      name: PrismicStructuredText!
+      description: PrismicStructuredText!
+      link: PrismicLinkType
+    }
+
+    type PrismicStructuredTextType {
+      text: String
+      html: String
+      raw: JSON
+    }
+
+    type PrismicImageType {
+      alt: String
+      url: String
+      gatsbyImageData: GatsbyImageDataType
+    }
+
+
+    type GatsbyImageDataType {
+      layout: String
+      images: [String]
+      width: Int
+      height: Int
+    }
   `;
 
   createTypes(typeDefs);
