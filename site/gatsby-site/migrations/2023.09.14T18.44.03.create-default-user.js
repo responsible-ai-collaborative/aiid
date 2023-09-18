@@ -2,7 +2,7 @@ const { ObjectId } = require('bson');
 
 const config = require('../config');
 
-const userId = '65031f49ec066d7c64380f5c';
+const userId = '65031f49ec066d7c64380f5c'; // Default user. For more information refer to the wiki page: https://github.com/responsible-ai-collaborative/aiid/wiki/Special-non%E2%80%90secret-values
 
 /**
  *
