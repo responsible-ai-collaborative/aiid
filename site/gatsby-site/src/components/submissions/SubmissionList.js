@@ -79,7 +79,6 @@ const SubmissionList = ({ data }) => {
 
   const defaultColumn = React.useMemo(
     () => ({
-      // className: 'min-w-[120px]',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
