@@ -2,7 +2,7 @@ import {
   faFacebookSquare,
   faGithubSquare,
   faLinkedin,
-  faTwitterSquare,
+  faSquareXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -161,7 +161,7 @@ export default function Footer() {
 
                     switch (item.name) {
                       case 'twitter':
-                        icon = faTwitterSquare;
+                        icon = faSquareXTwitter;
                         break;
                       case 'facebook':
                         icon = faFacebookSquare;
@@ -224,7 +224,7 @@ export default function Footer() {
             >
               <FontAwesomeIcon
                 titleId={'twitter'}
-                icon={faTwitterSquare}
+                icon={faSquareXTwitter}
                 color={'gray'}
                 className="pointer fa fa-lg hover:text-primary-blue"
                 title="Open Twitter"
