@@ -48,7 +48,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     sidebarItems = sidebar.edges.map((item) => {
       const itemItems = item.node.data.items.map((item) => {
         return {
-          url: item.item_url.url || item.item_path,
+          url: item.item_url.url || item.item_path || '/',
           title: item.item_title,
           label: item.item_label,
           items: [],
@@ -56,7 +56,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
       });
 
       return {
-        url: item.node.data.url.url || item.node.data.path,
+        url: item.node.data.url.url || item.node.data.path || '/',
         title: item.node.data.title,
         label: item.node.data.label,
         items: itemItems,
