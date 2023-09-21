@@ -90,22 +90,24 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   return (
     <>
+      <AiidHelmet path={props.location.pathname}>
+        {id ? (
+          <title>{t('Edit submission')}</title>
+        ) : (
+          <title>{t('Submitted Incident Report List')}</title>
+        )}
+      </AiidHelmet>
+
       {pageLoading ? (
         <ListSkeleton />
       ) : (
         <>
           {id ? (
             <>
-              <AiidHelmet path={props.location.pathname}>
-                <title>{t('Edit submission')}</title>
-              </AiidHelmet>
               <SubmissionEdit id={id} />
             </>
           ) : (
             <>
-              <AiidHelmet path={props.location.pathname}>
-                <title>{t('Submitted Incident Report List')}</title>
-              </AiidHelmet>
               <div className={'titleWrapper'}>
                 <h1>
                   <Trans ns="submitted">Submitted Incident Report List</Trans>
