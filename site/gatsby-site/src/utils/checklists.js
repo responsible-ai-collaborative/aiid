@@ -1,5 +1,42 @@
 import { classy } from 'utils/classy';
 import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { v4 as uuidv4 } from 'uuid';
+
+const riskStatusFeatures = {
+  'Not Mitigated': {
+    icon: faWarning,
+    color: 'red',
+  },
+  Mitigated: {
+    icon: faShield,
+    color: 'blue',
+  },
+  Prevented: {
+    icon: faShield,
+    color: 'green',
+  },
+  Unclear: {
+    icon: faWarning,
+    color: 'gray',
+  },
+  'Not Applicable': {
+    icons: faShield,
+    color: 'gray',
+  },
+};
+
+const riskStatusValues = Object.keys(riskStatusFeatures);
+
+const checkedRiskStatus = (status) => {
+  if (!riskStatusValues.includes(status)) {
+    throw new Error(`Unknown risk status: "${status}"`);
+  }
+  return status;
+};
+
+const statusIcon = (status) => riskStatusFeatures[checkedRiskStatus(status)].icon || faWarning;
+
+const statusColor = (status) => riskStatusFeatures[checkedRiskStatus(status)].color || 'gray';
 
 const abbreviatedTag = (tag) => tag.replace(/^.*:/g, '');
 
@@ -18,7 +55,7 @@ const risksEqual = (risk1, risk2) => {
 const Label = classy('label', 'mb-1 block');
 
 const emptyRisk = () => ({
-  id: Math.random().toString(36).slice(-10),
+  id: uuidv4(),
   title: 'Untitled Risk',
   tags: [],
   risk_status: 'Not Mitigated',
@@ -47,24 +84,6 @@ const exportJson = (checklist) => {
   a.click();
 };
 
-const statusIcon = (status) =>
-  ({
-    'Not Mitigated': faWarning,
-    Mitigated: faShield,
-    Prevented: faShield,
-    Unclear: faWarning,
-    'Not Applicable': faShield,
-  }[status] || faWarning);
-
-const statusColor = (status) =>
-  ({
-    'Not Mitigated': 'red',
-    Mitigated: 'blue',
-    Prevented: 'green',
-    'Not Applicable': 'gray',
-    Unclear: 'gray',
-  }[status] || 'gray');
-
 const DeleteButton = classy(
   'button',
   `
@@ -91,11 +110,8 @@ const DeleteButton = classy(
 );
 
 function shouldBeGrouped(tag1, tag2) {
-  console.log(`tag1`, tag1);
-  console.log(`tag2`, tag2);
   if (tag1 == tag2) return true;
   if (tag1.slice(0, 3) == ' GMF' && tag2.slice(0, 3) == 'GMF') {
-
     // Despite the name, this function has nothing to do with the education system.
     const removeKnownPotential = (tag) => tag.replace('GMF:Known', '').replace('GMF:Potential');
 
@@ -113,9 +129,10 @@ export {
   emptyRisk,
   risksEqual,
   removeTypename,
+  riskStatusValues,
+  checkedRiskStatus,
   statusIcon,
   statusColor,
   exportJson,
   shouldBeGrouped,
 };
-

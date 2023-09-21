@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Layout from 'components/Layout';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from 'flowbite-react';
 import { debounce } from 'debounce';
@@ -23,12 +22,12 @@ export default function ChecklistsPage(props) {
   const { t } = useTranslation();
 
   return (
-    <Layout {...props} className="w-full md:max-w-5xl">
+    <>
       <AiidHelmet path={pathname}>
         <title>{t('Risk Checklists')}</title>
       </AiidHelmet>
       <ChecklistsPageBody {...{ taxa, classifications, t }} />
-    </Layout>
+    </>
   );
 }
 
@@ -61,11 +60,9 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
         checklist: {
           ...values,
           id: query.id,
-          risks: (
-            values.risks
-              .filter(risk => !risk.generated)
-              .map((risk) => ({ ...risk, startClosed: undefined }))
-          ),
+          risks: values.risks
+            .filter((risk) => !risk.generated)
+            .map((risk) => ({ ...risk, startClosed: undefined })),
         },
       },
     });

@@ -4,14 +4,18 @@ import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
 
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import { classy, classyDiv } from 'utils/classy';
-import { Label, DeleteButton, abbreviatedTag, emptyRisk, shouldBeGrouped, risksEqual } from 'utils/checklists';
+import {
+  Label,
+  DeleteButton,
+  abbreviatedTag,
+  emptyRisk,
+  shouldBeGrouped,
+  risksEqual,
+} from 'utils/checklists';
 import Tags from 'components/forms/Tags';
-import RiskSection from 'components/checklists/RiskSection';
 import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
@@ -39,6 +43,7 @@ export default function CheckListForm({
     }
   };
 
+  isSubmitting; // We should use this instead
   const [saveStatus, setSaveStatus] = useState(null);
 
   const [risksLoading, setRisksLoading] = useState(false);
@@ -57,14 +62,16 @@ export default function CheckListForm({
     oldSetFieldValue(key, value);
     submitForm();
   };
- 
+
   const removeRisk = (findFunction) => {
     setFieldValue('risks', values.risks.find(findFunction));
   };
+
   const changeSort = (sortFunction) => (event) => {
     event.preventDefault();
     setFieldValue('risks', values.risks.sort(sortFunction));
   };
+
   const updateRisk = (risk, attributeValueMap) => {
     const updatedRisks = [...values.risks];
 
@@ -80,7 +87,7 @@ export default function CheckListForm({
     setFieldValue('risks', updatedRisks);
     submitForm();
   };
-  
+
   return (
     <Form onSubmit={handleSubmit}>
       <Header>
@@ -108,10 +115,7 @@ export default function CheckListForm({
           </HeaderControls>
         </HeaderRow>
       </Header>
-      <Info>
-        This feature is in development.
-        Data entered will not be retained.
-      </Info>
+      <Info>This feature is in development. Data entered will not be retained.</Info>
       {/*<Info className="my-4">
         <Trans>
           Describe the system under investigation. Apply machine-readable tags to surface risks
@@ -137,15 +141,6 @@ export default function CheckListForm({
         </SideBySide>
         <OtherTagInput {...{ values, tags, setFieldValue }} />
       </section>
-
-      {/* TODO: Remove this */}
-      <section>
-        <details>
-          <summary>allPrecedents</summary>
-          <pre>{JSON.stringify(allPrecedents, null, 2)}</pre>
-        </details>
-      </section>
-
       <section>
         <header className="flex mt-6">
           <h2>Risks</h2>
@@ -192,19 +187,21 @@ export default function CheckListForm({
 
         {!risksLoading && values.risks.length == 0 && (
           <Trans>No risks yet. Try adding some system tags.</Trans>
-        )} 
-        <RiskSections {...{
-          risks: values.risks,
-          setFieldValue,
-          submitForm,
-          tags,
-          searchTags,
-          allPrecedents,
-          risksLoading,
-          removeRisk,
-          changeSort,
-          updateRisk
-        }} />
+        )}
+        <RiskSections
+          {...{
+            risks: values.risks,
+            setFieldValue,
+            submitForm,
+            tags,
+            searchTags,
+            allPrecedents,
+            risksLoading,
+            removeRisk,
+            changeSort,
+            updateRisk,
+          }}
+        />
       </section>
     </Form>
   );
@@ -303,7 +300,7 @@ function SavingIndicator({ saveStatus }) {
   const className = 'text-lg text-gray-500 inline-block mx-4';
 
   if (!saveStatus) {
-    return <></>
+    return <></>;
   }
   if (saveStatus == 'saving') {
     return (
@@ -331,7 +328,6 @@ function SavingIndicator({ saveStatus }) {
 }
 
 function Info({ children, className }) {
-  //  return <>{children}</>
   const [hide, setHide] = useState(false);
 
   if (hide) return <></>;
@@ -351,7 +347,13 @@ function Info({ children, className }) {
 }
 
 // TODO: Group known and potential in GMF Taxonomy
-const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents, setSaveStatus }) => {
+const searchRisks = async ({
+  values,
+  setFieldValue,
+  setRisksLoading,
+  setAllPrecedents,
+  setSaveStatus,
+}) => {
   const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   if (queryTags.length == 0) return;
@@ -370,8 +372,6 @@ const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrece
 
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
-
-      console.log(`result`, result);
 
       const newRisk = {
         ...emptyRisk(),
@@ -420,18 +420,9 @@ const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrece
 };
 
 function areDuplicates(A, B) {
-  console.log(`A.tags`, A.tags);
-  console.log(`B.tags`, B.tags);
   return (
     A.tags.length == B.tags.length &&
-    A.tags.every(aTag => B.tags.some(bTag => shouldBeGrouped(bTag, aTag))) &&
-    B.tags.every(bTag => A.tags.some(aTag => shouldBeGrouped(aTag, bTag)))
+    A.tags.every((aTag) => B.tags.some((bTag) => shouldBeGrouped(bTag, aTag))) &&
+    B.tags.every((bTag) => A.tags.some((aTag) => shouldBeGrouped(aTag, bTag)))
   );
 }
-
-
-
-
-
-
-
