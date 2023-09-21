@@ -278,40 +278,41 @@ JSON:
     "title": {
       "type": "Text",
       "config": {
-        "label": "Title"
+        "label": "Title",
+        "placeholder": "The title will appear at the top of your document"
       }
     },
     "language": {
       "type": "Text",
       "config": {
         "label": "Language",
-        "placeholder": "en es or fr"
+        "placeholder": "en, es or fr"
       }
     },
     "slug": {
       "type": "Text",
       "config": {
         "label": "Slug",
-        "placeholder": "Path to your doc. Example: /about"
+        "placeholder": "Path where your document leaves. Must start with \"/\". For example: /contact"
       }
     },
     "metatitle": {
       "type": "Text",
       "config": {
-        "label": "metaTitle"
+        "label": "metaTitle",
+        "placeholder": "The metatitle of your page"
       }
     },
     "metadescription": {
       "type": "Text",
       "config": {
-        "label": "metaDescription"
+        "label": "metaDescription",
+        "placeholder": "The meta description of your page"
       }
     },
     "aitranslated": {
       "type": "Boolean",
       "config": {
-        "placeholder_false": "Doc is its original language",
-        "placeholder_true": "Doc is translated",
         "default_value": false,
         "label": "aiTranslated"
       }
@@ -323,16 +324,26 @@ JSON:
           "text": {
             "type": "StructuredText",
             "config": {
-              "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+              "multi": "paragraph, heading1, heading2, heading3, heading4, heading5, heading6, strong, em, hyperlink, image, embed, list-item, o-list-item, rtl",
               "allowTargetBlank": true,
-              "label": "text"
+              "label": "text",
+              "placeholder": "Rich text field with the doc's page content. This field takes priority over markdown."
+            }
+          },
+          "markdown": {
+            "type": "StructuredText",
+            "config": {
+              "multi": "preformatted",
+              "allowTargetBlank": true,
+              "label": "markdown",
+              "placeholder": "Markdown content. Use text or markdown, not both. If both are filled, text has priority over markdown."
             }
           },
           "component": {
             "type": "Text",
             "config": {
               "label": "Component",
-              "placeholder": "Name of a React Component you want to appear on the page. Example: Leaderboards"
+              "placeholder": "Reference to internal component. It must be a component that doesn't receive props. Example: Sponsors"
             }
           }
         },

@@ -45,9 +45,12 @@ const createPrismicDocPages = async (graphql, createPage, { reporter }) => {
     `
   );
 
+  const usedSlugs = [];
+
   if (result.data.allPrismicDoc.edges.length > 0) {
     result.data.allPrismicDoc.edges.forEach((node) => {
       if (node?.node?.data?.slug) {
+        usedSlugs.push(node?.node?.data?.slug);
         createPage({
           path: node?.node?.data.slug,
           component: `${path.resolve(`./src/templates/prismicDoc.js`)}`,
@@ -59,20 +62,22 @@ const createPrismicDocPages = async (graphql, createPage, { reporter }) => {
         reporter.warn(`Missing slug for ${node?.node?.data?.title}`);
       }
     });
-  } else {
+  }
+
+  if (result.data.allFile.nodes.length > 0) {
     result.data.allFile.nodes.forEach((node) => {
       if (node.childMdx.frontmatter.slug) {
-        const template = node.sourceInstanceName == 'blog' ? 'post' : 'doc';
-
-        createPage({
-          path: node.childMdx.frontmatter.slug,
-          component: `${path.resolve(`./src/templates/${template}.js`)}?__contentFilePath=${
-            node.childMdx.internal.contentFilePath
-          }`,
-          context: {
-            slug: node.childMdx.frontmatter.slug,
-          },
-        });
+        if (!usedSlugs.includes(node.childMdx.frontmatter.slug)) {
+          createPage({
+            path: node.childMdx.frontmatter.slug,
+            component: `${path.resolve(`./src/templates/doc.js`)}?__contentFilePath=${
+              node.childMdx.internal.contentFilePath
+            }`,
+            context: {
+              slug: node.childMdx.frontmatter.slug,
+            },
+          });
+        }
       } else {
         reporter.warn(`Missing slug for ${node.absolutePath}`);
       }
