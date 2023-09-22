@@ -17,8 +17,6 @@ export default async function handler(req, res) {
     ).toArray()
   );
   
-  console.log(`classificationsMatchingSearchTags`, classificationsMatchingSearchTags);
-
   const tagsByIncidentId = {};
   for (const classification of classificationsMatchingSearchTags) {
     for (const id of classification.incidents) {
@@ -38,8 +36,6 @@ export default async function handler(req, res) {
     { incident_id: { $in: incidentIdsMatchingSearchTags } },
     { projection: { incident_id: 1, title: 1, description: 1 }}
   ).toArray();
-
-  console.log(`incidentsMatchingSearchTags`, incidentsMatchingSearchTags);
 
   const failureAttributeQuery = {
     attributes: {
@@ -72,17 +68,16 @@ export default async function handler(req, res) {
       }
     ).toArray()
   );
-  console.log(`failureClassificationsMatchingIncidentIds`, failureClassificationsMatchingIncidentIds);
   
   const matchingClassificationsByFailure = (
     groupable(failureClassificationsMatchingIncidentIds).groupByMultiple(
       classification => tagsFromClassification(classification)
     )
   );
-  console.log(`matchingClassificationsByFailure`, matchingClassificationsByFailure);
 
   const risks = Object.keys(matchingClassificationsByFailure).map(
     failure => ({
+      api_message: "This is an experimental an unsupported API",
       tag: failure,
       precedents: matchingClassificationsByFailure[failure].map(
         failureClassification => {
