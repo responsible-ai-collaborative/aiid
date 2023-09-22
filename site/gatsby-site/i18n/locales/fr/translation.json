@@ -254,6 +254,7 @@
   "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.": "Subscribe to the AI Incident Briefing and get monthly incident round-ups along with occasional major database updates.",
   "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.": "Check your inbox for the AI Incident Briefing, which includes incident round-ups along with occasional major database updates. You can manage your subscription status from the links in the email footer.",
   "Image URL is invalid, using fallback image": "L'URL de l'image n'est pas valide, utilisation d'une image de remplacement",
+  "Issue": "Problème",
   "You have successfully create Incident {{newIncidentId}}. <4>View incident</4>.": "Vous avez réussi à créer l'incident {{newIncidentId}}. <4>Voir l'incident</4>.",
   "New Incident": "Nouvel Incident",
   "csetCharts": "La taxonomie CSET AI Harm pour AIID est la deuxième édition de la taxonomie CSET incident. Il caractérise les dommages, les entités et les technologies impliquées dans les incidents d'IA et les circonstances de leur apparition. Les graphiques ci-dessous montrent certains champs de la taxonomie CSET AI Harm pour AIID. Des détails sur chaque champ peuvent être trouvés <1>ici</1>. Cependant, de brèves descriptions du champ sont fournies au-dessus de chaque graphique.",

@@ -71,6 +71,9 @@ export function DefaultDateCell({ cell }) {
 
 export function SelectDatePickerFilter({
   column: { filterValue = [], preFilteredRows, setFilter, id },
+  startDate = null,
+  endDate = null,
+  setDates = null,
 }) {
   const [min, max] = React.useMemo(() => {
     let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
@@ -95,12 +98,42 @@ export function SelectDatePickerFilter({
       picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
     );
     setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
+
+    if (setDates) {
+      setDates([picker.startDate.valueOf(), picker.endDate.valueOf()]);
+    }
   };
 
   const handleCancel = (event, picker) => {
     picker.element.val('');
     setFilter([min, max]);
+    if (setDates) {
+      setDates([]);
+    }
   };
+
+  let initialSettings = {
+    showDropdowns: true,
+    autoUpdateInput: false,
+    locale: {
+      cancelLabel: 'Clear',
+    },
+  };
+
+  let defaultValue = '';
+
+  if (startDate && endDate) {
+    const formatedStartDate = format(new Date(startDate), 'MM/dd/yyyy');
+
+    const formatedEndDate = format(new Date(endDate), 'MM/dd/yyyy');
+
+    defaultValue = `${formatedStartDate} - ${formatedEndDate}`;
+    initialSettings = {
+      ...initialSettings,
+      startDate: formatedStartDate,
+      endDate: formatedEndDate,
+    };
+  }
 
   return (
     <div className="flex font-normal mt-2">
@@ -108,19 +141,13 @@ export function SelectDatePickerFilter({
         className="custom-picker"
         onApply={handleApply}
         onCancel={handleCancel}
-        initialSettings={{
-          showDropdowns: true,
-          autoUpdateInput: false,
-          locale: {
-            cancelLabel: 'Clear',
-          },
-        }}
+        initialSettings={initialSettings}
       >
         <input
           style={{ width: 190 }}
           type="text"
           className="form-control col-4 p-2"
-          defaultValue=""
+          defaultValue={defaultValue}
         />
       </DateRangePicker>
     </div>
@@ -231,15 +258,33 @@ export default function Table({
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400 ">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps()}
-                    className={`${column.className} py-3 px-4 border-none align-top`}
-                    data-cy={`header-${column.id}`}
-                  >
-                    {column.render('Header')}
-                  </th>
-                ))}
+                {headerGroup.headers.map((column) => {
+                  let headerProps = column.getHeaderProps();
+
+                  const style = { ...headerProps.style };
+
+                  if (column.width) {
+                    style.width = Number.isInteger(column.width)
+                      ? `${column.width}px`
+                      : column.width; // Allows auto value
+                  }
+                  headerProps = { ...headerProps, style };
+                  return (
+                    <th
+                      {...headerProps}
+                      className={`${column.className || ''} py-3 px-4 border-none align-top`}
+                      data-cy={`header-${column.id}`}
+                    >
+                      {column.render('Header')}
+                      {column.getResizerProps && (
+                        <div
+                          {...column.getResizerProps()}
+                          className="inline-block bg-gray-400 w-1 h-full absolute right-0 top-0 translate-x-1/2 z-2 hover:bg-gray-500"
+                        />
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
@@ -257,10 +302,23 @@ export default function Table({
                   data-cy={`row`}
                 >
                   {row.cells.map((cell) => {
+                    const cellOriginalWidth = cell.column?.originalWidth;
+
+                    let cellProps = cell.getCellProps();
+
+                    if (cellOriginalWidth) {
+                      cellProps = {
+                        ...cellProps,
+                        style: {
+                          ...cellProps.style,
+                          minWidth: `${cellOriginalWidth}px`, //Doesn't allow resizing under the min-width
+                        },
+                      };
+                    }
                     return (
                       <td
-                        {...cell.getCellProps()}
-                        className={`${cell.column.width} py-3 px-4 border-none align-top h-full text-gray-700`}
+                        {...cellProps}
+                        className={`py-3 px-4 border-none align-top h-full text-gray-700`}
                         data-cy={`cell`}
                       >
                         {cell.render('Cell')}
