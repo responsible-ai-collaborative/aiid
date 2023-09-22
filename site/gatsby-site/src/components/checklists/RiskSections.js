@@ -37,7 +37,10 @@ export default function RiskSections({
               <RiskSection key={risk.id} {...{ ...riskSectionProps, risk }} />
             ))}
           <div className="flex flex-row">
-            <Spinner /> <Trans>Searching for risks matching tags…</Trans>
+            <Spinner />
+            <span className="ml-2">
+              <Trans>Searching for risks matching tags…</Trans>
+            </span>
           </div>
         </>
       ) : (

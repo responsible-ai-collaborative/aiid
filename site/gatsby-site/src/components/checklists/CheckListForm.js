@@ -64,7 +64,10 @@ export default function CheckListForm({
   };
 
   const removeRisk = (findFunction) => {
-    setFieldValue('risks', values.risks.find(findFunction));
+    setFieldValue(
+      'risks',
+      values.risks.filter((risk) => !findFunction(risk))
+    );
   };
 
   const changeSort = (sortFunction) => (event) => {
@@ -169,7 +172,10 @@ export default function CheckListForm({
             </Button>
             <Button
               onClick={() => {
-                setFieldValue('risks', [emptyRisk()].concat(values.risks || []));
+                setFieldValue(
+                  'risks',
+                  [emptyRisk({ generated: false })].concat(values.risks || [])
+                );
               }}
             >
               Add Risk

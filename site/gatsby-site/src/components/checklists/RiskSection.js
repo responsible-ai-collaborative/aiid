@@ -15,12 +15,11 @@ import {
   faHand,
   faComputer,
   faHashtag,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
   risk,
-  setFieldValue,
-  submitForm,
   tags,
   searchTags,
   allPrecedents,
@@ -30,8 +29,7 @@ export default function RiskSection({
 }) {
   const { t } = useTranslation();
 
-  const [showPrecedentFilters, setShowPrecedentFilters] = useState(false);
-
+  const [showPrecedentFilters, setShowPrecedentFilters] = useState(!risk.generated);
 
   const [precedents, setPrecedents] = useState([]);
 
@@ -57,9 +55,11 @@ export default function RiskSection({
             }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
             {...{ updateRisk }}
           />
-          <button onClick={() => {
-
-          }}>Trash</button>
+          {!risk.generated && (
+            <button onClick={() => removeRisk((r) => risksEqual(risk, r))}>
+              <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mr-1" />
+            </button>
+          )}
         </HeaderItemsGroup>
         <HeaderItemsGroup className="ml-auto mr-6">
           {risk.generated ? (
