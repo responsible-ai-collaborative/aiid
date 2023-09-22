@@ -42,6 +42,8 @@ const { getLanguages } = require('./i18n');
 
 const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
+const typeDefs = require('./typeDefs');
+
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
 exports.createPages = async ({ actions, graphql, reporter }) => {
@@ -187,118 +189,6 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
 
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
-
-  const typeDefs = `
-    type reportEmbedding {
-      vector: [Float]
-      from_text_hash: String
-    }
-
-    type incidentEmbedding {
-      vector: [Float]
-      from_reports: [Int]
-    }
-
-    type mongodbAiidprodIncidents implements Node {
-      embedding: incidentEmbedding
-      editors: [mongodbCustomDataUsers] @link(by: "userId")
-      editor_notes: String
-    }
-
-    type nlpSimilarIncident {
-      incident_id: Int
-      similarity: Float
-    }
-
-    type mongodbAiidprodIncidents implements Node {
-      nlp_similar_incidents: [nlpSimilarIncident]
-      editor_similar_incidents: [Int]
-      editor_dissimilar_incidents: [Int]
-      flagged_dissimilar_incidents: [Int]
-      reports: [mongodbAiidprodReports] @link(by: "report_number")
-      incident_id: Int
-      epoch_date_modified: Int
-    }
-    
-    type mongodbAiidprodSubmissions implements Node {
-      nlp_similar_incidents: [nlpSimilarIncident]
-      editor_similar_incidents: [Int]
-      editor_dissimilar_incidents: [Int]
-    }
-
-    type mongodbAiidprodReports implements Node {
-      cloudinary_id: String
-      tags: [String]
-      plain_text: String
-      embedding: reportEmbedding
-      inputs_outputs: [String]
-      report_number: Int
-    }
-
-    type mongodbAiidprodTaxaField_list implements Node {
-      render_as: String
-    }  
-    
-    type mongodbAiidprodTaxa implements Node {
-      field_list: [mongodbAiidprodTaxaField_list]
-      complete_entities: Boolean
-    }
-
-    type mongodbAiidprodClassificationsAttribute {
-      short_name: String
-      value_json: String
-    }
-    
-    type mongodbAiidprodClassifications implements Node {
-      incidents: [mongodbAiidprodIncidents] @link(by: "incident_id")
-      reports: [mongodbAiidprodReports] @link(by: "report_number")
-      namespace: String
-      attributes: [mongodbAiidprodClassificationsAttribute]
-    }
-
-    type completeFrom {
-      all: [String]
-      current: [String]
-      entities: Boolean
-    }
-
-    type Subfield {
-      field_number: String
-      short_name: String 
-      long_name: String
-      short_description: String
-      long_description: String
-      display_type: String
-      mongo_type: String
-      default: String
-      placeholder: String
-      permitted_values: [String]
-      weight: Int
-      instant_facet: Boolean
-      required: Boolean
-      public: Boolean
-      complete_from: completeFrom
-    }
-
-    type mongodbAiidprodTaxaField_list {
-      subfields: [Subfield]
-      field_number: String
-      short_name: String 
-      long_name: String
-      short_description: String
-      long_description: String
-      display_type: String
-      mongo_type: String
-      default: String
-      placeholder: String
-      permitted_values: [String]
-      weight: Int
-      instant_facet: Boolean
-      required: Boolean
-      public: Boolean
-      complete_from: completeFrom
-    }
-  `;
 
   createTypes(typeDefs);
 };
