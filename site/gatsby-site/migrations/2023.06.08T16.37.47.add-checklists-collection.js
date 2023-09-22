@@ -15,4 +15,12 @@ exports.up = async ({ context: { client } }) => {
 };
 
 /** @type {import('umzug').MigrationFn<any>} */
-exports.down = async () => {};
+exports.down = async ({ context: { client } }) => {
+  await client.connect();
+
+  try {
+    await client.db(config.realm.production_db.db_name).collection('checklists').drop();
+  } catch (e) {
+    console.log(e.message);
+  }
+};
