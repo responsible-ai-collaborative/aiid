@@ -58,6 +58,9 @@ const typeDefs = `
         url: String
         submitters: [String]
         date_published: String
+        date_submitted: String
+        date_modified: String
+        date_downloaded: String
         source_domain: String
         mongodb_id: String
         text: String
@@ -70,6 +73,7 @@ const typeDefs = `
         inputs_outputs: [String]
         report_number: Int
         is_incident_report: Boolean
+        flag: Boolean
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -119,6 +123,25 @@ const typeDefs = `
         namespace: String
         attributes: [mongodbAiidprodClassificationsAttribute]
         publish: Boolean
+        notes: String
+        fields: [mongodbAiidprodClassificationsFields]
+    }
+
+    type mongodbAiidprodClassificationsFields {
+        geocode: mongodbAiidprodClassificationsFieldsGeocode
+    }
+
+    type mongodbAiidprodClassificationsFieldsGeocode {
+        geometry: mongodbAiidprodClassificationsFieldsGeocodeGeometry
+    }
+
+    type mongodbAiidprodClassificationsFieldsGeocodeGeometry {
+        location: mongodbAiidprodClassificationsFieldsGeocodeGeometryLocation
+    }
+
+    type mongodbAiidprodClassificationsFieldsGeocodeGeometryLocation {
+        lat: Int
+        lng: Int
     }
 
     type completeFrom {
