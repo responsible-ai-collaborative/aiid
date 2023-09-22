@@ -10,7 +10,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import AiidHelmet from 'components/AiidHelmet';
 import CheckListForm from 'components/checklists/CheckListForm';
 import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
-import { removeTypename } from 'utils/checklists';
+import { removeTypename, checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 
 export default function ChecklistsPage(props) {
@@ -62,7 +62,11 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
           id: query.id,
           risks: values.risks
             .filter((risk) => !risk.generated)
-            .map((risk) => ({ ...risk, startClosed: undefined })),
+            .map((risk) => ({
+              ...risk,
+              risk_status: checkedRiskStatus(risk.risk_status),
+              startClosed: undefined,
+            })),
         },
       },
     });
