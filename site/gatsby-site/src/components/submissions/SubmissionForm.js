@@ -36,9 +36,8 @@ import {
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
-import UsersInputGroup from 'components/forms/UsersInputGroup';
 
-const SubmissionForm = () => {
+const SubmissionForm = ({ onChange = null }) => {
   const {
     values,
     errors,
@@ -148,7 +147,7 @@ const SubmissionForm = () => {
 
   return (
     <div>
-      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report" onChange={onChange}>
         <div className="flex items-center mb-1">
           <FontAwesomeIcon
             fixedWidth
@@ -364,14 +363,6 @@ const SubmissionForm = () => {
               placeholder={t('Incident Description')}
               rows={3}
               className="mt-3"
-              {...TextInputGroupProps}
-            />
-            <UsersInputGroup
-              name="incident_editors"
-              label={t('Editors')}
-              icon={faPenNib}
-              className="mt-3"
-              placeholder={t('Editors')}
               {...TextInputGroupProps}
             />
             <TagsInputGroup

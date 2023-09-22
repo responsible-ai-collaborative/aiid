@@ -91,6 +91,9 @@ const Image = ({
         cldImg={image}
         plugins={plugins}
         style={style}
+        onError={() => {
+          setLoadFailed(true);
+        }}
       />
     </div>
   );

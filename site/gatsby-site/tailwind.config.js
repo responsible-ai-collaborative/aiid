@@ -18,6 +18,14 @@ let safelist = [
   'tw-btn-link',
   'bg-amber-400',
   'tw-toast',
+  'bg-orange-100',
+  'text-orange-800',
+  'dark:bg-orange-200',
+  'dark:text-orange-900',
+  'bg-yellow-100',
+  'text-yellow-800',
+  'dark:bg-yellow-200',
+  'dark:text-yellow-900',
 ];
 
 // Whitelisting level options from ListItem component
