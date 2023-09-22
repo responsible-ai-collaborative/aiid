@@ -25,6 +25,11 @@ const typeDefs = `
         last_name: String
     }
 
+    type mongodbAiidprodIncidentsTsne {
+        x: Float
+        y: Float
+    }
+
     type mongodbAiidprodIncidents implements Node {
         title: String
         description: String
@@ -42,6 +47,7 @@ const typeDefs = `
         Alleged_deployer_of_AI_system: [String]
         Alleged_developer_of_AI_system: [String]
         Alleged_harmed_or_nearly_harmed_parties: [String]
+        tsne: mongodbAiidprodIncidentsTsne
     }
     
     type mongodbAiidprodSubmissions implements Node {
@@ -184,6 +190,11 @@ const typeDefs = `
         title: String
         text: String
         report_number: Int
+    }
+
+    type mongodbAiidprodDuplicates implements Node {
+        duplicate_incident_number: Int
+        true_incident_number: Int
     }
 `;
 
