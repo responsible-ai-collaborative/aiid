@@ -304,14 +304,6 @@ const HeaderTextWithIcon = (props) => (
   </div>
 );
 
-/*
-const = (props) => (
-  < {...{ ...props, className: ` ${props.className}`}}>
-    {props.children}
-  </ >
-);
-*/
-
 const PrecedentsQuery = (props) => (
   <div {...{ ...props, className: `col-span-2 ${props.className}` }}>{props.children}</div>
 );
