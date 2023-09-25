@@ -1,6 +1,11 @@
 import * as yup from 'yup';
 import { dateRegExp, isPastDate } from '../../utils/date';
 
+const incident_title = yup
+  .string()
+  .min(6, '*Title must have at least 6 characters')
+  .max(500, "*Titles can't be longer than 500 characters");
+
 const developers = yup.array(
   yup
     .string()
@@ -110,6 +115,7 @@ export const schema = yup.object().shape({
 });
 
 export const incidentSchema = schema.shape({
+  incident_title: incident_title.required('*Incident Title is required.'),
   developers: developers.required(),
   deployers: deployers.required(),
   harmed_parties: harmed_parties.required(),
