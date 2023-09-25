@@ -56,44 +56,34 @@ describe('Submitted reports', () => {
 
     const submissions = submittedReports.data.submissions;
 
-    cy.get('[data-cy="submissions"] > div').should('have.length', submissions.length);
+    cy.get('[data-cy="submissions"] [data-cy="row"]').should('have.length', submissions.length);
 
     submissions.forEach((report, index) => {
-      cy.get('[data-cy="submissions"]')
-        .children(`:nth-child(${index + 1})`)
-        .within(() => {
-          cy.get('[data-cy="review-button"]').click();
+      cy.get('[data-cy="submissions"] [data-cy="row"]')
+        .eq(index)
+        .then((element) => {
+          cy.wrap(element)
+            .find('[data-cy="cell"] [data-cy="review-submission"]')
+            .should('not.exist');
         });
 
-      cy.get('[data-cy="submissions"]')
-        .children(`:nth-child(${index + 1})`)
-        .within(() => {
-          const keys = [
-            'source_domain',
-            'authors',
-            'submitters',
-            'incident_id',
-            'date_published',
-            'date_submitted',
-            'date_downloaded',
-            'date_modified',
-            'url',
-            'incident_ids',
-          ];
+      cy.get('[data-cy="submissions"] [data-cy="row"]')
+        .eq(index)
+        .then((element) => {
+          const keys = ['title', 'submitters', 'incident_date', 'editor', 'status'];
 
-          for (const key of keys) {
-            if (report[key]) {
-              let value = report[key];
+          cy.wrap(element)
+            .find('[data-cy="cell"]')
+            .each((cell, cellIndex) => {
+              if (report[keys[cellIndex]]) {
+                let value = report[keys[cellIndex]];
 
-              if (isArray(value)) {
-                value = arrayToList(value);
+                if (isArray(value)) {
+                  value = arrayToList(value);
+                }
+                cy.wrap(cell).should('contain', value);
               }
-
-              cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('contain', value);
-            } else {
-              cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('not.exist');
-            }
-          }
+            });
         });
     });
   });
@@ -118,6 +108,17 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'AllQuickAdd',
       'AllQuickAdd',
       {
@@ -131,13 +132,11 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}`);
+
     cy.wait('@AllQuickAdd');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
+    cy.waitForStableDOM();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -183,7 +182,11 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add new Incident').click();
+    cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+    cy.get('@dropdown').select('Incident');
+
+    cy.get('[data-cy="promote-button"]').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -243,6 +246,17 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'AllQuickAdd',
       'AllQuickAdd',
       {
@@ -256,13 +270,11 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}}`);
+
     cy.wait('@AllQuickAdd');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
+    cy.waitForStableDOM();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -291,7 +303,7 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add to incident 10').click();
+    cy.get('[data-cy="promote-to-report-button"]').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -339,6 +351,17 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'AllQuickAdd',
       'AllQuickAdd',
       {
@@ -352,13 +375,9 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}}`);
+
     cy.wait('@AllQuickAdd');
-
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -404,7 +423,7 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add to incidents 52 and 53').click();
+    cy.get('[data-cy="promote-to-report-button"]').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -469,6 +488,17 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'AllQuickAdd',
       'AllQuickAdd',
       {
@@ -482,13 +512,11 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}`);
+
     cy.wait('@AllQuickAdd');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
+    cy.waitForStableDOM();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -504,7 +532,11 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add as issue').click();
+    cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+    cy.get('@dropdown').select('Issue');
+
+    cy.get('[data-cy="promote-button"]').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -539,6 +571,17 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'AllQuickAdd',
       'AllQuickAdd',
       {
@@ -552,13 +595,11 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}`);
+
     cy.wait('@AllQuickAdd');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
+    cy.waitForStableDOM();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -571,13 +612,11 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Reject New Report').click();
+    cy.get('[data-cy="reject-button"]').click();
 
     cy.wait('@DeleteSubmission').then((xhr) => {
       expect(xhr.request.body.variables._id).to.eq('6123bf345e740c1a81850e89');
     });
-
-    cy.get('[data-cy="submissions"]').children().should('have.length', 0);
   });
 
   maybeIt('Edits a submission - update just a text', () => {
@@ -619,15 +658,7 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+    cy.visit(url + `?editSubmission=${submittedReports.data.submissions[0]._id}`);
 
     cy.setEditorText(
       '## Another one\n\n**More markdown**\n\nAnother paragraph with more text to reach the minimum character count!'
@@ -676,8 +707,6 @@ describe('Submitted reports', () => {
 
     cy.clock(now);
 
-    cy.get('@modal').contains('Update').click();
-
     cy.wait('@UpsertGoogle').its('request.body.variables.entity.entity_id').should('eq', 'google');
 
     cy.wait('@UpsertAdults').its('request.body.variables.entity.entity_id').should('eq', 'adults');
@@ -697,6 +726,7 @@ describe('Submitted reports', () => {
         description:
           'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
+        incident_title: 'Submisssion 1 title',
         incident_date: '2015-09-01',
         incident_ids: [],
         language: 'en',
@@ -721,8 +751,6 @@ describe('Submitted reports', () => {
         },
       });
     });
-
-    cy.get('@modal').should('not.exist');
   });
 
   maybeIt('Edits a submission - uses fetch info', () => {
@@ -752,11 +780,7 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
+    cy.visit(url + `?editSubmission=${submittedReports.data.submissions[0]._id}`);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -771,10 +795,6 @@ describe('Submitted reports', () => {
         },
       }
     );
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
     cy.get('input[name="url"]').click();
 
@@ -820,6 +840,17 @@ describe('Submitted reports', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
         (req) => req.body.operationName == 'AllQuickAdd',
         'AllQuickAdd',
         {
@@ -833,13 +864,9 @@ describe('Submitted reports', () => {
 
       cy.wait('@FindSubmissions');
 
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
       cy.wait('@AllQuickAdd');
-
-      cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-      cy.get('@promoteForm').within(() => {
-        cy.get('[data-cy="review-button"]').click();
-      });
 
       cy.on('fail', (err) => {
         expect(err.message).to.include(
@@ -854,7 +881,11 @@ describe('Submitted reports', () => {
         {}
       );
 
-      cy.get('@promoteForm').contains('button', 'Add new Incident').click();
+      cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+      cy.get('@dropdown').select('Incident');
+
+      cy.get('[data-cy="promote-button"]').click();
 
       cy.contains('[data-cy="toast"]', 'Description is required.').should('exist');
 
@@ -884,6 +915,17 @@ describe('Submitted reports', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
         (req) => req.body.operationName == 'AllQuickAdd',
         'AllQuickAdd',
         {
@@ -897,13 +939,9 @@ describe('Submitted reports', () => {
 
       cy.wait('@FindSubmissions');
 
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
       cy.wait('@AllQuickAdd');
-
-      cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-      cy.get('@promoteForm').within(() => {
-        cy.get('[data-cy="review-button"]').click();
-      });
 
       cy.on('fail', (err) => {
         expect(err.message).to.include(
@@ -918,7 +956,11 @@ describe('Submitted reports', () => {
         {}
       );
 
-      cy.get('@promoteForm').contains('button', 'Add as issue').click();
+      cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+      cy.get('@dropdown').select('Issue');
+
+      cy.get('[data-cy="promote-button"]').click();
 
       cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
 
@@ -948,6 +990,17 @@ describe('Submitted reports', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
         (req) => req.body.operationName == 'AllQuickAdd',
         'AllQuickAdd',
         {
@@ -961,13 +1014,9 @@ describe('Submitted reports', () => {
 
       cy.wait('@FindSubmissions');
 
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
       cy.wait('@AllQuickAdd');
-
-      cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-      cy.get('@promoteForm').within(() => {
-        cy.get('[data-cy="review-button"]').click();
-      });
 
       cy.on('fail', (err) => {
         expect(err.message).to.include(
@@ -982,7 +1031,7 @@ describe('Submitted reports', () => {
         {}
       );
 
-      cy.get('@promoteForm').contains('button', 'Add to incident 12').click();
+      cy.get('[data-cy="promote-to-report-button"]').contains('Add to incident 12').click();
 
       cy.contains('[data-cy="toast"]', '*Date is not valid, must be `YYYY-MM-DD`').should('exist');
 
@@ -990,7 +1039,8 @@ describe('Submitted reports', () => {
     }
   );
 
-  maybeIt('Should display an error message if data is missing', () => {
+  it.skip('Should display an error message if data is missing', () => {
+    // With new submission list, we allow to save changes always
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -1014,6 +1064,17 @@ describe('Submitted reports', () => {
       'FindSubmission',
       {
         data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
           submission,
         },
       }
@@ -1023,19 +1084,13 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
+    cy.visit(url + `?editSubmission=${submission._id}`);
 
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
+    cy.get('[data-cy="submission-form"]')
+      .contains('Please review submission. Some data is missing.')
+      .should('exist');
 
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
-
-    cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
-
-    cy.get('[data-cy="update-btn"]').should('be.disabled');
+    cy.get('[data-cy="submission"]').contains('Changes not saved').should('exist');
 
     cy.waitForStableDOM();
 
@@ -1053,14 +1108,14 @@ describe('Submitted reports', () => {
 
     cy.get('input[name=date_downloaded]').type('2023-01-01');
 
-    cy.get('@modal')
+    cy.get('[data-cy="submission-form"]')
       .contains('Please review submission. Some data is missing.')
       .should('not.exist');
 
-    cy.get('[data-cy="update-btn"]').should('not.be.disabled');
+    cy.get('[data-cy="submission"]').contains('Changes not saved').should('not.exist');
   });
 
-  maybeIt('Should display submission image on edit modal', () => {
+  maybeIt('Should display submission image on edit page', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
@@ -1118,17 +1173,9 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}`);
+
     cy.wait('@AllQuickAdd');
-
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
     cy.waitForStableDOM();
 
@@ -1181,17 +1228,9 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
+    cy.visit(url + `?editSubmission=${submission._id}`);
+
     cy.wait('@AllQuickAdd');
-
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
     cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
   });
@@ -1229,25 +1268,13 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+    cy.visit(url + `?editSubmission=${submission._id}`);
 
     cy.waitForStableDOM();
 
     cy.get('input[name=date_published]').type('3000-01-01');
 
-    cy.get('@modal').contains('*Date must be in the past').should('exist');
-
-    cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
-
-    cy.get('[data-cy="update-btn"]').should('be.disabled');
+    cy.get('[data-cy="submission-form"]').contains('*Date must be in the past').should('exist');
   });
 
   maybeIt('Should display an error message if Date Downloaded is not in the past', () => {
@@ -1283,25 +1310,13 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').within(() => {
-      cy.get('[data-cy="review-button"]').click();
-    });
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+    cy.visit(url + `?editSubmission=${submission._id}`);
 
     cy.waitForStableDOM();
 
     cy.get('input[name=date_downloaded]').type('3000-01-01');
 
-    cy.get('@modal').contains('*Date must be in the past').should('exist');
-
-    cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
-
-    cy.get('[data-cy="update-btn"]').should('be.disabled');
+    cy.get('[data-cy="submission-form"]').contains('*Date must be in the past').should('exist');
   });
 
   maybeIt(
@@ -1359,32 +1374,6 @@ describe('Submitted reports', () => {
         }
       );
 
-      cy.visit(url);
-
-      cy.wait('@FindSubmissions');
-
-      cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-      cy.get('@promoteForm').within(() => {
-        cy.get('[data-cy="review-button"]').click();
-      });
-
-      cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-      cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
-
-      cy.waitForStableDOM();
-
-      cy.get(`input[name="incident_ids"]`).type('1');
-
-      cy.waitForStableDOM();
-
-      cy.get(`[role="option"]`).first().click();
-
-      cy.waitForStableDOM();
-
-      cy.get('[data-cy="incident-data-section"]').should('not.exist');
-
       cy.conditionalIntercept(
         '**/graphql',
         (req) => req.body.operationName === 'UpdateSubmission',
@@ -1425,15 +1414,23 @@ describe('Submitted reports', () => {
         }
       );
 
-      cy.get('@modal').contains('Update').click();
+      cy.visit(url);
 
-      cy.wait('@UpsertGoogle')
-        .its('request.body.variables.entity.entity_id')
-        .should('eq', 'google');
+      cy.wait('@FindSubmissions');
 
-      cy.wait('@UpsertAdults')
-        .its('request.body.variables.entity.entity_id')
-        .should('eq', 'adults');
+      cy.visit(url + `?editSubmission=${submittedReports.data.submissions[0]._id}`);
+
+      cy.waitForStableDOM();
+
+      cy.get(`input[name="incident_ids"]`).type('1');
+
+      cy.waitForStableDOM();
+
+      cy.get(`[role="option"]`).first().click();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="incident-data-section"]').should('not.exist');
 
       cy.wait('@UpdateSubmission').then((xhr) => {
         expect(xhr.request.body.variables.query).to.deep.nested.include({
@@ -1445,7 +1442,13 @@ describe('Submitted reports', () => {
         });
       });
 
-      cy.get('@modal').should('not.exist');
+      cy.wait('@UpsertGoogle')
+        .its('request.body.variables.entity.entity_id')
+        .should('eq', 'google');
+
+      cy.wait('@UpsertAdults')
+        .its('request.body.variables.entity.entity_id')
+        .should('eq', 'adults');
     }
   );
 });

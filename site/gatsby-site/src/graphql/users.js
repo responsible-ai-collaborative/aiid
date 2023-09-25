@@ -7,12 +7,6 @@ export const FIND_USERS = gql`
       userId
       first_name
       last_name
-      adminData {
-        email
-        disabled
-        creationDate
-        lastAuthenticationDate
-      }
     }
   }
 `;
@@ -31,6 +25,23 @@ export const FIND_USERS_FIELDS_ONLY = gql`
 export const FIND_USER = gql`
   query FindUser($query: UserQueryInput!) {
     user(query: $query) {
+      roles
+      userId
+      first_name
+      last_name
+      adminData {
+        email
+        disabled
+        creationDate
+        lastAuthenticationDate
+      }
+    }
+  }
+`;
+
+export const FIND_USERS_BY_ROLE = gql`
+  query FindUsersByRole($role: String!) {
+    users(query: { roles_in: [$role] }) {
       roles
       userId
       first_name
