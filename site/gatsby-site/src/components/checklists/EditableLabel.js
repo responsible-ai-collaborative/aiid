@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 export default function EditableLabel({ title, onChange, textClasses, iconClasses }) {
+  const [displayTitle, setDisplayTitle] = useState(title);
+
   const [editingTitle, setEditingTitle] = useState(false);
 
   return (
@@ -10,18 +12,18 @@ export default function EditableLabel({ title, onChange, textClasses, iconClasse
       {editingTitle ? (
         <input
           type="text"
-          value={title}
-          onChange={onChange}
+          value={displayTitle}
+          onChange={(evt) => {
+            setDisplayTitle(evt.target.value);
+            onChange(evt);
+          }}
           onBlur={() => setEditingTitle(false)}
           className={`${textClasses} py-0 border-none flex-shrink-1`}
         />
       ) : (
-        <span className={`${textClasses} bg-white`}>{title}</span>
+        <span className={`${textClasses} bg-white`}>{displayTitle}</span>
       )}
-      <button
-        className="px-2"
-        onClick={() => setEditingTitle((editingTitle) => !editingTitle)}
-      >
+      <button className="px-2" onClick={() => setEditingTitle((editingTitle) => !editingTitle)}>
         <FontAwesomeIcon
           className={`${iconClasses} align-baseline`}
           icon={editingTitle ? faCheck : faEdit}

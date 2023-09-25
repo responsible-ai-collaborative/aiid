@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import debounce from 'lodash/debounce';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import {
@@ -27,8 +28,6 @@ export default function CheckListForm({
   tags,
   isSubmitting,
 }) {
-  const { t } = useTranslation();
-
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
   const confirmDeleteChecklist = async (id) => {
@@ -58,9 +57,12 @@ export default function CheckListForm({
   const oldSetFieldValue = setFieldValue;
 
   setFieldValue = (key, value) => {
+    console.log(`Setting field value`, key, value);
     oldSetFieldValue(key, value);
     submitForm();
   };
+
+  const debouncedSetFieldValue = useRef(debounce(setFieldValue, 1000)).current;
 
   const removeRisk = (findFunction) => {
     setFieldValue(
@@ -100,7 +102,7 @@ export default function CheckListForm({
           <h1>
             <EditableLabel
               title={values.name}
-              onChange={(event) => setFieldValue('name', event.target.value)}
+              onChange={(event) => debouncedSetFieldValue('name', event.target.value)}
               textClasses="text-2xl"
               iconClasses="text-lg vertical-align"
             />
@@ -111,7 +113,7 @@ export default function CheckListForm({
               <Trans>Subscribe</Trans>
             </Button>
             <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
-              Delete
+              <Trans>Delete</Trans>
             </DeleteButton>
             <ExportDropdown checklist={values} />
           </HeaderControls>
@@ -125,17 +127,7 @@ export default function CheckListForm({
           checklist.
         </Trans>
       </Info>*/}
-      <section>
-        <Label for="about-system">About System</Label>
-        <Textarea
-          placeholder={t(`Human-readable notes on the system under investigation`)}
-          value={values.about}
-          row={4}
-          onChange={(event) => {
-            setFieldValue('about', event.target.value);
-          }}
-        />
-      </section>
+      <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue }} />
       <section>
         <SideBySide className="my-4">
           <GoalsTagInput {...{ values, tags, setFieldValue }} />
@@ -156,7 +148,7 @@ export default function CheckListForm({
                 )
               }
             >
-              Expand all
+              <Trans>Expand all</Trans>
             </Button>
             <Button
               color="light"
@@ -167,7 +159,7 @@ export default function CheckListForm({
                 )
               }
             >
-              Collapse all
+              <Trans>Collapse all</Trans>
             </Button>
             <Button
               onClick={() => {
@@ -177,7 +169,7 @@ export default function CheckListForm({
                 );
               }}
             >
-              Add Risk
+              <Trans>Add Risk</Trans>
             </Button>
           </div>
         </header>
@@ -211,6 +203,29 @@ export default function CheckListForm({
     </Form>
   );
 }
+
+const AboutSystem = ({ formAbout, debouncedSetFieldValue }) => {
+  const [about, setAbout] = useState(formAbout);
+
+  const { t } = useTranslation();
+
+  return (
+    <section>
+      <Label for="about-system">
+        <Trans>About System</Trans>
+      </Label>
+      <Textarea
+        placeholder={t(`Human-readable notes on the system under investigation`)}
+        value={about}
+        row={4}
+        onChange={(event) => {
+          setAbout(event.target.value);
+          debouncedSetFieldValue('about', event.target.value);
+        }}
+      />
+    </section>
+  );
+};
 
 const QueryTagInput = ({
   title,

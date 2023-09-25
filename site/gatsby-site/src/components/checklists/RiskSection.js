@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Select, TextInput, Textarea, Card } from 'flowbite-react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import debounce from 'lodash/debounce';
 
 import Tags from 'components/forms/Tags';
 import { Label, risksEqual, statusIcon, statusColor } from 'utils/checklists';
@@ -32,6 +33,8 @@ export default function RiskSection({
 
   const [precedents, setPrecedents] = useState([]);
 
+  const debouncedUpdateRisk = useRef(debounce(updateRisk, 2000)).current;
+
   useEffect(() => {
     updatePrecedents({ risk, setPrecedents, allPrecedents });
   }, [JSON.stringify(risk.tags), JSON.stringify(searchTags)]);
@@ -48,7 +51,7 @@ export default function RiskSection({
         <HeaderItemsGroup>
           <EditableLabel
             title={risk.title}
-            onChange={(event) => updateRisk(risk, { title: event.target.value })}
+            onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
             textClasses={`text-lg font-500 text-${
               risk.generated ? 'gray' : 'red'
             }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
@@ -190,33 +193,72 @@ export default function RiskSection({
               )
             )}
           </Select>
-          <div>
-            <Label>Severity</Label>
-            <TextInput
-              value={risk.severity}
-              onChange={(event) => updateRisk(risk, { severity: event.target.value })}
-            />
-          </div>
-          <div>
-            <Label>Likelihood</Label>
-            <TextInput
-              value={risk.likelihood}
-              onChange={(event) => updateRisk(risk, { likelihood: event.target.value })}
-            />
-          </div>
-          <div className="md:h-full flex flex-col">
-            <Label>Risk Notes</Label>
-            <Textarea
-              className="md:h-full shrink-1"
-              value={risk.risk_notes}
-              onChange={(event) => updateRisk(risk, { risk_notes: event.target.value })}
-            />
-          </div>
+          <RiskSeverity {...{ risk, debouncedUpdateRisk }} />
+          <RiskLikelihood {...{ risk, debouncedUpdateRisk }} />
+          <RiskNotes {...{ risk, debouncedUpdateRisk }} />
         </RiskFields>
       </RiskBody>
     </RiskDetails>
   );
 }
+
+const RiskSeverity = ({ risk, debouncedUpdateRisk }) => {
+  const { t } = useTranslation();
+
+  const [displaySeverity, setDisplaySeverity] = useState(risk.severity);
+
+  return (
+    <div>
+      <Label>{t('Severity')}</Label>
+      <TextInput
+        value={displaySeverity}
+        onChange={(event) => {
+          setDisplaySeverity(event.target.value);
+          debouncedUpdateRisk(risk, { severity: event.target.value });
+        }}
+      />
+    </div>
+  );
+};
+
+const RiskLikelihood = ({ risk, debouncedUpdateRisk }) => {
+  const { t } = useTranslation();
+
+  const [displayLikelihood, setDisplayLikelihood] = useState(risk.likelihood);
+
+  return (
+    <div>
+      <Label>{t('Likelihood')}</Label>
+      <TextInput
+        value={displayLikelihood}
+        onChange={(event) => {
+          setDisplayLikelihood(event.target.value);
+          debouncedUpdateRisk(risk, { likelihood: event.target.value });
+        }}
+      />
+    </div>
+  );
+};
+
+const RiskNotes = ({ risk, debouncedUpdateRisk }) => {
+  const { t } = useTranslation();
+
+  const [displayNotes, setDisplayNotes] = useState(risk.risk_notes);
+
+  return (
+    <div className="md:h-full flex flex-col">
+      <Label>{t('Risk Notes')}</Label>
+      <Textarea
+        className="md:h-full shrink-1"
+        value={displayNotes}
+        onChange={(event) => {
+          setDisplayNotes(event.target.value);
+          debouncedUpdateRisk(risk, { risk_notes: event.target.value });
+        }}
+      />
+    </div>
+  );
+};
 
 const RiskBody = (props) => (
   <div
