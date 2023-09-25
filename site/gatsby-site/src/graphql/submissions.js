@@ -55,6 +55,7 @@ export const FIND_SUBMISSIONS = gql`
         entity_id
         name
       }
+      status
       user {
         userId
       }
@@ -108,6 +109,7 @@ export const FIND_SUBMISSION = gql`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      status
     }
   }
 `;
