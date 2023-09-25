@@ -1,5 +1,3 @@
-import qs from 'qs';
-
 function createTransform() {
   let taxonomyCounter = 0;
 
@@ -34,9 +32,15 @@ function createTransform() {
 }
 
 export default function (queryString) {
-  const parsed = qs.parse(queryString, { parseArrays: true });
+  try {
+    const decoded = decodeURIComponent(queryString);
 
-  const updated = createTransform()(parsed);
+    const parsed = JSON.parse(decoded);
 
-  return updated;
+    const updated = createTransform()(parsed);
+
+    return updated;
+  } catch (e) {
+    return [];
+  }
 }

@@ -40,13 +40,15 @@ const GET_FACETS = gql`
 export default function Builder({ id, setFilters, removeFilter, config }) {
   const [fields, setFields] = useState(null);
 
-  const { data, loading } = useQuery(FIND_TAXONOMY, {
+  const { data, loading: loadingTaxonomy } = useQuery(FIND_TAXONOMY, {
     variables: { input: { namespace: config.namespace } },
   });
 
-  const { data: facetsData } = useQuery(GET_FACETS, {
+  const { data: facetsData, loading: loadingFacets } = useQuery(GET_FACETS, {
     variables: { input: { query: JSON.stringify({ namespace: config.namespace }) } },
   });
+
+  const loading = loadingFacets || loadingTaxonomy;
 
   const [collapsed, setCollapsed] = useState(false);
 

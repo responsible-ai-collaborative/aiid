@@ -14,9 +14,10 @@ export default function isValid(obj) {
       return false;
     }
 
-    if (!('valueSource' in obj) || !obj.valueSource) {
-      return false;
-    }
+    //TODO: check if this is needed
+    // if (!('valueSource' in obj) || !obj.valueSource) {
+    //   return false;
+    // }
   }
 
   return true;

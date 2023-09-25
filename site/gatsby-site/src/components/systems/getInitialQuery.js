@@ -1,11 +1,15 @@
 import decodeQuery from './decodeQuery';
 
 export default function getInitialQuery(location) {
-  const { filters } = decodeQuery(location.search.substr(1));
+  const params = new URLSearchParams(location.search);
 
-  if (!filters) {
-    return { filters: [] };
+  const query = params.get('filters');
+
+  if (query) {
+    const result = decodeQuery(query);
+
+    return { filters: result };
   }
 
-  return { filters };
+  return { filters: [] };
 }

@@ -237,7 +237,9 @@ export default function Systems() {
   useEffect(() => {
     console.log('init');
 
-    setFilters(getInitialQuery(location).filters);
+    const { filters } = getInitialQuery(location);
+
+    setFilters(filters);
   }, []);
 
   useEffect(() => {
@@ -250,14 +252,12 @@ export default function Systems() {
 
       const encoded = encodeQuery(filters);
 
-      navigate(`?${encoded}`);
+      navigate(`?filters=${encoded}`);
 
       console.log('debounced search', filters);
       debouncedSearch(filters);
     } else if (filters?.length == 0) {
-      debouncedSearch(filters);
-
-      navigate(`?`);
+      navigate(`?filters=[]`);
     }
 
     return () => debouncedSearch.cancel();
@@ -356,6 +356,8 @@ export default function Systems() {
     }
   }, [reports]);
 
+  console.log(filters);
+
   return (
     <>
       <div className="border">
@@ -436,7 +438,11 @@ export default function Systems() {
         <AddTaxonomyModal
           onClose={() => setShowTaxonomyModal(false)}
           onTaxonomySelected={(namespace) =>
-            addFilter('taxonomy', { namespace, query: { combinator: 'or', rules: [] } })
+            addFilter('taxonomy', {
+              namespace,
+              initialized: false,
+              query: { combinator: 'or', rules: [] },
+            })
           }
         />
       )}

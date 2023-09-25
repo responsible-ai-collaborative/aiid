@@ -1,6 +1,4 @@
-import qs from 'qs';
-
-function stripProperties(obj, propertiesToStrip = ['id', 'valueSource']) {
+function stripProperties(obj, propertiesToStrip = ['id', 'valueSource', 'initialized']) {
   if (Array.isArray(obj)) {
     return obj.map((item) => stripProperties(item, propertiesToStrip));
   }
@@ -21,9 +19,11 @@ function stripProperties(obj, propertiesToStrip = ['id', 'valueSource']) {
 }
 
 export default function (filters) {
-  const updated = stripProperties(filters);
+  const stripped = stripProperties(filters);
 
-  const encoded = qs.stringify({ filters: updated }, { encodeValuesOnly: true });
+  const stringified = JSON.stringify(stripped);
+
+  const encoded = encodeURIComponent(stringified);
 
   return encoded;
 }
