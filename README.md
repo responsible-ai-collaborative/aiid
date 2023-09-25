@@ -145,9 +145,12 @@ SKIP_PAGE_CREATOR=createTsneVisualizationPage
 GATSBY_PRISMIC_REPO_NAME=
 PRISMIC_ACCESS_TOKEN=
 PRISMIC_CUSTOM_TYPES_API_TOKEN=
+IS_EMPTY_ENVIRONMENT=
 ```
 
 For `GATSBY_PRISMIC_REPO_NAME`, `PRISMIC_ACCESS_TOKEN` and `PRISMIC_CUSTOM_TYPES_API_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+
+For complete empty environment (no database data, no Algolia index, no Prismic content), set `IS_EMPTY_ENVIRONMENT=true`. This will disable all tests that require data.
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
