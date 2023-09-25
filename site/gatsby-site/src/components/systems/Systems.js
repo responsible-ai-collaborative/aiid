@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import queryTypes from 'components/systems/queryTypes';
 import AddTaxonomyModal from './AddTaxonomyModal';
 import { gql, useApolloClient } from '@apollo/client';
@@ -22,6 +22,14 @@ const FIND_SYSTEMS = gql`
         incidents
         namespace
         reports
+      }
+      facets {
+        short_name
+        count
+        list {
+          count
+          _id
+        }
       }
     }
   }
@@ -111,19 +119,35 @@ export default function Systems() {
 
   const [searching, setSearching] = useState(false);
 
-  const [data, setData] = useState(null);
+  const [results, setResults] = useState(null);
 
-  const findSystems = async (options) => {
-    console.log('findSystems', options);
+  const [facets, setFacets] = useState([]);
+
+  const abortControllerRef = useRef(null);
+
+  const findSystems = async ({ variables }) => {
+    console.log('findsystems start, set results null');
 
     setSearching(true);
-    setData(null);
+    setResults(null);
+    setFacets([]);
 
-    const result = await client.query({ query: FIND_SYSTEMS, ...options });
+    const result = await client.query({
+      query: FIND_SYSTEMS,
+      variables,
+      context: { fetchOptions: abortControllerRef.current },
+    });
 
-    console.log('findSystems result', result);
+    const {
+      data: {
+        findSystems: { results, facets },
+      },
+    } = result;
 
-    setData(result.data);
+    console.log('findSystems complete set results', results, facets);
+
+    setResults([...results]);
+    setFacets([...facets]);
     setSearching(false);
   };
 
@@ -131,19 +155,23 @@ export default function Systems() {
 
   const [loadingIncidents, setLoadingIncidents] = useState(false);
 
-  const [dataIncidents, setDataIncidents] = useState(null);
+  const [incidents, setIncidents] = useState(null);
 
   const findIncidents = async (options) => {
     console.log('findIncidents', options);
 
     setLoadingIncidents(true);
-    setDataIncidents(null);
+    setIncidents(null);
 
-    const result = await client.query({ query: FIND_INCIDENTS, ...options });
+    const result = await client.query({
+      query: FIND_INCIDENTS,
+      context: { fetchOptions: abortControllerRef.current },
+      ...options,
+    });
 
     console.log('findIncidents result', result);
 
-    setDataIncidents(result.data);
+    setIncidents([...result.data.incidents]);
     setLoadingIncidents(false);
   };
 
@@ -151,19 +179,23 @@ export default function Systems() {
 
   const [loadingReports, setLoadingReports] = useState(false);
 
-  const [dataReports, setDataReports] = useState(null);
+  const [reports, setReports] = useState(null);
 
   const findReports = async (options) => {
     console.log('findReports', options);
 
     setLoadingReports(true);
-    setDataReports(null);
+    setReports(null);
 
-    const result = await client.query({ query: FIND_REPORTS, ...options });
+    const result = await client.query({
+      query: FIND_REPORTS,
+      context: { fetchOptions: abortControllerRef.current },
+      ...options,
+    });
 
     console.log('findReports result', result);
 
-    setDataReports(result.data);
+    setReports([...result.data.reports]);
     setLoadingReports(false);
   };
 
@@ -210,14 +242,21 @@ export default function Systems() {
 
   useEffect(() => {
     if (isValidQuery(filters) && filters?.every((filter) => filter.initialized)) {
-      console.log('debounced search', filters);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      abortControllerRef.current = new AbortController();
 
       const encoded = encodeQuery(filters);
 
       navigate(`?${encoded}`);
 
+      console.log('debounced search', filters);
       debouncedSearch(filters);
     } else if (filters?.length == 0) {
+      debouncedSearch(filters);
+
       navigate(`?`);
     }
 
@@ -225,13 +264,15 @@ export default function Systems() {
   }, [filters]);
 
   useEffect(() => {
-    if (!searching && data?.findSystems?.results) {
-      const incidents = data.findSystems.results.map((result) => result.incidents).flat();
+    console.log('useeffect results', searching, results);
 
-      const reports = data.findSystems.results.map((result) => result.reports).flat();
+    if (!searching && results?.length >= 0) {
+      const incidents = results.map((result) => result.incidents).flat();
+
+      const reports = results.map((result) => result.reports).flat();
 
       if (incidents.length) {
-        console.log('fetch', incidents);
+        console.log('fetching incidents', incidents);
 
         findIncidents({ variables: { query: { incident_id_in: incidents } } });
       } else {
@@ -241,7 +282,7 @@ export default function Systems() {
       }
 
       if (reports.length) {
-        console.log('fetch', reports);
+        console.log('fetching reports', reports);
 
         findReports({ variables: { query: { report_number_in: reports } } });
       } else {
@@ -250,13 +291,13 @@ export default function Systems() {
         setReportResults([]);
       }
     }
-  }, [data, searching]);
+  }, [results, searching]);
 
   useEffect(() => {
-    console.log('dataIncidents', dataIncidents);
+    console.log('useeffect dataIncidents', incidents);
 
-    if (dataIncidents?.incidents) {
-      const results = dataIncidents.incidents.map((incident) => {
+    if (incidents?.length) {
+      const results = incidents.map((incident) => {
         const { title, description, reports, incident_id } = incident;
 
         const [report] = reports;
@@ -283,13 +324,13 @@ export default function Systems() {
 
       setIncidentResults(results);
     }
-  }, [dataIncidents]);
+  }, [incidents]);
 
   useEffect(() => {
-    console.log('dataReports', dataReports);
+    console.log('useeffect dataReports', reports);
 
-    if (dataReports?.reports) {
-      const results = dataReports.reports.map((report) => {
+    if (reports?.length) {
+      const results = reports.map((report) => {
         return {
           description: report.description,
           report_number: report.report_number,
@@ -313,7 +354,7 @@ export default function Systems() {
 
       setReportResults(results);
     }
-  }, [dataReports]);
+  }, [reports]);
 
   return (
     <>
@@ -337,6 +378,7 @@ export default function Systems() {
                     id={filter.id}
                     setFilters={setFilters}
                     removeFilter={removeFilter}
+                    facets={facets}
                     config={filter.config}
                   />
                 );
@@ -394,7 +436,7 @@ export default function Systems() {
         <AddTaxonomyModal
           onClose={() => setShowTaxonomyModal(false)}
           onTaxonomySelected={(namespace) =>
-            addFilter('taxonomy', { namespace, query: { combinator: 'and', rules: [] } })
+            addFilter('taxonomy', { namespace, query: { combinator: 'or', rules: [] } })
           }
         />
       )}

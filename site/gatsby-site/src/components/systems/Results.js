@@ -21,7 +21,7 @@ export default function Results({
         <div>
           {(searching || fetching) && <Spinner />}
           {(!searching || !fetching) && filters?.length > 0 && (
-            <>{(results?.length > 0 || results?.length == 0) && <Heading results={results} />}</>
+            <>{results?.length >= 0 && <Heading results={results} />}</>
           )}
         </div>
         {results?.length > 0 && (

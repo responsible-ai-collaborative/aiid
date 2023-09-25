@@ -1,3 +1,4 @@
+import isArray from 'lodash/isArray';
 import { formatQuery } from 'react-querybuilder';
 
 const getOperation = (rule) => {
@@ -12,10 +13,10 @@ const getOperation = (rule) => {
       return { $ne: rule.value };
 
     case 'in':
-      return { $in: rule.value };
+      return { $in: !isArray(rule.value) ? [rule.value] : rule.value };
 
     case 'notIn':
-      return { $nin: rule.value };
+      return { $nin: !isArray(rule.value) ? [rule.value] : rule.value };
 
     case 'between': {
       const [value1, value2] = rule.value;
@@ -63,7 +64,7 @@ export default function (filters) {
     })
     .map((query) => JSON.stringify(query));
 
-  const fullQuery = `{"$or": [${queries.join(',')}]}`;
+  const fullQuery = filters.length > 0 ? `{"$or": [${queries.join(',')}]}` : `{}`;
 
   return fullQuery;
 }

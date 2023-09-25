@@ -12,50 +12,27 @@ const RandomIncidentsCarousel = () => {
     <StaticQuery
       query={graphql`
         query RandomIncidentsCarousel {
-          allMongodbAiidprodIncidents {
+          allMongodbAiidprodIncidents(
+            limit: 10
+            filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+          ) {
             nodes {
               incident_id
               reports {
                 report_number
+                image_url
+                cloudinary_id
               }
               title
             }
           }
-          allMongodbAiidprodReports(limit: 50, sort: { id: ASC }) {
-            nodes {
-              id
-              report_number
-              image_url
-              cloudinary_id
-            }
-          }
         }
       `}
-      render={({
-        allMongodbAiidprodReports: { nodes: reports },
-        allMongodbAiidprodIncidents: { nodes: incidents },
-      }) => {
+      render={({ allMongodbAiidprodIncidents: { nodes: selected } }) => {
         // this cannot be really random because it causes rehydration problems
 
         const { t } = useTranslation();
 
-        const selected = [];
-
-        for (let i = 0; i < reports.length && selected.length < 5; i++) {
-          const report = reports[i];
-
-          const incident = incidents.find((incident) => {
-            return incident.reports.some((r) => r.report_number === report.report_number);
-          });
-
-          if (!selected.some((s) => s.incident_id == incident.incident_id)) {
-            selected.push({
-              ...report,
-              incident_id: incident.incident_id,
-              title: incident.title || report.title,
-            });
-          }
-        }
         return (
           <div className="flex-1 flex justify-center items-center">
             <div className="h-full w-full relative">

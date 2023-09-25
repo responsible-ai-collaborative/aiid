@@ -22,11 +22,30 @@ const FIND_TAXONOMY = gql`
   }
 `;
 
+const GET_FACETS = gql`
+  query FindSystems($input: FindSystemsQueryInput) {
+    findSystems(input: $input) {
+      facets {
+        short_name
+        count
+        list {
+          count
+          _id
+        }
+      }
+    }
+  }
+`;
+
 export default function Builder({ id, setFilters, removeFilter, config }) {
   const [fields, setFields] = useState(null);
 
   const { data, loading } = useQuery(FIND_TAXONOMY, {
     variables: { input: { namespace: config.namespace } },
+  });
+
+  const { data: facetsData } = useQuery(GET_FACETS, {
+    variables: { input: { query: JSON.stringify({ namespace: config.namespace }) } },
   });
 
   const [collapsed, setCollapsed] = useState(false);
@@ -37,7 +56,7 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
     setFilters((filters) =>
       filters.map((filter) => {
         if (filter.id === id) {
-          return { ...filter, initialized: true, config: { ...filter.config, query } };
+          return { ...filter, config: { ...filter.config, query } };
         }
         return filter;
       })
@@ -45,7 +64,7 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
   };
 
   useEffect(() => {
-    if (data?.taxa) {
+    if (data?.taxa && facetsData?.findSystems.facets) {
       const fields = [];
 
       for (const field of data.taxa.field_list) {
@@ -103,15 +122,28 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
               { name: 'between', label: 'Between' },
             ];
             inputType = 'date';
+
+            break;
+
+          case 'list':
+            {
+              valueEditorType = 'multiselect';
+              operators = [
+                { name: 'in', label: 'In' },
+                { name: 'notIn', label: 'Not In' },
+              ];
+
+              const list = facetsData?.findSystems.facets.find(
+                (facet) => facet.short_name == field.short_name
+              ).list;
+
+              values = list.map(({ _id, count }) => ({ name: _id, label: `${_id} (${count})` }));
+            }
+
             break;
 
           default:
             console.log(field.display_type);
-
-          // TODO: list type needs to fetch every possible value
-          // case 'list':
-          //   operators = [{ name: 'contains', label: 'contains' }];
-          //   break;
         }
 
         if (operators || values || valueEditorType || inputType) {
@@ -127,8 +159,11 @@ export default function Builder({ id, setFilters, removeFilter, config }) {
       }
 
       setFields(fields);
+      setFilters((filters) =>
+        filters.map((filter) => (filter.id === id ? { ...filter, initialized: true } : filter))
+      );
     }
-  }, [data]);
+  }, [data, facetsData]);
 
   const valid = isValidFilter(config.query);
 
