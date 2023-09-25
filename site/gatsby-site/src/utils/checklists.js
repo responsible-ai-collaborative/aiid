@@ -1,4 +1,4 @@
-import { classy } from 'utils/classy';
+import React from 'react';
 import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -52,9 +52,11 @@ const risksEqual = (risk1, risk2) => {
   }
 };
 
-const Label = classy('label', 'mb-1 block');
+const Label = (props) => (
+  <label {...{ ...props, className: `mb-1 block ${props.className}` }}>{props.children}</label>
+);
 
-const emptyRisk = () => ({
+const emptyRisk = (properties) => ({
   id: uuidv4(),
   title: 'Untitled Risk',
   tags: [],
@@ -66,6 +68,7 @@ const emptyRisk = () => ({
   touched: false,
   generated: true,
   startClosed: false,
+  ...(properties || {}),
 });
 
 const removeTypename = (obj) => {
@@ -84,29 +87,35 @@ const exportJson = (checklist) => {
   a.click();
 };
 
-const DeleteButton = classy(
-  'button',
-  `
-  text-sm text-center font-medium
-  px-5 py-2.5 rounded-lg border
+const DeleteButton = (props) => (
+  <button
+    {...{
+      ...props,
+      className: `
+    text-sm text-center font-medium
+    px-5 py-2.5 rounded-lg border
 
-  text-red-700
-  border-gray-300
+    text-red-700
+    border-gray-300
 
-  hover:text-white
-  hover:bg-red-800
-  hover:border-red-800
+    hover:text-white
+    hover:bg-red-800
+    hover:border-red-800
 
-  focus:ring-4
-  focus:outline-none
-  focus:ring-red-300
+    focus:ring-4
+    focus:outline-none
+    focus:ring-red-300
 
-  dark:border-gray-600
-  dark:text-red-500
-  dark:hover:text-white
-  dark:hover:bg-red-600
-  dark:focus:ring-red-900
-`
+    dark:border-gray-600
+    dark:text-red-500
+    dark:hover:text-white
+    dark:hover:bg-red-600
+    dark:focus:ring-red-900
+  `,
+    }}
+  >
+    {props.children}
+  </button>
 );
 
 function shouldBeGrouped(tag1, tag2) {

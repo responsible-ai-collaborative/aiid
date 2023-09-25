@@ -6,7 +6,6 @@ import { useMutation } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
-import { classy, classyDiv } from 'utils/classy';
 import {
   Label,
   DeleteButton,
@@ -290,16 +289,41 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
   />
 );
 
-const Header = classy('header', 'titleWrapper');
-
-const HeaderRow = classyDiv('w-full flex items-center flex-wrap justify-between gap-3');
-
-const HeaderControls = classyDiv(
-  'flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full'
+const Header = (props) => (
+  <header {...{ ...props, className: `titleWrapper ${props.className}` }}>{props.children}</header>
 );
 
-const SideBySide = classyDiv(
-  'flex flex-col md:flex-row gap-2 [&>*]:w-full [&>*]:md:w-1/2 [&>*]:h-full'
+const HeaderRow = (props) => (
+  <div
+    {...{
+      ...props,
+      className: `w-full flex items-center flex-wrap justify-between gap-3 ${props.className}`,
+    }}
+  >
+    {props.children}
+  </div>
+);
+
+const HeaderControls = (props) => (
+  <div
+    {...{
+      ...props,
+      className: `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`,
+    }}
+  >
+    {props.children}
+  </div>
+);
+
+const SideBySide = (props) => (
+  <div
+    {...{
+      ...props,
+      className: `flex flex-col md:flex-row gap-2 [&>*]:w-full [&>*]:md:w-1/2 [&>*]:h-full ${props.className}`,
+    }}
+  >
+    {props.children}
+  </div>
 );
 
 function SavingIndicator({ saveStatus }) {

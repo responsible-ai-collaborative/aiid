@@ -4,7 +4,6 @@ import { Select, TextInput, Textarea, Card } from 'flowbite-react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import Tags from 'components/forms/Tags';
-import { classy, classyDiv } from 'utils/classy';
 import { Label, risksEqual, statusIcon, statusColor } from 'utils/checklists';
 import EditableLabel from 'components/checklists/EditableLabel';
 
@@ -219,66 +218,135 @@ export default function RiskSection({
   );
 }
 
-const RiskBody = classyDiv('grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem]');
-
-const RiskDetails = classy(
-  'details',
-  ({ generated }) => `
-  ${
-    generated ? 'border-gray-400' : 'border-red-700'
-  } border-l-2 border-r-2 border-t-2 open:border-b-2
-  h-0 open:h-fit
-  relative max-w-full
-  open:p-3 md:open:p-6 open:rounded
-  cursor-pointer
-
-  [&[open]>summary]:before:content-['⏷']
-        [&>summary]:before:content-['⏵']
-  [&[open]>summary]:before:w-4
-        [&>summary]:before:w-4
-`
+const RiskBody = (props) => (
+  <div
+    {...{
+      ...props,
+      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className}`,
+    }}
+  >
+    {props.children}
+  </div>
 );
 
-const RiskHeaderSummary = classy(
-  'summary',
-  ({ generated }) => `
-  absolute -top-4 left-1 md:left-3 w-full flex px-2 items-center
+const RiskDetails = (props) => (
+  <details
+    {...{
+      ...props,
+      className: ` 
+    ${
+      props.generated ? 'border-gray-400' : 'border-red-700'
+    } border-l-2 border-r-2 border-t-2 open:border-b-2
+    h-0 open:h-fit
+    relative max-w-full
+    open:p-3 md:open:p-6 open:rounded
+    cursor-pointer
 
-  before:w-4 
-  before:pl-1 
-  before:bg-white 
-  before:text-lg 
-  ${generated ? 'before:text-gray-400' : 'before:text-red-700'}
-`
+    [&[open]>summary]:before:content-['⏷']
+          [&>summary]:before:content-['⏵']
+    [&[open]>summary]:before:w-4
+          [&>summary]:before:w-4
+    ${props.className}
+  `,
+    }}
+  >
+    {props.children}
+  </details>
 );
 
-const HeaderItemsGroup = classyDiv(`
-  hidden md:flex px-2 gap-2 bg-white items-center
-`);
+const RiskHeaderSummary = (props) => (
+  <summary
+    {...{
+      ...props,
+      className: `
+    absolute -top-4 left-1 md:left-3 
+    w-full px-2 
+    flex items-center
 
-const HeaderTextWithIcon = classyDiv(
-  ({ color }) => `
-  inline-flex flex gap-1 items-center
-  inline-block bg-${color || 'gray'}-200 px-3 rounded-lg 
-  text-${color || 'gray'}-800
-`
+    before:w-4 
+    before:pl-1 
+    before:bg-white 
+    before:text-lg 
+    ${props.generated ? 'before:text-gray-400' : 'before:text-red-700'}
+
+    ${props.className}
+  `,
+    }}
+  >
+    {props.children}
+  </summary>
 );
 
-const PrecedentsQuery = classyDiv('col-span-2');
+const HeaderItemsGroup = (props) => (
+  <div
+    {...{
+      ...props,
+      className: `hidden md:flex px-2 gap-2 bg-white items-center ${props.className}`,
+    }}
+  >
+    {props.children}
+  </div>
+);
 
-const Precedents = classyDiv('col-span-1 flex flex-col h-full');
+const HeaderTextWithIcon = (props) => (
+  <div
+    {...{
+      ...props,
+      className: ` 
+    inline-flex flex gap-1 items-center
+    inline-block bg-${props.color || 'gray'}-200 px-3 rounded-lg 
+    text-${props.color || 'gray'}-800
+    ${props.className}
+  `,
+    }}
+  >
+    {props.children}
+  </div>
+);
 
-const RiskFields = classyDiv('col-span-1 flex flex-col gap-2');
+/*
+const = (props) => (
+  < {...{ ...props, className: ` ${props.className}`}}>
+    {props.children}
+  </ >
+);
+*/
 
-const PrecedentsList = classyDiv(`
-  flex flex-col gap-3 p-2  
-  h-full w-full max-w-full max-h-[30rem]
-  overflow-y-auto
-  bg-gray-100
-  border-1 border-gray-200 
-  rounded 
-  shadow-inner
-`);
+const PrecedentsQuery = (props) => (
+  <div {...{ ...props, className: `col-span-2 ${props.className}` }}>{props.children}</div>
+);
+
+const Precedents = (props) => (
+  <div {...{ ...props, className: `col-span-1 flex flex-col h-full ${props.className}` }}>
+    {props.children}
+  </div>
+);
+
+const RiskFields = (props) => (
+  <div {...{ ...props, className: `col-span-1 flex flex-col gap-2 ${props.className}` }}>
+    {props.children}
+  </div>
+);
+
+const PrecedentsList = (props) => (
+  <div
+    {...{
+      ...props,
+      className: `
+    flex flex-col gap-3 p-2  
+    h-full w-full max-w-full max-h-[30rem]
+    overflow-y-auto
+    bg-gray-100
+    border-1 border-gray-200 
+    rounded 
+    shadow-inner
+    ${props.className}
+  `,
+    }}
+  >
+    {props.children}
+  </div>
+);
 
 const updatePrecedents = async ({ risk, setPrecedents, allPrecedents }) => {
   const updatedPrecedents = [];
