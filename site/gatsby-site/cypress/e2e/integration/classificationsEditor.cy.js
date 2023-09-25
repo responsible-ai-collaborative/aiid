@@ -319,7 +319,7 @@ describe('Classifications Editor', () => {
 
             cy.contains('Select a taxonomy').click();
 
-            cy.contains(namespace).click();
+            cy.contains(new RegExp(`^${namespace}$`)).click();
 
             cy.contains('Add').click();
 
