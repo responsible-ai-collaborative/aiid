@@ -99,7 +99,7 @@ export default function VariantEditModal({
     } catch (e) {
       addToast({
         message: (
-          <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+          <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
         ),
         severity: SEVERITY.danger,
         error: e,
@@ -140,7 +140,7 @@ export default function VariantEditModal({
       } catch (e) {
         addToast({
           message: (
-            <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+            <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
           ),
           severity: SEVERITY.danger,
           error: e,
