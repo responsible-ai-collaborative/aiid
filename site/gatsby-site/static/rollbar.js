@@ -133,8 +133,7 @@ var _rollbarConfig = {
         i = e.createElement('script'),
         s = e.getElementsByTagName('script')[0],
         d = s.parentNode;
-      (i.crossOrigin = ''),
-        (i.src = n.rollbarJsUrl),
+      (i.src = n.rollbarJsUrl),
         o || (i.async = !0),
         (i.onload = i.onreadystatechange =
           a(function () {
