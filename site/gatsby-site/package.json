@@ -112,7 +112,7 @@
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
-    "bue": "node migrator up --name 2023.09.07T21.55.39.ingest-ldb.js --rerun ALLOW"
+    "bue": "node migrator up --name 2023.09.15T19.07.08.ingest-ldb.js --rerun ALLOW"
   },
   "devDependencies": {
     "@netlify/plugin-gatsby": "^3.7.0",

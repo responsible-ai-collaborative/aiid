@@ -13,7 +13,36 @@
     "input_type_format": "custom",
     "on_type": "Query",
     "payload_type": {
+        "bsonType": "object",
         "properties": {
+            "facets": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "count": {
+                            "bsonType": "int"
+                        },
+                        "list": {
+                            "bsonType": "array",
+                            "items": {
+                                "bsonType": "object",
+                                "properties": {
+                                    "_id": {
+                                        "bsonType": "string"
+                                    },
+                                    "count": {
+                                        "bsonType": "int"
+                                    }
+                                }
+                            }
+                        },
+                        "short_name": {
+                            "bsonType": "string"
+                        }
+                    }
+                }
+            },
             "results": {
                 "bsonType": "array",
                 "items": {
@@ -38,8 +67,7 @@
                 }
             }
         },
-        "title": "FindSystemsQueryResult",
-        "type": "object"
+        "title": "FindSystemsQueryResult"
     },
     "payload_type_format": "custom"
 }

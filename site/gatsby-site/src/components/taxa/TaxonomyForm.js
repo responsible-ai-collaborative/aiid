@@ -180,9 +180,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         data.reports = {
           link: reportNumber
             ? uniq([
-                ...classification.reports.map(({ report_number }) => report_number),
-                reportNumber,
-              ])
+              ...classification.reports.map(({ report_number }) => report_number),
+              reportNumber,
+            ])
             : classification.reports.map(({ report_number }) => report_number),
         };
         data.incidents = {
@@ -424,6 +424,9 @@ function FormField({
         {field.field_number ? field.field_number + '. ' : ''}
         {field.short_name}
       </Label>
+      <div>
+        {field.display_type}
+      </div>
       {field.display_type === 'enum' &&
         field.permitted_values.length <= 5 &&
         field.permitted_values.map((v) => {
@@ -481,7 +484,7 @@ function FormField({
             placeholder={''}
             errors={formikErrors}
             touched={formikTouched}
-            handleBlur={() => {}}
+            handleBlur={() => { }}
           />
           <datalist id={`${identifier}-possible-values`}>
             {autocompleteValues.map((v) => (
@@ -504,7 +507,7 @@ function FormField({
           placeholder={''}
           errors={formikErrors}
           touched={formikTouched}
-          handleBlur={() => {}}
+          handleBlur={() => { }}
         />
       )}
 
@@ -552,7 +555,7 @@ function FormField({
           placeholder={''}
           errors={formikErrors}
           touched={formikTouched}
-          handleBlur={() => {}}
+          handleBlur={() => { }}
           onWheel={(evt) => evt.target.blur()}
         />
       )}
@@ -569,7 +572,7 @@ function FormField({
           placeholder={''}
           errors={formikErrors}
           touched={formikTouched}
-          handleBlur={() => {}}
+          handleBlur={() => { }}
         />
       )}
 
@@ -585,7 +588,7 @@ function FormField({
           placeholder={''}
           errors={formikErrors}
           touched={formikTouched}
-          handleBlur={() => {}}
+          handleBlur={() => { }}
         />
       )}
 

@@ -23,9 +23,6 @@
                 "bsonType": "int"
             }
         },
-        "issue_type": {
-            "bsonType": "string"
-        },
         "namespace": {
             "bsonType": "string"
         },

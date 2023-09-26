@@ -1,7 +1,7 @@
 {
-    "app_id": "aiid-zhhkw",
+    "app_id": "application-0-tzyij",
     "config_version": 20210101,
-    "name": "aiid",
+    "name": "Application-0",
     "location": "US-VA",
     "provider_region": "aws-us-east-1",
     "deployment_model": "GLOBAL",
@@ -9,6 +9,8 @@
         "http://localhost:8000",
         "http://localhost:8080",
         "https://incidentdatabase.ai",
-        "https://staging-aiid.netlify.app"
+        "https://staging-aiid.netlify.app",
+        "https://deploy-preview-56--cesarvarela-staging.netlify.app",
+        "https://deploy-preview-56--cesarvarela-staging.netlify.app"
     ]
 }
