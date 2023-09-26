@@ -10,6 +10,7 @@ import { GatsbyImage } from 'gatsby-plugin-image';
 import { PrismicRichText } from '@prismicio/react';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import sponsorsJson from './sponsors.json';
+import ReactMarkdown from 'react-markdown';
 
 const SponsorModal = ({ setModalState, modalState, modalName, children, title, logo, linkTo }) => {
   return (
@@ -26,7 +27,7 @@ const SponsorModal = ({ setModalState, modalState, modalName, children, title, l
           <Modal.Body>
             {children}
             {logo.gatsbyImageData ? (
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center mt-2">
                 <Link to={linkTo} target="_blank">
                   <GatsbyImage
                     alt={`${title} Logo`}
@@ -37,7 +38,9 @@ const SponsorModal = ({ setModalState, modalState, modalName, children, title, l
                 </Link>
               </div>
             ) : (
-              <StyledImageModal src={`/images/${logo}`} linkTo={linkTo} />
+              <div className="mt-2">
+                <StyledImageModal src={`/images/${logo}`} linkTo={linkTo} />
+              </div>
             )}
           </Modal.Body>
           <Modal.Footer>
@@ -165,12 +168,7 @@ export default function Sponsors({ sponsors = [] }) {
       </div>
       {sponsors.map((sponsor) => {
         return sponsor?.items.map((item) => {
-          const text = item.richText
-            ? item.richText
-            : t(`sponsor-${item.name}`).replace(
-                /\[\[((.*?))\]\]/g,
-                `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
-              );
+          const translatedText = t(`sponsor-${item.name}`);
 
           return (
             <SponsorModal
@@ -183,9 +181,13 @@ export default function Sponsors({ sponsors = [] }) {
               linkTo={item.link}
             >
               {item.richText ? (
-                <PrismicRichText field={item.richText} />
+                <div className="prose">
+                  <PrismicRichText field={item.richText} />
+                </div>
               ) : (
-                <p dangerouslySetInnerHTML={{ __html: text }} />
+                <ReactMarkdown className="react-markdown prose max-w-full">
+                  {translatedText}
+                </ReactMarkdown>
               )}
             </SponsorModal>
           );
