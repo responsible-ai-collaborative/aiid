@@ -187,6 +187,7 @@ If the feature you are working on includes structural changes to the MongoDB dat
     - Choose "Username and Password" as authentication method.
     - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
 - Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
+- Once created, go to `App Settings` and update app region to `Global`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
