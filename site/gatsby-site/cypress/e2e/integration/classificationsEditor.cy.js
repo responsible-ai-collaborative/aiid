@@ -5,6 +5,10 @@ import editorCSETV1Mock from '../../fixtures/classifications/editorCSETV1.json';
 import { gql } from '@apollo/client';
 
 describe('Classifications Editor', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+  });
+
   const incidentId = 2;
 
   const reportNumber = 2658;

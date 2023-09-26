@@ -5,6 +5,10 @@ import classifications from '../../../fixtures/call/classifications.json';
 describe('Classifications App', () => {
   const url = '/apps/classifications';
 
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+  });
+
   maybeIt('Successfully edit a CSET classification', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
