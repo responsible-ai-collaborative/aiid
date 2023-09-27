@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-export default function EditableLabel({ title, onChange, textClasses, iconClasses }) {
+const EditableLabel = ({ title, onChange, textClasses, iconClasses }) => {
   const [displayTitle, setDisplayTitle] = useState(title);
 
   const [editingTitle, setEditingTitle] = useState(false);
@@ -32,3 +32,5 @@ export default function EditableLabel({ title, onChange, textClasses, iconClasse
     </span>
   );
 }
+
+export default EditableLabel;

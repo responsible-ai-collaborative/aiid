@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 
 import RiskSection from 'components/checklists/RiskSection';
 
-export default function RiskSections({
+const RiskSections = ({
   risks,
   setFieldValue,
   submitForm,
@@ -15,7 +15,7 @@ export default function RiskSections({
   removeRisk,
   changeSort,
   updateRisk,
-}) {
+}) => {
   const riskSectionProps = {
     setFieldValue,
     submitForm,
@@ -51,3 +51,5 @@ export default function RiskSections({
     </div>
   );
 }
+
+export default RiskSections;

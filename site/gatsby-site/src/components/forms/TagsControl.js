@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Tags from './Tags';
 
-function TagsControl({ name, placeholder, className, disabled = false, options = undefined }) {
+const TagsControl = ({ name, placeholder, className, disabled = false, options = undefined }) => {
   const {
     0: { value },
     2: { setTouched, setValue },

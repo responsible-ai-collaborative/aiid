@@ -13,7 +13,7 @@ import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { removeTypename, checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 
-export default function ChecklistsPage(props) {
+const ChecklistsPage = (props) => {
   const {
     location: { pathname },
     data: { taxa, classifications },
@@ -31,7 +31,7 @@ export default function ChecklistsPage(props) {
   );
 }
 
-function ChecklistsPageBody({ taxa, classifications, t }) {
+const ChecklistsPageBody = ({ taxa, classifications, t }) => {
   const [query] = useQueryParams({
     id: StringParam,
   });
@@ -116,7 +116,7 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
   }
 }
 
-function classificationsToTags({ classifications, taxa }) {
+const classificationsToTags = ({ classifications, taxa }) => {
   const tags = new Set();
 
   for (const classification of classifications.nodes) {
@@ -212,3 +212,5 @@ export const query = graphql`
     }
   }
 `;
+
+export default ChecklistsPage;

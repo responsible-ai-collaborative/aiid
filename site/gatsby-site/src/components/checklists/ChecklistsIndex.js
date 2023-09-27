@@ -9,7 +9,7 @@ import ExportDropdown from 'components/checklists/ExportDropdown';
 import { DeleteButton, removeTypename, statusIcon, statusColor } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 
-export default function ChecklistsIndex() {
+const ChecklistsIndex = () => {
   const { t } = useTranslation();
 
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
@@ -117,3 +117,5 @@ export default function ChecklistsIndex() {
 }
 
 const generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
+
+export default ChecklistsIndex;
