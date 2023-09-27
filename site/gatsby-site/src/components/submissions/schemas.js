@@ -52,10 +52,10 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  description,
-  developers,
-  deployers,
-  harmed_parties,
+  description: yup.string().nullable().required('*Description is required'),
+  developers: yup.string().nullable().required('*Developers is required'),
+  deployers: yup.string().nullable().required('*Deployers is required'),
+  harmed_parties: yup.string().nullable().required('*Harmed Parties is required'),
   authors: yup
     .array(
       yup
@@ -98,8 +98,8 @@ export const schema = yup.object().shape({
     .optional()
     .nullable(),
   incident_ids,
-  incident_date,
-  incident_title: yup.string().nullable(),
+  incident_date: yup.string().required('*Incident Date is required'),
+  incident_title: yup.string().nullable().required('*Incident Title is required'),
   incident_editors: yup
     .string()
     .matches(/^.{3,}$/, {
