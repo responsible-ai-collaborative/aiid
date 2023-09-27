@@ -11,7 +11,7 @@ describe('Admin', () => {
     cy.contains('Not enough permissions').should('be.visible');
   });
 
-  maybeIt('Should display a list of users, their roles abnd allow edition', () => {
+  maybeIt('Should display a list of users, their roles and allow edition', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(baseUrl);
