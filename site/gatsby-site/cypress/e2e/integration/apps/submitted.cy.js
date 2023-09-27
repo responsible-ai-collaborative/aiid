@@ -13,7 +13,9 @@ describe('Submitted reports', () => {
 
   let user;
 
-  before('before', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+
     cy.query({
       query: gql`
         {
