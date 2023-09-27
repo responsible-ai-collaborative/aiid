@@ -14,6 +14,7 @@ import {
   generateId,
 } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 const ChecklistsIndex = () => {
   const { t } = useTranslation();
@@ -21,6 +22,8 @@ const ChecklistsIndex = () => {
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
+
+  const addToast = useToastContext();
 
   const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS);
 
@@ -76,8 +79,12 @@ const ChecklistsIndex = () => {
                       newChecklists.splice(checklists.indexOf(checklist), 0, newChecklist);
                       return newChecklists;
                     });
-                  } catch (e) {
-                    console.log(e);
+                  } catch (error) {
+                    addToast({
+                      message: t('Could not clone checklist.'),
+                      severity: SEVERITY.danger,
+                      error,
+                    });
                   }
                 }}
               >
@@ -92,8 +99,12 @@ const ChecklistsIndex = () => {
                   try {
                     await deleteChecklist({ variables: { query: { id: checklist.id } } });
                     setChecklists((checklists) => checklists.filter((c) => c.id != checklist.id));
-                  } catch (e) {
-                    console.log(e);
+                  } catch (error) {
+                    addToast({
+                      message: t('Could not delete checklist.'),
+                      severity: SEVERITY.danger,
+                      error,
+                    });
                   }
                 }}
               >

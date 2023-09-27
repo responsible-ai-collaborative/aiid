@@ -19,6 +19,7 @@ import Tags from 'components/forms/Tags';
 import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 export default function CheckListForm({
   values,
@@ -30,13 +31,21 @@ export default function CheckListForm({
 }) {
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
+  const { t } = useTranslation();
+
+  const addToast = useToastContext();
+
   const confirmDeleteChecklist = async (id) => {
     if (window.confirm('Delete this checklist?')) {
       try {
         await deleteChecklist({ variables: { query: { id } } });
         window.location = '/apps/checklists/';
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        addToast({
+          message: t('Could not delete checklist.'),
+          severity: SEVERITY.danger,
+          error,
+        });
       }
     }
   };
@@ -57,7 +66,6 @@ export default function CheckListForm({
   const oldSetFieldValue = setFieldValue;
 
   setFieldValue = (key, value) => {
-    console.log(`Setting field value`, key, value);
     oldSetFieldValue(key, value);
     submitForm();
   };
