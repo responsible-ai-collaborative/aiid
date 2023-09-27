@@ -3,8 +3,10 @@ import { Button, Spinner } from 'flowbite-react';
 import Card from 'elements/Card';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useUserContext } from '../../contexts/userContext';
+
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import { DeleteButton, removeTypename, statusIcon, statusColor } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
@@ -17,6 +19,8 @@ export default function ChecklistsIndex() {
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
   const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS);
+
+  const { user } = useUserContext();
 
   const [checklists, setChecklists] = useState([]);
 
@@ -35,8 +39,21 @@ export default function ChecklistsIndex() {
             <Trans>Risk Checklists</Trans>
           </h1>
           <Button
-            onClick={() => {
-              window.location = '/apps/checklists?id=' + generateID();
+            onClick={async () => {
+              const newChecklist = {
+                id: generateID(),
+                name: "Unspecified System",
+                owner: user.userId
+              };
+              
+              try {
+                await insertChecklist({
+                  variables: { checklist: newChecklist },
+                });
+              } catch (e) {
+                console.log(e);
+              }
+              window.location = '/apps/checklists?id=' + newChecklist.id;
             }}
           >
             <Trans>New</Trans>

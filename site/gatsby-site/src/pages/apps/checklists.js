@@ -21,6 +21,8 @@ export default function ChecklistsPage(props) {
 
   const { t } = useTranslation();
 
+  console.log("A")
+
   return (
     <>
       <AiidHelmet path={pathname}>
@@ -60,7 +62,7 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
         checklist: {
           ...values,
           id: query.id,
-          risks: values.risks
+          risks: (values.risks || [])
             .filter((risk) => !risk.generated)
             .map((risk) => ({
               ...risk,

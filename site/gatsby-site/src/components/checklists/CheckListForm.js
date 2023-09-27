@@ -28,6 +28,9 @@ export default function CheckListForm({
   tags,
   isSubmitting,
 }) {
+
+  console.log(`values`, values);
+
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
   const confirmDeleteChecklist = async (id) => {
@@ -48,7 +51,11 @@ export default function CheckListForm({
 
   const [allPrecedents, setAllPrecedents] = useState([]);
 
-  const searchTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
+  const searchTags = [
+    ...(values['tags_goals'] || []),
+    ...(values['tags_methods'] || []),
+    ...(values['tags_other'] || [])
+  ];
 
   useEffect(() => {
     searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, setSaveStatus });
@@ -91,6 +98,7 @@ export default function CheckListForm({
     setFieldValue('risks', updatedRisks);
     submitForm();
   };
+
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -182,7 +190,7 @@ export default function CheckListForm({
           </Trans>
         </Info>*/}
 
-        {!risksLoading && values.risks.length == 0 && (
+        {!risksLoading && values.risks?.length == 0 && (
           <Trans>No risks yet. Try adding some system tags.</Trans>
         )}
         <RiskSections
@@ -399,7 +407,11 @@ const searchRisks = async ({
   setAllPrecedents,
   setSaveStatus,
 }) => {
-  const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
+  const queryTags = [
+    ...(values['tags_goals'] || []),
+    ...(values['tags_methods'] || []),
+    ...(values['tags_other'] || [])
+  ];
 
   if (queryTags.length == 0) return;
 
@@ -427,7 +439,7 @@ const searchRisks = async ({
         startClosed: true,
       };
 
-      const notDuplicate = [...risksToAdd, ...values.risks].every(
+      const notDuplicate = [...risksToAdd, ...(values.risks || [])].every(
         (existingRisk) => !areDuplicates(existingRisk, newRisk)
       );
 
@@ -440,7 +452,7 @@ const searchRisks = async ({
         }
       }
     }
-    setFieldValue('risks', values.risks.concat(risksToAdd));
+    setFieldValue('risks', (values.risks || []).concat(risksToAdd));
     setAllPrecedents(allPrecedents);
 
     // Example result:
