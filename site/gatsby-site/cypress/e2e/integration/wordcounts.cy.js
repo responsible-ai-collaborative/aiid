@@ -1,4 +1,8 @@
 describe('The Word Counts Page', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+  });
+
   it('successfully loads', () => {
     cy.visit('/summaries/wordcounts');
   });

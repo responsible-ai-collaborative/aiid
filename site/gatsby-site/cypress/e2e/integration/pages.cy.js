@@ -1,5 +1,5 @@
 import { switchLocalizedPath } from '../../../i18n';
-
+import { conditionalIt } from '../../support/utils';
 import config from '../../../config';
 
 describe('Pages', () => {
@@ -8,11 +8,9 @@ describe('Pages', () => {
   const paths = [
     '/',
     '/taxonomies/',
-    '/apps/classifications/',
     '/apps/discover/',
     '/apps/incidents/',
     '/apps/newsdigest/',
-    '/reports/2302/',
     '/apps/submit/',
     '/apps/submitted/',
     '/apps/variants/',
@@ -23,16 +21,21 @@ describe('Pages', () => {
     '/summaries/leaderboard/',
     '/summaries/spatial/',
     '/research/snapshots/',
-    '/cite/1/',
     '/entities/',
-    '/entities/facebook/',
-    '/blog/incident-report-2023-january/',
     '/account/',
-    '/taxonomy/csetv0/',
-    '/taxonomy/csetv1/',
     '/summaries/wordcounts/',
     '/about/', // doc template
   ];
+
+  if (!Cypress.env('isEmptyEnvironment')) {
+    paths.push('/apps/classifications/');
+    paths.push('/reports/2302/');
+    paths.push('/cite/1/');
+    paths.push('/entities/facebook/');
+    paths.push('/blog/incident-report-2023-january/');
+    paths.push('/taxonomy/csetv0/');
+    paths.push('/taxonomy/csetv1/');
+  }
 
   const languages = [
     {
@@ -151,7 +154,7 @@ describe('Pages', () => {
     });
   });
 
-  it('Should generate a valid RSS feed', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should generate a valid RSS feed', () => {
     cy.request('/rss.xml').then((response) => {
       expect(response.status).to.eq(200);
       expect(response.headers['content-type']).to.include('application/xml');

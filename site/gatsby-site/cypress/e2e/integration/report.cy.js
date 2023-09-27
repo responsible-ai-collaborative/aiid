@@ -1,4 +1,8 @@
 describe('Report pages', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+  });
+
   const reportNumber = 2302;
 
   const url = `/reports/${reportNumber}`;

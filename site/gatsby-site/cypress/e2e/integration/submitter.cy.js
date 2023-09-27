@@ -1,4 +1,8 @@
 describe('Submitter Selection', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+  });
+
   let url = '/';
 
   it('Should select the first submitter if there is one and load the discover page with a pre-selected submitter in the URL', () => {

@@ -14,6 +14,10 @@ const isLinked = (reportNumber, incidents) => {
 };
 
 describe('Integrity', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+  });
+
   it(
     `Shouldn't have repeated report numbers`,
     { requestTimeout: 30000, defaultCommandTimeout: 30000, responseTimeout: 30000 },
