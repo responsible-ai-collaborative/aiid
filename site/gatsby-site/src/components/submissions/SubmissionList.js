@@ -32,6 +32,8 @@ const SubmissionList = ({ data }) => {
 
   const [reviewing, setReviewing] = useState({ submissionId: null, value: false });
 
+  const [currentPage, setCurrentPage] = useState(0);
+
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
   const addToast = useToastContext();
@@ -41,41 +43,6 @@ const SubmissionList = ({ data }) => {
       setTableData(data.submissions);
     }
   }, [data]);
-
-  const claimSubmission = async (submissionId) => {
-    setClaiming({ submissionId, value: true });
-    try {
-      const submission = data.submissions.find((submission) => submission._id === submissionId);
-
-      const incidentEditors = [...submission.incident_editors];
-
-      const isAlreadyEditor = submission.incident_editors.find(
-        (editor) => editor.userId === user.customData.userId
-      );
-
-      if (!isAlreadyEditor) {
-        incidentEditors.push(user.customData.userId);
-
-        await updateSubmission({
-          variables: {
-            query: {
-              _id: submissionId,
-            },
-            set: { incident_editors: { link: incidentEditors } },
-          },
-        });
-      }
-
-      setClaiming({ submissionId: null, value: false });
-    } catch (error) {
-      addToast({
-        message: t(`There was an error claiming this submission. Please try again.`),
-        severity: SEVERITY.danger,
-      });
-
-      setClaiming({ submissionId: null, value: false });
-    }
-  };
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -379,40 +346,60 @@ const SubmissionList = ({ data }) => {
         disableFilters: true,
         disableSortBy: true,
         disableResizing: true,
-        Cell: ({ row: { values } }) => (
-          <div className="flex gap-2">
-            <Button
-              color={'gray'}
-              data-cy="review-submission"
-              onClick={async (event) => {
-                event.preventDefault();
-                await setSubmissionStatus(values);
-                window.location.href = `?editSubmission=${values._id}`;
-              }}
-              disabled={reviewing.value}
-            >
-              {reviewing.value && values._id === reviewing.submissionId ? (
-                <Trans>Reviewing...</Trans>
-              ) : (
-                <Trans>Review</Trans>
-              )}
-            </Button>
-            {!values.editor && (
+        Cell: ({ row: { values } }) => {
+          const isAlreadyEditor = values.incident_editors.find(
+            (editor) => editor.userId === user.customData.userId
+          );
+
+          return (
+            <div className="flex gap-2">
               <Button
                 color={'gray'}
-                data-cy="claim-submission"
-                onClick={() => claimSubmission(values._id)}
-                disabled={claiming.value}
+                data-cy="review-submission"
+                onClick={async (event) => {
+                  event.preventDefault();
+                  await setSubmissionStatus(values);
+                  window.location.href = `?editSubmission=${values._id}`;
+                }}
+                disabled={reviewing.value}
               >
-                {claiming.value && values._id === claiming.submissionId ? (
-                  <Trans>Claiming...</Trans>
+                {reviewing.value && values._id === reviewing.submissionId ? (
+                  <Trans>Reviewing...</Trans>
                 ) : (
-                  <Trans>Claim</Trans>
+                  <Trans>Review</Trans>
                 )}
               </Button>
-            )}
-          </div>
-        ),
+              {!values.editor && (
+                <Button
+                  color={'gray'}
+                  data-cy="claim-submission"
+                  onClick={() =>
+                    isAlreadyEditor ? unclaimSubmission(values._id) : claimSubmission(values._id)
+                  }
+                  disabled={claiming.value}
+                >
+                  {isAlreadyEditor ? (
+                    <>
+                      {claiming.value && values._id === claiming.submissionId ? (
+                        <Trans>Unclaiming...</Trans>
+                      ) : (
+                        <Trans>Unclaim</Trans>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {claiming.value && values._id === claiming.submissionId ? (
+                        <Trans>Claiming...</Trans>
+                      ) : (
+                        <Trans>Claim</Trans>
+                      )}
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          );
+        },
       });
     }
 
@@ -424,6 +411,7 @@ const SubmissionList = ({ data }) => {
       columns,
       data: tableData,
       defaultColumn,
+      initialState: { pageIndex: currentPage },
     },
     useFilters,
     useSortBy,
@@ -431,6 +419,75 @@ const SubmissionList = ({ data }) => {
     useBlockLayout,
     useResizeColumns
   );
+
+  const claimSubmission = async (submissionId) => {
+    setClaiming({ submissionId, value: true });
+    try {
+      const submission = data.submissions.find((submission) => submission._id === submissionId);
+
+      const incidentEditors = [...submission.incident_editors];
+
+      const isAlreadyEditor = submission.incident_editors.find(
+        (editor) => editor.userId === user.customData.userId
+      );
+
+      if (!isAlreadyEditor) {
+        incidentEditors.push(user.customData.userId);
+
+        await updateSubmission({
+          variables: {
+            query: {
+              _id: submissionId,
+            },
+            set: { incident_editors: { link: incidentEditors } },
+          },
+        });
+      }
+
+      setClaiming({ submissionId: null, value: false });
+    } catch (error) {
+      addToast({
+        message: t(`There was an error claiming this submission. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+
+      setClaiming({ submissionId: null, value: false });
+      table.goToPage(currentPage);
+    }
+  };
+
+  const unclaimSubmission = async (submissionId) => {
+    setClaiming({ submissionId, value: true });
+    const submission = data.submissions.find((submission) => submission._id === submissionId);
+
+    const incidentEditors = [...submission.incident_editors];
+
+    const isAlreadyEditor = submission.incident_editors.find(
+      (editor) => editor.userId === user.customData.userId
+    );
+
+    if (isAlreadyEditor) {
+      const index = incidentEditors.findIndex((editor) => editor.userId === user.customData.userId);
+
+      incidentEditors.splice(index, 1);
+
+      await updateSubmission({
+        variables: {
+          query: {
+            _id: submissionId,
+          },
+          set: { incident_editors: { link: incidentEditors } },
+        },
+      });
+
+      setClaiming({ submissionId: null, value: false });
+      table.goToPage(currentPage);
+    }
+  };
+
+  useEffect(() => {
+    setCurrentPage(table.state.pageIndex);
+  }, [table.state.pageIndex]);
 
   const setSubmissionStatus = async (submission) => {
     if (submission.status !== STATUS.inReview.name) {
