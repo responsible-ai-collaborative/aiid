@@ -6,7 +6,13 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ExportDropdown from 'components/checklists/ExportDropdown';
-import { DeleteButton, removeTypename, statusIcon, statusColor } from 'utils/checklists';
+import {
+  DeleteButton,
+  removeTypename,
+  statusIcon,
+  statusColor,
+  generateId,
+} from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 
 const ChecklistsIndex = () => {
@@ -36,7 +42,7 @@ const ChecklistsIndex = () => {
           </h1>
           <Button
             onClick={() => {
-              window.location = '/apps/checklists?id=' + generateID();
+              window.location = '/apps/checklists?id=' + generateId();
             }}
           >
             <Trans>New</Trans>
@@ -56,7 +62,7 @@ const ChecklistsIndex = () => {
                   const newChecklist = {
                     ...checklist,
                     _id: undefined,
-                    id: generateID(),
+                    id: generateId(),
                     name: checklist.name + t(' (Clone)'),
                   };
 
@@ -114,8 +120,6 @@ const ChecklistsIndex = () => {
       </div>
     </>
   );
-}
-
-const generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
+};
 
 export default ChecklistsIndex;

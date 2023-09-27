@@ -57,7 +57,7 @@ const Label = (props) => (
 );
 
 const emptyRisk = (properties) => ({
-  id: uuidv4(),
+  id: generateId(),
   title: 'Untitled Risk',
   tags: [],
   risk_status: 'Not Mitigated',
@@ -128,7 +128,9 @@ const shouldBeGrouped = (tag1, tag2) => {
     }
   }
   return false;
-}
+};
+
+const generateId = () => uuidv4();
 
 export {
   abbreviatedTag,
@@ -143,4 +145,5 @@ export {
   statusColor,
   exportJson,
   shouldBeGrouped,
+  generateId,
 };
