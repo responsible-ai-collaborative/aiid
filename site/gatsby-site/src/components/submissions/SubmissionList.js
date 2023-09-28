@@ -347,7 +347,7 @@ const SubmissionList = ({ data }) => {
         disableSortBy: true,
         disableResizing: true,
         Cell: ({ row: { values } }) => {
-          const isAlreadyEditor = values.incident_editors.find(
+          const isAlreadyEditor = values?.incident_editors?.find(
             (editor) => editor.userId === user.customData.userId
           );
 
