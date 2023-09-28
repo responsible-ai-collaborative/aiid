@@ -59,17 +59,17 @@ export const schema = yup.object().shape({
   }),
   developers: yup.string().when('incident_ids', {
     is: (incident_ids) => !incident_ids || incident_ids.length == 0,
-    then: yup.string().required('*Alledged developers is required'),
+    then: yup.string().required('*Alleged developers is required'),
     otherwise: yup.string().nullable(),
   }),
   deployers: yup.string().when('incident_ids', {
     is: (incident_ids) => !incident_ids || incident_ids.length == 0,
-    then: yup.string().required('*Alledged deployers is required'),
+    then: yup.string().required('*Alleged deployers is required'),
     otherwise: yup.string().nullable(),
   }),
   harmed_parties: yup.string().when('incident_ids', {
     is: (incident_ids) => !incident_ids || incident_ids.length == 0,
-    then: yup.string().required('*Alledged Harmed Parties is required'),
+    then: yup.string().required('*Alleged Harmed Parties is required'),
     otherwise: yup.string().nullable(),
   }),
   authors: yup
@@ -121,7 +121,7 @@ export const schema = yup.object().shape({
   }),
   incident_title: yup.string().when('incident_ids', {
     is: (incident_ids) => !incident_ids || incident_ids.length == 0,
-    then: yup.string().required('Incident title is required'),
+    then: yup.string().required('*Incident title is required'),
     otherwise: yup.string().nullable(),
   }),
   incident_editors: yup
