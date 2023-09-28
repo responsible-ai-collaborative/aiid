@@ -52,10 +52,26 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  description: yup.string().nullable().required('*Description is required'),
-  developers: yup.string().nullable().required('*Developers is required'),
-  deployers: yup.string().nullable().required('*Deployers is required'),
-  harmed_parties: yup.string().nullable().required('*Harmed Parties is required'),
+  description: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Description is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  developers: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alledged developers is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  deployers: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alledged deployers is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  harmed_parties: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alledged Harmed Parties is required'),
+    otherwise: yup.string().nullable(),
+  }),
   authors: yup
     .array(
       yup
@@ -98,8 +114,16 @@ export const schema = yup.object().shape({
     .optional()
     .nullable(),
   incident_ids,
-  incident_date: yup.string().required('*Incident Date is required'),
-  incident_title: yup.string().nullable().required('*Incident Title is required'),
+  incident_date: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Incident Date is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  incident_title: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('Incident title is required'),
+    otherwise: yup.string().nullable(),
+  }),
   incident_editors: yup
     .string()
     .matches(/^.{3,}$/, {
