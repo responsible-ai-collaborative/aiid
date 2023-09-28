@@ -193,6 +193,33 @@ exports.createSchemaCustomization = ({ actions }) => {
   createTypes(typeDefs);
 };
 
+exports.createResolvers = ({ createResolvers }) => {
+  const resolvers = {
+    mongodbAiidprodIncidents: {
+      Alleged_deployer_of_AI_system: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged deployer of AI system'];
+        },
+      },
+      Alleged_developer_of_AI_system: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged developer of AI system'];
+        },
+      },
+      Alleged_harmed_or_nearly_harmed_parties: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged harmed or nearly harmed parties'];
+        },
+      },
+    },
+  };
+
+  createResolvers(resolvers);
+};
+
 exports.onPreBootstrap = async ({ reporter }) => {
   const migrationsActivity = reporter.activityTimer(`Migrations`);
 
