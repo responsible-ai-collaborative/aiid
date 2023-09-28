@@ -178,6 +178,7 @@ const SubmissionList = ({ data }) => {
         className: 'min-w-[150px]',
         title: t('Submitters'),
         accessor: 'submitters',
+        disableSortBy: true,
         width: 150,
         Filter: SelectColumnFilter,
         Cell: ({ row: { values } }) => {
@@ -266,6 +267,7 @@ const SubmissionList = ({ data }) => {
         title: t('Editors'),
         accessor: 'incident_editors',
         className: 'min-w-[150px]',
+        disableSortBy: true,
         width: 150,
         Filter: SelectEditorsColumnFilter,
         filter: (rows, [field], value) =>
