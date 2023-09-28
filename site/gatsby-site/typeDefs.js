@@ -133,7 +133,7 @@ const typeDefs = `
         attributes: [mongodbAiidprodClassificationsAttribute]
         publish: Boolean
         notes: String
-        fields: [mongodbAiidprodClassificationsFields]
+        fields: mongodbAiidprodClassificationsFields
     }
 
     type mongodbAiidprodClassificationsFields {
