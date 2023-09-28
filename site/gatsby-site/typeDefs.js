@@ -149,8 +149,8 @@ const typeDefs = `
     }
 
     type mongodbAiidprodClassificationsFieldsGeocodeGeometryLocation {
-        lat: Int
-        lng: Int
+        lat: Float
+        lng: Float
     }
 
     type completeFrom {
