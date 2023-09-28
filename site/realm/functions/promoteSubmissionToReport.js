@@ -26,7 +26,7 @@ exports = async (input) => {
       const lastIncident = await incidents.find({}).sort({ incident_id: -1 }).limit(1).next();
 
       const editors = (!submission.incident_editors || !submission.incident_editors.length)
-        ? ['619b47ea5eed5334edfa3bbc']
+        ? ['65031f49ec066d7c64380f5c'] // Default user. For more information refer to the wiki page: https://github.com/responsible-ai-collaborative/aiid/wiki/Special-non%E2%80%90secret-values
         : submission.incident_editors;
 
       const newIncident = {

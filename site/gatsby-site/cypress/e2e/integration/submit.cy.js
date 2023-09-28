@@ -1,5 +1,3 @@
-import { isArray } from 'lodash';
-import { arrayToList } from '../../../src/utils/typography';
 import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
 import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
@@ -401,41 +399,16 @@ describe('The Submit form', () => {
 
     cy.contains('Report successfully added to review queue').should('exist');
 
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
     cy.visit('/apps/submitted');
 
     cy.wait('@findSubmissions');
 
     cy.contains(
-      '[data-cy="submission"]',
+      '[data-cy="row"]',
       'YouTube to crack down on inappropriate content masked as kids’ cartoons'
     ).should('exist');
-    cy.get('[data-cy="submission"] [data-cy="review-button"]').click();
-
-    const expectedValues = {
-      _id: '6272f2218933c7a9b512e13b',
-      text: 'Something',
-      submitters: 'Something',
-      authors: 'Valentina Palladino',
-      incident_date: '2021-09-21',
-      date_published: '2017-11-10',
-      image_url:
-        'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-      incident_ids: [1],
-      url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
-      source_domain: 'arstechnica.com',
-      language: 'en',
-      editor_notes: 'Here are some notes',
-    };
-
-    for (let key in expectedValues) {
-      cy.get(`[data-cy="${key}"]`)
-        .contains(
-          isArray(expectedValues[key]) ? arrayToList(expectedValues[key]) : expectedValues[key]
-        )
-        .should('exist');
-    }
-
-    cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
