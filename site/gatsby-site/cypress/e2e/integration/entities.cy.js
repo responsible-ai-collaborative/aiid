@@ -2,7 +2,7 @@ describe('Entities page', () => {
   const url = '/entities';
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   it('Successfully loads', () => {

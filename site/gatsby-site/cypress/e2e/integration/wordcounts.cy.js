@@ -1,6 +1,6 @@
 describe('The Word Counts Page', () => {
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   it('successfully loads', () => {

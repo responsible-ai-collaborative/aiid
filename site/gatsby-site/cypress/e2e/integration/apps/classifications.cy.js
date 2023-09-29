@@ -6,7 +6,7 @@ describe('Classifications App', () => {
   const url = '/apps/classifications';
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   maybeIt('Successfully edit a CSET classification', () => {

@@ -1,6 +1,6 @@
 describe('Submitter Selection', () => {
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   let url = '/';

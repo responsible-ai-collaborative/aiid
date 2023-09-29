@@ -6,7 +6,7 @@ import { gql } from '@apollo/client';
 
 describe('Classifications Editor', () => {
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   const incidentId = 2;

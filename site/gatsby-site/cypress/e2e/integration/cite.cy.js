@@ -18,7 +18,7 @@ describe('Cite pages', () => {
   let user;
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
 
     cy.query({
       query: gql`

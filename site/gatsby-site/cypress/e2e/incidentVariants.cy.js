@@ -56,7 +56,7 @@ describe('Variants pages', () => {
   const url = `/cite/${incidentId}`;
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   it('Successfully loads', () => {

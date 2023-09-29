@@ -1,6 +1,6 @@
 describe('Report pages', () => {
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   const reportNumber = 2302;

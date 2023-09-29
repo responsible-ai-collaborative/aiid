@@ -4,7 +4,7 @@ describe('Account', () => {
   const url = '/account';
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' && this.skip();
+    Cypress.env('isEmptyEnvironment') && this.skip();
   });
 
   it('Should successfully load account page', () => {

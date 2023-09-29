@@ -12,7 +12,7 @@ const entitySubscriptions = subscriptionsData.data.subscriptions
 
 describe('Subscriptions', () => {
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') == 'true' &&
+    Cypress.env('isEmptyEnvironment') &&
       Cypress.env('e2eUsername') &&
       Cypress.env('e2ePassword') &&
       this.skip();

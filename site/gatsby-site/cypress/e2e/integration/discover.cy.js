@@ -14,7 +14,7 @@ describe('The Discover app', () => {
   });
 
   conditionalIt(
-    Cypress.env('isEmptyEnvironment') == 'true',
+    Cypress.env('isEmptyEnvironment'),
     'Should display empty state when no incidents are available',
     () => {
       cy.visit(url);
