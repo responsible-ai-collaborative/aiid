@@ -119,4 +119,17 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/signup/');
   });
+
+  it('Should display empty message on common entities card on empty environment', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="common-entities"]')
+      .scrollIntoView()
+      .should('be.visible')
+      .within(() => {
+        cy.contains('h2', 'Common Entities').should('exist');
+        cy.contains('a', 'View all entities').should('have.attr', 'href', '/entities/');
+        cy.contains('There are no entities yet').should('exist').should('be.visible');
+      });
+  });
 });
