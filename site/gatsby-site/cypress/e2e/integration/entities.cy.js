@@ -1,15 +1,15 @@
+import { conditionalIt } from '../../support/utils';
+
 describe('Entities page', () => {
   const url = '/entities';
 
-  before('before', function () {
-    Cypress.env('isEmptyEnvironment') && this.skip();
-  });
-
   it('Successfully loads', () => {
     cy.visit(url);
+
+    cy.get('[data-cy="entities"]').should('be.visible');
   });
 
-  it('Displays a list of entities', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Displays a list of entities', () => {
     cy.visit(url);
 
     cy.get('[data-cy="entities"]').should('be.visible');
@@ -17,7 +17,7 @@ describe('Entities page', () => {
     cy.get('[data-cy="entities"] tr').should('have.length.at.least', 10);
   });
 
-  it('Filter entities by name', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Filter entities by name', () => {
     cy.visit(url);
 
     cy.get('[data-cy="input-filter-Entity"]').type('Amazon');
@@ -25,7 +25,7 @@ describe('Entities page', () => {
     cy.get('[data-cy="entities"] tr').should('have.length.at.least', 11);
   });
 
-  it('Filter entities by incident title', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Filter entities by incident title', () => {
     cy.visit(url);
 
     cy.get('[data-cy="input-filter-As Deployer and Developer"]').type('taxi');
@@ -35,7 +35,7 @@ describe('Entities page', () => {
     cy.contains('[data-cy="row"]', 'Cruise').should('be.visible');
   });
 
-  it('Entities row should be expandable', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Entities row should be expandable', () => {
     cy.visit(url);
 
     cy.get('[data-cy="input-filter-Entity"]').type('Amazon');
@@ -51,7 +51,7 @@ describe('Entities page', () => {
     cy.get('@cell').find('ul').children().should('have.length.at.least', 14);
   });
 
-  it('Should display Entity responses', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should display Entity responses', () => {
     cy.visit(url);
 
     cy.get('[data-cy="header-responses"]').should('exist');
@@ -63,7 +63,7 @@ describe('Entities page', () => {
     cy.get('[data-cy="cell-responses"]').first().should('have.text', '2 Incident responses');
   });
 
-  it('Should be able to sort', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should be able to sort', () => {
     cy.visit(url);
     cy.get('[data-cy="row"]').first().contains('a', 'Facebook').should('be.visible');
   });
