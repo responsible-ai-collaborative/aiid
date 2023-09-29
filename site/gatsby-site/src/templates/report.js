@@ -4,16 +4,17 @@ import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { graphql } from 'gatsby';
+import { Link, graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 import { Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
+import Card from 'elements/Card';
 
 function ReportPage(props) {
   const {
-    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications },
+    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications, incidents },
     data,
   } = props;
 
@@ -84,7 +85,34 @@ function ReportPage(props) {
       />
 
       <Container className="mt-4">
-        <ReportCard item={report} alwaysExpanded={true} actions={actions} />
+        <Card className={'shadow-card'} data-cy="classifications-editor">
+          <Card.Header className="items-center justify-between">
+            <h4>
+              <Trans>Associated Incidents</Trans>
+            </h4>
+          </Card.Header>
+
+          <Card.Body>
+            {incidents.nodes.map((incident) => (
+              <Link to={`/cite/${incident.incident_id}`} key={incident.incident_id}>
+                <h4 className="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white">
+                  <span className="text-sm">
+                    <Trans>Incident {{ id: incident.incident_id }}</Trans>
+                  </span>
+                  <span className="ml-2 bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
+                    <Trans ns="entities" count={incident.reports.length}>
+                      {{ count: incident.reports.length }} Report
+                    </Trans>
+                  </span>
+                  <br />
+                  {incident.title}
+                </h4>
+              </Link>
+            ))}
+          </Card.Body>
+        </Card>
+
+        <ReportCard className="mt-4" item={report} alwaysExpanded={true} actions={actions} />
       </Container>
     </>
   );
@@ -204,6 +232,17 @@ export const query = graphql`
           value_json
         }
         publish
+      }
+    }
+    incidents: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { report_number: { eq: $report_number } } } }
+    ) {
+      nodes {
+        incident_id
+        title
+        reports {
+          report_number
+        }
       }
     }
   }
