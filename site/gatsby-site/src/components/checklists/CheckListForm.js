@@ -28,6 +28,7 @@ export default function CheckListForm({
   submitForm,
   tags,
   isSubmitting,
+  submissionError,
 }) {
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
@@ -50,9 +51,6 @@ export default function CheckListForm({
     }
   };
 
-  isSubmitting; // We should use this instead
-  const [saveStatus, setSaveStatus] = useState(null);
-
   const [risksLoading, setRisksLoading] = useState(false);
 
   const [allPrecedents, setAllPrecedents] = useState([]);
@@ -60,7 +58,7 @@ export default function CheckListForm({
   const searchTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, setSaveStatus });
+    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   const oldSetFieldValue = setFieldValue;
@@ -116,7 +114,7 @@ export default function CheckListForm({
             />
           </h1>
           <HeaderControls>
-            <SavingIndicator {...{ saveStatus }} />
+            <SavingIndicator {...{ isSubmitting, submissionError }} />
             <Button color="light" onClick={() => alert('Coming soon')}>
               <Trans>Subscribe</Trans>
             </Button>
@@ -128,13 +126,6 @@ export default function CheckListForm({
         </HeaderRow>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
-      {/*<Info className="my-4">
-        <Trans>
-          Describe the system under investigation. Apply machine-readable tags to surface risks
-          associate with likewise-tagged incidents in the database. These are the basis of a risk
-          checklist.
-        </Trans>
-      </Info>*/}
       <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue }} />
       <section>
         <SideBySide className="my-4">
@@ -181,14 +172,6 @@ export default function CheckListForm({
             </Button>
           </div>
         </header>
-        {/*<Info>
-          <Trans>
-            Risks are surfaced automatically based on the tags applied to the system. They can also
-            be added manually. Each risk is associated with a query for precedent incidents, which
-            can be modified to suit your needs. You can subscribe both to new risks and new
-            precedent incidents.
-          </Trans>
-        </Info>*/}
 
         {!risksLoading && values.risks.length == 0 && (
           <Trans>No risks yet. Try adding some system tags.</Trans>
@@ -349,32 +332,32 @@ const SideBySide = (props) => (
   </div>
 );
 
-function SavingIndicator({ saveStatus }) {
+// TODO: Unless the network connection is fairly slow
+// (check with throttling in browser devtools),
+// submissions happen fast enough that this never rerenders with
+// isSubmitting == true.
+// This needs to be better optimized for the render cycle.
+function SavingIndicator({ isSubmitting, submissionError }) {
   const className = 'text-lg text-gray-500 inline-block mx-4';
 
-  if (!saveStatus) {
-    return <></>;
-  }
-  if (saveStatus == 'saving') {
+  if (isSubmitting) {
     return (
       <span {...{ className }}>
         <Spinner />
         <Trans>Saving...</Trans>
       </span>
     );
-  }
-  if (saveStatus == 'saved') {
-    return (
-      <span {...{ className }}>
-        <Trans>Saved</Trans>
-      </span>
-    );
-  }
-  if (saveStatus == 'error') {
+  } else if (submissionError) {
     return (
       <span {...{ className }}>
         <Spinner />
         <Trans>Error saving...</Trans>
+      </span>
+    );
+  } else {
+    return (
+      <span {...{ className }}>
+        <Trans>Saved</Trans>
       </span>
     );
   }
@@ -399,14 +382,30 @@ function Info({ children, className }) {
   );
 }
 
+// Hits the risk management API with the specified query tags
+// to populate values.risks and allPrecedents.
+//
+// Example resulting values.risks:
+//
+// [ { "tag": "GMF:Failure:Gaming Vulnerability",
+//     "precedents": [
+//       { "incident_id": 146,
+//         "url": "https://incidentdatabase.ai/cite/146",
+//         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+//         "description": "A publicly accessible research model[...]moral judgments.",
+//         "tags": [ "GMF:Known AI Technology:Language Modeling", ],
+//         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
+//       },
+//     ]
+//   }
+// ]
+//
 // TODO: Group known and potential in GMF Taxonomy
-const searchRisks = async ({
-  values,
-  setFieldValue,
-  setRisksLoading,
-  setAllPrecedents,
-  setSaveStatus,
-}) => {
+const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents }) => {
+  const addToast = useToastContext();
+
+  const { t } = useTranslation();
+
   const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   if (queryTags.length == 0) return;
@@ -448,25 +447,14 @@ const searchRisks = async ({
         }
       }
     }
-    setFieldValue('risks', values.risks.concat(risksToAdd));
     setAllPrecedents(allPrecedents);
 
-    // Example result:
-    // [ { "tag": "GMF:Failure:Gaming Vulnerability",
-    //     "precedents": [
-    //       { "incident_id": 146,
-    //         "url": "https://incidentdatabase.ai/cite/146",
-    //         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-    //         "description": "A publicly accessible research model[...]moral judgments.",
-    //         "tags": [ "GMF:Known AI Technology:Language Modeling", ],
-    //         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
-    //       },
-    //     ]
-    //   }
-    // ]
+    setFieldValue('risks', values.risks.concat(risksToAdd));
   } else {
-    // TODO: Handle the error better
-    setSaveStatus('error');
+    addToast({
+      message: t('Failure searching for risks.'),
+      severity: SEVERITY.danger,
+    });
   }
 
   setRisksLoading(false);

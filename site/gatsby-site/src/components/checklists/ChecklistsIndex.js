@@ -113,7 +113,7 @@ const ChecklistsIndex = () => {
               <ExportDropdown {...{ checklist }} />
             </div>
             <ul className="flex gap-2 flex-wrap p-4">
-              {checklist.risks
+              {(checklist.risks || [])
                 .filter((r) => r.risk_status != 'Not Applicable')
                 .map((risk) => (
                   <li key={risk.id} className="flex items-center gap-1 text-gray-600 mx-1">

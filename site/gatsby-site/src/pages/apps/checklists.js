@@ -29,7 +29,7 @@ const ChecklistsPage = (props) => {
       <ChecklistsPageBody {...{ taxa, classifications, t }} />
     </>
   );
-}
+};
 
 const ChecklistsPageBody = ({ taxa, classifications, t }) => {
   const [query] = useQueryParams({
@@ -51,8 +51,11 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
 
   const debouncedSaveChecklist = useRef(debounce(saveChecklist, 3000)).current;
 
+  const [submissionError, setSubmissionError] = useState(null);
+
   const submit = async (values, { setSubmitting }) => {
     setSubmitting(true);
+    setSubmissionError(null);
 
     const save = removeTypename({
       variables: {
@@ -71,7 +74,11 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
       },
     });
 
-    await debouncedSaveChecklist(save);
+    try {
+      await debouncedSaveChecklist(save);
+    } catch (error) {
+      setSubmissionError(error);
+    }
     setSubmitting(false);
   };
 
@@ -110,11 +117,11 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
           }
         }
       >
-        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t }} />}
+        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t, submissionError }} />}
       </Formik>
     );
   }
-}
+};
 
 const classificationsToTags = ({ classifications, taxa }) => {
   const tags = new Set();
@@ -141,7 +148,7 @@ const classificationsToTags = ({ classifications, taxa }) => {
     }
   }
   return Array.from(tags);
-}
+};
 
 export const query = graphql`
   query ChecklistsPageQuery {
