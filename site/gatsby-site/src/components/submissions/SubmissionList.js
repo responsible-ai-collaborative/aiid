@@ -32,8 +32,6 @@ const SubmissionList = ({ data }) => {
 
   const [reviewing, setReviewing] = useState({ submissionId: null, value: false });
 
-  const [currentPage, setCurrentPage] = useState(0);
-
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
   const addToast = useToastContext();
@@ -144,6 +142,11 @@ const SubmissionList = ({ data }) => {
           value={dateFilter}
           onChange={(e) => {
             setDateFilter(e.target.value || undefined);
+            setTableState({
+              pageIndex: 0,
+              filters: table.state.filters,
+              sortBy: table.state.sortBy,
+            });
           }}
         >
           <option value="incident_date">Incident date</option>
@@ -158,6 +161,11 @@ const SubmissionList = ({ data }) => {
               endDate={dateValues.length > 1 ? dateValues[1] : null}
               setDates={(vals) => {
                 setDateValues(vals);
+                setTableState({
+                  pageIndex: 0,
+                  filters: table.state.filters,
+                  sortBy: table.state.sortBy,
+                });
               }}
             />
           }
@@ -408,12 +416,18 @@ const SubmissionList = ({ data }) => {
     return columns;
   }, [isLoggedIn, claiming, reviewing, dateFilter]);
 
+  const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
+
   const table = useTable(
     {
       columns,
       data: tableData,
       defaultColumn,
-      initialState: { pageIndex: currentPage },
+      initialState: {
+        pageIndex: tableState.pageIndex,
+        filters: tableState.filters,
+        sortBy: tableState.sortBy,
+      },
     },
     useFilters,
     useSortBy,
@@ -421,6 +435,14 @@ const SubmissionList = ({ data }) => {
     useBlockLayout,
     useResizeColumns
   );
+
+  useEffect(() => {
+    setTableState({ pageIndex: 0, filters: table.state.filters, sortBy: table.state.sortBy });
+  }, [table.state.filters, table.state.sortBy]);
+
+  useEffect(() => {
+    table.gotoPage(tableState.pageIndex);
+  }, [claiming, reviewing, tableState.pageIndex]);
 
   const claimSubmission = async (submissionId) => {
     setClaiming({ submissionId, value: true });
@@ -454,7 +476,6 @@ const SubmissionList = ({ data }) => {
       });
 
       setClaiming({ submissionId: null, value: false });
-      table.goToPage(currentPage);
     }
   };
 
@@ -483,12 +504,11 @@ const SubmissionList = ({ data }) => {
       });
 
       setClaiming({ submissionId: null, value: false });
-      table.goToPage(currentPage);
     }
   };
 
   useEffect(() => {
-    setCurrentPage(table.state.pageIndex);
+    setTableState({ ...table.state });
   }, [table.state.pageIndex]);
 
   const setSubmissionStatus = async (submission) => {
