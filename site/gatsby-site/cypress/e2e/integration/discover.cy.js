@@ -14,6 +14,20 @@ describe('The Discover app', () => {
   });
 
   conditionalIt(
+    Cypress.env('isEmptyEnvironment') == 'true',
+    'Should display empty state when no incidents are available',
+    () => {
+      cy.visit(url);
+
+      cy.waitForStableDOM();
+
+      cy.get('div[data-cy="hits-container"]').should('not.exist');
+
+      cy.contains('Your search returned no results.').should('exist').and('be.visible');
+    }
+  );
+
+  conditionalIt(
     !Cypress.env('isEmptyEnvironment'),
     'Should default to incident reports and show at least 30',
     () => {
