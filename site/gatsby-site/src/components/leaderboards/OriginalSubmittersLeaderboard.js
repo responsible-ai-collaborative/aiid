@@ -4,7 +4,6 @@ import { Leaderboard } from './Leaderboard';
 
 const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
   const {
-    allMongodbAiidprodReports: { nodes: reports },
     allMongodbAiidprodIncidents: { nodes: incidents },
   } = useStaticQuery(graphql`
     {
@@ -13,44 +12,24 @@ const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
           incident_id
           reports {
             report_number
+            submitters
+            date_submitted
           }
-        }
-      }
-      allMongodbAiidprodReports(
-        filter: { is_incident_report: { eq: true } }
-        sort: { date_submitted: ASC }
-      ) {
-        nodes {
-          report_number
-          submitters
-          date_submitted
         }
       }
     }
   `);
 
-  const incidentsHash = {};
-
   const submitters = {};
 
-  for (const report of reports) {
-    const { incident_id: id } = incidents.find((incident) => {
-      return incident.reports.some((r) => r.report_number === report.report_number);
-    });
-
-    const {
-      submitters: [submitter],
-    } = report;
-
-    if (!incidentsHash[id]) {
-      incidentsHash[id] = true;
-
-      if (!submitters[submitter]) {
-        submitters[submitter] = 0;
+  incidents.forEach((incident) => {
+    incident.reports.forEach((report) => {
+      if (!submitters[report.submitters]) {
+        submitters[report.submitters] = 0;
       }
-      submitters[submitter]++;
-    }
-  }
+      submitters[report.submitters]++;
+    });
+  });
 
   const hash = {};
 
