@@ -61,12 +61,9 @@ export default function CheckListForm({
     searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, t, addToast });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
-  const oldSetFieldValue = setFieldValue;
-
-  setFieldValue = (key, value) => {
-    oldSetFieldValue(key, value);
+  useEffect(() => {
     submitForm();
-  };
+  }, [values]);
 
   const debouncedSetFieldValue = useRef(debounce(setFieldValue, 1000)).current;
 
