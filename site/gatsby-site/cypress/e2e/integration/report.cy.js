@@ -19,6 +19,12 @@ describe('Report pages', () => {
     cy.get('[data-cy="incident-report-card"]').should('have.length', 1);
   });
 
+  it('Should not display associated Incidents', () => {
+    cy.visit(`/reports/2974/`);
+
+    cy.contains('Associated Incidents').should('not.exist');
+  });
+
   it('Should always be expanded', () => {
     cy.visit(url);
 
