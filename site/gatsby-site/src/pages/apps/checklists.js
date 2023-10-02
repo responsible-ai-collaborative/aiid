@@ -13,7 +13,7 @@ import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { removeTypename, checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 
-export default function ChecklistsPage(props) {
+const ChecklistsPage = (props) => {
   const {
     location: { pathname },
     data: { taxa, classifications },
@@ -31,9 +31,9 @@ export default function ChecklistsPage(props) {
       <ChecklistsPageBody {...{ taxa, classifications, t }} />
     </>
   );
-}
+};
 
-function ChecklistsPageBody({ taxa, classifications, t }) {
+const ChecklistsPageBody = ({ taxa, classifications, t }) => {
   const [query] = useQueryParams({
     id: StringParam,
   });
@@ -53,8 +53,11 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
 
   const debouncedSaveChecklist = useRef(debounce(saveChecklist, 3000)).current;
 
+  const [submissionError, setSubmissionError] = useState(null);
+
   const submit = async (values, { setSubmitting }) => {
     setSubmitting(true);
+    setSubmissionError(null);
 
     const save = removeTypename({
       variables: {
@@ -73,7 +76,11 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
       },
     });
 
-    await debouncedSaveChecklist(save);
+    try {
+      await debouncedSaveChecklist(save);
+    } catch (error) {
+      setSubmissionError(error);
+    }
     setSubmitting(false);
   };
 
@@ -112,13 +119,13 @@ function ChecklistsPageBody({ taxa, classifications, t }) {
           }
         }
       >
-        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t }} />}
+        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t, submissionError }} />}
       </Formik>
     );
   }
-}
+};
 
-function classificationsToTags({ classifications, taxa }) {
+const classificationsToTags = ({ classifications, taxa }) => {
   const tags = new Set();
 
   for (const classification of classifications.nodes) {
@@ -143,7 +150,7 @@ function classificationsToTags({ classifications, taxa }) {
     }
   }
   return Array.from(tags);
-}
+};
 
 export const query = graphql`
   query ChecklistsPageQuery {
@@ -214,3 +221,5 @@ export const query = graphql`
     }
   }
 `;
+
+export default ChecklistsPage;

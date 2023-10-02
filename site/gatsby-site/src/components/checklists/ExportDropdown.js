@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next';
 import { Dropdown } from 'flowbite-react';
 import { exportJson } from 'utils/checklists';
 
-export default function ExportDropdown({ checklist }) {
+const ExportDropdown = ({ checklist }) => {
   return (
     <Dropdown label="Export">
       <Dropdown.Item onClick={() => exportJson(checklist)}>
@@ -18,3 +18,5 @@ export default function ExportDropdown({ checklist }) {
     </Dropdown>
   );
 }
+
+export default ExportDropdown;

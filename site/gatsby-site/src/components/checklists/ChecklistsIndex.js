@@ -8,15 +8,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../../contexts/userContext';
 
 import ExportDropdown from 'components/checklists/ExportDropdown';
-import { DeleteButton, removeTypename, statusIcon, statusColor } from 'utils/checklists';
+import {
+  DeleteButton,
+  removeTypename,
+  statusIcon,
+  statusColor,
+  generateId,
+  emptyRisk,
+} from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
-export default function ChecklistsIndex() {
+const ChecklistsIndex = () => {
   const { t } = useTranslation();
 
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
+
+  const addToast = useToastContext();
 
   const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS);
 
@@ -41,7 +51,8 @@ export default function ChecklistsIndex() {
           <Button
             onClick={async () => {
               const newChecklist = {
-                id: generateID(),
+                ...emptyRisk(),
+                id: generateId(),
                 name: "Unspecified System",
                 owner: user.userId
               };
@@ -73,7 +84,7 @@ export default function ChecklistsIndex() {
                   const newChecklist = {
                     ...checklist,
                     _id: undefined,
-                    id: generateID(),
+                    id: generateId(),
                     name: checklist.name + t(' (Clone)'),
                   };
 
@@ -87,8 +98,12 @@ export default function ChecklistsIndex() {
                       newChecklists.splice(checklists.indexOf(checklist), 0, newChecklist);
                       return newChecklists;
                     });
-                  } catch (e) {
-                    console.log(e);
+                  } catch (error) {
+                    addToast({
+                      message: t('Could not clone checklist.'),
+                      severity: SEVERITY.danger,
+                      error,
+                    });
                   }
                 }}
               >
@@ -103,8 +118,12 @@ export default function ChecklistsIndex() {
                   try {
                     await deleteChecklist({ variables: { query: { id: checklist.id } } });
                     setChecklists((checklists) => checklists.filter((c) => c.id != checklist.id));
-                  } catch (e) {
-                    console.log(e);
+                  } catch (error) {
+                    addToast({
+                      message: t('Could not delete checklist.'),
+                      severity: SEVERITY.danger,
+                      error,
+                    });
                   }
                 }}
               >
@@ -113,7 +132,7 @@ export default function ChecklistsIndex() {
               <ExportDropdown {...{ checklist }} />
             </div>
             <ul className="flex gap-2 flex-wrap p-4">
-              {checklist.risks
+              {(checklist.risks || [])
                 .filter((r) => r.risk_status != 'Not Applicable')
                 .map((risk) => (
                   <li key={risk.id} className="flex items-center gap-1 text-gray-600 mx-1">
@@ -131,6 +150,6 @@ export default function ChecklistsIndex() {
       </div>
     </>
   );
-}
+};
 
-const generateID = () => [0, 0, 0, 0].map(() => Math.random().toString(36).slice(-10)).join('');
+export default ChecklistsIndex;

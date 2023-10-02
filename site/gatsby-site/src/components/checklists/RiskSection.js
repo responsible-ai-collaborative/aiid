@@ -170,7 +170,7 @@ export default function RiskSection({
                       <span className="bootstrap rbt-token">
                         {content}, {tag}
                       </span>
-                    ))}
+                    ), [])}
                 </div>
               </Card>
             ))}
@@ -424,11 +424,14 @@ function ProgressCircle({ progress, className }) {
   );
 }
 
+// Sort functions
+
 const byNumPrecedents = (a, b) => a.precedents.length - b.precedents.length;
 
-const isNullish = (x) => [null, undefined, ''].includes(x);
-
+// Sort the risk sections by one of their properties `p`
+// e.g. severity, likelihood, generated
 const byProperty = (p) => (a, b) => {
+  // Group nulls together at end
   if (isNullish(a?.[p]) && isNullish(b?.[p])) {
     return 0;
   }
@@ -439,9 +442,13 @@ const byProperty = (p) => (a, b) => {
     return 1;
   }
 
+  // Sort numerically if you can.
   const [numA, numB] = [Number(a[p]), Number(b[p])];
 
   if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
 
+  // Sort alphabetically otherwise.
   return String(a[p]).localeCompare(String(b[p]));
 };
+
+const isNullish = (x) => [null, undefined, ''].includes(x);

@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 
 import config from '../../../../config';
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
 
   const mongoClient = new MongoClient(
     config.mongodb.translationsConnectionString
@@ -99,7 +99,7 @@ export default async function handler(req, res) {
 
 }
 
-function getRiskClassificationsMongoQuery(queryParams) {
+const getRiskClassificationsMongoQuery = (queryParams) => {
   const tagStrings = queryParams.tags.split('___');
 
   const tagSearch = {};
@@ -132,7 +132,7 @@ function getRiskClassificationsMongoQuery(queryParams) {
   }
 }
 
-var tagsFromClassification = (classification) => (
+const tagsFromClassification = (classification) => (
   // classification:
   // {
   //   attributes: [
@@ -158,7 +158,7 @@ var tagsFromClassification = (classification) => (
   )
 );
 
-function parseJson(json) {
+const parseJson = (json) => {
   try {
     return JSON.parse(json);
   } catch (e) {
@@ -166,11 +166,11 @@ function parseJson(json) {
   }
 }
 
-var joinArrays = (arrays) => arrays.reduce(
+const joinArrays = (arrays) => arrays.reduce(
   (result, array) => result.concat(array), []
 );
 
-var groupable = (array) => {
+const groupable = (array) => {
   array.groupBy = (keyFunction, valueFunction) => {
     const groups = {};
     for (const element of array) {
@@ -204,3 +204,6 @@ var groupable = (array) => {
   }
   return array;
 }
+
+export default handler;
+

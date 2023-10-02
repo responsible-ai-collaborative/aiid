@@ -57,7 +57,7 @@ const Label = (props) => (
 );
 
 const emptyRisk = (properties) => ({
-  id: uuidv4(),
+  id: generateId(),
   title: 'Untitled Risk',
   tags: [],
   risk_status: 'Not Mitigated',
@@ -118,10 +118,9 @@ const DeleteButton = (props) => (
   </button>
 );
 
-function shouldBeGrouped(tag1, tag2) {
+const shouldBeGrouped = (tag1, tag2) => {
   if (tag1 == tag2) return true;
   if (tag1.slice(0, 3) == ' GMF' && tag2.slice(0, 3) == 'GMF') {
-    // Despite the name, this function has nothing to do with the education system.
     const removeKnownPotential = (tag) => tag.replace('GMF:Known', '').replace('GMF:Potential');
 
     if (removeKnownPotential(tag1) == removeKnownPotential(tag2)) {
@@ -129,7 +128,9 @@ function shouldBeGrouped(tag1, tag2) {
     }
   }
   return false;
-}
+};
+
+const generateId = () => uuidv4();
 
 export {
   abbreviatedTag,
@@ -144,4 +145,5 @@ export {
   statusColor,
   exportJson,
   shouldBeGrouped,
+  generateId,
 };
