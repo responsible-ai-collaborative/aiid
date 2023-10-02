@@ -166,9 +166,9 @@ export default function RiskSection({
                   <p>{precedent.description}</p>
                   {precedent.tags
                     .filter((tag) => searchTags.includes(tag))
-                    .reduce((content, tag) => (
-                      <span className="bootstrap rbt-token">
-                        {content}, {tag}
+                    .map((tag) => (
+                      <span className="bootstrap rbt-token" key={tag}>
+                        {tag}
                       </span>
                     ))}
                 </div>

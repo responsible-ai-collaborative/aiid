@@ -58,7 +58,7 @@ export default function CheckListForm({
   const searchTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents });
+    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, t, addToast });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   const oldSetFieldValue = setFieldValue;
@@ -401,11 +401,14 @@ function Info({ children, className }) {
 // ]
 //
 // TODO: Group known and potential in GMF Taxonomy
-const searchRisks = async ({ values, setFieldValue, setRisksLoading, setAllPrecedents }) => {
-  const addToast = useToastContext();
-
-  const { t } = useTranslation();
-
+const searchRisks = async ({
+  values,
+  setFieldValue,
+  setRisksLoading,
+  setAllPrecedents,
+  t,
+  addToast,
+}) => {
   const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
 
   if (queryTags.length == 0) return;
