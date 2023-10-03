@@ -161,7 +161,7 @@ export function Head({ location }) {
     <>
       <script type="application/ld+json">{stringified}</script>
       <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}>
-        <title>bue</title>
+        <title>{title}</title>
         <meta property="og:type" content="website" />
       </AiidHelmet>
     </>
