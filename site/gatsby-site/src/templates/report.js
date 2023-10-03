@@ -89,7 +89,7 @@ function ReportPage(props) {
           <Card className={'shadow-card'} data-cy="classifications-editor">
             <Card.Header className="items-center justify-between">
               <h4>
-                <Trans>Associated Incidents</Trans>
+                <Trans ns="reports">Associated Incidents</Trans>
               </h4>
             </Card.Header>
 
@@ -101,7 +101,7 @@ function ReportPage(props) {
                       <Trans>Incident {{ id: incident.incident_id }}</Trans>
                     </span>
                     <span className="ml-2 bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
-                      <Trans ns="entities" count={incident.reports.length}>
+                      <Trans count={incident.reports.length}>
                         {{ count: incident.reports.length }} Report
                       </Trans>
                     </span>
