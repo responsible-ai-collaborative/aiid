@@ -94,6 +94,10 @@
         "private": true
     },
     {
+        "name": "createDefaultAdminUser",
+        "private": false
+    },
+    {
         "name": "onNewIncident",
         "private": false,
         "disable_arg_logs": true
