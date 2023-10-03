@@ -44,16 +44,23 @@ exports.up = async ({ context: { client } }) => {
       const field = taxonomy.field_list.find((f) => f.short_name === attribute.short_name);
 
       if (field) {
-        updatedAttributes.push({ ...attribute });
+        updatedAttributes.push({
+          ...attribute,
+        });
       } else {
         if (attribute.short_name in mappings) {
           changed = true;
 
           if (mappings[attribute.short_name] != null) {
-            updatedAttributes.push({
+            const updated = {
               short_name: mappings[attribute.short_name],
-              value_json: attribute.value_json,
-            });
+            };
+
+            if (attribute.value_json !== 'null' && attribute.value_json !== undefined) {
+              updated.value_json = attribute.value_json;
+            }
+
+            updatedAttributes.push(updated);
 
             console.log(`[${attribute.short_name}] updated to [${mappings[attribute.short_name]}]`);
           }
