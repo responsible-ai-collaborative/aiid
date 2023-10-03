@@ -44,9 +44,7 @@ exports.up = async ({ context: { client } }) => {
       const field = taxonomy.field_list.find((f) => f.short_name === attribute.short_name);
 
       if (field) {
-        updatedAttributes.push({
-          ...attribute,
-        });
+        updatedAttributes.push({ ...attribute });
       } else {
         if (attribute.short_name in mappings) {
           changed = true;
