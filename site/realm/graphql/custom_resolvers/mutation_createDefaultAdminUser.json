@@ -1,0 +1,28 @@
+{
+    "field_name": "createDefaultAdminUser",
+    "function_name": "createVariant",
+    "input_type": {
+        "properties": {
+            "email": {
+                "bsonType": "string"
+            },
+            "password": {
+                "bsonType": "string"
+            }
+        },
+        "title": "CreateDefaultAdminUser",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": {
+        "properties": {
+            "userId": {
+                "bsonType": "string"
+            }
+        },
+        "title": "DefaultAdminUser",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}
