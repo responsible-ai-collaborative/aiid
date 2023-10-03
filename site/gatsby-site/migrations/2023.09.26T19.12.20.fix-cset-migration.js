@@ -50,10 +50,15 @@ exports.up = async ({ context: { client } }) => {
           changed = true;
 
           if (mappings[attribute.short_name] != null) {
-            updatedAttributes.push({
+            const updated = {
               short_name: mappings[attribute.short_name],
-              value_json: attribute.value_json,
-            });
+            };
+
+            if (attribute.value_json !== 'null' && attribute.value_json !== undefined) {
+              updated.value_json = attribute.value_json;
+            }
+
+            updatedAttributes.push(updated);
 
             console.log(`[${attribute.short_name}] updated to [${mappings[attribute.short_name]}]`);
           }
