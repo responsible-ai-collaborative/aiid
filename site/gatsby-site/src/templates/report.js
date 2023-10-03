@@ -3,8 +3,8 @@ import AiidHelmet from 'components/AiidHelmet';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
-import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { Link, graphql } from 'gatsby';
+import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
+import { graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 import { Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
@@ -95,7 +95,7 @@ function ReportPage(props) {
 
             <Card.Body>
               {incidents.nodes.map((incident) => (
-                <Link to={`/cite/${incident.incident_id}`} key={incident.incident_id}>
+                <LocalizedLink to={`/cite/${incident.incident_id}`} key={incident.incident_id}>
                   <h4 className="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white">
                     <span className="text-sm">
                       <Trans>Incident {{ id: incident.incident_id }}</Trans>
@@ -108,7 +108,7 @@ function ReportPage(props) {
                     <br />
                     {incident.title}
                   </h4>
-                </Link>
+                </LocalizedLink>
               ))}
             </Card.Body>
           </Card>
