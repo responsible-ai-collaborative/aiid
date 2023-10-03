@@ -1,14 +1,16 @@
 describe('Report pages', () => {
-  const reportNumber = 2302;
+  const url = `/reports/`;
 
-  const url = `/reports/${reportNumber}`;
+  const reportWithIncidents = 1;
+
+  const reportNoIncidents = 2302;
 
   it('Successfully loads', () => {
-    cy.visit(url);
+    cy.visit(url + reportWithIncidents);
   });
 
   it('Should Display associated Incidents', () => {
-    cy.visit(`/reports/1`);
+    cy.visit(url + reportWithIncidents);
 
     cy.contains('Associated Incidents').should('be.visible');
 
@@ -20,13 +22,13 @@ describe('Report pages', () => {
   });
 
   it('Should not display associated Incidents', () => {
-    cy.visit(`/reports/2974/`);
+    cy.visit(url + reportNoIncidents);
 
     cy.contains('Associated Incidents').should('not.exist');
   });
 
   it('Should always be expanded', () => {
-    cy.visit(url);
+    cy.visit(url + reportWithIncidents);
 
     cy.get('[data-cy="incident-report-card"]').should('have.class', 'expanded');
   });
