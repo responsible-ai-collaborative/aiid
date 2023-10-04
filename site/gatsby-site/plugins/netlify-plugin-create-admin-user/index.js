@@ -47,8 +47,8 @@ const createAdminUser = async () => {
   return mutationResult;
 };
 
-// Runs on Post build
-export const onPostBuild = async function ({
+// Runs on build success
+export const onSuccess = async function ({
   // Core utilities
   utils: {
     // Utility to report errors.
