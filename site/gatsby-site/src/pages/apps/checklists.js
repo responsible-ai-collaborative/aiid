@@ -21,8 +21,6 @@ const ChecklistsPage = (props) => {
 
   const { t } = useTranslation();
 
-  console.log("A")
-
   return (
     <>
       <AiidHelmet path={pathname}>
@@ -104,19 +102,19 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
   if (query.id && savedChecklistLoading) {
     return <Spinner />;
   }
-  if (query.id && !savedChecklistLoading) {
+  if (query.id && savedChecklist) {
     return (
       <Formik
         onSubmit={submit}
         initialValues={
-          savedChecklist || {
+          savedChecklist /* || {
             name: 'Unspecified System',
             about: '',
             tags_goals: [],
             tags_methods: [],
             tags_other: [],
             risks: [],
-          }
+          } */
         }
       >
         {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t, submissionError }} />}

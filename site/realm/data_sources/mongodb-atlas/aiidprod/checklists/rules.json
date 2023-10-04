@@ -15,9 +15,7 @@
         },
         {
             "name": "role is owner",
-            "apply_when": {
-                "owner_id": "%%user.userId"
-            },
+            "apply_when": { "owner_id": "%%user.id" },
             "read": true,
             "write": true,
             "insert": true,
@@ -28,10 +26,10 @@
             "name": "default",
             "apply_when": {},
             "read": true,
-            "write": false,
             "insert": true,
             "delete": false,
-            "search": true
+            "search": true,
+            "write": false
         }
     ]
 }

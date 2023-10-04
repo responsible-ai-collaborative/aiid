@@ -20,6 +20,7 @@ import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useUserContext } from '../../contexts/userContext';
 
 export default function CheckListForm({
   values,
@@ -30,8 +31,9 @@ export default function CheckListForm({
   isSubmitting,
   submissionError,
 }) {
+  const { user } = useUserContext();
 
-  console.log(`values`, values);
+  const userIsOwner = values.owner_id == user.id;
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
@@ -61,19 +63,18 @@ export default function CheckListForm({
   const searchTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
-    ...(values['tags_other'] || [])
+    ...(values['tags_other'] || []),
   ];
 
   useEffect(() => {
     searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, addToast, t });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
-  const oldSetFieldValue = setFieldValue;
-
-  setFieldValue = (key, value) => {
-    oldSetFieldValue(key, value);
-    submitForm();
-  };
+  useEffect(() => {
+    if (userIsOwner) {
+      submitForm();
+    }
+  }, [values]);
 
   const debouncedSetFieldValue = useRef(debounce(setFieldValue, 1000)).current;
 
@@ -105,7 +106,6 @@ export default function CheckListForm({
     submitForm();
   };
 
-
   return (
     <Form onSubmit={handleSubmit}>
       <Header>
@@ -119,6 +119,7 @@ export default function CheckListForm({
               onChange={(event) => debouncedSetFieldValue('name', event.target.value)}
               textClasses="text-2xl"
               iconClasses="text-lg vertical-align"
+              disabled={!userIsOwner}
             />
           </h1>
           <HeaderControls>
@@ -126,21 +127,23 @@ export default function CheckListForm({
             <Button color="light" onClick={() => alert('Coming soon')}>
               <Trans>Subscribe</Trans>
             </Button>
-            <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
-              <Trans>Delete</Trans>
-            </DeleteButton>
+            {userIsOwner && (
+              <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
+                <Trans>Delete</Trans>
+              </DeleteButton>
+            )}
             <ExportDropdown checklist={values} />
           </HeaderControls>
         </HeaderRow>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
-      <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue }} />
+      <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
       <section>
         <SideBySide className="my-4">
-          <GoalsTagInput {...{ values, tags, setFieldValue }} />
-          <MethodsTagInput {...{ values, tags, setFieldValue }} />
+          <GoalsTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
+          <MethodsTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
         </SideBySide>
-        <OtherTagInput {...{ values, tags, setFieldValue }} />
+        <OtherTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
       </section>
       <section>
         <header className="flex mt-6">
@@ -168,16 +171,18 @@ export default function CheckListForm({
             >
               <Trans>Collapse all</Trans>
             </Button>
-            <Button
-              onClick={() => {
-                setFieldValue(
-                  'risks',
-                  [emptyRisk({ generated: false })].concat(values.risks || [])
-                );
-              }}
-            >
-              <Trans>Add Risk</Trans>
-            </Button>
+            {userIsOwner && (
+              <Button
+                onClick={() => {
+                  setFieldValue(
+                    'risks',
+                    [emptyRisk({ generated: false })].concat(values.risks || [])
+                  );
+                }}
+              >
+                <Trans>Add Risk</Trans>
+              </Button>
+            )}
           </div>
         </header>
 
@@ -196,6 +201,7 @@ export default function CheckListForm({
             removeRisk,
             changeSort,
             updateRisk,
+            userIsOwner,
           }}
         />
       </section>
@@ -203,7 +209,7 @@ export default function CheckListForm({
   );
 }
 
-const AboutSystem = ({ formAbout, debouncedSetFieldValue }) => {
+const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
   const [about, setAbout] = useState(formAbout);
 
   const { t } = useTranslation();
@@ -221,6 +227,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue }) => {
           setAbout(event.target.value);
           debouncedSetFieldValue('about', event.target.value);
         }}
+        disabled={!userIsOwner}
       />
     </section>
   );
@@ -235,6 +242,7 @@ const QueryTagInput = ({
   tags,
   setFieldValue,
   placeHolder,
+  userIsOwner,
 }) => (
   <div className="bootstrap">
     <Label for={id}>{title}</Label>
@@ -247,11 +255,12 @@ const QueryTagInput = ({
       }}
       labelKey={labelKey}
       placeHolder={placeHolder}
+      disabled={!userIsOwner}
     />
   </div>
 );
 
-const GoalsTagInput = ({ values, tags, setFieldValue }) => (
+const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
     {...{
       title: 'Goals',
@@ -260,13 +269,13 @@ const GoalsTagInput = ({ values, tags, setFieldValue }) => (
       labelKey: abbreviatedTag,
       include: (tagParts) =>
         tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
-      ...{ tags, setFieldValue },
       placeHolder: 'Goals for which to list associated risks',
+      ...{ tags, setFieldValue, userIsOwner },
     }}
   />
 );
 
-const MethodsTagInput = ({ values, tags, setFieldValue }) => (
+const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
     {...{
       title: 'Methods',
@@ -276,13 +285,13 @@ const MethodsTagInput = ({ values, tags, setFieldValue }) => (
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
-      ...{ tags, setFieldValue },
       placeHolder: 'Methods for which to list associated risks',
+      ...{ tags, setFieldValue, userIsOwner },
     }}
   />
 );
 
-const OtherTagInput = ({ values, tags, setFieldValue }) => (
+const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
     {...{
       title: 'Other',
@@ -297,8 +306,8 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
           'Known AI Technology',
           'Potential AI Technology',
         ].includes(tagParts[1]),
-      ...{ tags, setFieldValue },
       placeHolder: 'Other tags for which to list associated risks',
+      ...{ tags, setFieldValue, userIsOwner },
     }}
   />
 );
@@ -414,16 +423,13 @@ const searchRisks = async ({
   setFieldValue,
   setRisksLoading,
   setAllPrecedents,
-  setSaveStatus,
   addToast,
-  t
+  t,
 }) => {
-  console.log("Searching risks");
-
   const queryTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
-    ...(values['tags_other'] || [])
+    ...(values['tags_other'] || []),
   ];
 
   if (queryTags.length == 0) return;

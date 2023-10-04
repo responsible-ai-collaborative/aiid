@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 const allChecklistFields = `
   id
+  owner_id
   name
   about
   tags_goals
@@ -49,6 +50,14 @@ export const UPDATE_CHECKLIST = gql`
   ) {
     upsertOneChecklist(query: $query, data: $checklist) {
       ${allChecklistFields}
+    }
+  }
+`;
+
+export const INSERT_EMPTY_CHECKLIST = gql`
+  mutation insertChecklist {
+    insertOneChecklist {
+      _id
     }
   }
 `;
