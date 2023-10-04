@@ -1,6 +1,6 @@
 {
     "field_name": "createDefaultAdminUser",
-    "function_name": "createVariant",
+    "function_name": "createDefaultAdminUser",
     "input_type": {
         "properties": {
             "email": {
@@ -10,7 +10,7 @@
                 "bsonType": "string"
             }
         },
-        "title": "CreateDefaultAdminUser",
+        "title": "CreateDefaultAdminUserInput",
         "type": "object"
     },
     "input_type_format": "custom",
