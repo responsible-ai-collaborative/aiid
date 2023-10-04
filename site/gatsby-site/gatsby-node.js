@@ -108,12 +108,6 @@ exports.onCreateWebpackConfig = ({ actions }) => {
   });
 };
 
-exports.onCreateBabelConfig = ({ actions }) => {
-  actions.setBabelPlugin({
-    name: '@babel/plugin-proposal-export-default-from',
-  });
-};
-
 exports.onCreateNode = async ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
 

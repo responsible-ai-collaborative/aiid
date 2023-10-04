@@ -19,6 +19,8 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+import '@cypress/code-coverage/support';
+
 const ignoredErrors = [
   // disable Realm error when origin is not whitelisted
   'origin forbidden (status 403 Forbidden)',

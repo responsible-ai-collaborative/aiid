@@ -6,7 +6,6 @@
   "version": "0.2.0",
   "dependencies": {
     "@apollo/client": "^3.7.8",
-    "@babel/plugin-proposal-export-default-from": "^7.12.13",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
     "@cloudinary/base": "^1.0.0-beta.4",
@@ -102,16 +101,18 @@
   "main": "n/a",
   "scripts": {
     "start": "gatsby develop",
-    "build": "gatsby build --prefix-paths",
+    "build": "gatsby build",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "gatsby serve -p 8000",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
+    "test:instrument": "nyc instrument --compact=false src instrumented"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.11.0",
     "@netlify/plugin-gatsby": "^3.7.0",
     "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.7",
@@ -130,6 +131,7 @@
     "husky": "^4.3.6",
     "lint-staged": "^10.5.3",
     "netlify-plugin-cypress": "^2.2.1",
+    "nyc": "^15.1.0",
     "postcss": "^8.4.14",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
