@@ -30,16 +30,14 @@ const client = new apolloClient.ApolloClient({
 });
 
 const createAdminUser = async () => {
-  const CREATE_DEFAULT_ADMIN_USER = apolloClient.gql`
-    mutation CreateDefaultAdminUser {
-      createDefaultAdminUser {
-        userId
-      }
-    }
-  `;
-
   const mutationResult = await client.mutate({
-    mutation: CREATE_DEFAULT_ADMIN_USER,
+    mutation: apolloClient.gql`
+      mutation CreateDefaultAdminUser($input: CreateDefaultAdminUserInput) {
+        createDefaultAdminUser(input: $input) {
+          userId
+        }
+      }
+    `,
     variables: {
       email: process.env.E2E_ADMIN_USERNAME,
       password: process.env.E2E_ADMIN_PASSWORD,

@@ -67,7 +67,7 @@ exports = async (input) => {
             }
         );
 
-        return { userId: response._id, email };
+        return { userId: response._id };
     }
 }
 
