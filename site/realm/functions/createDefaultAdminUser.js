@@ -63,6 +63,8 @@ exports = async (input) => {
             {
                 $set: {
                     roles: ['admin'],
+                    first_name: 'Test',
+                    last_name: 'User',
                 },
             }
         );
