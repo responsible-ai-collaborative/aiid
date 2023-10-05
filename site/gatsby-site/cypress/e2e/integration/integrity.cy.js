@@ -109,4 +109,39 @@ describe('Integrity', () => {
       });
     }
   );
+
+  it(
+    `Classifications should only contain attributes defined in the taxonomy`,
+    { requestTimeout: 30000, defaultCommandTimeout: 30000, responseTimeout: 30000 },
+    () => {
+      cy.query({
+        query: gql`
+          query {
+            taxas(limit: 999999) {
+              namespace
+              field_list {
+                short_name
+              }
+            }
+            classifications(limit: 999999) {
+              namespace
+              attributes {
+                short_name
+              }
+            }
+          }
+        `,
+      }).then(({ data: { classifications, taxas } }) => {
+        expect(
+          classifications.every((c) => {
+            const taxonomy = taxas.find((t) => t.namespace === c.namespace);
+
+            return c.attributes.every((a) =>
+              taxonomy.field_list.find((f) => f.short_name === a.short_name)
+            );
+          })
+        ).to.eq(true, 'Classification attribute not defined in a taxonomy');
+      });
+    }
+  );
 });

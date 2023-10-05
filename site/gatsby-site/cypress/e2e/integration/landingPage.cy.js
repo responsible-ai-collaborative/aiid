@@ -136,4 +136,10 @@ describe('The Landing page', () => {
         });
     }
   );
+
+  it('Renders rich results config', () => {
+    cy.visit('/');
+
+    cy.get('script[type="application/ld+json"]').should('exist');
+  });
 });
