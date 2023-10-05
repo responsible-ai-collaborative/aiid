@@ -68,7 +68,11 @@ export const onPostBuild = async function ({
 
     const result = await createAdminUser();
 
-    await run('echo', [`${result?.data?.userId} Admin user created`]);
+    await run('echo', [
+      result?.data?.userId
+        ? `${result?.data?.userId} Admin user created`
+        : 'Admin user already exists',
+    ]);
   } catch (error) {
     // Report a user error
     build.failBuild('Error message', { error });
