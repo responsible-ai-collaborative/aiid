@@ -30,10 +30,13 @@ export default function CheckListForm({
   tags,
   isSubmitting,
   submissionError,
+  users,
 }) {
   const { user } = useUserContext();
 
   const userIsOwner = values.owner_id == user.id;
+
+  const owner = users.find((u) => (u.userId = values.owner_id));
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
@@ -109,32 +112,35 @@ export default function CheckListForm({
   return (
     <Form onSubmit={handleSubmit}>
       <Header>
-        <LocalizedLink to="/apps/checklists" className="text-lg">
-          <Trans>Risk Checklists</Trans>
-        </LocalizedLink>
-        <HeaderRow>
-          <h1>
+        <HeaderInfo>
+          <LocalizedLink to="/apps/checklists" className="text-md">
+            <Trans>Risk Checklists</Trans>
+          </LocalizedLink>
+          <h1 className="text-sm my-0">
             <EditableLabel
               title={values.name}
               onChange={(event) => debouncedSetFieldValue('name', event.target.value)}
-              textClasses="text-2xl"
-              iconClasses="text-lg vertical-align"
+              textClasses="text-2xl m-0"
+              iconClasses="text-sm vertical-align leading-3"
               disabled={!userIsOwner}
             />
           </h1>
-          <HeaderControls>
-            <SavingIndicator {...{ isSubmitting, submissionError }} />
-            <Button color="light" onClick={() => alert('Coming soon')}>
-              <Trans>Subscribe</Trans>
-            </Button>
-            {userIsOwner && (
-              <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
-                <Trans>Delete</Trans>
-              </DeleteButton>
-            )}
-            <ExportDropdown checklist={values} />
-          </HeaderControls>
-        </HeaderRow>
+          <div className="text-gray-600">
+            {owner.first_name} {owner.last_name}
+          </div>
+        </HeaderInfo>
+        <HeaderControls>
+          <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
+          <Button color="light" onClick={() => alert('Coming soon')}>
+            <Trans>Subscribe</Trans>
+          </Button>
+          {userIsOwner && (
+            <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
+              <Trans>Delete</Trans>
+            </DeleteButton>
+          )}
+          <ExportDropdown checklist={values} />
+        </HeaderControls>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
       <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
@@ -312,50 +318,43 @@ const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   />
 );
 
-const Header = (props) => (
-  <header {...{ ...props, className: `titleWrapper ${props.className}` }}>{props.children}</header>
-);
+const Header = (props) => {
+  const className = `
+    border-[rgb(230,236,241)] border-b-[1px]
+    lg:min-h-[5.5rem]
+    flex justify-between flex-wrap gap-4
+    pb-2 -mt-2
+    ${props.className}
+  `;
 
-const HeaderRow = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `w-full flex items-center flex-wrap justify-between gap-3 ${props.className}`,
-    }}
-  >
-    {props.children}
-  </div>
-);
+  return <header {...{ ...props, className }}>{props.children}</header>;
+};
 
-const HeaderControls = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`,
-    }}
-  >
-    {props.children}
-  </div>
-);
+const HeaderInfo = (props) => {
+  const className = `flex flex-col justify-center ${props.className}`;
 
-const SideBySide = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `flex flex-col md:flex-row gap-2 [&>*]:w-full [&>*]:md:w-1/2 [&>*]:h-full ${props.className}`,
-    }}
-  >
-    {props.children}
-  </div>
-);
+  return <div {...{ ...props, className }}>{props.children}</div>;
+};
 
-// TODO: Unless the network connection is fairly slow
-// (check with throttling in browser devtools),
-// submissions happen fast enough that this never rerenders with
-// isSubmitting == true.
-// This needs to be better optimized for the render cycle.
-function SavingIndicator({ isSubmitting, submissionError }) {
-  const className = 'text-lg text-gray-500 inline-block mx-4';
+const HeaderControls = (props) => {
+  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`;
+
+  return <div {...{ ...props, className }}>{props.children}</div>;
+};
+
+const SideBySide = (props) => {
+  const className = `
+    flex flex-col md:flex-row gap-2
+    [&>*]:w-full [&>*]:md:w-1/2
+    [&>*]:h-full 
+    ${props.className}
+  `;
+
+  return <div {...{ ...props, className }}>{props.children}</div>;
+};
+
+function SavingIndicator({ isSubmitting, submissionError, className }) {
+  className = `text-lg text-gray-500 inline-block ${className}`;
 
   if (isSubmitting) {
     return (
