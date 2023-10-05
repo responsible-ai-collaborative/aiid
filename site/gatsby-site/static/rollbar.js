@@ -4,7 +4,7 @@ let environment = 'other';
 if (location.hostname == 'incidentdatabase.ai') {
   environment = 'production';
 } else if (location.hostname == 'staging-aiid.netlify.app') {
-  environment == 'staging';
+  environment = 'staging';
 } else if (location.hostname == 'localhost') {
   environment = 'localhost';
 }
