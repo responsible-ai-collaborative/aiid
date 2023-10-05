@@ -39,8 +39,10 @@ const createAdminUser = async () => {
       }
     `,
     variables: {
-      email: process.env.E2E_ADMIN_USERNAME,
-      password: process.env.E2E_ADMIN_PASSWORD,
+      input: {
+        email: process.env.E2E_ADMIN_USERNAME,
+        password: process.env.E2E_ADMIN_PASSWORD,
+      },
     },
   });
 
