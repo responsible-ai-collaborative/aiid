@@ -70,11 +70,9 @@ export const onPostBuild = async function ({
 
     const result = await createAdminUser();
 
-    console.log('result', result);
-
     await run('echo', [
-      result?.data?.userId
-        ? `${result?.data?.userId} Admin user created`
+      result?.data?.createDefaultAdminUser?.userId
+        ? `${result?.data?.createDefaultAdminUser?.userId} Admin user created`
         : 'Admin user already exists',
     ]);
   } catch (error) {
