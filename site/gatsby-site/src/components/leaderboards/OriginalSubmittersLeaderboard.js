@@ -25,14 +25,31 @@ const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
 
   const submitters = {};
 
-  incidents.forEach((incident) => {
-    incident.reports.forEach((report) => {
-      if (!submitters[report.submitters]) {
-        submitters[report.submitters] = 0;
-      }
-      submitters[report.submitters]++;
-    });
-  });
+  const allReports = incidents
+    .flatMap((incident) => incident.reports)
+    .sort((a, b) => a.date_submitted - b.date_submitted);
+
+  const incidentsHash = new Set();
+
+  for (const report of allReports) {
+    const incident = incidents.find((incident) =>
+      incident.reports.some((r) => r.report_number === report.report_number)
+    );
+
+    if (!incident) {
+      continue;
+    }
+
+    const {
+      submitters: [submitter],
+    } = report;
+
+    if (!incidentsHash.has(incident.incident_id)) {
+      incidentsHash.add(incident.incident_id);
+
+      submitters[submitter] = (submitters[submitter] || 0) + 1;
+    }
+  }
 
   const hash = {};
 
