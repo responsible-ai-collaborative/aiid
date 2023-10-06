@@ -1,0 +1,37 @@
+{
+    "plugins": [
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ]
+    ],
+    "presets": [
+        [
+            "babel-preset-gatsby",
+            {
+                "targets": {
+                    "browsers": [
+                        ">0.25%",
+                        "not dead"
+                    ]
+                }
+            }
+        ]
+    ],
+    "env": {
+        "develop": {
+            "plugins": [
+                [
+                    "babel-plugin-istanbul",
+                    {
+                        "include": [
+                            "src/**/*.js"
+                        ]
+                    }
+                ]
+            ]
+        }
+    }
+}
