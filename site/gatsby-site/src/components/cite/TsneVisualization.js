@@ -133,43 +133,45 @@ export default function TsneVisualization({
               ))}
             </Select>
             <ul>
-              {taxons.map((taxon) => (
-                <li
-                  key={taxon}
-                  className={
-                    'cursor-pointer' +
-                    (taxonVisibility[taxon]
-                      ? highlightedCategory &&
-                        taxonVisibility[highlightedCategory] &&
-                        highlightedCategory != taxon
-                        ? ' opacity-50'
-                        : ''
-                      : ' opacity-10')
-                  }
-                >
-                  <button
-                    style={{
-                      background: 'none',
-                      padding: '0px',
-                      margin: '0px',
-                      border: 'none',
-                      textAlign: 'left',
-                    }}
-                    className="-indent-4 pl-4"
-                    onMouseEnter={() => setHighlightedCategory(taxon)}
-                    onMouseLeave={() => setHighlightedCategory(null)}
-                    onClick={() =>
-                      setTaxonVisibility((taxonVisibility) => ({
-                        ...taxonVisibility,
-                        [taxon]: !taxonVisibility[taxon],
-                      }))
+              {taxons
+                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+                .map((taxon) => (
+                  <li
+                    key={taxon}
+                    className={
+                      'cursor-pointer' +
+                      (taxonVisibility[taxon]
+                        ? highlightedCategory &&
+                          taxonVisibility[highlightedCategory] &&
+                          highlightedCategory != taxon
+                          ? ' opacity-50'
+                          : ''
+                        : ' opacity-10')
                     }
                   >
-                    <Swatch color={taxonColorMap[taxon]} />
-                    <Trans>{taxon}</Trans>
-                  </button>
-                </li>
-              ))}
+                    <button
+                      style={{
+                        background: 'none',
+                        padding: '0px',
+                        margin: '0px',
+                        border: 'none',
+                        textAlign: 'left',
+                      }}
+                      className="-indent-4 pl-4"
+                      onMouseEnter={() => setHighlightedCategory(taxon)}
+                      onMouseLeave={() => setHighlightedCategory(null)}
+                      onClick={() =>
+                        setTaxonVisibility((taxonVisibility) => ({
+                          ...taxonVisibility,
+                          [taxon]: !taxonVisibility[taxon],
+                        }))
+                      }
+                    >
+                      <Swatch color={taxonColorMap[taxon]} />
+                      <Trans>{taxon}</Trans>
+                    </button>
+                  </li>
+                ))}
             </ul>
           </Sidebar>
         </VisualizationLayout>
@@ -293,8 +295,8 @@ function PlotPoint({
   let zIndex = 1;
 
   if (currentIncidentId == incident.incident_id) zIndex = 4;
-  else if (highlightedCategory == taxon) zIndex = 3;
-  else if (taxon != 'Unclassified') zIndex = 2;
+  else if (highlightedCategory == taxon) /*   */ zIndex = 3;
+  else if (taxon != 'Unclassified') /*        */ zIndex = 2;
 
   const onTop = typeof window != 'undefined' && clientPosition?.y < window.innerHeight / 2;
 
