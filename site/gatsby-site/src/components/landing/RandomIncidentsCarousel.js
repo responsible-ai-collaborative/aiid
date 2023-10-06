@@ -12,34 +12,31 @@ const RandomIncidentsCarousel = () => {
     <StaticQuery
       query={graphql`
         query RandomIncidentsCarousel {
-          allMongodbAiidprodIncidents {
+          allMongodbAiidprodIncidents(sort: { reports: { report_number: ASC } }) {
             nodes {
               incident_id
               reports {
+                id
                 report_number
+                image_url
+                cloudinary_id
               }
               title
             }
           }
-          allMongodbAiidprodReports(limit: 50, sort: { id: ASC }) {
-            nodes {
-              id
-              report_number
-              image_url
-              cloudinary_id
-            }
-          }
         }
       `}
-      render={({
-        allMongodbAiidprodReports: { nodes: reports },
-        allMongodbAiidprodIncidents: { nodes: incidents },
-      }) => {
+      render={({ allMongodbAiidprodIncidents: { nodes: incidents } }) => {
         // this cannot be really random because it causes rehydration problems
 
         const { t } = useTranslation();
 
         const selected = [];
+
+        const reports = incidents
+          .flatMap((incident) => incident.reports)
+          .sort((a, b) => a.id.localeCompare(b.id))
+          .slice(0, 50);
 
         for (let i = 0; i < reports.length && selected.length < 5; i++) {
           const report = reports[i];
