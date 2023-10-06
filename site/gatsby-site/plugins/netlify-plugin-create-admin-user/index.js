@@ -35,6 +35,8 @@ const createAdminUser = async () => {
       mutation CreateDefaultAdminUser($input: CreateDefaultAdminUserInput) {
         createDefaultAdminUser(input: $input) {
           userId
+          status
+          message
         }
       }
     `,
