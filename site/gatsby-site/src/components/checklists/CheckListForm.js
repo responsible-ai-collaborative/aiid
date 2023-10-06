@@ -279,13 +279,14 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
       idValue: values['tags_other'],
       labelKey: (tag) => tag,
       include: (tagParts) =>
-        tagParts[0] != 'GMF' ||
-        ![
-          'Known AI Goal',
-          'Potential AI Goal',
-          'Known AI Technology',
-          'Potential AI Technology',
-        ].includes(tagParts[1]),
+        !tagParts[0].startsWith('CSETv1_Annotator') &&
+        (tagParts[0] != 'GMF' ||
+          ![
+            'Known AI Goal',
+            'Potential AI Goal',
+            'Known AI Technology',
+            'Potential AI Technology',
+          ].includes(tagParts[1])),
       ...{ tags, setFieldValue },
       placeHolder: 'Other tags for which to list associated risks',
     }}
