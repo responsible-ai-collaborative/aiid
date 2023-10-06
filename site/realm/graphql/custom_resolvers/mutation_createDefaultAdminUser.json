@@ -19,6 +19,12 @@
         "properties": {
             "userId": {
                 "bsonType": "string"
+            },
+            "status": {
+                "bsonType": "int"
+            },
+            "message": {
+                "bsonType": "string"
             }
         },
         "title": "DefaultAdminUser",

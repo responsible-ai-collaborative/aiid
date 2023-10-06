@@ -14,7 +14,10 @@ exports = async (input) => {
 
     // If the Admin user already exist in the database, we skip the creation
     if (adminUser) {
-        return 'Admin user already created';
+        return {
+            status: 204,
+            message: 'Admin user already created'
+        }
     }
 
     const publicApiKey = context.values.get('publicApiKey');
@@ -34,7 +37,7 @@ exports = async (input) => {
     if (loginResponse.statusCode != 200) {
         return {
             status: loginResponse.statusCode,
-            error: EJSON.parse(loginResponse.body.text()).error
+            message: EJSON.parse(loginResponse.body.text()).error,
         }
     }
 
@@ -69,7 +72,10 @@ exports = async (input) => {
             }
         );
 
-        return { userId: response._id };
+        return {
+            status: 200,
+            userId: response._id
+        };
     }
 }
 
