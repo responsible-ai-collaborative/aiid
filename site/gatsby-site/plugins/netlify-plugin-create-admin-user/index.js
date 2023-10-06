@@ -70,6 +70,8 @@ export const onPostBuild = async function ({
 
     const result = await createAdminUser();
 
+    console.log('result', result);
+
     await run('echo', [
       result?.data?.createDefaultAdminUser?.userId
         ? `${result?.data?.createDefaultAdminUser?.userId} Admin user created`
