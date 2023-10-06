@@ -7,7 +7,9 @@ const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
     allMongodbAiidprodIncidents: { nodes: incidents },
   } = useStaticQuery(graphql`
     {
-      allMongodbAiidprodIncidents {
+      allMongodbAiidprodIncidents(
+        filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+      ) {
         nodes {
           incident_id
           reports {
@@ -24,10 +26,17 @@ const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
 
   incidents.forEach((incident) => {
     incident.reports.forEach((report) => {
-      if (!submitters[report.submitters]) {
-        submitters[report.submitters] = [];
+      const {
+        submitters: [submitter],
+      } = report;
+
+      if (!submitters[submitter]) {
+        submitters[submitter] = [];
       }
-      submitters[report.submitters].push(incident.incident_id);
+
+      if (!submitters[submitter].includes(incident.incident_id)) {
+        submitters[submitter].push(incident.incident_id);
+      }
     });
   });
 

@@ -7,7 +7,10 @@ const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
     allMongodbAiidprodIncidents: { nodes: incidents },
   } = useStaticQuery(graphql`
     {
-      allMongodbAiidprodIncidents {
+      allMongodbAiidprodIncidents(
+        filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+        sort: { reports: { date_submitted: ASC } }
+      ) {
         nodes {
           incident_id
           reports {
