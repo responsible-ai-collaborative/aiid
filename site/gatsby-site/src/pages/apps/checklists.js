@@ -127,6 +127,8 @@ const classificationsToTags = ({ classifications, taxa }) => {
   const tags = new Set();
 
   for (const classification of classifications.nodes) {
+    if (!classification.publish) continue;
+
     const taxonomy = taxa.nodes.find((t) => t.namespace == classification.namespace);
 
     for (const attribute of classification.attributes) {
@@ -137,11 +139,11 @@ const classificationsToTags = ({ classifications, taxa }) => {
 
         if (Array.isArray(value)) {
           for (const item of value) {
-            if (String(item).length < 20) {
+            if (isTag({ value: item, field })) {
               tags.add([classification.namespace, attribute.short_name, String(item)].join(':'));
             }
           }
-        } else if (String(value).length < 20) {
+        } else if (isTag({ value, field })) {
           tags.add([classification.namespace, attribute.short_name, String(value)].join(':'));
         }
       }
@@ -149,6 +151,13 @@ const classificationsToTags = ({ classifications, taxa }) => {
   }
   return Array.from(tags);
 };
+
+const isTag = ({ value, field }) =>
+  value &&
+  typeof value !== 'object' &&
+  String(value).length < 20 &&
+  String(value).length > 0 &&
+  field.display_type != 'long_string';
 
 export const query = graphql`
   query ChecklistsPageQuery {

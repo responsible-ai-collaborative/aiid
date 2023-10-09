@@ -205,7 +205,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue }) => {
       <Textarea
         placeholder={t(`Human-readable notes on the system under investigation`)}
         value={about}
-        row={4}
+        rows={4}
         onChange={(event) => {
           setAbout(event.target.value);
           debouncedSetFieldValue('about', event.target.value);
@@ -248,7 +248,10 @@ const GoalsTagInput = ({ values, tags, setFieldValue }) => (
       idValue: values['tags_goals'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
-        tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
+        tagParts[0] == 'GMF' &&
+        ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]) &&
+        tagParts[2] &&
+        tagParts[2] !== 'null',
       ...{ tags, setFieldValue },
       placeHolder: 'Goals for which to list associated risks',
     }}
@@ -264,7 +267,9 @@ const MethodsTagInput = ({ values, tags, setFieldValue }) => (
       labelKey: abbreviatedTag,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
-        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
+        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]) &&
+        tagParts[2] &&
+        tagParts[2] !== 'null',
       ...{ tags, setFieldValue },
       placeHolder: 'Methods for which to list associated risks',
     }}
@@ -279,14 +284,13 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
       idValue: values['tags_other'],
       labelKey: (tag) => tag,
       include: (tagParts) =>
-        !tagParts[0].startsWith('CSETv1_Annotator') &&
-        (tagParts[0] != 'GMF' ||
-          ![
-            'Known AI Goal',
-            'Potential AI Goal',
-            'Known AI Technology',
-            'Potential AI Technology',
-          ].includes(tagParts[1])),
+        tagParts[0] != 'GMF' ||
+        ![
+          'Known AI Goal',
+          'Potential AI Goal',
+          'Known AI Technology',
+          'Potential AI Technology',
+        ].includes(tagParts[1]),
       ...{ tags, setFieldValue },
       placeHolder: 'Other tags for which to list associated risks',
     }}
