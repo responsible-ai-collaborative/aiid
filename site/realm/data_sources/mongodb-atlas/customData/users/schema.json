@@ -17,15 +17,6 @@
         },
         "userId": {
             "bsonType": "string"
-        },
-        "adminData": {
-            "bsonType": "object",
-            "properties": {
-              "email": {"bsonType": "string"},
-              "disabled": {"bsonType": "bool"},
-              "creationDate": {"bsonType": "string"},
-              "lastAuthenticationDate": {"bsonType": "string"}
-            }
         }
     },
     "required": [

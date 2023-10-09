@@ -764,4 +764,14 @@
   .latest-reports-carousel *[data-testid="carousel-indicator"] {
     @apply hidden !important;
   }
+
+  .editors-dropdown,
+  .editors-dropdown *[data-testid="flowbite-tooltip-target"],
+  .editors-dropdown *[data-testid="flowbite-tooltip-target"] button {
+    @apply w-full !important;
+  }
+
+  .editors-dropdown *[data-testid="flowbite-tooltip-target"] button span {
+    @apply w-full justify-between !important;
+  }
 }
