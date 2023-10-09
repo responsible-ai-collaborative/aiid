@@ -17,6 +17,7 @@ const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
             report_number
             submitters
             date_submitted
+            is_incident_report
           }
         }
       }
@@ -25,16 +26,26 @@ const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
 
   const submitters = {};
 
-  const allReports = incidents
+  let allReports = incidents
     .flatMap((incident) => incident.reports)
-    .sort((a, b) => a.date_submitted - b.date_submitted);
+    .filter((item, index, arr) => {
+      // If the current item's is_incident_report is false, exclude it.
+      if (!item.is_incident_report) return false;
+
+      // Check if there's another item ahead with the same report_number and is_incident_report set to true.
+      return !arr
+        .slice(index + 1)
+        .some(
+          (nextItem) => nextItem.report_number === item.report_number && nextItem.is_incident_report
+        );
+    });
 
   const incidentsHash = new Set();
 
   for (const report of allReports) {
-    const incident = incidents.find((incident) =>
-      incident.reports.some((r) => r.report_number === report.report_number)
-    );
+    const incident = incidents.find((incident) => {
+      return incident.reports.some((r) => r.report_number === report.report_number);
+    });
 
     if (!incident) {
       continue;
@@ -44,10 +55,13 @@ const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
       submitters: [submitter],
     } = report;
 
-    if (!incidentsHash.has(incident.incident_id)) {
-      incidentsHash.add(incident.incident_id);
+    if (!incidentsHash[incident.incident_id]) {
+      incidentsHash[incident.incident_id] = true;
 
-      submitters[submitter] = (submitters[submitter] || 0) + 1;
+      if (!submitters[submitter]) {
+        submitters[submitter] = 0;
+      }
+      submitters[submitter]++;
     }
   }
 
