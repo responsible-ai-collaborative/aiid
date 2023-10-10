@@ -1,6 +1,11 @@
 import * as yup from 'yup';
 import { dateRegExp, isPastDate } from '../../utils/date';
 
+const incident_title = yup
+  .string()
+  .min(6, '*Title must have at least 6 characters')
+  .max(500, "*Titles can't be longer than 500 characters");
+
 const developers = yup.array(
   yup
     .string()
@@ -47,10 +52,26 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  description,
-  developers,
-  deployers,
-  harmed_parties,
+  description: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Description is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  developers: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alleged developers is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  deployers: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alleged deployers is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  harmed_parties: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alleged Harmed Parties is required'),
+    otherwise: yup.string().nullable(),
+  }),
   authors: yup
     .array(
       yup
@@ -93,8 +114,16 @@ export const schema = yup.object().shape({
     .optional()
     .nullable(),
   incident_ids,
-  incident_date,
-  incident_title: yup.string().nullable(),
+  incident_date: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Incident Date is required'),
+    otherwise: yup.string().nullable(),
+  }),
+  incident_title: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Incident title is required'),
+    otherwise: yup.string().nullable(),
+  }),
   incident_editors: yup
     .string()
     .matches(/^.{3,}$/, {
@@ -110,6 +139,7 @@ export const schema = yup.object().shape({
 });
 
 export const incidentSchema = schema.shape({
+  incident_title: incident_title.required('*Incident Title is required.'),
   developers: developers.required(),
   deployers: deployers.required(),
   harmed_parties: harmed_parties.required(),

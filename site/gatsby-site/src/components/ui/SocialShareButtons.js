@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedin, faFacebook, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import config from '../../../config';
 
 const SocialShareButtons = ({ metaTitle, path, page, className = '' }) => {
@@ -27,7 +27,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className = '' }) => {
       >
         <FontAwesomeIcon
           titleId="twitter"
-          icon={faTwitter}
+          icon={faXTwitter}
           color={'#001934'}
           className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to Twitter"

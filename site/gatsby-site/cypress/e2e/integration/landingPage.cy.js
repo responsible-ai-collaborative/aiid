@@ -115,4 +115,10 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/signup/');
   });
+
+  it('Renders rich results config', () => {
+    cy.visit('/');
+
+    cy.get('script[type="application/ld+json"]').should('exist');
+  });
 });

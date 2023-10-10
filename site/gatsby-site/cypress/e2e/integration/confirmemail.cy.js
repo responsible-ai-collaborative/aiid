@@ -11,23 +11,23 @@ describe('Confirm email', () => {
     cy.contains('Invalid parameters').should('exist');
     cy.get('[data-cy="confirm-login-btn"]').should('exist');
 
-    cy.get('#content').contains('An unknown error has ocurred').should('exist');
+    cy.get('#content').contains('An unknown error has occurred').should('exist');
 
     cy.visit(`${url}?tokenId=dummyTokenId`);
 
     cy.contains('Invalid parameters').should('exist');
     cy.get('[data-cy="confirm-login-btn"]').should('exist');
 
-    cy.get('#content').contains('An unknown error has ocurred').should('exist');
+    cy.get('#content').contains('An unknown error has occurred').should('exist');
   });
 
   it('Should display an error message if the confirmation failed on Atlas', () => {
     cy.visit(`${url}?token=invalidToken&tokenId=invalidTokenId`);
 
-    cy.get('[data-cy="toast"]').contains('An unknown error has ocurred').should('exist');
+    cy.get('[data-cy="toast"]').contains('An unknown error has occurred').should('exist');
     cy.get('[data-cy="confirm-login-btn"]').should('exist');
 
-    cy.get('#content').contains('An unknown error has ocurred').should('exist');
+    cy.get('#content').contains('An unknown error has occurred').should('exist');
   });
 
   it('Should display success message if the email is confirmed on Atlas', () => {

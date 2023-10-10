@@ -4,7 +4,7 @@ let environment = 'other';
 if (location.hostname == 'incidentdatabase.ai') {
   environment = 'production';
 } else if (location.hostname == 'staging-aiid.netlify.app') {
-  environment == 'staging';
+  environment = 'staging';
 } else if (location.hostname == 'localhost') {
   environment = 'localhost';
 }
@@ -80,7 +80,7 @@ var _rollbarConfig = {
     (_rollbarConfig = _rollbarConfig || {}),
       (_rollbarConfig.rollbarJsUrl =
         _rollbarConfig.rollbarJsUrl ||
-        'https://cdn.rollbar.com/rollbarjs/refs/tags/v2.26.1/rollbar.min.js'),
+        'https://cdn.rollbar.com/rollbarjs/refs/tags/v2.26.2/rollbar.min.js'),
       (_rollbarConfig.async = void 0 === _rollbarConfig.async || _rollbarConfig.async);
     var a = n.setupShim(window, _rollbarConfig),
       l = t(_rollbarConfig);
@@ -133,8 +133,7 @@ var _rollbarConfig = {
         i = e.createElement('script'),
         s = e.getElementsByTagName('script')[0],
         d = s.parentNode;
-      (i.crossOrigin = ''),
-        (i.src = n.rollbarJsUrl),
+      (i.src = n.rollbarJsUrl),
         o || (i.async = !0),
         (i.onload = i.onreadystatechange =
           a(function () {
