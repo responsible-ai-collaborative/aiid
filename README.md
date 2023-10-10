@@ -144,10 +144,9 @@ GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 SKIP_PAGE_CREATOR=createTsneVisualizationPage
 GATSBY_PRISMIC_REPO_NAME=
 PRISMIC_ACCESS_TOKEN=
-PRISMIC_CUSTOM_TYPES_API_TOKEN=
 ```
 
-For `GATSBY_PRISMIC_REPO_NAME`, `PRISMIC_ACCESS_TOKEN` and `PRISMIC_CUSTOM_TYPES_API_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+For `GATSBY_PRISMIC_REPO_NAME` and `PRISMIC_ACCESS_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
@@ -324,7 +323,7 @@ GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
 ### Prismic setup
-This project uses Prismic to fetch page content. 
+This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
 
 #### Prismic Setup
 
@@ -334,7 +333,6 @@ This project uses Prismic to fetch page content.
 4. Choose your plan (if you only need one user, the free plan is enough)
 5. Click `Create repository`
 6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
-7. Create a new custom type token in Settings > API & Security > Custom types API tab > Tokens > Add new app name and create token > Save value for later
 
 #### Adding the Prismic content types
 
@@ -359,7 +357,6 @@ In order to do this, you need to create a Netlify Build Hook.
 Add the following environment variable on Netlify: 
 `GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
 `PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
-`PRISMIC_CUSTOM_TYPES_API_TOKEN=[you_prismic_custom_types_access_token]` (step 7 from Prismic Setup section)
 
 **Create Prismic/Netlify Hook**
 1. Login to your Netlify
