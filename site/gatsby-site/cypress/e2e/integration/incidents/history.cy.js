@@ -2,6 +2,7 @@ import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import incidentHistory from '../../../fixtures/history/incidentHistory.json';
 import versionReports from '../../../fixtures/history/versionReports.json';
 import { maybeIt } from '../../../support/utils';
+
 const { gql } = require('@apollo/client');
 
 describe('Incidents', () => {

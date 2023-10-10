@@ -9,7 +9,9 @@ export default function Tags({
   onChange,
   name,
   disabled = false,
+  labelKey,
   options,
+  className,
   stayOpen = false,
 }) {
   const [open, setOpen] = useState(false);
@@ -25,9 +27,7 @@ export default function Tags({
 
   return (
     <Typeahead
-      className="Typeahead"
-      ref={ref}
-      id={id}
+      className={`Typeahead ${className}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === ',') {
@@ -52,7 +52,12 @@ export default function Tags({
       options={options || []}
       selected={value}
       placeholder={placeHolder}
-      disabled={disabled}
+      {...{
+        disabled,
+        labelKey,
+        ref,
+        id,
+      }}
     />
   );
 }
