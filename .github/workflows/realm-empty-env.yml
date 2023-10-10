@@ -1,9 +1,11 @@
 name: Realm Deploy to Empty Environment
 
-on:
-  push:
-    branches:
-      - staging
+on: [workflow_dispatch]
+
+#on:
+#  push:
+#    branches:
+#      - staging
 
 jobs:
   push:
