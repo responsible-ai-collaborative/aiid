@@ -219,8 +219,6 @@ const exportHtml = (checklist) => {
 };
 
 const exportCsv = (checklist) => {
-  console.log(`checklist`, checklist);
-
   const csv = rowsToCsv([
     ['Title', checklist.name],
     ['About', checklist.about],
