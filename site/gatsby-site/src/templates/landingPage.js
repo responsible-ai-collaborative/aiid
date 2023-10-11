@@ -50,43 +50,9 @@ const LandingPage = (props) => {
     return updatedIncident;
   });
 
-  const { t } = useTranslation(['translation', 'landing']);
-
-  const title = t('Welcome to the Artificial Intelligence Incident Database', { ns: 'landing' });
-
-  const metaTitle = title;
-
-  const metaDescription = t('The starting point for information about the AI Incident Database', {
-    ns: 'landing',
-  });
-
-  const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
-
-  const ldJSON = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    url: config.gatsby.siteUrl,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: config.gatsby.siteUrl + '/apps/discover?q={search_term_string}',
-      },
-      'query-input': 'required name=search_term_string',
-    },
-  };
-
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
     <div className="max-w-full 2xl:w-[72rem]" {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
-        <title>{title}</title>
-        <meta property="og:type" content="website" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJSON) }}
-        />
-      </AiidHelmet>
       <Container>
         <div>
           <Hero />
@@ -120,8 +86,8 @@ const LandingPage = (props) => {
           </div>
           {(latestPost?.edges?.length > 0 || latestPostOld?.nodes?.length > 0) && (
             <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-              {latestPost.edges.length > 0 ? (
-                <PostPreviewNew post={latestPost.edges[0].node} latestPost={true} />
+              {latestPost.nodes.length > 0 ? (
+                <PostPreviewNew post={latestPost.nodes[0]} latestPost={true} />
               ) : latestPostOld.nodes.length > 0 ? (
                 <Blog post={latestPostOld.nodes[0]} />
               ) : (
@@ -161,6 +127,46 @@ const LandingPage = (props) => {
 };
 
 export default LandingPage;
+
+export function Head({ location }) {
+  const { t } = useTranslation(['translation', 'landing']);
+
+  const title = t('Welcome to the Artificial Intelligence Incident Database', { ns: 'landing' });
+
+  const metaTitle = title;
+
+  const metaDescription = t('The starting point for information about the AI Incident Database', {
+    ns: 'landing',
+  });
+
+  const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
+
+  const ldJSON = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: config.gatsby.siteUrl,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: config.gatsby.siteUrl + '/apps/discover?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  const stringified = JSON.stringify(ldJSON, null, 2);
+
+  return (
+    <>
+      <script type="application/ld+json">{stringified}</script>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}>
+        <title>{title}</title>
+        <meta property="og:type" content="website" />
+      </AiidHelmet>
+    </>
+  );
+}
 
 export const query = graphql`
   query LandingPageQuery($latestReportNumber: Int, $latestReportNumbers: [Int], $locale: String!) {
@@ -240,31 +246,29 @@ export const query = graphql`
       filter: { data: { language: { eq: $locale } } }
       sort: { data: { date: DESC } }
     ) {
-      edges {
-        node {
-          uid
-          lang
-          data {
-            metatitle
-            metadescription
-            slug
-            aitranslated
-            language
-            title {
-              text
-            }
-            content {
-              richText
-              text
-              html
-            }
-            image {
-              url
-              gatsbyImageData
-            }
-            date
-            author
+      nodes {
+        uid
+        lang
+        data {
+          metatitle
+          metadescription
+          slug
+          aitranslated
+          language
+          title {
+            text
           }
+          content {
+            richText
+            text
+            html
+          }
+          image {
+            url
+            gatsbyImageData
+          }
+          date
+          author
         }
       }
     }

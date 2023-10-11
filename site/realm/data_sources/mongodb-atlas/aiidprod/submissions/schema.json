@@ -144,6 +144,9 @@
         },
         "user": {
             "bsonType": "string"
+        },
+        "status": {
+            "bsonType": "string"
         }
     },
     "required": [

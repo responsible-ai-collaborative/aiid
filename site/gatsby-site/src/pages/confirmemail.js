@@ -44,7 +44,7 @@ const ConfirmEmail = () => {
           addToast({
             message: (
               <>
-                <label className="capitalize">{t('An unknown error has ocurred')}</label>{' '}
+                <label className="capitalize">{t('An unknown error has occurred')}</label>{' '}
                 <Link to={'/login?redirectTo=/account/'} data-cy="confirm-login-btn">
                   <Trans>Login</Trans>
                 </Link>
@@ -78,7 +78,7 @@ const ConfirmEmail = () => {
         </p>
       ) : confirmed === false ? (
         <p>
-          <Trans>An unknown error has ocurred</Trans>
+          <Trans>An unknown error has occurred</Trans>
         </p>
       ) : (
         <div className="flex gap-2">

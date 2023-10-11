@@ -154,7 +154,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       } catch (e) {
         console.log(e);
         addToast({
-          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+          message: <label>{t(e.error || 'An unknown error has occurred')}</label>,
           severity: SEVERITY.danger,
           error: e,
         });
@@ -202,7 +202,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     } catch (e) {
       console.log(e);
       addToast({
-        message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+        message: <label>{t(e.error || 'An unknown error has occurred')}</label>,
         severity: SEVERITY.danger,
         error: e,
       });
