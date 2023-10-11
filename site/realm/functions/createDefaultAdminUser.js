@@ -7,14 +7,10 @@
 */
 exports = async (input) => {
 
-    console.log('> input', JSON.stringify(input));
-
     //check if the Admin user is already created
     const usersCollection = context.services.get('mongodb-atlas').db('customData').collection("users");
 
     const adminUser = await usersCollection.findOne({ roles: { $in: ['admin'] } });
-
-    console.log('> adminUser', JSON.stringify(adminUser));
 
     // If the Admin user already exist in the database, we skip the creation
     if (adminUser) {
@@ -23,8 +19,6 @@ exports = async (input) => {
             message: 'Admin user already created'
         }
     }
-
-    console.log('> step 3');
 
     const publicApiKey = context.values.get('publicApiKey');
     const privateApiKey = context.values.get('privateApiKey');
@@ -39,8 +33,6 @@ exports = async (input) => {
         },
         encodeBodyAsJSON: true
     })
-
-    console.log('> step 4', loginResponse.statusCode);
 
     if (loginResponse.statusCode != 200) {
         return {

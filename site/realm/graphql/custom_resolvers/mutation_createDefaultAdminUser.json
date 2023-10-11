@@ -17,15 +17,15 @@
     "on_type": "Mutation",
     "payload_type": {
         "properties": {
-            "userId": {
+            "message": {
                 "bsonType": "string"
             },
             "status": {
                 "bsonType": "int"
             },
-            "message": {
+            "userId": {
                 "bsonType": "string"
-            }
+            }            
         },
         "title": "DefaultAdminUser",
         "type": "object"
