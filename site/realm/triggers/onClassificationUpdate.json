@@ -1,0 +1,29 @@
+{
+    "name": "onClassificationUpdate",
+    "type": "DATABASE",
+    "config": {
+        "operation_types": [
+            "UPDATE"
+        ],
+        "database": "aiidprod",
+        "collection": "classifications",
+        "service_name": "mongodb-atlas",
+        "match": {
+                { "updateDescription.publish": true }
+        },
+        "project": {},
+        "full_document": true,
+        "full_document_before_change": true,
+        "unordered": false,
+        "skip_catchup_events": false,
+        "tolerate_resume_errors": false
+    },
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "onClassificationUpdate"
+            }
+        }
+    }
+}
