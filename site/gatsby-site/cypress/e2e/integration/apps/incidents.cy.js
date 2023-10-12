@@ -38,11 +38,15 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length.at.least', 10);
   });
 
-  conditionalIt(Cypress.env('isEmptyEnvironment'), 'Should display an empty list of incidents on Empty environment', () => {
-    cy.visit(url);
+  conditionalIt(
+    Cypress.env('isEmptyEnvironment'),
+    'Should display an empty list of incidents on Empty environment',
+    () => {
+      cy.visit(url);
 
-    cy.get('[data-cy="row"]').should('have.length', 0);
-  });
+      cy.get('[data-cy="row"]').should('have.length', 0);
+    }
+  );
 
   maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -386,19 +390,23 @@ describe('Incidents App', () => {
       });
   });
 
-  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should navigate to the last page, and the first page', () => {
-    cy.visit(url);
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should navigate to the last page, and the first page',
+    () => {
+      cy.visit(url);
 
-    cy.get('[data-cy="last-page"]').click();
+      cy.get('[data-cy="last-page"]').click();
 
-    cy.get('[data-cy="total-pages"]')
-      .invoke('text')
-      .then((text) => {
-        cy.get('[data-cy="current-page"]').should('have.text', text);
-      });
+      cy.get('[data-cy="total-pages"]')
+        .invoke('text')
+        .then((text) => {
+          cy.get('[data-cy="current-page"]').should('have.text', text);
+        });
 
-    cy.get('[data-cy="first-page"]').click();
+      cy.get('[data-cy="first-page"]').click();
 
-    cy.get('[data-cy="current-page"]').should('have.text', '1');
-  });
+      cy.get('[data-cy="current-page"]').should('have.text', '1');
+    }
+  );
 });
