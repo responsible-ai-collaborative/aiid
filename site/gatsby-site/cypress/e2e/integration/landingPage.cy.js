@@ -24,6 +24,8 @@ describe('The Landing page', () => {
 
     cy.get('[data-cy="Waking Up Foundation-image"]').scrollIntoView();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="Waking Up Foundation-image"]').click();
 
     cy.get('[data-cy="sponsor-modal"]', { timeout: 15000 }).should('be.visible');
