@@ -11,8 +11,6 @@ describe('New Incident page', () => {
   let user;
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') && this.skip();
-
     cy.query({
       query: gql`
         {
