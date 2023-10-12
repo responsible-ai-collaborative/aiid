@@ -718,8 +718,8 @@ To disable all email noticications, fill the following `SendGridApiKey` secret v
 SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
 publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
 privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
-groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
-appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
+groupId = [Atlas Service App group ID, eg: "62cc90978bc4600cafdcf16e"]
+appId = [Atlas Service App ID, eg: "62cc98647e6a26c53d5b4b53"]
 ```
 
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
