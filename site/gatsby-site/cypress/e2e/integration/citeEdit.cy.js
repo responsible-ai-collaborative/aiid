@@ -12,9 +12,7 @@ describe('Edit report', () => {
 
   let user;
 
-  before('before', function () {
-    Cypress.env('isEmptyEnvironment') && this.skip();
-
+  before('before', () => {
     cy.query({
       query: gql`
         {

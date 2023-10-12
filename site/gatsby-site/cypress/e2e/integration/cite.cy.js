@@ -18,6 +18,7 @@ describe('Cite pages', () => {
   let user;
 
   before('before', function () {
+    // Skip all tests if the environment is empty since /cite/{incident_id} is not available
     Cypress.env('isEmptyEnvironment') && this.skip();
 
     cy.query({
