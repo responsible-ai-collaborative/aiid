@@ -59,7 +59,7 @@ exports = async (input) => {
 
     const response = EJSON.parse(result.body.text());
 
-    console.log('> step 5', JSON.stringify(response));
+    console.log('Create User API response:', JSON.stringify(response));
 
     // If the user was successfully created, we add the admin role
     if (response._id) {
