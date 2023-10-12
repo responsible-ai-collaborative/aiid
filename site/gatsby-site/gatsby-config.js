@@ -271,7 +271,13 @@ const plugins = [
     options: {
       repositoryName: process.env.GATSBY_PRISMIC_REPO_NAME,
       accessToken: process.env.PRISMIC_ACCESS_TOKEN,
-      customTypesApiToken: process.env.PRISMIC_CUSTOM_TYPES_API_TOKEN,
+      schemas: {
+        blog: require('./custom_types/blog.json'),
+        doc: require('./custom_types/doc.json'),
+        footer: require('./custom_types/footer.json'),
+        sidebar: require('./custom_types/sidebar.json'),
+        sponsor: require('./custom_types/sponsor.json'),
+      },
       routes: [
         {
           type: 'blog',

@@ -86,8 +86,8 @@ const LandingPage = (props) => {
           </div>
           {(latestPost?.edges?.length > 0 || latestPostOld?.nodes?.length > 0) && (
             <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-              {latestPost.edges.length > 0 ? (
-                <PostPreviewNew post={latestPost.edges[0].node} latestPost={true} />
+              {latestPost.nodes.length > 0 ? (
+                <PostPreviewNew post={latestPost.nodes[0]} latestPost={true} />
               ) : latestPostOld.nodes.length > 0 ? (
                 <Blog post={latestPostOld.nodes[0]} />
               ) : (
@@ -246,31 +246,29 @@ export const query = graphql`
       filter: { data: { language: { eq: $locale } } }
       sort: { data: { date: DESC } }
     ) {
-      edges {
-        node {
-          uid
-          lang
-          data {
-            metatitle
-            metadescription
-            slug
-            aitranslated
-            language
-            title {
-              text
-            }
-            content {
-              richText
-              text
-              html
-            }
-            image {
-              url
-              gatsbyImageData
-            }
-            date
-            author
+      nodes {
+        uid
+        lang
+        data {
+          metatitle
+          metadescription
+          slug
+          aitranslated
+          language
+          title {
+            text
           }
+          content {
+            richText
+            text
+            html
+          }
+          image {
+            url
+            gatsbyImageData
+          }
+          date
+          author
         }
       }
     }
