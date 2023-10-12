@@ -121,4 +121,14 @@ describe('The Landing page', () => {
 
     cy.get('script[type="application/ld+json"]').should('exist');
   });
+
+  it('Loads the random incidents carousel', () => {
+    cy.visit('/');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="random-incidents-carousel"]').scrollIntoView().should('exist');
+
+    cy.get('[data-cy="random-incidents-carousel-item"]').should('have.length', 5);
+  });
 });

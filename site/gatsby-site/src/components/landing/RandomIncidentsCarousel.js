@@ -61,6 +61,7 @@ const RandomIncidentsCarousel = () => {
                  * so we have to cover them up on top.            */}
               </div>
               <Carousel
+                data-cy="random-incidents-carousel"
                 slideInterval={6000}
                 slide={false}
                 leftControl={<CarouselLeftArrow />}
@@ -71,6 +72,7 @@ const RandomIncidentsCarousel = () => {
                     to={`/cite/${incident_id}`}
                     key={incident_id}
                     className="block h-full relative"
+                    data-cy="random-incidents-carousel-item"
                   >
                     <Image
                       publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
