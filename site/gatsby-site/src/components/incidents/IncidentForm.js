@@ -74,7 +74,7 @@ function IncidentForm() {
       ? []
       : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
           incident_id: selectedSimilarId.current,
-          ...report.report_number,
+          ...report,
         }));
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
@@ -90,17 +90,13 @@ function IncidentForm() {
   const editorSimilarIncidentReports =
     editorSimilarIncidentReportsQuery.loading ||
     editorSimilarIncidentReportsQuery.error ||
-    editorSimilarIncidentReportsQuery.data.incidents.length == 0
+    editorSimilarIncidentReportsQuery.data.incidents.length === 0
       ? []
-      : editorSimilarIncidentReportsQuery.data.incidents.reduce(
-          (reports, incident) =>
-            reports.concat(
-              incident.reports.map((report) => ({
-                ...report.report_number,
-                incident_id: incident.incident_id,
-              }))
-            ),
-          []
+      : editorSimilarIncidentReportsQuery.data.incidents.flatMap((incident) =>
+          incident.reports.map((report) => ({
+            ...report,
+            incident_id: incident.incident_id,
+          }))
         );
 
   useEffect(() => {
