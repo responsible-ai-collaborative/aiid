@@ -121,7 +121,7 @@ function CiteTemplate({
           });
         } catch (error) {
           addToast({
-            message: <label>{t(error.error || 'An unknown error has ocurred')}</label>,
+            message: <label>{t(error.error || 'An unknown error has occurred')}</label>,
             severity: SEVERITY.danger,
             error,
           });

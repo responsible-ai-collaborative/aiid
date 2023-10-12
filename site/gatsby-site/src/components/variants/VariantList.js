@@ -304,7 +304,7 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
                 addToast({
                   message: (
                     <label className="capitalize">
-                      {t(e.error || 'An unknown error has ocurred')}
+                      {t(e.error || 'An unknown error has occurred')}
                     </label>
                   ),
                   severity: SEVERITY.danger,

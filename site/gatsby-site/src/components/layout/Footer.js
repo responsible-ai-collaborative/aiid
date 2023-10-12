@@ -48,6 +48,7 @@ export default function Footer() {
                 url {
                   url
                 }
+                path
               }
             }
           }
