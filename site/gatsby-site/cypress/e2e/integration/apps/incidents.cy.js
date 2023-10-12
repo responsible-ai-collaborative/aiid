@@ -1,7 +1,7 @@
 import incident from '../../../fixtures/incidents/incident112.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
-import { maybeIt } from '../../../support/utils';
+import { maybeIt, conditionalIt } from '../../../support/utils';
 import { getUnixTime } from 'date-fns';
 import { transformIncidentData, deleteIncidentTypenames } from '../../../../src/utils/cite';
 import users from '../../../fixtures/users/users.json';
@@ -13,8 +13,6 @@ describe('Incidents App', () => {
   let user;
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') && this.skip();
-
     cy.query({
       query: gql`
         {
@@ -34,10 +32,16 @@ describe('Incidents App', () => {
     cy.visit(url);
   });
 
-  it('Should display a list of incidents', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should display a list of incidents', () => {
     cy.visit(url);
 
     cy.get('[data-cy="row"]').should('have.length.at.least', 10);
+  });
+
+  conditionalIt(Cypress.env('isEmptyEnvironment'), 'Should display an empty list of incidents on Empty environment', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="row"]').should('have.length', 0);
   });
 
   maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
@@ -81,9 +85,11 @@ describe('Incidents App', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.wait(['@FindIncidents']);
 
-    cy.waitForStableDOM();
+    cy.get('[data-testid="flowbite-toggleswitch-toggle"]').click();
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -380,7 +386,7 @@ describe('Incidents App', () => {
       });
   });
 
-  it('Should navigate to the last page, and the first page', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should navigate to the last page, and the first page', () => {
     cy.visit(url);
 
     cy.get('[data-cy="last-page"]').click();
