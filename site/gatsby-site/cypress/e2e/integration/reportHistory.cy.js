@@ -10,7 +10,7 @@ describe('Report History', () => {
 
   let user;
 
-  before('before', function () {
+  before('before', () => {
     cy.query({
       query: gql`
         {
