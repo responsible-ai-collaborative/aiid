@@ -441,9 +441,6 @@ These environments must contain the following variables:
 GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
-GATSBY_REALM_EMPTY_ENV_APP_ID=[The Realm App ID of the empty environment]
-REALM_EMPTY_ENV_API_PRIVATE_KEY=[The private key of the empty environment]
-REALM_EMPTY_ENV_API_PUBLIC_KEY=[The public key of the empty environment]
 ```
 
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
