@@ -144,10 +144,12 @@ GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 SKIP_PAGE_CREATOR=createTsneVisualizationPage
 GATSBY_PRISMIC_REPO_NAME=
 PRISMIC_ACCESS_TOKEN=
-PRISMIC_CUSTOM_TYPES_API_TOKEN=
+IS_EMPTY_ENVIRONMENT=
 ```
 
-For `GATSBY_PRISMIC_REPO_NAME`, `PRISMIC_ACCESS_TOKEN` and `PRISMIC_CUSTOM_TYPES_API_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+For `GATSBY_PRISMIC_REPO_NAME` and `PRISMIC_ACCESS_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+
+For complete empty environment (no database data, no Algolia index, no Prismic content), set `IS_EMPTY_ENVIRONMENT=true`. This will disable all tests that require data.
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
@@ -184,6 +186,7 @@ If the feature you are working on includes structural changes to the MongoDB dat
     - Choose "Username and Password" as authentication method.
     - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
 - Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
+- Once created, go to `App Settings` and update app region to `Global`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
@@ -324,7 +327,7 @@ GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
 ### Prismic setup
-This project uses Prismic to fetch page content. 
+This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
 
 #### Prismic Setup
 
@@ -334,7 +337,6 @@ This project uses Prismic to fetch page content.
 4. Choose your plan (if you only need one user, the free plan is enough)
 5. Click `Create repository`
 6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
-7. Create a new custom type token in Settings > API & Security > Custom types API tab > Tokens > Add new app name and create token > Save value for later
 
 #### Adding the Prismic content types
 
@@ -359,7 +361,6 @@ In order to do this, you need to create a Netlify Build Hook.
 Add the following environment variable on Netlify: 
 `GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
 `PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
-`PRISMIC_CUSTOM_TYPES_API_TOKEN=[you_prismic_custom_types_access_token]` (step 7 from Prismic Setup section)
 
 **Create Prismic/Netlify Hook**
 1. Login to your Netlify
@@ -441,6 +442,8 @@ GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
+
+To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 ### Testing
 
@@ -712,8 +715,8 @@ To disable all email noticications, fill the following `SendGridApiKey` secret v
 SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
 publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
 privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
-groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
-appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
+groupId = [Atlas Service App group ID, eg: "62cc90978bc4600cafdcf16e"]
+appId = [Atlas Service App ID, eg: "62cc98647e6a26c53d5b4b53"]
 ```
 
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).

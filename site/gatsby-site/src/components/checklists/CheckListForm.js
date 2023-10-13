@@ -231,7 +231,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
         data-cy="about"
         placeholder={t(`Human-readable notes on the system under investigation`)}
         value={about}
-        row={4}
+        rows={4}
         onChange={(event) => {
           setAbout(event.target.value);
           debouncedSetFieldValue('about', event.target.value);
@@ -277,7 +277,10 @@ const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
       idValue: values['tags_goals'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
-        tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
+        tagParts[0] == 'GMF' &&
+        ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]) &&
+        tagParts[2] &&
+        tagParts[2] !== 'null',
       placeHolder: 'Goals for which to list associated risks',
       ...{ tags, setFieldValue, userIsOwner },
     }}
@@ -293,7 +296,9 @@ const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
       labelKey: abbreviatedTag,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
-        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
+        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]) &&
+        tagParts[2] &&
+        tagParts[2] !== 'null',
       placeHolder: 'Methods for which to list associated risks',
       ...{ tags, setFieldValue, userIsOwner },
     }}
