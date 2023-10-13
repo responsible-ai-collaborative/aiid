@@ -1,23 +1,22 @@
 import React from 'react';
-import { connectCurrentRefinements } from 'react-instantsearch-dom';
-import useSearch from './useSearch';
-import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
+import { useCurrentRefinements } from 'react-instantsearch';
+import { useInstantSearch } from 'react-instantsearch';
 
-const ClearButton = connectCurrentRefinements(({ items, children, refine }) => {
-  const { setSearchState, searchState } = useSearch();
+function ClearButton({ children }) {
+  const { indexUiState, setIndexUiState } = useInstantSearch();
+
+  const { items } = useCurrentRefinements();
 
   const disabled =
     items.length == 1 &&
-    items?.[0]?.currentRefinement?.[0] == 'true' &&
-    !searchState.refinementList.hideDuplicates;
+    items?.[0]?.refinements?.[0].value == 'true' &&
+    !indexUiState.configure.distinct;
 
   return (
     <button
       className="text-blue-600 cursor-pointer disabled:cursor-default disabled:text-gray-500 no-underline"
       onClick={() => {
-        items = items.filter((item) => !DEFAULT_SEARCH_KEYS_VALUES.includes(item.attribute));
-        refine(items);
-        setSearchState((state) => ({
+        setIndexUiState((state) => ({
           ...state,
           refinementList: { is_incident_report: ['true'] },
         }));
@@ -27,8 +26,8 @@ const ClearButton = connectCurrentRefinements(({ items, children, refine }) => {
       {children}
     </button>
   );
-});
+}
 
-const ClearFilters = ({ children }) => <ClearButton clearsQuery>{children}</ClearButton>;
+const ClearFilters = ({ children }) => <ClearButton>{children}</ClearButton>;
 
 export default ClearFilters;

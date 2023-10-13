@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react';
-import { connectRefinementList, Highlight } from 'react-instantsearch-dom';
-import useSearch from '../useSearch';
+import React from 'react';
+import { useRefinementList, Highlight } from 'react-instantsearch';
 import { Trans, useTranslation } from 'react-i18next';
 import { Badge, Button, ListGroup } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import Label from 'components/forms/Label';
 import TextInputGroup from 'components/forms/TextInputGroup';
+import { useInstantSearch, useClearRefinements } from 'react-instantsearch';
 
 const RefinementList = ({
   items,
@@ -16,17 +16,15 @@ const RefinementList = ({
   placeholder,
   attribute,
 }) => {
-  const clear = useCallback(() => {
-    refine([]);
-  }, [items]);
+  const { indexUiState } = useInstantSearch();
 
-  const { searchState } = useSearch();
-
-  const selectedItems = searchState.refinementList[attribute] || [];
+  const selectedItems = indexUiState?.refinementList?.[attribute] || [];
 
   const clearEnabled = selectedItems.length > 0;
 
   const { t } = useTranslation();
+
+  const { refine: clear } = useClearRefinements({ includedAttributes: [attribute] });
 
   return (
     <div>
@@ -90,6 +88,16 @@ const RefinementList = ({
 };
 
 export const touchedCount = ({ searchState, attribute }) =>
-  searchState.refinementList[attribute] ? searchState.refinementList[attribute].length : 0;
+  searchState.refinementList?.[attribute] ? searchState.refinementList[attribute].length : 0;
 
 export default connectRefinementList(RefinementList);
+
+function connectRefinementList(Component) {
+  const RefinementList = (props) => {
+    const data = useRefinementList(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return RefinementList;
+}

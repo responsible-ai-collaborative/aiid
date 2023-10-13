@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connectHits, connectStateResults } from 'react-instantsearch-dom';
+import { useHits, useInstantSearch } from 'react-instantsearch';
 import CsvDownloadButton from 'react-json-to-csv';
 import { format, fromUnixTime } from 'date-fns';
 import { faFileCsv } from '@fortawesome/free-solid-svg-icons';
@@ -71,4 +71,16 @@ const CsvExport = ({ hits, isSearchStalled }) => {
   );
 };
 
-export default connectHits(connectStateResults(CsvExport));
+export default connectHits(CsvExport);
+
+function connectHits(Component) {
+  const Hits = (props) => {
+    const data = useHits(props);
+
+    const { status } = useInstantSearch();
+
+    return <Component {...props} {...data} isSearchStalled={status == 'stalled'} />;
+  };
+
+  return Hits;
+}

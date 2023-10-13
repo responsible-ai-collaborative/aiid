@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { connectHits, connectStateResults } from 'react-instantsearch-dom';
+import { useHits, useInstantSearch, useRefinementList } from 'react-instantsearch';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
 import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
 
-const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => {
+const Hits = ({ hits, isSearchStalled, viewType }) => {
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   const [isMounted, setIsMounted] = useState(false);
@@ -14,6 +14,8 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const { refine } = useRefinementList({ attribute: 'incident_id' });
 
   if (!isSearchStalled && hits.length === 0) {
     return (
@@ -56,8 +58,10 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
             key={hit.objectID}
             item={hit}
             {...{
-              toggleFilterByIncidentId,
               viewType,
+              toggleFilterByIncidentId: () => {
+                refine(hit.incident_id);
+              },
             }}
           />
         ))
@@ -66,4 +70,16 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
   );
 };
 
-export default connectHits(connectStateResults(Hits));
+export default connectHits(Hits);
+
+function connectHits(Component) {
+  const Hits = (props) => {
+    const data = useHits(props);
+
+    const { status } = useInstantSearch();
+
+    return <Component {...props} {...data} isSearchStalled={status == 'stalled'} />;
+  };
+
+  return Hits;
+}

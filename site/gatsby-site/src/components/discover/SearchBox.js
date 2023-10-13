@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { connectSearchBox } from 'react-instantsearch-dom';
+import { useSearchBox } from 'react-instantsearch';
 import { debounce } from 'debounce';
 import SearchInput from 'components/forms/SearchInput';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 
-function SearchBox({ currentRefinement, refine }) {
+function SearchBox({ query: currentRefinement, refine }) {
   const [query, setQuery] = useState(currentRefinement);
 
   const debouncedRefine = useRef(debounce((value) => refine(value), 500)).current;
@@ -52,3 +52,13 @@ function SearchBox({ currentRefinement, refine }) {
 }
 
 export default connectSearchBox(SearchBox);
+
+function connectSearchBox(Component) {
+  const SearchBox = (props) => {
+    const data = useSearchBox(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return SearchBox;
+}

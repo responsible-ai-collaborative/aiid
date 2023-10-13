@@ -6,20 +6,20 @@ import Filters from './Filters';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import useSearch from './useSearch';
 import CsvExport from './CsvExport';
 import Sorting from './Sorting';
 import SORTING_LISTS from 'components/discover/SORTING_LISTS';
+import { useInstantSearch } from 'react-instantsearch';
 
 const Controls = () => {
-  const { searchState } = useSearch();
+  const { indexUiState } = useInstantSearch();
 
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => {
     const defaultKeys = ['is_incident_report', 'page', 'display', 'sortBy'];
 
-    const expand = Object.keys(searchState.refinementList).some(
+    const expand = Object.keys(indexUiState.refinementList).some(
       (key) => !defaultKeys.includes(key)
     );
 
@@ -43,7 +43,8 @@ const Controls = () => {
             <CsvExport />
           </div>
 
-          <Sorting items={SORTING_LISTS} defaultRefinement={searchState.sortBy} />
+          <Sorting items={SORTING_LISTS} defaultRefinement={indexUiState.sortBy} />
+
           <div className="justify-end">
             <ClearFilters>
               <Trans>Clear Filters</Trans>
@@ -67,7 +68,9 @@ const Controls = () => {
           </div>
         </div>
       </div>
-      <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
+      <div className={'mb-3 invisible h-0' + (expandFilters ? ' md:visible h-auto' : '')}>
+        <Filters />
+      </div>
     </>
   );
 };

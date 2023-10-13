@@ -1,12 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { connectSortBy } from 'react-instantsearch-dom';
+import { useSortBy } from 'react-instantsearch';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import SORTING_LIST from './SORTING_LISTS';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import useSearch from './useSearch';
 import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
 import isEqual from 'lodash/isEqual';
+import { useInstantSearch } from 'react-instantsearch';
 
 function Sorting(props) {
   const { locale } = useLocalization();
@@ -18,7 +18,7 @@ function Sorting(props) {
 
   const { t } = useTranslation();
 
-  const { searchState } = useSearch();
+  const { indexUiState } = useInstantSearch();
 
   const sortResults = (item) => {
     setSelectedItem(item);
@@ -27,17 +27,17 @@ function Sorting(props) {
   useEffect(() => {
     let indexName = '';
 
-    if (selectedItem && selectedItem[`value_${locale}`]) {
+    if (selectedItem && selectedItem[`value_${locale}`] && indexUiState.refinementList) {
       indexName = selectedItem[`value_${locale}`];
 
       let hasOnlyDefaultValues = isEqual(
         DEFAULT_SEARCH_KEYS_VALUES.sort(),
-        Object.keys(searchState.refinementList).sort()
+        Object.keys(indexUiState.refinementList).sort()
       );
 
       if (
-        searchState.query == '' &&
-        Object.keys(searchState.refinementList).length > 0 &&
+        indexUiState.query == '' &&
+        Object.keys(indexUiState.refinementList).length > 0 &&
         selectedItem.default &&
         hasOnlyDefaultValues
       ) {
@@ -89,3 +89,13 @@ function Sorting(props) {
 const DiscoverSorting = connectSortBy(Sorting);
 
 export default DiscoverSorting;
+
+function connectSortBy(Component) {
+  const SortBy = (props) => {
+    const data = useSortBy(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return SortBy;
+}

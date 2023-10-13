@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { connectStats } from 'react-instantsearch-dom';
+import { useStats } from 'react-instantsearch';
 import DisplayOptions from './DisplayOptions';
 
 function Stats({ className, nbHits: count }) {
@@ -18,3 +18,13 @@ function Stats({ className, nbHits: count }) {
 }
 
 export default connectStats(Stats);
+
+function connectStats(Component) {
+  const Stats = (props) => {
+    const data = useStats(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return Stats;
+}
