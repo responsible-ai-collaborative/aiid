@@ -3,6 +3,10 @@ import { maybeIt } from '../../support/utils';
 describe('Account', () => {
   const url = '/account';
 
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') && this.skip();
+  });
+
   it('Should successfully load account page', () => {
     cy.visit(url);
   });

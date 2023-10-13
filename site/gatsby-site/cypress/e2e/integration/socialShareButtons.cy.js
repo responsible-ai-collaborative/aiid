@@ -9,19 +9,22 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
 
   const urlsToTest = [
     {
-      page: 'Incident',
-      url: incidentUrl,
-      title:
-        'Incident 10: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees',
-      shareButtonSections: 1,
-    },
-    {
       page: 'Blog Post',
       url: blogPostUrl,
       title: `Join the Responsible AI Collaborative Founding Staff`,
       shareButtonSections: 1,
     },
   ];
+
+  if (!Cypress.env('isEmptyEnvironment')) {
+    urlsToTest.push({
+      page: 'Incident',
+      url: incidentUrl,
+      title:
+        'Incident 10: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees',
+      shareButtonSections: 1,
+    });
+  }
 
   urlsToTest.forEach(({ page, url, shareButtonSections }) => {
     it(`${page} page should have ${shareButtonSections} Social Share button sections`, () => {
