@@ -110,7 +110,7 @@ export default function CheckListForm({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form data-cy="checklist-form" onSubmit={handleSubmit}>
       <Header>
         <HeaderInfo>
           <LocalizedLink to="/apps/checklists" className="text-md">
@@ -125,9 +125,11 @@ export default function CheckListForm({
               disabled={!userIsOwner}
             />
           </h1>
-          <div className="text-gray-600">
-            {owner.first_name} {owner.last_name}
-          </div>
+          {owner && owner.first_name && owner.last_name && (
+            <div className="text-gray-600">
+              {owner.first_name} {owner.last_name}
+            </div>
+          )}
         </HeaderInfo>
         <HeaderControls>
           <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
@@ -226,6 +228,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
         <Trans>About System</Trans>
       </Label>
       <Textarea
+        data-cy="about"
         placeholder={t(`Human-readable notes on the system under investigation`)}
         value={about}
         row={4}

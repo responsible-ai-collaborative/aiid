@@ -108,19 +108,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   }
   if (query.id && savedChecklist) {
     return (
-      <Formik
-        onSubmit={submit}
-        initialValues={
-          savedChecklist /* || {
-            name: 'Unspecified System',
-            about: '',
-            tags_goals: [],
-            tags_methods: [],
-            tags_other: [],
-            risks: [],
-          } */
-        }
-      >
+      <Formik onSubmit={submit} initialValues={savedChecklist}>
         {(FormProps) => <CheckListForm {...{ ...FormProps, tags, users, submissionError }} />}
       </Formik>
     );
