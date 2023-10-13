@@ -1,7 +1,7 @@
 import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import reportHistory from '../../fixtures/history/reportHistory.json';
 import updateOneReport from '../../fixtures/reports/updateOneReport.json';
-import { maybeIt } from '../../support/utils';
+import { conditionalIt, maybeIt } from '../../support/utils';
 import supportedLanguages from '../../../src/components/i18n/languages.json';
 const { gql } = require('@apollo/client');
 
@@ -11,8 +11,6 @@ describe('Report History', () => {
   let user;
 
   before('before', function () {
-    Cypress.env('isEmptyEnvironment') && this.skip();
-
     cy.query({
       query: gql`
         {
@@ -128,36 +126,40 @@ describe('Report History', () => {
     cy.url().should('include', '/cite/563/#r3206');
   });
 
-  it('Should refresh Report history if the user go back on the browser', () => {
-    cy.visit('/cite/10');
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should refresh Report history if the user go back on the browser',
+    () => {
+      cy.visit('/cite/10');
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.contains('Read More').click();
+      cy.contains('Read More').click();
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindReportHistory',
-      'FindReportHistory',
-      reportHistory
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindReportHistory',
+        'FindReportHistory',
+        reportHistory
+      );
 
-    cy.get('[data-cy="report-history-button"]').click();
+      cy.get('[data-cy="report-history-button"]').click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.wait('@FindReportHistory');
+      cy.wait('@FindReportHistory');
 
-    cy.url().should('include', '/cite/history/?report_number=16&incident_id=10');
+      cy.url().should('include', '/cite/history/?report_number=16&incident_id=10');
 
-    cy.go('back');
+      cy.go('back');
 
-    cy.url().should('include', '/cite/10');
+      cy.url().should('include', '/cite/10');
 
-    cy.go('forward');
+      cy.go('forward');
 
-    cy.wait('@FindReportHistory');
-  });
+      cy.wait('@FindReportHistory');
+    }
+  );
 
   it('Should not be able to restore a version if the user does not have the right permissions', () => {
     cy.visit(url);
