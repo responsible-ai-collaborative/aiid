@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useQueryParams } from 'use-query-params';
+import React, { useState, useEffect } from 'react';
+import { encodeQueryParams, decodeQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
-import { Configure, InstantSearch } from 'react-instantsearch-dom';
+import { InstantSearch } from 'react-instantsearch';
 import AiidHelmet from 'components/AiidHelmet';
 
 import config from '../../../config';
@@ -9,9 +9,7 @@ import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import OptionsModal from 'components/discover/OptionsModal';
-import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
-import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
@@ -19,8 +17,9 @@ import Row from 'elements/Row';
 import Col from 'elements/Col';
 import { VIEW_TYPES } from 'utils/discover';
 import SORTING_LIST from 'components/discover/SORTING_LISTS';
-import { DEFAULT_SEARCH_KEYS_VALUES } from 'components/discover/DEFAULT_SEARCH_KEYS_VALUES';
-import difference from 'lodash/difference';
+import { history } from 'instantsearch.js/es/lib/routers';
+import { navigate } from 'gatsby';
+import { stringify, parse } from 'query-string';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -152,6 +151,10 @@ const generateSearchState = ({ query }) => {
       ...convertStringToRange(cleanQuery),
     },
     sortBy: cleanQuery.sortBy,
+    configure: {
+      hitsPerPage: 28,
+      distinct: true,
+    },
   };
 };
 
@@ -188,131 +191,80 @@ const getQueryFromState = (searchState, locale) => {
 };
 
 function DiscoverApp(props) {
-  const [query, setQuery] = useQueryParams(queryConfig);
-
   const { locale } = useLocalization();
 
-  const indexName = `instant_search-${locale}`;
+  const [viewType] = useState(VIEW_TYPES.INCIDENTS);
 
-  const [searchState, setSearchState] = useState(generateSearchState({ query }));
-
-  const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
-
-  const [hasOnlyDefaultValues, setHasOnlyDefaultValues] = useState(false);
-
-  const onSearchStateChange = (searchState) => {
-    searchState = cleanSearchState(searchState);
-
-    const newHasOnlyDefaultValues =
-      difference(Object.keys(searchState.refinementList), DEFAULT_SEARCH_KEYS_VALUES).length === 0;
-
-    if (!newHasOnlyDefaultValues) {
-      searchState.sortBy = searchState.sortBy.replace('-featured', '');
-    } else {
-      searchState.sortBy =
-        !searchState.sortBy.includes('-featured') &&
-        SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.default
-          ? `${searchState.sortBy}-featured`
-          : searchState.sortBy;
-    }
-    setSearchState({ ...searchState });
-
-    setHasOnlyDefaultValues(newHasOnlyDefaultValues);
-  };
-
-  const cleanSearchState = (sState) => {
-    Object.keys(sState.refinementList).forEach((key) => {
-      if (sState.refinementList[key] === '') {
-        delete sState.refinementList[key];
-      }
-    });
-    return sState;
-  };
-
-  const toggleFilterByIncidentId = useCallback(
-    (incidentId) => {
-      const newSearchState = {
-        ...searchState,
-        refinementList: {
-          ...searchState.refinementList,
-          incident_id: [incidentId],
-        },
-      };
-
-      setSearchState(newSearchState);
-      setQuery(getQueryFromState(newSearchState, locale), 'push');
-    },
-    [searchState]
-  );
-
-  useEffect(() => {
-    const searchQuery = getQueryFromState(searchState, locale);
-
-    const extraQuery = { display: query.display };
-
-    setQuery({ ...searchQuery, ...extraQuery }, 'push');
-
-    setHasOnlyDefaultValues(
-      difference(Object.keys(searchState.refinementList), DEFAULT_SEARCH_KEYS_VALUES).length === 0
-    );
-
-    setViewType(
-      (searchState.refinementList.hideDuplicates === 'true' ||
-        searchState.refinementList.hideDuplicates === true) &&
-        searchState.refinementList.is_incident_report.length > 0 &&
-        searchState.refinementList.is_incident_report[0] === 'true'
-        ? VIEW_TYPES.INCIDENTS
-        : VIEW_TYPES.REPORTS
-    );
-  }, [searchState]);
+  const [indexName] = useState(`instant_search-${locale}`);
 
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { location } = props;
 
   return (
     <div {...props} className="w-full">
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
-      <SearchContext.Provider
-        value={{ searchState, setSearchState, indexName, searchClient, onSearchStateChange }}
-      >
+      {mounted && (
         <InstantSearch
-          indexName={
-            indexName + (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '')
-          }
           searchClient={searchClient}
-          searchState={searchState}
-          onSearchStateChange={onSearchStateChange}
+          indexName={indexName}
+          future={{
+            preserveSharedStateOnUnmount: true,
+          }}
+          routing={{
+            router: history({
+              getLocation: () => {
+                return location;
+              },
+              parseURL({ location }) {
+                const object = parse(location.search);
+
+                const query = decodeQueryParams(queryConfig, object);
+
+                const searchState = generateSearchState({ query });
+
+                return { [indexName]: searchState };
+              },
+              createURL: ({ routeState }) => {
+                const state = routeState[indexName];
+
+                const query = getQueryFromState(state, locale);
+
+                const encoded = encodeQueryParams(queryConfig, query);
+
+                const stringified = stringify(encoded);
+
+                return stringified;
+              },
+              push: (url) => {
+                navigate(`?${url}`);
+              },
+            }),
+          }}
         >
-          <Configure hitsPerPage={28} distinct={searchState.refinementList.hideDuplicates} />
+          <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
+            <Row className="px-0 mx-0">
+              <Col className="px-0 mx-0">
+                <SearchBox />
+              </Col>
+            </Row>
 
-          <VirtualFilters />
+            <Controls />
 
-          {mounted && (
-            <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
-              <Row className="px-0 mx-0">
-                <Col className="px-0 mx-0">
-                  <SearchBox defaultRefinement={query.s} />
-                </Col>
-              </Row>
+            <OptionsModal />
 
-              <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
+            <Hits viewType={viewType} />
 
-              <OptionsModal
-                className="hiddenDesktop"
-                searchState={searchState}
-                setSearchState={setSearchState}
-              />
-            </Container>
-          )}
-
-          <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} viewType={viewType} />
-
-          <Pagination />
+            <Pagination />
+          </Container>
         </InstantSearch>
-      </SearchContext.Provider>
+      )}
     </div>
   );
 }
