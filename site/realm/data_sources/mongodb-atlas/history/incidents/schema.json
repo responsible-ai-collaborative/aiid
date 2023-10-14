@@ -27,9 +27,6 @@
         "description": {
             "bsonType": "string"
         },
-        "modifiedBy": {
-            "bsonType": "string"
-        },
         "editor_dissimilar_incidents": {
             "bsonType": "array",
             "items": {
@@ -79,6 +76,9 @@
         },
         "incident_id": {
             "bsonType": "int"
+        },
+        "modifiedBy": {
+            "bsonType": "string"
         },
         "nlp_similar_incidents": {
             "bsonType": "array",

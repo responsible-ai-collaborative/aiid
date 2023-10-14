@@ -121,6 +121,9 @@
         "source_domain": {
             "bsonType": "string"
         },
+        "status": {
+            "bsonType": "string"
+        },
         "submitters": {
             "bsonType": "array",
             "items": {
@@ -143,9 +146,6 @@
             "bsonType": "string"
         },
         "user": {
-            "bsonType": "string"
-        },
-        "status": {
             "bsonType": "string"
         }
     },
