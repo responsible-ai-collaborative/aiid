@@ -1,3 +1,5 @@
+import { conditionalIt } from '../../support/utils';
+
 describe('Signup', () => {
   const url = '/signup';
 
@@ -37,17 +39,21 @@ describe('Signup', () => {
     cy.get('[data-cy="toast"]').contains(`Verification email sent to ${email}`).should('exist');
   });
 
-  it('Should display the error toast message if the user already exists', () => {
-    cy.visit(url);
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should display the error toast message if the user already exists',
+    () => {
+      cy.visit(url);
 
-    cy.get('[data-cy="signup-btn"]').click();
+      cy.get('[data-cy="signup-btn"]').click();
 
-    cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
-    cy.get('input[name=password]').type('anyPassword');
-    cy.get('input[name=passwordConfirm]').type('anyPassword');
-    cy.get('[data-cy="signup-btn"]').click();
-    cy.get('[data-cy="toast"]').contains('name already in use').should('exist');
-  });
+      cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
+      cy.get('input[name=password]').type('anyPassword');
+      cy.get('input[name=passwordConfirm]').type('anyPassword');
+      cy.get('[data-cy="signup-btn"]').click();
+      cy.get('[data-cy="toast"]').contains('name already in use').should('exist');
+    }
+  );
 
   it('Should display the error toast message if any other sign up error occur', () => {
     cy.visit(url);

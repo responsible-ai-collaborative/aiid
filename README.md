@@ -144,9 +144,12 @@ GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 SKIP_PAGE_CREATOR=createTsneVisualizationPage
 GATSBY_PRISMIC_REPO_NAME=
 PRISMIC_ACCESS_TOKEN=
+IS_EMPTY_ENVIRONMENT=
 ```
 
 For `GATSBY_PRISMIC_REPO_NAME` and `PRISMIC_ACCESS_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+
+For complete empty environment (no database data, no Algolia index, no Prismic content), set `IS_EMPTY_ENVIRONMENT=true`. This will disable all tests that require data.
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
@@ -183,6 +186,7 @@ If the feature you are working on includes structural changes to the MongoDB dat
     - Choose "Username and Password" as authentication method.
     - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
 - Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
+- Once created, go to `App Settings` and update app region to `Global`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
@@ -438,6 +442,8 @@ GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
+
+To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 ### Testing
 
