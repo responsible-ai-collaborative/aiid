@@ -340,7 +340,16 @@ This project uses Prismic to fetch page content. You can still run the project w
 
 #### Adding the Prismic content types
 
-Follow instructions on [prismicCustomTypes.md](prismicCustomTypes.md)
+## Prismic Custom Types
+You can find the list of all custom types in the folder custom_types
+
+## How to create a new Custom Type
+1. From the prismic left menu click `Custom Types`
+2. Click `Create new custom type`
+3. Give it a name (name of the json in custom_types folder)
+4. Click `JSON editor`
+5. Paste the JSON content from the predefined custom types inside the json
+6. Click `Save`
 
 #### Adding Prismic documents
 
