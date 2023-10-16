@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  SelectDatePickerFilter,
+} from 'components/ui/Table';
 import { Badge, Button } from 'flowbite-react';
 import UserEditModal from './UserEditModal';
 import { UserCreationDateCell, UserEmailCell, UserLastAuthDateCell } from './UserInfoCells';
@@ -32,6 +36,16 @@ export default function UsersTable({ data, className = '', ...props }) {
   );
 
   const client = useApolloClient();
+
+  const filterDate = (rows, id, filterValue) =>
+    rows.filter((row) => {
+      const rowValue = row.values[id];
+
+      if (!rowValue) return false;
+      const filterValueDate = new Date(rowValue).getTime();
+
+      return filterValueDate >= filterValue[0] && filterValueDate <= filterValue[1];
+    });
 
   useEffect(() => {
     const fetchUserAdminData = async () => {
@@ -84,18 +98,6 @@ export default function UsersTable({ data, className = '', ...props }) {
 
           return <UserEmailCell email={user?.adminData?.email} />;
         },
-        filter: (rows, id, filterValue) => {
-          return rows.filter((row) => {
-            const rowValue = row.values;
-
-            const user = updatedData.find((user) => user.userId === rowValue.userId);
-
-            if (user?.adminData?.email) {
-              return user.adminData.email.toLowerCase().includes(filterValue.toLowerCase());
-            }
-            return false;
-          });
-        },
       },
       {
         title: 'Id',
@@ -117,11 +119,13 @@ export default function UsersTable({ data, className = '', ...props }) {
       {
         title: 'Creation Date',
         accessor: 'adminData.creationDate',
+        Filter: SelectDatePickerFilter,
         Cell: ({ row: { values } }) => {
           const user = updatedData.find((user) => user.userId === values.userId);
 
           return <UserCreationDateCell creationDate={user?.adminData?.creationDate} />;
         },
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         title: 'Last Login Date',
@@ -135,6 +139,8 @@ export default function UsersTable({ data, className = '', ...props }) {
             />
           );
         },
+        Filter: SelectDatePickerFilter,
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         id: 'actions',
@@ -158,7 +164,7 @@ export default function UsersTable({ data, className = '', ...props }) {
   const table = useTable(
     {
       columns,
-      data,
+      data: updatedData,
       defaultColumn,
     },
     useFilters,
