@@ -3,8 +3,7 @@ import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
 import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
 import probablyRelatedReports from '../../fixtures/reports/probablyRelatedReports.json';
 import users from '../../fixtures/users/users.json';
-
-import { maybeIt } from '../../support/utils';
+import { conditionalIt } from '../../support/utils';
 
 describe('The Submit form', () => {
   const url = '/apps/submit';
@@ -94,7 +93,7 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
-  it('Should autocomplete entities', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should autocomplete entities', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.conditionalIntercept(
@@ -160,7 +159,8 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
-  maybeIt(
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
     'As editor, should submit a new incident report, adding an incident title and editors.',
     () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -259,157 +259,164 @@ describe('The Submit form', () => {
     }
   );
 
-  it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
-    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should submit a new report linked to incident 1 once all fields are filled properly',
+    () => {
+      cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentsTitles',
-      'FindIncidentsTitles',
-      {
-        data: {
-          incidents: [
-            {
-              __typename: 'Incident',
-              incident_id: 1,
-              title: 'Test title',
-              date: '2016-03-13',
-            },
-          ],
-        },
-      }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentsTitles',
+        'FindIncidentsTitles',
+        {
+          data: {
+            incidents: [
+              {
+                __typename: 'Incident',
+                incident_id: 1,
+                title: 'Test title',
+                date: '2016-03-13',
+              },
+            ],
+          },
+        }
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertSubmission',
-      'insertSubmission',
-      {
-        data: {
-          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
-        },
-      }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'InsertSubmission',
+        'insertSubmission',
+        {
+          data: {
+            insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+          },
+        }
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'findSubmissions',
-      {
-        data: {
-          submissions: [
-            {
-              __typename: 'Submission',
-              _id: '6272f2218933c7a9b512e13b',
-              text: 'Something',
-              title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-              submitters: ['Something'],
-              authors: ['Valentina Palladino'],
-              incident_date: '2021-09-21',
-              date_published: '2017-11-10',
-              image_url:
-                'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-              tags: ['New Tag'],
-              incident_ids: [1],
-              url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
-              source_domain: 'arstechnica.com',
-              language: 'en',
-              description: 'Something',
-              editor_notes: 'Here are some notes',
-            },
-          ],
-        },
-      }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'findSubmissions',
+        {
+          data: {
+            submissions: [
+              {
+                __typename: 'Submission',
+                _id: '6272f2218933c7a9b512e13b',
+                text: 'Something',
+                title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+                submitters: ['Something'],
+                authors: ['Valentina Palladino'],
+                incident_date: '2021-09-21',
+                date_published: '2017-11-10',
+                image_url:
+                  'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+                tags: ['New Tag'],
+                incident_ids: [1],
+                url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+                source_domain: 'arstechnica.com',
+                language: 'en',
+                description: 'Something',
+                editor_notes: 'Here are some notes',
+              },
+            ],
+          },
+        }
+      );
 
-    cy.intercept('POST', '/api/semanticallyRelated', semanticallyRelated).as('semanticallyRelated');
+      cy.intercept('POST', '/api/semanticallyRelated', semanticallyRelated).as(
+        'semanticallyRelated'
+      );
 
-    cy.visit(url);
+      cy.visit(url);
 
-    cy.get('input[name="url"]').type(
-      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-    );
+      cy.get('input[name="url"]').type(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
 
-    cy.get('button').contains('Fetch info').click();
+      cy.get('button').contains('Fetch info').click();
 
-    cy.setEditorText(
-      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
-    );
+      cy.setEditorText(
+        `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+      );
 
-    // Set the ID from the button in the list of semantically similar incidents
-    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]', { timeout: 8000 })
-      .contains('#1')
-      .first()
-      .click();
+      // Set the ID from the button in the list of semantically similar incidents
+      cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]', { timeout: 8000 })
+        .contains('#1')
+        .first()
+        .click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.get(
-      '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
-    )
-      .last()
-      .click();
+      cy.get(
+        '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
+      )
+        .last()
+        .click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.clickOutside();
+      cy.clickOutside();
 
-    cy.get('.form-has-errors').should('not.exist');
+      cy.get('.form-has-errors').should('not.exist');
 
-    cy.get('[data-cy="to-step-2"]').click();
+      cy.get('[data-cy="to-step-2"]').click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.wait('@FindIncidentsTitles');
+      cy.wait('@FindIncidentsTitles');
 
-    cy.get('[data-cy="to-step-3"]').click();
+      cy.get('[data-cy="to-step-3"]').click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.get('[name="incident_title"]').should('not.exist');
+      cy.get('[name="incident_title"]').should('not.exist');
 
-    cy.get('[name="description"]').should('not.exist');
+      cy.get('[name="description"]').should('not.exist');
 
-    cy.get('[name="incident_editors"]').should('not.exist');
+      cy.get('[name="incident_editors"]').should('not.exist');
 
-    cy.get('[name="tags"]').type('New Tag{enter}');
+      cy.get('[name="tags"]').type('New Tag{enter}');
 
-    cy.get('[name="editor_notes"').type('Here are some notes');
+      cy.get('[name="editor_notes"').type('Here are some notes');
 
-    cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click();
 
-    cy.wait('@insertSubmission').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
-        title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-        submitters: ['Anonymous'],
-        authors: ['Valentina Palladino'],
-        date_published: '2017-11-10',
-        image_url:
-          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-        cloudinary_id:
-          'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-        tags: ['New Tag'],
-        incident_ids: [1],
-        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
-        source_domain: `arstechnica.com`,
-        editor_notes: 'Here are some notes',
+      cy.wait('@insertSubmission').then((xhr) => {
+        expect(xhr.request.body.variables.submission).to.deep.include({
+          title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+          submitters: ['Anonymous'],
+          authors: ['Valentina Palladino'],
+          date_published: '2017-11-10',
+          image_url:
+            'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+          cloudinary_id:
+            'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+          tags: ['New Tag'],
+          incident_ids: [1],
+          url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+          source_domain: `arstechnica.com`,
+          editor_notes: 'Here are some notes',
+        });
+        expect(xhr.request.body.variables.submission.editor_similar_incidents.length == 1).to.be
+          .true;
       });
-      expect(xhr.request.body.variables.submission.editor_similar_incidents.length == 1).to.be.true;
-    });
 
-    cy.contains('Report successfully added to review queue').should('exist');
+      cy.contains('Report successfully added to review queue').should('exist');
 
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.visit('/apps/submitted');
+      cy.visit('/apps/submitted');
 
-    cy.wait('@findSubmissions');
+      cy.wait('@findSubmissions');
 
-    cy.contains(
-      '[data-cy="row"]',
-      'YouTube to crack down on inappropriate content masked as kids’ cartoons'
-    ).should('exist');
-  });
+      cy.contains(
+        '[data-cy="row"]',
+        'YouTube to crack down on inappropriate content masked as kids’ cartoons'
+      ).should('exist');
+    }
+  );
 
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
     cy.visit(url);
@@ -526,100 +533,104 @@ describe('The Submit form', () => {
     });
   });
 
-  maybeIt('Should submit a submission and link it to the current user id', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should submit a submission and link it to the current user id',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const values = {
-      url: 'https://incidentdatabase.ai',
-      title: 'test title',
-      authors: 'test author',
-      incident_date: '2022-01-01',
-      date_published: '2021-01-02',
-      date_downloaded: '2021-01-03',
-      image_url: 'https://incidentdatabase.ai/image.jpg',
-      incident_ids: [1],
-      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
-      tags: 'test tag',
-      editor_notes: 'Here are some notes',
-    };
-
-    const params = new URLSearchParams(values);
-
-    cy.intercept('GET', parserURL, {
-      title: 'test title',
-      authors: 'test author',
-      date_published: '2021-01-02',
-      date_downloaded: '2021-01-03',
-      image_url: 'https://incidentdatabase.ai/image.jpg',
-      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
-    }).as('parseNews');
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertSubmission',
-      'insertSubmission',
-      {
-        data: {
-          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentsTitles',
-      'FindIncidentsTitles',
-      {
-        data: {
-          incidents: [
-            {
-              __typename: 'Incident',
-              incident_id: 1,
-              title: 'Test title',
-              date: '2022-01-01',
-            },
-          ],
-        },
-      }
-    );
-
-    cy.visit(url + `?${params.toString()}`);
-
-    cy.wait('@FindIncidentsTitles');
-
-    cy.get('.form-has-errors').should('not.exist');
-
-    cy.waitForStableDOM();
-
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.waitForStableDOM();
-
-    cy.get('[data-cy="to-step-3"]').click();
-
-    cy.waitForStableDOM();
-
-    cy.get('button[type="submit"]').click();
-
-    cy.wait('@insertSubmission').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.nested.include({
-        ...values,
+      const values = {
+        url: 'https://incidentdatabase.ai',
+        title: 'test title',
+        authors: 'test author',
+        incident_date: '2022-01-01',
+        date_published: '2021-01-02',
+        date_downloaded: '2021-01-03',
+        image_url: 'https://incidentdatabase.ai/image.jpg',
         incident_ids: [1],
-        authors: [values.authors],
-        submitters: ['Test User'],
-        tags: [values.tags],
-        plain_text:
-          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
-        source_domain: `incidentdatabase.ai`,
-        cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+        text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+        tags: 'test tag',
         editor_notes: 'Here are some notes',
+      };
+
+      const params = new URLSearchParams(values);
+
+      cy.intercept('GET', parserURL, {
+        title: 'test title',
+        authors: 'test author',
+        date_published: '2021-01-02',
+        date_downloaded: '2021-01-03',
+        image_url: 'https://incidentdatabase.ai/image.jpg',
+        text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+      }).as('parseNews');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'InsertSubmission',
+        'insertSubmission',
+        {
+          data: {
+            insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentsTitles',
+        'FindIncidentsTitles',
+        {
+          data: {
+            incidents: [
+              {
+                __typename: 'Incident',
+                incident_id: 1,
+                title: 'Test title',
+                date: '2022-01-01',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.visit(url + `?${params.toString()}`);
+
+      cy.wait('@FindIncidentsTitles');
+
+      cy.get('.form-has-errors').should('not.exist');
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="to-step-2"]').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="to-step-3"]').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('button[type="submit"]').click();
+
+      cy.wait('@insertSubmission').then((xhr) => {
+        expect(xhr.request.body.variables.submission).to.deep.nested.include({
+          ...values,
+          incident_ids: [1],
+          authors: [values.authors],
+          submitters: ['Test User'],
+          tags: [values.tags],
+          plain_text:
+            'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+          source_domain: `incidentdatabase.ai`,
+          cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+          editor_notes: 'Here are some notes',
+        });
+
+        expect(xhr.request.body.variables.submission.user.link).to.not.be.undefined;
       });
+    }
+  );
 
-      expect(xhr.request.body.variables.submission.user.link).to.not.be.undefined;
-    });
-  });
-
-  it('Should show a list of related reports', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should show a list of related reports', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     const relatedReports = {
@@ -844,23 +855,26 @@ describe('The Submit form', () => {
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
-  it('Should show related reports based on semantic similarity', () => {
-    cy.visit(url);
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should show related reports based on semantic similarity',
+    () => {
+      cy.visit(url);
 
-    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+      cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
-    cy.setEditorText(
-      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
-    );
+      cy.setEditorText(
+        `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+      );
 
-    cy.clickOutside();
+      cy.clickOutside();
 
-    cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]', { timeout: 20000 }).should(
-      'contain',
-      'YouTube'
-    );
-    cy.clickOutside();
-  });
+      cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]', {
+        timeout: 20000,
+      }).should('contain', 'YouTube');
+      cy.clickOutside();
+    }
+  );
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
@@ -1572,7 +1586,7 @@ describe('The Submit form', () => {
     cy.get('@parseNewsSpy').should('have.been.calledOnce');
   });
 
-  it('Should load from localstorage', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should load from localstorage', () => {
     const values = {
       url: 'https://incidentdatabase.ai',
       authors: ['test author'],
@@ -1714,7 +1728,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should clear form', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should clear form', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     const values = {

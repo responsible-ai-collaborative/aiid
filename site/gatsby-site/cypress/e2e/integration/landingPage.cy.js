@@ -1,4 +1,4 @@
-import { maybeIt } from '../../support/utils';
+import { conditionalIt } from '../../support/utils';
 const { format } = require('date-fns');
 
 describe('The Landing page', () => {
@@ -57,7 +57,7 @@ describe('The Landing page', () => {
       .should('exist');
   });
 
-  it('Should display common entities card', () => {
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should display common entities card', () => {
     cy.visit('/');
 
     cy.get('[data-cy="common-entities"]')
@@ -91,22 +91,26 @@ describe('The Landing page', () => {
       });
   });
 
-  maybeIt('Should redirect to the account page when logged in', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'), { skipSession: true });
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should redirect to the account page when logged in',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'), { skipSession: true });
 
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+      cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.get('[data-cy="sidebar-desktop"]')
-      .contains('li', 'Account', { timeout: 8000 })
-      .scrollIntoView()
-      .click();
+      cy.get('[data-cy="sidebar-desktop"]')
+        .contains('li', 'Account', { timeout: 8000 })
+        .scrollIntoView()
+        .click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/account/');
-  });
+      cy.location('pathname', { timeout: 8000 }).should('eq', '/account/');
+    }
+  );
 
   it('Should redirect to the signup page when logged out', () => {
     cy.visit('/');
@@ -115,6 +119,23 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/signup/');
   });
+
+  conditionalIt(
+    Cypress.env('isEmptyEnvironment'),
+    'Should display empty message on common entities card on empty environment',
+    () => {
+      cy.visit('/');
+
+      cy.get('[data-cy="common-entities"]')
+        .scrollIntoView()
+        .should('be.visible')
+        .within(() => {
+          cy.contains('h2', 'Common Entities').should('exist');
+          cy.contains('a', 'View all entities').should('have.attr', 'href', '/entities/');
+          cy.contains('There are no entities yet').should('exist').should('be.visible');
+        });
+    }
+  );
 
   it('Renders rich results config', () => {
     cy.visit('/');
