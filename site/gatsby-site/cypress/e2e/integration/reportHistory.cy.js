@@ -10,7 +10,9 @@ describe('Report History', () => {
 
   let user;
 
-  before('before', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') && this.skip();
+
     cy.query({
       query: gql`
         {

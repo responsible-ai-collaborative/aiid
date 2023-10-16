@@ -10,7 +10,11 @@ const entity = {
 
 const USER_ID = '63320ce63ec803072c9f529c';
 
-describe('Entities page', () => {
+describe('Individual Entity page', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') && this.skip();
+  });
+
   const url = `/entities/${entity.entity_id}`;
 
   it('Successfully loads', () => {

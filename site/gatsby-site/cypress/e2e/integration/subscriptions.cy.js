@@ -11,6 +11,13 @@ const entitySubscriptions = subscriptionsData.data.subscriptions
   .sort((a, b) => a.entityId.name - b.entityId.name);
 
 describe('Subscriptions', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') &&
+      Cypress.env('e2eUsername') &&
+      Cypress.env('e2ePassword') &&
+      this.skip();
+  });
+
   const url = '/account';
 
   it('Incident Updates: Should display user subscriptions', () => {
