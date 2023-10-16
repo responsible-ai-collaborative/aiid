@@ -10,6 +10,7 @@ import UserEditModal from './UserEditModal';
 import { UserCreationDateCell, UserEmailCell, UserLastAuthDateCell } from './UserInfoCells';
 import { useApolloClient } from '@apollo/client';
 import { FIND_USER } from '../../graphql/users';
+import ListSkeleton from 'elements/Skeletons/List';
 
 function RolesCell({ cell }) {
   return (
@@ -25,6 +26,8 @@ export default function UsersTable({ data, className = '', ...props }) {
   const [userEditId, setUserEditId] = useState(null);
 
   const [updatedData, setUpdatedData] = useState(data);
+
+  const [loading, setLoading] = useState(true);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -50,8 +53,8 @@ export default function UsersTable({ data, className = '', ...props }) {
   useEffect(() => {
     const fetchUserAdminData = async () => {
       if (data) {
-        data.forEach(async (user) => {
-          try {
+        try {
+          const promises = data.map(async (user) => {
             const result = await client.query({
               query: FIND_USER,
               variables: { query: { userId: user.userId } },
@@ -77,10 +80,13 @@ export default function UsersTable({ data, className = '', ...props }) {
                 });
               }
             }
-          } catch (error) {
-            console.error('Error querying user admin data:', error);
-          }
-        });
+          });
+
+          await Promise.all(promises);
+        } catch (error) {
+          console.error('Error querying user admin data:', error);
+        }
+        setLoading(false);
       }
     };
 
@@ -94,9 +100,7 @@ export default function UsersTable({ data, className = '', ...props }) {
         accessor: 'adminData.email',
         className: 'min-w-[240px]',
         Cell: ({ row: { values } }) => {
-          const user = updatedData.find((user) => user.userId === values.userId);
-
-          return <UserEmailCell email={user?.adminData?.email} />;
+          return <UserEmailCell email={values['adminData.email']} />;
         },
       },
       {
@@ -121,9 +125,7 @@ export default function UsersTable({ data, className = '', ...props }) {
         accessor: 'adminData.creationDate',
         Filter: SelectDatePickerFilter,
         Cell: ({ row: { values } }) => {
-          const user = updatedData.find((user) => user.userId === values.userId);
-
-          return <UserCreationDateCell creationDate={user?.adminData?.creationDate} />;
+          return <UserCreationDateCell creationDate={values['adminData.creationDate']} />;
         },
         filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
@@ -131,11 +133,9 @@ export default function UsersTable({ data, className = '', ...props }) {
         title: 'Last Login Date',
         accessor: 'adminData.lastAuthenticationDate',
         Cell: ({ row: { values } }) => {
-          const user = updatedData.find((user) => user.userId === values.userId);
-
           return (
             <UserLastAuthDateCell
-              lastAuthenticationDate={user?.adminData?.lastAuthenticationDate}
+              lastAuthenticationDate={values['adminData.lastAuthenticationDate']}
             />
           );
         },
@@ -159,7 +159,7 @@ export default function UsersTable({ data, className = '', ...props }) {
     ];
 
     return columns;
-  }, [setUserEditId, updatedData, setUpdatedData]);
+  }, [setUserEditId, updatedData, setUpdatedData, loading]);
 
   const table = useTable(
     {
@@ -171,6 +171,8 @@ export default function UsersTable({ data, className = '', ...props }) {
     useSortBy,
     usePagination
   );
+
+  if (loading) return <ListSkeleton />;
 
   return (
     <>
