@@ -8,7 +8,6 @@ import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import CsvExport from './CsvExport';
 import Sorting from './Sorting';
-import SORTING_LISTS from 'components/discover/SORTING_LISTS';
 import { useInstantSearch } from 'react-instantsearch';
 
 const Controls = () => {
@@ -43,7 +42,7 @@ const Controls = () => {
             <CsvExport />
           </div>
 
-          <Sorting items={SORTING_LISTS} defaultRefinement={indexUiState.sortBy} />
+          <Sorting />
 
           <div className="justify-end">
             <ClearFilters>

@@ -5,7 +5,9 @@ import SearchInput from 'components/forms/SearchInput';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 
-function SearchBox({ query: currentRefinement, refine }) {
+export default function SearchBox({ ...props }) {
+  const { query: currentRefinement, refine } = useSearchBox(props);
+
   const [query, setQuery] = useState(currentRefinement);
 
   const debouncedRefine = useRef(debounce((value) => refine(value), 500)).current;
@@ -49,16 +51,4 @@ function SearchBox({ query: currentRefinement, refine }) {
       </Col>
     </Row>
   );
-}
-
-export default connectSearchBox(SearchBox);
-
-function connectSearchBox(Component) {
-  const SearchBox = (props) => {
-    const data = useSearchBox(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return SearchBox;
 }

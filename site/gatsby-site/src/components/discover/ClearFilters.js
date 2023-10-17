@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useCurrentRefinements } from 'react-instantsearch';
 import { useInstantSearch } from 'react-instantsearch';
+import { ConfigureContext } from './ConfigureContext';
 
 function ClearButton({ children }) {
-  const { indexUiState, setIndexUiState } = useInstantSearch();
+  const { setIndexUiState } = useInstantSearch();
+
+  const { configure, setConfigure } = useContext(ConfigureContext);
 
   const { items } = useCurrentRefinements();
 
   const disabled =
-    items.length == 1 &&
-    items?.[0]?.refinements?.[0].value == 'true' &&
-    !indexUiState.configure.distinct;
+    items.length == 1 && items?.[0]?.refinements?.[0].value == 'true' && !configure?.distinct;
 
   return (
     <button
@@ -20,6 +21,8 @@ function ClearButton({ children }) {
           ...state,
           refinementList: { is_incident_report: ['true'] },
         }));
+
+        setConfigure({ distinct: false, hitsPerPage: 28 });
       }}
       disabled={disabled}
     >

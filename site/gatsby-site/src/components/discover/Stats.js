@@ -3,7 +3,9 @@ import { Trans } from 'react-i18next';
 import { useStats } from 'react-instantsearch';
 import DisplayOptions from './DisplayOptions';
 
-function Stats({ className, nbHits: count }) {
+export default function Stats({ className, ...props }) {
+  const { nbHits: count } = useStats(props);
+
   return (
     <div className={'flex gap-3 items-center ' + className}>
       <Trans count={count}>
@@ -15,16 +17,4 @@ function Stats({ className, nbHits: count }) {
       </Trans>
     </div>
   );
-}
-
-export default connectStats(Stats);
-
-function connectStats(Component) {
-  const Stats = (props) => {
-    const data = useStats(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return Stats;
 }

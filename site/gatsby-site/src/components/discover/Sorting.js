@@ -8,17 +8,18 @@ import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
 import isEqual from 'lodash/isEqual';
 import { useInstantSearch } from 'react-instantsearch';
 
-function Sorting(props) {
+export default function Sorting() {
   const { locale } = useLocalization();
 
+  const { indexUiState } = useInstantSearch();
+
+  const { refine, currentRefinement, options } = useSortBy({ items: SORTING_LIST });
+
   const [selectedItem, setSelectedItem] = useState(
-    SORTING_LIST.find((s) => s.name === props.defaultRefinement) ||
-      SORTING_LIST.find((s) => s.default)
+    SORTING_LIST.find((s) => s.name === currentRefinement) || SORTING_LIST.find((s) => s.default)
   );
 
   const { t } = useTranslation();
-
-  const { indexUiState } = useInstantSearch();
 
   const sortResults = (item) => {
     setSelectedItem(item);
@@ -44,7 +45,9 @@ function Sorting(props) {
         indexName += '-featured';
       }
 
-      props.refine(indexName);
+      if (indexName != currentRefinement) {
+        refine(indexName);
+      }
     }
   }, [selectedItem]);
 
@@ -60,7 +63,7 @@ function Sorting(props) {
           data-cy="discover-sort"
           className="min-w-max"
         >
-          {props.items.map((item) => (
+          {options.map((item) => (
             <Fragment key={item.name}>
               <Dropdown.Item
                 key={item[`value_${locale}`]}
@@ -84,18 +87,4 @@ function Sorting(props) {
       </div>
     </>
   );
-}
-
-const DiscoverSorting = connectSortBy(Sorting);
-
-export default DiscoverSorting;
-
-function connectSortBy(Component) {
-  const SortBy = (props) => {
-    const data = useSortBy(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return SortBy;
 }

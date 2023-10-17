@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'flowbite-react';
 import isEqual from 'lodash/isEqual';
 import { Trans } from 'react-i18next';
-import { useInstantSearch, useConfigure, useRefinementList } from 'react-instantsearch';
+import { useInstantSearch } from 'react-instantsearch';
+import { ConfigureContext } from './ConfigureContext';
 
-const findIndex = (displayOptions, indexUiState) => {
+const findIndex = (displayOptions, currentState) => {
   return displayOptions.findIndex(({ state }) => {
     return (
-      indexUiState.configure.distinct == state.configure.distinct &&
+      currentState.configure &&
+      currentState.configure.distinct == state.configure.distinct &&
       isEqual(
-        indexUiState.refinementList.is_incident_report,
+        currentState.refinementList.is_incident_report,
         state.refinementList.is_incident_report
       )
     );
@@ -19,7 +21,10 @@ const findIndex = (displayOptions, indexUiState) => {
 const displayOptions = [
   {
     text: 'Incidents',
-    state: { configure: { distinct: true }, refinementList: { is_incident_report: ['true'] } },
+    state: {
+      configure: { distinct: true },
+      refinementList: { is_incident_report: ['true'] },
+    },
   },
   {
     text: 'Incident and Issue Reports',
@@ -30,43 +35,56 @@ const displayOptions = [
   },
   {
     text: 'Incident Reports',
-    state: { configure: { distinct: false }, refinementList: { is_incident_report: ['true'] } },
+    state: {
+      configure: { distinct: false },
+      refinementList: { is_incident_report: ['true'] },
+    },
   },
   {
     text: 'Issue Reports',
-    state: { configure: { distinct: false }, refinementList: { is_incident_report: ['false'] } },
+    state: {
+      configure: { distinct: false },
+      refinementList: { is_incident_report: ['false'] },
+    },
   },
 ];
 
 const DisplayOptions = () => {
   const { indexUiState, setIndexUiState } = useInstantSearch();
 
-  const [selectedIndex, setSelectedIndex] = useState(findIndex(displayOptions, indexUiState));
+  const { configure, setConfigure } = useContext(ConfigureContext);
 
-  const selectedOption = displayOptions[selectedIndex];
+  const [refinementList, setRefinementList] = useState({ ...indexUiState.refinementList });
 
-  useConfigure({ distinct: selectedOption.state.configure.distinct, hitsPerPage: 28 });
-  useRefinementList({ attribute: 'is_incident_report' });
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
-    const { state } = displayOptions[selectedIndex];
+    if (selectedIndex > -1) {
+      const { state } = displayOptions[selectedIndex];
 
-    setIndexUiState((prevIndexUiState) => {
-      const update = {
-        ...prevIndexUiState,
-        refinementList: {
-          ...prevIndexUiState.refinementList,
-          ...state.refinementList,
-        },
-        configure: {
-          ...prevIndexUiState.configure,
-          ...state.configure,
-        },
-      };
-
-      return update;
-    });
+      setRefinementList({ ...state.refinementList });
+      setConfigure({ ...state.configure });
+    }
   }, [selectedIndex]);
+
+  useEffect(() => {
+    const index = findIndex(displayOptions, { refinementList, configure });
+
+    setSelectedIndex(index);
+
+    const update = { ...indexUiState, refinementList, configure };
+
+    const sameConfigure = isEqual(configure, update.configure);
+
+    const sameRefinement = isEqual(
+      indexUiState.refinementList.is_incident_report,
+      update.refinementList.is_incident_report
+    );
+
+    if (!sameConfigure || !sameRefinement) {
+      setIndexUiState(update);
+    }
+  }, [indexUiState, refinementList, configure]);
 
   return (
     <div className="flex justify-end px-2 relative floating-label-dropdown">
@@ -74,21 +92,19 @@ const DisplayOptions = () => {
         <Trans>Display Option</Trans>
       </span>
 
-      <Dropdown
-        label={selectedIndex > -1 && displayOptions[selectedIndex].text}
-        color={'light'}
-        className="min-w-max"
-      >
-        {displayOptions.map(({ text }, index) => (
-          <Dropdown.Item
-            key={text}
-            onClick={() => setSelectedIndex(index)}
-            className={`${text === displayOptions[selectedIndex].text ? 'bg-blue-100' : ''}`}
-          >
-            <span>{text}</span>
-          </Dropdown.Item>
-        ))}
-      </Dropdown>
+      {selectedIndex > -1 && (
+        <Dropdown label={displayOptions[selectedIndex].text} color={'light'} className="min-w-max">
+          {displayOptions.map(({ text }, index) => (
+            <Dropdown.Item
+              key={text}
+              onClick={() => setSelectedIndex(index)}
+              className={`${text === displayOptions[selectedIndex].text ? 'bg-blue-100' : ''}`}
+            >
+              <span>{text}</span>
+            </Dropdown.Item>
+          ))}
+        </Dropdown>
+      )}
     </div>
   );
 };
