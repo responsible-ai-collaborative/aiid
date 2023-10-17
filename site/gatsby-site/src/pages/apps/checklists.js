@@ -121,7 +121,7 @@ const classificationsToTags = ({ classifications, taxa }) => {
   for (const classification of classifications) {
     if (!classification.publish) continue;
 
-    const taxonomy = taxa.nodes.find((t) => t.namespace == classification.namespace);
+    const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
 
     for (const attribute of classification.attributes) {
       const field = taxonomy.field_list.find((f) => f.short_name == attribute.short_name);
