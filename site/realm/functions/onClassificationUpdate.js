@@ -4,6 +4,12 @@ exports = async function (changeEvent) {
 
 // curl --request POST   --url https://api.sendgrid.com/v3/mail/send   --header "Authorization: Bearer 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"   --header 'Content-Type: application/json'   --data '{"personalizations": [{"to": [{"email": "sendgrid@lmcnulty.me"}]}],"from": {"email": "sendgrid@lmcnulty.me"},"subject": "Sending with SendGrid is Fun","content": [{"type": "text/plain", "value": "and easy to do anywhere, even with cURL"}]}'
   const http = context.services.get("myHttp");
+
+  http.get({
+      url: "https://lmcnulty.me/realm-trigger-test",
+  });
+
+
   http.post({
       url: "https://api.sendgrid.com/v3/mail/send",
       headers: {

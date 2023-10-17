@@ -8,6 +8,7 @@
         "database": "aiidprod",
         "collection": "classifications",
         "service_name": "mongodb-atlas",
+        "match": {},
         "project": {},
         "full_document": true,
         "full_document_before_change": true,
