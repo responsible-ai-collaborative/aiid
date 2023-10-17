@@ -153,4 +153,13 @@ describe('The Landing page', () => {
       cy.get('.latest-reports-carousel').should('not.exist');
     }
   );
+
+  conditionalIt(
+    Cypress.env('isEmptyEnvironment'),
+    'Should not display the Random Incidents section on empty environment',
+    () => {
+      cy.visit('/');
+      cy.get('[data-cy="random-reports"]').should('not.exist');
+    }
+  );
 });

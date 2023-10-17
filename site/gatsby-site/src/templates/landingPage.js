@@ -115,9 +115,11 @@ const LandingPage = (props) => {
           <div className="flex-1 lg:max-w-[50%]">
             <NewsletterSignup />
           </div>
-          <div className="flex-1 lg:max-w-[50%]">
-            <RandomReports />
-          </div>
+          {latestReports.length > 0 && (
+            <div className="flex-1 lg:max-w-[50%]">
+              <RandomReports />
+            </div>
+          )}
         </div>
 
         <div>
