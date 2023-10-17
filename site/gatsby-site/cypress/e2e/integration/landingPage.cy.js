@@ -144,4 +144,13 @@ describe('The Landing page', () => {
 
     cy.get('script[type="application/ld+json"]').should('exist');
   });
+
+  conditionalIt(
+    Cypress.env('isEmptyEnvironment'),
+    'Should not display the Latest Reports section on empty environment',
+    () => {
+      cy.visit('/');
+      cy.get('.latest-reports-carousel').should('not.exist');
+    }
+  );
 });

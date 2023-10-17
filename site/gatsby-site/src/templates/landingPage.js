@@ -62,11 +62,13 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        <div className="mb-5 md:mb-10">
-          <div>
-            <LatestReports latestReports={latestReports} />
+        {latestReports.length > 0 && (
+          <div className="mb-5 md:mb-10">
+            <div>
+              <LatestReports latestReports={latestReports} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="mb-5 md:mb-10">
           <div>
