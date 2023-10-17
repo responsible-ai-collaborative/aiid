@@ -116,7 +116,7 @@ describe('Report History', () => {
     cy.contains('There are no version history records for this Report').should('exist');
   });
 
-  it('Should go back to the Report', () => {
+  it('Should go back to the Incident Report', () => {
     cy.visit(url);
 
     cy.waitForStableDOM();
@@ -124,6 +124,16 @@ describe('Report History', () => {
     cy.contains(`Back to Report 3206`).click();
 
     cy.url().should('include', '/cite/563/#r3206');
+  });
+
+  it('Should go back to the Issue Report', () => {
+    cy.visit('/cite/history?report_number=3206&incident_id=null');
+
+    cy.waitForStableDOM();
+
+    cy.contains(`Back to Report 3206`).click();
+
+    cy.url().should('include', '/reports/3206');
   });
 
   conditionalIt(
