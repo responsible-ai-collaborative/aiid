@@ -1,20 +1,82 @@
 [
     {
-        "name": "logReportHistory",
+        "name": "linkReportsToIncidents",
         "private": false
     },
     {
-        "name": "confirmUser",
-        "private": true
-    },
-    {
-        "name": "onClassificationUpdate",
+        "name": "apiRequest",
         "private": false,
         "disable_arg_logs": true
     },
     {
+        "name": "logIncidentHistory",
+        "private": false
+    },
+    {
+        "name": "createVariant",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateChecklistUpdate",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "getEmailTemplateIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateEntityIncidentUpdated",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplatePasswordReset",
+        "private": true
+    },
+    {
+        "name": "logRollbar",
+        "private": true
+    },
+    {
         "name": "onNewUser",
         "private": true
+    },
+    {
+        "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "logReportHistory",
+        "private": false
+    },
+    {
+        "name": "getUserAdminData",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "updateOneReportTranslation",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateSubmissionApproved",
+        "private": true
+    },
+    {
+        "name": "passwordReset",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewEntityIncident",
+        "private": true
+    },
+    {
+        "name": "promoteSubmissionToReport",
+        "private": false
+    },
+    {
+        "name": "processNotifications",
+        "private": false
     },
     {
         "name": "getEmailTemplateNewReportAddedToAnIncident",
@@ -25,53 +87,11 @@
         "private": true
     },
     {
-        "name": "getEmailTemplateSubmissionApproved",
-        "private": true
-    },
-    {
-        "name": "logRollbar",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplatePasswordReset",
-        "private": true
-    },
-    {
-        "name": "apiRequest",
-        "private": false,
-        "disable_arg_logs": true
-    },
-    {
-        "name": "getEmailTemplateNewIncident",
+        "name": "confirmUser",
         "private": true
     },
     {
         "name": "getUser",
-        "private": false
-    },
-    {
-        "name": "promoteSubmissionToReport",
-        "private": false
-    },
-    {
-        "name": "passwordReset",
-        "private": true
-    },
-    {
-        "name": "logIncidentHistory",
-        "private": false
-    },
-    {
-        "name": "updateOneReportTranslation",
-        "private": false
-    },
-    {
-        "name": "getUserAdminData",
-        "private": false,
-        "disable_arg_logs": true
-    },
-    {
-        "name": "reportTranslations",
         "private": false
     },
     {
@@ -80,39 +100,15 @@
         "disable_arg_logs": true
     },
     {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateNewEntityIncident",
-        "private": true
-    },
-    {
         "name": "sendEmail",
         "private": false
     },
     {
-        "name": "createVariant",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateEntityIncidentUpdated",
+        "name": "getEmailTemplateNewIncident",
         "private": true
     },
     {
         "name": "onIncidentUpdate",
         "private": true
-    },
-    {
-        "name": "getEmailTemplateIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "processNotifications",
-        "private": false
-    },
-    {
-        "name": "processChecklistNotifications",
-        "private": false
     }
 ]
