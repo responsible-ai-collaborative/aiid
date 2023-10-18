@@ -41,6 +41,10 @@ export const FIND_USER_SUBSCRIPTIONS = gql`
         entity_id
         name
       }
+      checklistId {
+        id
+        name
+      }
       type
     }
   }

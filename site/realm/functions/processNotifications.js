@@ -322,6 +322,64 @@ exports = async function () {
     context.functions.execute('logRollbar', { error });
   }
 
+  // Notifications to Checklist Updates
+  try {
+    const pendingNotificationsToChecklistUpdates = await notificationsCollection.find({ processed: false, type: 'checklist' }).toArray();
+
+    if (pendingNotificationsToChecklistUpdates.length > 0) {
+
+      result += pendingNotificationsToChecklistUpdates.length;
+
+      const subscriptionsToChecklistUpdates = await subscriptionsCollection.find({ type: 'checklist' }).toArray();
+
+      // Process subscriptions to New Incidents
+      if (subscriptionsToChecklistUpdates.length > 0) {
+
+        const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
+
+        const recipients = await getRecipients(userIds);
+
+        for (const pendingNotification of pendingNotificationsToChecklistUpdates) {
+
+          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+
+          const sendEmailParams = {
+            recipients,
+            subject: 'Update to risk checklist "{{checklistTitle}}"',
+            dynamicData: {
+              checklistId: '', //TODO
+              checklistTitle: '',    //TODO
+            },
+            templateId: 'ChecklistUpdate' // Template value from function name sufix from "site/realm/functions/config.json"
+          };
+          const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+
+          //If notification was sucessfully sent > Mark the notification as processed
+          if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
+            await notificationsCollection.updateOne(
+              { _id: pendingNotification._id },
+              { $set: { processed: true, sentDate: new Date() } }
+            );
+          }
+        }
+
+        console.log(`Checklist Updates: ${pendingNotificationsToChecklistUpdates.length} pending notifications were processed.`);
+      }
+      else {
+        // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
+        await markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToChecklistUpdates);
+      }
+    }
+    else {
+      console.log('Submission Promoted: No pending notifications to process.');
+    }
+
+  } catch (error) {
+    console.log(`[Process Pending Notifications: Submission Promoted]: ${error.message}`)
+    error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
+    context.functions.execute('logRollbar', { error });
+  }
+
   return result;
 };
 

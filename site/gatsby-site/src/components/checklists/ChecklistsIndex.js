@@ -6,6 +6,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ExportDropdown from 'components/checklists/ExportDropdown';
+import SubscribeButton from 'components/checklists/SubscribeButton';
 import {
   DeleteButton,
   removeTypename,
@@ -90,9 +91,7 @@ const ChecklistsIndex = () => {
               >
                 <Trans>Clone</Trans>
               </Button>
-              <Button color="light" onClick={() => alert('Coming soon')}>
-                <Trans>Subscribe</Trans>
-              </Button>
+              <SubscribeButton checklistId={checklist.id} />
               <DeleteButton
                 type="button"
                 onClick={async () => {

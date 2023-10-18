@@ -20,6 +20,7 @@ import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import SubscribeButton from 'components/checklists/SubscribeButton';
 
 export default function CheckListForm({
   values,
@@ -112,9 +113,7 @@ export default function CheckListForm({
           </h1>
           <HeaderControls>
             <SavingIndicator {...{ isSubmitting, submissionError }} />
-            <Button color="light" onClick={() => alert('Coming soon')}>
-              <Trans>Subscribe</Trans>
-            </Button>
+            <SubscribeButton checklistId={values.id} />
             <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
               <Trans>Delete</Trans>
             </DeleteButton>

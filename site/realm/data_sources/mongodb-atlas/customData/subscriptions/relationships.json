@@ -11,6 +11,12 @@
         "foreign_key": "incident_id",
         "is_list": false
     },
+    "checklistId": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/checklists",
+        "source_key": "checklistId",
+        "foreign_key": "id",
+        "is_list": false
+    },
     "userId": {
         "ref": "#/relationship/mongodb-atlas/customData/users",
         "source_key": "userId",

@@ -54,7 +54,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     skip: !active,
   });
 
-  //TODO: why does this fetch all classifications? 🤔
+  //TODO: We fetch all classifications
+  // so we can auto-complete user-provided values.
+  // There's probably a more efficient way to do this.
   const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { namespace: taxonomy.namespace } },
     skip: !active,
@@ -95,6 +97,20 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     refetchQueries: [FIND_CLASSIFICATION],
     awaitRefetchQueries: true,
   });
+
+  // TODO: Right now we're just echoing
+  const [addChecklistNotifications] = useMutation(gql`
+    mutation addChecklistNotifications($input: AddChecklistNotificationsInput) {
+      addChecklistNotifications(input: $input) {
+        incidents
+        namespace
+        attributes {
+          short_name
+          value_json
+        }
+      }
+    }
+  `);
 
   const allTaxonomyFields =
     taxonomy &&
@@ -197,6 +213,40 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         data.incidents = {
           link: incidentId ? [incidentId] : [],
         };
+      }
+
+      if (incidentId) {
+        const previousAttributes = allClassificationsData?.classifications?.find(
+          (c) =>
+            c.incidents.map((i) => i.incident_id).includes(incidentId) && c.namespace == namespace
+        )?.attributes;
+
+        // TODO: Maybe we should send over the new and old values together
+        const changedAttributes = [];
+
+        for (const updatedAttribute of data.attributes) {
+          const matchingPreviousAttribute = previousAttributes?.find(
+            (previousAttribute) => previousAttribute.short_name == updatedAttribute.short_name
+          );
+
+          if (
+            updatedAttribute?.value_json != matchingPreviousAttribute?.value_json &&
+            updatedAttribute?.value_json != '""' &&
+            updatedAttribute?.value_json != null
+          ) {
+            changedAttributes.push(updatedAttribute);
+          }
+        }
+
+        await addChecklistNotifications({
+          variables: {
+            input: {
+              incidents: [incidentId],
+              attributes: changedAttributes,
+              namespace: data.namespace,
+            },
+          },
+        });
       }
 
       await upsertClassification({
