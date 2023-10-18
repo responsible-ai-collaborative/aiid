@@ -22,43 +22,46 @@ const convertArrayToString = (obj) => {
   return { ...obj };
 };
 
-const convertRangeToQueryString = (rangeObj) => {
-  let rangeQueryObj = {};
+const convertRangeToQueryString = (range) => {
+  const result = {};
 
-  for (const attr in rangeObj) {
-    if (rangeObj[attr] !== undefined && rangeObj[attr].min) {
-      rangeQueryObj[`${attr}_min`] = rangeObj[attr].min;
+  for (const [key, value] of Object.entries(range)) {
+    const [min, max] = value.split(':');
+
+    if (min) {
+      result[`${key}_min`] = min;
     }
-    if (rangeObj[attr] !== undefined && rangeObj[attr].max) {
-      rangeQueryObj[`${attr}_max`] = rangeObj[attr].max;
+
+    if (max) {
+      result[`${key}_max`] = max;
     }
   }
 
-  return rangeQueryObj;
+  return result;
 };
 
 const getQueryFromState = (searchState, locale) => {
   let query = {};
 
-  if (searchState && searchState.query !== '') {
+  if (searchState.query !== '') {
     query.s = searchState.query;
   }
 
-  if (searchState && searchState.refinementList !== {}) {
+  if (searchState.refinementList) {
     query = {
       ...query,
       ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
     };
   }
 
-  if (searchState && searchState.range !== {}) {
+  if (searchState.range) {
     query = {
       ...query,
       ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
     };
   }
 
-  if (searchState && searchState.sortBy) {
+  if (searchState.sortBy) {
     query.sortBy =
       SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.name ||
       searchState.sortBy;

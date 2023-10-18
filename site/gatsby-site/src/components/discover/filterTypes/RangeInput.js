@@ -13,7 +13,13 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
-const RangeInput = ({ range: { min, max }, start, refine, attribute }) => {
+export default function RangeInput({ attribute }) {
+  const {
+    range: { min, max },
+    start,
+    refine,
+  } = useRange({ attribute });
+
   if ((!min && min !== 0) || (!max && max !== 0)) {
     return null;
   }
@@ -127,21 +133,9 @@ const RangeInput = ({ range: { min, max }, start, refine, attribute }) => {
       </Formik>
     </div>
   );
-};
+}
 
 export const touchedCount = ({ searchState, attribute }) =>
   searchState?.range?.[attribute]?.split(':')[0] || searchState?.range?.[attribute]?.split(':')[1]
     ? 1
     : 0;
-
-export default connectRange(RangeInput);
-
-function connectRange(Component) {
-  const Range = (props) => {
-    const data = useRange(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return Range;
-}

@@ -1,16 +1,7 @@
 import { parse } from 'query-string';
 import { decodeQueryParams } from 'use-query-params';
 
-const removeUndefinedAttributes = (obj) => {
-  for (const attr in obj) {
-    if (obj[attr] === undefined) {
-      delete obj[attr];
-    }
-  }
-  return { ...obj };
-};
-
-const convertStringToArray = (obj) => {
+const convertStringToRefinement = (obj) => {
   const stringKeys = [
     'source_domain',
     'authors',
@@ -27,6 +18,7 @@ const convertStringToArray = (obj) => {
 
   for (const attr in obj) {
     if (stringKeys.includes(attr) && obj[attr] !== undefined) {
+      // TODO: we have to make the other namespaces available here too
       if (obj[attr].indexOf('CSET') >= 0) {
         // The facet separator is double pipe sign - "||"
         newObj[attr] = obj[attr].split('||CSET').map((i) => 'CSET' + i);
@@ -34,63 +26,36 @@ const convertStringToArray = (obj) => {
       } else {
         newObj[attr] = obj[attr].split('||');
       }
-    } else {
-      if (obj[attr]) {
-        newObj[attr] = obj[attr];
-      }
     }
   }
   return newObj;
 };
 
 const convertStringToRange = (query) => {
-  const rangeKeys = [
-    'epoch_incident_date_min',
-    'epoch_incident_date_max',
-    'epoch_date_published_min',
-    'epoch_date_published_max',
-  ];
+  const rangeKeys = ['epoch_incident_date', 'epoch_date_published'];
 
-  let resultObj = {};
+  const result = {};
 
-  for (const attr in query) {
-    if (rangeKeys.includes(attr)) {
-      if (attr.includes('_min') && !isNaN(parseInt(query[attr]))) {
-        resultObj[attr.split('_min')[0]] = {
-          ...resultObj[attr.split('_min')[0]],
-          min: parseInt(query[attr]),
-        };
-      }
-
-      if (attr.includes('_max') && !isNaN(parseInt(query[attr]))) {
-        resultObj[attr.split('_max')[0]] = {
-          ...resultObj[attr.split('_max')[0]],
-          max: parseInt(query[attr]),
-        };
-      }
+  for (const key of rangeKeys) {
+    if (query[key + '_min'] || query[key + '_max']) {
+      result[key] = `${query[key + '_min'] || ''}:${query[key + '_max'] || ''}`;
     }
   }
 
-  return resultObj;
+  return result;
 };
 
 const generateSearchState = ({ query }) => {
-  const cleanQuery = removeUndefinedAttributes(query);
-
-  const querySearch = cleanQuery.s || '';
-
-  delete cleanQuery.s;
-
   return {
     page: query.page,
-    query: querySearch,
+    query: query.s ?? '',
     refinementList: {
-      ...convertStringToArray(cleanQuery),
+      ...convertStringToRefinement(query),
     },
     range: {
-      ...convertStringToRange(cleanQuery),
+      ...convertStringToRange(query),
     },
-    sortBy: cleanQuery.sortBy,
+    sortBy: query.sortBy,
 
     // TODO: https://github.com/algolia/instantsearch/issues/5892
     __configure: {
