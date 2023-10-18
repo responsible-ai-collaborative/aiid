@@ -117,7 +117,9 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
           }
         }
       >
-        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t, submissionError }} />}
+        {(FormProps) => (
+          <CheckListForm checklistId={query.id} {...{ ...FormProps, tags, t, submissionError }} />
+        )}
       </Formik>
     );
   }

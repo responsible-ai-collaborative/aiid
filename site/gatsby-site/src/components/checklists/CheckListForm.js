@@ -30,6 +30,7 @@ export default function CheckListForm({
   tags,
   isSubmitting,
   submissionError,
+  checklistId,
 }) {
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
@@ -113,8 +114,8 @@ export default function CheckListForm({
           </h1>
           <HeaderControls>
             <SavingIndicator {...{ isSubmitting, submissionError }} />
-            <SubscribeButton checklistId={values.id} />
-            <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
+            <SubscribeButton checklistId={checklistId} />
+            <DeleteButton type="button" onClick={() => confirmDeleteChecklist(checklistId)}>
               <Trans>Delete</Trans>
             </DeleteButton>
             <ExportDropdown checklist={values} />

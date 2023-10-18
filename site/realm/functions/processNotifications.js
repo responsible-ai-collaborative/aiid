@@ -41,6 +41,7 @@ exports = async function () {
   const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const incidentsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
+  const checklistsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("checklists");
   const entitiesCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("entities");
   const reportsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
 
@@ -332,23 +333,27 @@ exports = async function () {
 
       const subscriptionsToChecklistUpdates = await subscriptionsCollection.find({ type: 'checklist' }).toArray();
 
-      // Process subscriptions to New Incidents
       if (subscriptionsToChecklistUpdates.length > 0) {
 
-        const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
+        const userIds = subscriptionsToChecklistUpdates.map((subscription) => subscription.userId);
 
         const recipients = await getRecipients(userIds);
 
         for (const pendingNotification of pendingNotificationsToChecklistUpdates) {
 
           const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+          
+          const checklist = await checklistsCollection.findOne({ id: pendingNotification.checklist_id });
+
+          console.log(`pendingNotification`, JSON.stringify(pendingNotification));
 
           const sendEmailParams = {
             recipients,
             subject: 'Update to risk checklist "{{checklistTitle}}"',
             dynamicData: {
-              checklistId: '', //TODO
-              checklistTitle: '',    //TODO
+              incident_id: String(pendingNotification.incident_id),
+              checklistId: String(pendingNotification.checklist_id), 
+              checklistTitle: String(checklist.name),
             },
             templateId: 'ChecklistUpdate' // Template value from function name sufix from "site/realm/functions/config.json"
           };
@@ -371,12 +376,12 @@ exports = async function () {
       }
     }
     else {
-      console.log('Submission Promoted: No pending notifications to process.');
+      console.log('Checklist Updates: No pending notifications to process.');
     }
 
   } catch (error) {
-    console.log(`[Process Pending Notifications: Submission Promoted]: ${error.message}`)
-    error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
+    console.log(`[Checklist Update Notifications]: ${error.message}`)
+    error.message = `[Checklist Update Notifications]: ${error.message}`;
     context.functions.execute('logRollbar', { error });
   }
 

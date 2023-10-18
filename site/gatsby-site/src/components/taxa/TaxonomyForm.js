@@ -102,20 +102,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   const [addChecklistNotifications] = useMutation(gql`
     mutation addChecklistNotifications($input: AddChecklistNotificationsInput) {
       addChecklistNotifications(input: $input) {
-        incidents
-        namespace
-        changedAttributes {
-          short_name
-          value_json
-        }
-        old_attributes {
-          short_name
-          value_json
-        }
-        new_attributes {
-          short_name
-          value_json
-        }
+        msg
       }
     }
   `);
@@ -231,7 +218,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           )
           ?.attributes.map((a) => ({ ...a, __typename: undefined }));
 
-        await addChecklistNotifications({
+        const addChecklistNotificationsPayload = await addChecklistNotifications({
           variables: {
             input: {
               incidents: [incidentId],
@@ -241,6 +228,11 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
             },
           },
         });
+
+        console.log(
+          `addChecklistNotificationsPayload.data.addChecklistNotifications.msg`,
+          addChecklistNotificationsPayload.data.addChecklistNotifications.msg
+        );
       }
 
       await upsertClassification({

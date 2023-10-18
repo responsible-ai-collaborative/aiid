@@ -160,7 +160,9 @@ exports = function () {
             <td style="padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="color: #000000; font-family: arial, helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline">Greetings {{email}},</span></div>
               <div style="font-family: inherit; text-align: inherit"><br></div>
               <div style="font-family: inherit; text-align: inherit">
-                A new risk has been added to your risk checklist 
+                A modification to  
+                <a href="https://incidentdatabase.ai/cite/{{incident_id}}">Incident #{{incident_id}}</a>
+                has created a new risk in your checklist 
                 <a href="https://incidentdatabase.ai/apps/checklists?id={{checklistId}}">"{{checklistTitle}}"</a>.
               </div>
               <div style="font-family: inherit; text-align: inherit"><br></div>

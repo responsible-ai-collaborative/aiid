@@ -6,6 +6,9 @@
         "incident_id": {
             "bsonType": "int"
         },
+        "checklist_id": {
+            "bsonType": "string"
+        },
         "processed": {
             "bsonType": "bool"
         },

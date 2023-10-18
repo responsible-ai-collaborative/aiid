@@ -15,15 +15,20 @@ const SubscribeButton = ({ checklistId }) => {
 
   const addToast = useToastContext();
 
+  console.log(`checklistId`, checklistId);
+  const subscription = {
+    type: 'checklist',
+    userId: { link: user.id },
+    checklistId: { link: checklistId },
+  };
+
+  console.log(`subscription`, subscription);
+
   const subscribe = async () => {
     try {
       await insertSubscription({
         variables: {
-          subscription: {
-            type: 'checklist',
-            userId: { link: user.id },
-            checklistId: { link: checklistId },
-          },
+          subscription,
         },
       });
     } catch (error) {
@@ -32,11 +37,12 @@ const SubscribeButton = ({ checklistId }) => {
         severity: SEVERITY.danger,
         error,
       });
+    } finally {
+      addToast({
+        message: t('Added checklist to your subscriptions'),
+        severity: SEVERITY.success,
+      });
     }
-    addToast({
-      message: t('Added checklist to your subscriptions'),
-      severity: SEVERITY.success,
-    });
   };
 
   return (
