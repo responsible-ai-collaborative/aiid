@@ -27,8 +27,6 @@
 // }}
 exports = async (input) => {
 
-  const debug = {};
-
   const db = context.services.get('mongodb-atlas').db('aiidprod');
   const incidentsCollection = db.collection('incidents');
   const classificationsCollection = db.collection('classifications');
@@ -106,7 +104,7 @@ exports = async (input) => {
     })
   ).sort((a, b) => b.precedents.length - a.precedents.length);
 
-  return risks.concat({tag: JSON.stringify(debug)});
+  return risks;
 };
 
 const getRiskClassificationsMongoQuery = (tagStrings) => {
