@@ -104,7 +104,15 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       addChecklistNotifications(input: $input) {
         incidents
         namespace
-        attributes {
+        changedAttributes {
+          short_name
+          value_json
+        }
+        old_attributes {
+          short_name
+          value_json
+        }
+        new_attributes {
           short_name
           value_json
         }
@@ -216,33 +224,19 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       }
 
       if (incidentId) {
-        const previousAttributes = allClassificationsData?.classifications?.find(
-          (c) =>
-            c.incidents.map((i) => i.incident_id).includes(incidentId) && c.namespace == namespace
-        )?.attributes;
-
-        // TODO: Maybe we should send over the new and old values together
-        const changedAttributes = [];
-
-        for (const updatedAttribute of data.attributes) {
-          const matchingPreviousAttribute = previousAttributes?.find(
-            (previousAttribute) => previousAttribute.short_name == updatedAttribute.short_name
-          );
-
-          if (
-            updatedAttribute?.value_json != matchingPreviousAttribute?.value_json &&
-            updatedAttribute?.value_json != '""' &&
-            updatedAttribute?.value_json != null
-          ) {
-            changedAttributes.push(updatedAttribute);
-          }
-        }
+        const oldAttributes = allClassificationsData?.classifications
+          ?.find(
+            (c) =>
+              c.incidents.map((i) => i.incident_id).includes(incidentId) && c.namespace == namespace
+          )
+          ?.attributes.map((a) => ({ ...a, __typename: undefined }));
 
         await addChecklistNotifications({
           variables: {
             input: {
               incidents: [incidentId],
-              attributes: changedAttributes,
+              old_attributes: oldAttributes,
+              new_attributes: data.attributes,
               namespace: data.namespace,
             },
           },

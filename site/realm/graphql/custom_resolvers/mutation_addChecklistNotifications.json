@@ -6,7 +6,21 @@
         "title": "addChecklistNotificationsInput",
         "type": "object",
         "properties": {
-            "attributes": {
+            "old_attributes": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "short_name": {
+                            "bsonType": "string"
+                        },
+                        "value_json": {
+                            "bsonType": "string"
+                        }
+                    }
+                }
+            },
+            "new_attributes": {
                 "bsonType": "array",
                 "items": {
                     "bsonType": "object",
@@ -37,7 +51,35 @@
         "title": "addChecklistNotificationsPayload",
         "type": "object",
         "properties": {
-            "attributes": {
+            "old_attributes": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "short_name": {
+                            "bsonType": "string"
+                        },
+                        "value_json": {
+                            "bsonType": "string"
+                        }
+                    }
+                }
+            },
+            "new_attributes": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "short_name": {
+                            "bsonType": "string"
+                        },
+                        "value_json": {
+                            "bsonType": "string"
+                        }
+                    }
+                }
+            },
+            "changedAttributes": {
                 "bsonType": "array",
                 "items": {
                     "bsonType": "object",
