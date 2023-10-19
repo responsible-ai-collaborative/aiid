@@ -191,4 +191,59 @@ describe('Admin', () => {
       cy.url({ timeout: 30000 }).should('include', '/incidents/new');
     }
   );
+
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should filter results',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindUsers',
+        'findUsers',
+        users
+      );
+
+      users.data.users.forEach((user) => {
+        cy.conditionalIntercept(
+          '**/graphql',
+          (req) => {
+            return (
+              req.body.operationName == 'FindUser' &&
+              req.body?.variables?.query.userId == user.userId
+            );
+          },
+          'findUser',
+          { data: { user } }
+        );
+      });
+
+      cy.visit(baseUrl);
+
+      cy.waitForStableDOM();
+
+      cy.wait('@findUsers');
+
+      cy.wait('@findUser');
+
+      cy.get('[data-cy="input-filter-First Name"]').clear().type('Test');
+
+      cy.get('[data-cy="input-filter-Last Name"]').clear().type('User');
+
+      cy.get('[data-cy="input-filter-Roles"]').clear().type('admin');
+
+      cy.get('[data-cy="input-filter-Email"]').clear().type('pablo@botsfactory.io');
+
+      cy.get('[data-cy="header-adminData.creationDate"] input')
+        .clear()
+        .type('01/09/2022 - 30/09/2022');
+
+      cy.get('[data-cy="header-adminData.lastAuthenticationDate"] input')
+        .clear()
+        .type('06/06/2023 - 06/06/2023');
+
+      cy.get('[data-cy="row"]').should('have.length', 1);
+    }
+  );
 });
