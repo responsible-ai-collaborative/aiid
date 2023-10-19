@@ -16,8 +16,12 @@ import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 const ChecklistsPage = (props) => {
   const {
     location: { pathname },
-    data: { taxa, classifications },
+    data,
   } = props;
+
+  const [taxa, classifications, users] = ['taxa', 'classifications', 'users'].map(
+    (e) => data[e]?.nodes
+  );
 
   const { t } = useTranslation();
 
@@ -26,12 +30,12 @@ const ChecklistsPage = (props) => {
       <AiidHelmet path={pathname}>
         <title>{t('Risk Checklists')}</title>
       </AiidHelmet>
-      <ChecklistsPageBody {...{ taxa, classifications, t }} />
+      <ChecklistsPageBody {...{ taxa, classifications, users }} />
     </>
   );
 };
 
-const ChecklistsPageBody = ({ taxa, classifications, t }) => {
+const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   const [query] = useQueryParams({
     id: StringParam,
   });
@@ -63,7 +67,7 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
         checklist: {
           ...values,
           id: query.id,
-          risks: values.risks
+          risks: (values.risks || [])
             .filter((risk) => !risk.generated)
             .map((risk) => ({
               ...risk,
@@ -95,29 +99,17 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
   if (!query.id) {
     return (
       <>
-        <ChecklistsIndex />
+        <ChecklistsIndex {...{ users }} />
       </>
     );
   }
   if (query.id && savedChecklistLoading) {
     return <Spinner />;
   }
-  if (query.id && !savedChecklistLoading) {
+  if (query.id && savedChecklist) {
     return (
-      <Formik
-        onSubmit={submit}
-        initialValues={
-          savedChecklist || {
-            name: 'Unspecified System',
-            about: '',
-            tags_goals: [],
-            tags_methods: [],
-            tags_other: [],
-            risks: [],
-          }
-        }
-      >
-        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, t, submissionError }} />}
+      <Formik onSubmit={submit} initialValues={savedChecklist}>
+        {(FormProps) => <CheckListForm {...{ ...FormProps, tags, users, submissionError }} />}
       </Formik>
     );
   }
@@ -126,10 +118,10 @@ const ChecklistsPageBody = ({ taxa, classifications, t }) => {
 const classificationsToTags = ({ classifications, taxa }) => {
   const tags = new Set();
 
-  for (const classification of classifications.nodes) {
+  for (const classification of classifications) {
     if (!classification.publish) continue;
 
-    const taxonomy = taxa.nodes.find((t) => t.namespace == classification.namespace);
+    const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
 
     for (const attribute of classification.attributes) {
       const field = taxonomy.field_list.find((f) => f.short_name == attribute.short_name);
@@ -214,6 +206,13 @@ export const query = graphql`
             }
           }
         }
+      }
+    }
+    users: allMongodbCustomDataUsers {
+      nodes {
+        userId
+        first_name
+        last_name
       }
     }
     classifications: allMongodbAiidprodClassifications {
