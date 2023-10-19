@@ -136,6 +136,10 @@ const plugins = [
       feeds: [
         {
           serialize: ({ query: { allMongodbAiidprodReports, allMongodbAiidprodIncidents } }) => {
+            if (allMongodbAiidprodReports.edges.length === 0) {
+              return [{ title: 'There are no reports yet.' }];
+            }
+
             return allMongodbAiidprodReports.edges.map((edge) => {
               const publicID = edge.node.cloudinary_id
                 ? edge.node.cloudinary_id

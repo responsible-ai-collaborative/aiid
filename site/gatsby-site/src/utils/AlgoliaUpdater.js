@@ -385,12 +385,14 @@ class AlgoliaUpdater {
 
     const duplicates = await this.getDuplicates();
 
-    const filters = duplicates
-      .map((d) => d.duplicate_incident_number)
-      .map((id) => `incident_id = ${id}`)
-      .join(' OR ');
+    if (duplicates.length > 0) {
+      const filters = duplicates
+        .map((d) => d.duplicate_incident_number)
+        .map((id) => `incident_id = ${id}`)
+        .join(' OR ');
 
-    await index.deleteBy({ filters });
+      await index.deleteBy({ filters });
+    }
 
     await this.mongoClient.close();
   };
