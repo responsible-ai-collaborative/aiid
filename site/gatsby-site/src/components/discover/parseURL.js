@@ -56,11 +56,9 @@ const generateSearchState = ({ query }) => {
       ...convertStringToRange(query),
     },
     sortBy: query.sortBy,
-
-    // TODO: https://github.com/algolia/instantsearch/issues/5892
-    __configure: {
+    configure: {
       hitsPerPage: 28,
-      distinct: true,
+      distinct: query.hideDuplicates ? true : false,
     },
   };
 };

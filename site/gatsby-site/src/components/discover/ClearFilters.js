@@ -1,17 +1,23 @@
-import React, { useContext } from 'react';
-import { useCurrentRefinements } from 'react-instantsearch';
+import React, { useEffect, useState } from 'react';
+import { Configure, useCurrentRefinements } from 'react-instantsearch';
 import { useInstantSearch } from 'react-instantsearch';
-import { ConfigureContext } from './ConfigureContext';
 
 function ClearButton({ children }) {
-  const { setIndexUiState } = useInstantSearch();
+  const { indexUiState, setIndexUiState } = useInstantSearch();
 
-  const { configure, setConfigure } = useContext(ConfigureContext);
+  const [configure, setConfigure] = useState({ ...indexUiState.configure });
 
   const { items } = useCurrentRefinements();
 
+  useEffect(() => {
+    setConfigure((configure) => ({ ...configure, ...indexUiState.configure }));
+  }, [indexUiState]);
+
   const disabled =
-    items.length == 1 && items?.[0]?.refinements?.[0].value == 'true' && !configure?.distinct;
+    items.length == 1 &&
+    items?.[0]?.refinements?.[0].value == 'true' &&
+    configure?.distinct == false &&
+    !indexUiState.query;
 
   return (
     <button
@@ -20,12 +26,17 @@ function ClearButton({ children }) {
         setIndexUiState((state) => ({
           ...state,
           refinementList: { is_incident_report: ['true'] },
+          range: {},
+          query: '',
+          configure: { distinct: false, hitsPerPage: 28 },
         }));
 
-        setConfigure({ distinct: false, hitsPerPage: 28 });
+        setConfigure((configure) => ({ ...configure, distinct: false }));
       }}
       disabled={disabled}
     >
+      <Configure {...configure} />
+
       {children}
     </button>
   );

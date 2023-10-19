@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from 'flowbite-react';
 import isEqual from 'lodash/isEqual';
 import { Trans } from 'react-i18next';
-import { useInstantSearch } from 'react-instantsearch';
-import { ConfigureContext } from './ConfigureContext';
+import { Configure, useInstantSearch } from 'react-instantsearch';
 
 const findIndex = (displayOptions, currentState) => {
   return displayOptions.findIndex(({ state }) => {
@@ -52,39 +51,38 @@ const displayOptions = [
 const DisplayOptions = () => {
   const { indexUiState, setIndexUiState } = useInstantSearch();
 
-  const { configure, setConfigure } = useContext(ConfigureContext);
-
-  const [refinementList, setRefinementList] = useState({ ...indexUiState.refinementList });
+  const [configure, setConfigure] = useState({ ...indexUiState.configure });
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  useEffect(() => {
-    if (selectedIndex > -1) {
-      const { state } = displayOptions[selectedIndex];
+  const selectItem = useCallback((index) => {
+    const { state } = displayOptions[index];
 
-      setRefinementList({ ...state.refinementList });
-      setConfigure({ ...state.configure });
-    }
-  }, [selectedIndex]);
-
-  useEffect(() => {
-    const index = findIndex(displayOptions, { refinementList, configure });
+    setIndexUiState((previousState) => {
+      return {
+        ...previousState,
+        refinementList: {
+          ...previousState.refinementList,
+          ...state.refinementList,
+        },
+        configure: {
+          ...previousState.configure,
+          ...state.configure,
+        },
+      };
+    });
 
     setSelectedIndex(index);
 
-    const update = { ...indexUiState, refinementList, configure };
+    setConfigure((configure) => ({ ...configure, ...state.configure }));
+  }, []);
 
-    const sameConfigure = isEqual(configure, update.configure);
+  useEffect(() => {
+    const index = findIndex(displayOptions, indexUiState);
 
-    const sameRefinement = isEqual(
-      indexUiState.refinementList.is_incident_report,
-      update.refinementList.is_incident_report
-    );
-
-    if (!sameConfigure || !sameRefinement) {
-      setIndexUiState(update);
-    }
-  }, [indexUiState, refinementList, configure]);
+    setConfigure((configure) => ({ ...configure, ...indexUiState.configure }));
+    setSelectedIndex(index);
+  }, [indexUiState]);
 
   return (
     <div className="flex justify-end px-2 relative floating-label-dropdown">
@@ -92,19 +90,19 @@ const DisplayOptions = () => {
         <Trans>Display Option</Trans>
       </span>
 
-      {selectedIndex > -1 && (
-        <Dropdown label={displayOptions[selectedIndex].text} color={'light'} className="min-w-max">
-          {displayOptions.map(({ text }, index) => (
-            <Dropdown.Item
-              key={text}
-              onClick={() => setSelectedIndex(index)}
-              className={`${text === displayOptions[selectedIndex].text ? 'bg-blue-100' : ''}`}
-            >
-              <span>{text}</span>
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-      )}
+      <Configure {...configure} />
+
+      <Dropdown label={displayOptions[selectedIndex]?.text} color={'light'} className="min-w-max">
+        {displayOptions.map(({ text }, index) => (
+          <Dropdown.Item
+            key={text}
+            onClick={() => selectItem(index)}
+            className={`${text === displayOptions[selectedIndex]?.text ? 'bg-blue-100' : ''}`}
+          >
+            <span>{text}</span>
+          </Dropdown.Item>
+        ))}
+      </Dropdown>
     </div>
   );
 };

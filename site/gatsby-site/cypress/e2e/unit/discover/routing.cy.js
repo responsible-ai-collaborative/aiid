@@ -2,6 +2,8 @@ import parseURL from '../../../../../gatsby-site/src/components/discover/parseUR
 import createURL from '../../../../../gatsby-site/src/components/discover/createURL';
 import { queryConfig } from '../../../../../gatsby-site/src/components/discover/queryParams';
 
+chai.config.truncateThreshold = 0;
+
 describe('Discover routing', () => {
   it('Should parse back and forth a discover URL', () => {
     const indexName = 'instant_search-en';
@@ -28,8 +30,8 @@ describe('Discover routing', () => {
       epoch_date_published: `:1670371200`,
     });
 
-    expect(state.__configure).to.deep.eq({
-      distinct: true,
+    expect(state.configure).to.deep.eq({
+      distinct: false,
       hitsPerPage: 28,
     });
 

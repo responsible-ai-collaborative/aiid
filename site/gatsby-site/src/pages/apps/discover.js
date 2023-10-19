@@ -18,12 +18,18 @@ import { history } from 'instantsearch.js/es/lib/routers';
 import { navigate } from 'gatsby';
 import parseURL from 'components/discover/parseURL';
 import createURL from 'components/discover/createURL';
-import { ConfigureProvider } from 'components/discover/ConfigureContext';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
 );
+
+function mapping() {
+  return {
+    stateToRoute: (uiState) => uiState,
+    routeToState: (routeState = {}) => routeState,
+  };
+}
 
 function DiscoverApp(props) {
   const { locale } = useLocalization();
@@ -64,25 +70,24 @@ function DiscoverApp(props) {
                 navigate(`?${url}`);
               },
             }),
+            stateMapping: mapping(),
           }}
         >
-          <ConfigureProvider>
-            <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
-              <Row className="px-0 mx-0">
-                <Col className="px-0 mx-0">
-                  <SearchBox />
-                </Col>
-              </Row>
+          <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
+            <Row className="px-0 mx-0">
+              <Col className="px-0 mx-0">
+                <SearchBox />
+              </Col>
+            </Row>
 
-              <Controls />
+            <Controls />
 
-              <OptionsModal />
+            <OptionsModal />
 
-              <Hits viewType={viewType} />
+            <Hits viewType={viewType} />
 
-              <Pagination />
-            </Container>
-          </ConfigureProvider>
+            <Pagination />
+          </Container>
         </InstantSearch>
       )}
     </div>
