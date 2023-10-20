@@ -15,6 +15,8 @@ describe('The Discover app', () => {
   it('Should default to incident reports and show at least 30', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
 
     cy.waitForStableDOM();
@@ -384,10 +386,7 @@ describe('The Discover app', () => {
   it('Should not add a trailing slash when loading the discover app', () => {
     cy.visit(url);
 
-    cy.location('search', { timeout: 8000 }).should(
-      'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
-    );
+    cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
   });
 
   it('Should export results to a CSV file', () => {
@@ -439,10 +438,9 @@ describe('The Discover app', () => {
   it('Should set the sort with the value from the URL', () => {
     cy.visit(url);
 
-    cy.location('search', { timeout: 8000 }).should(
-      'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
-    );
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
 
