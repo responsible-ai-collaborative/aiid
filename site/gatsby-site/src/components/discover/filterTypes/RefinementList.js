@@ -58,21 +58,31 @@ const RefinementList = ({
         )}
       </Formik>
       <ListGroup className="max-h-[400px] overflow-y-auto mt-4 border">
-        {items.map((item) => (
-          <button
-            className={`list-group-item text-left ${
-              item.isRefined ? 'bg-green-200 active' : 'hover:bg-gray-200'
-            } cursor-pointer p-3 flex justify-between items-center w-full`}
-            key={item.label}
-            data-cy={`${attribute}-item`}
-            onClick={() => {
-              refine(item.value);
-            }}
-          >
-            {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
-            <Badge color="gray">{item.count}</Badge>
-          </button>
-        ))}
+        {items.map((item) => {
+          const hit = {
+            _highlightResult: {
+              label: {
+                value: item.highlighted,
+              },
+            },
+          };
+
+          return (
+            <button
+              className={`list-group-item text-left ${
+                item.isRefined ? 'bg-green-200 active' : 'hover:bg-gray-200'
+              } cursor-pointer p-3 flex justify-between items-center w-full`}
+              key={item.label}
+              data-cy={`${attribute}-item`}
+              onClick={() => {
+                refine(item.value);
+              }}
+            >
+              {isFromSearch ? <Highlight attribute={'label'} hit={hit} /> : item.label}&nbsp;
+              <Badge color="gray">{item.count}</Badge>
+            </button>
+          );
+        })}
 
         {items.length === 0 && (
           <div className="p-3 flex justify-center" key="no-results">
