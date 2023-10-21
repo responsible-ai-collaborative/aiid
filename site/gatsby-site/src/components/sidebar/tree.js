@@ -3,8 +3,6 @@ import config from '../../../config';
 import TreeNode from './treeNode';
 import { useLocation } from '@reach/router';
 
-const navConfig = config.sidebar.navConfig;
-
 const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
   let subs = [];
 
@@ -59,18 +57,19 @@ const Tree = ({
   localizePath,
   isCollapsed = false,
   additionalNodes = [],
+  items = [],
 }) => {
   const location = useLocation();
 
   const [navSettings, setNavSetting] = useState(
-    subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath)
+    subtreeNav([...items, ...additionalNodes], location.pathname, localizePath)
   );
 
   useEffect(() => {
-    const nodes = subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath);
+    const nodes = subtreeNav([...items, ...additionalNodes], location.pathname, localizePath);
 
     setNavSetting(nodes);
-  }, [additionalNodes]);
+  }, [items, additionalNodes]);
 
   const toggle = (url) => {
     setNavSetting(subtreeNav(navSettings, url, localizePath));

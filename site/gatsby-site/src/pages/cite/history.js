@@ -163,12 +163,16 @@ function IncidentHistoryPage() {
     }
   };
 
+  const reportUrl = incidentId
+    ? `/cite/${incidentId}#r${reportNumber}`
+    : `/reports/${reportNumber}`;
+
   return (
     <div className={'w-full p-1'}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="text-2xl mb-5">{incidentTitle}</h1>
-          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
+          <Link to={reportUrl} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
               <Trans>Back to Report {{ reportNumber }}</Trans>
             </Button>

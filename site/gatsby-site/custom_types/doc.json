@@ -1,0 +1,68 @@
+{
+    "Main" : {
+      "title" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Title"
+        }
+      },
+      "language" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Language",
+          "placeholder" : "en es or fr"
+        }
+      },
+      "slug" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Slug",
+          "placeholder" : "Path to your doc. Example: /about"
+        }
+      },
+      "metatitle" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "metaTitle"
+        }
+      },
+      "metadescription" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "metaDescription"
+        }
+      },
+      "aitranslated" : {
+        "type" : "Boolean",
+        "config" : {
+          "placeholder_false" : "Doc is its original language",
+          "placeholder_true" : "Doc is translated",
+          "default_value" : false,
+          "label" : "aiTranslated"
+        }
+      },
+      "content" : {
+        "type" : "Group",
+        "config" : {
+          "fields" : {
+            "text" : {
+              "type" : "StructuredText",
+              "config" : {
+                "multi" : "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+                "allowTargetBlank" : true,
+                "label" : "text"
+              }
+            },
+            "component" : {
+              "type" : "Text",
+              "config" : {
+                "label" : "Component",
+                "placeholder" : "Name of a React Component you want to appear on the page. Example: Leaderboards"
+              }
+            }
+          },
+          "label" : "content"
+        }
+      }
+    }
+  }

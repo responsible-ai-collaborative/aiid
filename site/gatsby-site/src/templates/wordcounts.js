@@ -50,6 +50,11 @@ const WordCounts = ({ pageContext, ...props }) => {
           </Trans>
         </p>
         <div>
+          {wordClouds && wordClouds.length == 0 && (
+            <div className="flex justify-center">
+              <Trans>There are no reports or incidents to process</Trans>
+            </div>
+          )}
           <ul className="pl-0 list-revert">
             {wordClouds &&
               wordCountsSorted &&

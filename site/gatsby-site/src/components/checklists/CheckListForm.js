@@ -20,6 +20,7 @@ import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useUserContext } from '../../contexts/userContext';
 
 export default function CheckListForm({
   values,
@@ -29,7 +30,14 @@ export default function CheckListForm({
   tags,
   isSubmitting,
   submissionError,
+  users,
 }) {
+  const { user } = useUserContext();
+
+  const userIsOwner = values.owner_id == user.id;
+
+  const owner = users.find((u) => (u.userId = values.owner_id));
+
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
   const { t } = useTranslation();
@@ -55,14 +63,20 @@ export default function CheckListForm({
 
   const [allPrecedents, setAllPrecedents] = useState([]);
 
-  const searchTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
+  const searchTags = [
+    ...(values['tags_goals'] || []),
+    ...(values['tags_methods'] || []),
+    ...(values['tags_other'] || []),
+  ];
 
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, t, addToast });
+    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, addToast, t });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   useEffect(() => {
-    submitForm();
+    if (userIsOwner) {
+      submitForm();
+    }
   }, [values]);
 
   const debouncedSetFieldValue = useRef(debounce(setFieldValue, 1000)).current;
@@ -96,40 +110,48 @@ export default function CheckListForm({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form data-cy="checklist-form" onSubmit={handleSubmit}>
       <Header>
-        <LocalizedLink to="/apps/checklists" className="text-lg">
-          <Trans>Risk Checklists</Trans>
-        </LocalizedLink>
-        <HeaderRow>
-          <h1>
+        <HeaderInfo>
+          <LocalizedLink to="/apps/checklists" className="text-md">
+            <Trans>Risk Checklists</Trans>
+          </LocalizedLink>
+          <h1 className="text-sm my-0">
             <EditableLabel
               title={values.name}
               onChange={(event) => debouncedSetFieldValue('name', event.target.value)}
-              textClasses="text-2xl"
-              iconClasses="text-lg vertical-align"
+              textClasses="text-2xl m-0"
+              iconClasses="text-sm vertical-align leading-3"
+              disabled={!userIsOwner}
             />
           </h1>
-          <HeaderControls>
-            <SavingIndicator {...{ isSubmitting, submissionError }} />
-            <Button color="light" onClick={() => alert('Coming soon')}>
-              <Trans>Subscribe</Trans>
-            </Button>
+          {owner && owner.first_name && owner.last_name && (
+            <div className="text-gray-600">
+              {owner.first_name} {owner.last_name}
+            </div>
+          )}
+        </HeaderInfo>
+        <HeaderControls>
+          <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
+          <Button color="light" onClick={() => alert('Coming soon')}>
+            <Trans>Subscribe</Trans>
+          </Button>
+          {userIsOwner && (
             <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
               <Trans>Delete</Trans>
             </DeleteButton>
-            <ExportDropdown checklist={values} />
-          </HeaderControls>
-        </HeaderRow>
+          )}
+          <ExportDropdown checklist={values} />
+        </HeaderControls>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
-      <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue }} />
+      <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
       <section>
         <SideBySide className="my-4">
-          <GoalsTagInput {...{ values, tags, setFieldValue }} />
-          <MethodsTagInput {...{ values, tags, setFieldValue }} />
+          <GoalsTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
+          <MethodsTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
         </SideBySide>
-        <OtherTagInput {...{ values, tags, setFieldValue }} />
+        <OtherTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
       </section>
       <section>
         <header className="flex mt-6">
@@ -157,20 +179,22 @@ export default function CheckListForm({
             >
               <Trans>Collapse all</Trans>
             </Button>
-            <Button
-              onClick={() => {
-                setFieldValue(
-                  'risks',
-                  [emptyRisk({ generated: false })].concat(values.risks || [])
-                );
-              }}
-            >
-              <Trans>Add Risk</Trans>
-            </Button>
+            {userIsOwner && (
+              <Button
+                onClick={() => {
+                  setFieldValue(
+                    'risks',
+                    [emptyRisk({ generated: false })].concat(values.risks || [])
+                  );
+                }}
+              >
+                <Trans>Add Risk</Trans>
+              </Button>
+            )}
           </div>
         </header>
 
-        {!risksLoading && values.risks.length == 0 && (
+        {!risksLoading && values.risks?.length == 0 && (
           <Trans>No risks yet. Try adding some system tags.</Trans>
         )}
         <RiskSections
@@ -185,6 +209,7 @@ export default function CheckListForm({
             removeRisk,
             changeSort,
             updateRisk,
+            userIsOwner,
           }}
         />
       </section>
@@ -192,7 +217,7 @@ export default function CheckListForm({
   );
 }
 
-const AboutSystem = ({ formAbout, debouncedSetFieldValue }) => {
+const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
   const [about, setAbout] = useState(formAbout);
 
   const { t } = useTranslation();
@@ -203,13 +228,15 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue }) => {
         <Trans>About System</Trans>
       </Label>
       <Textarea
+        data-cy="about"
         placeholder={t(`Human-readable notes on the system under investigation`)}
         value={about}
-        row={4}
+        rows={4}
         onChange={(event) => {
           setAbout(event.target.value);
           debouncedSetFieldValue('about', event.target.value);
         }}
+        disabled={!userIsOwner}
       />
     </section>
   );
@@ -224,6 +251,7 @@ const QueryTagInput = ({
   tags,
   setFieldValue,
   placeHolder,
+  userIsOwner,
 }) => (
   <div className="bootstrap">
     <Label for={id}>{title}</Label>
@@ -236,11 +264,12 @@ const QueryTagInput = ({
       }}
       labelKey={labelKey}
       placeHolder={placeHolder}
+      disabled={!userIsOwner}
     />
   </div>
 );
 
-const GoalsTagInput = ({ values, tags, setFieldValue }) => (
+const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
     {...{
       title: 'Goals',
@@ -248,14 +277,17 @@ const GoalsTagInput = ({ values, tags, setFieldValue }) => (
       idValue: values['tags_goals'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
-        tagParts[0] == 'GMF' && ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]),
-      ...{ tags, setFieldValue },
+        tagParts[0] == 'GMF' &&
+        ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]) &&
+        tagParts[2] &&
+        tagParts[2] !== 'null',
       placeHolder: 'Goals for which to list associated risks',
+      ...{ tags, setFieldValue, userIsOwner },
     }}
   />
 );
 
-const MethodsTagInput = ({ values, tags, setFieldValue }) => (
+const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
     {...{
       title: 'Methods',
@@ -264,14 +296,16 @@ const MethodsTagInput = ({ values, tags, setFieldValue }) => (
       labelKey: abbreviatedTag,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
-        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]),
-      ...{ tags, setFieldValue },
+        ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]) &&
+        tagParts[2] &&
+        tagParts[2] !== 'null',
       placeHolder: 'Methods for which to list associated risks',
+      ...{ tags, setFieldValue, userIsOwner },
     }}
   />
 );
 
-const OtherTagInput = ({ values, tags, setFieldValue }) => (
+const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
     {...{
       title: 'Other',
@@ -286,56 +320,49 @@ const OtherTagInput = ({ values, tags, setFieldValue }) => (
           'Known AI Technology',
           'Potential AI Technology',
         ].includes(tagParts[1]),
-      ...{ tags, setFieldValue },
       placeHolder: 'Other tags for which to list associated risks',
+      ...{ tags, setFieldValue, userIsOwner },
     }}
   />
 );
 
-const Header = (props) => (
-  <header {...{ ...props, className: `titleWrapper ${props.className}` }}>{props.children}</header>
-);
+const Header = (props) => {
+  const className = `
+    border-[rgb(230,236,241)] border-b-[1px]
+    lg:min-h-[5.5rem]
+    flex justify-between flex-wrap gap-4
+    pb-2 -mt-2
+    ${props.className}
+  `;
 
-const HeaderRow = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `w-full flex items-center flex-wrap justify-between gap-3 ${props.className}`,
-    }}
-  >
-    {props.children}
-  </div>
-);
+  return <header {...{ ...props, className }}>{props.children}</header>;
+};
 
-const HeaderControls = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`,
-    }}
-  >
-    {props.children}
-  </div>
-);
+const HeaderInfo = (props) => {
+  const className = `flex flex-col justify-center ${props.className}`;
 
-const SideBySide = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `flex flex-col md:flex-row gap-2 [&>*]:w-full [&>*]:md:w-1/2 [&>*]:h-full ${props.className}`,
-    }}
-  >
-    {props.children}
-  </div>
-);
+  return <div {...{ ...props, className }}>{props.children}</div>;
+};
 
-// TODO: Unless the network connection is fairly slow
-// (check with throttling in browser devtools),
-// submissions happen fast enough that this never rerenders with
-// isSubmitting == true.
-// This needs to be better optimized for the render cycle.
-function SavingIndicator({ isSubmitting, submissionError }) {
-  const className = 'text-lg text-gray-500 inline-block mx-4';
+const HeaderControls = (props) => {
+  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`;
+
+  return <div {...{ ...props, className }}>{props.children}</div>;
+};
+
+const SideBySide = (props) => {
+  const className = `
+    flex flex-col md:flex-row gap-2
+    [&>*]:w-full [&>*]:md:w-1/2
+    [&>*]:h-full 
+    ${props.className}
+  `;
+
+  return <div {...{ ...props, className }}>{props.children}</div>;
+};
+
+function SavingIndicator({ isSubmitting, submissionError, className }) {
+  className = `text-lg text-gray-500 inline-block ${className}`;
 
   if (isSubmitting) {
     return (
@@ -403,14 +430,19 @@ const searchRisks = async ({
   setFieldValue,
   setRisksLoading,
   setAllPrecedents,
-  t,
   addToast,
+  t,
 }) => {
-  const queryTags = [...values['tags_goals'], ...values['tags_methods'], ...values['tags_other']];
+  const queryTags = [
+    ...(values['tags_goals'] || []),
+    ...(values['tags_methods'] || []),
+    ...(values['tags_other'] || []),
+  ];
 
   if (queryTags.length == 0) return;
 
   setRisksLoading(true);
+
   const response = await fetch(
     '/api/riskManagement/v1/risks?tags=' + encodeURIComponent(queryTags.join('___'))
   );
@@ -434,7 +466,7 @@ const searchRisks = async ({
         startClosed: true,
       };
 
-      const notDuplicate = [...risksToAdd, ...values.risks].every(
+      const notDuplicate = [...risksToAdd, ...(values.risks || [])].every(
         (existingRisk) => !areDuplicates(existingRisk, newRisk)
       );
 
@@ -447,6 +479,7 @@ const searchRisks = async ({
         }
       }
     }
+
     setAllPrecedents(allPrecedents);
 
     setFieldValue('risks', values.risks.concat(risksToAdd));

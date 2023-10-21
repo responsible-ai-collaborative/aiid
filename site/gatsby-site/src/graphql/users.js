@@ -40,8 +40,8 @@ export const FIND_USER = gql`
 `;
 
 export const FIND_USERS_BY_ROLE = gql`
-  query FindUsersByRole($role: String!) {
-    users(query: { roles_in: [$role] }) {
+  query FindUsersByRole($role: [String!]) {
+    users(query: { roles_in: $role }) {
       roles
       userId
       first_name
