@@ -4,8 +4,6 @@ import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import SORTING_LIST from './SORTING_LISTS';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
-import isEqual from 'lodash/isEqual';
 import { useInstantSearch } from 'react-instantsearch';
 
 export default function Sorting() {
@@ -26,24 +24,8 @@ export default function Sorting() {
   };
 
   useEffect(() => {
-    let indexName = '';
-
     if (selectedItem && selectedItem[`value_${locale}`] && indexUiState.refinementList) {
-      indexName = selectedItem[`value_${locale}`];
-
-      let hasOnlyDefaultValues = isEqual(
-        DEFAULT_SEARCH_KEYS_VALUES.sort(),
-        Object.keys(indexUiState.refinementList).sort()
-      );
-
-      if (
-        indexUiState.query == '' &&
-        Object.keys(indexUiState.refinementList).length > 0 &&
-        selectedItem.default &&
-        hasOnlyDefaultValues
-      ) {
-        indexName += '-featured';
-      }
+      const indexName = selectedItem[`value_${locale}`];
 
       if (indexName != currentRefinement) {
         refine(indexName);
