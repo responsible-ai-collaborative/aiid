@@ -36,7 +36,7 @@ function DiscoverApp(props) {
 
   const [viewType] = useState(VIEW_TYPES.INCIDENTS);
 
-  const [indexName] = useState(`instant_search-${locale}`);
+  const [indexName] = useState(`instant_search-${locale}-featured`);
 
   const [mounted, setMounted] = useState(false);
 

@@ -8,10 +8,13 @@ import Label from 'components/forms/Label';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { useInstantSearch, useClearRefinements } from 'react-instantsearch';
 
-export default function RefinementList({ placeholder, attribute }) {
+export default function RefinementList({ attribute, placeholder, ...props }) {
   const { indexUiState } = useInstantSearch();
 
-  const { refine, isFromSearch, searchForItems, items } = useRefinementList({ attribute });
+  const { refine, isFromSearch, searchForItems, items } = useRefinementList({
+    attribute,
+    ...props,
+  });
 
   const selectedItems = indexUiState?.refinementList?.[attribute] || [];
 
