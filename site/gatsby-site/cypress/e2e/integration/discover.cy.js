@@ -76,6 +76,8 @@ describe('The Discover app', () => {
     () => {
       cy.visit(url);
 
+      cy.waitForStableDOM();
+
       cy.get('[data-cy=expand-filters]').click();
 
       cy.waitForStableDOM();
@@ -412,6 +414,8 @@ describe('The Discover app', () => {
 
   it('Should not add a trailing slash when loading the discover app', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
   });
