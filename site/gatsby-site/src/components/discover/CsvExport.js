@@ -26,8 +26,14 @@ const convertData = (hits) => {
   }));
 };
 
-const CsvExport = ({ hits, isSearchStalled }) => {
+export default function CsvExport() {
   const [data, setData] = useState(null);
+
+  const { hits } = useHits();
+
+  const { status } = useInstantSearch();
+
+  const isLoading = status === 'loading' || status === 'stalled';
 
   useEffect(() => {
     if (hits) {
@@ -37,7 +43,7 @@ const CsvExport = ({ hits, isSearchStalled }) => {
 
   return (
     <div>
-      {!isSearchStalled && (
+      {!isLoading && (
         <Tooltip
           content={
             <Trans>
@@ -69,18 +75,4 @@ const CsvExport = ({ hits, isSearchStalled }) => {
       )}
     </div>
   );
-};
-
-export default connectHits(CsvExport);
-
-function connectHits(Component) {
-  const Hits = (props) => {
-    const data = useHits(props);
-
-    const { status } = useInstantSearch();
-
-    return <Component {...props} {...data} isSearchStalled={status == 'stalled'} />;
-  };
-
-  return Hits;
 }
