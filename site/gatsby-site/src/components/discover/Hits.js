@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHits, useInstantSearch, useRefinementList } from 'react-instantsearch';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
@@ -6,18 +6,18 @@ import { useQueryParam } from 'use-query-params';
 import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
 
-const Hits = ({ hits, isSearchStalled, viewType }) => {
+export default function Hits({ viewType, ...props }) {
+  const { status, results } = useInstantSearch();
+
+  const { hits } = useHits(props);
+
   const [display] = useQueryParam('display', DisplayModeEnumParam);
-
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const { refine } = useRefinementList({ attribute: 'incident_id' });
 
-  if (!isSearchStalled && hits.length === 0) {
+  const isLoading = status === 'loading' || status === 'stalled';
+
+  if (!results.__isArtificial && results.nbHits === 0) {
     return (
       <div className="tw-no-results">
         <p>Your search returned no results.</p>
@@ -25,10 +25,6 @@ const Hits = ({ hits, isSearchStalled, viewType }) => {
       </div>
     );
   }
-
-  if (!isMounted) return <></>;
-
-  const isLoading = isSearchStalled && isMounted;
 
   return (
     <div
@@ -68,18 +64,4 @@ const Hits = ({ hits, isSearchStalled, viewType }) => {
       )}
     </div>
   );
-};
-
-export default connectHits(Hits);
-
-function connectHits(Component) {
-  const Hits = (props) => {
-    const data = useHits(props);
-
-    const { status } = useInstantSearch();
-
-    return <Component {...props} {...data} isSearchStalled={status == 'stalled'} />;
-  };
-
-  return Hits;
 }
