@@ -8,15 +8,10 @@ import Label from 'components/forms/Label';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { useInstantSearch, useClearRefinements } from 'react-instantsearch';
 
-const RefinementList = ({
-  items,
-  isFromSearch,
-  refine,
-  searchForItems,
-  placeholder,
-  attribute,
-}) => {
+export default function RefinementList({ placeholder, attribute }) {
   const { indexUiState } = useInstantSearch();
+
+  const { refine, isFromSearch, searchForItems, items } = useRefinementList({ attribute });
 
   const selectedItems = indexUiState?.refinementList?.[attribute] || [];
 
@@ -95,19 +90,7 @@ const RefinementList = ({
       </Button>
     </div>
   );
-};
+}
 
 export const touchedCount = ({ searchState, attribute }) =>
   searchState.refinementList?.[attribute] ? searchState.refinementList[attribute].length : 0;
-
-export default connectRefinementList(RefinementList);
-
-function connectRefinementList(Component) {
-  const RefinementList = (props) => {
-    const data = useRefinementList(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return RefinementList;
-}
