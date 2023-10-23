@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useHits, useInstantSearch, useRefinementList } from 'react-instantsearch';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
 import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
+import { VIEW_TYPES } from 'utils/discover';
 
-export default function Hits({ viewType, ...props }) {
-  const { status, results } = useInstantSearch();
+export default function Hits({ ...props }) {
+  const { status, results, indexUiState } = useInstantSearch();
 
   const { hits } = useHits(props);
 
@@ -16,6 +17,14 @@ export default function Hits({ viewType, ...props }) {
   const { refine } = useRefinementList({ attribute: 'incident_id' });
 
   const isLoading = status === 'loading' || status === 'stalled';
+
+  const viewType = useMemo(() => {
+    return indexUiState.configure.distinct === true &&
+      indexUiState.refinementList.is_incident_report.length > 0 &&
+      indexUiState.refinementList.is_incident_report[0] === 'true'
+      ? VIEW_TYPES.INCIDENTS
+      : VIEW_TYPES.REPORTS;
+  }, [indexUiState]);
 
   if (!results.__isArtificial && results.nbHits === 0) {
     return (

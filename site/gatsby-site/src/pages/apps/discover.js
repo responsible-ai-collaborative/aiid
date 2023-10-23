@@ -13,7 +13,6 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
-import { VIEW_TYPES } from 'utils/discover';
 import { history } from 'instantsearch.js/es/lib/routers';
 import { navigate } from 'gatsby';
 import parseURL from 'components/discover/parseURL';
@@ -33,8 +32,6 @@ function mapping() {
 
 function DiscoverApp(props) {
   const { locale } = useLocalization();
-
-  const [viewType] = useState(VIEW_TYPES.INCIDENTS);
 
   const [indexName] = useState(`instant_search-${locale}-featured`);
 
@@ -84,7 +81,7 @@ function DiscoverApp(props) {
 
             <OptionsModal />
 
-            <Hits viewType={viewType} />
+            <Hits />
 
             <Pagination />
           </Container>
