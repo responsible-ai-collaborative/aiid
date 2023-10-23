@@ -92,6 +92,8 @@ describe('The Discover app', () => {
 
       cy.get('[data-cy="incident_id-item"]:contains("34")', { timeout: 8000 }).first().click();
 
+      cy.waitForStableDOM();
+
       cy.url().should('include', 'incident_id=34');
 
       cy.waitForStableDOM();
