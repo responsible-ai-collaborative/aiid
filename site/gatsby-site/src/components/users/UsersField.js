@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useField } from 'formik';
 import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 import { useQuery } from '@apollo/client';
-import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
+import { FIND_USERS } from '../../graphql/users';
 
 const filterBy = (option, text) => {
   return (
@@ -15,7 +15,7 @@ const filterBy = (option, text) => {
 export default function UsersField({ id, name, placeHolder = '' }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
-  const { data } = useQuery(FIND_USERS_FIELDS_ONLY);
+  const { data } = useQuery(FIND_USERS);
 
   const [loading, setLoading] = useState(true);
 
@@ -31,11 +31,16 @@ export default function UsersField({ id, name, placeHolder = '' }) {
   useEffect(() => {
     if (data?.users) {
       setSelected((selected) =>
-        selected.map(({ id }) => {
-          const { userId, first_name, last_name } = data.users.find((user) => user.userId == id);
+        selected
+          .map(({ id }) => {
+            const user = data.users.find((user) => user.userId == id);
 
-          return { id: userId, first_name, last_name };
-        })
+            if (!user) return null;
+            const { userId, first_name, last_name } = user;
+
+            return { id: userId, first_name, last_name };
+          })
+          .filter(Boolean)
       );
 
       setLoading(false);

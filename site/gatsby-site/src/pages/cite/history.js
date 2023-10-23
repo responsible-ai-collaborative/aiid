@@ -3,7 +3,7 @@ import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { FIND_REPORT, FIND_REPORT_HISTORY, UPDATE_REPORT } from '../../graphql/reports';
-import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
+import { FIND_USERS } from '../../graphql/users';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
@@ -41,7 +41,7 @@ function IncidentHistoryPage() {
 
   const [report, setReport] = useState(null);
 
-  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
+  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
 
   const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
     fetchPolicy: 'network-only',
