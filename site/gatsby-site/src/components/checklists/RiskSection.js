@@ -77,7 +77,8 @@ export default function RiskSection({
               )}
             >
               <FontAwesomeIcon icon={faComputer} className="mr-1" />
-              Auto-generated
+              <span className="md:hidden">Auto</span>
+              <span className="hidden md:inline">Auto-generated</span>
             </HeaderTextWithIcon>
           ) : (
             <HeaderTextWithIcon
@@ -145,6 +146,7 @@ export default function RiskSection({
                 onChange={(value) => updateRisk(risk, { tags: value })}
                 options={tags}
                 disabled={!userIsOwner}
+                allowNew={false}
               />
             </div>
           </PrecedentsQuery>
@@ -333,7 +335,7 @@ const HeaderItemsGroup = (props) => (
   <div
     {...{
       ...props,
-      className: `hidden md:flex px-2 gap-2 bg-white items-center ${props.className}`,
+      className: `md:flex px-2 gap-2 bg-white items-center ${props.className}`,
     }}
   >
     {props.children}
@@ -450,6 +452,14 @@ const byProperty = (p) => (a, b) => {
   }
   if (isNullish(a?.[p]) && !isNullish(b?.[p])) {
     return 1;
+  }
+
+  // Not applicable should always be last
+  if (a[p] == 'Not Applicable' && b[p] != 'Not Applicable') {
+    return 1;
+  }
+  if (a[p] != 'Not Applicable' && b[p] == 'Not Applicable') {
+    return -1;
   }
 
   // Sort numerically if you can.

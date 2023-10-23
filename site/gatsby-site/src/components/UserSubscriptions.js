@@ -61,11 +61,16 @@ const UserSubscriptions = () => {
 
   useEffect(() => {
     setIncidentSubscriptions(
-      data?.subscriptions.filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
+      data?.subscriptions.filter(
+        (subscription) =>
+          subscription.type === SUBSCRIPTION_TYPE.incident && subscription.incident_id
+      )
     );
 
     setEntitySubscriptions(
-      data?.subscriptions.filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.entity)
+      data?.subscriptions.filter(
+        (subscription) => subscription.type === SUBSCRIPTION_TYPE.entity && subscription.entityId
+      )
     );
 
     const hasSubscription = data?.subscriptions.some(
