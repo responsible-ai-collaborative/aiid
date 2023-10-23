@@ -83,7 +83,7 @@ const exportJson = (checklist) => {
 
   const a = document.createElement('a');
 
-  a.setAttribute('href', 'data:text/json,' + json);
+  a.setAttribute('href', 'data:text/json,' + encodeURIComponent(json));
   a.setAttribute('download', `${checklist.name} - Risk Checklist.json`);
   a.click();
 };
@@ -179,11 +179,11 @@ const exportHtml = (checklist) => {
                     <div className="value">{risk.severity}</div>
                   </section>
                 )}
-                {risk.notes && (
+                {risk.risk_notes && (
                   <section className="notes">
                     <h4 className="title">Notes</h4>
                     <div className="value text" style={{ whiteSpace: 'pre-wrap' }}>
-                      {risk.notes}
+                      {risk.risk_notes}
                     </div>
                   </section>
                 )}
@@ -222,9 +222,9 @@ const exportCsv = (checklist) => {
   const csv = rowsToCsv([
     ['Title', checklist.name],
     ['About', checklist.about],
-    ['Goals Tags', checklist.tags_goals],
-    ['Methods Tags', checklist.tags_methods],
-    ['Other Tags', checklist.tags_other],
+    ['Goals Tags', (checklist.tags_goals || []).join(', ')],
+    ['Methods Tags', (checklist.tags_methods || []).join(', ')],
+    ['Other Tags', (checklist.tags_other || []).join(', ')],
     [''],
     ['== Risks =='],
     [''],
@@ -235,8 +235,8 @@ const exportCsv = (checklist) => {
         ['Status', /*        */ r.risk_status],
         ['Severity', /*      */ r.severity],
         ['Likelihood', /*    */ r.likelihood],
-        ['Precedents (AIID #)', r.precedents.map((p) => p.incident_id)],
-        ['Notes', /*         */ r.notes],
+        ['Precedents (AIID #)', (r.precedents || []).map((p) => p.incident_id).join(', ')],
+        ['Notes', /*         */ r.risk_notes],
 
         // Show headings in first row, values in rest
       ].map((pair) => (i == 0 ? pair[0] : pair[1]))
