@@ -12,6 +12,7 @@ export default function Tags({
   labelKey,
   options,
   className,
+  allowNew = true,
   stayOpen = false,
 }) {
   const [open, setOpen] = useState(false);
@@ -44,7 +45,6 @@ export default function Tags({
         }
         setOpen(false);
       }}
-      allowNew
       multiple
       open={open && stayOpen ? true : undefined}
       renderMenu={options ? undefined : () => null}
@@ -57,6 +57,7 @@ export default function Tags({
         labelKey,
         ref,
         id,
+        allowNew,
       }}
     />
   );
