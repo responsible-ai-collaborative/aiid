@@ -1,103 +1,174 @@
 exports = async function (input) {
+  let msg = "";
+  const log = (s) => msg += (
+    typeof s == "string" ? s : JSON.stringify(s)
+  ) + '\n' ;
 
-  try {
-    // TODO: This should add documents to the notifications collection
-    // for each subscription to a checklist that has a query
-    // matched by the updated value.
-    //
-    const changedAttributes = [];
-
-    for (const newAttribute of input.new_attributes) {
-      const matchingOldAttribute = input.old_attributes?.find(
-        (oldAttribute) => oldAttribute.short_name == newAttribute.short_name
-      );
-
-      if (
-        newAttribute?.value_json != matchingOldAttribute?.value_json &&
-        newAttribute?.value_json != '""' &&
-        newAttribute?.value_json != null
-      ) {
-        changedAttributes.push(newAttribute);
-      }
-    }
-
-    const oldTags = tagsFromClassification({ 
-      namespace: input.namespace,
-      attributes: input.old_attributes 
-    });
-
-    const newTags = tagsFromClassification({
-      namespace: input.namespace,
-      attributes: changedAttributes
-    }).filter(tag => !oldTags.includes(tag));
-
-
-    const checklistsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("checklists");
-
-    const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
-    
-    const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
-
-    const subscriptions = await subscriptionsCollection.find({
-      type: 'checklist'
-    }).toArray();
-
-  //  const subscriptions = [];
+  // TODO: This should add documents to the notifications collection
+  // for each subscription to a checklist that has a query
+  // matched by the updated value.
   //
-  //  while (await subscriptionsCursor.hasNext()) {
-  //    const subscription = await subscriptionsCursor.next(); 
-  //    
-  //    subscriptions.push(subscription);
-  //  }
+  const changedAttributes = [];
 
-    const out = [];
 
-    const checklists = [];
+  for (const newAttribute of input.new_attributes) {
+    const matchingOldAttribute = input.old_attributes?.find(
+      (oldAttribute) => oldAttribute.short_name == newAttribute.short_name
+    );
 
-    for (const subscription of subscriptions) {
-      const checklist = await checklistsCollection.findOne({ id: subscription.checklistId });
+    if (
+      newAttribute?.value_json != matchingOldAttribute?.value_json &&
+      newAttribute?.value_json != '""' &&
+      newAttribute?.value_json != null
+    ) {
+      changedAttributes.push(newAttribute);
+    }
+  }
 
-      checklists.push(checklist);
+  const oldTags = tagsFromClassification({ 
+    namespace: input.namespace,
+    attributes: input.old_attributes 
+  });
 
-      const queryTags = [
-        ...checklist.tags_goals,
-        ...checklist.tags_methods,
-        ...checklist.tags_other
-      ];
+  const allCurrentTags = tagsFromClassification({
+    namespace: input.namespace,
+    attributes: changedAttributes
+  });
+
+  const newTags = allCurrentTags.filter(tag => !oldTags.includes(tag));
+
+
+  const checklistsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("checklists");
+
+  const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   
-      const risks = await context.functions.execute('risksResolver', { tags: queryTags});
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
 
-      const outItem = { allRisks: risks.map(risk => risk.tag) };
-  
-      // risks for which all precedents are in input.incidents
-      // would not have been risks but for this incident classification
-      const newRisks = risks.filter(risk => {
-        for (const precedent of risk.precedents) {
-          if (!input.incidents.includes(precedent.incident_id)) {
-            return false;
-          }
-        } 
-        return true;
-      });
+  const subscriptions = await subscriptionsCollection.find({
+    type: 'checklist'
+  }).toArray();
 
-      if (newRisks.length > 0) {
-        notificationsCollection.insertOne({
-          type: 'checklist',
-          processed: false,
-          incident_id: input.incidents[0], // TODO: Multiple?
-          checklist_id: subscription.checklistId,
-        });
+
+  const out = [];
+
+  const checklists = [];
+
+  for (const subscription of subscriptions) {
+    
+    log("subscription")
+    log(subscription)
+    log("")
+
+    const checklist = await checklistsCollection.findOne({ id: subscription.checklistId });
+
+    log("checklist")
+    log(checklist)
+    log("")
+
+    checklists.push(checklist);
+
+    const queryTags = [
+      ...checklist.tags_goals,
+      ...checklist.tags_methods,
+      ...checklist.tags_other
+    ];
+
+    log("queryTags")
+    log(queryTags)
+    log("")
+
+    const risks = await context.functions.execute('risksResolver', { tags: queryTags});
+
+//    log("risks")
+//    log(risks)
+//    log("")
+
+    const outItem = { allRisks: risks.map(risk => risk.tag) };
+
+    // TODO: Notification should be triggered in any of these cases:
+    //
+    // 1. The user adds a new risk tag to a classification AND
+    //    that risk is included in `risks` AND
+    //    this incident is the only precedent for that risk.
+    //
+    // 2. The user adds a new query (non-risk) tag to a classification AND
+    //    that tag matches the query AND
+    //    there is a risk included in the `risks` for which (
+    //      this incident is the only precedent AND
+    //      none of the classification's other tags match the query
+    //    )
+
+    const thisIncidentIsTheOnlyPrecedent = (risk) => (
+      risk.precedents.length == 1 &&
+      input.incidents.includes(risk.precedents[0].incident_id)
+    )
+
+    const allCurrentTagsMatchingQuery = allCurrentTags.filter(
+      tag => queryTags.includes(tag)
+    );
+
+    const isTheOnlyMatchingTag = (tag) => (
+      allCurrentTagsMatchingQuery.length == 1 && 
+      allCurrentTagsMatchingQuery[0] == tag 
+    );
+
+    const newRiskTags = [];
+
+    for (const newTag in newTags) {
+      log("newTag")
+      log(newTag)
+      log("")
+
+      const newTagRisk = risks.find(r => r.tag == newTag);
+
+      log("newTagRisk")
+      log(newTagRisk)
+      log("")
+
+      if (newTagRisk && thisIncidentIsTheOnlyPrecedent(newTagRisk)) {
+        log("this incident is the only precedent")
+        newRiskTags.push(newTag);
       }
 
-      outItem.newRisks = newRisks.map(risk => risk.tag);
-
-      out.push(outItem);
+      if (isTheOnlyMatchingTag(newTag)) {
+        log(newTag + " is the only matching tag...")
+        for (const risk of risks) {
+          log(risk)
+          if (thisIncidentIsTheOnlyPrecedent(risk)) {
+            log("Is the only precedent for " + risk.tag);
+            newRiskTags.push(risk.tag);
+          } else {
+            log("Not the only precedent for " + risk.tag);
+          }
+        }
+      }
     }
 
-    return { msg: JSON.stringify({ subscriptions, oldTags, newTags, out }, null, 2) };
-  } catch (error) {
-    return { msg: 'error' }
+    if (newRiskTags.length > 0) {
+      notificationsCollection.insertOne({
+        type: 'checklist',
+        processed: false,
+        incident_id: input.incidents[0], // TODO: Multiple?
+        checklist_id: subscription.checklistId,
+      });
+    }
+
+    outItem.newRisksTags = newRiskTags;
+
+    out.push(outItem);
   }
+
+//  : JSON.stringify({
+//    input,
+//    changedAttributes,
+//    oldTags,
+//    allCurrentTags,
+//    newTags,
+//    subscriptions,
+//    out,
+//  }, null, 2)
+
+  return { msg };
 };
 
 if (typeof module === 'object') {

@@ -1,7 +1,7 @@
 [
     {
-        "name": "linkReportsToIncidents",
-        "private": false
+        "name": "getEmailTemplateEntityIncidentUpdated",
+        "private": true
     },
     {
         "name": "apiRequest",
@@ -9,7 +9,11 @@
         "disable_arg_logs": true
     },
     {
-        "name": "logIncidentHistory",
+        "name": "passwordReset",
+        "private": true
+    },
+    {
+        "name": "updateOneReportTranslation",
         "private": false
     },
     {
@@ -17,29 +21,8 @@
         "private": false
     },
     {
-        "name": "getEmailTemplateChecklistUpdate",
-        "private": false,
-        "disable_arg_logs": true
-    },
-    {
-        "name": "getEmailTemplateIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateEntityIncidentUpdated",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplatePasswordReset",
-        "private": true
-    },
-    {
-        "name": "logRollbar",
-        "private": true
-    },
-    {
-        "name": "onNewUser",
-        "private": true
+        "name": "processNotifications",
+        "private": false
     },
     {
         "name": "reportTranslations",
@@ -50,20 +33,59 @@
         "private": false
     },
     {
-        "name": "getUserAdminData",
-        "private": false,
-        "disable_arg_logs": true
+        "name": "getEmailTemplatePasswordReset",
+        "private": true
     },
     {
-        "name": "updateOneReportTranslation",
-        "private": false
+        "name": "processChecklistSubscriptions",
+        "private": false,
+        "disable_arg_logs": true
     },
     {
         "name": "getEmailTemplateSubmissionApproved",
         "private": true
     },
     {
-        "name": "passwordReset",
+        "name": "onNewUser",
+        "private": true
+    },
+    {
+        "name": "risksResolver",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "confirmUser",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewIncident",
+        "private": true
+    },
+    {
+        "name": "getUserAdminData",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "getEmailTemplateConfirmEmail",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewReportAddedToAnIncident",
+        "private": true
+    },
+    {
+        "name": "addChecklistNotifications",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "linkReportsToIncidents",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateIncidentUpdate",
         "private": true
     },
     {
@@ -71,44 +93,37 @@
         "private": true
     },
     {
-        "name": "promoteSubmissionToReport",
-        "private": false
-    },
-    {
-        "name": "processNotifications",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateNewReportAddedToAnIncident",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateConfirmEmail",
-        "private": true
-    },
-    {
-        "name": "confirmUser",
-        "private": true
-    },
-    {
-        "name": "getUser",
-        "private": false
-    },
-    {
         "name": "onNewIncident",
         "private": false,
         "disable_arg_logs": true
+    },
+    {
+        "name": "onIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateChecklistUpdate",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "logRollbar",
+        "private": true
     },
     {
         "name": "sendEmail",
         "private": false
     },
     {
-        "name": "getEmailTemplateNewIncident",
-        "private": true
+        "name": "logIncidentHistory",
+        "private": false
     },
     {
-        "name": "onIncidentUpdate",
-        "private": true
+        "name": "promoteSubmissionToReport",
+        "private": false
+    },
+    {
+        "name": "getUser",
+        "private": false
     }
 ]

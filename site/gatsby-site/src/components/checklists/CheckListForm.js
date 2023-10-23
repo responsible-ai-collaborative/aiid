@@ -38,6 +38,7 @@ export default function CheckListForm({
 
   const addToast = useToastContext();
 
+  // TODO: Also delete subscriptions to checklist
   const confirmDeleteChecklist = async (id) => {
     if (window.confirm('Delete this checklist?')) {
       try {

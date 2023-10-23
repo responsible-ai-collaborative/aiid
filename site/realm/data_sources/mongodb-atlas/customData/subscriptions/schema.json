@@ -3,14 +3,14 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "checklistId": {
+            "bsonType": "string"
+        },
         "entityId": {
             "bsonType": "string"
         },
         "incident_id": {
             "bsonType": "int"
-        },
-        "checklistId": {
-            "bsonType": "string"
         },
         "type": {
             "bsonType": "string"

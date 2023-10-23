@@ -210,13 +210,25 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         };
       }
 
+      await upsertClassification({
+        variables: {
+          query: {
+            ...incidentsQuery,
+            ...reportsQuery,
+            namespace,
+          },
+          data,
+        },
+      });
+
       if (incidentId) {
-        const oldAttributes = allClassificationsData?.classifications
-          ?.find(
-            (c) =>
-              c.incidents.map((i) => i.incident_id).includes(incidentId) && c.namespace == namespace
-          )
-          ?.attributes.map((a) => ({ ...a, __typename: undefined }));
+        const oldClassification = allClassificationsData?.classifications?.find(
+          (c) =>
+            c.incidents.map((i) => i.incident_id).includes(incidentId) && c.namespace == namespace
+        );
+
+        const oldAttributes =
+          oldClassification?.attributes.map((a) => ({ ...a, __typename: undefined })) || [];
 
         const addChecklistNotificationsPayload = await addChecklistNotifications({
           variables: {
@@ -234,17 +246,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           addChecklistNotificationsPayload.data.addChecklistNotifications.msg
         );
       }
-
-      await upsertClassification({
-        variables: {
-          query: {
-            ...incidentsQuery,
-            ...reportsQuery,
-            namespace,
-          },
-          data,
-        },
-      });
     } catch (e) {
       addToast({
         message: <>Error updating classification data: {e.message}</>,

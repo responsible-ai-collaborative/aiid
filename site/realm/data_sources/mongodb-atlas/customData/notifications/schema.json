@@ -3,11 +3,11 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "incident_id": {
-            "bsonType": "int"
-        },
         "checklist_id": {
             "bsonType": "string"
+        },
+        "incident_id": {
+            "bsonType": "int"
         },
         "processed": {
             "bsonType": "bool"

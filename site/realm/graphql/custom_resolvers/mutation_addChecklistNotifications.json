@@ -1,24 +1,16 @@
 {
     "field_name": "addChecklistNotifications",
     "function_name": "addChecklistNotifications",
-    "input_type_format": "custom",
     "input_type": {
-        "title": "addChecklistNotificationsInput",
-        "type": "object",
         "properties": {
-            "old_attributes": {
+            "incidents": {
                 "bsonType": "array",
                 "items": {
-                    "bsonType": "object",
-                    "properties": {
-                        "short_name": {
-                            "bsonType": "string"
-                        },
-                        "value_json": {
-                            "bsonType": "string"
-                        }
-                    }
+                    "bsonType": "int"
                 }
+            },
+            "namespace": {
+                "bsonType": "string"
             },
             "new_attributes": {
                 "bsonType": "array",
@@ -34,24 +26,34 @@
                     }
                 }
             },
-            "incidents": {
+            "old_attributes": {
                 "bsonType": "array",
                 "items": {
-                    "bsonType": "int"
+                    "bsonType": "object",
+                    "properties": {
+                        "short_name": {
+                            "bsonType": "string"
+                        },
+                        "value_json": {
+                            "bsonType": "string"
+                        }
+                    }
                 }
-            },
-            "namespace": {
+            }
+        },
+        "title": "addChecklistNotificationsInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": {
+        "properties": {
+            "msg": {
                 "bsonType": "string"
             }
-        }
-    },
-    "on_type": "Mutation",
-    "payload_type_format": "custom",
-    "payload_type": {
+        },
         "title": "addChecklistNotificationsPayload",
-        "type": "object",
-        "properties": {
-          "msg": { "bsonType": "string" }
-        }
-    }
+        "type": "object"
+    },
+    "payload_type_format": "custom"
 }

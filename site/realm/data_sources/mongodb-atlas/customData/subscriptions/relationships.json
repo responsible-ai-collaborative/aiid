@@ -1,4 +1,10 @@
 {
+    "checklistId": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/checklists",
+        "source_key": "checklistId",
+        "foreign_key": "id",
+        "is_list": false
+    },
     "entityId": {
         "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
         "source_key": "entityId",
@@ -9,12 +15,6 @@
         "ref": "#/relationship/mongodb-atlas/aiidprod/incidents",
         "source_key": "incident_id",
         "foreign_key": "incident_id",
-        "is_list": false
-    },
-    "checklistId": {
-        "ref": "#/relationship/mongodb-atlas/aiidprod/checklists",
-        "source_key": "checklistId",
-        "foreign_key": "id",
         "is_list": false
     },
     "userId": {
