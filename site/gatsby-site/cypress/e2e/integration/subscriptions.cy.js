@@ -1,4 +1,5 @@
 import subscriptionsData from '../../fixtures/subscriptions/subscriptions.json';
+import subscriptionsToDeletedIncidentsData from '../../fixtures/subscriptions/subscriptions-to-deleted-incidents.json';
 import emptySubscriptionsData from '../../fixtures/subscriptions/empty-subscriptions.json';
 import { SUBSCRIPTION_TYPE } from '../../../src/utils/subscriptions';
 
@@ -11,6 +12,13 @@ const entitySubscriptions = subscriptionsData.data.subscriptions
   .sort((a, b) => a.entityId.name - b.entityId.name);
 
 describe('Subscriptions', () => {
+  before('before', function () {
+    Cypress.env('isEmptyEnvironment') &&
+      Cypress.env('e2eUsername') &&
+      Cypress.env('e2ePassword') &&
+      this.skip();
+  });
+
   const url = '/account';
 
   it('Incident Updates: Should display user subscriptions', () => {
@@ -167,6 +175,39 @@ describe('Subscriptions', () => {
     cy.get('input[name=subscribe-all]').should('be.checked');
 
     cy.get('button[role=switch][aria-checked=true]').should('exist');
+  });
+
+  it('Incident Updates: Should not display user subscriptions to deleted Incidents', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUserSubscriptions',
+      'FindUserSubscriptions',
+      subscriptionsToDeletedIncidentsData
+    );
+
+    cy.visit(url);
+
+    const incidentSubscriptions = subscriptionsToDeletedIncidentsData.data.subscriptions
+      .filter(
+        (subscription) =>
+          subscription.type === SUBSCRIPTION_TYPE.incident && subscription.incident_id
+      )
+      .sort((a, b) => a.incident_id.incident_id - b.incident_id.incident_id);
+
+    cy.get('[data-cy="incident-subscription-item"]').should(
+      'have.length',
+      incidentSubscriptions.length
+    );
+
+    incidentSubscriptions.forEach((subscription, index) => {
+      const incident = subscription.incident_id;
+
+      cy.get('[data-cy="incident-subscription-item"] > div')
+        .eq(index)
+        .contains(`Updates on incident #${incident.incident_id}: ${incident.title}`);
+    });
   });
 
   // mocking userId does not work

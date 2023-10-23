@@ -9,8 +9,63 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed }) => {
+  const navConfig = config.sidebar.navConfig;
+
+  const { sidebar } = useStaticQuery(graphql`
+    {
+      sidebar: allPrismicSidebar(sort: { data: { order: ASC } }) {
+        edges {
+          node {
+            data {
+              title
+              label
+              url {
+                url
+              }
+              path
+              order
+              items {
+                item_title
+                item_label
+                item_url {
+                  url
+                }
+                item_path
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  let sidebarItems = [];
+
+  if (sidebar.edges.length > 0) {
+    sidebarItems = sidebar.edges.map((item) => {
+      const itemItems = item.node.data.items.map((item) => {
+        return {
+          url: item.item_url.url || item.item_path || '/',
+          title: item.item_title,
+          label: item.item_label,
+          items: [],
+        };
+      });
+
+      return {
+        url: item.node.data.url.url || item.node.data.path || '/',
+        title: item.node.data.title,
+        label: item.node.data.label,
+        items: itemItems,
+      };
+    });
+  } else {
+    sidebarItems = navConfig;
+  }
+
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -145,6 +200,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
                 items: [],
               },
             ]}
+            items={sidebarItems}
           />
           {config.sidebar.links && config.sidebar.links?.length > 0 && (
             <li className="tw-li-divider">

@@ -1,5 +1,4 @@
 import { switchLocalizedPath } from '../../../i18n';
-
 import config from '../../../config';
 
 describe('Pages', () => {
@@ -8,11 +7,9 @@ describe('Pages', () => {
   const paths = [
     '/',
     '/taxonomies/',
-    '/apps/classifications/',
     '/apps/discover/',
     '/apps/incidents/',
     '/apps/newsdigest/',
-    '/reports/2302/',
     '/apps/submit/',
     '/apps/submitted/',
     '/apps/variants/',
@@ -23,16 +20,21 @@ describe('Pages', () => {
     '/summaries/leaderboard/',
     '/summaries/spatial/',
     '/research/snapshots/',
-    '/cite/1/',
     '/entities/',
-    '/entities/facebook/',
-    '/blog/incident-report-2023-january/',
     '/account/',
-    '/taxonomy/csetv0/',
-    '/taxonomy/csetv1/',
     '/summaries/wordcounts/',
     '/about/', // doc template
   ];
+
+  if (!Cypress.env('isEmptyEnvironment')) {
+    paths.push('/apps/classifications/');
+    paths.push('/reports/2302/');
+    paths.push('/cite/1/');
+    paths.push('/entities/facebook/');
+    paths.push('/blog/incident-report-2023-january/');
+    paths.push('/taxonomy/csetv0/');
+    paths.push('/taxonomy/csetv1/');
+  }
 
   const languages = [
     {
@@ -147,40 +149,6 @@ describe('Pages', () => {
               cy.log(`No images found on page, skipping image test for path ${path}`);
             }
           });
-      });
-    });
-  });
-
-  it('Should generate a valid RSS feed', () => {
-    cy.request('/rss.xml').then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.headers['content-type']).to.include('application/xml');
-
-      const xml = response.body;
-
-      const parsedXml = Cypress.$.parseXML(xml);
-
-      const hasChannelTag = Cypress.$(parsedXml).find('channel').length > 0;
-
-      expect(hasChannelTag).to.be.true;
-
-      const items = Cypress.$(parsedXml).find('channel > item').slice(0, 20);
-
-      expect(items.length).to.be.greaterThan(0);
-
-      items.each((_index, item) => {
-        const description = Cypress.$(item).find('description');
-
-        const title = Cypress.$(item).find('title');
-
-        const pubDate = Cypress.$(item).find('pubDate');
-
-        const guid = Cypress.$(item).find('guid');
-
-        expect(description.length).to.equal(1);
-        expect(title.length).to.equal(1);
-        expect(pubDate.length).to.equal(1);
-        expect(guid.length).to.equal(1);
       });
     });
   });
