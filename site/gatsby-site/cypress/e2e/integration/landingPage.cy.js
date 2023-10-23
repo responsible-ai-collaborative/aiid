@@ -162,4 +162,14 @@ describe('The Landing page', () => {
       cy.get('[data-cy="random-reports"]').should('not.exist');
     }
   );
+
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Loads the random incidents carousel', () => {
+    cy.visit('/');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="random-incidents-carousel"]').scrollIntoView().should('exist');
+
+    cy.get('[data-cy="random-incidents-carousel-item"]').should('have.length', 5);
+  });
 });

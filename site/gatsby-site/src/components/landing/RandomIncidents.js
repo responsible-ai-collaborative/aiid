@@ -2,7 +2,7 @@ import RandomIncidentsCarousel from 'components/landing/RandomIncidentsCarousel'
 import React from 'react';
 import { Trans } from 'react-i18next';
 
-export default function RandomReports() {
+export default function RandomIncidents() {
   return (
     <div
       className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col h-full"
