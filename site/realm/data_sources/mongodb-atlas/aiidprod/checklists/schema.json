@@ -3,6 +3,7 @@
   "properties": {
     "_id":       { "bsonType": "objectId" },
     "id":        { "bsonType": "string" },
+    "owner_id":  { "bsonType": "string" },
     "entity_id": { "bsonType": "string" },
     "name":      { "bsonType": "string" },
     "about":     { "bsonType": "string" },
