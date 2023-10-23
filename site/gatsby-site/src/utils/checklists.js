@@ -21,7 +21,7 @@ const riskStatusFeatures = {
     color: 'gray',
   },
   'Not Applicable': {
-    icons: faShield,
+    icon: faShield,
     color: 'gray',
   },
 };
@@ -283,8 +283,8 @@ const DeleteButton = (props) => (
 
 const shouldBeGrouped = (tag1, tag2) => {
   if (tag1 == tag2) return true;
-  if (tag1.slice(0, 3) == ' GMF' && tag2.slice(0, 3) == 'GMF') {
-    const removeKnownPotential = (tag) => tag.replace('GMF:Known', '').replace('GMF:Potential');
+  if (tag1.slice(0, 3) == 'GMF' && tag2.slice(0, 3) == 'GMF') {
+    const removeKnownPotential = (tag) => tag.replace('GMF:Known', '').replace('GMF:Potential', '');
 
     if (removeKnownPotential(tag1) == removeKnownPotential(tag2)) {
       return true;
