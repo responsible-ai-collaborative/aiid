@@ -31,7 +31,7 @@ describe('Admin', () => {
             }
           }
         `,
-        timeout: 60000, // mongodb admin api is extremely slow
+        timeout: 90000, // mongodb admin api is extremely slow
       }).then(({ data: { users } }) => {
         cy.waitForStableDOM();
 
