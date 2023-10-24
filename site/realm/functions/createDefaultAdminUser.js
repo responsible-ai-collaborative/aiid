@@ -16,7 +16,7 @@ exports = async (input) => {
     if (adminUser) {
         return {
             status: 204,
-            message: 'Admin user already created'
+            message: 'Admin user already exists.'
         }
     }
 
