@@ -317,12 +317,12 @@ exports.onPreBuild = function ({ reporter }) {
   }
 };
 
-exports.onPostBuild = () => {
-  console.log('Replacing Env variables on static file...');
+exports.onPostBuild = ({ reporter }) => {
+  reporter.info('Replacing Env variables on static file...');
 
   const filePath = `${process.cwd()}/public/rollbar.js`;
 
-  console.log(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
+  reporter.info(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
 
