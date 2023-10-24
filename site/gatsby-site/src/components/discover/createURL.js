@@ -85,7 +85,5 @@ export default function ({ routeState, indexName, locale, queryConfig }) {
 
   const stringified = stringify(encoded);
 
-  console.log('bue createurl');
-
   return stringified;
 }

@@ -70,7 +70,5 @@ export default function ({ location, indexName, queryConfig }) {
 
   const searchState = generateSearchState({ query });
 
-  console.log('holis parseurl', searchState);
-
   return { [indexName]: searchState };
 }
