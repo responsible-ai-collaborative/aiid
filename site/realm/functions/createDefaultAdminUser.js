@@ -8,7 +8,7 @@
 exports = async (input) => {
 
     //check if the Admin user is already created
-    const usersCollection = context.services.get('mongodb-atlas').db('customData').collection("users");
+    const usersCollection = context.services.get('mongodb-atlas').db('customData').collection('users');
 
     const adminUser = await usersCollection.findOne({ roles: { $in: ['admin'] } });
 
