@@ -35,6 +35,8 @@ describe('Admin', () => {
       }).then(({ data: { users } }) => {
         cy.waitForStableDOM();
 
+        cy.get('table[role="table"]', { timeout: 90000 }).should('be.visible');
+
         for (const user of users.slice(0, 5)) {
           cy.get('[data-cy="input-filter-Id"]').clear();
           cy.get('[data-cy="input-filter-Id"]').type(user.userId);
