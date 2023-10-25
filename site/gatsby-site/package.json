@@ -55,7 +55,6 @@
     "gatsby-source-filesystem": "^5.0.0",
     "gatsby-source-mongodb": "^5.0.0",
     "gatsby-source-prismic": "^5.3.1",
-    "gatsby-source-s3": "^3.2.3",
     "gatsby-transformer-sharp": "^5.7.0",
     "graphql": "^16.8.1",
     "graphql-http": "^1.18.0",
