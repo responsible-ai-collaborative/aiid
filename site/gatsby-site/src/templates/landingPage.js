@@ -62,11 +62,13 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        <div className="mb-5 md:mb-10">
-          <div>
-            <LatestReports latestReports={latestReports} />
+        {latestReports.length > 0 && (
+          <div className="mb-5 md:mb-10">
+            <div>
+              <LatestReports latestReports={latestReports} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="mb-5 md:mb-10">
           <div>
@@ -113,9 +115,11 @@ const LandingPage = (props) => {
           <div className="flex-1 lg:max-w-[50%]">
             <NewsletterSignup />
           </div>
-          <div className="flex-1 lg:max-w-[50%]">
-            <RandomIncidents />
-          </div>
+          {latestReports.length > 0 && (
+            <div className="flex-1 lg:max-w-[50%]">
+              <RandomIncidents />
+            </div>
+          )}
         </div>
 
         <div>
