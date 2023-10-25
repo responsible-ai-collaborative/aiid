@@ -12,6 +12,7 @@ const USER_ID = '63320ce63ec803072c9f529c';
 
 describe('Individual Entity page', () => {
   before('before', function () {
+    // Skip all tests if the environment is empty since /entities/{entity_id} page is not available
     Cypress.env('isEmptyEnvironment') && this.skip();
   });
 

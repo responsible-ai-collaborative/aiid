@@ -20,11 +20,14 @@ describe('The Landing page', () => {
 
   it('Loads the sponsor modals', () => {
     cy.visit('/');
+
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="Waking Up Foundation-image"]').scrollIntoView();
+    cy.get('[data-cy="Waking Up Foundation-image"]', { timeout: 15000 }).scrollIntoView();
 
     cy.get('[data-cy="Waking Up Foundation-image"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="sponsor-modal"]', { timeout: 15000 }).should('be.visible');
   });
@@ -143,7 +146,25 @@ describe('The Landing page', () => {
     cy.get('script[type="application/ld+json"]').should('exist');
   });
 
-  it('Loads the random incidents carousel', () => {
+  conditionalIt(
+    Cypress.env('isEmptyEnvironment'),
+    'Should not display the Latest Reports section on empty environment',
+    () => {
+      cy.visit('/');
+      cy.get('.latest-reports-carousel').should('not.exist');
+    }
+  );
+
+  conditionalIt(
+    Cypress.env('isEmptyEnvironment'),
+    'Should not display the Random Incidents section on empty environment',
+    () => {
+      cy.visit('/');
+      cy.get('[data-cy="random-reports"]').should('not.exist');
+    }
+  );
+
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Loads the random incidents carousel', () => {
     cy.visit('/');
 
     cy.waitForStableDOM();
