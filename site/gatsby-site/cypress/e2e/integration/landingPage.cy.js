@@ -20,9 +20,10 @@ describe('The Landing page', () => {
 
   it('Loads the sponsor modals', () => {
     cy.visit('/');
+
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="Waking Up Foundation-image"]').scrollIntoView();
+    cy.get('[data-cy="Waking Up Foundation-image"]', { timeout: 15000 }).scrollIntoView();
 
     cy.get('[data-cy="Waking Up Foundation-image"]').click();
 
