@@ -391,25 +391,27 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <div className="editors-dropdown">
               {!userLoading && (
                 <Dropdown label={t('Editors')} color={'light'}>
-                  {userData.users.map((user) => {
-                    const isChecked =
-                      selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
+                  {userData.users
+                    .filter((user) => user.first_name || user.last_name)
+                    .map((user) => {
+                      const isChecked =
+                        selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
 
-                    return (
-                      <DropdownItem key={`editors-${user.userId}`}>
-                        <div className="flex justify-center items-center gap-2">
-                          <Checkbox
-                            id={`checkbox-${user.userId}`}
-                            checked={isChecked}
-                            onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
-                          />
-                          <Label htmlFor={`checkbox-${user.userId}`}>
-                            {user.first_name} {user.last_name}
-                          </Label>
-                        </div>
-                      </DropdownItem>
-                    );
-                  })}
+                      return (
+                        <DropdownItem key={`editors-${user.userId}`}>
+                          <div className="flex justify-center items-center gap-2">
+                            <Checkbox
+                              id={`checkbox-${user.userId}`}
+                              checked={isChecked}
+                              onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
+                            />
+                            <Label htmlFor={`checkbox-${user.userId}`}>
+                              {user.first_name} {user.last_name}
+                            </Label>
+                          </div>
+                        </DropdownItem>
+                      );
+                    })}
                 </Dropdown>
               )}
             </div>

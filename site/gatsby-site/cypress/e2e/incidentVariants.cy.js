@@ -55,6 +55,11 @@ const new_submitter = 'New Submitter';
 describe('Variants pages', () => {
   const url = `/cite/${incidentId}`;
 
+  before('before', function () {
+    // Skip all tests if the environment is empty since /cite/{incident_id} page is not available
+    Cypress.env('isEmptyEnvironment') && this.skip();
+  });
+
   it('Successfully loads', () => {
     cy.visit(url);
 

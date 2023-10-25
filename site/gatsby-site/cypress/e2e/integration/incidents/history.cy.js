@@ -1,7 +1,7 @@
 import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import incidentHistory from '../../../fixtures/history/incidentHistory.json';
 import versionReports from '../../../fixtures/history/versionReports.json';
-import { maybeIt } from '../../../support/utils';
+import { conditionalIt, maybeIt } from '../../../support/utils';
 
 const { gql } = require('@apollo/client');
 
@@ -14,15 +14,15 @@ describe('Incidents', () => {
     cy.query({
       query: gql`
         {
-          users {
+          user(query: { first_name: "Test", last_name: "User" }) {
             userId
             first_name
             last_name
           }
         }
       `,
-    }).then(({ data: { users } }) => {
-      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    }).then(({ data: { user: userData } }) => {
+      user = userData;
     });
   });
 
@@ -168,49 +168,53 @@ describe('Incidents', () => {
     cy.url().should('include', '/cite/10');
   });
 
-  it('Should refresh Report history if the user go back on the browser', () => {
-    cy.visit('/cite/10');
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should refresh Report history if the user go back on the browser',
+    () => {
+      cy.visit('/cite/10');
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentHistory',
-      'FindIncidentHistory',
-      incidentHistory
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentHistory',
+        'FindIncidentHistory',
+        incidentHistory
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindEntities',
-      'FindEntities',
-      {
-        data: {
-          entities: [
-            { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
-            { __typename: 'Entity', entity_id: 'google', name: 'Google' },
-            { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
-          ],
-        },
-      }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindEntities',
+        'FindEntities',
+        {
+          data: {
+            entities: [
+              { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
+              { __typename: 'Entity', entity_id: 'google', name: 'Google' },
+              { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
+            ],
+          },
+        }
+      );
 
-    cy.get('[data-cy="view-history-btn"]').click();
+      cy.get('[data-cy="view-history-btn"]').click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.wait(['@FindIncidentHistory', '@FindEntities']);
+      cy.wait(['@FindIncidentHistory', '@FindEntities']);
 
-    cy.url().should('include', url);
+      cy.url().should('include', url);
 
-    cy.go('back');
+      cy.go('back');
 
-    cy.url().should('include', '/cite/10');
+      cy.url().should('include', '/cite/10');
 
-    cy.go('forward');
+      cy.go('forward');
 
-    cy.wait(['@FindIncidentHistory', '@FindEntities']);
-  });
+      cy.wait(['@FindIncidentHistory', '@FindEntities']);
+    }
+  );
 
   it('Should not be able to restore a version if the user does not have the right permissions', () => {
     cy.visit(url);

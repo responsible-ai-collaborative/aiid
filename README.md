@@ -86,7 +86,7 @@ After merge to staging, the code quality is everyone’s responsibility.
 |:--:|
 | *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
 
-The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
+The site has three components that are considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include:
 
 1. Web host. This is the web server hosting the Gatsby-based web application. The site is hosted in production on [Netlify](https://www.netlify.com/).
 2. Index. The [Algolia](https://www.algolia.com) search index.
@@ -96,7 +96,7 @@ More details are available in the `Production System` information below. We reco
 
 **Style guide:**
 
-1. `ESLint` and `Prettier` has been configured to help enforcing code styles. Configuration details can be found on `.eslintrc.json` and `.prettierrc`.
+1. `ESLint` and `Prettier` have been configured to help enforcing code styles. Configuration details can be found in `.eslintrc.json` and `.prettierrc`.
 2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
 3. `format` and `lint` scripts can be used manually to fix style issues.
 
@@ -114,7 +114,7 @@ See [mongo.md](mongo.md)
 
 ### Algolia
 
-[Algolia](https://www.algolia.com) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently manually when new incident reports are ingested into the database.
+[Algolia](https://www.algolia.com) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently updated manually when new incident reports are ingested into the database.
 
 ### Cloudinary
 
@@ -144,9 +144,12 @@ GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 SKIP_PAGE_CREATOR=createTsneVisualizationPage
 GATSBY_PRISMIC_REPO_NAME=
 PRISMIC_ACCESS_TOKEN=
+IS_EMPTY_ENVIRONMENT=
 ```
 
 For `GATSBY_PRISMIC_REPO_NAME` and `PRISMIC_ACCESS_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+
+For complete empty environment (no database data, no Algolia index, no Prismic content), set `IS_EMPTY_ENVIRONMENT=true`. This will disable all tests that require data.
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
 
@@ -163,7 +166,7 @@ gatsby develop
 ```
 You should have a local copy of the project running on https://localhost:8000.
 
-The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changing to the backend you will need your own development backend that you can control, modify, and potentially break.
+The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changes to the backend you will need your own development backend that you can control, modify, and potentially break.
 
 #### Additional Configuration
 
@@ -181,8 +184,10 @@ If the feature you are working on includes structural changes to the MongoDB dat
 - Create a new MongoDB project (the free tier will be enough)
 - Create a new Atlas cluster with the name: `AIIDDev`
     - Choose "Username and Password" as authentication method.
-    - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
+    - Choose "My Local Environment" as network access and add your current IP address.
+    - If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
 - Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
+- Once created, go to `App Settings` and update app region to `Global`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
@@ -253,11 +258,11 @@ Restart Gatsby, and you should have a complete working environment!
 
 The translation process runs on Gatsby's `postBuild` event and consists of 3 steps:
 
--1 Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
+1. Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
 ```
 GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 ```
--2 Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
+2. Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
 ```
 translations 
     |-- incident_reports_en
@@ -278,15 +283,15 @@ To access this database, a user with read/write permissions needs to be provided
 MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
 ```
 
-You can use the same value than defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
+You can use the same value defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
 
--3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
+3. Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
 ```
 instant_search-{language code}
 ```
 After the first run, the following applies for subsequent runs:
 Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
-Algolia indexes are replaced every time the process runs
+Algolia indexes are replaced every time the process runs.
 
 
 #### UI Translations
@@ -336,7 +341,16 @@ This project uses Prismic to fetch page content. You can still run the project w
 
 #### Adding the Prismic content types
 
-Follow instructions on [prismicCustomTypes.md](prismicCustomTypes.md)
+## Prismic Custom Types
+You can find the list of all custom types in the folder custom_types
+
+## How to create a new Custom Type
+1. From the prismic left menu click `Custom Types`
+2. Click `Create new custom type`
+3. Give it a name (name of the json in custom_types folder)
+4. Click `JSON editor`
+5. Paste the JSON content from the predefined custom types inside the json
+6. Click `Save`
 
 #### Adding Prismic documents
 
@@ -410,7 +424,7 @@ const YourComponent = () => {
 
 ## Deployment Setup
 
-Deployment of the site consists of two parts: deployment of the backend related features that runs as a Github Action and deployment of the frontend related features that runs on Netlify:
+Deployment of the site consists of two parts: deployment of the backend related features that runs as a GitHub Action and deployment of the frontend related features that runs on Netlify:
 
 ### Netlify
 The Netlify build process runs every time a push is made to an open PR or `master` or `develop`.
@@ -425,12 +439,12 @@ GATSBY_REALM_APP_ID=
 MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
 GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
-GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployments stability
+GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployment stability
 NODE_VERSION=18 # this is required by Gatsby v5
 NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
 ```
 ### Github Actions
-Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 
+Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
 
 These environments must contain the following variables:
 ```
@@ -438,6 +452,8 @@ GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
+
+To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 ### Testing
 
@@ -458,7 +474,7 @@ npm run test:e2e
 
 And to run it in continuous integration (headless) mode:
 ```
-test:e2e:ci
+npm run test:e2e:ci
 ```
 
 ## Adding new Taxonomies
@@ -648,7 +664,7 @@ facebookAppSecret = [Facebook App Secret, see comment below for more information
 
 On Facebook Authentication settings, set the "Client ID" with the Facebook App Id. To get the Facebook App ID you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and check your app.
 
-Redirect URIs, is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
+"Redirect URIs" is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
 
 
 About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
@@ -679,7 +695,7 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
         "type": "new-incidents",
     }
     ```
-- **Entities**: Users can subscribe to an specific Entity. The user with this subscription type will be notified when a new Incident associated with an specific Entity is created or when an existing Incident is updated to be associated with that Entity.
+- **Entities**: Users can subscribe to a specific Entity. The user with this subscription type will be notified when a new Incident associated with an specific Entity is created or when an existing Incident is updated to be associated with that Entity.
     ```
     {
         "userId": "63320ce63ec803072c9f529c",
@@ -709,8 +725,8 @@ To disable all email noticications, fill the following `SendGridApiKey` secret v
 SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
 publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
 privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
-groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
-appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
+groupId = [Atlas Service App group ID, eg: "62cc90978bc4600cafdcf16e"]
+appId = [Atlas Service App ID, eg: "62cc98647e6a26c53d5b4b53"]
 ```
 
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
@@ -770,7 +786,8 @@ And finally, as part of the site build process, we processed all pending notific
 
 ### Error logging
 
-For the error logging for the whole site and background processes this project uses [Rollbar](https://rollbar.com).
+This project uses [Rollbar](https://rollbar.com) for error logging for the whole site, including background processes.
+
 To log the errors a Realm secret value should be set:
 ```
 rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
@@ -782,10 +799,10 @@ GATSBY_ROLLBAR_TOKEN: [The access token value from your Rollbar account > Projec
 
 ### Restoring Production database to Staging
 
-There is a Github Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
+There is a GitHub Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
 Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow` 
 
-To enable this workflow these [Github secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
+To enable this workflow these [GitHub secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
 ```
 DB_PRODUCTION_CONNECTION_STRING=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
 DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]

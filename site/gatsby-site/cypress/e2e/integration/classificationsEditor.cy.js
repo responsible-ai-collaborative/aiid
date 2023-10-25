@@ -5,6 +5,11 @@ import editorCSETV1Mock from '../../fixtures/classifications/editorCSETV1.json';
 import { gql } from '@apollo/client';
 
 describe('Classifications Editor', () => {
+  before('before', function () {
+    // Skip all tests if the environment is empty since /cite/{incident_id} and /reports/{reportNumber} pages are not available
+    Cypress.env('isEmptyEnvironment') && this.skip();
+  });
+
   const incidentId = 2;
 
   const reportNumber = 2658;

@@ -35,6 +35,43 @@ const submission = {
   user: 'user1',
 };
 
+const submission_with_embedding = {
+  _id: '5f9c3ebfd4896d392493f03c',
+  authors: ['Nedi Bedi and Kathleen McGrory'],
+  cloudinary_id: 'something',
+  date_downloaded: '2020-10-30',
+  date_modified: '2021-07-27',
+  date_published: '2017-05-03',
+  date_submitted: '2020-10-30',
+  epoch_date_modified: 1686182943,
+  description:
+    'By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth',
+  image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
+  incident_date: '2015-09-01',
+  incident_editors: ['1', '2'],
+  incident_id: 0,
+  language: 'en',
+  source_domain: 'projects.tampabay.com',
+  submitters: ['Kate Perkins'],
+  text: '## Submission 1 text\n\n_Markdown content!_',
+  plain_text: 'Submission 1 text\n\nMarkdown content!',
+  title: 'Submisssion 1 title',
+  url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+  editor_notes: '',
+  developers: ['AI Dev'],
+  deployers: ['Youtube'],
+  harmed_parties: ['Adults'],
+  nlp_similar_incidents: [],
+  editor_dissimilar_incidents: [],
+  editor_similar_incidents: [],
+  tags: [],
+  user: 'user1',
+  embedding: {
+    vector: [1, 2, 3],
+    from_reports: [1],
+  },
+};
+
 const incident = {
   AllegedDeployerOfAISystem: [],
   AllegedDeveloperOfAISystem: [],
@@ -225,7 +262,7 @@ describe('Functions', () => {
 
   it('Should promote a submission to a new report & existing incident', () => {
     const submissionsCollection = {
-      findOne: cy.stub().resolves(submission),
+      findOne: cy.stub().resolves(submission_with_embedding),
       deleteOne: cy.stub(),
     };
 
@@ -245,6 +282,7 @@ describe('Functions', () => {
           }),
         }),
       insertOne: cy.stub().resolves(),
+      updateOne: cy.stub().resolves(),
     };
 
     const incidentsHistoryCollection = {
@@ -259,6 +297,7 @@ describe('Functions', () => {
           }),
         }),
       }),
+      findOne: cy.stub().resolves({ report_number: 1 }),
       insertOne: cy.stub().resolves(),
     };
 
@@ -331,7 +370,7 @@ describe('Functions', () => {
     ).then(() => {
       expect(incidentsCollection.insertOne.callCount).to.eq(0);
 
-      expect(incidentsHistoryCollection.insertOne.callCount).to.eq(0);
+      expect(incidentsHistoryCollection.insertOne.callCount).to.eq(1);
 
       const expectedReport = {
         report_number: 2,
@@ -356,6 +395,10 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
+        embedding: {
+          vector: [1, 2, 3],
+          from_reports: [1],
+        },
       };
 
       expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);
@@ -369,7 +412,7 @@ describe('Functions', () => {
 
       expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
         ...expectedReport,
-        modifiedBy: submission.user,
+        modifiedBy: submission_with_embedding.user,
       });
     });
   });
