@@ -317,9 +317,12 @@ exports.onPreBuild = function ({ reporter }) {
   }
 };
 
-exports.onPostBuild = () => {
-  // Replace Env variables on static file
+exports.onPostBuild = ({ reporter }) => {
+  reporter.info('Replacing Env variables on static file...');
+
   const filePath = `${process.cwd()}/public/rollbar.js`;
+
+  reporter.info(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
 

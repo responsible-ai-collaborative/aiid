@@ -6,6 +6,9 @@ TERM = "xterm"
   package = "@netlify/plugin-gatsby"
 
 [[plugins]]
+  package = "/plugins/netlify-plugin-create-admin-user"
+
+[[plugins]]
   package = "netlify-plugin-cypress"
   [plugins.inputs]
     enable = false
