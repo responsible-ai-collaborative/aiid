@@ -246,10 +246,10 @@ describe('Cite pages', () => {
     cy.get('[data-cy="remove-duplicate"]').click();
     cy.waitForStableDOM();
 
-    cy.get('#input-duplicateIncidentId').type('1');
+    cy.get('#input-duplicateIncidentId').type('50');
     cy.waitForStableDOM();
 
-    cy.get('#duplicateIncidentId > a[aria-label="1"]').click();
+    cy.get('#duplicateIncidentId > a[aria-label="50"]').click();
     cy.waitForStableDOM();
 
     cy.get('[data-cy="confirm-remove-duplicate"]').click();
