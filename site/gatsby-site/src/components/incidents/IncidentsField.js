@@ -10,7 +10,7 @@ const filterBy = (option, text) => {
   );
 };
 
-export default function IncidentsField({ id, name, placeHolder = '', multiple, className }) {
+export default function IncidentsField({ id, name, placeHolder = '', multiple = true, className }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
