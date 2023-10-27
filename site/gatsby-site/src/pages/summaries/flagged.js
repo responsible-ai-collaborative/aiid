@@ -38,27 +38,7 @@ const IncidentList = ({ incidents }) => {
 };
 
 export default function FlaggedIncidents({ data, ...props }) {
-  const incidents = data.allMongodbAiidprodIncidents.nodes
-    .filter((incident) => {
-      return incident.reports.some((report_number) =>
-        data.allMongodbAiidprodReports.nodes.find((report) => report.report_number == report_number)
-      );
-    })
-    .map((incident) => {
-      const reports = incident.reports.reduce((filtered, report_number) => {
-        const report = data.allMongodbAiidprodReports.nodes.find(
-          (r) => r.report_number == report_number
-        );
-
-        if (report) {
-          filtered.push(report);
-        }
-
-        return filtered;
-      }, []);
-
-      return { ...incident, reports };
-    });
+  const incidents = data.allMongodbAiidprodIncidents.nodes;
 
   return (
     <>
@@ -81,32 +61,30 @@ export default function FlaggedIncidents({ data, ...props }) {
 
 export const pageQuery = graphql`
   query AllFlaggedIncidents {
-    allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
+    allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { flag: { eq: true } } } }
+      sort: { incident_id: ASC }
+    ) {
       nodes {
         incident_id
         title
         date
         reports {
           report_number
+          title
+          url
+          authors
+          date_downloaded
+          date_modified
+          date_published
+          date_submitted
+          description
+          flag
+          image_url
+          language
+          source_domain
+          submitters
         }
-      }
-    }
-    allMongodbAiidprodReports(filter: { flag: { eq: true } }) {
-      nodes {
-        report_number
-        title
-        url
-        authors
-        date_downloaded
-        date_modified
-        date_published
-        date_submitted
-        description
-        flag
-        image_url
-        language
-        source_domain
-        submitters
       }
     }
   }

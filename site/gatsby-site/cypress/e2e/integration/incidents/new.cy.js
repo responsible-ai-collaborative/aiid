@@ -14,15 +14,15 @@ describe('New Incident page', () => {
     cy.query({
       query: gql`
         {
-          users {
+          user(query: { first_name: "Test", last_name: "User" }) {
             userId
             first_name
             last_name
           }
         }
       `,
-    }).then(({ data: { users } }) => {
-      user = users.find((u) => u.first_name == 'Test' && u.last_name == 'User');
+    }).then(({ data: { user: userData } }) => {
+      user = userData;
     });
   });
 

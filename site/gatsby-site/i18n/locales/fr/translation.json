@@ -257,6 +257,8 @@
   "Issue": "Problème",
   "You have successfully create Incident {{newIncidentId}}. <4>View incident</4>.": "Vous avez réussi à créer l'incident {{newIncidentId}}. <4>Voir l'incident</4>.",
   "New Incident": "Nouvel Incident",
+  "No words found": "Pas de mots trouvés",
+  "No incidents found": "Pas d'incidents trouvés",
   "csetCharts": "La taxonomie CSET AI Harm pour AIID est la deuxième édition de la taxonomie CSET incident. Il caractérise les dommages, les entités et les technologies impliquées dans les incidents d'IA et les circonstances de leur apparition. Les graphiques ci-dessous montrent certains champs de la taxonomie CSET AI Harm pour AIID. Des détails sur chaque champ peuvent être trouvés <1>ici</1>. Cependant, de brèves descriptions du champ sont fournies au-dessus de chaque graphique.",
   "The taxonomy provides the CSET definition for AI harm.": "La taxonomie fournit la définition CSET du préjudice causé par l'IA.",
   "AI harm has four elements which, once appropriately defined, enable the identification of AI harm. These key components serve to distinguish harm from non-harm and AI harm from non-AI harm. To be an AI harm, there must be:": "Le préjudice causé par l'IA comporte quatre éléments qui, une fois correctement définis, permettent d'identifier le préjudice causé par l'IA. Ces composantes clés servent à distinguer le préjudice du non-préjudice et le préjudice causé par l'IA du préjudice non causé par l'IA. Pour être un préjudice causé par l'IA, il doit y avoir :",
