@@ -1,9 +1,8 @@
 import { format } from 'date-fns';
-import { maybeIt } from '../../../support/utils';
-
+import { conditionalIt } from '../../../support/utils';
 import newsArticles from '../../../fixtures/candidates/newsArticles.json';
 
-describe('Incidents App', () => {
+describe('News Digest', () => {
   const url = '/apps/newsdigest';
 
   it('Successfully loads', () => {
@@ -48,47 +47,51 @@ describe('Incidents App', () => {
     cy.window().its('open').should('be.called');
   });
 
-  maybeIt('Should dismiss and restore items', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should dismiss and restore items',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    newsArticles.data.candidates[0].date_published = format(new Date(), 'yyyy-MM-dd');
-    newsArticles.data.candidates[1].date_published = format(new Date(), 'yyyy-MM-dd');
+      newsArticles.data.candidates[0].date_published = format(new Date(), 'yyyy-MM-dd');
+      newsArticles.data.candidates[1].date_published = format(new Date(), 'yyyy-MM-dd');
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'NewsArticles',
-      'NewsArticles',
-      newsArticles
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'NewsArticles',
+        'NewsArticles',
+        newsArticles
+      );
 
-    cy.visit(url);
+      cy.visit(url);
 
-    cy.get('[data-cy="results"] [data-cy="candidate-card"] [data-cy="candidate-dropdown"]', {
-      timeout: 15000,
-    })
-      .first()
-      .parent()
-      .parent()
-      .parent()
-      .invoke('attr', 'data-id')
-      .then((dataId) => {
-        cy.get(`[data-id="${dataId}"] [data-cy="candidate-dropdown"]`).click();
+      cy.get('[data-cy="results"] [data-cy="candidate-card"] [data-cy="candidate-dropdown"]', {
+        timeout: 15000,
+      })
+        .first()
+        .parent()
+        .parent()
+        .parent()
+        .invoke('attr', 'data-id')
+        .then((dataId) => {
+          cy.get(`[data-id="${dataId}"] [data-cy="candidate-dropdown"]`).click();
 
-        cy.get(`[data-id="${dataId}"] [data-cy="dismiss-icon"]`).parent().click();
+          cy.get(`[data-id="${dataId}"] [data-cy="dismiss-icon"]`).parent().click();
 
-        cy.get(`[data-cy="dismissed"] [data-id="${dataId}"]`).should('exist');
+          cy.get(`[data-cy="dismissed"] [data-id="${dataId}"]`).should('exist');
 
-        cy.get(`[data-cy="results"] [data-id="${dataId}"]`).should('not.exist');
+          cy.get(`[data-cy="results"] [data-id="${dataId}"]`).should('not.exist');
 
-        cy.get(`[data-cy="dismissed-summary"]`).click();
+          cy.get(`[data-cy="dismissed-summary"]`).click();
 
-        cy.get(`[data-id="${dataId}"] [data-cy="candidate-dropdown"]`).click();
+          cy.get(`[data-id="${dataId}"] [data-cy="candidate-dropdown"]`).click();
 
-        cy.get(`[data-id="${dataId}"] [data-cy="restore-icon"]`).parent().click();
+          cy.get(`[data-id="${dataId}"] [data-cy="restore-icon"]`).parent().click();
 
-        cy.get(`[data-cy="results"] [data-id="${dataId}"]`, { timeout: 8000 }).should('exist');
+          cy.get(`[data-cy="results"] [data-id="${dataId}"]`, { timeout: 8000 }).should('exist');
 
-        cy.get(`[data-cy="dismissed"] [data-id="${dataId}"]`).should('not.exist');
-      });
-  });
+          cy.get(`[data-cy="dismissed"] [data-id="${dataId}"]`).should('not.exist');
+        });
+    }
+  );
 });

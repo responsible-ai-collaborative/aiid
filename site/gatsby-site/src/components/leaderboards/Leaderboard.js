@@ -60,6 +60,16 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
         </div>
         <div className="flow-root overflow-y-auto">
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+            {sortedArray.length === 0 && (
+              <li
+                className="py-3 sm:py-4 list-none px-6 hover:bg-gray-100 dark:hover:bg-gray-700"
+                data-cy="leaderboard-empty-item"
+              >
+                <p className="truncate text-sm font-medium text-gray-900 dark:text-w  hite mb-0 my-0">
+                  <Trans>There are no submissions yet</Trans>
+                </p>
+              </li>
+            )}
             {sortedArray.map((item, index) => (
               <li
                 className="py-3 sm:py-4 list-none px-6 hover:bg-gray-100 dark:hover:bg-gray-700"

@@ -26,6 +26,7 @@ export default function RiskSection({
   removeRisk,
   updateRisk,
   changeSort,
+  userIsOwner,
 }) {
   const { t } = useTranslation();
 
@@ -55,10 +56,11 @@ export default function RiskSection({
             textClasses={`text-lg font-500 text-${
               risk.generated ? 'gray' : 'red'
             }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
+            disabled={!userIsOwner}
             {...{ updateRisk }}
           />
-          {!risk.generated && (
-            <button onClick={() => removeRisk((r) => risksEqual(risk, r))}>
+          {!risk.generated && userIsOwner && (
+            <button onClick={() => removeRisk((r) => risksEqual(risk, r))} disabled={!userIsOwner}>
               <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mr-1" />
             </button>
           )}
@@ -75,7 +77,8 @@ export default function RiskSection({
               )}
             >
               <FontAwesomeIcon icon={faComputer} className="mr-1" />
-              Auto-generated
+              <span className="md:hidden">Auto</span>
+              <span className="hidden md:inline">Auto-generated</span>
             </HeaderTextWithIcon>
           ) : (
             <HeaderTextWithIcon
@@ -142,6 +145,8 @@ export default function RiskSection({
                 value={risk.tags}
                 onChange={(value) => updateRisk(risk, { tags: value })}
                 options={tags}
+                disabled={!userIsOwner}
+                allowNew={false}
               />
             </div>
           </PrecedentsQuery>
@@ -166,11 +171,14 @@ export default function RiskSection({
                   <p>{precedent.description}</p>
                   {precedent.tags
                     .filter((tag) => searchTags.includes(tag))
-                    .map((tag) => (
-                      <span className="bootstrap rbt-token" key={tag}>
-                        {tag}
-                      </span>
-                    ))}
+                    .map(
+                      (tag) => (
+                        <span className="bootstrap rbt-token" key={tag}>
+                          {tag}
+                        </span>
+                      ),
+                      []
+                    )}
                 </div>
               </Card>
             ))}
@@ -184,6 +192,7 @@ export default function RiskSection({
             id="risk_status"
             value={risk.risk_status}
             onChange={(event) => updateRisk(risk, { risk_status: event.target.value })}
+            disabled={!userIsOwner}
           >
             {['Not Mitigated', 'Mitigated', 'Prevented', 'Not Applicable', 'Unclear'].map(
               (status) => (
@@ -193,16 +202,16 @@ export default function RiskSection({
               )
             )}
           </Select>
-          <RiskSeverity {...{ risk, debouncedUpdateRisk }} />
-          <RiskLikelihood {...{ risk, debouncedUpdateRisk }} />
-          <RiskNotes {...{ risk, debouncedUpdateRisk }} />
+          <RiskSeverity {...{ risk, debouncedUpdateRisk, userIsOwner }} />
+          <RiskLikelihood {...{ risk, debouncedUpdateRisk, userIsOwner }} />
+          <RiskNotes {...{ risk, debouncedUpdateRisk, userIsOwner }} />
         </RiskFields>
       </RiskBody>
     </RiskDetails>
   );
 }
 
-const RiskSeverity = ({ risk, debouncedUpdateRisk }) => {
+const RiskSeverity = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
   const { t } = useTranslation();
 
   const [displaySeverity, setDisplaySeverity] = useState(risk.severity);
@@ -212,6 +221,7 @@ const RiskSeverity = ({ risk, debouncedUpdateRisk }) => {
       <Label>{t('Severity')}</Label>
       <TextInput
         value={displaySeverity}
+        disabled={!userIsOwner}
         onChange={(event) => {
           setDisplaySeverity(event.target.value);
           debouncedUpdateRisk(risk, { severity: event.target.value });
@@ -221,7 +231,7 @@ const RiskSeverity = ({ risk, debouncedUpdateRisk }) => {
   );
 };
 
-const RiskLikelihood = ({ risk, debouncedUpdateRisk }) => {
+const RiskLikelihood = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
   const { t } = useTranslation();
 
   const [displayLikelihood, setDisplayLikelihood] = useState(risk.likelihood);
@@ -231,6 +241,7 @@ const RiskLikelihood = ({ risk, debouncedUpdateRisk }) => {
       <Label>{t('Likelihood')}</Label>
       <TextInput
         value={displayLikelihood}
+        disabled={!userIsOwner}
         onChange={(event) => {
           setDisplayLikelihood(event.target.value);
           debouncedUpdateRisk(risk, { likelihood: event.target.value });
@@ -240,7 +251,7 @@ const RiskLikelihood = ({ risk, debouncedUpdateRisk }) => {
   );
 };
 
-const RiskNotes = ({ risk, debouncedUpdateRisk }) => {
+const RiskNotes = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
   const { t } = useTranslation();
 
   const [displayNotes, setDisplayNotes] = useState(risk.risk_notes);
@@ -251,6 +262,7 @@ const RiskNotes = ({ risk, debouncedUpdateRisk }) => {
       <Textarea
         className="md:h-full shrink-1"
         value={displayNotes}
+        disabled={!userIsOwner}
         onChange={(event) => {
           setDisplayNotes(event.target.value);
           debouncedUpdateRisk(risk, { risk_notes: event.target.value });
@@ -323,7 +335,7 @@ const HeaderItemsGroup = (props) => (
   <div
     {...{
       ...props,
-      className: `hidden md:flex px-2 gap-2 bg-white items-center ${props.className}`,
+      className: `md:flex px-2 gap-2 bg-white items-center ${props.className}`,
     }}
   >
     {props.children}
@@ -440,6 +452,14 @@ const byProperty = (p) => (a, b) => {
   }
   if (isNullish(a?.[p]) && !isNullish(b?.[p])) {
     return 1;
+  }
+
+  // Not applicable should always be last
+  if (a[p] == 'Not Applicable' && b[p] != 'Not Applicable') {
+    return 1;
+  }
+  if (a[p] != 'Not Applicable' && b[p] == 'Not Applicable') {
+    return -1;
   }
 
   // Sort numerically if you can.

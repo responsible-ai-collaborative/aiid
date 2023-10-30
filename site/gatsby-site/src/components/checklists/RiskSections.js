@@ -15,6 +15,7 @@ const RiskSections = ({
   removeRisk,
   changeSort,
   updateRisk,
+  userIsOwner,
 }) => {
   const riskSectionProps = {
     setFieldValue,
@@ -25,6 +26,7 @@ const RiskSections = ({
     removeRisk,
     changeSort,
     updateRisk,
+    userIsOwner,
   };
 
   return (
@@ -50,6 +52,6 @@ const RiskSections = ({
       )}
     </div>
   );
-}
+};
 
 export default RiskSections;

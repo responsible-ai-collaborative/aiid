@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-const EditableLabel = ({ title, onChange, textClasses, iconClasses }) => {
+const EditableLabel = ({ title, onChange, textClasses, iconClasses, disabled }) => {
   const [displayTitle, setDisplayTitle] = useState(title);
 
   const [editingTitle, setEditingTitle] = useState(false);
@@ -23,14 +23,16 @@ const EditableLabel = ({ title, onChange, textClasses, iconClasses }) => {
       ) : (
         <span className={`${textClasses} bg-white`}>{displayTitle}</span>
       )}
-      <button className="px-2" onClick={() => setEditingTitle((editingTitle) => !editingTitle)}>
-        <FontAwesomeIcon
-          className={`${iconClasses} align-baseline`}
-          icon={editingTitle ? faCheck : faEdit}
-        />
-      </button>
+      {!disabled && (
+        <button className="px-2" onClick={() => setEditingTitle((editingTitle) => !editingTitle)}>
+          <FontAwesomeIcon
+            className={`${iconClasses} align-baseline`}
+            icon={editingTitle ? faCheck : faEdit}
+          />
+        </button>
+      )}
     </span>
   );
-}
+};
 
 export default EditableLabel;

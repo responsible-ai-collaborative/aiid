@@ -82,7 +82,6 @@ exports = async (input) => {
       parentIncidents.push(newIncident);
 
     } else if (submission.embedding) {
-
       for (const parentIncident of parentIncidents) {
 
         const matchingReports = [];
@@ -121,21 +120,26 @@ exports = async (input) => {
         if (submission.user) {
           await subscriptionsCollection.insertOne({
             type: 'submission-promoted',
-            incident_id: BSON.Int32(newIncident.incident_id),
+            incident_id: BSON.Int32(parentIncident.incident_id),
             userId: submission.user
           });
 
           await notificationsCollection.insertOne({
             type: 'submission-promoted',
-            incident_id: BSON.Int32(newIncident.incident_id),
+            incident_id: BSON.Int32(parentIncident.incident_id),
             processed: false
           });
         }
+        let incidentValues = parentIncident;
+
+        delete incidentValues._id; // Otherwise Mongo complains about duplicate _id in incidentsHistory
+        
         const incidentHistory = {
-          ...parentIncident,
-          reports: [...parentIncident.reports, BSON.Int32(report_number)],
+          ...incidentValues,
+          reports: [...incidentValues.reports, BSON.Int32(report_number)],
           embedding,
         }
+
         if (submission.user) {
           incidentHistory.modifiedBy = submission.user;
         }

@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 const allChecklistFields = `
   id
+  owner_id
   name
   about
   tags_goals
