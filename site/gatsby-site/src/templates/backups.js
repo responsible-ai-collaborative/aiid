@@ -1,11 +1,11 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import config from '../../config';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
@@ -63,12 +63,12 @@ const Backups = ({ pageContext, ...props }) => {
                 {backups
                   .map((b) => ({
                     ...b,
-                    Url: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
+                    Url: `${config.cloudflareR2.publicBucketUrl}/${b.Key}`,
                   }))
                   .map((value) => (
                     <li key={`snapshot-${value['Key']}`}>
-                      {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
-                      <Link to={value['Url']}>{value['Key']}</Link>
+                      {value['LastModified']} &middot; {(value['Size'] / 1000000).toFixed(2)} MB
+                      &middot; <Link to={value['Url']}>{value['Key']}</Link>
                     </li>
                   ))}
               </ul>

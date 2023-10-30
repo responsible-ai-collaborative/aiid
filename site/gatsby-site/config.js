@@ -206,7 +206,7 @@ const config = {
     accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
     bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-    publicBucketUrl: process.env.CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
+    publicBucketUrl: process.env.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
   },
 };
 
