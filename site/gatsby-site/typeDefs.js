@@ -65,7 +65,7 @@ const typeDefs = `
         submitters: [String]
         date_published: String
         date_submitted: String
-        date_modified: String
+        date_modified: Date
         date_downloaded: String
         source_domain: String
         mongodb_id: String
