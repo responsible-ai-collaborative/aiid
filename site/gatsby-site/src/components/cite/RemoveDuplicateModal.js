@@ -57,13 +57,15 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
 
             const submit = async () => {
               setSubmitting(true);
-              const reportIds = removeTypename(
-                duplicateIncidentData.incident.reports.concat(incident.reports)
-              ).map((report) => report.report_number);
+              const reportIds = duplicateIncidentData.incident.reports
+                .concat(incident.reports)
+                .map((report) => report.report_number);
 
               const duplicate_incident_number = incident.incident_id;
 
               const true_incident_number = values.duplicateIncidentId[0];
+
+              let error = false;
 
               try {
                 await insertDuplicate({
@@ -80,7 +82,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   severity: SEVERITY.danger,
                   error: e,
                 });
-                return;
+                error = true;
               }
 
               try {
@@ -96,6 +98,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   severity: SEVERITY.danger,
                   error: e,
                 });
+                error = true;
               }
 
               try {
@@ -104,7 +107,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                     variables: {
                       query: { _id: classification._id },
                       data: {
-                        ...removeTypename(classification),
+                        ...classification,
                         incidents: {
                           link: classification.incidents
                             .map((incident) => incident.incident_id)
@@ -124,6 +127,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   severity: SEVERITY.danger,
                   error: e,
                 });
+                error = true;
               }
               try {
                 for (const subscription of subscriptionsData.subscriptions) {
@@ -144,19 +148,19 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                   severity: SEVERITY.danger,
                   error: e,
                 });
+                error = true;
               }
 
               setSubmitting(false);
               onClose();
-              addToast({
-                severity: SEVERITY.success,
-                message: [
-                  `Incident ${incident.incident_id} marked`,
-                  `as duplicate of ${values.duplicateIncidentId[0]}.`,
-                  `Its page will updated within 24 hours.`,
-                ].join(' '),
-              });
-              setTimeout(() => (window.location.pathname = '/'), 5000);
+
+              if (!error) {
+                addToast({
+                  severity: SEVERITY.success,
+                  message: `Incident ${incident.incident_id} marked as duplicate of ${values.duplicateIncidentId[0]}. Its page will updated within 24 hours.`,
+                });
+                setTimeout(() => (window.location.pathname = '/'), 5000);
+              }
             };
 
             return (
@@ -186,9 +190,3 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
     </Modal>
   );
 }
-
-const removeTypename = (obj) => {
-  const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
-
-  return JSON.parse(replaced);
-};
