@@ -377,7 +377,6 @@ class AlgoliaUpdater {
         ranking: ['asc(epoch_date_submitted)'],
       });
     } catch (e) {
-      console.log(e);
       throw 'Error updating Algolia settings ' + e.message;
     }
   };
