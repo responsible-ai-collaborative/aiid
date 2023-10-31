@@ -5,6 +5,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import { format } from 'date-fns';
 import config from '../../config';
 
 const Backups = ({ pageContext, ...props }) => {
@@ -59,7 +60,7 @@ const Backups = ({ pageContext, ...props }) => {
         <Container>
           <Row>
             <Col xs={12}>
-              <ul className="pl-8 leading-6">
+              <ul className="pl-8 leading-6" data-cy="snapshots-list">
                 {backups
                   .map((b) => ({
                     ...b,
@@ -67,8 +68,9 @@ const Backups = ({ pageContext, ...props }) => {
                   }))
                   .map((value) => (
                     <li key={`snapshot-${value['Key']}`}>
-                      {value['LastModified']} &middot; {(value['Size'] / 1000000).toFixed(2)} MB
-                      &middot; <Link to={value['Url']}>{value['Key']}</Link>
+                      {format(new Date(value['LastModified']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
+                      {(value['Size'] / 1000000).toFixed(2)} MB &middot;{' '}
+                      <Link to={value['Url']}>{value['Key']}</Link>
                     </li>
                   ))}
               </ul>
