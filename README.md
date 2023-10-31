@@ -34,7 +34,7 @@ Please make sure your code is well organized and commented before opening the pu
 The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
 
 The process of completing work through GitHub issues at the highest level is:
-Create Issue -> Assign Issue -> Review and Publish
+`Create Issue` -> `Assign Issue` -> `Review and Publish`
 
 Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
 
@@ -50,35 +50,25 @@ Labels help streamline the process and ensure issues do not get lost or neglecte
 
 ### Assign Issue
 
-Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
+Add the label `Current Backlog` to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
 
 ![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
 
-### Review and Publish:
+### Pull Request (PR) Review: Draft, Assign, and Publish
 
-Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
+Once the issue has a deliverable output(s), use the Pull Request process to have the contribution reviewed and accepted.
 
-![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+The person opening the PR should create it in a draft status until the work is finished, then they should click on "Ready for review" button and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
 
+#### Assigning a reviewer
+In general, PR reviews can be assigned to any member of the [@responsible-ai-collaboraite/aiid-dev](https://github.com/orgs/responsible-ai-collaborative/teams/aiid-dev ) team, or to the team alias itself.
+**Don't be shy!** Above all, contributors and reviewers should assume good intentions. As such, reviewers are also encouraged to re-assign PR reviews based on familiarity and time constraints.
 
-## PR labeling strategy
+When something is mergeable, then someone else with maintainer permissions (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
 
-On a daily basis, all PRs should be labeled with one of the review process tags:
-- `PR: Needs Review`
-- `PR: Work Needed`
-- `PR: Mergeable`
-
-The person opening the PR should create it in a draft status until the work is finished, then she/he should click on "Ready for review" button and apply the `PR: Needs Review` label and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
+After merging to staging, the code quality is everyone’s responsibility.
 
 For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
-
-The reviewer can change the PR label to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
-
-Please respond to review requests in a timely manner, or indicate if another reviewer would be better. Code review is everyone’s responsibility.
-
-When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
-
-After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
