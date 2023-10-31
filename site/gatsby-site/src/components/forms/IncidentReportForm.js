@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Select } from 'flowbite-react';
 import { Form, useFormikContext } from 'formik';
 import * as yup from 'yup';
-import TextInputGroup from '../../components/forms/TextInputGroup';
+import TextInputGroup, { DateInputGroup } from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { dateRegExp } from '../../utils/date';
+import { dateTimeRegExp } from '../../utils/date';
 import { getCloudinaryPublicID } from '../../utils/cloudinary';
 import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -21,7 +21,6 @@ import {
   faTag,
   faPenNib,
   faMedal,
-  faCalendar,
   faImage,
   faLink,
   faLanguage,
@@ -77,11 +76,11 @@ export const schema = yup.object().shape({
     .required('*Text is required'),
   date_published: yup
     .string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+    .matches(dateTimeRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date published is required'),
   date_downloaded: yup
     .string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+    .matches(dateTimeRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date downloaded required'),
   url: yup
     .string()
@@ -209,6 +208,11 @@ const IncidentReportForm = () => {
 
   const { config } = useLocalization();
 
+  const handleDateChange = (name, value) => {
+    setFieldTouched(name, true);
+    setFieldValue(name, value);
+  };
+
   return (
     <div>
       <Form
@@ -273,7 +277,7 @@ const IncidentReportForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
-        <TextInputGroup
+        {/* <TextInputGroup
           name="date_published"
           label="Date Published"
           icon={faCalendar}
@@ -281,8 +285,19 @@ const IncidentReportForm = () => {
           placeholder="YYYY-MM-DD"
           className="mt-3"
           {...TextInputGroupProps}
+        /> */}
+        <DateInputGroup
+          name="date_published"
+          value={values.date_published}
+          label="Date Published"
+          icon={faDownload}
+          placeholder="YYYY-MM-DD"
+          className="mt-3"
+          {...TextInputGroupProps}
+          handleChange={handleDateChange}
         />
-        <TextInputGroup
+
+        {/* <TextInputGroup
           name="date_downloaded"
           label="Date Downloaded"
           icon={faDownload}
@@ -290,6 +305,17 @@ const IncidentReportForm = () => {
           placeholder="YYYY-MM-DD"
           className="mt-3"
           {...TextInputGroupProps}
+        /> */}
+
+        <DateInputGroup
+          name="date_downloaded"
+          value={values.date_downloaded}
+          label="Date Downloaded"
+          icon={faDownload}
+          placeholder="YYYY-MM-DD"
+          className="mt-3"
+          {...TextInputGroupProps}
+          handleChange={handleDateChange}
         />
         <PreviewImageInputGroup
           cloudinary_id={values.cloudinary_id}

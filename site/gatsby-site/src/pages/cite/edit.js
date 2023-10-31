@@ -25,6 +25,7 @@ import RelatedIncidents from '../../components/RelatedIncidents';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
+import { formatDate } from 'utils/date';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -303,6 +304,7 @@ function EditCitePage(props) {
                 onSubmit={handleSubmit}
                 initialValues={{
                   ...reportData.report,
+                  date_published: formatDate(reportData.report.date_published),
                   incident_ids,
                 }}
               >

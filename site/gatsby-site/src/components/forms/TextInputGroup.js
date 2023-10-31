@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Label from './Label';
 import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Datetime from 'react-datetime';
+import { format, parseISO } from 'date-fns';
 
 const TextInputGroup = ({
   name = '',
@@ -142,6 +144,68 @@ const Input = ({
         onBlur={handleBlur}
       />
       {addOnComponent}
+    </div>
+  );
+};
+
+export const DateInputGroup = ({
+  name = '',
+  label,
+  errors,
+  touched,
+  handleChange,
+  schema = null,
+  className = '',
+  icon = null,
+  showPopover = true,
+  ...props
+}) => {
+  const [optional, setOptional] = useState(true);
+
+  // this causes an unncessary re-render
+  useEffect(() => {
+    if (schema && schema.fields[name]) {
+      schema.fields[name].isValid(undefined).then((result) => setOptional(result));
+    }
+  }, []);
+
+  const handleDateChange = (momentObj) => {
+    const newDateTime = momentObj.toISOString();
+
+    if (handleChange) handleChange(name, newDateTime);
+  };
+
+  const formattedDate = format(parseISO(props.value), 'yyyy-MM-dd');
+
+  return (
+    <div className={`form-group ${className}`}>
+      <div className="flex items-center">
+        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mr-1" />}
+        {label && (
+          <Label popover={name} label={(optional ? '' : '*') + label} showPopover={showPopover} />
+        )}
+      </div>
+      <div className="mt-1">
+        <Datetime
+          {...props} // Pass any additional props to Datetime
+          onChange={handleDateChange}
+          value={formattedDate}
+          inputProps={{ className: 'p-2.5 w-full' }}
+          timeFormat={false}
+          dateFormat="YYYY-MM-DD"
+          closeOnSelect={true}
+        />
+
+        {/* Hidden input field to store the actual value with a name attribute */}
+        <input type="hidden" name={name} value={props.value} />
+        <div>
+          <span className="text-red-700 text-sm">
+            <Trans ns="validation">
+              {errors && touched && errors[name] && touched[name] ? errors[name] : null}
+            </Trans>
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
