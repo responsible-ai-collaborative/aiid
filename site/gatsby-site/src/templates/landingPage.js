@@ -8,7 +8,7 @@ import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
-import RandomReports from 'components/landing/RandomReports';
+import RandomIncidents from 'components/landing/RandomIncidents';
 import Hero from 'components/landing/Hero';
 import NewsletterSignup from 'components/landing/NewsletterSignup';
 import { useTranslation } from 'react-i18next';
@@ -62,11 +62,13 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        <div className="mb-5 md:mb-10">
-          <div>
-            <LatestReports latestReports={latestReports} />
+        {latestReports.length > 0 && (
+          <div className="mb-5 md:mb-10">
+            <div>
+              <LatestReports latestReports={latestReports} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="mb-5 md:mb-10">
           <div>
@@ -113,9 +115,11 @@ const LandingPage = (props) => {
           <div className="flex-1 lg:max-w-[50%]">
             <NewsletterSignup />
           </div>
-          <div className="flex-1 lg:max-w-[50%]">
-            <RandomReports />
-          </div>
+          {latestReports.length > 0 && (
+            <div className="flex-1 lg:max-w-[50%]">
+              <RandomIncidents />
+            </div>
+          )}
         </div>
 
         <div>
