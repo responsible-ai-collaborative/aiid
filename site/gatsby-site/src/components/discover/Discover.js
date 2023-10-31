@@ -6,7 +6,7 @@ import algoliasearch from 'algoliasearch/lite';
 import config from '../../../config';
 import { navigate } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { InstantSearch, Pagination } from 'react-instantsearch';
+import { InstantSearch } from 'react-instantsearch';
 import SearchBox from 'components/discover/SearchBox';
 import Hits from 'components/discover/Hits';
 import Controls from './Controls';
@@ -15,6 +15,7 @@ import createURL from './createURL';
 import parseURL from './parseURL';
 import { queryConfig } from './queryParams';
 import { history } from 'instantsearch.js/es/lib/routers';
+import Pagination from './Pagination';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
