@@ -12,6 +12,9 @@
         "id": {
             "bsonType": "string"
         },
+        "owner_id": {
+            "bsonType": "string"
+        },
         "name": {
             "bsonType": "string"
         },

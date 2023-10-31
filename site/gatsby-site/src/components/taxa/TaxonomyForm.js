@@ -230,7 +230,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         const oldAttributes =
           oldClassification?.attributes.map((a) => ({ ...a, __typename: undefined })) || [];
 
-        const addChecklistNotificationsPayload = await addChecklistNotifications({
+        await addChecklistNotifications({
           variables: {
             input: {
               incidents: [incidentId],
@@ -240,11 +240,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
             },
           },
         });
-
-        console.log(
-          `addChecklistNotificationsPayload.data.addChecklistNotifications.msg`,
-          addChecklistNotificationsPayload.data.addChecklistNotifications.msg
-        );
       }
     } catch (e) {
       addToast({

@@ -15,14 +15,11 @@ const SubscribeButton = ({ checklistId }) => {
 
   const addToast = useToastContext();
 
-  console.log(`checklistId`, checklistId);
   const subscription = {
     type: 'checklist',
     userId: { link: user.id },
     checklistId: { link: checklistId },
   };
-
-  console.log(`subscription`, subscription);
 
   const subscribe = async () => {
     try {
@@ -37,12 +34,12 @@ const SubscribeButton = ({ checklistId }) => {
         severity: SEVERITY.danger,
         error,
       });
-    } finally {
-      addToast({
-        message: t('Added checklist to your subscriptions'),
-        severity: SEVERITY.success,
-      });
+      return;
     }
+    addToast({
+      message: t('Added checklist to your subscriptions'),
+      severity: SEVERITY.success,
+    });
   };
 
   return (

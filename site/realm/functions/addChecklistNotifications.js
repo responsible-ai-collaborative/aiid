@@ -49,21 +49,11 @@ exports = async function (input) {
   }).toArray();
 
 
-  const out = [];
-
   const checklists = [];
 
   for (const subscription of subscriptions) {
     
-    log("subscription")
-    log(subscription)
-    log("")
-
     const checklist = await checklistsCollection.findOne({ id: subscription.checklistId });
-
-    log("checklist")
-    log(checklist)
-    log("")
 
     checklists.push(checklist);
 
@@ -73,17 +63,7 @@ exports = async function (input) {
       ...checklist.tags_other
     ];
 
-    log("queryTags")
-    log(queryTags)
-    log("")
-
     const risks = await context.functions.execute('risksResolver', { tags: queryTags});
-
-//    log("risks")
-//    log(risks)
-//    log("")
-
-    const outItem = { allRisks: risks.map(risk => risk.tag) };
 
     // TODO: Notification should be triggered in any of these cases:
     //
@@ -114,31 +94,18 @@ exports = async function (input) {
 
     const newRiskTags = [];
 
-    for (const newTag in newTags) {
-      log("newTag")
-      log(newTag)
-      log("")
+    for (const newTag of newTags) {
 
       const newTagRisk = risks.find(r => r.tag == newTag);
 
-      log("newTagRisk")
-      log(newTagRisk)
-      log("")
-
       if (newTagRisk && thisIncidentIsTheOnlyPrecedent(newTagRisk)) {
-        log("this incident is the only precedent")
         newRiskTags.push(newTag);
       }
 
       if (isTheOnlyMatchingTag(newTag)) {
-        log(newTag + " is the only matching tag...")
         for (const risk of risks) {
-          log(risk)
           if (thisIncidentIsTheOnlyPrecedent(risk)) {
-            log("Is the only precedent for " + risk.tag);
             newRiskTags.push(risk.tag);
-          } else {
-            log("Not the only precedent for " + risk.tag);
           }
         }
       }
@@ -152,10 +119,6 @@ exports = async function (input) {
         checklist_id: subscription.checklistId,
       });
     }
-
-    outItem.newRisksTags = newRiskTags;
-
-    out.push(outItem);
   }
 
 //  : JSON.stringify({
