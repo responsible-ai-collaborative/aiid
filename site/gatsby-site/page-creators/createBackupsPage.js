@@ -22,11 +22,13 @@ const createBackupsPage = (_, createPage) => {
             const backups = result.Contents;
 
             backups.sort(function (a, b) {
-              const bDate = Date.parse(b.LastModified.toString());
-
-              const aDate = Date.parse(a.LastModified.toString());
-
-              return bDate - aDate;
+              if (a.Key < b.Key) {
+                return 1;
+              }
+              if (a.Key > b.Key) {
+                return -1;
+              }
+              return 0;
             });
 
             createPage({
