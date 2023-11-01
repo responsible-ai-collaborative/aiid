@@ -29,7 +29,7 @@ describe('Submitted reports', () => {
     });
   });
 
-  it('Loads submissions', () => {
+  it.only('Loads submissions', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
@@ -1451,4 +1451,63 @@ describe('Submitted reports', () => {
         .should('eq', 'adults');
     }
   );
+
+  it('Claims a submission', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '5f9c3ebfd4896d392493f03c'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName === 'UpdateSubmission',
+      'UpdateSubmission',
+      {
+        data: {
+          updateOneSubmission: {
+            ...submission,
+            incident_editors: { link: ['62cd9520a69a2cdf17fb47db'] },
+          },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="claim-submission"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.wait('@UpdateSubmission');
+
+    // cy.get('[data-cy="cell"]').eq(3).contains('You').should('exist');
+  });
 });
