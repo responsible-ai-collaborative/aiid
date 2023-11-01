@@ -12,6 +12,7 @@ describe('The Word Counts Page', () => {
     'Should display a message if no data is presented',
     () => {
       cy.visit(url);
+      cy.waitForStableDOM();
       cy.get('[data-cy=wordlist-container]').should('not.exist');
       cy.contains('There are no reports or incidents to process')
         .should('exist')

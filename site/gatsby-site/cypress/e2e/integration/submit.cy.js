@@ -191,6 +191,8 @@ describe('The Submit form', () => {
         `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
       );
 
+      cy.waitForStableDOM();
+
       cy.get('button').contains('Fetch info').click();
 
       cy.wait('@parseNews');
