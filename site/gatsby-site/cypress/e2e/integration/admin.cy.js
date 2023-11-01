@@ -65,7 +65,7 @@ describe('Admin', () => {
         }
       }
 
-      const user = users.data.users.find((user) => user.userId == '63320ce63ec803072c9f529c');
+      const [user] = users.data.users;
 
       cy.get('[data-cy="input-filter-Id"]').clear();
       cy.get('[data-cy="input-filter-Id"]').type(user.userId);
