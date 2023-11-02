@@ -10,7 +10,7 @@ describe('Checklists App Index', () => {
   const usersQuery = {
     query: gql`
       {
-        users {
+        users(limit: 9999) {
           userId
           roles
           adminData {
@@ -19,7 +19,7 @@ describe('Checklists App Index', () => {
         }
       }
     `,
-    timeout: 60000, // mongodb admin api is extremely slow
+    timeout: 120000, // mongodb admin api is extremely slow
   };
 
   it('Should not display New Checklist button as non-logged-in user', () => {

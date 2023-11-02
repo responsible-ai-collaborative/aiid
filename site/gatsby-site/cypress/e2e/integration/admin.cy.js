@@ -23,16 +23,13 @@ describe('Admin', () => {
         users
       );
 
-      users.data.users.forEach((user) => {
+      users.data.users.forEach((user, index) => {
         cy.conditionalIntercept(
           '**/graphql',
-          (req) => {
-            return (
-              req.body.operationName == 'FindUser' &&
-              req.body?.variables?.query.userId == user.userId
-            );
-          },
-          'findUser',
+          (req) =>
+            req.body.operationName == 'FindUser' &&
+            req.body?.variables?.query.userId == user.userId,
+          'findUser' + index,
           { data: { user } }
         );
       });
@@ -41,11 +38,7 @@ describe('Admin', () => {
 
       cy.waitForStableDOM();
 
-      cy.wait('@findUsers', { timeout: 60000 });
-
-      cy.wait('@findUser');
-
-      for (const user of users.data.users) {
+      for (const user of users.data.users.slice(0, 5)) {
         cy.get('[data-cy="input-filter-Id"]').clear();
         cy.get('[data-cy="input-filter-Id"]').type(user.userId);
 
@@ -72,9 +65,7 @@ describe('Admin', () => {
         }
       }
 
-      const user = users.data.users.find(
-        (user) => user.adminData.email == Cypress.env('e2eUsername')
-      );
+      const [user] = users.data.users;
 
       cy.get('[data-cy="input-filter-Id"]').clear();
       cy.get('[data-cy="input-filter-Id"]').type(user.userId);

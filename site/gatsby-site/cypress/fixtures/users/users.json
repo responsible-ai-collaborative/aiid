@@ -85,49 +85,17 @@
         "__typename": "User",
         "adminData": {
           "__typename": "UserAdminDatum",
-          "creationDate": "2022-09-26T20:34:46Z",
-          "disabled": false,
-          "email": "clara@botsfactory.io",
-          "lastAuthenticationDate": "2023-06-06T00:07:30Z"
+          "creationDate": null,
+          "disabled": null,
+          "email": null,
+          "lastAuthenticationDate": null
         },
-        "first_name": "Test",
-        "last_name": "User2",
+        "first_name": null,
+        "last_name": null,
         "roles": [
-          "admin"
+          "subscriber"
         ],
-        "userId": "633a0ce633d806072c9f5292"
-      },
-      {
-        "__typename": "User",
-        "adminData": {
-          "__typename": "UserAdminDatum",
-          "creationDate": "2022-09-26T20:34:46Z",
-          "disabled": false,
-          "email": "staging@seanbmcgregor.com",
-          "lastAuthenticationDate": "2023-06-06T00:07:30Z"
-        },
-        "first_name": "Test",
-        "last_name": "User3",
-        "roles": [
-          "admin"
-        ],
-        "userId": "633a0ce633d80607eehef5292"
-      },
-      {
-        "__typename": "User",
-        "adminData": {
-          "__typename": "UserAdminDatum",
-          "creationDate": "2022-09-26T20:34:46Z",
-          "disabled": false,
-          "email": "production@seanbmcgregor.com",
-          "lastAuthenticationDate": "2023-06-06T00:07:30Z"
-        },
-        "first_name": "Test",
-        "last_name": "User4",
-        "roles": [
-          "admin"
-        ],
-        "userId": "633a0ce3333d80607eehef5292"
+        "userId": "63e5d7a329e0d8b04a5092a6"
       }
     ]
   }
