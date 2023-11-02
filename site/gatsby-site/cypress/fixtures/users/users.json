@@ -80,6 +80,22 @@
           "subscriber"
         ],
         "userId": "619b47ea5eed5334edfa3bbc"
+      },
+      {
+        "__typename": "User",
+        "adminData": {
+          "__typename": "UserAdminDatum",
+          "creationDate": null,
+          "disabled": null,
+          "email": null,
+          "lastAuthenticationDate": null
+        },
+        "first_name": null,
+        "last_name": null,
+        "roles": [
+          "subscriber"
+        ],
+        "userId": "63e5d7a329e0d8b04a5092a6"
       }
     ]
   }
