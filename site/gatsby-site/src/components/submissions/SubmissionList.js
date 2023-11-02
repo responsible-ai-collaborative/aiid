@@ -167,6 +167,7 @@ const SubmissionList = ({ data }) => {
                   sortBy: table.state.sortBy,
                 });
               }}
+              data-cy="date-picker-filter"
             />
           }
         </div>

@@ -30,11 +30,17 @@ describe('Submitted reports', () => {
   });
 
   it('Loads submissions', () => {
+    const submissions = submittedReports.data.submissions.slice(0, 10);
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
       'FindSubmission',
-      submittedReports
+      {
+        data: {
+          submissions,
+        },
+      }
     );
 
     cy.conditionalIntercept(
@@ -53,8 +59,6 @@ describe('Submitted reports', () => {
     cy.wait('@FindSubmission');
 
     cy.wait('@AllQuickAdd');
-
-    const submissions = submittedReports.data.submissions;
 
     cy.get('[data-cy="submissions"] [data-cy="row"]').should('have.length', submissions.length);
 
@@ -1584,5 +1588,76 @@ describe('Submitted reports', () => {
         incident_editors: { link: [] },
       });
     });
+  });
+
+  maybeIt('Should maintain current page while claiming', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '433346160eeeeqdd5e382bei234'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      submittedReports
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName === 'UpdateSubmission',
+      'UpdateSubmission',
+      {
+        data: {
+          updateOneSubmission: {
+            ...submission,
+            incident_editors: [
+              {
+                userId: '62cd9520a69a2cdf17fb47db',
+                first_name: 'Your',
+                last_name: 'Name',
+              },
+            ],
+          },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.waitForStableDOM();
+
+    cy.get('.pagination').contains('Next').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="claim-submission"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.wait('@UpdateSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.query).to.deep.nested.include({
+        _id: submission._id,
+      });
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        incident_editors: { link: ['62cd9520a69a2cdf17fb47db'] },
+      });
+    });
+    cy.get(".pagination [aria-current='page'] button").contains('2').should('exist');
   });
 });
