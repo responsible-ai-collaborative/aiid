@@ -43,9 +43,11 @@ const SubscribeButton = ({ checklistId }) => {
   };
 
   return (
-    <Button color="light" onClick={subscribe}>
-      <Trans>Subscribe</Trans>
-    </Button>
+    <div data-cy="subscribe-button">
+      <Button color="light" onClick={subscribe}>
+        <Trans>Subscribe</Trans>
+      </Button>
+    </div>
   );
 };
 

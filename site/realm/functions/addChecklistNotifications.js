@@ -1,15 +1,14 @@
 exports = async function (input) {
   let msg = "";
-  const log = (s) => msg += (
-    typeof s == "string" ? s : JSON.stringify(s)
-  ) + '\n' ;
+  function log() {
+    msg += (
+      Object.values(arguments)
+        .map(a => JSON.stringify(a, null, 2))
+        .join(" ")
+    ) + '\n\n' ;
+  }
 
-  // TODO: This should add documents to the notifications collection
-  // for each subscription to a checklist that has a query
-  // matched by the updated value.
-  //
   const changedAttributes = [];
-
 
   for (const newAttribute of input.new_attributes) {
     const matchingOldAttribute = input.old_attributes?.find(
@@ -24,18 +23,22 @@ exports = async function (input) {
       changedAttributes.push(newAttribute);
     }
   }
+  log(`changedAttributes`, changedAttributes);
 
   const oldTags = tagsFromClassification({ 
     namespace: input.namespace,
     attributes: input.old_attributes 
   });
+  log(`oldTags`, oldTags);
 
   const allCurrentTags = tagsFromClassification({
     namespace: input.namespace,
     attributes: changedAttributes
   });
+  log(`allCurrentTags`, allCurrentTags);
 
   const newTags = allCurrentTags.filter(tag => !oldTags.includes(tag));
+  log(`newTags`, newTags);
 
 
   const checklistsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("checklists");
@@ -52,8 +55,11 @@ exports = async function (input) {
   const checklists = [];
 
   for (const subscription of subscriptions) {
+
+    log(`subscription`, subscription);
     
     const checklist = await checklistsCollection.findOne({ id: subscription.checklistId });
+    log(`checklist`, checklist);
 
     checklists.push(checklist);
 
@@ -63,7 +69,10 @@ exports = async function (input) {
       ...checklist.tags_other
     ];
 
-    const risks = await context.functions.execute('risksResolver', { tags: queryTags});
+    log('queryTags', queryTags)
+
+    const risks = await context.functions.execute('risksResolver', { tags: queryTags, graphql: false });
+    log(`risks`, risks.map(r => r.tag));
 
     // TODO: Notification should be triggered in any of these cases:
     //
@@ -82,15 +91,19 @@ exports = async function (input) {
       risk.precedents.length == 1 &&
       input.incidents.includes(risk.precedents[0].incident_id)
     )
+    log(`thisIncidentIsTheOnlyPrecedent`, thisIncidentIsTheOnlyPrecedent);
 
     const allCurrentTagsMatchingQuery = allCurrentTags.filter(
       tag => queryTags.includes(tag)
     );
+    log(`allCurrentTagsMatchingQuery`, allCurrentTagsMatchingQuery);
 
     const isTheOnlyMatchingTag = (tag) => (
       allCurrentTagsMatchingQuery.length == 1 && 
       allCurrentTagsMatchingQuery[0] == tag 
     );
+    log(`isTheOnlyMatchingTag`, isTheOnlyMatchingTag);
+
 
     const newRiskTags = [];
 
@@ -110,6 +123,7 @@ exports = async function (input) {
         }
       }
     }
+    log(`newRiskTags`, newRiskTags);
 
     if (newRiskTags.length > 0) {
       notificationsCollection.insertOne({
@@ -120,16 +134,6 @@ exports = async function (input) {
       });
     }
   }
-
-//  : JSON.stringify({
-//    input,
-//    changedAttributes,
-//    oldTags,
-//    allCurrentTags,
-//    newTags,
-//    subscriptions,
-//    out,
-//  }, null, 2)
 
   return { msg };
 };

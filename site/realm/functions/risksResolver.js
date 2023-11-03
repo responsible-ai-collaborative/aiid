@@ -27,6 +27,8 @@
 // }}
 exports = async (input) => {
 
+  input.graphql = typeof input.graphql === 'undefined';
+
   const db = context.services.get('mongodb-atlas').db('aiidprod');
   const incidentsCollection = db.collection('incidents');
   const classificationsCollection = db.collection('classifications');
@@ -98,7 +100,14 @@ exports = async (input) => {
           const incidents = incidentsMatchingSearchTags.filter(
             incident => failureClassification.incidents.includes(incident.incident_id)
           );
-          return incidents;
+          return input.graphql 
+            ? incidents // GraphQL does the field selection for us own.
+            : incidents.map(incident => ({
+                incident_id: incident?.incident_id,
+                title: incident?.title,
+                description: incident?.description,
+                tags: tagsByIncidentId[incident?.incident_id]
+              }))
         }
       ).flat()
     })
@@ -109,7 +118,7 @@ exports = async (input) => {
 
 const getRiskClassificationsMongoQuery = (tagStrings) => {
 
-  if (!tagStrings) return {};
+  if (!tagStrings || tagStrings.length == []) return {};
 
   const tagSearch = {};
 
@@ -126,6 +135,7 @@ const getRiskClassificationsMongoQuery = (tagStrings) => {
     }
     tagSearch[namespace].push(tag);
   }
+
 
   return {
     $or: Object.keys(tagSearch).map(

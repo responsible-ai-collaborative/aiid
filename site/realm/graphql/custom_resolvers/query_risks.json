@@ -8,6 +8,9 @@
                 "items": {
                     "bsonType": "string"
                 }
+            },
+            "graphql": {
+                "bsonType": "bool"
             }
         },
         "title": "RisksInput",

@@ -12,10 +12,10 @@
         "id": {
             "bsonType": "string"
         },
-        "owner_id": {
+        "name": {
             "bsonType": "string"
         },
-        "name": {
+        "owner_id": {
             "bsonType": "string"
         },
         "risks": {

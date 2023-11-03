@@ -258,6 +258,7 @@ const QueryTagInput = ({
     <Label for={id}>{title}</Label>
     <Tags
       id={id}
+      inputId={id}
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
       onChange={(value) => {
