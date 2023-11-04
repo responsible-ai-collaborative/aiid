@@ -35,7 +35,21 @@ const ChecklistsIndex = ({ users }) => {
     setChecklists(checklistsData?.checklists || []);
   }, [checklistsData]);
 
-  const loggedIn = user.providerType != 'anon-user';
+  const loggedIn = user?.providerType != 'anon-user';
+
+  const sortFunction = (A, B) => {
+    const a = A.name || 'Unspecified System';
+
+    const b = B.name || 'Unspecified System';
+
+    if (a == b) return 0;
+    if (a > b) return 1;
+    if (a < b) return -1;
+  };
+
+  const displayedChecklists = checklists
+    .filter((checklist) => checklist.owner_id == user.id)
+    .sort(sortFunction);
 
   if (checklistsLoading) {
     return <Spinner />;
@@ -83,7 +97,7 @@ const ChecklistsIndex = ({ users }) => {
         </div>
       </div>
       <div className="flex flex-col gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4">
-        {checklists.map((checklist) => (
+        {displayedChecklists.map((checklist) => (
           <CheckListCard
             key={checklist}
             owner={users.find((u) => u.userId == checklist.owner_id)}
