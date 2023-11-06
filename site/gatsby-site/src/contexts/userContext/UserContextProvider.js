@@ -6,9 +6,10 @@ import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/c
 import config from '../../../config';
 import fetch from 'cross-fetch';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { navigate } from 'gatsby';
 import useLocalizePath from '../../components/i18n/useLocalizePath';
+import CustomButton from '../../elements/Button';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
@@ -98,12 +99,41 @@ export const UserContextProvider = ({ children }) => {
 
       addToast({
         message: (
-          <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
+          <>
+            <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
+            <CustomButton
+              variant="link"
+              title={t('Resend Verification email')}
+              onClick={() => onResendConfirmationClick(email)}
+              className="underline text-sm pl-0 border-0"
+            >
+              <Trans>Resend Verification email</Trans>
+            </CustomButton>
+          </>
         ),
         severity: SEVERITY.danger,
         error: e,
       });
       return false;
+    }
+  };
+
+  const onResendConfirmationClick = async (email) => {
+    try {
+      await realmApp.emailPasswordAuth.retryCustomConfirmation(email);
+
+      addToast({
+        message: `${t('Verification email sent to')} ${email}`,
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      addToast({
+        message: (
+          <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
+        ),
+        severity: SEVERITY.danger,
+        error: e,
+      });
     }
   };
 
