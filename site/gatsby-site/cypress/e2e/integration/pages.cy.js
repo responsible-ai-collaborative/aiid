@@ -1,5 +1,6 @@
 import { switchLocalizedPath } from '../../../i18n';
 import config from '../../../config';
+import isString from 'lodash/isString';
 
 describe('Pages', () => {
   const baseUrl = config.gatsby.siteUrl;
@@ -67,15 +68,20 @@ describe('Pages', () => {
         // check for runtime errors
 
         cy.get('@consoleError').then((consoleError) => {
-          const noHydrationErrors = consoleError
-            .getCalls()
-            .every((call) =>
-              call.args.every(
-                (arg) => !arg.includes('did not match') || !arg.includes('Minified React error')
-              )
-            );
+          const errors = [];
 
-          expect(noHydrationErrors, 'No hydration errors').to.be.true;
+          consoleError.getCalls().forEach((call) =>
+            call.args.forEach((arg) => {
+              if (
+                isString(arg) &&
+                (arg.includes('did not match') || arg.includes('Minified React error'))
+              ) {
+                errors.push(arg);
+              }
+            })
+          );
+
+          expect(errors.length, `No hydration errors:\n ${errors.join(', ')}`).to.eq(0);
 
           // This should be enabled once the app is free of warnings
 

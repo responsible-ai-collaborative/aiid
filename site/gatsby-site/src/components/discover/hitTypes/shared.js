@@ -1,7 +1,7 @@
 import { format, fromUnixTime } from 'date-fns';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
-import { Highlight } from 'react-instantsearch-dom';
+import { Highlight } from 'react-instantsearch';
 import { VIEW_TYPES } from 'utils/discover';
 import WebArchiveLink from '../../../components/ui/WebArchiveLink';
 
