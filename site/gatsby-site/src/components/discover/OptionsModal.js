@@ -9,8 +9,6 @@ import Button from 'elements/Button';
 import DisplayOptions from './DisplayOptions';
 import { Accordion, Modal } from 'flowbite-react';
 
-// https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
-
 function OptionsModal() {
   const [showModal, setShowModal] = useState(false);
 
