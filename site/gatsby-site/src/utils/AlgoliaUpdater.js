@@ -6,6 +6,8 @@ const config = require('../../config');
 
 const { isCompleteReport } = require('./variants');
 
+const { merge } = require('lodash');
+
 const subset = !!process.env.ALGOLIA_SUBSET;
 
 const truncate = (doc) => {
@@ -45,7 +47,7 @@ const includedCSETAttributes = [
 ];
 
 const getClassificationArray = ({ classification, taxonomy }) => {
-  const result = [];
+  const attributes = {};
 
   if (classification.attributes) {
     for (const attribute of classification.attributes) {
@@ -61,20 +63,15 @@ const getClassificationArray = ({ classification, taxonomy }) => {
       ) {
         const value = JSON.parse(attribute.value_json);
 
-        const values = Array.isArray(value) ? value : [value];
-
-        for (const v of values) {
-          if (v == '' || typeof v === 'object') continue;
-          result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
-        }
+        attributes[attribute.short_name] = value;
       }
     }
   }
 
-  return result;
+  return { [classification.namespace]: attributes };
 };
 
-const reportToEntry = ({ incident = null, report }) => {
+const reportToEntry = ({ incident = null, report, classifications = [] }) => {
   let featuredValue = 0;
 
   if (config?.header?.search?.featured) {
@@ -102,6 +99,7 @@ const reportToEntry = ({ incident = null, report }) => {
     source_domain: report.source_domain,
     submitters: report.submitters,
     title: report.title,
+    name: report.title,
     url: report.url,
     tags: report.tags,
     editor_notes: report.editor_notes,
@@ -112,7 +110,14 @@ const reportToEntry = ({ incident = null, report }) => {
     featured: featuredValue,
     flag: report.flag,
     is_incident_report: report.is_incident_report,
+    namespaces: classifications.map((c) => {
+      return Object.keys(c)[0];
+    }),
   };
+
+  for (const classification of classifications) {
+    merge(entry, classification);
+  }
 
   if (incident) {
     entry.incident_id = incident.incident_id;
@@ -142,30 +147,36 @@ class AlgoliaUpdater {
   }
 
   generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
-    const classificationsHash = {};
-
-    for (const classification of classifications) {
-      for (const incident_id of classification.incidents) {
-        const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
-
-        if (!classificationsHash[incident_id]) {
-          classificationsHash[incident_id] = getClassificationArray({ classification, taxonomy });
-        }
-      }
-    }
-
     const downloadData = [];
 
     for (const incident of incidents) {
+      const incidentClassifications = classifications
+        .filter((c) => c.incidents.includes(incident.incident_id))
+        .map((classification) =>
+          getClassificationArray({
+            classification,
+            taxonomy: taxa.find((t) => t.namespace == classification.namespace),
+          })
+        );
+
       for (const report_number of incident.reports) {
         if (reports.some((r) => r.report_number == report_number)) {
           const report = reports.find((r) => r.report_number == report_number) || {};
 
-          const entry = reportToEntry({ incident, report });
+          const reportClassifications = classifications
+            .filter((c) => c.reports.includes(report.report_number))
+            .map((classification) =>
+              getClassificationArray({
+                classification,
+                taxonomy: taxa.find((t) => t.namespace == classification.namespace),
+              })
+            );
 
-          if (classificationsHash[entry.incident_id]) {
-            entry.classifications = classificationsHash[entry.incident_id];
-          }
+          const entry = reportToEntry({
+            incident,
+            report,
+            classifications: [...incidentClassifications, ...reportClassifications],
+          });
 
           downloadData.push(entry);
         }
@@ -302,10 +313,15 @@ class AlgoliaUpdater {
 
     await index.replaceAllObjects(entries);
 
+    const settings = {
+      ...algoliaSettings,
+      attributesForFaceting: [...algoliaSettings.attributesForFaceting, 'GMF', 'CSETv0', 'CSETv1'],
+    };
+
     try {
       await index.setSettings(
         {
-          ...algoliaSettings,
+          ...settings,
           indexLanguages: [language],
           queryLanguages: [language],
           replicas: [
@@ -383,8 +399,6 @@ class AlgoliaUpdater {
   };
 
   deleteDuplicates = async ({ language }) => {
-    await this.mongoClient.connect();
-
     const indexName = `instant_search-${language}`;
 
     const index = await this.algoliaClient.initIndex(indexName);
@@ -399,13 +413,9 @@ class AlgoliaUpdater {
 
       await index.deleteBy({ filters });
     }
-
-    await this.mongoClient.close();
   };
 
   async generateIndex({ language }) {
-    await this.mongoClient.connect();
-
     const classifications = await this.getClassifications();
 
     const taxa = await this.getTaxa();
@@ -421,12 +431,12 @@ class AlgoliaUpdater {
       taxa,
     });
 
-    await this.mongoClient.close();
-
     return entries;
   }
 
   async run() {
+    await this.mongoClient.connect();
+
     for (let { code: language } of this.languages) {
       const entries = await this.generateIndex({ language });
 
@@ -438,6 +448,8 @@ class AlgoliaUpdater {
 
       await this.deleteDuplicates({ language });
     }
+
+    await this.mongoClient.close();
   }
 }
 
