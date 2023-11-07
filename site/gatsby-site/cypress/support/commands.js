@@ -81,3 +81,50 @@ Cypress.Commands.add('getEditorText', (selector = '.CodeMirror') => {
       return editor.CodeMirror.options.value;
     });
 });
+
+Cypress.Commands.add('setDate', (value, fieldName) => {
+  const parts = value.split('-');
+
+  // Extract the year, month, and day from the date value
+  const year = parts[0];
+
+  const month = parseInt(parts[1]) - 1;
+
+  const day = parseInt(parts[2]).toString(); // remove leading zero
+
+  return cy
+    .get(`.rdt.datetime-${fieldName} input`)
+    .first()
+    .click()
+    .then(() => {
+      cy.get(`.rdt.datetime-${fieldName}.rdtOpen .rdtPicker .rdtSwitch`).first().click(); //Switch to month
+      cy.get(`.rdt.datetime-${fieldName}.rdtOpen .rdtPicker .rdtSwitch`).first().click(); //Switch to year
+
+      const selectYear = (year) => {
+        cy.get(`.rdt.datetime-${fieldName}.rdtOpen .rdtPicker`).then(($years) => {
+          if ($years.text().includes(year)) {
+            cy.get(`.rdt.datetime-${fieldName}.rdtOpen .rdtYear`).contains(year).click();
+          } else {
+            // Click the next year range button
+            cy.get(`.rdt.datetime-${fieldName}.rdtOpen .rdtNext`).click();
+            // Call the function recursively
+            selectYear(year);
+          }
+        });
+      };
+
+      selectYear(year);
+
+      cy.waitForStableDOM();
+      cy.get(
+        `.rdt.datetime-${fieldName}.rdtOpen .rdtPicker .rdtMonths .rdtMonth[data-value="${month}"]`
+      )
+        .first()
+        .click();
+
+      cy.waitForStableDOM();
+      cy.get(`.rdt.datetime-${fieldName}.rdtOpen .rdtPicker .rdtDays .rdtDay[data-value="${day}"]`)
+        .first()
+        .click({ force: true });
+    });
+});

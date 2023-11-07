@@ -32,6 +32,9 @@ const query = gql`
         epoch_date_downloaded
         report_number
         flag
+        date_downloaded
+        date_modified
+        date_submitted
       }
     }
   }
@@ -135,11 +138,11 @@ export default function Incidents(props) {
       {
         className: 'min-w-[240px]',
         title: t('Date Downloaded'),
-        accessor: 'epoch_date_downloaded',
+        accessor: 'date_downloaded',
         width: 240,
         Filter: SelectDatePickerFilter,
         Cell: ({ row: { values } }) => {
-          return <>{formatDateField(values.epoch_date_downloaded)}</>;
+          return <>{formatDateField(values.date_downloaded)}</>;
         },
       },
       {
@@ -184,7 +187,7 @@ export default function Incidents(props) {
   const filterTypes = {
     epoch_date_submitted: filterDateFunction,
     epoch_date_modified: filterDateFunction,
-    epoch_date_downloaded: filterDateFunction,
+    date_downloaded: filterDateFunction,
   };
 
   const table = useTable(

@@ -41,6 +41,9 @@ exports.up = async ({ context: { client } }) => {
             date_published: date_published,
             date_submitted: date_submitted,
           },
+          $unset: {
+            epoch_date_downloaded: '',
+          },
         }
       );
     })
@@ -66,6 +69,9 @@ exports.up = async ({ context: { client } }) => {
             date_modified: date_modified,
             date_published: date_published,
             date_submitted: date_submitted,
+          },
+          $unset: {
+            epoch_date_downloaded: '',
           },
         }
       );

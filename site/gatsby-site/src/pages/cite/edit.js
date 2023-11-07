@@ -186,7 +186,6 @@ function EditCitePage(props) {
 
       values.date_modified = now;
 
-      values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(now);
 

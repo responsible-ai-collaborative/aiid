@@ -170,10 +170,18 @@ export const DateInputGroup = ({
     }
   }, []);
 
-  const handleDateChange = (momentObj) => {
-    const newDateTime = momentObj.toISOString();
+  const handleDateChange = async (date) => {
+    const parsedDate = date.toISOString();
 
-    if (handleChange) handleChange(name, newDateTime);
+    const isValid = await schema.fields[name].isValid(parsedDate);
+
+    if (isValid) {
+      const newDateTime = parsedDate;
+
+      if (handleChange) handleChange(name, newDateTime);
+    } else {
+      console.error('Invalid date object:', date);
+    }
   };
 
   const formattedDate = format(parseISO(props.value), 'yyyy-MM-dd');
@@ -195,6 +203,7 @@ export const DateInputGroup = ({
           timeFormat={false}
           dateFormat="YYYY-MM-DD"
           closeOnSelect={true}
+          className={`datetime-${name}`}
         />
 
         {/* Hidden input field to store the actual value with a name attribute */}

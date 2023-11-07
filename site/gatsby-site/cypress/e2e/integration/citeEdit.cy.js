@@ -143,8 +143,6 @@ describe('Edit report', () => {
 
     const updates = {
       authors: 'Test Author',
-      date_downloaded: '2022-01-01',
-      date_published: '2022-02-02',
       image_url: 'https://test.com/test.jpg',
       submitters: 'Test Submitter',
       title: 'Test Title',
@@ -152,8 +150,17 @@ describe('Edit report', () => {
       editor_notes: 'Pro iustitia tantum',
     };
 
+    const dateUpdates = {
+      date_downloaded: '2022-01-01',
+      date_published: '2022-02-02',
+    };
+
     Object.keys(updates).forEach((key) => {
       cy.get(`[name=${key}]`).clear().type(updates[key]);
+    });
+
+    Object.keys(dateUpdates).forEach((key) => {
+      cy.setDate(dateUpdates[key], key);
     });
 
     cy.setEditorText(
@@ -200,7 +207,6 @@ describe('Edit report', () => {
       date_downloaded: '2022-01-01',
       date_modified: format(now, 'yyyy-MM-dd'),
       date_published: '2022-02-02',
-      epoch_date_downloaded: 1640995200,
       epoch_date_modified: getUnixTime(now),
       epoch_date_published: 1643760000,
       flag: null,
@@ -221,7 +227,18 @@ describe('Edit report', () => {
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(expectedReport.report_number);
 
-      expect(xhr.request.body.variables.set).to.deep.eq(expectedReport);
+      expect({
+        ...xhr.request.body.variables.set,
+        date_downloaded: format(
+          new Date(xhr.request.body.variables.set.date_downloaded),
+          'yyyy-MM-dd'
+        ),
+        date_published: format(
+          new Date(xhr.request.body.variables.set.date_published),
+          'yyyy-MM-dd'
+        ),
+        date_modified: format(new Date(xhr.request.body.variables.set.date_modified), 'yyyy-MM-dd'),
+      }).to.deep.eq(expectedReport);
     });
 
     cy.wait('@logReportHistory')
@@ -404,7 +421,6 @@ describe('Edit report', () => {
       date_downloaded: '2022-01-01',
       date_modified: format(now, 'yyyy-MM-dd'),
       date_published: '2022-02-02',
-      epoch_date_downloaded: 1640995200,
       epoch_date_modified: getUnixTime(now),
       epoch_date_published: 1643760000,
       flag: null,
@@ -670,7 +686,6 @@ describe('Edit report', () => {
       date_modified: format(now, 'yyyy-MM-dd'),
       date_published: '2015-07-11',
       editor_notes: '',
-      epoch_date_downloaded: 1555113600,
       epoch_date_modified: getUnixTime(now),
       epoch_date_published: 1436572800,
       flag: null,
@@ -950,7 +965,6 @@ describe('Edit report', () => {
       editor_notes: '',
       language: 'en',
       source_domain: 'change.org',
-      epoch_date_downloaded: 1555113600,
       epoch_date_published: 1436572800,
       date_modified: format(now, 'yyyy-MM-dd'),
       epoch_date_modified: getUnixTime(now),
@@ -1144,7 +1158,6 @@ describe('Edit report', () => {
       editor_notes: '',
       language: 'en',
       source_domain: 'change.org',
-      epoch_date_downloaded: 1555113600,
       epoch_date_published: 1436572800,
       date_modified: format(now, 'yyyy-MM-dd'),
       epoch_date_modified: getUnixTime(now),
