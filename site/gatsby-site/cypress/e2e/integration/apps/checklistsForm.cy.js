@@ -7,7 +7,7 @@ describe('Checklists App Form', () => {
   const usersQuery = {
     query: gql`
       {
-        users {
+        users(limit: 9999) {
           userId
           roles
           adminData {
@@ -16,7 +16,7 @@ describe('Checklists App Form', () => {
         }
       }
     `,
-    timeout: 60000, // mongodb admin api is extremely slow
+    timeout: 120000, // mongodb admin api is extremely slow
   };
 
   it('Should have read-only access for non-logged-in users', () => {

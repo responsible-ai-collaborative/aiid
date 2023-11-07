@@ -313,15 +313,10 @@ class AlgoliaUpdater {
 
     await index.replaceAllObjects(entries);
 
-    const settings = {
-      ...algoliaSettings,
-      attributesForFaceting: [...algoliaSettings.attributesForFaceting, 'GMF', 'CSETv0', 'CSETv1'],
-    };
-
     try {
       await index.setSettings(
         {
-          ...settings,
+          ...algoliaSettings,
           indexLanguages: [language],
           queryLanguages: [language],
           replicas: [
@@ -393,7 +388,6 @@ class AlgoliaUpdater {
         ranking: ['asc(epoch_date_submitted)'],
       });
     } catch (e) {
-      console.log(e);
       throw 'Error updating Algolia settings ' + e.message;
     }
   };

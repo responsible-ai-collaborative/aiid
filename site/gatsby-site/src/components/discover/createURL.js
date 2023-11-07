@@ -71,7 +71,9 @@ const getQueryFromState = (searchState, locale) => {
     query.hideDuplicates = 1;
   }
 
-  query.page = searchState?.page;
+  if (searchState.page) {
+    query.page = searchState.page;
+  }
 
   return query;
 };
