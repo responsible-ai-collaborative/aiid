@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner, Button } from 'flowbite-react';
+import { Spinner, Button, Select } from 'flowbite-react';
 import Card from 'elements/Card';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -31,25 +31,17 @@ const ChecklistsIndex = ({ users }) => {
 
   const [checklists, setChecklists] = useState([]);
 
+  const [sortFunction, setSortFunction] = useState(sortAlphabetical);
+
   useEffect(() => {
     setChecklists(checklistsData?.checklists || []);
   }, [checklistsData]);
 
   const loggedIn = user?.providerType != 'anon-user';
 
-  const sortFunction = (A, B) => {
-    const a = A.name || 'Unspecified System';
-
-    const b = B.name || 'Unspecified System';
-
-    if (a == b) return 0;
-    if (a > b) return 1;
-    if (a < b) return -1;
-  };
-
   const displayedChecklists = checklists
     .filter((checklist) => checklist.owner_id == user.id)
-    .sort(sortFunction);
+    .sort(sortFunction || sortAlphabetical);
 
   if (checklistsLoading) {
     return <Spinner />;
@@ -61,39 +53,56 @@ const ChecklistsIndex = ({ users }) => {
           <h1 className="mr-auto">
             <Trans>Risk Checklists</Trans>
           </h1>
-          {loggedIn && (
-            <Button
-              id="new-checklist-button"
-              onClick={async () => {
-                const newChecklist = {
-                  id: generateId(),
-                  owner_id: user.id,
-                  name: 'Unspecified System',
-                  about: '',
-                  tags_goals: [],
-                  tags_methods: [],
-                  tags_other: [],
-                  risks: [],
-                };
-
-                try {
-                  await insertChecklist({
-                    variables: { checklist: newChecklist },
-                  });
-                } catch (error) {
-                  addToast({
-                    message: t('Could not create checklist.'),
-                    severity: SEVERITY.danger,
-                    error,
-                  });
-                  return;
-                }
-                window.location = '/apps/checklists?id=' + newChecklist.id;
-              }}
+          <div className="flex gap-2 items-center">
+            <label for="sort-by">Sort</label>
+            <Select 
+              id="sort-by"
+              onChange={
+                (evt) => setSortFunction(
+                  { alphabetical: sortAlphabetical,
+                    chronological: sortChronological
+                  }[evt.target.value]
+                )
+              }
             >
-              <Trans>New</Trans>
-            </Button>
-          )}
+              <option value="alphabetical">Alphabetical</option>
+              <option value="chronological">Newest First</option>
+            </Select>
+            {loggedIn && (
+              <Button
+                id="new-checklist-button"
+                onClick={async () => {
+                  const newChecklist = {
+                    id: generateId(),
+                    date_created: new Date(),
+                    owner_id: user.id,
+                    name: 'Unspecified System',
+                    about: '',
+                    tags_goals: [],
+                    tags_methods: [],
+                    tags_other: [],
+                    risks: [],
+                  };
+
+                  try {
+                    await insertChecklist({
+                      variables: { checklist: newChecklist },
+                    });
+                  } catch (error) {
+                    addToast({
+                      message: t('Could not create checklist.'),
+                      severity: SEVERITY.danger,
+                      error,
+                    });
+                    return;
+                  }
+                  window.location = '/apps/checklists?id=' + newChecklist.id;
+                }}
+              >
+                <Trans>New</Trans>
+              </Button>
+            )}
+            </div>
         </div>
       </div>
       <div className="flex flex-col gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4">
@@ -206,4 +215,24 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
   );
 };
 
+const sortAlphabetical = (A, B) => {
+  const a = A?.name || 'Unspecified System';
+
+  const b = B?.name || 'Unspecified System';
+
+  if (a == b) return 0;
+  if (a > b) return 1;
+  if (a < b) return -1;
+}
+const sortChronological = (A, B) => {
+  const a = A?.date_created || 'Unspecified System';
+
+  const b = B?.date_created || 'Unspecified System';
+
+  if (a == b) return 0;
+  if (a > b) return 1;
+  if (a < b) return -1;
+}
+
 export default ChecklistsIndex;
+
