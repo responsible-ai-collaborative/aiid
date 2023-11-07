@@ -101,14 +101,16 @@ export const UserContextProvider = ({ children }) => {
         message: (
           <>
             <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
-            <CustomButton
-              variant="link"
-              title={t('Resend Verification email')}
-              onClick={() => onResendConfirmationClick(email)}
-              className="underline text-sm pl-0 border-0"
-            >
-              <Trans>Resend Verification email</Trans>
-            </CustomButton>
+            {e.statusCode === 401 && e.error == 'confirmation required' && (
+              <CustomButton
+                variant="link"
+                title={t('Resend Verification email')}
+                onClick={() => onResendConfirmationClick(email)}
+                className="underline text-sm pl-0 border-0"
+              >
+                <Trans>Resend Verification email</Trans>
+              </CustomButton>
+            )}
           </>
         ),
         severity: SEVERITY.danger,
