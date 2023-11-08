@@ -1,10 +1,10 @@
-import flaggedReport from '../fixtures/reports/flagged.json';
-import unflaggedReport from '../fixtures/reports/unflagged.json';
-import config from '../../config';
+import flaggedReport from '../../fixtures/reports/flagged.json';
+import unflaggedReport from '../../fixtures/reports/unflagged.json';
+import config from '../../../config';
 import path from 'path';
 import { format, getUnixTime } from 'date-fns';
-import { deleteReportTypenames, transformReportData } from '../../src/utils/reports';
-import { conditionalIt } from '../support/utils';
+import { deleteReportTypenames, transformReportData } from '../../../src/utils/reports';
+import { conditionalIt } from '../../support/utils';
 
 describe('The Discover app', () => {
   const url = '/apps/discover';
