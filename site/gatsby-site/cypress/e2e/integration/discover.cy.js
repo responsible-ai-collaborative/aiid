@@ -143,6 +143,8 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="tags-item"]:contains("response")', { timeout: 8000 }).first().click();
 
+    cy.waitForStableDOM();
+
     cy.url().should('include', 'tags=response');
 
     cy.waitForStableDOM();
@@ -293,6 +295,8 @@ describe('The Discover app', () => {
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Issue Reports$/).click();
+
+    cy.waitForStableDOM();
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
 
