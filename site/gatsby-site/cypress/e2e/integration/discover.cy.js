@@ -539,6 +539,8 @@ describe('The Discover app', () => {
         .first()
         .click();
 
+      cy.waitForStableDOM();
+
       cy.url().should('include', 'source_domain=theguardian.com');
 
       cy.waitForStableDOM();
