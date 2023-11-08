@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Col from 'elements/Col';
 import Row from 'elements/Row';
 import Container from 'elements/Container';
@@ -34,6 +34,26 @@ export default function Discover() {
 
   const [indexName] = useState(`instant_search-${locale}-featured`);
 
+  const [width, setWidth] = useState(0);
+
+  const handleWindowSizeChange = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+
+    handleWindowSizeChange();
+
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    };
+  }, []);
+
+  if (width == 0) {
+    return null;
+  }
+
   return (
     <InstantSearch
       searchClient={searchClient}
@@ -62,9 +82,7 @@ export default function Discover() {
           </Col>
         </Row>
 
-        <Controls />
-
-        <OptionsModal />
+        {width > 767 ? <Controls /> : <OptionsModal />}
 
         <Hits />
 
