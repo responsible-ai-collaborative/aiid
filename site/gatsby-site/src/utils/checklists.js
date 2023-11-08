@@ -69,6 +69,7 @@ const emptyRisk = (properties) => ({
   touched: false,
   generated: true,
   startClosed: false,
+  date_created: new Date(),
   ...(properties || {}),
 });
 

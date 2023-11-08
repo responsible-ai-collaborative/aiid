@@ -4,6 +4,7 @@
     "_id":       { "bsonType": "objectId" },
     "id":        { "bsonType": "string" },
     "date_created": { "bsonType": "date" },
+    "date_updated": { "bsonType": "date" },
     "owner_id":  { "bsonType": "string" },
     "entity_id": { "bsonType": "string" },
     "name":      { "bsonType": "string" },

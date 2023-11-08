@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import gql from 'graphql-tag';
 
 import { useUserContext } from '../../contexts/userContext';
 import ExportDropdown from 'components/checklists/ExportDropdown';
@@ -14,6 +15,7 @@ import {
   statusIcon,
   statusColor,
   generateId,
+  abbreviatedTag,
 } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -27,11 +29,74 @@ const ChecklistsIndex = ({ users }) => {
 
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
-  const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS);
+  const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS, {
+    variables: { query: { owner_id: user?.id || 'fakeid' } },
+  });
+
+  const identifier = (checklist) => checklist.id.replace(/-/g, '');
+
+  const allTags = (checklist) => [
+    ...checklist.tags_goals,
+    ...checklist.tags_methods,
+    ...checklist.tags_other,
+  ];
+
+  // Example
+  // ---------------------------------------------------------------------
+  // query {
+  //   e39b619bd8f640a38ce60357eb6afba5:
+  //   risks(input: {tags: ["GMF:Known AI Technology:Transformer"]}) {
+  //     tag
+  //     title
+  //   }
+  //   349590abca7ba6e3b01658e6368febdf:
+  //   risks(input: {tags: ["GMF:Known AI Technical Failure:Underspecification"]}) {
+  //     tag
+  //     title
+  //   }
+  // }
+
+  const skip = !checklistsData?.checklists || checklistsData.checklists.length == 0;
+
+  const { data: risksData } = useQuery(
+    skip
+      ? gql`
+          query {
+            thisWontRunButHasToBeValidGraphQL {
+              ForSomeReason
+            }
+          }
+        `
+      : gql`
+      query {
+        ${(checklistsData?.checklists || [])
+          .filter((c) => allTags(c).length > 0)
+          .map(
+            (c) => `
+          ${identifier(c)}:
+          risks(input: { tags: [${allTags(c)
+            .map((t) => `"${t}"`)
+            .join(', ')}] }) {
+            tag
+          }
+        `
+          )
+          .join('\n')}
+      }
+    `,
+    { skip }
+  );
 
   const [checklists, setChecklists] = useState([]);
 
-  const [sortFunction, setSortFunction] = useState(sortAlphabetical);
+  const [sortBy, setSortBy] = useState('alphabetical');
+
+  const sortFunction = {
+    alphabetical: sortByProperty('name'),
+    'oldest-first': sortByProperty('date_created'),
+    'newest-first': reverse(sortByProperty('date_created')),
+    'last-updated': reverse(sortByProperty('date_updated')),
+  }[sortBy];
 
   useEffect(() => {
     setChecklists(checklistsData?.checklists || []);
@@ -41,7 +106,8 @@ const ChecklistsIndex = ({ users }) => {
 
   const displayedChecklists = checklists
     .filter((checklist) => checklist.owner_id == user.id)
-    .sort(sortFunction || sortAlphabetical);
+    .sort(sortFunction || sortFunction['alphabetical'])
+    .map((c) => ({ ...c, risks: c.risks.concat(risksData?.[identifier(c)] || []) }));
 
   if (checklistsLoading) {
     return <Spinner />;
@@ -54,19 +120,12 @@ const ChecklistsIndex = ({ users }) => {
             <Trans>Risk Checklists</Trans>
           </h1>
           <div className="flex gap-2 items-center">
-            <label for="sort-by">Sort</label>
-            <Select 
-              id="sort-by"
-              onChange={
-                (evt) => setSortFunction(
-                  { alphabetical: sortAlphabetical,
-                    chronological: sortChronological
-                  }[evt.target.value]
-                )
-              }
-            >
+            <label htmlFor="sort-by">Sort</label>
+            <Select id="sort-by" onChange={(evt) => setSortBy(evt.target.value)}>
               <option value="alphabetical">Alphabetical</option>
-              <option value="chronological">Newest First</option>
+              <option value="oldest-first">Oldest First</option>
+              <option value="newest-first">Newest First</option>
+              <option value="last-updated">Last Updated</option>
             </Select>
             {loggedIn && (
               <Button
@@ -75,6 +134,7 @@ const ChecklistsIndex = ({ users }) => {
                   const newChecklist = {
                     id: generateId(),
                     date_created: new Date(),
+                    date_updated: new Date(),
                     owner_id: user.id,
                     name: 'Unspecified System',
                     about: '',
@@ -102,7 +162,7 @@ const ChecklistsIndex = ({ users }) => {
                 <Trans>New</Trans>
               </Button>
             )}
-            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4">
@@ -202,11 +262,11 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
             .map((risk) => (
               <li key={risk.id} className="flex items-center gap-1 text-gray-600 mx-1">
                 <FontAwesomeIcon
-                  icon={statusIcon(risk.risk_status)}
-                  className={`text-${statusColor(risk.risk_status)}-600`}
-                  title={risk.risk_status}
+                  icon={statusIcon(risk.risk_status || 'Unclear')}
+                  className={`text-${statusColor(risk.risk_status || 'Unclear')}-600`}
+                  title={risk.risk_status || 'Unclear'}
                 />
-                {risk.title}
+                {risk.title || abbreviatedTag(risk.tag)}
               </li>
             ))}
         </ul>
@@ -215,24 +275,35 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
   );
 };
 
-const sortAlphabetical = (A, B) => {
-  const a = A?.name || 'Unspecified System';
+const reverse = (f) => (A, B) => f(B, A);
 
-  const b = B?.name || 'Unspecified System';
+const sortByProperty = (property, defaultValue) => (A, B) => {
+  const a = A?.[property] || defaultValue;
 
-  if (a == b) return 0;
-  if (a > b) return 1;
-  if (a < b) return -1;
-}
-const sortChronological = (A, B) => {
-  const a = A?.date_created || 'Unspecified System';
-
-  const b = B?.date_created || 'Unspecified System';
+  const b = B?.[property] || defaultValue;
 
   if (a == b) return 0;
   if (a > b) return 1;
   if (a < b) return -1;
-}
+};
+
+//const sortAlphabetical = (A, B) => {
+//  const a = A?.name || 'Unspecified System';
+//
+//  const b = B?.name || 'Unspecified System';
+//
+//  if (a == b) return 0;
+//  if (a > b) return 1;
+//  if (a < b) return -1;
+//}
+//const sortByDateCreated = (A, B) => {
+//  const a = A?.date_created || 'Unspecified System';
+//
+//  const b = B?.date_created || 'Unspecified System';
+//
+//  if (a == b) return 0;
+//  if (a > b) return 1;
+//  if (a < b) return -1;
+//}
 
 export default ChecklistsIndex;
-
