@@ -31,13 +31,13 @@ export default function UsersField({ id, name, placeHolder = '' }) {
   useEffect(() => {
     if (data?.users) {
       setSelected((selected) =>
-        selected
-          .filter(({ id }) => data.users.some((user) => user.userId == id))
-          .map(({ id }) => {
-            const { userId, first_name, last_name } = data.users.find((user) => user.userId == id);
+        selected.map(({ id }) => {
+          const user = data.users.find((user) => user.userId == id);
 
-            return { id: userId, first_name, last_name };
-          })
+          const { userId, first_name = '', last_name = '' } = user || {};
+
+          return { id: userId, first_name, last_name };
+        })
       );
 
       setLoading(false);
