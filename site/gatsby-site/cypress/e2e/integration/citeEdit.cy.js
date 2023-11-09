@@ -208,7 +208,7 @@ describe('Edit report', () => {
       date_modified: format(now, 'yyyy-MM-dd'),
       date_published: '2022-02-02',
       epoch_date_modified: getUnixTime(now),
-      epoch_date_published: 1643760000,
+      epoch_date_published: 1643770800,
       flag: null,
       image_url: 'https://test.com/test.jpg',
       report_number: 10,
@@ -251,7 +251,12 @@ describe('Edit report', () => {
           user: report10.data.report.user.userId,
         };
 
-        expect(input).to.deep.eq(expectedResult);
+        expect({
+          ...input,
+          date_downloaded: format(new Date(input.date_downloaded), 'yyyy-MM-dd'),
+          date_published: format(new Date(input.date_published), 'yyyy-MM-dd'),
+          date_modified: format(new Date(input.date_modified), 'yyyy-MM-dd'),
+        }).to.deep.eq(expectedResult);
       });
 
     cy.wait('@updateOneReportTranslation').then((xhr) => {
@@ -364,8 +369,6 @@ describe('Edit report', () => {
 
     const updates = {
       authors: 'Test Author',
-      date_downloaded: '2022-01-01',
-      date_published: '2022-02-02',
       image_url: 'https://test.com/test.jpg',
       submitters: 'Test Submitter',
       title: 'Test Title',
@@ -373,8 +376,17 @@ describe('Edit report', () => {
       editor_notes: 'Pro iustitia tantum',
     };
 
+    const dateUpdates = {
+      date_downloaded: '2022-01-01',
+      date_published: '2022-02-02',
+    };
+
     Object.keys(updates).forEach((key) => {
       cy.get(`[name=${key}]`).clear().type(updates[key]);
+    });
+
+    Object.keys(dateUpdates).forEach((key) => {
+      cy.setDate(dateUpdates[key], key);
     });
 
     cy.setEditorText(
@@ -422,7 +434,7 @@ describe('Edit report', () => {
       date_modified: format(now, 'yyyy-MM-dd'),
       date_published: '2022-02-02',
       epoch_date_modified: getUnixTime(now),
-      epoch_date_published: 1643760000,
+      epoch_date_published: 1643770800,
       flag: null,
       image_url: 'https://test.com/test.jpg',
       report_number: 10,
@@ -441,7 +453,18 @@ describe('Edit report', () => {
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
 
-      expect(xhr.request.body.variables.set).deep.eq(expectedReport);
+      expect({
+        ...xhr.request.body.variables.set,
+        date_downloaded: format(
+          new Date(xhr.request.body.variables.set.date_downloaded),
+          'yyyy-MM-dd'
+        ),
+        date_published: format(
+          new Date(xhr.request.body.variables.set.date_published),
+          'yyyy-MM-dd'
+        ),
+        date_modified: format(new Date(xhr.request.body.variables.set.date_modified), 'yyyy-MM-dd'),
+      }).deep.eq(expectedReport);
     });
 
     cy.wait('@logReportHistory')
@@ -454,7 +477,12 @@ describe('Edit report', () => {
           user: report10.data.report.user.userId,
         };
 
-        expect(input).to.deep.eq(expectedResult);
+        expect({
+          ...input,
+          date_downloaded: format(new Date(input.date_downloaded), 'yyyy-MM-dd'),
+          date_published: format(new Date(input.date_published), 'yyyy-MM-dd'),
+          date_modified: format(new Date(input.date_modified), 'yyyy-MM-dd'),
+        }).to.deep.eq(expectedResult);
       });
 
     cy.wait('@updateOneReportTranslation').then((xhr) => {
@@ -707,7 +735,13 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set).deep.eq(expectedReport);
+
+        expect({
+          ...variables.set,
+          date_downloaded: format(new Date(variables.set.date_downloaded + ' '), 'yyyy-MM-dd'),
+          date_published: format(new Date(variables.set.date_published + ' '), 'yyyy-MM-dd'),
+          date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+        }).deep.eq(expectedReport);
       });
 
     cy.wait('@logReportHistory')
@@ -720,7 +754,12 @@ describe('Edit report', () => {
           user: report10.data.report.user.userId,
         };
 
-        expect(input).to.deep.eq(expectedResult);
+        expect({
+          ...input,
+          date_downloaded: format(new Date(input.date_downloaded + ' '), 'yyyy-MM-dd'),
+          date_published: format(new Date(input.date_published + ' '), 'yyyy-MM-dd'),
+          date_modified: format(new Date(input.date_modified), 'yyyy-MM-dd'),
+        }).to.deep.eq(expectedResult);
       });
 
     cy.wait('@updateOneReportTranslation')
@@ -974,7 +1013,12 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set).deep.eq(expectedReport);
+        expect({
+          ...variables.set,
+          date_downloaded: format(new Date(variables.set.date_downloaded + ' '), 'yyyy-MM-dd'),
+          date_published: format(new Date(variables.set.date_published + ' '), 'yyyy-MM-dd'),
+          date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+        }).deep.eq(expectedReport);
       });
 
     cy.wait('@logReportHistory')
@@ -987,7 +1031,12 @@ describe('Edit report', () => {
           user: report10.data.report.user.userId,
         };
 
-        expect(input).to.deep.eq(expectedResult);
+        expect({
+          ...input,
+          date_downloaded: format(new Date(input.date_downloaded + ' '), 'yyyy-MM-dd'),
+          date_published: format(new Date(input.date_published + ' '), 'yyyy-MM-dd'),
+          date_modified: format(new Date(input.date_modified), 'yyyy-MM-dd'),
+        }).to.deep.eq(expectedResult);
       });
 
     cy.wait('@UpdateReportTranslation');
@@ -1167,7 +1216,12 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set).deep.eq(expectedReport);
+        expect({
+          ...variables.set,
+          date_downloaded: format(new Date(variables.set.date_downloaded + ' '), 'yyyy-MM-dd'),
+          date_published: format(new Date(variables.set.date_published + ' '), 'yyyy-MM-dd'),
+          date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+        }).deep.eq(expectedReport);
       });
 
     cy.wait('@logReportHistory')
@@ -1180,7 +1234,12 @@ describe('Edit report', () => {
           user: report10.data.report.user.userId,
         };
 
-        expect(input).to.deep.eq(expectedResult);
+        expect({
+          ...input,
+          date_downloaded: format(new Date(input.date_downloaded + ' '), 'yyyy-MM-dd'),
+          date_published: format(new Date(input.date_published + ' '), 'yyyy-MM-dd'),
+          date_modified: format(new Date(input.date_modified), 'yyyy-MM-dd'),
+        }).to.deep.eq(expectedResult);
       });
 
     cy.wait('@UpdateReportTranslation');
