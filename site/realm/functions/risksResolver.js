@@ -26,6 +26,10 @@
 //     ]
 // }}
 exports = async (input) => {
+  let msg = "";
+  function log() {
+    msg += Object.values(arguments).map(x => JSON.stringify(x)).join(' ') + '\n'
+  }
 
   const db = context.services.get('mongodb-atlas').db('aiidprod');
   const incidentsCollection = db.collection('incidents');
@@ -48,6 +52,8 @@ exports = async (input) => {
     }
   }
 
+  log(`classificationsMatchingSearchTags.length`, classificationsMatchingSearchTags.length);
+
   const incidentIdsMatchingSearchTags = (
     classificationsMatchingSearchTags.map(c => c.incidents).flat()
   );
@@ -56,11 +62,13 @@ exports = async (input) => {
     { incident_id: { $in: incidentIdsMatchingSearchTags } },
   ).toArray();
 
+  log(`incidentsMatchingSearchTags.length`, incidentsMatchingSearchTags.length);
+
   // TODO: These should probably be defined in the taxa
   const failureTags = [
-    { namespace: "GMF", short_name: "Known AI Technical Failure"},
+    { namespace: "GMF", short_name: "Known AI Technical Failure" },
     { namespace: "GMF", short_name: "Potential AI Technical Failure" }
-  ]
+  ];
 
   // TODO: This selects every field.
   // For performance, we should only select those we need.
@@ -82,12 +90,18 @@ exports = async (input) => {
     ).toArray()
   )
 
+  log(`failureClassificationsMatchingIncidentIds.length`, failureClassificationsMatchingIncidentIds.length);
+
   const matchingClassificationsByFailure = groupByMultiple(
     failureClassificationsMatchingIncidentIds,
     classification => tagsFromClassification(classification).filter(
-      tag => tag.startsWith('GMF:Known AI Technical Failure:') 
+      tag => failureTags.some(
+        f => tag.startsWith(`${f.namespace}:${f.short_name}:`) 
+      )
     )
   );
+
+  log(`Object.keys(matchingClassificationsByFailure)`, Object.keys(matchingClassificationsByFailure));
   
   const risks = Object.keys(matchingClassificationsByFailure).map(
     failure => ({
@@ -104,7 +118,7 @@ exports = async (input) => {
     })
   ).sort((a, b) => b.precedents.length - a.precedents.length);
 
-  return risks;
+  return [{tag: msg}].concat(risks);
 };
 
 const getRiskClassificationsMongoQuery = (tagStrings) => {

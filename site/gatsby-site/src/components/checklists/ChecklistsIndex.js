@@ -104,6 +104,20 @@ const ChecklistsIndex = ({ users }) => {
 
   const loggedIn = user?.providerType != 'anon-user';
 
+  const deduplicatedRisks = {};
+//  if (risksData) {
+//    for (const ident in risksData) {
+//      deduplicatedRisks[ident] = [];
+//      for (const risk of risksData[ident]) {
+//        if (deduplicatedRisks[ident].every(
+//          r => abbreviatedTag(r.tag) !== abbreviatedTag(risk.tag))
+//        ) {
+//          deduplicatedRisks[ident].push(risk);
+//        }
+//      }
+//    }
+//  }
+
   const displayedChecklists = checklists
     .filter((checklist) => checklist.owner_id == user.id)
     .sort(sortFunction || sortFunction['alphabetical'])
