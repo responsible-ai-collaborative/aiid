@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { AccordionFilter } from './Filter';
 import Stats from './Stats';
@@ -9,15 +9,42 @@ import Button from 'elements/Button';
 import DisplayOptions from './DisplayOptions';
 import { Accordion, Modal } from 'flowbite-react';
 import { graphql, useStaticQuery } from 'gatsby';
+import { useRange, useRefinementList } from 'react-instantsearch';
+
+const VirtualRefinementList = ({ attribute }) => {
+  useRefinementList({ attribute });
+
+  return null;
+};
+
+const VirtualRange = ({ attribute }) => {
+  useRange({ attribute });
+
+  return null;
+};
+
+const componentsMap = {
+  refinement: VirtualRefinementList,
+  classifications: VirtualRefinementList,
+  range: VirtualRange,
+};
+
+function VirtualFilters() {
+  return (
+    <>
+      {REFINEMENT_LISTS.map((list) => {
+        const Component = componentsMap[list.type];
+
+        return <Component key={list.attribute} attribute={list.attribute} />;
+      })}
+    </>
+  );
+}
 
 function OptionsModal() {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
-
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   const {
     taxa: { nodes: taxa },
@@ -49,36 +76,37 @@ function OptionsModal() {
           </Button>
         </div>
       </div>
-      {mounted && (
-        <Modal show={showModal} onClose={handleClose}>
-          <Modal.Header>
-            <Trans>Search Options</Trans>
-          </Modal.Header>
-          <Modal.Body>
-            <div>
-              <div className="tw-options-modal-hbox">
-                <DisplayOptions />
-                <DisplayModeSwitch />
-              </div>
-              <Accordion>
-                {REFINEMENT_LISTS.map((list) => (
-                  <AccordionFilter
-                    key={list.attribute}
-                    attribute={list.attribute}
-                    {...list}
-                    taxa={taxa}
-                  />
-                ))}
-              </Accordion>
+
+      <VirtualFilters />
+
+      <Modal show={showModal} onClose={handleClose}>
+        <Modal.Header>
+          <Trans>Search Options</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <div className="tw-options-modal-hbox">
+              <DisplayOptions />
+              <DisplayModeSwitch />
             </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              <Trans>Close</Trans>
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+            <Accordion>
+              {REFINEMENT_LISTS.map((list) => (
+                <AccordionFilter
+                  key={list.attribute}
+                  attribute={list.attribute}
+                  {...list}
+                  taxa={taxa}
+                />
+              ))}
+            </Accordion>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            <Trans>Close</Trans>
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
