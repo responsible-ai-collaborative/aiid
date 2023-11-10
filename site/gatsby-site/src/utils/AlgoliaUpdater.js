@@ -49,6 +49,8 @@ const includedCSETAttributes = [
 const getClassificationArray = ({ classification, taxonomy }) => {
   const attributes = {};
 
+  const list = [];
+
   if (classification.attributes) {
     for (const attribute of classification.attributes) {
       const field = taxonomy?.field_list.find((field) => field.short_name == attribute.short_name);
@@ -64,14 +66,22 @@ const getClassificationArray = ({ classification, taxonomy }) => {
         const value = JSON.parse(attribute.value_json);
 
         attributes[attribute.short_name] = value;
+
+        const values = Array.isArray(value) ? value : [value];
+
+        for (const v of values) {
+          if (v != '' && typeof v != 'object') {
+            list.push(`${classification.namespace}:${attribute.short_name}:${v}`);
+          }
+        }
       }
     }
   }
 
-  return { [classification.namespace]: attributes };
+  return { tree: { [classification.namespace]: attributes }, list };
 };
 
-const reportToEntry = ({ incident = null, report, classifications = [] }) => {
+const reportToEntry = ({ incident = null, report, classifications = [{ list: [], tree: [] }] }) => {
   let featuredValue = 0;
 
   if (config?.header?.search?.featured) {
@@ -111,12 +121,13 @@ const reportToEntry = ({ incident = null, report, classifications = [] }) => {
     flag: report.flag,
     is_incident_report: report.is_incident_report,
     namespaces: classifications.map((c) => {
-      return Object.keys(c)[0];
+      return Object.keys(c.tree)[0];
     }),
+    classifications: classifications.map((c) => c.list).flat(),
   };
 
   for (const classification of classifications) {
-    merge(entry, classification);
+    merge(entry, classification.tree);
   }
 
   if (incident) {
@@ -313,10 +324,15 @@ class AlgoliaUpdater {
 
     await index.replaceAllObjects(entries);
 
+    const taxa = await this.getTaxa();
+
+    const namespaces = taxa.map((t) => t.namespace);
+
     try {
       await index.setSettings(
         {
           ...algoliaSettings,
+          attributesForFaceting: [...algoliaSettings.attributesForFaceting, ...namespaces],
           indexLanguages: [language],
           queryLanguages: [language],
           replicas: [
