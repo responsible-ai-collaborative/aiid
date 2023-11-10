@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRefinementList, useInstantSearch } from 'react-instantsearch';
 import debounce from 'lodash/debounce';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
@@ -10,7 +12,7 @@ function Attribute({ name, refinement, searchResults }) {
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    if (searchResults.length > 0) {
+    if (searchResults?.length > 0) {
       setCollapsed(false);
     }
   }, [searchResults]);
@@ -36,14 +38,17 @@ function Attribute({ name, refinement, searchResults }) {
           {refinement.items
             .filter(
               (item) =>
-                searchResults.length == 0 ||
+                searchResults == null ||
                 searchResults.map((r) => r.value.split(':')[2]).includes(item.value)
             )
             .map((item) => {
               return (
                 <div
                   key={item.value}
-                  className="cursor-pointer inline-block p-1 border rounded-md text-xs"
+                  className={
+                    'cursor-pointer inline-block p-1 border rounded-md text-xs' +
+                    (item.isRefined ? ' bg-green-100 hover:bg-red-200' : '')
+                  }
                   role="button"
                   tabIndex={0}
                   onClick={() => refinement.refine(item.value)}
@@ -74,13 +79,13 @@ function Namespace({ taxonomy, refinement, searchResults }) {
   }
 
   useEffect(() => {
-    if (searchResults.length > 0) {
+    if (searchResults?.length > 0) {
       setCollapsed(false);
     }
   }, [searchResults]);
 
   return (
-    <div key={namespace}>
+    <div key={namespace} className="border p-2 rounded-md">
       <div
         className="font-bold cursor-pointer"
         role="button"
@@ -91,11 +96,11 @@ function Namespace({ taxonomy, refinement, searchResults }) {
         <div className="inline-block">{collapsed ? <>+</> : <>-</>} </div>
       </div>
       {!collapsed && (
-        <div className="space-y-2 mt-1 max-h-60	overflow-y-scroll">
+        <div className="space-y-2 mt-2 max-h-[240px]	overflow-y-scroll">
           {Object.keys(refinements)
             .filter(
               (name) =>
-                searchResults.length == 0 ||
+                searchResults == null ||
                 searchResults.map((r) => r.value.split(':')[1]).includes(name)
             )
             .map((name) => {
@@ -126,12 +131,15 @@ function SelectedRefinement({ attribute }) {
     .map((item) => (
       <div
         key={item.value}
-        className="cursor-pointer border text-xs p-1 rounded-md bg-green-100"
+        className="cursor-pointer border text-xs p-2 rounded-md bg-green-100 hover:bg-red-200 flex justify-between items-center"
         role="button"
         tabIndex={0}
         onClick={() => refine(item.value)}
       >
-        <b>{namespace}</b> : {name} : {item.label}
+        <div>
+          <b>{namespace}</b> : {name} : {item.label}
+        </div>
+        <FontAwesomeIcon icon={faClose} />
       </div>
     ));
 }
@@ -160,7 +168,7 @@ function Search({ setSearchResults }) {
     }
 
     if (query.length == 0) {
-      setSearchResults([]);
+      setSearchResults(null);
     }
   }, [query]);
 
@@ -197,7 +205,7 @@ export default function Hierarchical({ taxa }) {
     return taxa.map((t) => t.namespace).some((n) => key.startsWith(`${n}.`));
   });
 
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
 
   return (
     <div>
@@ -209,26 +217,30 @@ export default function Hierarchical({ taxa }) {
 
       <Search setSearchResults={setSearchResults} />
 
-      <div className="mt-3 space-y-2">
-        {namespaces
-          .filter(
-            (ns) =>
-              searchResults.length == 0 ||
-              searchResults.map((r) => r.value.split(':')[0]).includes(ns.value)
-          )
-          .map((refinement) => {
-            const taxonomy = taxa.find((t) => t.namespace === refinement.value);
+      {searchResults == null || searchResults.length > 0 ? (
+        <div className="mt-3 space-y-2">
+          {namespaces
+            .filter(
+              (ns) =>
+                searchResults == null ||
+                searchResults.map((r) => r.value.split(':')[0]).includes(ns.value)
+            )
+            .map((refinement) => {
+              const taxonomy = taxa.find((t) => t.namespace === refinement.value);
 
-            return (
-              <Namespace
-                key={refinement.value}
-                taxonomy={taxonomy}
-                refinement={refinement}
-                searchResults={searchResults}
-              />
-            );
-          })}
-      </div>
+              return (
+                <Namespace
+                  key={refinement.value}
+                  taxonomy={taxonomy}
+                  refinement={refinement}
+                  searchResults={searchResults}
+                />
+              );
+            })}
+        </div>
+      ) : (
+        <div className="mt-3">No results</div>
+      )}
     </div>
   );
 }
