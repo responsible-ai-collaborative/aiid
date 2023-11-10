@@ -4,7 +4,7 @@ const getRecipients = async (userIds) => {
   for (const userId of userIds) {
     const userResponse = await context.functions.execute('getUser', { userId });
 
-    if (userResponse.email) {
+    if (userResponse?.email) {
       recipients.push({
         email: userResponse.email,
         userId,
@@ -262,13 +262,19 @@ exports = async function () {
 
   // Notifications to New Promotions
   try {
+
+    // Finds all pending notifications to New Promotions
     const pendingNotificationsToNewPromotions = await notificationsCollection.find({ processed: false, type: 'submission-promoted' }).toArray();
+
+    // Gets all incident ids from pending notifications to New Promotions
+    const pendingNotificationsIncidentIds = pendingNotificationsToNewPromotions.map((notification) => notification.incident_id);
 
     if (pendingNotificationsToNewPromotions.length > 0) {
 
       result += pendingNotificationsToNewPromotions.length;
 
-      const subscriptionsToNewPromotions = await subscriptionsCollection.find({ type: 'submission-promoted' }).toArray();
+      // Finds all subscriptions to New Promotions for those new incidents
+      const subscriptionsToNewPromotions = await subscriptionsCollection.find({ type: 'submission-promoted', incident_id: { $in: pendingNotificationsIncidentIds } }).toArray();
 
       // Process subscriptions to New Incidents
       if (subscriptionsToNewPromotions.length > 0) {
