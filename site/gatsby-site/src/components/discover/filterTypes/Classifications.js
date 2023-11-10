@@ -175,7 +175,7 @@ function Search({ setSearchResults }) {
       <TextInputGroup
         name="query"
         label={'Search'}
-        placeholder={t('bue')}
+        placeholder={t('Search')}
         schema={null}
         icon={null}
         type="search"
