@@ -23,7 +23,7 @@ describe('Discover routing', () => {
     expect(state.refinementList).to.deep.eq({
       source_domain: ['theguardian.com'],
       authors: ['Christopher Knaus', 'Sam Levin'],
-      classifications: ['CSETv0:Intent:Accident'],
+      'CSETv0.Intent': ['Accident'],
       is_incident_report: ['true'],
     });
     expect(state.range).to.deep.eq({
@@ -40,6 +40,7 @@ describe('Discover routing', () => {
       indexName,
       locale: 'en',
       queryConfig,
+      taxa: ['CSETv0', 'CSETv1'],
     });
 
     expect('?' + resultURL).to.eq(location.search);

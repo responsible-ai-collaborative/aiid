@@ -324,15 +324,14 @@ class AlgoliaUpdater {
 
     await index.replaceAllObjects(entries);
 
-    const taxa = await this.getTaxa();
-
-    const namespaces = taxa.map((t) => t.namespace);
-
     try {
       await index.setSettings(
         {
           ...algoliaSettings,
-          attributesForFaceting: [...algoliaSettings.attributesForFaceting, ...namespaces],
+          attributesForFaceting: [
+            ...algoliaSettings.attributesForFaceting,
+            ...config.discover.taxa,
+          ],
           indexLanguages: [language],
           queryLanguages: [language],
           replicas: [
