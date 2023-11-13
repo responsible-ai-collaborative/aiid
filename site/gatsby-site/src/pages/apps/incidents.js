@@ -1,33 +1,99 @@
-import React from 'react';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
-import { Spinner } from 'flowbite-react';
+import React, { useEffect, useState } from 'react';
 import IncidentsTable from '../../components/incidents/IncidentsTable';
-import { FIND_INCIDENTS } from '../../graphql/incidents';
+import { FIND_INCIDENTS_TABLE } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import AiidHelmet from '../../components/AiidHelmet';
+import ListSkeleton from 'elements/Skeletons/List';
+import { graphql } from 'gatsby';
+import { makeEntitiesHash } from 'utils/entities';
 
-export default function IncidentsPage(props) {
-  const { data: incidentsData } = useQuery(FIND_INCIDENTS);
+const IncidentsPage = ({ data, ...props }) => {
+  const { data: incidents, loading } = useQuery(FIND_INCIDENTS_TABLE);
+
+  const [incidentsData, setIncidentsData] = useState(null);
+
+  const [isLiveData, setIsLiveData] = useState(false);
+
+  useEffect(() => {
+    if (isLiveData) {
+      if (incidents) {
+        setIncidentsData(incidents.incidents);
+      }
+    } else if (data?.incidents?.nodes) {
+      const entitiesHash = makeEntitiesHash(data?.entities?.nodes);
+
+      const incidents = [];
+
+      for (const incident of data.incidents.nodes) {
+        incident.AllegedDeployerOfAISystem = incident.Alleged_deployer_of_AI_system.map(
+          (entity_id) => entitiesHash[entity_id]
+        );
+        incident.AllegedDeveloperOfAISystem = incident.Alleged_developer_of_AI_system.map(
+          (entity_id) => entitiesHash[entity_id]
+        );
+        incident.AllegedHarmedOrNearlyHarmedParties =
+          incident.Alleged_harmed_or_nearly_harmed_parties.map(
+            (entity_id) => entitiesHash[entity_id]
+          );
+        incidents.push(incident);
+      }
+
+      setIncidentsData(incidents);
+    }
+  }, [isLiveData, incidents, data]);
 
   const { t } = useTranslation();
 
   return (
-    <LayoutHideSidebar {...props} className="bootstrap">
-      <AiidHelmet>
+    <div className="w-full" {...props}>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
-      {!incidentsData && (
-        <div className="p-4 flex justify-center align-items-center gap-2">
-          <Spinner />
-          <Trans>Fetching Incidents...</Trans>
-        </div>
-      )}
-      {incidentsData && incidentsData.incidents && (
-        <div className="ms-3 mt-2 mb-2">
-          <IncidentsTable data={incidentsData.incidents} />
-        </div>
-      )}
-    </LayoutHideSidebar>
+      <div>
+        {(incidentsData && !isLiveData) || (incidentsData && isLiveData && !loading) ? (
+          <div className="overflow-x-auto">
+            <IncidentsTable
+              data={incidentsData}
+              isLiveData={isLiveData}
+              setIsLiveData={setIsLiveData}
+            />
+          </div>
+        ) : (
+          <div className="px-3">
+            <ListSkeleton />
+          </div>
+        )}
+      </div>
+    </div>
   );
-}
+};
+
+export const query = graphql`
+  query IncidentsPageQuery {
+    incidents: allMongodbAiidprodIncidents {
+      nodes {
+        incident_id
+        title
+        description
+        editors {
+          userId
+          first_name
+          last_name
+        }
+        date
+        Alleged_deployer_of_AI_system
+        Alleged_developer_of_AI_system
+        Alleged_harmed_or_nearly_harmed_parties
+      }
+    }
+    entities: allMongodbAiidprodEntities {
+      nodes {
+        id: entity_id
+        name
+      }
+    }
+  }
+`;
+
+export default IncidentsPage;

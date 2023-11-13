@@ -1,8 +1,10 @@
 {
   "Welcome to the Artificial Intelligence Incident Database": "Bienvenido a la base de datos de incidentes de Inteligencia Artificial",
+  "<0>Welcome to the</0><1>AI Incident Database</1>": "<0>Bienvenido a</0><1>la base de datos de incidentes de IA</1>",
   "The starting point for information about the AI Incident Database": "El punto de partida para la información sobre la base de datos de incidentes de IA",
   "Search reports": "Buscar informes",
   "Latest Incident Report": "Último informe",
+  "Latest Incident Reports": "Últimos informes",
   "Quick Add New Report URL": "Enviar URL Rapidamente",
   "quickaddDescription": "Los enlaces enviados se agregan a una <2>cola de revisión </2>para que se resuelvan en un registro de incidente nuevo o existente. Los incidentes enviados con <4> detalles completos </4> se procesan antes que las URL que no poseen los detalles completos.",
   "About the Database": "Acerca de la Base de Datos",
@@ -20,8 +22,8 @@
   "The Responsible AI Collaborative": "El Colaborativo de IA Responsable",
   "Database Founding Sponsor": "Patrocinador fundador de la base de datos",
   "In-Kind Sponsors": "Patrocinadores",
-  "First Incident Reports": "Primeros Informes de Incidentes",
-  "Distinct Incidents Reported": "Incidentes Distintos Reportados",
-  "Total Incident Reports": "Total de Informes de Incidentes",
+  "New Incidents Contributed": "Nuevos incidentes aportados",
+  "Reports added to Existing Incidents": "Reportes agregados a Incidentes Existentes",
+  "Total Report Contributions": "Informe total de contribuciones",
   "Organization Founding Sponsor": "Patrocinador fundador de la organización"
 }

@@ -24,7 +24,7 @@
           ["services", "./src/services"],
           ["templates", "./src/templates"],
           ["utils", "./src/utils"],
-          ["buble", "@philpl/buble"],
+          ["plugins", "./plugins"],
           ["@reach/router", "@gatsbyjs/reach-router"]
         ],
         "extensions": [".js", ".jsx"]
@@ -64,6 +64,7 @@
     "cypress/globals": true
   },
   "globals": {
-    "graphql": false
+    "graphql": false,
+    "Rollbar": true
   }
 }

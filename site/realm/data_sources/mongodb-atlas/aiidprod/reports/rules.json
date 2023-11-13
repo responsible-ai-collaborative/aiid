@@ -33,18 +33,41 @@
             "additional_fields": {}
         },
         {
-            "name": "default",
-            "apply_when": {},
-            "fields": {
-                "flag": {
-                    "write": true
+            "name": "Variant",
+            "apply_when": {
+                "source_domain": {
+                    "$eq": ""
+                },
+                "title": {
+                    "$eq": ""
+                },
+                "url": {
+                    "$eq": ""
                 }
             },
             "read": true,
+            "write": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
+        },
+        {
+            "name": "default",
+            "apply_when": {},
+            "document_filters": {
+                "write": {},
+                "read": {}
+            },
+            "fields": {
+                "flag": {
+                    "write": true,
+                    "read": true
+                }
+            },
+            "read": true,
+            "insert": false,
+            "delete": false,
+            "search": true
         }
     ]
 }

@@ -1,82 +1,99 @@
-import React, { useCallback } from 'react';
-import styled from 'styled-components';
-import { connectRefinementList, Highlight } from 'react-instantsearch-dom';
-import { Form, Badge, ListGroup, Button } from 'react-bootstrap';
-import useSearch from '../useSearch';
+import React from 'react';
+import { useRefinementList, Highlight } from 'react-instantsearch';
 import { Trans, useTranslation } from 'react-i18next';
+import { Badge, Button, ListGroup } from 'flowbite-react';
+import { Form, Formik } from 'formik';
+import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
+import Label from 'components/forms/Label';
+import TextInputGroup from 'components/forms/TextInputGroup';
+import { useInstantSearch, useClearRefinements } from 'react-instantsearch';
 
-const ListGroupScrollable = styled(ListGroup)`
-  max-height: 400px;
-  overflow-y: scroll;
-`;
+export default function RefinementList({ attribute, placeholder, ...props }) {
+  const { indexUiState } = useInstantSearch();
 
-const RefinementList = ({
-  items,
-  isFromSearch,
-  refine,
-  searchForItems,
-  placeholder,
-  attribute,
-}) => {
-  const clear = useCallback(() => {
-    refine([]);
-  }, [items]);
+  const { refine, isFromSearch, searchForItems, items } = useRefinementList({
+    attribute,
+    ...props,
+  });
 
-  const { searchState } = useSearch();
-
-  const selectedItems = searchState.refinementList[attribute] || [];
+  const selectedItems = indexUiState?.refinementList?.[attribute] || [];
 
   const clearEnabled = selectedItems.length > 0;
 
   const { t } = useTranslation();
 
+  const { refine: clear } = useClearRefinements({ includedAttributes: [attribute] });
+
   return (
-    <div className="bootstrap">
-      <Form onSubmit={(e) => e.preventDefault()}>
-        <Form.Control
-          type="search"
-          placeholder={t(placeholder)}
-          onChange={(event) => searchForItems(event.currentTarget.value)}
-        />
-      </Form>
-      <ListGroupScrollable className="mt-4 border">
-        {items.map((item) => (
-          <ListGroup.Item
-            action
-            key={item.label}
-            active={item.isRefined}
-            onClick={() => {
-              refine(item.value);
-            }}
-          >
-            <div className="flex justify-between items-center">
-              {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
-              <Badge bg="secondary">{item.count}</Badge>
-            </div>
-          </ListGroup.Item>
-        ))}
+    <div>
+      <Formik initialValues={{}} onSubmit={() => {}} enableReinitialize>
+        {({ values, errors, touched, handleBlur, setValues }) => (
+          <>
+            <Form onSubmit={(e) => e.preventDefault()}>
+              <FieldContainer>
+                <Label>
+                  <Trans>From Date</Trans>:
+                </Label>
+                <TextInputGroup
+                  name="search"
+                  label={'Search'}
+                  placeholder={t(placeholder)}
+                  schema={null}
+                  icon={null}
+                  type="search"
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={(event) => {
+                    setValues({ search: event.currentTarget.value });
+                    searchForItems(event.currentTarget.value);
+                  }}
+                />
+              </FieldContainer>
+            </Form>
+          </>
+        )}
+      </Formik>
+      <ListGroup className="max-h-[400px] overflow-y-auto mt-4 border">
+        {items.map((item) => {
+          const hit = {
+            _highlightResult: {
+              label: {
+                value: item.highlighted,
+              },
+            },
+          };
+
+          return (
+            <button
+              className={`list-group-item text-left ${
+                item.isRefined ? 'bg-green-200 active' : 'hover:bg-gray-200'
+              } cursor-pointer p-3 flex justify-between items-center w-full`}
+              key={item.label}
+              data-cy={`${attribute}-item`}
+              onClick={() => {
+                refine(item.value);
+              }}
+            >
+              {isFromSearch ? <Highlight attribute={'label'} hit={hit} /> : item.label}&nbsp;
+              <Badge color="gray">{item.count}</Badge>
+            </button>
+          );
+        })}
 
         {items.length === 0 && (
-          <ListGroup.Item key="no-results">
-            <div className="flex justify-center">
-              <Trans>No result</Trans>
-            </div>
-          </ListGroup.Item>
+          <div className="p-3 flex justify-center" key="no-results">
+            <Trans>No result</Trans>
+          </div>
         )}
-      </ListGroupScrollable>
-      <Button
-        variant="link secondary"
-        className="mt-4 no-underline"
-        onClick={clear}
-        disabled={!clearEnabled}
-      >
+      </ListGroup>
+      <Button color="light" className="mt-4 no-underline" onClick={clear} disabled={!clearEnabled}>
         <Trans>Clear</Trans>
       </Button>
     </div>
   );
-};
+}
 
 export const touchedCount = ({ searchState, attribute }) =>
-  searchState.refinementList[attribute] ? searchState.refinementList[attribute].length : 0;
-
-export default connectRefinementList(RefinementList);
+  searchState.refinementList?.[attribute] ? searchState.refinementList[attribute].length : 0;

@@ -1,10 +1,9 @@
 import EntitiesTable from 'components/entities/EntitiesTable';
-import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import Container from 'elements/Container';
 import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
-import { Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
+import AiidHelmet from 'components/AiidHelmet';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -16,6 +15,8 @@ const incidentFields = [
 const entitiesFields = ['relatedEntities'];
 
 const EntitiesPage = ({ pageContext, data, ...props }) => {
+  const { t } = useTranslation(['entities']);
+
   const { entities } = pageContext;
 
   const { incidents } = data;
@@ -47,15 +48,25 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
     [incidentsHash, entitiesHash]
   );
 
+  const metaTitle = t('Entities');
+
   return (
-    <LayoutHideSidebar {...props}>
-      <Container className="tw-container-xl mt-6">
-        <h1 className="text-5xl mt-6 font-extrabold dark:text-white">
-          <Trans ns="entities">Entities</Trans>
-        </h1>
+    <div {...props}>
+      <AiidHelmet
+        {...{
+          metaTitle,
+          metaDescription: t('Entities involved in AI Incidents'),
+          canonicalUrl: 'https://incidentdatabase.ai/entities',
+          path: props.location.pathname,
+        }}
+      />
+      <div className="w-full">
+        <div className="titleWrapper">
+          <h1>{t(metaTitle)}</h1>
+        </div>
         <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
-      </Container>
-    </LayoutHideSidebar>
+      </div>
+    </div>
   );
 };
 
@@ -64,7 +75,9 @@ export const query = graphql`
     incidents: allMongodbAiidprodIncidents {
       nodes {
         incident_id
-        reports
+        reports {
+          report_number
+        }
         title
         description
         Alleged_deployer_of_AI_system

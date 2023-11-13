@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import Layout from '../components/Layout';
-import { Form } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import React, { useEffect, useState } from 'react';
+import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
-import Button from '../elements/Button';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
+import TextInputGroup from 'components/forms/TextInputGroup';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -26,15 +24,29 @@ const Login = (props) => {
 
   const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
 
+  const [redirectTo, setRedirectTo] = useState(null);
+
   const { t } = useTranslation();
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
-  let [{ redirectTo }] = useQueryParams({
-    redirectTo: StringParam,
+  const [{ redirectTo: redirectToParam }] = useQueryParams({
+    redirectTo: withDefault(StringParam, '/'),
   });
 
-  redirectTo = redirectTo ?? '/';
+  useEffect(() => {
+    if (!loading) {
+      const missingNames = !user.customData.first_name || !user.customData.last_name;
+
+      const isSignup = !!localStorage.getItem('signup');
+
+      const askToCompleteProfile = missingNames && isSignup;
+
+      localStorage.removeItem('signup');
+
+      setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile=1' : redirectToParam);
+    }
+  }, [loading]);
 
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
@@ -45,7 +57,7 @@ const Login = (props) => {
   };
 
   return (
-    <Layout {...props} className="bootstrap">
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -72,52 +84,55 @@ const Login = (props) => {
               setSubmitting(false);
             }}
           >
-            {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+              isValid,
+            }) => (
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-4 w-full" controlId="formBasicEmail">
-                  <Form.Label>
-                    <Trans>Email address</Trans>
-                  </Form.Label>
-                  <Form.Control
-                    isInvalid={errors.email && touched.email}
+                <div className="mb-4 w-full" id="formBasicEmail">
+                  <TextInputGroup
                     type="email"
+                    label={t('Email address')}
                     placeholder={t('Email')}
                     name="email"
                     value={values.email}
-                    onChange={handleChange}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    values={values}
+                    errors={errors}
+                    touched={touched}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
-                  </Form.Control.Feedback>
-                </Form.Group>
+                </div>
 
-                <Form.Group className="mb-4" controlId="formBasicPassword">
-                  <Form.Label>
-                    <Trans ns="login">Password</Trans>
-                  </Form.Label>
-                  <Form.Control
-                    isInvalid={errors.password && touched.password}
+                <div className="mb-4" id="formBasicPassword">
+                  <TextInputGroup
                     type="password"
+                    label={t('Password', { ns: 'login' })}
                     placeholder={t('Password', { ns: 'login' })}
                     name="password"
                     value={values.password}
-                    onChange={handleChange}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    values={values}
+                    errors={errors}
+                    touched={touched}
                   />
-                  <Form.Text>
-                    <Link to="/forgotpassword">
-                      <Trans ns="login">Forgot password?</Trans>
-                    </Link>
-                  </Form.Text>
-                  <Form.Control.Feedback type="invalid">
-                    <Trans>{errors.password && touched.password ? errors.password : null}</Trans>
-                  </Form.Control.Feedback>
-                </Form.Group>
+                  <Link to="/forgotpassword" className="text-sm">
+                    <Trans ns="login">Forgot password?</Trans>
+                  </Link>
+                </div>
 
                 <Button
-                  variant="primary"
                   type="submit"
                   disabled={isSubmitting || !isValid || displayFacebookSpinner}
                   className="w-full"
+                  data-cy="login-btn"
                 >
                   {isSubmitting && <Spinner />}
                   <span className="pl-3">
@@ -133,7 +148,6 @@ const Login = (props) => {
           </div>
 
           <Button
-            variant="primary"
             onClick={clickLoginWithFacebook}
             className={'w-full'}
             disabled={displayFacebookSpinner}
@@ -155,13 +169,13 @@ const Login = (props) => {
 
           <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}
-            <Link to="/signup">
+            <Link to="/signup/">
               <Trans ns="login">Sign up</Trans>
             </Link>
           </div>
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

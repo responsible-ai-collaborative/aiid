@@ -1,14 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
-import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
+import { format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
-import TextInputGroup from '../components/forms/TextInputGroup';
-import { Spinner } from 'flowbite-react';
-import { isWebUri } from 'valid-url';
-import { Trans } from 'react-i18next';
+import PlaceholderImage from 'components/PlaceholderImage';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -24,13 +21,38 @@ const Image = ({
   alt,
   transformation = null,
   plugins = [lazyload()],
-  style,
+  style = null,
+  height = 800,
+  itemIdentifier,
+  onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
-  const [cloudinaryId, setCloudinaryID] = useState(publicID);
-
   const imageElement = useRef(null);
 
-  const image = new CloudinaryImage(cloudinaryId.replace(/%/g, '%25'), {
+  const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
+
+  useEffect(() => {
+    setLoadFailed(false);
+    const img = imageElement.current?.imageRef.current;
+
+    // In order for the error event to fire, the image must be in the document.
+    if (img) {
+      const errorListener = img.addEventListener('error', () => {
+        setLoadFailed(true);
+      });
+
+      return () => img.removeEventListener('error', errorListener);
+    }
+
+    if (publicID && publicID.includes('placeholder.svg')) {
+      setLoadFailed(true);
+    }
+  }, [publicID, imageElement.current?.imageRef.current]);
+
+  useEffect(() => {
+    onImageLoaded(loadFailed);
+  }, [loadFailed, onImageLoaded]);
+
+  const image = new CloudinaryImage(publicID, {
     cloudName: config.cloudinary.cloudName,
   });
 
@@ -38,7 +60,6 @@ const Image = ({
   // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
   const tmpImage = new CloudinaryImage();
 
-  tmpImage.delivery(defaultImage('fallback.jpg'));
   tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
 
   if (transformation) {
@@ -47,139 +68,35 @@ const Image = ({
 
   image.transformation = tmpImage.transformation.toString();
 
-  useEffect(() => {
-    let fallbackTimeout;
-
-    const useFallbackIfLoadFailed = () => {
-      const img = imageElement.current?.imageRef.current;
-
-      if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
-        if ((img.src || img.srcset) && img.complete) {
-          setCloudinaryID('fallback.jpg');
-        } else {
-          fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
-        }
-      }
-    };
-
-    setCloudinaryID(publicID);
-    useFallbackIfLoadFailed();
-
-    return () => clearTimeout(fallbackTimeout);
-  }, [publicID]);
-
   return (
-    <AdvancedImage
-      ref={imageElement}
-      alt={alt}
-      className={className}
-      cldImg={image}
-      plugins={plugins}
-      style={style}
-    />
-  );
-};
-
-const PreviewImageInputGroup = ({
-  cloudinary_id,
-  name,
-  label,
-  placeholder,
-  values,
-  errors,
-  touched,
-  handleChange,
-  handleBlur,
-  className = '',
-  schema,
-}) => {
-  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
-
-  // Track whether the image is waiting to update so we can show a spinner.
-  const [updatingImage, setUpdatingImage] = useState(false);
-
-  const [imageReferenceError, setImageReferenceError] = useState(false);
-
-  const timeoutID = useRef(null);
-
-  const imageUrl = useRef(values.image_url);
-
-  const updateCloudinaryID = () => {
-    if (isWebUri(values.image_url)) {
-      // We want to show an error if the given url does not point to an image.
-      // We can do this by attempting to load the image ourselves
-      // before passing it to Cloudinary, which loads a fallback on error.
-      const img = document.createElement('img');
-
-      img.src = values.image_url;
-      img.onload = () => {
-        setImageReferenceError(false);
-        setCloudinaryID(getCloudinaryPublicID(values.image_url));
-      };
-      img.onerror = () => {
-        setCloudinaryID();
-        setImageReferenceError(true);
-      };
-    } else {
-      setCloudinaryID();
-    }
-    setUpdatingImage(false);
-  };
-
-  // When the form value changes, wait two seconds,
-  // and if it hasn't changed again by then, update the cloudinaryID.
-  // This prevents repeated requests for partially-typed URLs.
-  if (values.image_url != imageUrl.current) {
-    imageUrl.current = values.image_url;
-    setUpdatingImage(true);
-    clearTimeout(timeoutID.current);
-    timeoutID.current = setTimeout(updateCloudinaryID, 2000);
-  }
-
-  // Default to fallback so we don't have to hit cloudinary API
-  // when we know there will be no match
-  if (!cloudinaryID || cloudinaryID == 'reports/') {
-    setCloudinaryID('fallback.jpg');
-  }
-
-  const childErrors = { ...errors };
-
-  touched.image_url = values.image_url.length > 0;
-  if (imageReferenceError) {
-    childErrors.image_url ||= '*Url must point to a valid image';
-  }
-
-  return (
-    <>
-      <TextInputGroup
-        name={name}
-        label={label}
-        placeholder={placeholder}
-        values={values}
-        errors={childErrors}
-        touched={touched}
-        handleChange={handleChange}
-        className={className}
-        handleBlur={handleBlur}
-        schema={schema}
+    <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
+      <PlaceholderImage
+        siteName="IncidentDatabase.AI"
+        itemIdentifier={itemIdentifier}
+        title={alt}
+        className={`${className} ${
+          !publicID || publicID == '' || loadFailed ? '' : 'hidden'
+        } h-full w-full object-cover`}
+        height={height}
+        style={style}
+        data-cy="cloudinary-image-placeholder"
       />
-      <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
-        <div
-          className="flex items-center justify-center bootstrap"
-          style={{ height: '50vh', marginTop: '1rem' }}
-        >
-          {updatingImage ? (
-            <Spinner size="xl" />
-          ) : (
-            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt="Selected image" />
-          )}
-        </div>
-        <figcaption className="mt-2">
-          <Trans>Selected Image</Trans>
-        </figcaption>
-      </figure>
-    </>
+      <AdvancedImage
+        data-cy={'cloudinary-image'}
+        ref={imageElement}
+        alt={alt}
+        className={`${className} ${
+          !publicID || publicID == '' || loadFailed ? 'hidden' : ''
+        } h-full w-full object-cover`}
+        cldImg={image}
+        plugins={plugins}
+        style={style}
+        onError={() => {
+          setLoadFailed(true);
+        }}
+      />
+    </div>
   );
 };
 
-export { getCloudinaryPublicID, Image, PreviewImageInputGroup };
+export { getCloudinaryPublicID, Image };

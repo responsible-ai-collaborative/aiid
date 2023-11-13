@@ -143,7 +143,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
   }, [incident.text]);
 
   return (
-    <div data-cy="semantically-related-incidents">
+    <div data-cy="semantically-related-incidents" className="flex">
       {incident?.text?.length > 0 && (
         <RelatedIncidentsArea
           key="byText"

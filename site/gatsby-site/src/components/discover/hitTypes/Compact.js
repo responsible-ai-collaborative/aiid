@@ -1,106 +1,80 @@
 import React from 'react';
 import { Image } from 'utils/cloudinary';
-import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
+
 import md5 from 'md5';
 import Actions from '../Actions';
-import { HeaderTitle, SourceDomainSubtitle } from './shared';
+import useLocalizePath from 'components/i18n/useLocalizePath';
+
+import { SourceDomainSubtitle, HeaderTitle } from './shared';
+import { useTranslation } from 'react-i18next';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
+import { VIEW_TYPES } from 'utils/discover';
 
-const StyledCard = styled(Card)`
-  height: 240px;
+export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
+  const localizePath = useLocalizePath();
 
-  :hover {
-    background: #00000000;
-  }
+  const { t } = useTranslation();
 
-  animation: all 0s;
-`;
+  const detailsPath =
+    viewType === VIEW_TYPES.INCIDENTS
+      ? localizePath({
+          path: `/cite/${item.incident_id}`,
+        })
+      : item.is_incident_report
+      ? localizePath({
+          path: `/cite/${item.incident_id}#r${item.objectID}`,
+        })
+      : localizePath({
+          path: `/reports/${item.report_number}`,
+        });
 
-const StyledCardBody = styled(Card.Body)`
-  position: relative;
-  padding: 0;
-`;
-
-const Contents = styled.div`
-  background: #000000b3;
-  color: #fff;
-  bottom: 0;
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  min-height: 40%;
-`;
-
-const IncidentCardImage = styled(Image)`
-  object-fit: cover;
-  position: absolute;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  bottom: 0;
-  left: 0;
-`;
-
-const StyledHeaderTitle = styled(HeaderTitle)`
-  line-height: 1.1 !important;
-  a {
-    color: white !important;
-  }
-  a:hover {
-    opacity: 0.9;
-  }
-  font-size: 1rem;
-  * {
-    font-size: 1rem;
-  }
-  max-height: 5em;
-  overflow: hidden;
-`;
-
-const StyledSubTitle = styled(SourceDomainSubtitle)`
-  color: var(--bs-gray-400);
-  :hover {
-    opacity: 0.9;
-  }
-  a:hover {
-    color: var(--bs-gray-400);
-  }
-`;
-
-export default function Compact({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-}) {
   return (
-    <StyledCard>
-      <StyledCardBody className="flex flex-col ">
-        <Contents className="pl-6 pr-6 pt-3">
-          <StyledHeaderTitle item={item} />
-          <StyledSubTitle item={item} className="my-2 small" />
-        </Contents>
-
-        <IncidentCardImage
+    <Card className="h-full" data-cy={item.mongodb_id} data-cy-report-number={item.report_number}>
+      <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
+      <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
+      <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
+      <div className="relative block h-[18rem]">
+        <Image
+          className={`absolute inset-0 card-img-top rounded-t-lg object-cover w-full`}
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
-          height="240px"
-          transformation={fill().height(240)}
+          transformation={fill().height(480)}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
-      </StyledCardBody>
-
+        <div className="absolute inset-0 flex justify-center items-end">
+          <div
+            className="
+            w-full
+            backdrop-blur-md
+            p-3
+            pb-2
+            rounded-md
+            bg-white/60
+            top-0
+            inset-x-0
+            shadow-lg
+            m-4
+          "
+          >
+            <a href={detailsPath}>
+              <HeaderTitle
+                item={item}
+                viewType={viewType}
+                className="mb-1 leading-tight text-xl hover:text-blue-500 text-black hover:text-black"
+              />
+            </a>
+            <SourceDomainSubtitle item={item} className="mb-2 [&>div>a]:text-black" />
+            <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
+          </div>
+        </div>
+      </div>
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
-    </StyledCard>
+    </Card>
   );
 }

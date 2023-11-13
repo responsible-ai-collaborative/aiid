@@ -1,31 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { geoPath, geoGraticule, geoEquirectangular, scaleLinear, extent, zoom, select } from 'd3';
-import styled from 'styled-components';
 import { useWorldAtlas } from './useWorldAtlas';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-
-const Point = styled.circle`
-  fill: #f00;
-`;
-
-const Sphere = styled.path`
-  fill: #fbfbfb;
-`;
-
-const Graticules = styled.path`
-  fill: none;
-  stroke: #ececec;
-`;
-
-const Land = styled.path`
-  fill: #bdbdbd;
-`;
-
-const Trigger = styled.div`
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-`;
 
 const abstractLocations = ['Global', 'Twitter platform', 'Wikipedia platform'];
 
@@ -50,24 +25,27 @@ function Points({ data, geocodes, projection }) {
 
       const radius = sizeScale(sizeValue(d));
 
+      const [showTooltip, setShowTooltip] = useState(false);
+
       return (
-        <div className="bootstrap" key={place}>
-          <Point cx={x} cy={y} r={radius} />
-          <OverlayTrigger
-            placement="right"
-            trigger="click"
-            rootClose={true}
-            overlay={
-              <Popover>
-                <Popover.Body>{place}</Popover.Body>
-              </Popover>
-            }
+        <React.Fragment key={place}>
+          <circle className="fill-[#f00]" cx={x} cy={y} r={radius} />
+          <foreignObject
+            x={x - radius}
+            y={y - radius * 2}
+            width={showTooltip ? radius * 50 : radius * 2}
+            height={showTooltip ? radius * 20 : radius * 2}
+            onClick={() => setShowTooltip(!showTooltip)}
           >
-            <foreignObject x={x - radius} y={y - radius} width={radius * 2} height={radius * 2}>
-              <Trigger />
-            </foreignObject>
-          </OverlayTrigger>
-        </div>
+            <div className="relative">
+              {showTooltip && (
+                <div className="absolute bottom-full left-4 top-0 transform bg-gray-900 text-white rounded-md border border-gray-800 pointer-events-none transition-all duration-300 z-50 text-xs h-fit w-fit p-1">
+                  {place}
+                </div>
+              )}
+            </div>
+          </foreignObject>
+        </React.Fragment>
       );
     });
 }
@@ -79,12 +57,12 @@ function WorldMap({ land, projection }) {
 
   return (
     <>
-      <Sphere d={path({ type: 'Sphere' })} />
+      <path className="fill-[#fbfbfb]" d={path({ type: 'Sphere' })} />
 
-      <Graticules d={path(graticule())} />
+      <path className="fill-none stroke-[#ececec]" d={path(graticule())} />
 
       {land.features.map((feature) => (
-        <Land key={feature} d={path(feature)} />
+        <path className="fill-[#bdbdbd]" key={feature} d={path(feature)} />
       ))}
     </>
   );

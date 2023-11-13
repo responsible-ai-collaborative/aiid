@@ -4,47 +4,52 @@ import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Carousel } from 'flowbite-react';
+import { useTranslation } from 'react-i18next';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 
 const RandomIncidentsCarousel = () => {
   return (
     <StaticQuery
       query={graphql`
         query RandomIncidentsCarousel {
-          allMongodbAiidprodIncidents {
+          allMongodbAiidprodIncidents(sort: { reports: { report_number: ASC } }) {
             nodes {
               incident_id
-              reports
+              reports {
+                id
+                report_number
+                image_url
+                cloudinary_id
+              }
               title
-            }
-          }
-          allMongodbAiidprodReports(limit: 50, sort: { order: ASC, fields: id }) {
-            nodes {
-              id
-              report_number
-              image_url
-              cloudinary_id
             }
           }
         }
       `}
-      render={({
-        allMongodbAiidprodReports: { nodes: reports },
-        allMongodbAiidprodIncidents: { nodes: incidents },
-      }) => {
-        const randomIncidents = [];
+      render={({ allMongodbAiidprodIncidents: { nodes: incidents } }) => {
+        // this cannot be really random because it causes rehydration problems
 
-        while (randomIncidents.length < 5) {
-          const incident = incidents.splice(Math.floor(Math.random() * incidents.length), 1)[0];
+        const { t } = useTranslation();
 
-          const reportWithImage = reports.find(
-            (report) => incident.reports.includes(report.report_number) && report.cloudinary_id
-          );
+        const selected = [];
 
-          if (reportWithImage) {
-            randomIncidents.push({
-              ...reportWithImage,
+        const reports = incidents
+          .flatMap((incident) => incident.reports)
+          .sort((a, b) => a.id.localeCompare(b.id))
+          .slice(0, 50);
+
+        for (let i = 0; i < reports.length && selected.length < 5; i++) {
+          const report = reports[i];
+
+          const incident = incidents.find((incident) => {
+            return incident.reports.some((r) => r.report_number === report.report_number);
+          });
+
+          if (!selected.some((s) => s.incident_id == incident.incident_id)) {
+            selected.push({
+              ...report,
               incident_id: incident.incident_id,
-              title: incident.title || reportWithImage.title,
+              title: incident.title || report.title,
             });
           }
         }
@@ -55,19 +60,26 @@ const RandomIncidentsCarousel = () => {
                 {/* The carousel insists on using rounded corners, *
                  * so we have to cover them up on top.            */}
               </div>
-              <Carousel slideInterval={6000} slide={false}>
-                {randomIncidents.map(({ incident_id, title, image_url, cloudinary_id }) => (
+              <Carousel
+                data-cy="random-incidents-carousel"
+                slideInterval={6000}
+                slide={false}
+                leftControl={<CarouselLeftArrow />}
+                rightControl={<CarouselRightArrow />}
+              >
+                {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
                   <Link
                     to={`/cite/${incident_id}`}
                     key={incident_id}
                     className="block h-full relative"
+                    data-cy="random-incidents-carousel-item"
                   >
                     <Image
                       publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
                       alt={title}
                       transformation={fill().height(800).width(1000)}
-                      plugins={[]}
                       className="w-full h-full object-cover"
+                      itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <h5

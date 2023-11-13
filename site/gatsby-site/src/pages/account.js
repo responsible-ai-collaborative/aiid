@@ -2,11 +2,10 @@ import React from 'react';
 import { Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import { Trans, useTranslation } from 'react-i18next';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import AiidHelmet from 'components/AiidHelmet';
-import { StyledHeading } from 'components/styles/Docs';
 import UserSubscriptions from 'components/UserSubscriptions';
+import UserDetails from 'components/users/UserDetails';
 
 const Account = (props) => {
   const { user, loading } = useUserContext();
@@ -14,14 +13,14 @@ const Account = (props) => {
   const { t } = useTranslation(['account']);
 
   return (
-    <Layout {...props}>
-      <AiidHelmet>
+    <>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('Account Details')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>
+        <h1>
           <Trans ns="account">Account Details</Trans>
-        </StyledHeading>
+        </h1>
       </div>
       {loading ? (
         <div className="flex flex-wrap gap-2">
@@ -31,15 +30,12 @@ const Account = (props) => {
       ) : user && user.isLoggedIn && user.profile.email ? (
         <>
           <div className="block p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <p>
-              <Trans>Email address</Trans>
-              {': '}
-              {user.profile.email}
-            </p>
-            <Link to="/logout">
-              <Trans ns="login">Log out</Trans>
-            </Link>
+            <h2>
+              <Trans ns="account">About You</Trans>
+            </h2>
+            <UserDetails userId={user.id} />
           </div>
+
           <div className="block mt-6 p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
             <h2>
               <Trans ns="account">Subscriptions</Trans>
@@ -52,7 +48,7 @@ const Account = (props) => {
           <Trans ns="login">Login</Trans>
         </Link>
       )}
-    </Layout>
+    </>
   );
 };
 

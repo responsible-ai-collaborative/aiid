@@ -1,28 +1,25 @@
 import React from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
-import { Row, Col } from 'react-bootstrap';
 import Filter from './Filter';
-import styled from 'styled-components';
-
-const StyledFilter = styled(Filter)`
-  width: 100%;
-  .dropdown-toggle {
-    width: 100%;
-  }
-`;
+import { useMenuContext } from 'contexts/MenuContext';
 
 function Filters() {
+  const { isCollapsed } = useMenuContext();
+
   return (
-    <Row xs={1} md={2} lg={4} className="hidden md:flex gap-y-2 mt-1 flex-wrap">
+    <div className="hidden md:flex gap-y-2 mt-3 flex-wrap">
       {REFINEMENT_LISTS.map((list) => (
-        <Col
+        <div
           key={list.attribute}
-          className="w-full flex-0-0-auto md:w-1/2 992px:w-1/4 px-2 bootstrap"
+          className={`w-full flex-0-0-auto  ${
+            isCollapsed ? 'md:w-1/2 lg:w-1/5' : 'md:w-1/2 xl:w-1/5'
+          } px-1 ${list.hidden ? 'hidden' : ''}`}
+          data-cy={list.attribute}
         >
-          <StyledFilter type={list.type} {...list} />
-        </Col>
+          <Filter className="w-full" type={list.type} {...list} />
+        </div>
       ))}
-    </Row>
+    </div>
   );
 }
 

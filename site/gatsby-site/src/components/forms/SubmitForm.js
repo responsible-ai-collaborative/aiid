@@ -1,21 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
 import { CSVReader } from 'react-papaparse';
-import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
+import {
+  useQueryParams,
+  StringParam,
+  ArrayParam,
+  encodeDate,
+  withDefault,
+  NumericArrayParam,
+} from 'use-query-params';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, parse } from 'date-fns';
+import { format, parse, getUnixTime } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
-import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
-import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
-import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { graphql, useStaticQuery } from 'gatsby';
+import { processEntities, RESPONSE_TAG } from '../../utils/entities';
+import SubmissionWizard from '../submissions/SubmissionWizard';
+import getSourceDomain from 'utils/getSourceDomain';
+import { Helmet } from 'react-helmet';
+import { Button } from 'flowbite-react';
+import { getCloudinaryPublicID } from 'utils/cloudinary';
+import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -33,33 +49,83 @@ const CustomDateParam = {
 const queryConfig = {
   url: withDefault(StringParam, ''),
   title: withDefault(StringParam, ''),
-  authors: withDefault(StringParam, ''),
-  submitters: withDefault(StringParam, ''),
+  authors: withDefault(ArrayParam, []),
+  submitters: withDefault(ArrayParam, []),
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
   image_url: withDefault(StringParam, ''),
-  incident_id: withDefault(StringParam, ''),
+  incident_ids: withDefault(NumericArrayParam, []),
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
+  incident_editors: withDefault(ArrayParam, []),
   language: withDefault(StringParam, 'en'),
 };
 
 const SubmitForm = () => {
-  const { isRole } = useUserContext();
+  const { isRole, loading, user } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
-  const queryParams = { ...query };
+  const [isIncidentResponse, setIsIncidentResponse] = useState(false);
 
-  for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-    if (queryParams[key] && !Array.isArray(queryParams[key])) {
-      queryParams[key] = [queryParams[key]];
+  const isClient = typeof window !== 'undefined';
+
+  const [submission, setSubmission] = useState({});
+
+  const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
+
+  const [savingInLocalStorage, setSavingInLocalStorage] = useState(false);
+
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
     }
-  }
+  `);
 
-  const [submission, setSubmission] = useState({ ...queryParams });
+  useEffect(() => {
+    let submission = { ...query, cloudinary_id: '' };
+
+    if (submission.tags && submission.tags.includes(RESPONSE_TAG)) {
+      setIsIncidentResponse(true);
+    }
+
+    if (submission.image_url) {
+      submission.cloudinary_id = getCloudinaryPublicID(submission.image_url);
+    }
+
+    if (
+      isEqual(submission, SUBMISSION_INITIAL_VALUES) &&
+      isClient &&
+      localStorage.getItem('formValues')
+    ) {
+      submission = {
+        ...SUBMISSION_INITIAL_VALUES,
+        ...JSON.parse(localStorage.getItem('formValues')),
+      };
+    }
+
+    if (!loading) {
+      if (user?.profile?.email) {
+        submission.user = { link: user.id };
+
+        if (user.customData.first_name && user.customData.last_name) {
+          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+        }
+      }
+    }
+    setSubmission(submission);
+  }, [loading, user?.profile]);
+
+  const [displayCsvSection] = useState(false);
 
   const [csvData, setCsvData] = useState([]);
 
@@ -76,16 +142,19 @@ const SubmitForm = () => {
 
   const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
   useEffect(() => {
     if (csvData[csvIndex]) {
       setSubmission(csvData[csvIndex]);
     }
   }, [csvIndex, csvData]);
 
-  const handleCSVError = (err, file, inputElem, reason) => {
+  const handleCSVError = (_err, _file, _inputElem, reason) => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
+      error: _err,
     });
   };
 
@@ -99,49 +168,60 @@ const SubmitForm = () => {
 
   const localizePath = useLocalizePath();
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     try {
-      const date_submitted = format(new Date(), 'yyyy-MM-dd');
+      const now = new Date();
 
-      const description = values.description ? values.description : values.text;
+      const date_submitted = format(now, 'yyyy-MM-dd');
+
+      const url = new URL(values?.url);
+
+      const source_domain = getSourceDomain(url);
 
       const submission = {
         ...values,
-        incident_id: values.incident_id == '' ? 0 : values.incident_id,
+        source_domain,
         date_submitted,
         date_modified: date_submitted,
-        description: description.substring(0, 200),
+        epoch_date_modified: getUnixTime(now),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
-        submitters: values.submitters
-          ? !isArray(values.submitters)
-            ? values.submitters.split(',').map((s) => s.trim())
-            : values.submitters
-          : ['Anonymous'],
+        submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
-        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
-        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
-        harmed_parties: isString(values.harmed_parties)
-          ? values.harmed_parties.split(',')
-          : values.harmed_parties,
+        incident_editors: { link: values.incident_editors },
       };
 
-      await insertSubmission({ variables: { submission } });
+      submission.deployers = await processEntities(
+        allEntities,
+        values.deployers,
+        createEntityMutation
+      );
 
-      resetForm();
+      submission.developers = await processEntities(
+        allEntities,
+        values.developers,
+        createEntityMutation
+      );
+
+      submission.harmed_parties = await processEntities(
+        allEntities,
+        values.harmed_parties,
+        createEntityMutation
+      );
+
+      await insertSubmission({ variables: { submission } });
 
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
-            Report successfully added to review queue. It will appear on the{' '}
-            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>
-              review queue page
-            </Link>{' '}
-            within an hour.
+            Report successfully added to review queue. You can see your submission{' '}
+            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>here</Link>.
           </Trans>
         ),
         severity: SEVERITY.success,
       });
+
+      clearForm();
     } catch (e) {
       addToast({
         message: (
@@ -150,89 +230,185 @@ const SubmitForm = () => {
           </Trans>
         ),
         severity: SEVERITY.warning,
+        error: e,
       });
     }
   };
 
-  return (
-    <div className="my-5">
-      <Formik
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-        initialValues={submission}
-        enableReinitialize={true}
-      >
-        {({ isSubmitting, submitForm }) => (
-          <>
-            <SubmissionForm />
+  const clearForm = () => {
+    const submission = { ...SUBMISSION_INITIAL_VALUES };
 
-            <p className="mt-4">
-              <Trans ns="submit" i18nKey="submitReviewDescription">
-                Submitted reports are added to a{' '}
-                <Link locale={locale} to="/apps/submitted">
-                  review queue{' '}
+    if (user?.profile?.email) {
+      submission.user = { link: user.id };
+
+      if (user.customData.first_name && user.customData.last_name) {
+        submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+      }
+    }
+    setSubmission(submission);
+    setSubmissionReset((prevState) => ({
+      ...prevState,
+      reset: true,
+      forceUpdate: !prevState.forceUpdate, // toggle forceUpdate value
+    }));
+    localStorage.setItem('formValues', JSON.stringify(submission));
+  };
+
+  const submissionRef = useRef(null);
+
+  if (!submission || isEmpty(submission)) return <></>;
+
+  return (
+    <>
+      <Helmet>
+        <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
+      </Helmet>
+      <div className={'titleWrapper flex flex-row justify-between'}>
+        <h1 data-cy="submit-form-title">
+          <Trans ns="submit">
+            {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
+          </Trans>
+        </h1>
+        <div className="flex items-center justify-center mt-2">
+          <span className="text-gray-400 text-sm">
+            {savingInLocalStorage ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
+                <Trans>Saving as draft...</Trans>
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faCheck} className="mr-1" />
+                <Trans>Draft saved</Trans>
+              </>
+            )}
+          </span>
+          <Button
+            color="gray"
+            size={'xs'}
+            className={'ml-2'}
+            onClick={() => clearForm()}
+            data-cy="clear-form"
+          >
+            <Trans i18n={i18n} ns="submit">
+              Clear Form
+            </Trans>
+          </Button>
+        </div>
+      </div>
+      <p ref={submissionRef}>
+        {isIncidentResponse ? (
+          <>
+            {submission.incident_ids.length > 0 ? (
+              <Trans ns="submit" i18nKey={'submitFormResponseDescription1'}>
+                The following form will create a new incident response {}for incident{' '}
+                <Link to={`/cite/${submission.incident_ids[0]}`}>
+                  #{{ incident_id: submission.incident_ids[0] }}
                 </Link>{' '}
-                to be resolved to a new or existing incident record. Incidents are reviewed and
-                merged into the database after enough incidents are pending.
+                for <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
+                Database.
+              </Trans>
+            ) : (
+              <Trans ns="submit" i18nKey={'submitFormResponseDescription2'}>
+                The following form will create a new incident response for{' '}
+                <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
+                Database.
+              </Trans>
+            )}{' '}
+            <Trans ns="submit" i18nKey={'submitFormResponseDescription3'}>
+              Fields beginning with an asterisk (*) are required. Please carefully check your
+              entries for content issues (e.g., accidental copy and paste of advertisements). For
+              details on the database ingestion process, please check the{' '}
+              <Link to="/research/1-criteria/">research pages</Link> or{' '}
+              <Link to="/contact">contact us with questions</Link>.
+            </Trans>
+          </>
+        ) : (
+          <Trans ns="submit" i18nKey={'submitFormDescription'}>
+            The following form will create a new incident report for{' '}
+            <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident Database.
+            Fields beginning with an asterisk (*) are required. Please carefully check your entries
+            for content issues (e.g., accidental copy and paste of advertisements). For details on
+            the database ingestion process, please check the{' '}
+            <Link to="/research/1-criteria/">research pages</Link> or{' '}
+            <Link to="/contact">contact us with questions</Link>.
+          </Trans>
+        )}
+      </p>
+
+      <div className="my-5">
+        {submission && (
+          <SubmissionWizard
+            submitForm={handleSubmit}
+            initialValues={submission}
+            urlFromQueryString={query.url}
+            submissionReset={submissionReset}
+            setSavingInLocalStorage={setSavingInLocalStorage}
+            scrollToTop={() => {
+              setTimeout(() => {
+                // This is needed to make it work in Firefox
+                submissionRef.current.scrollIntoView();
+              }, 0);
+            }}
+            clearForm={clearForm}
+          />
+        )}
+
+        <p className="mt-4">
+          <Trans ns="submit" i18nKey="submitReviewDescription">
+            Submitted reports are added to a{' '}
+            <Link locale={locale} to="/apps/submitted">
+              review queue{' '}
+            </Link>{' '}
+            to be resolved to a new or existing incident record. Incidents are reviewed and merged
+            into the database after enough incidents are pending.
+          </Trans>
+        </p>
+
+        {!loading && isRole('submitter') && displayCsvSection && (
+          <div className="mt-5 p-0">
+            <h2>
+              <Trans ns="submit">Advanced: Add by CSV</Trans>
+            </h2>
+            <p>
+              <Trans ns="submit" i18nKey="CSVDescription">
+                The header row of the file is assumed to match the names of the inputs in the form.
+                Each row will be processed, one at a time, so that it flows through the form
+                validations before submitting.
               </Trans>
             </p>
-
-            <Button
-              onClick={submitForm}
-              className="mt-3 bootstrap"
-              variant="primary"
-              type="submit"
-              disabled={isSubmitting}
+            <p>
+              Record {csvIndex + 1} of {csvData.length}
+            </p>
+            <div className="flex justify-center my-3 gap-4">
+              <Button className="me-4" onClick={previousRecord}>
+                &lt; <Trans>Previous</Trans>
+              </Button>
+              <Button onClick={nextRecord}>
+                <Trans>Next</Trans> &gt;
+              </Button>
+            </div>
+            <CSVReader
+              onDrop={(data) => {
+                setCsvData(data);
+                addToast({
+                  message: 'File uploaded',
+                  severity: SEVERITY.info,
+                });
+              }}
+              onError={handleCSVError}
+              config={{ header: true }}
+              noDrag
+              addRemoveButton
             >
-              <Trans>Submit</Trans>
-            </Button>
-          </>
-        )}
-      </Formik>
-
-      {isRole('submitter') && (
-        <Container className="mt-5 p-0 bootstrap">
-          <h2>
-            <Trans ns="submit">Advanced: Add by CSV</Trans>
-          </h2>
-          <p>
-            <Trans ns="submit" i18nKey="CSVDescription">
-              The header row of the file is assumed to match the names of the inputs in the form.
-              Each row will be processed, one at a time, so that it flows through the form
-              validations before submitting.
-            </Trans>
-          </p>
-          <p>
-            Record {csvIndex + 1} of {csvData.length}
-          </p>
-          <div className="flex justify-center my-3">
-            <Button className="me-4" onClick={previousRecord}>
-              &lt; <Trans>Previous</Trans>
-            </Button>
-            <Button onClick={nextRecord}>
-              <Trans>Next</Trans> &gt;
-            </Button>
+              <span>
+                <Trans>Click to upload</Trans>
+              </span>
+            </CSVReader>
           </div>
-          <CSVReader
-            onDrop={(data) => {
-              setCsvData(data);
-              addToast({
-                message: 'File uploaded',
-                severity: SEVERITY.info,
-              });
-            }}
-            onError={handleCSVError}
-            config={{ header: true }}
-            noDrag
-            addRemoveButton
-          >
-            <span>
-              <Trans>Click to upload</Trans>
-            </span>
-          </CSVReader>
-        </Container>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

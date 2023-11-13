@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Spinner, Button } from 'flowbite-react';
 import WebArchiveLink from '../ui/WebArchiveLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,123 +8,190 @@ import {
   faUserShield,
   faFlag,
   faHashtag,
+  faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
+import { Modal } from 'flowbite-react';
+import { useUserContext } from 'contexts/userContext';
+import { useLogReportHistory } from '../../hooks/useLogReportHistory';
+import { format, getUnixTime } from 'date-fns';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function FlagModalContent({ reportNumber }) {
+  const { user } = useUserContext();
+
   const { data } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },
   });
 
-  const [flagReport, { loading }] = useMutation(UPDATE_REPORT, {
-    variables: {
-      query: {
-        report_number: reportNumber,
+  const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
+
+  const { logReportHistory } = useLogReportHistory();
+
+  const flagReport = async () => {
+    const now = new Date();
+
+    const updated = {
+      flag: true,
+      date_modified: format(now, 'yyyy-MM-dd'),
+      epoch_date_modified: getUnixTime(now),
+    };
+
+    await flagReportMutation({
+      variables: {
+        query: {
+          report_number: reportNumber,
+        },
+        set: {
+          ...updated,
+        },
       },
-      set: {
-        flag: true,
-      },
-    },
-  });
+    });
+
+    await logReportHistory(data.report, updated, user);
+  };
 
   const report = data?.report;
 
   const { t } = useTranslation(['translation', 'actions']);
 
   return (
-    <div className="bootstrap">
-      <div className="modal-body" data-cy="flag-modal">
-        <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
+    <div className="tw-modal-body">
+      <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
-        <div className="flex justify-center w-full">
-          {!report ? (
-            <Spinner />
-          ) : report.flag ? (
-            <Button color="warning" disabled data-cy="flag-toggle">
-              <Trans>Flagged</Trans>
-            </Button>
-          ) : (
-            <Button color="warning" onClick={() => flagReport()} data-cy="flag-toggle">
-              {loading && (
-                <div className="mr-2">
-                  <Spinner size="sm" color="warning" light={true} />
-                </div>
-              )}
-              <Trans>Flag Report</Trans>
-            </Button>
-          )}
-        </div>
+      <div className="flex justify-center w-full pt-6">
+        {!report ? (
+          <Spinner />
+        ) : report.flag ? (
+          <Button color="warning" disabled data-cy="flag-toggle">
+            <Trans>Flagged</Trans>
+          </Button>
+        ) : (
+          <Button color="warning" onClick={() => flagReport()} data-cy="flag-toggle">
+            {loading && (
+              <div className="mr-2">
+                <Spinner size="sm" color="warning" light={true} />
+              </div>
+            )}
+            <Trans>Flag Report</Trans>
+          </Button>
+        )}
       </div>
     </div>
   );
 }
 
-export default function Actions({
-  item,
-  toggleFilterByIncidentId = null,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-}) {
+export default function Actions({ item, toggleFilterByIncidentId = null }) {
   const { t } = useTranslation();
 
+  const localizePath = useLocalizePath();
+
+  const [showAuthors, setShowAuthors] = useState(false);
+
+  const [showSubmitters, setShowSubmitters] = useState(false);
+
+  const [showFlag, setShowFlag] = useState(false);
+
   return (
-    <>
+    <div className="flex flex-wrap">
       <WebArchiveLink
         url={item.url}
         date={item.date_submitted}
         className="btn btn-link px-1"
         title={t('Authors')}
+        datePublished={item.epoch_date_published}
+        incidentDate={item.epoch_incident_date}
+        dateSubmitted={item.epoch_date_submitted}
       >
-        <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
+        <FontAwesomeIcon
+          titleId="report-source"
+          icon={faNewspaper}
+          className="fa-newspaper"
+          title="Read the Source"
+        />
       </WebArchiveLink>
 
       <CustomButton
         variant="link"
         title={t('Authors')}
-        onClick={() =>
-          authorsModal.openFor({
-            title: t('Authors'),
-            body: () => item.authors.join(', '),
-          })
-        }
+        onClick={() => setShowAuthors(true)}
+        className="text-black"
       >
-        <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
+        <FontAwesomeIcon title={t('Authors')} icon={faIdCard} className="fa-id-card" />
       </CustomButton>
+
+      {showAuthors && (
+        <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
+          <Modal.Header>
+            <Trans>Authors</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <>{item.authors.join(', ')}</>
+          </Modal.Body>
+        </Modal>
+      )}
 
       <CustomButton
         variant="link"
         title={t('Submitters')}
-        className="px-1"
-        onClick={() =>
-          submittersModal.openFor({
-            title: t('Submitters'),
-            body: () => item.submitters.join(', '),
-          })
-        }
+        className="px-1 text-black"
+        onClick={() => setShowSubmitters(true)}
       >
-        <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
+        <FontAwesomeIcon titleId="report-shield" icon={faUserShield} className="fa-user-shield" />
+      </CustomButton>
+
+      {showSubmitters && (
+        <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
+          <Modal.Header>
+            <Trans>Submitters</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <>{item.submitters.join(', ')}</>
+          </Modal.Body>
+        </Modal>
+      )}
+
+      <CustomButton
+        variant="link"
+        title={t('View History')}
+        className="px-1 text-black"
+        data-cy="report-history-button"
+        href={localizePath({
+          path: `/cite/history?report_number=${item.report_number}&incident_id=${item.incident_id}`,
+        })}
+      >
+        <FontAwesomeIcon titleId="report-history" icon={faClockRotateLeft} />
       </CustomButton>
 
       <CustomButton
         variant="link"
         title={t('Flag Report')}
-        className="px-1"
+        className="px-1 text-black"
         data-cy="flag-button"
-        onClick={() =>
-          flagReportModal.openFor({
-            title: t('Flag Report'),
-            body: () => <FlagModalContent reportNumber={item.report_number} />,
-          })
-        }
+        onClick={() => setShowFlag(true)}
       >
-        <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+        <FontAwesomeIcon titleId="report-flag" icon={faFlag} className="fa-flag" />
       </CustomButton>
 
-      {toggleFilterByIncidentId && (
+      {showFlag && (
+        <Modal
+          show={showFlag}
+          onClose={() => setShowFlag(false)}
+          data-cy={'flag-report-' + item.report_number}
+        >
+          <Modal.Header>
+            <Trans>Flag Report</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <FlagModalContent reportNumber={item.report_number} />
+          </Modal.Body>
+        </Modal>
+      )}
+
+      {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton
           variant="link"
           aria-hidden="true"
@@ -132,10 +199,15 @@ export default function Actions({
           title={t(`Filter by Incident ID #{{id}}`, { id: item.incident_id })}
           onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         >
-          <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
+          <FontAwesomeIcon
+            titleId="report-hashtag"
+            icon={faHashtag}
+            className="fa-hashtag"
+            title="Incident ID"
+          />
           {item.incident_id}
         </CustomButton>
       )}
-    </>
+    </div>
   );
 }

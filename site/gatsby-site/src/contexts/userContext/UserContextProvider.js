@@ -38,6 +38,9 @@ const getApolloCLient = (getValidAccessToken) =>
         Report: {
           keyFields: ['report_number'],
         },
+        User: {
+          keyFields: ['userId'],
+        },
       },
     }),
   });
@@ -83,7 +86,7 @@ export const UserContextProvider = ({ children }) => {
       const user = await realmApp.logIn(credentials);
 
       if (redirectTo) {
-        navigate(localizePath({ path: redirectTo }));
+        window.location.href = localizePath({ path: redirectTo });
       }
 
       if (user.id === realmApp.currentUser.id) {
@@ -95,9 +98,10 @@ export const UserContextProvider = ({ children }) => {
 
       addToast({
         message: (
-          <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+          <label className="capitalize">{t(e.error || 'An unknown error has occurred')}</label>
         ),
         severity: SEVERITY.danger,
+        error: e,
       });
       return false;
     }

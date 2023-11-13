@@ -1,15 +1,12 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Container from 'react-bootstrap/Container';
-
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
+import Container from 'elements/Container';
 
-const IncidentCite = ({ pageContext, ...props }) => {
+const IncidentCite = ({ pageContext }) => {
   const { true_incident_number, duplicate_incident_number } = pageContext;
 
   // meta tags
@@ -21,29 +18,20 @@ const IncidentCite = ({ pageContext, ...props }) => {
   const canonicalUrl = getCanonicalUrl(true_incident_number);
 
   return (
-    <Layout {...props}>
-      <AiidHelmet>
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </AiidHelmet>
+    <>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <h1>{metaDescription}</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <Container>
           This incident is a duplicate of Incident{' '}
           <Link to={`/cite/${true_incident_number}`}>{true_incident_number}</Link>. All new reports
           and citations should be directed to incident {true_incident_number}. The reports
           previously found on this page have been migrated to the previously existing incident.
         </Container>
-      </StyledMainWrapper>
-    </Layout>
+      </div>
+    </>
   );
 };
 

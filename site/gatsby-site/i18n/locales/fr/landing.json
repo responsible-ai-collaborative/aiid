@@ -1,8 +1,10 @@
 {
   "Welcome to the Artificial Intelligence Incident Database": "Bienvenue dans la base de données des incidents d'intelligence artificielle",
+  "<0>Welcome to the</0><1>AI Incident Database</1>": "<0>Bienvenue dans</0><1>la base de données des incidents d'IA</1>",
   "The starting point for information about the AI Incident Database": "Le point de départ des informations sur la base de données des incidents AI",
   "Search reports": "Rechercher des rapports",
   "Latest Incident Report": "Dernier rapport",
+  "Latest Incident Reports": "Derniers rapports",
   "Quick Add New Report URL": "Ajout rapide d'un nouveau rapport",
   "quickaddDescription": "Les liens soumis sont ajoutés à une <2>file d'attente de révision </2> pour être résolus en créant un nouvel incident ou en ajoutant le rapport sur un incident existant. Les incidents soumis avec <4> tous les détails </4> sont traités en priorité par rapport à ceux qui n'ont pas tous les détails complets.",
   "About the Database": "A propos de la base de données",
@@ -20,8 +22,9 @@
   "The Responsible AI Collaborative": "La collaboration IA responsable",
   "Database Founding Sponsor": "Sponsor fondateur de la base de données",
   "In-Kind Sponsors": "Sponsors",
-  "First Incident Reports": "Premiers rapports d'incident",
-  "Distinct Incidents Reported": "Différents Incidents Signalés",
-  "Total Incident Reports": "Nombre total de rapports d'incidents",
-  "Organization Founding Sponsor": "Sponsor fondateur de l'association"
+  "New Incidents Contributed": "Nouveaux incidents apportés",
+  "Reports added to Existing Incidents": "Rapports ajoutés aux incidents existants",
+  "Total Report Contributions": "Contributions totales au rapport",
+  "Organization Founding Sponsor": "Sponsor fondateur de l'association",
+  "forms": "Voir le <2>formulaire 990</2> et la <6>demande d'exonération fiscale</6> de la Responsible AI Collaborative."
 }

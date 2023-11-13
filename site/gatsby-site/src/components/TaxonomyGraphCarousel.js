@@ -1,49 +1,25 @@
-import React, { useState } from 'react';
-import Carousel from 'react-bootstrap/Carousel';
-import { gql, useQuery } from '@apollo/client';
-import BillboardChart from 'react-billboardjs';
-import { donut } from 'billboard.js';
+import React from 'react';
+import { Carousel } from 'flowbite-react';
+import bb, { donut } from 'billboard.js';
+import BillboardJS from '@billboard.js/react';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
-// The BillboardCharts render based on
-// the rendered height of the containing element.
-// Since the carousel sets the hidden slides to `display: none`,
-// that means we have to create a new chart
-// each time carousel changes slides.
-// This convinces React to let use do so.
-const SlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
+import { getClassificationValue } from 'utils/classifications';
+import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
+import { isAiHarm } from 'utils/cset';
 
-const NonSlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
+const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
+  const taxaData = data.allMongodbAiidprodTaxa;
 
-const TaxonomyGraphCarousel = ({ namespace, axes }) => {
-  const { data: taxaData } = useQuery(gql`
-    query Taxa {
-      taxa (query: { namespace: "${namespace}" }) {
-        namespace
-        field_list {
-          permitted_values
-          short_name
-        }
-      }
-    }
-  `);
+  const classificationsData = data.allMongodbAiidprodClassifications;
 
-  const { data: classificationsData, loading: classificationsLoading } = useQuery(gql`
-    query ClassificationsInNamespace {
-      classifications(query: { namespace: "${namespace}" } ) {
-        incident_id
-        classifications {
-          ${axes.map((axis) => axis.replace(/ /g, '')).join('\n')}
-          Publish
-        }
-      }
-    }
-  `);
+  const classificationsLoading = false;
 
   const includedCategories = {};
 
   if (taxaData) {
-    for (const axis in taxaData.taxa.field_list) {
-      includedCategories[axis] = taxaData.taxa.field_list[axis].permitted_values;
+    for (const axis in taxaData.nodes.field_list) {
+      includedCategories[axis] = taxaData.nodes.field_list[axis].permitted_values;
     }
   }
 
@@ -63,23 +39,35 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
   //      ...
   //    }
   //  }
-  if (!classificationsLoading && classificationsData?.classifications) {
-    for (const classification of classificationsData.classifications) {
-      if (!classification.classifications.Publish) {
+  if (!classificationsLoading && classificationsData?.nodes) {
+    for (const classification of classificationsData.nodes) {
+      if (classification.namespace != namespace) {
         continue;
       }
-      for (const axis in classification.classifications) {
-        categoryCounts[axis] ||= {};
-        const value = classification.classifications[axis];
+      if (classification.attributes) {
+        if (getClassificationValue(classification, 'Publish') === false) {
+          continue;
+        }
+        if (classification.namespace == 'CSETv1' && !isAiHarm(classification)) {
+          continue;
+        }
+        for (const attribute of classification.attributes) {
+          const axis = attribute.short_name;
 
-        if (Array.isArray(value)) {
-          for (const category of value) {
-            categoryCounts[axis][category] ||= 0;
-            categoryCounts[axis][category] += 1;
+          categoryCounts[axis] ||= {};
+          const value = getClassificationValue(classification, axis);
+
+          if (!value) continue;
+
+          if (Array.isArray(value)) {
+            for (const category of value) {
+              categoryCounts[axis][category] ||= 0;
+              categoryCounts[axis][category] += 1;
+            }
+          } else {
+            categoryCounts[axis][value] ||= 0;
+            categoryCounts[axis][value] += 1;
           }
-        } else {
-          categoryCounts[axis][value] ||= 0;
-          categoryCounts[axis][value] += 1;
         }
       }
     }
@@ -103,48 +91,66 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
     );
 
     if (categories.length > 8) {
-      categoryCounts[axis]['All others'] = 0;
+      categoryCounts[axis]['All Others'] = 0;
       for (const category of bottomCategories) {
-        categoryCounts[axis]['All others'] += categoryCounts[axis][category];
+        categoryCounts[axis]['All Others'] += categoryCounts[axis][category];
         delete categoryCounts[axis][category];
       }
     }
   }
 
-  const [sliding, setSlide] = useState(false);
-
   return (
     !classificationsLoading && (
-      <div className="bootstrap">
+      <div className="h-96 dark">
         <Carousel
-          interval={60000}
-          onSlide={() => setSlide(true)}
-          onSlid={() => setSlide(false)}
-          variant="dark"
+          slide={false}
+          leftControl={<CarouselLeftArrow />}
+          rightControl={<CarouselRightArrow />}
         >
           {!classificationsLoading &&
-            classificationsData?.classifications &&
+            classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis.replace(/ /g, '');
+              if (categoryCounts[axis]) {
+                const columns = Object.keys(categoryCounts[axis])
+                  .map((category) => [category, categoryCounts[axis][category]])
+                  .sort((a, b) =>
+                    a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
+                  );
 
-              const columns = Object.keys(categoryCounts[dbAxis])
-                .map((category) => [category, categoryCounts[dbAxis][category]])
-                .sort((a, b) =>
-                  a[0] == 'All others' ? 1 : b[0] == 'All others' ? -1 : b[1] - a[1]
-                );
+                const options = {
+                  data: {
+                    columns,
+                    type: donut(),
+                    onclick: (column) => {
+                      if (column.name == 'All Others') {
+                        window.open('/apps/discover');
+                      } else {
+                        window.open(
+                          '/apps/discover?classifications=' +
+                            [namespace, axis, column.name].join(':')
+                        );
+                      }
+                    },
+                  },
+                  interaction: {
+                    enabled: false,
+                  },
+                };
 
-              return (
-                <Carousel.Item key={index}>
-                  <h3 className="text-base text-center">{axis}</h3>
-                  <div className="pb-8">
-                    {sliding ? (
-                      <SlidingChart columns={columns} />
-                    ) : (
-                      <NonSlidingChart columns={columns} />
-                    )}
+                return (
+                  <div key={index} className="h-96">
+                    <h3 className="text-base text-center">{axis}</h3>
+                    <LocalizedLink
+                      to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
+                      className="h-96"
+                    >
+                      <BillboardJS bb={bb} options={{ ...options }} />
+                    </LocalizedLink>
                   </div>
-                </Carousel.Item>
-              );
+                );
+              } else {
+                return <></>;
+              }
             })}
         </Carousel>
       </div>

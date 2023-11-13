@@ -16,6 +16,16 @@ let safelist = [
   'tw-tooltip-bottom',
   'tw-tooltip-left',
   'tw-btn-link',
+  'bg-amber-400',
+  'tw-toast',
+  'bg-orange-100',
+  'text-orange-800',
+  'dark:bg-orange-200',
+  'dark:text-orange-900',
+  'bg-yellow-100',
+  'text-yellow-800',
+  'dark:bg-yellow-200',
+  'dark:text-yellow-900',
 ];
 
 // Whitelisting level options from ListItem component
@@ -37,7 +47,7 @@ const backfaceVisibility = plugin(function ({ addUtilities }) {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   important: true,
-  darkMode: 'false', // Remove line if you wish to enable dark mode
+  darkMode: 'class', // This lets us use it for specific components where useful
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
@@ -45,17 +55,26 @@ module.exports = {
     './src/templates/**/*.{js,jsx,ts,tsx}',
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
   ],
+  variants: {
+    extend: {
+      textColor: ['group-hover'],
+    },
+  },
   theme: {
     maxHeight: {
       240: '240px',
     },
     extend: {
+      animation: {
+        'all-0': 'all 0s',
+      },
       screens: {
         '1300px': { min: '1300px' },
+        '3xl': { min: '1920px' },
         'min-576px': { min: '576px' },
         'min-767px': { min: '767px' },
         'min-992px': { min: '992px' },
-        '50rem': { max: '50rem' },
+        'max-50rem': { max: '50rem' },
         '767px': { max: '767px' },
         '965px': { max: '965px' },
         '992px': { min: '992px' },
@@ -68,7 +87,6 @@ module.exports = {
         'disable-gray': '#dee2e6',
         'primary-blue': '#0d6efd',
         'hover-blue': '#0b5ed7',
-        'gray-500': '#adb5bd',
         'dark-gray': '#6c757d',
         'muted-gray': '#6c757d',
         'deep-blue': '#0a58ca',
@@ -102,6 +120,8 @@ module.exports = {
         card: '0 2px 5px 0px #e3e5ec',
         'left-side-bar': 'rgb(175 158 232 / 40%) -1px 0px 4px 1px',
         table: 'inset 0 0 0 9999px transparent',
+        tsne: '0px 0px 2px 2px rgba(0, 0, 0, 0.15)',
+        'tsne-current': '0px 0px 3px 3px rgba(255, 255, 255, 0.75)',
       },
       transitionDelay: {},
       transitionDuration: {
@@ -123,6 +143,7 @@ module.exports = {
         'carousel-next-prev': 'ease',
         'form-check-input': 'ease-in-out',
         modal: 'linear',
+        'rotate-180': 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
       transitionProperty: {
         btn: 'color,background-color,border-color,box-shadow',
@@ -133,6 +154,9 @@ module.exports = {
         'carousel-indicator': 'opacity',
         'carousel-next-prev': 'opacity',
         'form-check-input': 'background-position',
+        'rotate-180': 'transform',
+        width: 'width',
+        visibility: 'visibility',
       },
       zIndex: {
         2: '2',
@@ -167,6 +191,8 @@ module.exports = {
         '0-1-auto': '0 1 auto',
         '1-1-auto': '1 1 auto',
         '2-1-auto': '1 1 0',
+        '1/3': '1 0 32%',
+        '1/3-fixed': '0 0 32%',
       },
       transformOrigin: {
         'center-left': 'center left',
@@ -197,8 +223,11 @@ module.exports = {
         'form-control': '1.125rem 1.125rem',
         'form-select': '16px 12px',
       },
+      listStyleType: {
+        revert: 'revert',
+      },
     },
   },
-  plugins: [backfaceVisibility, require('flowbite/plugin')],
+  plugins: [backfaceVisibility, require('flowbite/plugin'), require('@tailwindcss/typography')],
   safelist: safelist,
 };

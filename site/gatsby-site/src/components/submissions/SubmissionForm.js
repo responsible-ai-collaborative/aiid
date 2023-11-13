@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
-import { useFormikContext } from 'formik';
-import * as yup from 'yup';
+import { Form, useFormikContext } from 'formik';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import TagsInputGroup from '../../components/forms/TagsInputGroup';
+import PreviewImageInputGroup from '../../components/forms/PreviewImageInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { dateRegExp } from '../../utils/date';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
+import { getCloudinaryPublicID } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import { graphql, useStaticQuery } from 'gatsby';
 import Label from '../forms/Label';
-import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
@@ -19,132 +14,30 @@ import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
+import { schema } from './schemas';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faHandPointRight,
+  faCode,
+  faBolt,
+  faTag,
+  faPenNib,
+  faMedal,
+  faCalendar,
+  faImage,
+  faLink,
+  faLanguage,
+  faDownload,
+  faNewspaper,
+  faAlignLeft,
+  faStickyNote,
+  faTenge,
+} from '@fortawesome/free-solid-svg-icons';
+import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
+import { Select } from 'flowbite-react';
+import IncidentsField from 'components/incidents/IncidentsField';
 
-// set in form //
-// * title: "title of the report" # (string) The title of the report that is indexed.
-// * text: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
-// * date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
-// * submitters: Array(string) # People that submitted the incident report
-// * authors: Array(string) # People that wrote the incident report
-// * date_published: `2019-07-25` # (Date or null) The publication date of the report.
-// * image_url: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
-// * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
-// * tags: Array(string) # Open tag set tags applied to the report
-// * incident_date: `2019-07-25` (Date or null) The date in which the incident took place
-
-// set in DB function //
-// * source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
-// * incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
-// * date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-// * ref_number: 25 # (int) The reference number scoped to the incident ID.
-// * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
-// * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
-// * language: "en" # (string) The language identifier of the report.
-
-// Schema for yup
-export const schema = yup.object().shape({
-  title: yup
-    .string()
-    .min(6, '*Title must have at least 6 characters')
-    .max(500, "*Titles can't be longer than 500 characters")
-    .required('*Title is required'),
-  description: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Description must have at least 3 characters')
-      .max(500, "Description can't be longer than 500 characters"),
-  }),
-  developers: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Alleged Developer must have at least 3 characters')
-      .max(200, "Alleged Developers can't be longer than 200 characters"),
-  }),
-  deployers: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Alleged Deployers must have at least 3 characters')
-      .max(200, "Alleged Deployers can't be longer than 200 characters"),
-  }),
-  harmed_parties: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Harmed Parties must have at least 3 characters')
-      .max(200, "Harmed Parties can't be longer than 200 characters"),
-  }),
-  authors: yup
-    .string()
-    .min(3, '*Authors must have at least 3 characters')
-    .max(200, "*Authors can't be longer than 200 characters")
-    .required('*Author is required. Anonymous or the publication can be entered.'),
-  submitters: yup
-    .string()
-    .max(200, "*Submitter list can't be longer than 200 characters")
-    .test(
-      'len',
-      '*Submitter must have at least 3 characters',
-      (val) => val === undefined || val.length == 0 || 3 <= val.length
-    ),
-  text: yup
-    .string()
-    .min(80, `*Text must have at least 80 characters`)
-    .max(50000, `*Text can’t be longer than 50000 characters`)
-    .required('*Text is required'),
-  date_published: yup
-    .string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-    .required('*Date published is required'),
-  date_downloaded: yup
-    .string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-    .required('*Date downloaded required'),
-  url: yup
-    .string()
-    .url('*Must enter URL in http://www.example.com format')
-    .required('*URL required'),
-  image_url: yup
-    .string()
-    .matches(
-      /((https?):\/\/)(\S)*$/,
-      '*Must enter URL in http://www.example.com/images/preview.png format'
-    ),
-  incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
-  incident_date: yup.date().when('incident_id', {
-    is: (incident_id) => incident_id == '' || incident_id === undefined,
-    then: yup.date().required('*Incident Date required'),
-  }),
-  editor_notes: yup.string(),
-});
-
-const SubmissionForm = () => {
-  const data = useStaticQuery(graphql`
-    query SubmissionFormQuery {
-      allMongodbAiidprodReports {
-        edges {
-          node {
-            tags
-          }
-        }
-      }
-    }
-  `);
-
-  const tags = [];
-
-  for (const node of data.allMongodbAiidprodReports.edges) {
-    if (node.node.tags) {
-      for (const tag of node.node.tags) {
-        if (!tags.includes(tag)) {
-          tags.push(tag);
-        }
-      }
-    }
-  }
-
+const SubmissionForm = ({ onChange = null }) => {
   const {
     values,
     errors,
@@ -220,6 +113,7 @@ const SubmissionForm = () => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 
@@ -242,41 +136,52 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  useEffect(() => {
+    if (values._id) {
+      // Only display form errors on Edit mode
+      Object.keys(errors).map((key) => {
+        setFieldTouched(key, true);
+      });
+    }
+  }, [errors]);
+
   return (
-    <div className="bootstrap">
-      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
-        <TextInputGroup
+    <div>
+      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report" onChange={onChange}>
+        <div className="flex items-center mb-1">
+          <FontAwesomeIcon
+            fixedWidth
+            icon={faLink}
+            title={t('Report Address')}
+            className="mb-2 mr-1"
+          />
+          <Label label={'*' + t('Report Address')} popover="url"></Label>
+        </div>
+        <FlowbiteSearchInput
           name="url"
           label={t('Report Address')}
           placeholder={t('Report URL')}
-          addOnComponent={
-            <Button
-              className="outline-secondary rounded-l-none"
-              disabled={!!errors.url || !touched.url || parsingNews}
-              onClick={() => parseNewsUrl(values.url)}
-              data-cy="fetch-info"
-            >
-              {!parsingNews ? (
-                <Trans ns="submit">Fetch info</Trans>
-              ) : (
-                <div className="flex gap-2">
-                  <Spinner size="sm" />
-                  <Trans ns="submit">Fetching...</Trans>
-                </div>
-              )}
-            </Button>
-          }
-          {...TextInputGroupProps}
+          defaultValue={values?.url || ''}
+          dataCy="fetch-info"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleBlur={handleBlur}
           handleChange={(e) => {
             setFieldTouched('url', true);
             TextInputGroupProps.handleChange(e);
           }}
+          btnClick={() => parseNewsUrl(values.url)}
+          loading={parsingNews}
+          btnDisabled={!!errors.url || !touched.url || parsingNews}
+          btnText={t('Fetch info')}
         />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
         <TextInputGroup
           name="title"
           label={t('Title')}
+          icon={faTenge}
           placeholder={t('Report title')}
           className="mt-3"
           {...TextInputGroupProps}
@@ -285,6 +190,7 @@ const SubmissionForm = () => {
         <TagsInputGroup
           name="authors"
           label={t('Author(s)')}
+          icon={faPenNib}
           placeholder={t('The author or authors of the report')}
           className="mt-3"
           {...TextInputGroupProps}
@@ -296,6 +202,7 @@ const SubmissionForm = () => {
           name="submitters"
           placeholder={t('Your name as you would like it to appear in the leaderboard')}
           label={t('Submitter(s)')}
+          icon={faMedal}
           className="mt-3"
           {...TextInputGroupProps}
         />
@@ -306,6 +213,7 @@ const SubmissionForm = () => {
           type="date"
           placeholder={t('YYYY-MM-DD')}
           className="mt-3"
+          icon={faCalendar}
           {...TextInputGroupProps}
         />
 
@@ -318,25 +226,37 @@ const SubmissionForm = () => {
         <TextInputGroup
           name="date_downloaded"
           label={t('Date Downloaded')}
+          icon={faDownload}
           type="date"
           placeholder={t('YYYY-MM-DD')}
           className="mt-3"
           {...TextInputGroupProps}
         />
+
         <PreviewImageInputGroup
-          publicID={values.cloudinary_id}
+          cloudinary_id={values.cloudinary_id}
           name="image_url"
           label={t('Image Address')}
+          icon={faImage}
           placeholder={t('Image URL')}
           className="mt-3"
           {...TextInputGroupProps}
         />
 
-        <Form.Group
+        <div
           className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
           data-color-mode="light"
         >
-          <Label popover="text" label={t('Text')} />
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faNewspaper}
+              title={t('Text')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="text" label={t('Text')} />
+          </div>
+
           <div style={{ position: 'relative' }}>
             {touched['text'] && errors['text'] && (
               <div
@@ -357,16 +277,21 @@ const SubmissionForm = () => {
               }}
             />
           </div>
-        </Form.Group>
-        <Form.Control.Feedback type="invalid">
-          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
-        </Form.Control.Feedback>
+        </div>
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
-        <Form.Group className="mt-3">
-          <Label popover="language" label={t('Language')} />
-          <Form.Select
+        <div className="mt-3">
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faLanguage}
+              title={t('Language')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="language" label={t('Language')} />
+          </div>
+          <Select
             name="language"
             placeholder={t('Report Language')}
             value={values.language}
@@ -377,15 +302,30 @@ const SubmissionForm = () => {
                 {l.name}
               </option>
             ))}
-          </Form.Select>
-        </Form.Group>
+          </Select>
+        </div>
 
-        <IncidentIdField
-          name="incident_id"
+        <TagsInputGroup
+          name="tags"
+          label={t('Tags')}
+          icon={faTag}
           className="mt-3"
-          placeHolder={t('Leave empty to report a new incident')}
-          showIncidentData={false}
+          placeholder={t('Tags')}
+          {...TextInputGroupProps}
         />
+
+        <div>
+          <div className="flex items-center">
+            <Label popover="incident_id" label={t('Incident IDs')} />
+          </div>
+          <div className="mt-1">
+            <IncidentsField
+              name="incident_ids"
+              id={'incident_ids'}
+              placeHolder={t('Leave empty to report a new incident')}
+            />
+          </div>
+        </div>
 
         <RelatedIncidents
           incident={values}
@@ -393,71 +333,78 @@ const SubmissionForm = () => {
           columns={['byIncidentId']}
         />
 
-        {!values.incident_id && (
-          <TextInputGroup
-            name="incident_date"
-            label={t('Incident Date')}
-            placeholder={t('Incident Date')}
-            type="date"
-            className="mt-3"
-            disabled={values.incident_id}
-            {...TextInputGroupProps}
-          />
+        {(!values.incident_ids || values.incident_ids.length === 0) && (
+          <div data-cy="incident-data-section">
+            <hr className="my-4" />
+            <h3 className="text-lg">Incident Data</h3>
+            <TextInputGroup
+              name="incident_title"
+              label={t('Incident Title')}
+              icon={faTenge}
+              placeholder={t('Incident title')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TextInputGroup
+              name="incident_date"
+              label={t('Incident Date')}
+              icon={faCalendar}
+              placeholder={t('Incident Date')}
+              type="date"
+              className="mt-3"
+              disabled={values.incident_id}
+              {...TextInputGroupProps}
+            />
+            <TextInputGroup
+              name="description"
+              label={t('Description')}
+              icon={faAlignLeft}
+              type="textarea"
+              placeholder={t('Incident Description')}
+              rows={3}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TagsInputGroup
+              name="developers"
+              label={t('Alleged developer of AI system')}
+              icon={faCode}
+              placeholder={t('Who created or built the technology involved in the incident?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="deployers"
+              label={t('Alleged deployer of AI system')}
+              icon={faHandPointRight}
+              placeholder={t('Who employed or was responsible for the technology?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="harmed_parties"
+              label={t('Alleged harmed or nearly harmed parties')}
+              icon={faBolt}
+              placeholder={t('Who experienced negative impacts?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <hr />
+          </div>
         )}
 
-        <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
-
-          <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
-
-          {!values.incident_id && (
-            <>
-              <TextInputGroup
-                name="description"
-                label={t('Description')}
-                as="textarea"
-                placeholder={t('Incident Description')}
-                rows={3}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="developers"
-                label={t('Alleged developer of AI system')}
-                placeholder={t('Who created or built the technology involved in the incident?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="deployers"
-                label={t('Alleged deployer of AI system')}
-                placeholder={t('Who employed or was responsible for the technology?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="harmed_parties"
-                label={t('Alleged harmed or nearly harmed parties')}
-                placeholder={t('Who experienced negative impacts?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-            </>
-          )}
-
-          <TextInputGroup
-            name="editor_notes"
-            label={t('Editor Notes')}
-            as="textarea"
-            placeholder={t('Optional context and notes about the incident')}
-            rows={8}
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
-        </details>
+        <TextInputGroup
+          name="editor_notes"
+          label={t('Editor Notes')}
+          icon={faStickyNote}
+          as="textarea"
+          placeholder={t('Optional context and notes about the incident')}
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
       </Form>
     </div>
   );

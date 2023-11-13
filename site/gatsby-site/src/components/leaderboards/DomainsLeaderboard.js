@@ -3,7 +3,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 import { useTranslation } from 'react-i18next';
 
-const DomainsLeaderboard = ({ limit, className }) => {
+const DomainsLeaderboard = ({ limit = 0, className = '' }) => {
   const { t } = useTranslation();
 
   return (
@@ -11,7 +11,7 @@ const DomainsLeaderboard = ({ limit, className }) => {
       query={graphql`
         query DomainsLeaderboard {
           allMongodbAiidprodReports {
-            group(field: source_domain) {
+            group(field: { source_domain: SELECT }) {
               fieldValue
               totalCount
             }

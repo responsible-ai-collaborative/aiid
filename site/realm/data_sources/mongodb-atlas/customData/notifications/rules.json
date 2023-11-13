@@ -1,0 +1,37 @@
+{
+    "collection": "notifications",
+    "database": "customData",
+    "roles": [
+        {
+            "name": "role is admin",
+            "apply_when": {
+                "%%user.custom_data.roles": "admin"
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true
+        },
+        {
+            "name": "API key user",
+            "apply_when": {
+                "%%user.type": "server"
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true
+        },
+        {
+            "name": "default",
+            "apply_when": {},
+            "read": true,
+            "write": false,
+            "insert": false,
+            "delete": false,
+            "search": true
+        }
+    ]
+}

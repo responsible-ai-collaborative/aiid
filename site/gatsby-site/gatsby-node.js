@@ -1,5 +1,7 @@
 const path = require('path');
 
+const fs = require('fs');
+
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
 const { Translate } = require('@google-cloud/translate').v2;
@@ -26,6 +28,10 @@ const createTsneVisualizationPage = require('./page-creators/createTsneVisualiza
 
 const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
+const createReportPages = require('./page-creators/createReportPages');
+
+const createBlogPages = require('./page-creators/createBlogPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -35,6 +41,8 @@ const { MongoClient } = require('mongodb');
 const { getLanguages } = require('./i18n');
 
 const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
+
+const typeDefs = require('./typeDefs');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
@@ -52,14 +60,18 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/about/1-governance', '/about'],
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
-    ['/research', 'research/snapshots'],
+    ['/research', '/research/snapshots'],
+    ['/apps/newsSearch', '/apps/newsdigest'],
+    ['/research/related-work', '/research/4-related-work'],
+    ['/blog/incident-report-2022-january', '/blog/incident-report-2023-january'],
   ];
 
-  redirects.forEach((pair) =>
-    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
-  );
+  redirects.forEach((pair) => {
+    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true });
+  });
 
   for (const pageCreator of [
+    createBlogPages,
     createMdxPages,
     createCitationPages,
     createWordCountsPages,
@@ -69,10 +81,11 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createDuplicatePages,
     createTsneVisualizationPage,
     createEntitiesPages,
+    createReportPages,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
-      await pageCreator(graphql, createPage, reporter);
+      await pageCreator(graphql, createPage, { reporter, languages: getLanguages() });
     }
   }
 };
@@ -90,7 +103,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         services: path.resolve(__dirname, 'src/services'),
         templates: path.resolve(__dirname, 'src/templates'),
         utils: path.resolve(__dirname, 'src/utils'),
-        buble: '@philpl/buble', // to reduce bundle size
+        plugins: path.resolve(__dirname, 'plugins'),
       },
       fallback: { crypto: false },
     },
@@ -142,21 +155,27 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
     let value = { geometry: { location: { lat: 0, lng: 0 } } };
 
     if (config.google.mapsApiKey) {
-      try {
-        if (node.classifications.Location && node.classifications.Location !== '') {
-          const {
-            data: {
-              results: { 0: geometry },
-            },
-          } = await googleMapsApiClient.geocode({
-            params: { key: config.google.mapsApiKey, address: node.classifications.Location },
-          });
+      const locationAttribute = node.attributes.find((a) => a.short_name == 'Location');
 
-          value = geometry;
+      try {
+        if (locationAttribute) {
+          const locationValue = JSON.parse(locationAttribute.value_json);
+
+          if (locationValue && locationValue !== '') {
+            const {
+              data: {
+                results: { 0: geometry },
+              },
+            } = await googleMapsApiClient.geocode({
+              params: { key: config.google.mapsApiKey, address: locationValue },
+            });
+
+            value = geometry;
+          }
         }
       } catch (e) {
         console.log(e);
-        console.log('Error fetching geocode data for', node.classifications.Location);
+        console.log('Error fetching geocode data for', locationAttribute?.value_json);
       }
     }
 
@@ -171,65 +190,34 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
-  const typeDefs = `
-    type reportEmbedding {
-      vector: [Float]
-      from_text_hash: String
-    }
-
-    type incidentEmbedding {
-      vector: [Float]
-      from_reports: [Int]
-    }
-
-    type mongodbAiidprodIncidents implements Node {
-      embedding: incidentEmbedding
-    }
-
-    type nlpSimilarIncident {
-      incident_id: Int
-      similarity: Float
-    }
-
-    type mongodbAiidprodIncidents implements Node {
-      nlp_similar_incidents: [nlpSimilarIncident]
-      editor_similar_incidents: [Int]
-      editor_dissimilar_incidents: [Int]
-      flagged_dissimilar_incidents: [Int]
-    }
-    
-    type mongodbAiidprodSubmissions implements Node {
-      nlp_similar_incidents: [nlpSimilarIncident]
-      editor_similar_incidents: [Int]
-      editor_dissimilar_incidents: [Int]
-    }
-
-    type mongodbAiidprodReports implements Node {
-      cloudinary_id: String
-      tags: [String]
-      plain_text: String
-      embedding: reportEmbedding 
-    }
-
-    type mongodbAiidprodTaxaField_list implements Node {
-      render_as: String
-    }  
-    
-    type mongodbAiidprodTaxa implements Node {
-      field_list: [mongodbAiidprodTaxaField_list]
-    }
-
-    type mongodbAiidprodTaxaField_list {
-      default: String
-      placeholder: String
-    }
-
-    type mongodbAiidprodResourcesClassifications implements Node {
-      MSFT_AI_Fairness_Checklist: Boolean
-    }
-  `;
-
   createTypes(typeDefs);
+};
+
+exports.createResolvers = ({ createResolvers }) => {
+  const resolvers = {
+    mongodbAiidprodIncidents: {
+      Alleged_deployer_of_AI_system: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged deployer of AI system'];
+        },
+      },
+      Alleged_developer_of_AI_system: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged developer of AI system'];
+        },
+      },
+      Alleged_harmed_or_nearly_harmed_parties: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged harmed or nearly harmed parties'];
+        },
+      },
+    },
+  };
+
+  createResolvers(resolvers);
 };
 
 exports.onPreBootstrap = async ({ reporter }) => {
@@ -323,8 +311,22 @@ exports.onPreBootstrap = async ({ reporter }) => {
   }
 };
 
-exports.onPreBuild = function () {
+exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
-    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+    reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
+};
+
+exports.onPostBuild = ({ reporter }) => {
+  reporter.info('Replacing Env variables on static file...');
+
+  const filePath = `${process.cwd()}/public/rollbar.js`;
+
+  reporter.info(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
+
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+
+  const newFileContent = fileContent.replace(/GATSBY_ROLLBAR_TOKEN/g, config.rollbar.token);
+
+  fs.writeFileSync(filePath, newFileContent);
 };

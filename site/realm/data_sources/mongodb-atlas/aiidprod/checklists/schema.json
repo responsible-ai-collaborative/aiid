@@ -1,0 +1,58 @@
+ { 
+  "title": "checklists",
+  "properties": {
+    "_id":       { "bsonType": "objectId" },
+    "id":        { "bsonType": "string" },
+    "owner_id":  { "bsonType": "string" },
+    "entity_id": { "bsonType": "string" },
+    "name":      { "bsonType": "string" },
+    "about":     { "bsonType": "string" },
+    "tags_goals": {
+      "bsonType": "array",
+      "items": {"bsonType": "string"}
+    },
+    "tags_methods": {
+      "bsonType": "array",
+      "items": {"bsonType": "string"}
+    },
+    "tags_other": {
+      "bsonType": "array",
+      "items": {"bsonType": "string"}
+    },
+    "risks": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "id":          { "bsonType": "string" },
+          "title":       { "bsonType": "string" },
+          "risk_status": { "bsonType": "string" },
+          "risk_notes":  { "bsonType": "string" },
+          "severity":    { "bsonType": "string" },
+          "likelihood":  { "bsonType": "string" },
+          "touched":     { "bsonType": "bool" },
+          "generated":   { "bsonType": "bool" },
+          "tags": { 
+            "bsonType": "array", 
+            "items": {"bsonType": "string"}
+          },
+          "precedents": {
+            "bsonType": "array", 
+            "items": {
+              "bsonType": "object",
+              "properties": {
+                "incident_id": {"bsonType": "int"},
+                "title":       {"bsonType": "string"},
+                "description": {"bsonType": "string"},
+                "tags": {
+                  "bsonType": "array",
+                  "items": { "bsonType": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

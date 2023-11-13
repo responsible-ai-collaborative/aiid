@@ -2,24 +2,21 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 
-const UniqueSubmittersLeaderboard = ({ limit, className }) => {
+const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
   const {
-    allMongodbAiidprodReports: { nodes: reports },
     allMongodbAiidprodIncidents: { nodes: incidents },
   } = useStaticQuery(graphql`
     {
-      allMongodbAiidprodIncidents {
+      allMongodbAiidprodIncidents(
+        filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+      ) {
         nodes {
           incident_id
-          reports
-        }
-      }
-
-      allMongodbAiidprodReports {
-        nodes {
-          report_number
-          submitters
-          date_submitted
+          reports {
+            report_number
+            submitters
+            date_submitted
+          }
         }
       }
     }
@@ -27,23 +24,21 @@ const UniqueSubmittersLeaderboard = ({ limit, className }) => {
 
   const submitters = {};
 
-  for (const report of reports) {
-    const { incident_id: id } = incidents.find((incident) =>
-      incident.reports.includes(report.report_number)
-    );
+  incidents.forEach((incident) => {
+    incident.reports.forEach((report) => {
+      const {
+        submitters: [submitter],
+      } = report;
 
-    const {
-      submitters: [submitter],
-    } = report;
+      if (!submitters[submitter]) {
+        submitters[submitter] = [];
+      }
 
-    if (!submitters[submitter]) {
-      submitters[submitter] = [];
-    }
-
-    if (!submitters[submitter].includes(id)) {
-      submitters[submitter].push(id);
-    }
-  }
+      if (!submitters[submitter].includes(incident.incident_id)) {
+        submitters[submitter].push(incident.incident_id);
+      }
+    });
+  });
 
   const hash = {};
 
@@ -56,7 +51,7 @@ const UniqueSubmittersLeaderboard = ({ limit, className }) => {
       dataHash={hash}
       leaderboard={{
         attribute: 'submitters',
-        title: 'Distinct Incidents Reported',
+        title: 'Reports added to Existing Incidents',
       }}
       limit={limit}
       className={className}

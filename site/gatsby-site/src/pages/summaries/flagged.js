@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const ReportList = ({ report }) => (
   <dl data-cy="report" className="my-4 grid grid-cols-1 md:grid-cols-2 border-2 rounded">
     {Object.keys(report).map((key, i) => (
-      <>
+      <Fragment key={key}>
         <dt className={'border-gray p-2' + (i % 2 == 0 ? ' bg-gray-100' : '')}>{key}</dt>
         <dd
           style={{ maxHeight: '400px' }}
@@ -19,7 +17,7 @@ const ReportList = ({ report }) => (
         >
           {key.includes('url') ? <a href={report[key]}>{report[key]}</a> : <>{report[key]}</>}
         </dd>
-      </>
+      </Fragment>
     ))}
   </dl>
 );
@@ -40,75 +38,53 @@ const IncidentList = ({ incidents }) => {
 };
 
 export default function FlaggedIncidents({ data, ...props }) {
-  const incidents = data.allMongodbAiidprodIncidents.nodes
-    .filter((incident) => {
-      return incident.reports.some((report_number) =>
-        data.allMongodbAiidprodReports.nodes.find((report) => report.report_number == report_number)
-      );
-    })
-    .map((incident) => {
-      const reports = incident.reports.reduce((filtered, report_number) => {
-        const report = data.allMongodbAiidprodReports.nodes.find(
-          (r) => r.report_number == report_number
-        );
-
-        if (report) {
-          filtered.push(report);
-        }
-
-        return filtered;
-      }, []);
-
-      return { ...incident, reports };
-    });
+  const incidents = data.allMongodbAiidprodIncidents.nodes;
 
   return (
-    <Layout {...props}>
-      <AiidHelmet>
+    <>
+      <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Flagged Incident List</StyledHeading>
+        <h1>Flagged Incident List</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <p className="paragraph">
           The following incident reports have been flagged by users and are pending review by
           editors.
         </p>
         <IncidentList incidents={incidents} />
-      </StyledMainWrapper>
-    </Layout>
+      </div>
+    </>
   );
 }
 
 export const pageQuery = graphql`
   query AllFlaggedIncidents {
-    allMongodbAiidprodIncidents(sort: { order: ASC, fields: incident_id }) {
+    allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { flag: { eq: true } } } }
+      sort: { incident_id: ASC }
+    ) {
       nodes {
         incident_id
         title
         date
-        reports
-      }
-    }
-
-    allMongodbAiidprodReports(filter: { flag: { eq: true } }) {
-      nodes {
-        report_number
-        title
-        url
-        authors
-        date_downloaded
-        date_modified
-        date_published
-        date_submitted
-        description
-        flag
-        image_url
-        language
-        ref_number
-        source_domain
-        submitters
+        reports {
+          report_number
+          title
+          url
+          authors
+          date_downloaded
+          date_modified
+          date_published
+          date_submitted
+          description
+          flag
+          image_url
+          language
+          source_domain
+          submitters
+        }
       }
     }
   }

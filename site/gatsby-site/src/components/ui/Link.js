@@ -1,6 +1,6 @@
 import React from 'react';
 import isAbsoluteUrl from 'is-absolute-url';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const Link = ({ to, ...props }) =>
   isAbsoluteUrl(to) ? (

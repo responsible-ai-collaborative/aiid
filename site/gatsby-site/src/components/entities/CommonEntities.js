@@ -11,12 +11,18 @@ import amazon from '../../images/amazon.svg';
 import youtube from '../../images/youtube.svg';
 
 export default function CommonEntities() {
-  const { incidents } = useStaticQuery(graphql`
+  const {
+    incidents,
+    entities: entitiesData,
+    responses,
+  } = useStaticQuery(graphql`
     {
       incidents: allMongodbAiidprodIncidents {
         nodes {
           incident_id
-          reports
+          reports {
+            report_number
+          }
           title
           description
           Alleged_deployer_of_AI_system
@@ -24,12 +30,27 @@ export default function CommonEntities() {
           Alleged_harmed_or_nearly_harmed_parties
         }
       }
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+      responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+        nodes {
+          report_number
+        }
+      }
     }
   `);
 
   const commonEntities = useMemo(
     () =>
-      computeEntities({ incidents: incidents.nodes })
+      computeEntities({
+        incidents: incidents.nodes,
+        entities: entitiesData.nodes,
+        responses: responses.nodes,
+      })
         .sort(
           (a, b) =>
             b.incidentsAsBoth.length +
@@ -50,11 +71,18 @@ export default function CommonEntities() {
           <Trans ns="entities">View all entities</Trans>
         </Link>
       </div>
-      <div className="grid lg:grid-cols-3 gap-4">
+      {commonEntities.length === 0 && (
+        <div className="flex justify-center">
+          <Trans>There are no entities yet</Trans>
+        </div>
+      )}
+      <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
         {commonEntities.map((entity, index) => {
           const incidentsCount = entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;
 
           const harmedCount = entity.harmedEntities.length;
+
+          const responsesCount = entity.responses.length;
 
           return (
             <Link
@@ -70,6 +98,7 @@ export default function CommonEntities() {
                 lg:flex-col
                 xl:flex-row 
                 relative
+                hover:no-underline
               "
             >
               <div className="shrink-0 w-1/4 lg:w-full xl:w-1/4">
@@ -90,15 +119,14 @@ export default function CommonEntities() {
                       Amazon: amazon,
                     }[entity.name]
                   }
+                  loading="lazy"
                 />
               </div>
               <div className="w-full">
-                <Link to={`/entities/${entity.id}`}>
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    {index + 1}.&nbsp;{entity.name}
-                  </h5>
-                </Link>
-                <ul className="list-none text-black dark:text-white">
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {index + 1}.&nbsp;{entity.name}
+                </h5>
+                <ul className="text-black dark:text-white">
                   <li>
                     <Trans ns="entities">
                       Involved in{' '}
@@ -114,7 +142,16 @@ export default function CommonEntities() {
                       <span className="font-semibold text-gray-900 dark:text-white">
                         {{ harmedCount }}
                       </span>{' '}
-                      entities.
+                      entities,
+                    </Trans>
+                  </li>
+                  <li>
+                    <Trans ns="entities">
+                      with{' '}
+                      <span className="font-semibold text-gray-900 dark:text-white">
+                        {{ responsesCount }}
+                      </span>{' '}
+                      incident responses.
                     </Trans>
                   </li>
                 </ul>

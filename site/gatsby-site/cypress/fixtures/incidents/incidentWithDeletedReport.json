@@ -2,19 +2,28 @@
     "data": {
         "incident": {
             "AllegedDeployerOfAISystem": [
-                "YouTube"
+                {
+                    "entity_id": "youtube",
+                    "name": "YouTube"
+                }
             ],
             "AllegedDeveloperOfAISystem": [
-                "YouTube"
+                {
+                    "entity_id": "youtube",
+                    "name": "YouTube"
+                }
             ],
             "AllegedHarmedOrNearlyHarmedParties": [],
             "__typename": "Incident",
             "date": "2015-05-19",
             "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
-            "editors": ["Sean McGregor"],
+            "editors": [{"userId": "1", "first_name": "Sean", "last_name":  "McGregor"}],
             "nlp_similar_incidents": [],
             "incident_id": 1,
-            "nlp_similar_incidents": [],
+            "editor_similar_incidents": [],
+            "editor_dissimilar_incidents": [],
+            "flagged_dissimilar_incidents": [],
+            "embedding": [],
             "reports": [
                 {
                     "__typename": "Report",

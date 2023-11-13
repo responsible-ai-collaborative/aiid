@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { graphql } from 'gatsby';
 import { TextInput, Label } from 'flowbite-react';
 import { format } from 'date-fns';
@@ -28,15 +27,14 @@ const countByDate = (items, series, startDate) =>
 export default function IncidentsOverTimePage({ data, ...props }) {
   const metaTitle = 'Incidents Over Time';
 
-  const [startDate, setStartDate] = useState(new Date(2022, 2, 28));
+  const [startDate, setStartDate] = useState(new Date(2020, 10, 7));
 
   const [startAtZero, setStartAtZero] = useState(false);
 
   const incidentsByDate = data.allMongodbAiidprodIncidents.nodes
+    .filter((i) => i.reports && i.reports.length > 0)
     .map((incident) => {
-      const reports = data.allMongodbAiidprodReports.nodes.filter((report) =>
-        incident.reports.includes(report.report_number)
-      );
+      const reports = incident.reports;
 
       const earliestReport = reports.sort((a, b) => a.date_submitted - b.date_submitted)[0];
 
@@ -49,13 +47,17 @@ export default function IncidentsOverTimePage({ data, ...props }) {
 
   const incidentsData = countByDate(incidentsByDate, 'incidents', startDate);
 
-  const reportsData = countByDate(data.allMongodbAiidprodReports.nodes, 'reports', startDate);
+  const allReports = data.allMongodbAiidprodIncidents.nodes
+    .flatMap((incident) => incident.reports)
+    .sort((a, b) => Date.parse(a.date_submitted) - Date.parse(b.date_submitted));
+
+  const reportsData = countByDate(allReports, 'reports', startDate);
 
   const params = {
     x: (d) => d.date,
     y: (d) => d.count,
     z: (d) => d.series,
-    title: (d) => format(d.date, 'M/d/yy') + ' – ' + d.count + ' ' + d.series,
+    title: (d) => format(d.date, 'yyyy-MM-dd') + ' – ' + d.count + ' ' + d.series,
     width: 500,
     height: 500,
     color: (z) => ({ incidents: '#021b35', reports: '#ec9982' }[z]),
@@ -65,8 +67,8 @@ export default function IncidentsOverTimePage({ data, ...props }) {
   };
 
   return (
-    <Layout {...props}>
-      <AiidHelmet {...{ metaTitle }}>
+    <>
+      <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -96,6 +98,9 @@ export default function IncidentsOverTimePage({ data, ...props }) {
             onChange={(evt) => {
               setStartDate(Date.parse(evt.target.value));
             }}
+            onKeyPress={(e) => {
+              e.preventDefault();
+            }}
           />
         </div>
         <div className="flex gap-2 items-center">
@@ -110,38 +115,33 @@ export default function IncidentsOverTimePage({ data, ...props }) {
           <Label htmlFor="start-at-zero">y-axis starts at zero</Label>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 
 export const pageQuery = graphql`
   query IncidentsOverTime {
-    allMongodbAiidprodIncidents {
+    allMongodbAiidprodIncidents(sort: { reports: { date_submitted: ASC } }) {
       nodes {
         incident_id
         title
         date
-        reports
-      }
-    }
-
-    allMongodbAiidprodReports(sort: { order: ASC, fields: date_submitted }, limit: 9999) {
-      nodes {
-        report_number
-        title
-        url
-        authors
-        date_downloaded
-        date_modified
-        date_published
-        date_submitted
-        description
-        flag
-        image_url
-        language
-        ref_number
-        source_domain
-        submitters
+        reports {
+          report_number
+          title
+          url
+          authors
+          date_downloaded
+          date_modified
+          date_published
+          date_submitted
+          description
+          flag
+          image_url
+          language
+          source_domain
+          submitters
+        }
       }
     }
   }

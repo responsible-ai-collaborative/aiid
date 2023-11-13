@@ -1,109 +1,55 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
-import { Button, Form, Pagination } from 'react-bootstrap';
-import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
+import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
-import styled from 'styled-components';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
+import { Button, ToggleSwitch } from 'flowbite-react';
+import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
-const Table = styled.div`
-  display: inline-block;
-  border-spacing: 0;
-
-  .tr {
-    &:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    :last-child {
-      .td {
-        border-bottom: 0;
-      }
-    }
-  }
-
-  .th,
-  .td {
-    margin: 0;
-    padding: 0.5rem;
-    position: relative;
-
-    :last-child {
-      border-right: 0;
-    }
-  }
-`;
-
-const Header = styled.div`
-  background: #fff;
-  position: sticky;
-  z-index: 1;
-  width: fit-content;
-  top: 0;
-  box-shadow: 0px 3px 3px #ccc;
-`;
-
-const HeaderText = styled.h6`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const ResizeHandle = styled.div`
-  display: inline-block;
-  background: ${({ isResizing }) => (isResizing ? 'var(--bs-primary)' : 'var(--bs-secondary)')};
-  width: 6px;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateX(50%);
-  z-index: 1;
-  touch-action: none;
-`;
-
-function DefaultColumnFilter({
-  column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
-}) {
-  const count = preFilteredRows.length;
-
-  const { t } = useTranslation();
-
-  if (!canFilter) {
-    return <HeaderText>{Header}</HeaderText>;
-  }
-
+function ListCell({ cell }) {
   return (
-    <div className="bootstrap">
-      <HeaderText>{Header}</HeaderText>
-      <Form.Control
-        data-cy={`input-filter-${Header}`}
-        className="w-100"
-        type="text"
-        value={filterValue || ''}
-        onChange={(e) => {
-          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-        }}
-        placeholder={t(`Search {{count}} records...`, { count })}
-      />
+    <div>
+      {cell.value?.map((v, i) => {
+        const isLast = i === cell.value.length - 1;
+
+        const segments = v.split(' ');
+
+        const entity_id = segments.pop();
+
+        const name = segments.join(' ');
+
+        if (entity_id) {
+          return (
+            <Link key={`entity-${name}`} to={`/entities/${entity_id}`} data-cy="cell-entity-link">
+              {name}
+              {!isLast ? ', ' : ''}
+            </Link>
+          );
+        } else {
+          return (
+            <>
+              {name} {!isLast ? ', ' : ''}
+            </>
+          );
+        }
+      })}
     </div>
   );
 }
 
-function ListCell({ cell }) {
-  return <div>{cell.value?.join(', ')}</div>;
-}
-
-export default function IncidentsTable({ data }) {
+export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
   const { isLoggedIn, isRole } = useUserContext();
 
+  const { t } = useTranslation();
+
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 30,
-      width: 220,
-      maxWidth: 640,
+      className: 'min-w-[120px]',
       Filter: DefaultColumnFilter,
+      Header: DefaultColumnHeader,
     }),
     []
   );
@@ -111,7 +57,7 @@ export default function IncidentsTable({ data }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: 'Incident ID',
+        title: t('Incident ID'),
         accessor: 'incident_id',
         Cell: ({ row: { values } }) => (
           <a className="flex" href={`/cite/${values.incident_id}`}>
@@ -120,47 +66,56 @@ export default function IncidentsTable({ data }) {
         ),
       },
       {
-        Header: <Trans>Title</Trans>,
+        className: 'min-w-[240px]',
+        title: t('Title'),
         accessor: 'title',
       },
       {
-        Header: <Trans>Description</Trans>,
+        className: 'min-w-[240px]',
+        title: t('Description'),
         accessor: 'description',
       },
       {
-        Header: <Trans>date</Trans>,
+        title: t('Date'),
         accessor: 'date',
       },
       {
-        Header: <Trans>Alleged Deployer of AI System</Trans>,
-        accessor: 'AllegedDeployerOfAISystem',
+        title: t('Alleged Deployer of AI System'),
+        id: 'AllegedDeployerOfAISystem',
+        accessor: (data) =>
+          data.AllegedDeployerOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
       {
-        Header: <Trans>Alleged Developer of AISystem</Trans>,
-        accessor: 'AllegedDeveloperOfAISystem',
+        title: t('Alleged Developer of AI System'),
+        id: 'AllegedDeveloperOfAISystem',
+        accessor: (data) =>
+          data.AllegedDeveloperOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
       {
-        Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
-        accessor: 'AllegedHarmedOrNearlyHarmedParties',
+        title: t('Alleged Harmed or Nearly Harmed Parties'),
+        id: 'AllegedHarmedOrNearlyHarmedParties',
+        accessor: (data) =>
+          data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
     ];
 
     if (isRole('incident_editor')) {
       columns.push({
-        Header: 'Actions',
+        title: t('Actions'),
+        id: 'actions',
+        className: 'min-w-[120px]',
         Cell: ({ row: { values } }) => (
-          <div className="bootstrap">
-            <Button
-              data-cy="edit-incident"
-              variant="link"
-              onClick={() => setIncindentIdToEdit(values.incident_id)}
-            >
-              Edit
-            </Button>
-          </div>
+          <Button
+            color={'gray'}
+            data-cy="edit-incident"
+            variant="link"
+            onClick={() => setIncindentIdToEdit(values.incident_id)}
+          >
+            Edit
+          </Button>
         ),
       });
     }
@@ -168,113 +123,38 @@ export default function IncidentsTable({ data }) {
     return columns;
   }, [isLoggedIn]);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
-  } = useTable(
+  const table = useTable(
     {
       columns,
       data,
       defaultColumn,
     },
     useFilters,
-    useBlockLayout,
-    useResizeColumns,
+    useSortBy,
     usePagination
   );
 
   return (
     <>
-      {/* eslint-disable react/jsx-key */}
-
-      <Table {...getTableProps()}>
-        <Header>
-          {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <div
-                  {...column.getHeaderProps()}
-                  className="td border-bottom border-right px-3 py-2"
-                >
-                  {column.render('Filter')}
-                  <ResizeHandle {...column.getResizerProps()} isResizing={column.isResizing} />
-                </div>
-              ))}
-            </div>
-          ))}
-        </Header>
-
-        <div {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <div {...row.getRowProps()} className="tr" data-cy="row">
-                {row.cells.map((cell) => {
-                  return (
-                    <div
-                      {...cell.getCellProps()}
-                      className="td border-end border-bottom"
-                      data-cy="cell"
-                    >
-                      {cell.render('Cell')}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </Table>
-
-      <div className="flex gap-2 justify-start items-center mt-3 bootstrap">
-        <Pagination className="mb-0">
-          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-
-          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-        </Pagination>
-
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-
-        <Form.Select
-          style={{ width: 120 }}
-          size="sm"
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
+      <div className="flex justify-start ml-4 mb-2 pt-1">
+        <ToggleSwitch
+          checked={isLiveData}
+          label={t('Show Live data')}
+          onChange={(checked) => {
+            setIsLiveData(checked);
           }}
-        >
-          {[10, 50, 100, 'all'].map((pageSize) => (
-            <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </Form.Select>
+          name="live-data-switch"
+        />
       </div>
 
-      <IncidentEditModal
-        show={incidentIdToEdit !== 0}
-        onClose={() => setIncindentIdToEdit(0)}
-        incidentId={incidentIdToEdit}
-      />
+      <Table table={table} />
+      {incidentIdToEdit !== 0 && (
+        <IncidentEditModal
+          show={true}
+          onClose={() => setIncindentIdToEdit(0)}
+          incidentId={incidentIdToEdit}
+        />
+      )}
     </>
   );
 }

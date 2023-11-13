@@ -1,5 +1,4 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -9,9 +8,10 @@ import { INSERT_QUICKADD } from '../../graphql/quickadd';
 import { useMutation } from '@apollo/client';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import { Spinner } from 'flowbite-react';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -19,7 +19,6 @@ import Col from 'elements/Col';
 // set in DB function //
 // * source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
 // * date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-// * ref_number: 25 # (int) The reference number scoped to the incident ID.
 // * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
@@ -59,8 +58,8 @@ const QuickAddForm = ({ className = '' }) => {
         addToast({
           message: (
             <>
-              {'Report successfully added to review queue. It will appear on the  '}
-              <LocalizedLink to="/apps/submitted">review queue page</LocalizedLink> within an hour.
+              {'Report successfully added to review queue. You can see your submission  '}
+              <LocalizedLink to="/apps/submitted">here</LocalizedLink>.
             </>
           ),
           severity: SEVERITY.success,
@@ -116,16 +115,25 @@ const QuickAddForm = ({ className = '' }) => {
 
           <button
             type="submit"
-            className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex disabled:opacity-50"
             disabled={isSubmitting || !!errors.url}
           >
-            <Trans>Submit</Trans>
+            {isSubmitting ? (
+              <>
+                <Spinner size="sm" />
+                <div className="ml-2">
+                  <Trans>Submitting...</Trans>
+                </div>
+              </>
+            ) : (
+              <Trans>Submit</Trans>
+            )}
           </button>
         </div>
         <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.url}</p>
         <Row className="mt-2">
           <Col>
-            <Form.Text className="text-muted-gray">
+            <div className="text-muted-gray text-xs leading-5">
               <Trans i18nKey="quickaddDescription" ns="landing">
                 Submitted links are added to a{' '}
                 <LocalizedLink to="/apps/submitted">review queue </LocalizedLink>
@@ -133,7 +141,7 @@ const QuickAddForm = ({ className = '' }) => {
                 <LocalizedLink to="/apps/submit"> full details </LocalizedLink> are processed before
                 URLs not possessing the full details.
               </Trans>
-            </Form.Text>
+            </div>
           </Col>
         </Row>
       </form>

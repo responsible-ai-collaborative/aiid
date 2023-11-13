@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { subWeeks, addWeeks, getUnixTime, parse, isValid } from 'date-fns';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
-import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { Trans } from 'react-i18next';
+import RelatedIncidentsArea from './RelatedIncidentsArea';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -46,14 +45,20 @@ const reportsWithIncidentIds = async (reports, client) => {
     },
   });
 
-  return reports.map((report) => ({
-    ...report,
-    incident_id: response.data.incidents.filter((incident) =>
+  return reports.map((report) => {
+    const incident = response.data.incidents.find((incident) =>
       incident.reports
         .map((incidentReport) => incidentReport.report_number)
         .includes(report.report_number)
-    )[0]?.incident_id,
-  }));
+    );
+
+    return {
+      ...report,
+      title: report.title,
+      incident_title: incident?.title,
+      incident_id: incident?.incident_id,
+    };
+  });
 };
 
 const allSearchColumns = {
@@ -64,7 +69,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans date={date}>
-            Incidents reports matched by published date: <b>{{ date }}</b>
+            Incidents reports matched by published date: <b className="break-all">{{ date }}</b>
           </Trans>
         </>
       );
@@ -78,7 +83,13 @@ const allSearchColumns = {
       return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
     },
     getQueryVariables: (incident) => {
-      const datePublished = parse(incident.date_published, 'yyyy-MM-dd', new Date());
+      const today = new Date();
+
+      let datePublished = parse(incident.date_published, 'yyyy-MM-dd', today);
+
+      if (datePublished > today) {
+        datePublished = today;
+      }
 
       const epoch_date_published_gt = getUnixTime(subWeeks(datePublished, 2));
 
@@ -104,8 +115,8 @@ const allSearchColumns = {
     getReports: async (result) =>
       result.data.incidents.length ? result.data.incidents[0].reports : [],
     getIncidents: async (result) => result.data.incidents,
-    isSet: (incident) => incident.incident_id,
-    getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
+    isSet: (incident) => incident.incident_ids && incident.incident_ids.length,
+    getQueryVariables: (incident) => ({ incident_id_in: incident.incident_ids }),
     editSimilar: false,
     editId: false,
     showIncidents: true,
@@ -118,7 +129,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans authors={authors}>
-            Incidents reports matched by authors: <b>{{ authors }}</b>
+            Incidents reports matched by authors: <b className="break-words">{{ authors }}</b>
           </Trans>
         </>
       );
@@ -138,7 +149,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans url={url}>
-            Incidents reports matched by URL: <b>{{ url }}</b>
+            Incidents reports matched by URL: <b className="break-all">{{ url }}</b>
           </Trans>
         </>
       );
@@ -154,7 +165,6 @@ const allSearchColumns = {
 const RelatedIncidents = ({
   incident,
   setFieldValue = null,
-  className = '',
   columns = Object.keys(allSearchColumns),
 }) => {
   const searchColumns = {};
@@ -192,7 +202,7 @@ const RelatedIncidents = ({
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident);
-  }, [incident.authors, incident.incident_id, incident.date_published, incident.url]);
+  }, [incident.authors, incident.incident_ids, incident.date_published, incident.url]);
 
   const search = useCallback(
     async (key, column) => {
@@ -233,28 +243,26 @@ const RelatedIncidents = ({
   }, [queryVariables]);
 
   return (
-    <div className="bootstrap">
-      <ListGroup data-cy="related-reports" className={className + ' bootstrap break-words'}>
-        {Object.keys(searchColumns).map((key) => {
-          const column = searchColumns[key];
+    <div data-cy="related-reports">
+      {Object.keys(searchColumns).map((key) => {
+        const column = searchColumns[key];
 
-          return (
-            <RelatedIncidentsArea
-              key={key}
-              columnKey={key}
-              loading={loading[key]}
-              reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
-              incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
-              header={column.header(incident)}
-              setFieldValue={setFieldValue}
-              {...{
-                editId: column.editId,
-                editSimilar: column.editSimilar,
-              }}
-            />
-          );
-        })}
-      </ListGroup>
+        return (
+          <RelatedIncidentsArea
+            key={key}
+            columnKey={key}
+            loading={loading[key]}
+            reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
+            incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
+            header={column.header(incident)}
+            setFieldValue={setFieldValue}
+            {...{
+              editId: column.editId,
+              editSimilar: column.editSimilar,
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

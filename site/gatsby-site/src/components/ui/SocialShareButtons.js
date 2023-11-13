@@ -1,11 +1,17 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedin, faFacebook, faXTwitter } from '@fortawesome/free-brands-svg-icons';
+import config from '../../../config';
 
-const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
+const SocialShareButtons = ({ metaTitle, path, page, className = '' }) => {
+  const canonicalUrl = config.gatsby.siteUrl + path;
+
   return (
-    <div data-cy="social-share-buttons" className={`flex social-btn-container ${page}`}>
+    <div
+      data-cy="social-share-buttons"
+      className={`flex social-btn-container ${page} ${className}`}
+    >
       {/* Twitter */}
       <button
         className={'social-btn'}
@@ -20,9 +26,10 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
         }}
       >
         <FontAwesomeIcon
-          icon={faTwitter}
+          titleId="twitter"
+          icon={faXTwitter}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to Twitter"
         />
       </button>
@@ -41,9 +48,10 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="linkedin"
           icon={faLinkedin}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to LinkedIn"
         />
       </button>
@@ -62,9 +70,10 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="envelope"
           icon={faEnvelope}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share by email"
         />
       </button>
@@ -83,9 +92,10 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="facebook"
           icon={faFacebook}
           color={'#001934'}
-          className={'pointer fa fa-lg'}
+          className={'pointer fa fa-lg hover:text-primary-blue'}
           title="Share to Facebook"
         />
       </button>

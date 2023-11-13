@@ -1,16 +1,19 @@
 const path = require('path');
 
-const createMdxPages = async (graphql, createPage, reporter) => {
+const createMdxPages = async (graphql, createPage, { reporter }) => {
   const result = await graphql(
     `
       {
-        allFile(filter: { sourceInstanceName: { in: ["blog", "docs"] }, ext: { eq: ".mdx" } }) {
+        allFile(filter: { sourceInstanceName: { in: ["docs"] }, ext: { eq: ".mdx" } }) {
           nodes {
             sourceInstanceName
             absolutePath
             childMdx {
               frontmatter {
                 slug
+              }
+              internal {
+                contentFilePath
               }
             }
           }
@@ -21,11 +24,13 @@ const createMdxPages = async (graphql, createPage, reporter) => {
 
   result.data.allFile.nodes.forEach((node) => {
     if (node.childMdx.frontmatter.slug) {
-      const template = node.sourceInstanceName == 'blog' ? 'post' : 'docs';
+      const template = node.sourceInstanceName == 'blog' ? 'post' : 'doc';
 
       createPage({
         path: node.childMdx.frontmatter.slug,
-        component: path.resolve(`./src/templates/${template}.js`),
+        component: `${path.resolve(`./src/templates/${template}.js`)}?__contentFilePath=${
+          node.childMdx.internal.contentFilePath
+        }`,
         context: {
           slug: node.childMdx.frontmatter.slug,
         },

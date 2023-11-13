@@ -56,26 +56,26 @@
         "epoch_date_submitted": {
             "bsonType": "int"
         },
-        "epoch_incident_date": {
-            "bsonType": "int"
-        },
         "flag": {
             "bsonType": "bool"
         },
         "image_url": {
             "bsonType": "string"
         },
-        "incident_date": {
-            "bsonType": "string"
+        "inputs_outputs": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "is_incident_report": {
+            "bsonType": "bool"
         },
         "language": {
             "bsonType": "string"
         },
         "plain_text": {
             "bsonType": "string"
-        },
-        "ref_number": {
-            "bsonType": "int"
         },
         "report_number": {
             "bsonType": "int"
@@ -103,11 +103,14 @@
         },
         "url": {
             "bsonType": "string"
+        },
+        "user": {
+            "bsonType": "string"
         }
     },
     "required": [
-        "report_number",
-        "ref_number",
+        "authors",
+        "cloudinary_id",
         "date_downloaded",
         "date_modified",
         "date_published",
@@ -117,13 +120,15 @@
         "epoch_date_published",
         "epoch_date_submitted",
         "image_url",
-        "cloudinary_id",
-        "authors",
+        "language",
+        "plain_text",
+        "report_number",
+        "source_domain",
         "submitters",
-        "title",
+        "tags",
         "text",
-        "url",
-        "source_domain"
+        "title",
+        "url"
     ],
     "title": "report"
 }

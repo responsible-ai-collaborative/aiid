@@ -1,11 +1,10 @@
 import { introspectSchema, wrapSchema, FilterRootFields } from '@graphql-tools/wrap';
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { mergeSchemas } from '@graphql-tools/schema';
 import fetch from 'cross-fetch';
 import { print } from 'graphql';
-import { stitchSchemas } from '@graphql-tools/stitch';
 import Cors from 'cors';
-import { graphqlHTTP } from 'express-graphql';
-import config from '../../config';
+import siteConfig from '../../config';
+import { createHandler } from 'graphql-http/lib/use/express';
 
 const cors = Cors();
 
@@ -16,11 +15,11 @@ async function realmExecutor({ document, variables }) {
   const query = print(document);
 
   const fetchResult = await fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${siteConfig.realm.production_db.realm_app_id}/graphql`,
     {
       method: 'POST',
       headers: {
-        apiKey: config.realm.graphqlApiKey,
+        apiKey: siteConfig.realm.graphqlApiKey,
       },
       body: JSON.stringify({ query, variables }),
     }
@@ -46,15 +45,21 @@ export default async function handler(req, res) {
     // Root types (Mutation in this case) can't be empty so we add a dummy type to the definition
     // https://github.com/graphql/graphql-spec/issues/568
 
-    const dummySchema = makeExecutableSchema({
-      typeDefs: [`type Mutation { _ : Boolean }`],
+    const gatewaySchema = mergeSchemas({
+      schemas: [realmSubschema],
+      typeDefs: `
+        type Mutation {
+          _: Boolean
+        }
+      `,
+      resolvers: {
+        Mutation: {
+          _: () => true,
+        },
+      },
     });
 
-    const gatewaySchema = stitchSchemas({
-      subschemas: [realmSubschema, dummySchema],
-    });
-
-    graphqlMiddleware = graphqlHTTP({ schema: gatewaySchema, graphiql: true });
+    graphqlMiddleware = createHandler({ schema: gatewaySchema });
   }
 
   // Manually run the cors middleware

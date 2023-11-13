@@ -1,7 +1,22 @@
-import React, { useRef } from 'react';
-import Typeahead from './Typeahead';
+import React, { useRef, useState } from 'react';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
-export default function Tags({ id, inputId, placeHolder, value, onChange, name }) {
+export default function Tags({
+  id,
+  inputId,
+  placeHolder,
+  value,
+  onChange,
+  name,
+  disabled = false,
+  labelKey,
+  options,
+  className,
+  allowNew = true,
+  stayOpen = false,
+}) {
+  const [open, setOpen] = useState(false);
+
   const ref = useRef(null);
 
   const commitTag = (tag) => {
@@ -13,8 +28,7 @@ export default function Tags({ id, inputId, placeHolder, value, onChange, name }
 
   return (
     <Typeahead
-      ref={ref}
-      id={id}
+      className={`Typeahead ${className}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === ',') {
@@ -24,18 +38,27 @@ export default function Tags({ id, inputId, placeHolder, value, onChange, name }
           commitTag(e.target.value);
         }
       }}
+      onFocus={() => setOpen(true)}
       onBlur={(e) => {
         if (e.target.value) {
           commitTag(e.target.value);
         }
+        setOpen(false);
       }}
-      allowNew
       multiple
-      renderMenu={() => null}
+      open={open && stayOpen ? true : undefined}
+      renderMenu={options ? undefined : () => null}
       onChange={(value) => onChange(value)}
-      options={[]}
+      options={options || []}
       selected={value}
       placeholder={placeHolder}
+      {...{
+        disabled,
+        labelKey,
+        ref,
+        id,
+        allowNew,
+      }}
     />
   );
 }

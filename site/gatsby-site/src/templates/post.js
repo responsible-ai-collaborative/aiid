@@ -1,65 +1,91 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
-import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
-import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper, Author } from 'components/styles/Post';
 import config from '../../config';
-import { format } from 'date-fns';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
+import Outline from 'components/Outline';
+import DateLabel from 'components/ui/DateLabel';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Post(props) {
   const {
     data: { mdx },
+    children,
   } = props;
 
   const metaTitle = mdx.frontmatter.metaTitle;
 
   const metaDescription = mdx.frontmatter.metaDescription;
 
-  let canonicalUrl = config.gatsby.siteUrl;
+  const postImage = mdx.frontmatter.image?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
 
-  canonicalUrl =
-    config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-  canonicalUrl = canonicalUrl + mdx.fields.slug;
+  let metaImage = null;
+
+  if (postImage) {
+    metaImage = `${config.gatsby.siteUrl}${postImage}`;
+  }
+
+  const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
+
+  const loc = new URL(canonicalUrl);
+
+  const rightSidebar = (
+    <>
+      <Outline location={loc} />
+    </>
+  );
+
+  const { displayRightSidebar } = useLayoutContext();
+
+  useEffect(() => {
+    displayRightSidebar(rightSidebar);
+  }, []);
 
   return (
-    <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
+    <>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
-        <StyledHeading>{mdx.fields.title}</StyledHeading>
-
-        <div className="inline-block pb-2">
-          <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
-          {mdx.frontmatter.aiTranslated && (
-            <>
-              <TranslationBadge className="ml-2" />
-              <Link className="ml-2" to={mdx.frontmatter.slug}>
-                <Trans>View Original</Trans>
-              </Link>
-            </>
-          )}
-        </div>
-
+        <LocalizedLink to="/blog" className="text-lg">
+          <Trans>AIID Blog</Trans>
+        </LocalizedLink>
+        <h1>{mdx.fields.title}</h1>
+      </div>
+      <div className="flex items-center mb-6 -mt-1 flex-wrap">
         <SocialShareButtons
           metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
+          path={props.location.pathname}
           page="post"
-        ></SocialShareButtons>
+          className="inline-block"
+        />
+        {mdx.frontmatter.aiTranslated && (
+          <>
+            <TranslationBadge className="ml-2" />
+            <Link className="ml-2" to={mdx.frontmatter.slug}>
+              <Trans>View Original</Trans>
+            </Link>
+          </>
+        )}
+        <span>
+          {' '}
+          <Trans>
+            Posted <DateLabel date={new Date(mdx.frontmatter.date)} /> by{' '}
+            <Author name={mdx.frontmatter.author} />.
+          </Trans>
+        </span>
       </div>
-      <StyledMainWrapper>
-        <MDXProvider components={MdxComponents}>
-          <MDXRenderer>{mdx.body}</MDXRenderer>
-        </MDXProvider>
-        <Author>By {mdx.frontmatter.author}</Author>
-      </StyledMainWrapper>
-    </Layout>
+      <div className={`prose post-styled-main-wrapper`}>
+        <MDXProvider components={MdxComponents}>{children}</MDXProvider>
+      </div>
+    </>
   );
 }
+
+var Author = ({ name }) => <span>{name}</span>;
 
 export const pageQuery = graphql`
   query PostTemplateQuery($slug: String!, $locale: String!) {
@@ -71,11 +97,8 @@ export const pageQuery = graphql`
     }
     mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
-        id
         title
-        slug
       }
-      body
       tableOfContents
       parent {
         ... on File {
@@ -89,6 +112,11 @@ export const pageQuery = graphql`
         date
         aiTranslated
         slug
+        image {
+          childImageSharp {
+            gatsbyImageData(layout: FIXED)
+          }
+        }
       }
     }
   }

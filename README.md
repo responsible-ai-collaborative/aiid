@@ -7,7 +7,7 @@ Information about the goals and organization of the AI Incident Database can be 
 1. Contribute **changes** to the current AI Incident Database.
 2. Contribute a **new summary** to the AI Incident Database. A "summary" is a programmatically generated summary of the database contents. Examples are available [here](https://incidentdatabase.ai/summaries).
 3. Contribute a **new taxonomy** to the AI Incident Database. Details on taxonomies are available in the arXiv paper.
-4. Contribute a **new application** facilitating a new use case for the database.
+4. Contribute a **new application** facilitating a new use case for the database. 
 
 ## Project Communications
 
@@ -21,9 +21,9 @@ The steps for contributing changes are the following,
 
 1. Create a fork of the repository.
 2. Clone the fork to your local environment.
-3. Open a feature branch from whichever branch you would like to change. This is typically the master branch, so you can do `git checkout master` then `git checkout -b feature-cool-new-thing`.
+3. Open a feature branch from whichever branch you would like to change. This is typically the `staging` branch, so you can do `git checkout staging` then `git checkout -b feature-cool-new-thing`.
 4. Make your changes, commit them, then push them remote.
-5. Open a pull request to the `master` branch.
+5. Open a pull request to the `staging` branch.
 6. Update the pull request based on the review.
 7. See the pull request get pulled. :)
 
@@ -34,7 +34,7 @@ Please make sure your code is well organized and commented before opening the pu
 The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
 
 The process of completing work through GitHub issues at the highest level is:
-Create Issue -> Assign Issue -> Review and Publish
+`Create Issue` -> `Assign Issue` -> `Review and Publish`
 
 Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
 
@@ -50,35 +50,25 @@ Labels help streamline the process and ensure issues do not get lost or neglecte
 
 ### Assign Issue
 
-Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
+Add the label `Current Backlog` to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
 
 ![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
 
-### Review and Publish:
+### Pull Request (PR) Review: Draft, Assign, and Publish
 
-Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
+Once the issue has a deliverable output(s), use the Pull Request process to have the contribution reviewed and accepted.
 
-![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+The person opening the PR should create it in a draft status until the work is finished, then they should click on "Ready for review" button and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
 
+#### Assigning a reviewer
+In general, PR reviews can be assigned to any member of the [@responsible-ai-collaboraite/aiid-dev](https://github.com/orgs/responsible-ai-collaborative/teams/aiid-dev ) team, or to the team alias itself.
+**Don't be shy!** Above all, contributors and reviewers should assume good intentions. As such, reviewers are also encouraged to re-assign PR reviews based on familiarity and time constraints.
 
-## PR labeling strategy
+When something is mergeable, then someone else with maintainer permissions (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
 
-On a daily basis, all PRs should be labeled with one of the review process tags:
-- `PR: Needs Review`
-- `PR: Work Needed`
-- `PR: Mergeable`
-
-The person opening the PR should create it in a draft status until the work is finished, then she/he should click on "Ready for review" button and apply the `PR: Needs Review` label and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
+After merging to staging, the code quality is everyone’s responsibility.
 
 For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
-
-The reviewer can change the PR label to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
-
-Please respond to review requests in a timely manner, or indicate if another reviewer would be better. Code review is everyone’s responsibility.
-
-When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
-
-After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
@@ -86,7 +76,7 @@ After merge to staging, the code quality is everyone’s responsibility.
 |:--:|
 | *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
 
-The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
+The site has three components that are considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include:
 
 1. Web host. This is the web server hosting the Gatsby-based web application. The site is hosted in production on [Netlify](https://www.netlify.com/).
 2. Index. The [Algolia](https://www.algolia.com) search index.
@@ -96,7 +86,7 @@ More details are available in the `Production System` information below. We reco
 
 **Style guide:**
 
-1. `ESLint` and `Prettier` has been configured to help enforcing code styles. Configuration details can be found on `.eslintrc.json` and `.prettierrc`.
+1. `ESLint` and `Prettier` have been configured to help enforcing code styles. Configuration details can be found in `.eslintrc.json` and `.prettierrc`.
 2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
 3. `format` and `lint` scripts can be used manually to fix style issues.
 
@@ -114,7 +104,7 @@ See [mongo.md](mongo.md)
 
 ### Algolia
 
-[Algolia](https://www.algolia.com) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently manually when new incident reports are ingested into the database.
+[Algolia](https://www.algolia.com) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently updated manually when new incident reports are ingested into the database.
 
 ### Cloudinary
 
@@ -133,15 +123,26 @@ npm install --global gatsby-cli
 Create a `.env` file under `site/gatsby-site` with the following contents:
 
 ```
-GATSBY_REALM_APP_ID=aiidstitch2-vsdrv
-MONGODB_CONNECTION_STRING=mongodb+srv://readonlyuser:gfz2JXY1SDmworgw@aiiddev.6zxh5.mongodb.net
-MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6zxh5.mongodb.net,aiiddev-shard-00-00.6zxh5.mongodb.net
+GATSBY_REALM_APP_ID=aiidstitch2-sasvc
+MONGODB_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
+MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
+MONGODB_REPLICA_SET=aiiddev-shard-00-02.seam4.mongodb.net,aiiddev-shard-00-01.seam4.mongodb.net,aiiddev-shard-00-00.seam4.mongodb.net
 
 GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
-GATSBY_AVAILABLE_LANGUAGES=en,es
-MONGODB_TRANSLATIONS_CONNECTION_STRING=[to be updated in MongoDB setup section]
+GATSBY_AVAILABLE_LANGUAGES=en,es,fr
+SKIP_PAGE_CREATOR=createTsneVisualizationPage
+GATSBY_PRISMIC_REPO_NAME=
+PRISMIC_ACCESS_TOKEN=
+IS_EMPTY_ENVIRONMENT=
 ```
+
+For `GATSBY_PRISMIC_REPO_NAME` and `PRISMIC_ACCESS_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
+
+For complete empty environment (no database data, no Algolia index, no Prismic content), set `IS_EMPTY_ENVIRONMENT=true`. This will disable all tests that require data.
+
+This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
+
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
 ```
@@ -155,7 +156,7 @@ gatsby develop
 ```
 You should have a local copy of the project running on https://localhost:8000.
 
-The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changing to the backend you will need your own development backend that you can control, modify, and potentially break.
+The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changes to the backend you will need your own development backend that you can control, modify, and potentially break.
 
 #### Additional Configuration
 
@@ -173,8 +174,10 @@ If the feature you are working on includes structural changes to the MongoDB dat
 - Create a new MongoDB project (the free tier will be enough)
 - Create a new Atlas cluster with the name: `AIIDDev`
     - Choose "Username and Password" as authentication method.
-    - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
+    - Choose "My Local Environment" as network access and add your current IP address.
+    - If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
 - Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
+- Once created, go to `App Settings` and update app region to `Global`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
@@ -184,6 +187,7 @@ Extract the archive, then from the `mongodump` directory, run `mongorestore` (in
 
 ```
 mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidprod aiidprod
+mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/translations translations
 ```
 
 You can find the value for `<CLUSTER>` by going to your Atlas cluster's overview on cloud.mongodb.com, then selecting the "primary" shard labeled `aiiddev-shard-00-<XX>.<CLUSTER>.mongodb.net`.
@@ -244,11 +248,11 @@ Restart Gatsby, and you should have a complete working environment!
 
 The translation process runs on Gatsby's `postBuild` event and consists of 3 steps:
 
--1 Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
+1. Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
 ```
 GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 ```
--2 Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
+2. Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
 ```
 translations 
     |-- incident_reports_en
@@ -269,15 +273,15 @@ To access this database, a user with read/write permissions needs to be provided
 MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
 ```
 
-You can use the same value than defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
+You can use the same value defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
 
--3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
+3. Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
 ```
 instant_search-{language code}
 ```
 After the first run, the following applies for subsequent runs:
 Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
-Algolia indexes are replaced every time the process runs
+Algolia indexes are replaced every time the process runs.
 
 
 #### UI Translations
@@ -312,6 +316,66 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 ```
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
+
+### Prismic setup
+This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
+
+#### Prismic Setup
+
+1. Sign up for a new [Prismic](https://prismic.io/) account or log in to your account if you already have one
+2. In `Create a new repository` section choose `Something else`
+3. Give your repository a name and choose `gatsby` in the technology dropdown
+4. Choose your plan (if you only need one user, the free plan is enough)
+5. Click `Create repository`
+6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
+
+#### Adding the Prismic content types
+
+## Prismic Custom Types
+You can find the list of all custom types in the folder custom_types
+
+## How to create a new Custom Type
+1. From the prismic left menu click `Custom Types`
+2. Click `Create new custom type`
+3. Give it a name (name of the json in custom_types folder)
+4. Click `JSON editor`
+5. Paste the JSON content from the predefined custom types inside the json
+6. Click `Save`
+
+#### Adding Prismic documents
+
+1. On the Prismic dashboard left menu click `Documents`
+2. Click `Create new`
+3. Fill in all the mandatory fields
+4. Click `Save`
+5. Keep in mind that the new content won't be available on your page until you Publish it.
+6. In order to publish it, click `Publish`
+
+#### Prismic & Netlify Hook integration
+
+In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
+In order to do this, you need to create a Netlify Build Hook.
+
+**Prismic environment variables**
+
+Add the following environment variable on Netlify: 
+`GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
+`PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
+
+**Create Prismic/Netlify Hook**
+1. Login to your Netlify
+2. Go to `Deploys`
+3. Go to `Deploy settings`
+4. Scroll to `Build Hooks`
+5. Click `Add build hook`
+6. Give it a name and assign a branch
+7. Click save
+8. Copy the generated URL
+9. Go to your Prismic repository
+10. Go to  `Settings` > `Webhooks`
+11. Create a new webhook and paste the URL in the URL field
+12. In `Triggers` select `A document is published` and `A document is unpublished`
+13. Click `Add this webhook`
 
 ## Front-end development
 
@@ -350,7 +414,7 @@ const YourComponent = () => {
 
 ## Deployment Setup
 
-Deployment of the site consists of two parts: deployment of the backend related features that runs as a Github Action and deployment of the frontend related features that runs on Netlify:
+Deployment of the site consists of two parts: deployment of the backend related features that runs as a GitHub Action and deployment of the frontend related features that runs on Netlify:
 
 ### Netlify
 The Netlify build process runs every time a push is made to an open PR or `master` or `develop`.
@@ -358,16 +422,19 @@ To correctly set up  this process, the following environment variables need to b
 
 ```
 ALGOLIA_ADMIN_KEY=
-AWS_LAMBDA_JS_RUNTIME=nodejs14.x # required to run the Gatsby v4
+AWS_LAMBDA_JS_RUNTIME=nodejs18.x # required to run the Gatsby v5
 GATSBY_ALGOLIA_APP_ID=
 GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
 MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
 GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
+GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployment stability
+NODE_VERSION=18 # this is required by Gatsby v5
+NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
 ```
 ### Github Actions
-Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 
+Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
 
 These environments must contain the following variables:
 ```
@@ -404,6 +471,7 @@ Additional notes:
 `CYPRESS_PROJECT_ID` is the Cypress project ID. For more information, see [Cypress Project ID](https://docs.cypress.io/guides/dashboard/projects#Identification)
 
 `CYPRESS_RECORD_KEY` is the Cypress record ID. For more information, see [Cypress Record ID](https://docs.cypress.io/guides/dashboard/projects#Project-ID)
+To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 ### Testing
 
@@ -424,7 +492,7 @@ npm run test:e2e
 
 And to run it in continuous integration (headless) mode:
 ```
-test:e2e:ci
+npm run test:e2e:ci
 ```
 
 ## Adding new Taxonomies
@@ -549,9 +617,8 @@ Execution is taken care of by the [umzug](https://github.com/sequelize/umzug) pa
 ## Public GraphQL endpoint
 The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
 
-### GraphiQL
-The `graphiQL` UI is avaiable at:
-https://incidentdatabase.ai/api/graphql
+### Accessing the endpoint
+You can check the endpoint [here](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Fincidentdatabase.ai%2Fapi%2Fgraphql)
 
 ### Sample request
 
@@ -583,7 +650,23 @@ The endpoint is implemented as a Gatsby function. In the context where this func
 ```
 REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
+You can generate a new key following these steps:
+1. Go to your Realm App
+2. Go to `Authentication`
+3. Go to `Authentication Providers`
+4. Go to `API keys`
+5. Click on `Create API key` and copy the key value
+
 About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
+
+In addition to that, you have to add your Netlify site URL to the allowed origins in your Realm App.
+
+1. Go to your Realm app
+2. Go to `App Settings`
+3. Click on `+ Add Allowed Request Origin`
+4. Add your Netlify public site URL (ie: `https://xxxx-xxxxx.netlify.app`)
+5. Click `Save Draft`
+6. Deploy draft
 
 ## Social Networks login integration
 
@@ -599,29 +682,151 @@ facebookAppSecret = [Facebook App Secret, see comment below for more information
 
 On Facebook Authentication settings, set the "Client ID" with the Facebook App Id. To get the Facebook App ID you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and check your app.
 
-Redirect URIs, is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
+"Redirect URIs" is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
 
 
 About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
 
 ## Email subscriptions
 
+### Subscription types
+
+- **All**: This subscription type is not defined yet.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c"
+        "type": "all",
+    }
+    ```
+- **Incident**: Users with this subscription type will be notified when the incident associated is updated. This subscription type needs an incident_id value associated.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c"
+        "type": "incident",
+        "incident_id": 10,
+    }
+    ```
+- **New Incident**: Users with this subscription type will be notified when a new Incident is created. The notification will be sent after finish the next site build when the Incident page is actually created.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c"
+        "type": "new-incidents",
+    }
+    ```
+- **Entities**: Users can subscribe to a specific Entity. The user with this subscription type will be notified when a new Incident associated with an specific Entity is created or when an existing Incident is updated to be associated with that Entity.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c",
+        "type": "entity"
+        "entityId": "openai",
+    }
+    ```
+- **Submission Promoted**: Users that submit a new Incident Report are automatically subscribed to its promotion. Once the submission has been approved by an editor, the user will recieve an email informing that the submission is now an incident/issue/report.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c",
+        "type": "submission-promoted"
+    }
+    ```
+
+These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
+
+### Email notifications
+
 [Sendgrid](https://sendgrid.com/) is used to send email notifications.
 
 To allow email notifications add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+
+To disable all email noticications, fill the following `SendGridApiKey` secret value with an empty string. If this secret value is an empty string, the emails will be ignored.
 
 ```
 SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
 publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
 privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
-groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
-appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
+groupId = [Atlas Service App group ID, eg: "62cc90978bc4600cafdcf16e"]
+appId = [Atlas Service App ID, eg: "62cc98647e6a26c53d5b4b53"]
 ```
 
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
+
+Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
+When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
+And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
+
+### Notifications collection definition
+
+- **Incident Updated**
+    ```
+    {
+        "type": "incident-updated",
+        "incident_id": 374,
+        "processed": false
+    }
+    ```
+- **New Incident Report**
+    ```
+    {
+        "type": "new-report-incident",
+        "incident_id": 374,
+        "report_number": 2172,
+        "processed": false
+    }
+    ```
+- **New Incident**
+    ```
+    {
+        "type": 'new-incidents',
+        "incident_id": incidentId,
+        "processed": false,
+    }
+    ```
+- **Entities**
+    ```
+    {
+        "type": "entity",
+        "incident_id": 374,
+        "entity_id": "openai",
+        "isUpdate": true,
+        "processed": false
+    }
+    ```
+- **Submission Promoted**
+    ```
+    {
+        "type": "submission-promoted",
+        "incident_id": 374,
+        "processed": false
+    }
+    ```
+
+### Error logging
+
+This project uses [Rollbar](https://rollbar.com) for error logging for the whole site, including background processes.
+
+To log the errors a Realm secret value should be set:
+```
+rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
+In addition to that, this env variable should be set as well:
+```
+GATSBY_ROLLBAR_TOKEN: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
+
+### Restoring Production database to Staging
+
+There is a GitHub Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
+Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow` 
+
+To enable this workflow these [GitHub secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
+```
+DB_PRODUCTION_CONNECTION_STRING=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+
+NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
+```
 
 ## Contact
 

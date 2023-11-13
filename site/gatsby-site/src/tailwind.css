@@ -41,7 +41,7 @@
     }
 
     p {
-        @apply mb-4 mt-0;
+        @apply mb-4 mt-4;
     }
 
     .input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {
@@ -56,29 +56,16 @@
         @apply appearance-none bg-white rounded-md text-gray-900 block text-base font-normal leading-normal w-full py-1 px-3 transition-form-control bg-clip-padding border-1 border-solid border-form-control;
     }
 
-
-    ul, ol {
-      list-style: revert;
-    }
-
     .tw-layout {
-        @apply flex md:flex content-between bg-white 767px:block border-none;
+        @apply flex md:flex content-between bg-white md:block border-none;
     }
 
     .tw-layout .item > a:hover {
         @apply bg-primary-blue text-white;
     }
 
-    .tw-content {
-        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-4 z-[1] relative overflow-hidden flex-1;
-    }
-
     .tw-container {
         @apply xl:max-w-[1140px] md:max-w-[520px] lg:max-w-[960px] sm:max-w-[540px];
-    }
-
-    .tw-container-xl {
-        @apply ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-[1140px] xl:max-w-[1320px];
     }
 
     .tw-bg-secondary {
@@ -86,45 +73,16 @@
     }
 
     .tw-hidden-mobile {
-        @apply 767px:hidden;
+        @apply 767px:hidden ;
     }
 
     .tw-col-auto {
         @apply flex-0-0-auto w-auto max-w-none;
     }
 
-    .tw-nav-header-container {
-        @apply flex flex-row justify-between items-center w-full;
+    .tw-modal-body li {
+        @apply pl-6;
     }
-
-    .tw-nav-header-container .nav-bar-header {
-        @apply order-[0];
-    }
-
-    .tw-nav-header-container .divider {
-        @apply w-[1px];
-    }
-
-    .tw-nav-header-container .nav-bar-brand {
-        @apply items-center flex p-0;
-    }
-
-    .tw-nav-header-container .nav-bar-brand > * {
-        @apply shrink-0;
-    }
-
-    #desktopLogo {
-      @apply ml-[10px] mr-[10px];
-    }
-
-    .tw-nav-header-container .nav-bar-brand > .headerTitle {
-        @apply shrink;
-    }
-
-    .tw-skip-to-content {
-        @apply text-white bg-transparent relative order-1 ml-auto opacity-0 w-0 h-0 overflow-hidden focus:opacity-100 focus:py-[0ch] focus:px-[1ch] focus:w-[unset] focus:h-[unset]  767px:text-xs;
-    }
-
 }
 
 @layer components {
@@ -200,7 +158,7 @@
     }
 
     .tw-btn-menu {
-        @apply 767px:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90 z-10;
+        @apply md:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90 z-10;
     }
 
     .tw-btn-menu.collapsed {
@@ -279,18 +237,6 @@
 
     /* TAILWIND Tooltip ends */
 
-    .tw-incident-stat-card {
-        @apply flex flex-col shadow-card rounded-5px border-border-light-gray border-1.5;
-    }
-
-    .tw-incident-stat-card .subhead {
-        @apply m-0 opacity-40 pt-2.5;
-    }
-
-    .tw-similar-incidents {
-        @apply mt-8 mb-8;
-    }
-
     .tw-similar-incidents .card {
         @apply overflow-hidden shadow-card;
     }
@@ -340,16 +286,8 @@
         @apply ml-[0.5ch] mr-[0.5ch] text-dark-gray;
     }
 
-    .tw-flag-button {
-        @apply p-0 text-dark-gray hover:text-gray-500;
-    }
-
-    .tw-flag-button.flagged {
-        @apply text-red-50;
-    }
-
     .tw-card-set {
-        @apply gap-4 mb-8 grid grid-cols-1 md:grid-cols-2 1300px:grid-cols-3;
+        @apply gap-4 mb-8 grid grid-cols-1 lg:grid-cols-2 1300px:grid-cols-3;
     }
 
     .tw-card-set > * {
@@ -360,12 +298,22 @@
         @apply flex flex-row justify-between items-center order-2;
     }
 
-    .tw-header-icons-container .paddingAround {
-        @apply pr-2;
+    .tw-header-icons-container > *, .tw-social-media-icons {
+        @apply mx-2 inline-block;
     }
 
     .tw-footer-link {
         @apply text-gray-700 hover:text-primary-blue;
+    }
+
+    /* This needs to be set for the submission modal because Flowbite has a defect with long-content modals 
+    where the modal is not scrollable and the top content is not accesible. */
+    .submission-modal > div:first-child {
+        @apply md:m-auto;
+    }
+
+    .pagination nav ul {
+        margin-top: 0 !important;
     }
 }
 
@@ -481,6 +429,25 @@
         @apply text-gray-900;
     }
 
+    #sidebar-tree::-webkit-scrollbar {
+        @apply w-1;
+    }
+    #sidebar-tree::-webkit-scrollbar-thumb {
+        @apply bg-gray-300;
+    }
+
+    /* For some reason, on Firefox 
+     * the tooltip shows up _under_ the scrollbar.
+     * The easy fix is to translate the tooltip
+     * so that it no longer overlaps the edge of the sidebar. 
+     */
+    #sidebar-tree *[data-testid="flowbite-tooltip"] {
+      @apply translate-x-4;
+    }
+    #sidebar-tree *[data-testid="flowbite-tooltip-target"] {
+      @apply items-center flex;
+    }
+
     /* TAILWIND Sidebar ends */
 
     .tw-hbox {
@@ -531,22 +498,6 @@
         @apply text-center;
     }
 
-    .tw-hits-container {
-        @apply grid grid-cols-1 min-576px:grid-cols-2 min-767px:grid-cols-3 min-992px:grid-cols-4 gap-1.5;
-    }
-
-    .tw-hits-container.details {
-        @apply grid md:grid-cols-4 gap-[6px];
-    }
-
-    .tw-hits-container.compact {
-        @apply grid md:grid-cols-4 gap-[6px];
-    }
-
-    .tw-hits-container.list {
-        @apply grid grid-cols-1 gap-[6px];
-    }
-
     /* TAILWIND AIS PAGINATION START */
 
     .tw-ais-pagination {
@@ -580,11 +531,247 @@
 
     /* BOOTSTRAP missing styles */
 
-    .bootstrap .is-invalid~.invalid-feedback, .bootstrap .is-invalid~.invalid-tooltip, .bootstrap .was-validated :invalid~.invalid-feedback, .bootstrap .was-validated :invalid~.invalid-tooltip {
-        display: block;
+    .tsne-visualization-wrapper>.react-transform-wrapper {
+        @apply w-full h-full !important;
     }
 
-    .bootstrap .list-group-item+.list-group-item {
-        border-top-width: 0;
+    .tsne-visualization-wrapper>.react-transform-wrapper>.react-transform-component {
+        @apply h-[calc(100vh-2rem)] w-[calc(100vh-2rem)] overflow-visible !important;
     }
+
+    .tsne-visualization-item>a:not(.incident-card) {
+        @apply absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply text-inherit
+    }
+
+    .tsne-visualization-item .incident-card {
+        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden bg-white !important;
+    }
+
+    .tsne-visualization-item .incident-card img,
+    .tsne-visualization-item .incident-card canvas {
+        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-32 object-cover !important;
+    }
+
+    .tsne-visualization-item .incident-card h3 {
+        @apply text-[100%] m-0 leading-[1.5] !important;
+    }
+
+    .tsne-visualization-item .incident-card:not(:hover) {
+        @apply text-black !important;
+    }
+
+    .tsne-visualization-item> a:hover:not(.current):not(.incident-card) {
+        @apply text-[#ec9982] z-[3] !important;
+    }
+
+    .tsne-visualization-item>a.current {
+        @apply border-[black] shadow-tsne-current !important;
+    }
+
+    .pagination [aria-current="page"] button {
+        @apply bg-blue-50 text-blue-600 !important;
+    }
+
+    .variants-markdown > p:first-child {
+        @apply mt-0;
+    }
+
+    .edit-variant-modal > div:first-child {
+        @apply flex;
+    }
+
+   .incidents-pagination [aria-current="page"] button {
+    @apply bg-blue-50 text-blue-600 !important;
+   }
+
+   .Typeahead .rbt-input-multi .rbt-input-wrapper {
+    @apply bg-gray-50 items-center pl-2.5 !important;
+  }
+
+  .Typeahead .rbt-close {
+    @apply border-none bg-transparent !important;
+  }
+
+  .Typeahead .rbt-input-multi {
+    @apply p-0 !important;
+  }
+
+  .Typeahead input {
+    @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu {
+    @apply bg-white text-gray-800 flex border rounded z-2;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item {
+    @apply text-gray-800 border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 bg-transparent hover:bg-gray-200;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item.active{
+    @apply bg-blue-100 !important;
+  }
+
+  .floating-label-dropdown button {
+    @apply hover:text-blue-500 hover:bg-white hover:border-blue-500 !important;
+  }
+
+  .form-tooltip {
+    @apply p-1 !important;
+  }
+  
+  .edit-div {
+    @apply py-4 px-6 text-right;
+  }
+  .edit-div a {
+    @apply text-sm font-medium leading-4 no-underline text-[#555] border-[#d3dce4] border-1 cursor-pointer rounded transition-all duration-200 ease-out bg-[#fff] shadow-[0,1px,1px,0,rgba(116,129,141,.1)] h-8 px-4;
+  }
+
+  .edit-div a:hover {
+    @apply bg-[#f5f7f9];
+  }
+
+  .styled-main-wrapper {
+    @apply max-w-[800px] text-[#3b454e];
+  }
+  .styled-main-wrapper>ul,
+  .styled-main-wrapper>ol {
+    @apply my-6 mx-0 py-0 pl-0 pr-8;
+  }
+
+  .styled-main-wrapper>ul>li,
+  .styled-main-wrapper>ol>li {
+    @apply text-base leading-6 font-normal;
+  }
+
+  .styled-main-wrapper a {
+    @apply text-[#0d6efd] transition-colors duration-200 ease-out;
+  }
+
+  .styled-main-wrapper code {
+    @apply border-[#ede7f3] border-1 rounded px-[6px] py-[2px] text-[0.9375em] bg-[#fff];
+  }
+
+  .post-styled-main-wrapper {
+    @apply max-w-[750px] text-[#3b454e];
+  }
+
+  .post-styled-main-wrapepr ul,
+  .post-styled-main-wrapepr ol {
+    @apply py-0 pr-0 pl-8;
+  }
+
+  .post-styled-main-wrapper ul li,
+  .post-styled-main-wrapper ol li {
+    @apply text-base leading-7 font-normal;
+  }
+
+  .post-styled-main-wrapper a {
+    @apply transition-colors text-blue-500;
+  }
+
+  .post-styled-main-wrapper code {
+    @apply border border-[#ede713] py-[2px] px-[6px] text-base bg-white;
+  }
+
+  aside.sidebar {
+    @apply max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-r border-r-[#ede7f3] h-screen overflow-auto fixed pl-6 pt-0 bg-text-light-gray top-0;
+  }
+
+  aside.sidebar.right {
+    @apply sticky max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-none h-screen overflow-auto pl-6 pt-0 bg-none bg-transparent top-0;
+  }
+
+  aside.sidebar .rightSideTitle {
+    @apply text-sm leading-4 font-bold uppercase tracking-wider py-2 pr-6 pl-4 border-l border-l-gray-200 text-[rgb(59,69,78)];
+  }
+
+  aside.sidebar .rightSideBarUL {
+    @apply mt-8 p-0;
+  }
+
+  aside.sidebar .rightSideBarUL li {
+    @apply list-none border-l border-l-[#e6ecf1] py-2 pr-6 pl-4;
+  }
+
+  aside.sidebar .rightSideBarUL li a {
+    @apply font-medium leading-6 py-2 pt-6 pb-4 text-[#1a1a1a];
+  }
+
+  [type='checkbox']:checked, [type='radio']:checked, .dark [type='checkbox']:checked, .dark [type='radio']:checked {
+    border-color: transparent !important;
+    background-color: currentColor  !important;
+    background-size: 100% 100% !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+  
+  .reports-table tr td{
+    @apply last:border-b-0;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    @apply m-0 p-2 last:border-r-0;
+  }
+
+  .tw-toast {
+    @apply p-0 mb-2 !important;
+  }
+
+  .tw-toast a {
+    @apply underline text-white !important;
+  }
+
+  .taxonomy-markdown {
+    @apply mt-0 !important;
+  }
+
+  .taxonomy-markdown h1 {
+    @apply text-2xl font-extrabold leading-[1.5] mb-4 mt-8 !important;
+  }
+
+  .taxonomy-markdown p {
+    @apply leading-[1.5] first:mt-0 !important;
+  }
+  
+  .react-markdown pre {
+    @apply table table-fixed w-full !important;
+  }
+
+  .react-markdown pre code {
+    @apply block overflow-auto w-full !important;
+  }
+
+  .react-markdown ul {
+    margin-top: 45px !important;
+  }
+
+  .react-markdown p {
+    overflow-wrap: anywhere;
+  }
+
+  .prose a {
+    @apply text-blue-500 no-underline hover:underline !important;
+  }
+
+  .titleWrapper h1 {
+    @apply font-medium m-0 p-0;
+    @apply leading-10 !important;
+  }
+
+  .latest-reports-carousel *[data-testid="carousel-indicator"] {
+    @apply hidden !important;
+  }
+
+  .editors-dropdown,
+  .editors-dropdown *[data-testid="flowbite-tooltip-target"],
+  .editors-dropdown *[data-testid="flowbite-tooltip-target"] button {
+    @apply w-full !important;
+  }
+
+  .editors-dropdown *[data-testid="flowbite-tooltip-target"] button span {
+    @apply w-full justify-between !important;
+  }
 }

@@ -1,118 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
-import TaxonomyForm from '../../components/taxa/TaxonomyForm';
 import AiidHelmet from '../../components/AiidHelmet';
-import styled from 'styled-components';
-import { useMongo } from '../../hooks/useMongo';
-import config from '../../../config';
+import { useApolloClient } from '@apollo/client';
+import gql from 'graphql-tag';
+import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button, Select, Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
-import { format } from 'date-fns';
-
-const Container = styled.div`
-  max-width: calc(100vw - 298px);
-  margin: 0 auto;
-  overflow: auto;
-  white-space: nowrap;
-  font-size: 0.8em;
-
-  ${({ isWide }) =>
-    isWide &&
-    `
-    max-width: 100vw;
-    padding: 0 0 0 2.7rem;
-  `};
-
-  @media (max-width: 767px) {
-    padding: 0;
-  }
-`;
-
-const TableStyles = styled.div`
-  padding-top: 1rem;
-
-  table {
-    border-spacing: 0;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`;
-
-const ScrollCell = styled.div`
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: auto;
-`;
-
-const ModalCell = styled.div`
-  cursor: pointer;
-  width: 10px;
-  height: 10px;
-`;
-
-const HeaderCellContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TaxonomySelectContainer = styled.div`
-  padding: 1rem 1rem 1rem 0;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
+import ListSkeleton from 'elements/Skeletons/List';
+import { Modal } from 'flowbite-react';
+import { Trans, useTranslation } from 'react-i18next';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  formatDateField,
+  SelectDatePickerFilter,
+} from 'components/ui/Table';
+import { v4 as uuidv4 } from 'uuid';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
-
-const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
-  const count = preFilteredRows.length;
-
-  return (
-    <InputGroup>
-      <FormControl
-        style={{ minWidth: 100 }}
-        value={filterValue || ''}
-        onChange={(e) => {
-          e.preventDefault();
-          setFilter(e.target.value || undefined);
-        }}
-        placeholder={`Search ${count} records...`}
-      />
-    </InputGroup>
-  );
-};
 
 const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
   // TODO: add search for large lists
   let options;
 
   const columnsArrayValues = [
+    'Entities',
     'NamedEntities',
     'TechnologyPurveyor',
     'HarmType',
@@ -200,114 +116,29 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   ].sort((a, b) => (String(a).toLowerCase() >= String(b).toLowerCase() ? 1 : -1));
 
   return (
-    <Form.Select
+    <Select
       style={{ minWidth: 100 }}
       value={filterValue}
       onChange={(e) => {
         setFilter(e.target.value || undefined);
       }}
+      className="mt-2"
     >
-      <option value="">All</option>
+      <option
+        value=""
+        onClick={() => {
+          setFilter('');
+        }}
+      >
+        <Trans>All</Trans>
+      </option>
       {filteredOptions.map((option, i) => (
         <option key={i} value={option}>
           {option}
         </option>
       ))}
-    </Form.Select>
+    </Select>
   );
-};
-
-const SelectDatePickerFilter = ({
-  column: { filterValue = [], preFilteredRows, setFilter, id },
-}) => {
-  const [min, max] = React.useMemo(() => {
-    let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
-
-    let max = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
-
-    preFilteredRows.forEach((row) => {
-      const currentDatetime = new Date(row.values[id]).getTime();
-
-      min = currentDatetime <= min ? currentDatetime : min;
-      max = currentDatetime >= max ? currentDatetime : max;
-    });
-    return [min, max];
-  }, [id, preFilteredRows]);
-
-  if (filterValue.length === 0) {
-    setFilter;
-  }
-
-  const handleApply = (event, picker) => {
-    picker.element.val(
-      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-    );
-    setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
-  };
-
-  const handleCancel = (event, picker) => {
-    picker.element.val('');
-    setFilter([min, max]);
-  };
-
-  return (
-    <DateRangePicker
-      className="custom-picker"
-      onApply={handleApply}
-      onCancel={handleCancel}
-      initialSettings={{
-        showDropdowns: true,
-        autoUpdateInput: false,
-        locale: {
-          cancelLabel: 'Clear',
-        },
-      }}
-    >
-      <input style={{ width: 190 }} type="text" className="form-control col-4" defaultValue="" />
-    </DateRangePicker>
-  );
-};
-
-const getClassificationsArray = (classifications, taxonomy) => {
-  if (!classifications) {
-    return [];
-  }
-
-  const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
-
-  const array = [];
-
-  const getStringForValue = (value) => {
-    if (value === null) {
-      return '';
-    }
-
-    switch (typeof value) {
-      case 'object':
-        return value.join(', ');
-
-      case 'boolean':
-        return value ? 'Yes' : 'No';
-
-      default:
-        return value;
-    }
-  };
-
-  taxaFieldsArray.forEach((field) => {
-    const c = classifications[field.short_name];
-
-    const value = getStringForValue(c);
-
-    array.push({
-      name: field.short_name,
-      value: getStringForValue(value),
-      weight: field.weight,
-      shortDescription: field.short_description,
-    });
-  });
-
-  return array;
 };
 
 export default function ClassificationsDbView(props) {
@@ -315,11 +146,7 @@ export default function ClassificationsDbView(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const [collapse, setCollapse] = useState(true);
-
   const [allTaxonomies, setAllTaxonomies] = useState([]);
-
-  const [allClassifications, setAllClassifications] = useState([]);
 
   const [tableData, setTableData] = useState([]);
 
@@ -327,9 +154,13 @@ export default function ClassificationsDbView(props) {
 
   const [currentTaxonomy, setCurrentTaxonomy] = useState('');
 
-  const [currentFilters, setCurrentFilters] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
-  const [currentSorting, setCurrentSorting] = useState([]);
+  const [modalContent, setModalContent] = useState({ title: '', content: '' });
+
+  const { t } = useTranslation();
+
+  const client = useApolloClient();
 
   useEffect(() => {
     setLoading(true);
@@ -357,44 +188,63 @@ export default function ClassificationsDbView(props) {
     setupTaxonomiesSelect();
   }, [isAdmin]);
 
-  const fetchClassificationData = (query) => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
-
-      try {
-        runQuery(
-          query,
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'classifications'
-        );
-      } catch (error) {
-        reject(error);
-      }
+  const fetchClassificationData = async (query) => {
+    const classificationsData = await client.query({
+      query: FIND_CLASSIFICATION,
+      variables: { query },
     });
+
+    // For now we convert the list of attributes into a classifications object
+    // to work with old code.
+    const classifications = [];
+
+    for (const c of classificationsData.data.classifications) {
+      if (c.attributes && (c.publish || isAdmin)) {
+        classifications.push({
+          ...c,
+          classifications: c.attributes.reduce((classifications, attribute) => {
+            classifications[attribute.short_name] = JSON.parse(attribute.value_json);
+            if (attribute.value_json && attribute.value_json[0] == '{') {
+              classifications[attribute.short_name] = attribute.value_json;
+            }
+            return classifications;
+          }, {}),
+        });
+      }
+    }
+    return classifications;
   };
 
-  const fetchTaxaData = () => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
-
-      try {
-        runQuery(
-          {},
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'taxa'
-        );
-      } catch (error) {
-        reject(error);
-      }
+  const fetchTaxaData = async () => {
+    const taxaData = await client.query({
+      query: gql`
+        query FindTaxa {
+          taxas {
+            namespace
+            weight
+            description
+            field_list {
+              field_number
+              short_name
+              long_name
+              short_description
+              long_description
+              display_type
+              mongo_type
+              default
+              placeholder
+              permitted_values
+              weight
+              instant_facet
+              required
+              public
+            }
+          }
+        }
+      `,
     });
+
+    return taxaData.data.taxas;
   };
 
   const initSetup = async () => {
@@ -410,7 +260,8 @@ export default function ClassificationsDbView(props) {
       const classificationsToRowsMap = (cObj) => {
         const row = {};
 
-        row['IncidentId'] = cObj.incident_id;
+        row['IncidentId'] = cObj.incidents[0].incident_id;
+
         for (const key in cObj.classifications) {
           row[key.split(' ').join('')] = cObj.classifications[key];
         }
@@ -457,6 +308,7 @@ export default function ClassificationsDbView(props) {
       };
 
       tableData = classifications
+        .filter((c) => c.incidents.length > 0)
         .map(classificationsToRowsMap) // should be first map function
         .map(classificationFormatBoolean)
         .map(replaceEmptyValuesMap);
@@ -468,7 +320,8 @@ export default function ClassificationsDbView(props) {
       const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
 
       const column = {
-        Header: taxaField.short_name,
+        id: uuidv4(),
+        title: t(taxaField.short_name),
         accessor: taxaField.short_name.split(' ').join(''),
       };
 
@@ -480,6 +333,49 @@ export default function ClassificationsDbView(props) {
       if (taxaField.display_type === 'date') {
         column.Filter = SelectDatePickerFilter;
         column.filter = taxaField.short_name.split(' ').join('');
+        column.Cell = function DateCell({ column: { id }, row: { values } }) {
+          return <>{formatDateField(values[id])}</>;
+        };
+      } else if (taxaField.display_type === 'string') {
+        column.className = 'min-w-[400px]';
+        column.Cell = function StringCell({ column: { id }, row: { values } }) {
+          return (
+            <div className="max-w-[400px] flex flex-col items-start">
+              <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
+                {values[id]}
+              </div>
+              {values[id]?.length > 130 && (
+                <FontAwesomeIcon
+                  onClick={() => {
+                    setShowModal(true);
+                    setModalContent({
+                      title: column.title,
+                      content: values[id],
+                    });
+                  }}
+                  icon={faExpandAlt}
+                  className="fas fa-expand-arrows-alt cursor-pointer"
+                />
+              )}
+            </div>
+          );
+        };
+      } else {
+        column.Cell = function otherCell({ cell }) {
+          cell.value = ((value) =>
+            Array.isArray(value)
+              ? value.map((v) => (typeof v == 'object' ? JSON.stringify(v) : v)).join(', ')
+              : value)(cell.value);
+          return (
+            <>
+              <div key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+                <div className="w-full m-0 p-0 overflow-auto">
+                  {cell.render('Cell').props.cell.value}
+                </div>
+              </div>
+            </>
+          );
+        };
       }
 
       return column;
@@ -493,34 +389,60 @@ export default function ClassificationsDbView(props) {
     }
 
     const incidentIdColumn = {
-      Header: 'Incident ID',
+      title: t('Incident ID'),
       accessor: 'IncidentId',
+      Cell: ({ row: { values } }) => (
+        <a className="flex" href={`/cite/${values.IncidentId}`}>
+          Incident {values.IncidentId}
+        </a>
+      ),
     };
 
     const actionsColumn = {
-      Header: 'Actions',
+      title: t('Actions'),
       accessor: 'actions',
+      disableFilters: true,
+      disableSortBy: true,
+      Cell: ({ row: { values } }) => (
+        <a
+          target="_blank"
+          href={
+            isAdmin ? `/cite/${values.IncidentId}/?edit_taxonomy=${currentTaxonomy}` : undefined
+          }
+          rel="noreferrer"
+        >
+          <Button
+            color={'gray'}
+            data-cy="edit-classification"
+            className="me-auto"
+            disabled={!isAdmin}
+          >
+            <Trans>Edit</Trans>
+          </Button>
+        </a>
+      ),
     };
 
     setColumnData([
-      actionsColumn,
       incidentIdColumn,
-      ...taxaData[0].field_list.map(fieldToColumnMap),
+      ...taxaData[0].field_list.reduce(
+        (acc, field) => {
+          if (!acc.field_names.has(field.short_name)) {
+            acc.field_names.add(field.short_name);
+            acc.fields.push(fieldToColumnMap(field));
+          }
+          return acc;
+        },
+        { fields: [], field_names: new Set() }
+      ).fields,
+      actionsColumn,
     ]);
 
     let rowQuery = {
       namespace: currentTaxonomy,
     };
 
-    // Fetch only classifications with "Annotation Status": "6. Complete and final"
-    if (!isAdmin) {
-      rowQuery['classifications.Annotation Status'] = '6. Complete and final';
-    }
     const classificationData = await fetchClassificationData(rowQuery);
-
-    if (classificationData.length > 0) {
-      setAllClassifications(classificationData);
-    }
 
     setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
 
@@ -536,12 +458,9 @@ export default function ClassificationsDbView(props) {
     try {
       initSetup();
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   }, [currentTaxonomy, allTaxonomies]);
-
-  const editClassificationModal = useModal();
 
   const data = React.useMemo(() => tableData, [tableData]);
 
@@ -550,6 +469,7 @@ export default function ClassificationsDbView(props) {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
+      Header: DefaultColumnHeader,
     }),
     []
   );
@@ -565,91 +485,12 @@ export default function ClassificationsDbView(props) {
     );
   };
 
-  const formatDateField = (s) => {
-    const dateObj = new Date(s.props.cell.value);
-
-    if (dateObj instanceof Date && !isNaN(dateObj)) {
-      return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
-    } else {
-      return <>{s.props.cell.value}</>;
-    }
-  };
-
-  const handleSubmit = () => {
-    editClassificationModal.close();
-    initSetup();
-  };
-
-  const editFormRef = React.useRef(null);
-
-  const getEditClassificationForm = (row) => {
-    const taxonomyFormObj = {
-      classificationsArray: [],
-      namespace: '',
-      taxonomyFields: [],
-    };
-
-    const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy)[0];
-
-    taxonomyFormObj.namespace = taxaData.namespace;
-    taxonomyFormObj.taxonomyFields = taxaData.field_list.map((f) => {
-      return {
-        display_type: f.display_type,
-        long_name: f.long_name,
-        public: f.public,
-        short_description: f.short_description,
-        short_name: f.short_name,
-        weight: f.weight,
-      };
-    });
-
-    const classificationObj = allClassifications.filter(
-      (report) => report.incident_id === row.values.IncidentId
-    );
-
-    taxonomyFormObj.classificationsArray = getClassificationsArray(
-      classificationObj.length > 0 ? classificationObj[0].classifications : null,
-      taxaData
-    );
-
-    if (classificationObj.length === 1) {
-      taxonomyFormObj.notes = classificationObj[0].notes;
-    }
-
-    return (
-      <div className="bootstrap">
-        <TaxonomyForm
-          ref={editFormRef}
-          namespace={taxaData.namespace}
-          incidentId={row.values.IncidentId}
-          onSubmit={handleSubmit}
-        />
-      </div>
-    );
-  };
-
   const filterTypes = {
     BeginningDate: filterDateFunction,
     EndingDate: filterDateFunction,
   };
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    setAllFilters,
-    state,
-  } = useTable(
+  const table = useTable(
     {
       columns,
       data,
@@ -658,8 +499,6 @@ export default function ClassificationsDbView(props) {
       initialState: {
         pageIndex: 0,
         pageSize: 500,
-        filters: currentFilters,
-        sortBy: currentSorting,
       },
     },
     useFilters,
@@ -667,225 +506,66 @@ export default function ClassificationsDbView(props) {
     usePagination
   );
 
-  const { pageIndex, pageSize, filters, sortBy } = state;
-
-  useEffect(() => {
-    setCurrentFilters(filters);
-  }, [filters]);
-
-  useEffect(() => {
-    setCurrentSorting(sortBy);
-  }, [sortBy]);
-
   const fullTextModal = useModal();
 
-  const RenderRow = React.useCallback(
-    (row) => {
-      prepareRow(row);
-      return (
-        <tr key={row.id} {...row.getRowProps()}>
-          {row.cells.map((cell) => {
-            if (cell.column.Header.includes('Incident ID')) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>
-                    <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
-                  </ScrollCell>
-                </td>
-              );
-            } else if (cell.column.Header.includes('Actions')) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <Button
-                    data-cy="edit-classification"
-                    className="me-auto"
-                    disabled={!isAdmin}
-                    onClick={() =>
-                      editClassificationModal.openFor({
-                        title: (
-                          <>
-                            Edit {currentTaxonomy} classification for incident{' '}
-                            {row.original.IncidentId}{' '}
-                            <Button className="ms-2" onClick={() => editFormRef.current.submit()}>
-                              Submit
-                            </Button>
-                          </>
-                        ),
-                        body: function f() {
-                          return getEditClassificationForm(row);
-                        },
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
-                  </Button>
-                </td>
-              );
-            } else if (cell.column.Header.includes('Date')) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
-                </td>
-              );
-            } else if (cell.value?.length > 130) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell style={{ overflow: 'hidden' }}>
-                    {cell.value.substring(0, 124)}...
-                  </ScrollCell>
-                  <ModalCell>
-                    <FontAwesomeIcon
-                      onClick={() =>
-                        fullTextModal.openFor({
-                          title: cell.column.Header,
-                          body: function f() {
-                            return cell.value;
-                          },
-                        })
-                      }
-                      icon={faExpandAlt}
-                      className="fas fa-expand-arrows-alt"
-                    />
-                  </ModalCell>
-                </td>
-              );
-            } else {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>
-                    {((value) => (Array.isArray(value) ? value.join(', ') : value))(
-                      cell.render('Cell').props.cell.value
-                    )}
-                  </ScrollCell>
-                </td>
-              );
-            }
-          })}
-        </tr>
-      );
-    },
-    [prepareRow, page]
-  );
-
   return (
-    <LayoutHideSidebar
-      {...props}
-      menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
-    >
-      <AiidHelmet>
+    <div {...props}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
-      <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />
-      <Container isWide={collapse}>
+      <div
+        className={`p-0 md:p-[auto] my-0 mx-[auto] overflow-auto whitespace-nowrap text=[0.8em]`}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <TaxonomySelectContainer className="gap-2">
-            Showing the
-            <Form.Select
-              style={{ width: 120 }}
+          <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
+            <Trans>Showing the</Trans>
+            <Select
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
+              className="min-w-[200px]"
             >
-              {allTaxonomies.map((taxa) => (
-                <option key={taxa.namespace} value={taxa.namespace}>
-                  {taxa.namespace}
-                </option>
-              ))}
-            </Form.Select>
-            taxonomy
-            {loading && <Spinner />}
-          </TaxonomySelectContainer>
-          <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
-            {currentTaxonomy} taxonomy page
-          </Link>
-          <Button onClick={() => setAllFilters([])}>Reset filters</Button>
-        </div>
-        {!loading && (
-          <TableStyles>
-            <Table striped bordered hover {...getTableProps()}>
-              <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th key={column.id} {...column.getHeaderProps()}>
-                        <HeaderCellContainer
-                          {...column.getHeaderProps(column.getSortByToggleProps())}
-                          style={{ marginBottom: 5 }}
-                        >
-                          {column.render('Header')}
-                          <span>
-                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
-                          </span>
-                        </HeaderCellContainer>
-                        <div>{column.canFilter ? column.render('Filter') : null}</div>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {page.map(RenderRow)}
-                {page.length === 0 && (
-                  <tr>
-                    <th colSpan={10}>
-                      <div>
-                        <span>No results found</span>
-                      </div>
-                    </th>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-
-            <div className="pagination">
-              <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                {'<<'}
-              </button>{' '}
-              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {'<'}
-              </button>{' '}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
-                {'>'}
-              </button>{' '}
-              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                {'>>'}
-              </button>{' '}
-              <span>
-                Page{' '}
-                <strong>
-                  {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
-              </span>
-              <span>
-                | Go to page:{' '}
-                <input
-                  type="number"
-                  defaultValue={pageIndex + 1}
-                  onChange={(e) => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0;
-
-                    gotoPage(page);
-                  }}
-                  style={{ width: '100px' }}
-                />
-              </span>{' '}
-              <select
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                }}
-              >
-                {[10, 20, 30, 40, 50, 100, 500].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
+              {allTaxonomies.map((taxa) => {
+                return (
+                  <option key={taxa.namespace} value={taxa.namespace}>
+                    {taxa.namespace}
                   </option>
-                ))}
-              </select>
+                );
+              })}
+            </Select>
+            <Trans>taxonomy</Trans>
+            {loading && <Spinner />}
+          </div>
+          <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
+            <Trans>{{ currentTaxonomy }} taxonomy page</Trans>
+          </Link>
+          <Button onClick={() => table.setAllFilters([])}>
+            <Trans>Reset filters</Trans>
+          </Button>
+        </div>
+        <div className="mt-4 always-visible-scroll">
+          {loading && <ListSkeleton />}
+          {!loading && (
+            <div>
+              <Table table={table} />
             </div>
-          </TableStyles>
-        )}
-      </Container>
+          )}
+        </div>
+      </div>
       <CustomModal {...fullTextModal} />
-    </LayoutHideSidebar>
+
+      {showModal && (
+        <Modal
+          show={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setModalContent({ title: '', content: '' });
+          }}
+        >
+          <Modal.Header>{modalContent.title}</Modal.Header>
+          <Modal.Body>{modalContent.content}</Modal.Body>
+        </Modal>
+      )}
+    </div>
   );
 }

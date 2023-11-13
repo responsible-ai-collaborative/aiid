@@ -33,6 +33,9 @@
                 "bsonType": "int"
             }
         },
+        "editor_notes": {
+            "bsonType": "string"
+        },
         "editor_similar_incidents": {
             "bsonType": "array",
             "items": {
@@ -61,6 +64,9 @@
                     }
                 }
             }
+        },
+        "epoch_date_modified": {
+            "bsonType": "int"
         },
         "flagged_dissimilar_incidents": {
             "bsonType": "array",
