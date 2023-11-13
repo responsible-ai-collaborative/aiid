@@ -52,8 +52,6 @@ exports = async (input) => {
     }
   }
 
-  log(`classificationsMatchingSearchTags.length`, classificationsMatchingSearchTags.length);
-
   const incidentIdsMatchingSearchTags = (
     classificationsMatchingSearchTags.map(c => c.incidents).flat()
   );
@@ -61,8 +59,6 @@ exports = async (input) => {
   const incidentsMatchingSearchTags = await incidentsCollection.find(
     { incident_id: { $in: incidentIdsMatchingSearchTags } },
   ).toArray();
-
-  log(`incidentsMatchingSearchTags.length`, incidentsMatchingSearchTags.length);
 
   // TODO: These should probably be defined in the taxa
   const failureTags = [
@@ -90,8 +86,6 @@ exports = async (input) => {
     ).toArray()
   )
 
-  log(`failureClassificationsMatchingIncidentIds.length`, failureClassificationsMatchingIncidentIds.length);
-
   const matchingClassificationsByFailure = groupByMultiple(
     failureClassificationsMatchingIncidentIds,
     classification => tagsFromClassification(classification).filter(
@@ -101,8 +95,6 @@ exports = async (input) => {
     )
   );
 
-  log(`Object.keys(matchingClassificationsByFailure)`, Object.keys(matchingClassificationsByFailure));
-  
   const risks = Object.keys(matchingClassificationsByFailure).map(
     failure => ({
       api_message: "This is an experimental an unsupported API",
@@ -118,7 +110,7 @@ exports = async (input) => {
     })
   ).sort((a, b) => b.precedents.length - a.precedents.length);
 
-  return [{tag: msg}].concat(risks);
+  return risks;
 };
 
 const getRiskClassificationsMongoQuery = (tagStrings) => {

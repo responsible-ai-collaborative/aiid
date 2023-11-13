@@ -33,23 +33,27 @@ const ChecklistsIndex = ({ users }) => {
     variables: { query: { owner_id: user?.id || 'fakeid' } },
   });
 
-  const identifier = (checklist) => checklist.id.replace(/-/g, '');
-
   const allTags = (checklist) => [
     ...checklist.tags_goals,
     ...checklist.tags_methods,
     ...checklist.tags_other,
   ];
 
+  const identifier = (checklist) =>
+    allTags(checklist)
+      .sort()
+      .join()
+      .replace(/[^A-Za-z]/g, '');
+
   // Example
   // ---------------------------------------------------------------------
   // query {
-  //   e39b619bd8f640a38ce60357eb6afba5:
+  //   GMFKnownAITechnologyTransformer:
   //   risks(input: {tags: ["GMF:Known AI Technology:Transformer"]}) {
   //     tag
   //     title
   //   }
-  //   349590abca7ba6e3b01658e6368febdf:
+  //   GMFKnownAITechnicalFailureUnderspecification:
   //   risks(input: {tags: ["GMF:Known AI Technical Failure:Underspecification"]}) {
   //     tag
   //     title
@@ -58,16 +62,15 @@ const ChecklistsIndex = ({ users }) => {
 
   const skip = !checklistsData?.checklists || checklistsData.checklists.length == 0;
 
-  const { data: risksData } = useQuery(
-    skip
-      ? gql`
+  const query = skip
+    ? `
           query {
             thisWontRunButHasToBeValidGraphQL {
               ForSomeReason
             }
           }
         `
-      : gql`
+    : `
       query {
         ${(checklistsData?.checklists || [])
           .filter((c) => allTags(c).length > 0)
@@ -83,6 +86,11 @@ const ChecklistsIndex = ({ users }) => {
           )
           .join('\n')}
       }
+    `;
+
+  const { data: risksData } = useQuery(
+    gql`
+      ${query}
     `,
     { skip }
   );
@@ -105,23 +113,28 @@ const ChecklistsIndex = ({ users }) => {
   const loggedIn = user?.providerType != 'anon-user';
 
   const deduplicatedRisks = {};
-//  if (risksData) {
-//    for (const ident in risksData) {
-//      deduplicatedRisks[ident] = [];
-//      for (const risk of risksData[ident]) {
-//        if (deduplicatedRisks[ident].every(
-//          r => abbreviatedTag(r.tag) !== abbreviatedTag(risk.tag))
-//        ) {
-//          deduplicatedRisks[ident].push(risk);
-//        }
-//      }
-//    }
-//  }
+
+  if (risksData) {
+    for (const ident in risksData) {
+      deduplicatedRisks[ident] = [];
+      for (const risk of risksData[ident]) {
+        if (
+          deduplicatedRisks[ident].every((r) => abbreviatedTag(r.tag) !== abbreviatedTag(risk.tag))
+        ) {
+          deduplicatedRisks[ident].push(risk);
+        }
+      }
+    }
+  }
 
   const displayedChecklists = checklists
     .filter((checklist) => checklist.owner_id == user.id)
     .sort(sortFunction || sortFunction['alphabetical'])
-    .map((c) => ({ ...c, risks: c.risks.concat(risksData?.[identifier(c)] || []) }));
+    .map((c) => {
+      const generatedRisks = risksData?.[identifier(c)] || [];
+
+      return { ...c, risks: c.risks.concat(generatedRisks) };
+    });
 
   if (checklistsLoading) {
     return <Spinner />;
@@ -145,10 +158,12 @@ const ChecklistsIndex = ({ users }) => {
               <Button
                 id="new-checklist-button"
                 onClick={async () => {
+                  const now = new Date();
+
                   const newChecklist = {
                     id: generateId(),
-                    date_created: new Date(),
-                    date_updated: new Date(),
+                    date_created: now,
+                    date_updated: now,
                     owner_id: user.id,
                     name: 'Unspecified System',
                     about: '',
@@ -300,24 +315,5 @@ const sortByProperty = (property, defaultValue) => (A, B) => {
   if (a > b) return 1;
   if (a < b) return -1;
 };
-
-//const sortAlphabetical = (A, B) => {
-//  const a = A?.name || 'Unspecified System';
-//
-//  const b = B?.name || 'Unspecified System';
-//
-//  if (a == b) return 0;
-//  if (a > b) return 1;
-//  if (a < b) return -1;
-//}
-//const sortByDateCreated = (A, B) => {
-//  const a = A?.date_created || 'Unspecified System';
-//
-//  const b = B?.date_created || 'Unspecified System';
-//
-//  if (a == b) return 0;
-//  if (a > b) return 1;
-//  if (a < b) return -1;
-//}
 
 export default ChecklistsIndex;
