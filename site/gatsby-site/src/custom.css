@@ -9,3 +9,7 @@ a {
     appearance: none;
     -webkit-appearance: none;
 }
+
+.bytemd-preview ul, .bytemd-preview ol {
+    list-style: revert;
+}
