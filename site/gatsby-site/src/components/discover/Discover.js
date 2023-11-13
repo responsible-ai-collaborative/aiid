@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Col from 'elements/Col';
 import Row from 'elements/Row';
 import Container from 'elements/Container';
@@ -16,6 +16,7 @@ import parseURL from './parseURL';
 import { queryConfig } from './queryParams';
 import { history } from 'instantsearch.js/es/lib/routers';
 import Pagination from './Pagination';
+import debounce from 'lodash/debounce';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -33,6 +34,28 @@ export default function Discover() {
   const { locale } = useLocalization();
 
   const [indexName] = useState(`instant_search-${locale}-featured`);
+
+  const [width, setWidth] = useState(0);
+
+  const handleWindowSizeChange = useRef(
+    debounce(() => {
+      setWidth(window.innerWidth);
+    }, 1000)
+  ).current;
+
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+
+    handleWindowSizeChange();
+
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    };
+  }, []);
+
+  if (width == 0) {
+    return null;
+  }
 
   return (
     <InstantSearch
@@ -62,9 +85,7 @@ export default function Discover() {
           </Col>
         </Row>
 
-        <Controls />
-
-        <OptionsModal />
+        {width > 767 ? <Controls /> : <OptionsModal />}
 
         <Hits />
 
