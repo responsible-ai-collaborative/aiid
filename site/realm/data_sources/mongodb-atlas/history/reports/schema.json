@@ -13,16 +13,16 @@
             "bsonType": "string"
         },
         "date_downloaded": {
-            "bsonType": "string"
+            "bsonType": "date"
         },
         "date_modified": {
-            "bsonType": "string"
+            "bsonType": "date"
         },
         "date_published": {
-            "bsonType": "string"
+            "bsonType": "date"
         },
         "date_submitted": {
-            "bsonType": "string"
+            "bsonType": "date"
         },
         "description": {
             "bsonType": "string"
