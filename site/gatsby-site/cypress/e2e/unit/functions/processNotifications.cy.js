@@ -269,9 +269,14 @@ const stubEverything = () => {
           .returns({ toArray: () => subscriptionsToIncidentUpdates });
       }
 
+      const incidentIds = pendingNotificationsToPromotedIncidents.map(
+        (pendingNotification) => pendingNotification.incident_id
+      );
+
       stub
         .withArgs({
           type: SUBSCRIPTION_TYPE.submissionPromoted,
+          incident_id: { $in: incidentIds },
         })
         .as(`subscriptions.find("${SUBSCRIPTION_TYPE.submissionPromoted}")`)
         .returns({ toArray: () => subscriptionsToPromotedIncidents });
@@ -450,6 +455,7 @@ describe('Functions', () => {
 
       expect(subscriptionsCollection.find.getCall(5).args[0]).to.deep.equal({
         type: SUBSCRIPTION_TYPE.submissionPromoted,
+        incident_id: { $in: [217] },
       });
 
       for (const subscription of subscriptionsToPromotedIncidents) {
@@ -464,8 +470,6 @@ describe('Functions', () => {
         expect(incidentsCollection.findOne.getCall(i).args[0]).to.deep.equal({
           incident_id: pendingNotification.incident_id,
         });
-
-        console.log('subscriptionsToPromotedIncidents', global.context.functions);
 
         const userIds = subscriptionsToPromotedIncidents.map((subscription) => subscription.userId);
 
