@@ -10,6 +10,10 @@ a {
     -webkit-appearance: none;
 }
 
-.bytemd-preview ul, .bytemd-preview ol {
-    list-style: revert;
+.bytemd-preview ul {
+    list-style: inside disc;
+}
+
+.bytemd-preview ol {
+    list-style: inside auto;
 }
