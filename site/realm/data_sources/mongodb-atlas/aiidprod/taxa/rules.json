@@ -7,22 +7,22 @@
             "apply_when": {
                 "%%user.custom_data.roles": "admin"
             },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "taxonomy_editor",
             "apply_when": {
                 "%%user.custom_data.roles": "taxonomy_editor"
             },
+            "read": true,
             "write": true,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "taxonomy_editor_cset",
@@ -30,11 +30,11 @@
                 "%%root.namespace": "CSET",
                 "%%user.custom_data.roles": "taxonomy_editor_cset"
             },
+            "read": true,
             "write": true,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "taxonomy_editor_tech",
@@ -42,11 +42,11 @@
                 "%%root.namespace": "TECH",
                 "%%user.custom_data.roles": "taxonomy_editor_tech"
             },
+            "read": true,
             "write": true,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "default",
@@ -55,8 +55,7 @@
             "write": false,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }
