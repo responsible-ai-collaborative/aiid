@@ -7,33 +7,33 @@
             "apply_when": {
                 "%%user.custom_data.roles": "admin"
             },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "taxonomy_editor",
             "apply_when": {
                 "%%user.custom_data.roles": "taxonomy_editor"
             },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "taxonomy_editor_cset",
             "apply_when": {
                 "%%user.custom_data.roles": "taxonomy_editor_cset"
             },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "default",
@@ -42,8 +42,7 @@
             "write": false,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }
