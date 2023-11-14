@@ -140,6 +140,15 @@
                 },
                 "tag": {
                     "bsonType": "string"
+                },
+                "tags": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "title": {
+                    "bsonType": "string"
                 }
             }
         },

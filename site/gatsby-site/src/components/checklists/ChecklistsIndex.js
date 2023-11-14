@@ -80,7 +80,8 @@ const ChecklistsIndex = ({ users }) => {
           risks(input: { tags: [${allTags(c)
             .map((t) => `"${t}"`)
             .join(', ')}] }) {
-            tag
+            tags
+            title
           }
         `
           )
@@ -112,29 +113,19 @@ const ChecklistsIndex = ({ users }) => {
 
   const loggedIn = user?.providerType != 'anon-user';
 
-  const deduplicatedRisks = {};
-
-  if (risksData) {
-    for (const ident in risksData) {
-      deduplicatedRisks[ident] = [];
-      for (const risk of risksData[ident]) {
-        if (
-          deduplicatedRisks[ident].every((r) => abbreviatedTag(r.tag) !== abbreviatedTag(risk.tag))
-        ) {
-          deduplicatedRisks[ident].push(risk);
-        }
-      }
-    }
-  }
-
-  const displayedChecklists = checklists
-    .filter((checklist) => checklist.owner_id == user.id)
-    .sort(sortFunction || sortFunction['alphabetical'])
-    .map((c) => {
-      const generatedRisks = risksData?.[identifier(c)] || [];
-
-      return { ...c, risks: c.risks.concat(generatedRisks) };
-    });
+  const displayedChecklists = (
+    checklists
+      .filter((checklist) => checklist.owner_id == user.id)
+      .map((checklist) => {
+        const generatedRisks = (risksData?.[identifier(checklist)] || []);
+        const manualRisks = checklist.risks;
+        const newGeneratedRisks = generatedRisks.filter(
+          generatedRisk => manualRisks.every(manualRisk => manualRisk.title != generatedRisk.title)
+        );
+        return { ...checklist, risks: manualRisks.concat(newGeneratedRisks) };
+      })
+      .sort(sortFunction || sortFunction['alphabetical'])
+  );
 
   if (checklistsLoading) {
     return <Spinner />;

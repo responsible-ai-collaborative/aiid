@@ -43,7 +43,6 @@ const handler = async (req, res) => {
         short_name: {
           $in: [
             "Known AI Technical Failure", 
-            "Potential AI Technical Failure"
           ]
         }
       }

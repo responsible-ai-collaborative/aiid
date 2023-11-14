@@ -63,7 +63,6 @@ exports = async (input) => {
   // TODO: These should probably be defined in the taxa
   const failureTags = [
     { namespace: "GMF", short_name: "Known AI Technical Failure" },
-    { namespace: "GMF", short_name: "Potential AI Technical Failure" }
   ];
 
   // TODO: This selects every field.
@@ -99,6 +98,8 @@ exports = async (input) => {
     failure => ({
       api_message: "This is an experimental an unsupported API",
       tag: failure,
+      title: failure.replace(/.*:/g, ''),
+      tags: [failure],
       precedents: matchingClassificationsByFailure[failure].map(
         failureClassification => {
           const incidents = incidentsMatchingSearchTags.filter(
