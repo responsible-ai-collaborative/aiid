@@ -129,30 +129,31 @@ export default function Footer() {
               {items.map((item) => {
                 const url = item.url;
 
-                return (
-                  <>
-                    {item.title && (
-                      <li key={item.title}>
-                        {url.includes('http') ? (
-                          <a href={url} className="tw-footer-link">
-                            {t(item.title)}{' '}
-                            <FontAwesomeIcon
-                              icon={faExternalLinkAlt}
-                              color={'gray'}
-                              className="pointer fa fa-sm  hover:text-primary-blue"
-                              title="External Link"
-                            />
-                          </a>
-                        ) : (
-                          <LocalizedLink to={url} className="tw-footer-link">
-                            {t(item.title)}
-                          </LocalizedLink>
-                        )}
-                      </li>
-                    )}
-                  </>
-                );
+                if (item.title) {
+                  return (
+                    <li key={item.title}>
+                      {url.includes('http') ? (
+                        <a href={url} className="tw-footer-link">
+                          {t(item.title)}{' '}
+                          <FontAwesomeIcon
+                            icon={faExternalLinkAlt}
+                            color={'gray'}
+                            className="pointer fa fa-sm  hover:text-primary-blue"
+                            title="External Link"
+                          />
+                        </a>
+                      ) : (
+                        <LocalizedLink to={url} className="tw-footer-link">
+                          {t(item.title)}
+                        </LocalizedLink>
+                      )}
+                    </li>
+                  );
+                }
+
+                return null;
               })}
+
               {socialItems.length > 0 && (
                 <div className="pt-3 mb-2">
                   {socialItems.map((item) => {
@@ -177,26 +178,28 @@ export default function Footer() {
                         icon = faRssSquare;
                         break;
                     }
-                    return (
-                      <>
-                        {item.name && (
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="pr-2 tw-footer-link"
-                          >
-                            <FontAwesomeIcon
-                              titleId={item.name}
-                              icon={icon}
-                              color={'gray'}
-                              className="pointer fa fa-lg hover:text-primary-blue"
-                              title={`Open ${item.name}`}
-                            />
-                          </a>
-                        )}
-                      </>
-                    );
+
+                    if (item.name) {
+                      return (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="pr-2 tw-footer-link"
+                        >
+                          <FontAwesomeIcon
+                            titleId={item.name}
+                            icon={icon}
+                            color={'gray'}
+                            className="pointer fa fa-lg hover:text-primary-blue"
+                            title={`Open ${item.name}`}
+                          />
+                        </a>
+                      );
+                    }
+
+                    return null;
                   })}
                 </div>
               )}

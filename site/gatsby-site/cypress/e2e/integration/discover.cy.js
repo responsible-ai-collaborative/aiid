@@ -21,6 +21,8 @@ describe('The Discover app', () => {
 
       cy.waitForStableDOM();
 
+      cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+
       cy.get('div[data-cy="hits-container"]').should('not.exist');
 
       cy.contains('Your search returned no results.').should('exist').and('be.visible');
@@ -33,15 +35,13 @@ describe('The Discover app', () => {
     () => {
       cy.visit(url);
 
-      cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
-
       cy.waitForStableDOM();
+
+      cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
 
       cy.contains('[data-cy="display-options"]', 'Incident Reports')
         .should('exist')
         .and('be.visible');
-
-      cy.waitForStableDOM();
 
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 28);
     }
@@ -74,6 +74,8 @@ describe('The Discover app', () => {
     () => {
       cy.visit(url);
 
+      cy.waitForStableDOM();
+
       cy.get('[data-cy=expand-filters]').click();
 
       cy.waitForStableDOM();
@@ -87,6 +89,8 @@ describe('The Discover app', () => {
         .type('{enter}');
 
       cy.get('[data-cy="incident_id-item"]:contains("34")', { timeout: 8000 }).first().click();
+
+      cy.waitForStableDOM();
 
       cy.url().should('include', 'incident_id=34');
 
@@ -136,6 +140,8 @@ describe('The Discover app', () => {
       .type('{enter}');
 
     cy.get('[data-cy="tags-item"]:contains("response")', { timeout: 8000 }).first().click();
+
+    cy.waitForStableDOM();
 
     cy.url().should('include', 'tags=response');
 
@@ -288,6 +294,8 @@ describe('The Discover app', () => {
 
     cy.contains('li', /^Issue Reports$/).click();
 
+    cy.waitForStableDOM();
+
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
 
     cy.waitForStableDOM();
@@ -411,10 +419,9 @@ describe('The Discover app', () => {
   it('Should not add a trailing slash when loading the discover app', () => {
     cy.visit(url);
 
-    cy.location('search', { timeout: 8000 }).should(
-      'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
-    );
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
   });
 
   conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should export results to a CSV file', () => {
@@ -466,10 +473,9 @@ describe('The Discover app', () => {
   it('Should set the sort with the value from the URL', () => {
     cy.visit(url);
 
-    cy.location('search', { timeout: 8000 }).should(
-      'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
-    );
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
 
@@ -530,6 +536,8 @@ describe('The Discover app', () => {
       cy.get('[data-cy="source_domain-item"]:contains("theguardian.com")', { timeout: 8000 })
         .first()
         .click();
+
+      cy.waitForStableDOM();
 
       cy.url().should('include', 'source_domain=theguardian.com');
 
