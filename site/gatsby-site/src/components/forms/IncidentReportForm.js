@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Select } from 'flowbite-react';
 import { Form, useFormikContext } from 'formik';
 import * as yup from 'yup';
-import TextInputGroup, { DateInputGroup } from '../../components/forms/TextInputGroup';
+import TextInputGroup from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateTimeRegExp } from '../../utils/date';
 import { getCloudinaryPublicID } from '../../utils/cloudinary';
@@ -28,6 +28,7 @@ import {
   faNewspaper,
   faAlignLeft,
   faTenge,
+  faCalendar,
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
@@ -156,6 +157,24 @@ const IncidentReportForm = () => {
   }, [values.image_url]);
 
   useEffect(() => {
+    if (values?.date_published) {
+      const publishedDate = new Date(values.date_published);
+
+      const formattedDate = publishedDate.toISOString().split('T')[0];
+
+      setFieldValue('date_published', formattedDate);
+    }
+
+    if (values?.date_downloaded) {
+      const publishedDate = new Date(values.date_downloaded);
+
+      const formattedDate = publishedDate.toISOString().split('T')[0];
+
+      setFieldValue('date_downloaded', formattedDate);
+    }
+  }, [values?.date_published, values?.date_downloaded]);
+
+  useEffect(() => {
     Object.keys(errors).map((key) => {
       setFieldTouched(key, true);
     });
@@ -207,11 +226,6 @@ const IncidentReportForm = () => {
   );
 
   const { config } = useLocalization();
-
-  const handleDateChange = (name, value) => {
-    setFieldTouched(name, true);
-    setFieldValue(name, value);
-  };
 
   return (
     <div>
@@ -277,26 +291,25 @@ const IncidentReportForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
-        <DateInputGroup
+
+        <TextInputGroup
           name="date_published"
-          value={values.date_published}
-          label="Date Published"
-          icon={faDownload}
-          placeholder="YYYY-MM-DD"
+          label={t('Date Published')}
+          type="date"
+          placeholder={t('YYYY-MM-DD')}
           className="mt-3"
+          icon={faCalendar}
           {...TextInputGroupProps}
-          handleChange={handleDateChange}
         />
 
-        <DateInputGroup
+        <TextInputGroup
           name="date_downloaded"
-          value={values.date_downloaded}
-          label="Date Downloaded"
-          icon={faDownload}
-          placeholder="YYYY-MM-DD"
+          label={t('Date Downloaded')}
+          type="date"
+          placeholder={t('YYYY-MM-DD')}
           className="mt-3"
+          icon={faDownload}
           {...TextInputGroupProps}
-          handleChange={handleDateChange}
         />
         <PreviewImageInputGroup
           cloudinary_id={values.cloudinary_id}

@@ -189,6 +189,9 @@ function EditCitePage(props) {
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(now);
 
+      values.date_published = new Date(values.date_published);
+      values.date_downloaded = new Date(values.date_downloaded);
+
       const updated = pick(values, reportFields);
 
       await updateReport({
