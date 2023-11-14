@@ -39,13 +39,9 @@ describe('The Discover app', () => {
 
       cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
 
-      cy.waitForStableDOM();
-
       cy.contains('[data-cy="display-options"]', 'Incident Reports')
         .should('exist')
         .and('be.visible');
-
-      cy.waitForStableDOM();
 
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 28);
     }
