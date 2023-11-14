@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connectHits, connectStateResults } from 'react-instantsearch-dom';
+import { useHits, useInstantSearch } from 'react-instantsearch';
 import CsvDownloadButton from 'react-json-to-csv';
 import { format, fromUnixTime } from 'date-fns';
 import { faFileCsv } from '@fortawesome/free-solid-svg-icons';
@@ -26,8 +26,14 @@ const convertData = (hits) => {
   }));
 };
 
-const CsvExport = ({ hits, isSearchStalled }) => {
+export default function CsvExport() {
   const [data, setData] = useState(null);
+
+  const { hits } = useHits();
+
+  const { status } = useInstantSearch();
+
+  const isLoading = status === 'loading' || status === 'stalled';
 
   useEffect(() => {
     if (hits) {
@@ -37,7 +43,7 @@ const CsvExport = ({ hits, isSearchStalled }) => {
 
   return (
     <div>
-      {!isSearchStalled && (
+      {!isLoading && (
         <Tooltip
           content={
             <Trans>
@@ -69,6 +75,4 @@ const CsvExport = ({ hits, isSearchStalled }) => {
       )}
     </div>
   );
-};
-
-export default connectHits(connectStateResults(CsvExport));
+}
