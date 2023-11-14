@@ -3,7 +3,7 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - run-tests-on-github
+      - feature-github-tests
 
 jobs:
   # call-realm:

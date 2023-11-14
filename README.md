@@ -443,34 +443,6 @@ REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
 
-### Cypress test run on Github Action
-
-The `Cypress e2e tests` Github Action workflow runs the Cypress test suite. This workflow is defined on `cypress.yml`.
-It requires a set of Github secrets variables to be set on the repository. Keep the same values as the ones defined in the `.env` file.
-
-These Github secrets must contain the following variables:
-
-```
-CYPRESS_PROJECT_ID=
-CYPRESS_RECORD_KEY=
-ALGOLIA_ADMIN_KEY=
-GATSBY_ALGOLIA_APP_ID=
-GATSBY_ALGOLIA_SEARCH_KEY=
-GATSBY_AVAILABLE_LANGUAGES=
-GATSBY_REALM_APP_ID=
-GATSBY_REALM_APP_GRAPHQL_URL=
-GOOGLE_TRANSLATE_API_KEY=xxxx
-MONGODB_CONNECTION_STRING=
-MONGODB_REPLICA_SET=
-MONGODB_TRANSLATIONS_CONNECTION_STRING=
-MONGODB_MIGRATIONS_CONNECTION_STRING=
-```
-
-Additional notes:
-
-`CYPRESS_PROJECT_ID` is the Cypress project ID. For more information, see [Cypress Project ID](https://docs.cypress.io/guides/dashboard/projects#Identification)
-
-`CYPRESS_RECORD_KEY` is the Cypress record ID. For more information, see [Cypress Record ID](https://docs.cypress.io/guides/dashboard/projects#Project-ID)
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 ### Testing

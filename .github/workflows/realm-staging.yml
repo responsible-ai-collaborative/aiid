@@ -1,16 +1,14 @@
-name: Realm Deploy
+name: Realm Deploy Staging
+
 on:
-  workflow_call:
-    inputs:
-      environment:
-        type: string
-        description: Environment to deploy to
-        required: true
+  push:
+    branches:
+      - staging
 
 jobs:
   push:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: staging
     steps:
       - uses: actions/checkout@v2
       - name: "Install the Realm CLI"
@@ -23,4 +21,3 @@ jobs:
         run: |
           cd site/realm
           realm-cli push --remote="${{ secrets.GATSBY_REALM_APP_ID }}" -y
-
