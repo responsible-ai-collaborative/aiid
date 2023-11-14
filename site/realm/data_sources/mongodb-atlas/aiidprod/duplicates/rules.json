@@ -9,8 +9,7 @@
             "write": false,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }
