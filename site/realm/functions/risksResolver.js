@@ -101,12 +101,11 @@ exports = async (input) => {
       title: failure.replace(/.*:/g, ''),
       tags: [failure],
       precedents: matchingClassificationsByFailure[failure].map(
-        failureClassification => {
-          const incidents = incidentsMatchingSearchTags.filter(
-            incident => failureClassification.incidents.includes(incident.incident_id)
-          );
-          return incidents;
-        }
+        failureClassification => (
+          incidentsMatchingSearchTags
+            .filter(incident => failureClassification.incidents.includes(incident.incident_id))
+            .map(incident => ({...incident, tags: tagsByIncidentId[incident.incident_id]}) )
+        )
       ).flat()
     })
   ).sort((a, b) => b.precedents.length - a.precedents.length);

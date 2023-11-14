@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
+import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 
@@ -69,8 +69,18 @@ export default function CheckListForm({
     ...(values['tags_other'] || []),
   ];
 
+  const apolloClient = useApolloClient();
+
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, addToast, t });
+    searchRisks({
+      values,
+      setFieldValue,
+      setRisksLoading,
+      setAllPrecedents,
+      addToast,
+      t,
+      apolloClient,
+    });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   useEffect(() => {
@@ -433,6 +443,7 @@ const searchRisks = async ({
   setAllPrecedents,
   addToast,
   t,
+  apolloClient,
 }) => {
   const queryTags = [
     ...(values['tags_goals'] || []),
@@ -444,14 +455,26 @@ const searchRisks = async ({
 
   setRisksLoading(true);
 
-  const response = await fetch(
-    '/api/riskManagement/v1/risks?tags=' + encodeURIComponent(queryTags.join('___'))
-  );
+  const risksResponse = await apolloClient.query({
+    query: gql`
+      query {
+        risks(input: { tags: [${queryTags.map((t) => `"${t}"`).join(', ')}] }) {
+          tags
+          title
+          precedents {
+            incident_id
+            title
+            tags
+          }
+        }
+      }
+    `,
+  });
 
   const allPrecedents = [];
 
-  if (response.ok) {
-    const results = await response.json();
+  if (risksResponse.data) {
+    const results = risksResponse.data.risks;
 
     const risksToAdd = [];
 
@@ -460,8 +483,8 @@ const searchRisks = async ({
 
       const newRisk = {
         ...emptyRisk(),
-        title: abbreviatedTag(result.tag),
-        tags: [result.tag],
+        title: result.title,
+        tags: result.tags,
         precedents: result.precedents,
         description: result.description,
         startClosed: true,
