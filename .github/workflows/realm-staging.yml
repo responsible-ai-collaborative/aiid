@@ -21,3 +21,4 @@ jobs:
         run: |
           cd site/realm
           realm-cli push --remote="${{ secrets.GATSBY_REALM_APP_ID }}" -y
+
