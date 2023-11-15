@@ -36,7 +36,13 @@ describe('Checklists App Index', () => {
     cy.get(newChecklistButtonQuery).should('exist');
   });
 
-  maybeIt('Should show delete buttons only for owned checklists', () => {
+  /* We're now showing only the user's owned checklists,
+   * so we can't test that the delete button doesn't show up on unowned ones.
+   * Eventually, we'll probably have public checklists show up here too,
+   * so this can be skipped with a TODO to activate it
+   * once there are unowned checklists displayed.
+   */
+  it.skip('Should show delete buttons only for owned checklists', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.query(usersQuery).then(({ data: { users } }) => {
@@ -83,6 +89,8 @@ describe('Checklists App Index', () => {
       cy.get('[data-cy="checklist-card"]:first-child button').contains('Delete').should('exist');
 
       cy.get('[data-cy="checklist-card"]:last-child button').contains('Delete').should('not.exist');
+
+      cy.wait(100000);
     });
   });
 });

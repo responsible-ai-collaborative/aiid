@@ -60,30 +60,28 @@ const ChecklistsIndex = ({ users }) => {
   //   }
   // }
 
-  const skip = !checklistsData?.checklists || checklistsData.checklists.length == 0;
+  const queryableChecklists = (checklistsData?.checklists || []).filter(
+    (c) => allTags(c).length > 0
+  );
+
+  const skip = !queryableChecklists.length > 0;
+
+  const tagsQuery = (classification) =>
+    allTags(classification)
+      .map((tag) => `"${tag}"`)
+      .join(', ');
 
   const query = skip
-    ? `
-          query {
-            thisWontRunButHasToBeValidGraphQL {
-              ForSomeReason
-            }
-          }
-        `
-    : `
-      query {
-        ${(checklistsData?.checklists || [])
-          .filter((c) => allTags(c).length > 0)
+    ? 'query { thisWontRunButHasToBeValidGraphQL { ForSomeReason } }'
+    : `query {
+        ${queryableChecklists
           .map(
-            (c) => `
-          ${identifier(c)}:
-          risks(input: { tags: [${allTags(c)
-            .map((t) => `"${t}"`)
-            .join(', ')}] }) {
-            tags
-            title
-          }
-        `
+            (c) =>
+              `${identifier(c)}:
+            risks(input: { tags: [${tagsQuery(c)}] }) {
+              tags
+              title
+            }`
           )
           .join('\n')}
       }
@@ -113,19 +111,20 @@ const ChecklistsIndex = ({ users }) => {
 
   const loggedIn = user?.providerType != 'anon-user';
 
-  const displayedChecklists = (
-    checklists
-      .filter((checklist) => checklist.owner_id == user.id)
-      .map((checklist) => {
-        const generatedRisks = (risksData?.[identifier(checklist)] || []);
-        const manualRisks = checklist.risks;
-        const newGeneratedRisks = generatedRisks.filter(
-          generatedRisk => manualRisks.every(manualRisk => manualRisk.title != generatedRisk.title)
-        );
-        return { ...checklist, risks: manualRisks.concat(newGeneratedRisks) };
-      })
-      .sort(sortFunction || sortFunction['alphabetical'])
-  );
+  const displayedChecklists = checklists
+    .filter((checklist) => checklist.owner_id == user.id)
+    .map((checklist) => {
+      const generatedRisks = risksData?.[identifier(checklist)] || [];
+
+      const manualRisks = checklist.risks;
+
+      const newGeneratedRisks = generatedRisks.filter((generatedRisk) =>
+        manualRisks.every((manualRisk) => manualRisk.title != generatedRisk.title)
+      );
+
+      return { ...checklist, risks: manualRisks.concat(newGeneratedRisks) };
+    })
+    .sort(sortFunction || sortFunction['alphabetical']);
 
   if (checklistsLoading) {
     return <Spinner />;
