@@ -116,20 +116,7 @@ exports = async (input) => {
           { incident_id: BSON.Int32(parentIncident.incident_id) },
           { $set: { ...parentIncident, embedding } }
         );
-
-        if (submission.user) {
-          await subscriptionsCollection.insertOne({
-            type: 'submission-promoted',
-            incident_id: BSON.Int32(parentIncident.incident_id),
-            userId: submission.user
-          });
-
-          await notificationsCollection.insertOne({
-            type: 'submission-promoted',
-            incident_id: BSON.Int32(parentIncident.incident_id),
-            processed: false
-          });
-        }
+        
         let incidentValues = parentIncident;
 
         delete incidentValues._id; // Otherwise Mongo complains about duplicate _id in incidentsHistory
