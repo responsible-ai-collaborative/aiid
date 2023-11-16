@@ -89,8 +89,6 @@ describe('Checklists App Index', () => {
       cy.get('[data-cy="checklist-card"]:first-child button').contains('Delete').should('exist');
 
       cy.get('[data-cy="checklist-card"]:last-child button').contains('Delete').should('not.exist');
-
-      cy.wait(100000);
     });
   });
 });

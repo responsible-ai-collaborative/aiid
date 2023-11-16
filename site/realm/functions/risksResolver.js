@@ -26,10 +26,6 @@
 //     ]
 // }}
 exports = async (input) => {
-  let msg = "";
-  function log() {
-    msg += Object.values(arguments).map(x => JSON.stringify(x)).join(' ') + '\n'
-  }
 
   const db = context.services.get('mongodb-atlas').db('aiidprod');
   const incidentsCollection = db.collection('incidents');
