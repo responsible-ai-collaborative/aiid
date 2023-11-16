@@ -422,16 +422,28 @@ function Info({ children, className }) {
 //
 // Example resulting values.risks:
 //
-// [ { "tag": "GMF:Failure:Gaming Vulnerability",
-//     "precedents": [
-//       { "incident_id": 146,
-//         "url": "https://incidentdatabase.ai/cite/146",
-//         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-//         "description": "A publicly accessible research model[...]moral judgments.",
-//         "tags": [ "GMF:Known AI Technology:Language Modeling", ],
-//         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
+// [ {
+//     /* GraphQL API Results */
+//     title: "Gaming Vulnerability",
+//     tags: ["GMF:Failure:Gaming Vulnerability"],
+//     precedents: [
+//       { incident_id: 146,
+//         url: "https://incidentdatabase.ai/cite/146",
+//         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+//         description: "A publicly accessible research model [...] moral judgments.",
+//         tags: [ "GMF:Known AI Technology:Language Modeling", ],
 //       },
-//     ]
+//     ],
+//
+//     /* Defaults Risk Annotations */
+//     risk_status: "Not Mitigated",
+//     risk_notes: "",
+//     severity: "",
+//
+//     /* UI properties*/
+//     startClosed: true,
+//     touched: false,
+//     generated: true,
 //   }
 // ]
 //
@@ -464,6 +476,7 @@ const searchRisks = async ({
           precedents {
             incident_id
             title
+            description
             tags
           }
         }

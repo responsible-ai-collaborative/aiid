@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner, Button, Select } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import Card from 'elements/Card';
+import Select from 'elements/Select';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckToSlot } from '@fortawesome/free-solid-svg-icons';
 import gql from 'graphql-tag';
 
+import CardSkeleton from 'elements/Skeletons/Card';
 import { useUserContext } from '../../contexts/userContext';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import {
@@ -23,61 +26,70 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 const ChecklistsIndex = ({ users }) => {
   const { t } = useTranslation();
 
+  const addToast = useToastContext();
+
   const { user } = useUserContext();
 
-  const addToast = useToastContext();
+  const loggedIn = user?.providerType != 'anon-user';
 
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
+  /************************** Get Checklists **************************/
   const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS, {
-    variables: { query: { owner_id: user?.id || 'fakeid' } },
+    variables: { query: { owner_id: user?.id } },
+    skip: !user?.id,
   });
 
-  const allTags = (checklist) => [
-    ...checklist.tags_goals,
-    ...checklist.tags_methods,
-    ...checklist.tags_other,
-  ];
+  // In useState so that on deleting a checklist,
+  // we can remove it from display immediately.
+  const [checklists, setChecklists] = useState([]);
 
-  const identifier = (checklist) =>
-    allTags(checklist)
-      .sort()
-      .join()
-      .replace(/[^A-Za-z]/g, '');
+  useEffect(() => {
+    setChecklists(checklistsData?.checklists || []);
+  }, [checklistsData]);
 
+  const riskQueryableChecklists = (checklistsData?.checklists || []).filter(
+    (c) => allTags(c).length > 0
+  );
+
+  /***************************** Get Risks ****************************/
+  const skipRisksQuery = !riskQueryableChecklists.length > 0;
+
+  // We want to query the risks for each checklist.
+  // To do that, we construct multiple labeled risk queries:
+  //
   // Example
-  // ---------------------------------------------------------------------
+  // -------------------------------------------------------------------
   // query {
   //   GMFKnownAITechnologyTransformer:
   //   risks(input: {tags: ["GMF:Known AI Technology:Transformer"]}) {
-  //     tag
+  //     tags
   //     title
   //   }
   //   GMFKnownAITechnicalFailureUnderspecification:
   //   risks(input: {tags: ["GMF:Known AI Technical Failure:Underspecification"]}) {
-  //     tag
+  //     tags
   //     title
   //   }
   // }
-
-  const queryableChecklists = (checklistsData?.checklists || []).filter(
-    (c) => allTags(c).length > 0
-  );
-
-  const skip = !queryableChecklists.length > 0;
-
-  const tagsQuery = (classification) =>
-    allTags(classification)
-      .map((tag) => `"${tag}"`)
-      .join(', ');
-
-  const query = skip
-    ? 'query { thisWontRunButHasToBeValidGraphQL { ForSomeReason } }'
+  const riskQuery = skipRisksQuery
+    ? // Since we're constructing the query with riskQueryableChecklists.map(),
+      // if riskQueryableChecklists is empty,
+      // then the resulting constructed query string is 'query { }'.
+      // This is not valid graphql, so gql() will throw an exception if we pass it.
+      // But we have to pass it something, because
+      // useQuery() will throw an exception if gets something
+      // other than a graphql document returned by gql().
+      // It doesn't care if { skip: true } is set,
+      // it always typechecks its arguments.
+      // So instead, we just pass a dummy query
+      // that's valid graphql won't run.
+      'query { thisWontRunBut { useQueryMakesUseProvideValidGraphQL } }'
     : `query {
-        ${queryableChecklists
+        ${riskQueryableChecklists
           .map(
-            (c) =>
-              `${identifier(c)}:
+            (c) => `
+            ${identifier(c)}:
             risks(input: { tags: [${tagsQuery(c)}] }) {
               tags
               title
@@ -87,29 +99,17 @@ const ChecklistsIndex = ({ users }) => {
       }
     `;
 
-  const { data: risksData } = useQuery(
-    gql`
-      ${query}
-    `,
-    { skip }
-  );
+  const { data: risksData } = useQuery(gql(riskQuery), { skip: skipRisksQuery });
 
-  const [checklists, setChecklists] = useState([]);
-
+  /************************ Prepare Display ***************************/
   const [sortBy, setSortBy] = useState('alphabetical');
 
   const sortFunction = {
     alphabetical: sortByProperty('name'),
     'oldest-first': sortByProperty('date_created'),
-    'newest-first': reverse(sortByProperty('date_created')),
-    'last-updated': reverse(sortByProperty('date_updated')),
+    'newest-first': sortByProperty('date_created', { reverse: true }),
+    'last-updated': sortByProperty('date_updated', { reverse: true }),
   }[sortBy];
-
-  useEffect(() => {
-    setChecklists(checklistsData?.checklists || []);
-  }, [checklistsData]);
-
-  const loggedIn = user?.providerType != 'anon-user';
 
   const displayedChecklists = checklists
     .filter((checklist) => checklist.owner_id == user.id)
@@ -126,9 +126,6 @@ const ChecklistsIndex = ({ users }) => {
     })
     .sort(sortFunction || sortFunction['alphabetical']);
 
-  if (checklistsLoading) {
-    return <Spinner />;
-  }
   return (
     <>
       <div className={'titleWrapper'}>
@@ -185,13 +182,35 @@ const ChecklistsIndex = ({ users }) => {
         </div>
       </div>
       <div className="flex flex-col gap-4 bg-gray-100 border-1 border-gray-200 rounded shadow-inner p-4">
-        {displayedChecklists.map((checklist) => (
-          <CheckListCard
-            key={checklist}
-            owner={users.find((u) => u.userId == checklist.owner_id)}
-            {...{ checklist, setChecklists }}
-          />
-        ))}
+        {checklistsLoading &&
+          Array(12)
+            .fill()
+            .map((_, i) => (
+              <CardSkeleton
+                key={i}
+                image={false}
+                lines={4}
+                maxWidthSmall={false}
+                className="bg-white"
+              />
+            ))}
+        {!checklistsLoading &&
+          displayedChecklists.map((checklist) => (
+            <CheckListCard
+              key={checklist}
+              owner={users.find((u) => u.userId == checklist.owner_id)}
+              {...{ checklist, setChecklists }}
+            />
+          ))}
+        {!checklistsLoading && (!displayedChecklists || displayedChecklists.length == 0) && (
+          <div className="text-xl text-center my-16 text-gray-300">
+            <FontAwesomeIcon icon={faCheckToSlot} size="5x" />
+            <br />
+            <p className="text-gray-400">
+              <Trans>You haven’t made any checklists (yet).</Trans>
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
@@ -269,41 +288,70 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
         )}
         <ExportDropdown {...{ checklist }} />
       </div>
-      <div>
+      <div className="p-4">
         {owner && owner.first_name && owner.last_name && (
-          <span className="float-right text-gray-700 m-4">
+          <span className="float-right text-gray-700">
             by {owner.first_name} {owner.last_name}
           </span>
         )}
-        <ul className="flex gap-2 flex-wrap p-4">
-          {(checklist.risks || [])
-            .filter((r) => r.risk_status != 'Not Applicable')
-            .map((risk) => (
-              <li key={risk.id} className="flex items-center gap-1 text-gray-600 mx-1">
-                <FontAwesomeIcon
-                  icon={statusIcon(risk.risk_status || 'Unclear')}
-                  className={`text-${statusColor(risk.risk_status || 'Unclear')}-600`}
-                  title={risk.risk_status || 'Unclear'}
-                />
-                {risk.title || abbreviatedTag(risk.tag)}
-              </li>
-            ))}
-        </ul>
+
+        {checklist?.risks && (
+          <ul className="flex gap-2 flex-wrap">
+            {checklist.risks
+              .filter((r) => r.risk_status != 'Not Applicable')
+              .map((risk) => (
+                <li key={risk.id} className="flex items-center gap-1 text-gray-600 mx-1">
+                  <FontAwesomeIcon
+                    icon={statusIcon(risk.risk_status || 'Unclear')}
+                    className={`text-${statusColor(risk.risk_status || 'Unclear')}-600`}
+                    title={risk.risk_status || 'Unclear'}
+                  />
+                  {risk.title || abbreviatedTag(risk.tag)}
+                </li>
+              ))}
+          </ul>
+        )}
+        {(!checklist?.risks || checklist?.risks.length == 0) && (
+          <span className="text-gray-700">No risks identified</span>
+        )}
       </div>
     </Card>
   );
 };
 
-const reverse = (f) => (A, B) => f(B, A);
+const allTags = (checklist) => [
+  ...checklist.tags_goals,
+  ...checklist.tags_methods,
+  ...checklist.tags_other,
+];
 
-const sortByProperty = (property, defaultValue) => (A, B) => {
+const identifier = (checklist) =>
+  allTags(checklist)
+    .sort()
+    .join()
+    .replace(/[^A-Za-z]/g, '');
+
+const tagsQuery = (classification) =>
+  allTags(classification)
+    .map((tag) => `"${tag}"`)
+    .join(', ');
+
+const sortByProperty = (property, config) => (A, B) => {
+  const defaultValue = config?.defaultValue;
+
+  const reverse = config?.reverse || false;
+
   const a = A?.[property] || defaultValue;
 
   const b = B?.[property] || defaultValue;
 
-  if (a == b) return 0;
-  if (a > b) return 1;
-  if (a < b) return -1;
+  let result;
+
+  if (a == b) result = 0;
+  if (a > b) result = 1;
+  if (a < b) result = -1;
+
+  return reverse ? -result : result;
 };
 
 export default ChecklistsIndex;
