@@ -1,3 +1,5 @@
+const { SUBSCRIPTION_TYPE } = require('../../../../src/utils/subscriptions');
+
 const promoteSubmissionToReport = require('../../../../../realm/functions/promoteSubmissionToReport');
 
 //should be on its own /cypress/unit folder or something
@@ -257,6 +259,12 @@ describe('Functions', () => {
         ...expectedReport,
         modifiedBy: submission.user,
       });
+
+      expect(subscriptionsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+        type: SUBSCRIPTION_TYPE.submissionPromoted,
+        incident_id: 2,
+        userId: 'user1',
+      });
     });
   });
 
@@ -414,6 +422,8 @@ describe('Functions', () => {
         ...expectedReport,
         modifiedBy: submission_with_embedding.user,
       });
+
+      expect(subscriptionsCollection.insertOne.called).to.be.false;
     });
   });
 
@@ -565,6 +575,8 @@ describe('Functions', () => {
         ...expectedReport,
         modifiedBy: submission.user,
       });
+
+      expect(subscriptionsCollection.insertOne.called).to.be.false;
     });
   });
 
