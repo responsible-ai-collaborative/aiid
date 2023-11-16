@@ -25,6 +25,8 @@ describe('The Landing page', () => {
 
     cy.get('[data-cy="Waking Up Foundation-image"]', { timeout: 15000 }).scrollIntoView();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="Waking Up Foundation-image"]').click();
 
     cy.waitForStableDOM();
