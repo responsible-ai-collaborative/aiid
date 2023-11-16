@@ -1494,7 +1494,7 @@ describe('Submitted reports', () => {
             ...submission,
             incident_editors: [
               {
-                userId: '62cd9520a69a2cdf17fb47db',
+                userId: '619737436d52a1795887d3f9',
                 first_name: 'Your',
                 last_name: 'Name',
               },
@@ -1521,7 +1521,7 @@ describe('Submitted reports', () => {
         _id: submission._id,
       });
       expect(xhr.request.body.variables.set).to.deep.eq({
-        incident_editors: { link: ['62cd9520a69a2cdf17fb47db'] },
+        incident_editors: { link: [user.userId] },
       });
     });
   });
@@ -1539,7 +1539,18 @@ describe('Submitted reports', () => {
       'FindSubmissions',
       {
         data: {
-          submissions: [submission],
+          submissions: [
+            {
+              ...submission,
+              incident_editors: [
+                {
+                  userId: user.userId,
+                  first_name: 'Test',
+                  last_name: 'User',
+                },
+              ],
+            },
+          ],
         },
       }
     );
@@ -1655,7 +1666,7 @@ describe('Submitted reports', () => {
         _id: submission._id,
       });
       expect(xhr.request.body.variables.set).to.deep.eq({
-        incident_editors: { link: ['62cd9520a69a2cdf17fb47db'] },
+        incident_editors: { link: [user.userId] },
       });
     });
     cy.get(".pagination [aria-current='page'] button").contains('2').should('exist');
