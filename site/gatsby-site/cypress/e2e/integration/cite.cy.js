@@ -234,6 +234,8 @@ describe('Cite pages', () => {
   it('Should pre-fill submit report response form', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('New Response').scrollIntoView().click();
 
     cy.waitForStableDOM();
