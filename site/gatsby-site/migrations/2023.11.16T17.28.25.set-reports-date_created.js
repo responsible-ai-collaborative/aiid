@@ -7,7 +7,7 @@ const config = require('../config');
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  // New epoch_date_modified field on submissions collection
+  // New date_created field on reports collection
   const reportsCollection = client.db(config.realm.production_db.db_name).collection('reports');
 
   const reportsCursor = reportsCollection.find({});
