@@ -7,15 +7,7 @@ const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?
 export default async function handler(req, res) {
   const { url } = req.query;
 
-  const parserConfig = { contentType: 'markdown' };
-
-  const host = new URL(url).host;
-
-  if (['www.washingtonpost.com', 'washingtonpost.com'].includes(host)) {
-    parserConfig.html = await getHtmlWithCookies(url);
-  }
-
-  const article = await Parser.parse(url, parserConfig);
+  const article = await getArticle(url, { cookies: false });
 
   const response = {
     title: article.title,
@@ -30,6 +22,26 @@ export default async function handler(req, res) {
 
   res.status(200).json(response);
 }
+
+const getArticle = async (url, config) => {
+  try {
+    const parserConfig = { contentType: 'markdown' };
+
+    if (config.cookies) {
+      parserConfig.html = await getHtmlWithCookies(url);
+    }
+
+    const article = await Parser.parse(url, parserConfig);
+
+    return article;
+  } catch (error) {
+    if (config.cookies) {
+      throw error;
+    } else {
+      return await getArticle(url, { cookies: true });
+    }
+  }
+};
 
 const getHtmlWithCookies = async (url) => {
   const axiosInstance = axios.create();

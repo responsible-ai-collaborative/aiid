@@ -1798,4 +1798,44 @@ describe('The Submit form', () => {
 
     cy.contains('Please review. Some data is missing.').should('exist');
   });
+
+  it('Should fetch article', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('.tw-toast')
+      .contains('Please verify all information programmatically pulled from the report')
+      .should('exist');
+
+    cy.get('.tw-toast').contains('Error fetching news.').should('not.exist');
+  });
+
+  it('Should fetch article from site using cookies', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.get('input[name="url"]').type(
+      'https://www.washingtonpost.com/technology/2023/02/16/microsoft-bing-ai-chatbot-sydney/'
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('.tw-toast')
+      .contains('Please verify all information programmatically pulled from the report')
+      .should('exist');
+
+    cy.get('.tw-toast').contains('Error fetching news.').should('not.exist');
+  });
 });
