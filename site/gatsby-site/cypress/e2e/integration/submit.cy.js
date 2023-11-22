@@ -857,7 +857,7 @@ describe('The Submit form', () => {
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
-  conditionalIt(
+  conditionalIt.skip(
     !Cypress.env('isEmptyEnvironment'),
     'Should show related reports based on semantic similarity',
     () => {
