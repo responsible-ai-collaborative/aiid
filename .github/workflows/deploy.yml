@@ -11,14 +11,15 @@ jobs:
   install-and-build:
     name: NPM install and build site
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-core-64gb
     defaults:
       run:
         shell: bash
         working-directory: site/gatsby-site
     steps:
+
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Cache 'node_modules' and '~/.cache/Cypress' folder
       - name: Cache node modules
@@ -36,7 +37,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
       # Install NPM dependencies
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
@@ -67,6 +67,10 @@ jobs:
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
+          GATSBY_PRISMIC_REPO_NAME: ${{ secrets.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
 
       # Extract commit hash to use as a cache key
       - name: Extract commit hash
@@ -87,11 +91,10 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-core-64gb
     needs: install-and-build
     defaults:
       run:
@@ -105,13 +108,14 @@ jobs:
       fail-fast: false
       matrix:
         # run 10 copies of the current job in parallel
-        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        containers: [1, 2, 3, 4]
     # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
     timeout-minutes: 20
     steps:
+
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Cache node_modules folder
       - name: Cache node modules
@@ -129,7 +133,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
       # Install NPM dependencies
       - name: Install NPM dependencies
         if: steps.cache-nodemodules-2.outputs.cache-hit != 'true'
@@ -159,7 +162,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
       # Extract branch name
       - name: Extract branch name
         shell: bash
@@ -168,7 +170,7 @@ jobs:
 
       # Run all Cypress tests
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         with:
           working-directory: site/gatsby-site
           # we have already installed all dependencies above
@@ -178,10 +180,10 @@ jobs:
           parallel: true
           group: "Cypress e2e tests"
           tag: ${{ steps.extract_branch.outputs.branch }}
-          start: npm run serve
-          wait-on: http://localhost:8000/
+          start: node node_modules/.bin/gatsby serve -p 8000 -H 127.0.0.1
+          wait-on: http://127.0.0.1:8000
           # wait for 10 minutes for the server to respond
-          wait-on-timeout: 600
+          wait-on-timeout: 60
         env:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
@@ -203,4 +205,4 @@ jobs:
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
           # Since this is triggered on a pull request, we set the commit message to the pull request title
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
-
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
