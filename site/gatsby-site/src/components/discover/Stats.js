@@ -10,9 +10,9 @@ export default function Stats({ className, ...props }) {
     <div className={'flex gap-3 items-center ' + className}>
       <span data-cy="display-options">
         <DisplayOptions />
-      </span>{' '}
+      </span>
       <div>
-        <b>{count}</b> <Trans>search results</Trans>
+        <b>{count}</b> <Trans>results found</Trans>
       </div>
     </div>
   );
