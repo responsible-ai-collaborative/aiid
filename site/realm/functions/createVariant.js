@@ -63,7 +63,7 @@ exports = async (input) => {
     language: 'en',
     tags: ['variant:unreviewed'],
     inputs_outputs: input.variant.inputs_outputs,
-    date_created: now,
+    created_at: now,
   };
 
   await reports.insertOne({ ...newReport, report_number: BSON.Int32(newReport.report_number) });

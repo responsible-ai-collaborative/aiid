@@ -24,6 +24,9 @@
         "date_submitted": {
             "bsonType": "string"
         },
+        "created_at": {
+            "bsonType": "date"        
+        },
         "description": {
             "bsonType": "string"
         },

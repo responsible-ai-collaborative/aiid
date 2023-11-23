@@ -43,6 +43,7 @@ exports = async (input) => {
         nlp_similar_incidents: submission.nlp_similar_incidents || [],
         editor_similar_incidents: submission.editor_similar_incidents || [],
         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
+        created_at: new Date()
       }
       if (submission.embedding) {
         newIncident.embedding = {
@@ -71,6 +72,7 @@ exports = async (input) => {
         ...newIncident,
         reports: [BSON.Int32(report_number)],
         incident_id: BSON.Int32(newIncident.incident_id),
+        created_at: new Date(),
       };
 
       if (submission.user) {
@@ -125,6 +127,7 @@ exports = async (input) => {
           ...incidentValues,
           reports: [...incidentValues.reports, BSON.Int32(report_number)],
           embedding,
+          created_at: new Date(),
         }
 
         if (submission.user) {
@@ -157,7 +160,7 @@ exports = async (input) => {
     source_domain: submission.source_domain,
     language: submission.language,
     tags: submission.tags,
-    date_created: new Date()
+    created_at: new Date()
   };
   if (submission.embedding) {
     newReport.embedding = submission.embedding;
@@ -177,6 +180,7 @@ exports = async (input) => {
   const reportHistory = {
     ...newReport,
     report_number: BSON.Int32(newReport.report_number),
+    created_at: new Date(),
   };
 
   if (submission.user) {
