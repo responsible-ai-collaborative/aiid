@@ -1819,7 +1819,7 @@ describe('The Submit form', () => {
     cy.get('.tw-toast').contains('Error fetching news.').should('not.exist');
   });
 
-  it('Should fetch article from site using cookies', () => {
+  it('Should fetch article from site using cookies as fallback', () => {
     cy.visit(url);
 
     cy.intercept('GET', parserURL).as('parseNews');

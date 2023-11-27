@@ -23,6 +23,8 @@ export default async function handler(req, res) {
   res.status(200).json(response);
 }
 
+// Runs first with { cookies: false },
+// then on error recurs with { cookies: true } as a fallback.
 const getArticle = async (url, config) => {
   try {
     const parserConfig = { contentType: 'markdown' };
