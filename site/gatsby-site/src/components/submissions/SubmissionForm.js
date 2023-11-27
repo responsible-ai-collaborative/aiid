@@ -147,7 +147,7 @@ const SubmissionForm = ({ onChange = null }) => {
   }, [errors]);
 
   const staticQueryData = useStaticQuery(graphql`
-    query SubmissionFormQuery {
+    query SubmittedFormQuery {
       allMongodbAiidprodEntities {
         nodes {
           name
