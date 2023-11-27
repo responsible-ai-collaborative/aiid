@@ -36,6 +36,7 @@ import {
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const SubmissionForm = ({ onChange = null }) => {
   const {
@@ -144,6 +145,20 @@ const SubmissionForm = ({ onChange = null }) => {
       });
     }
   }, [errors]);
+
+  const staticQueryData = useStaticQuery(graphql`
+    query SubmissionFormQuery {
+      allMongodbAiidprodEntities {
+        nodes {
+          name
+        }
+      }
+    }
+  `);
+
+  const entityNames = staticQueryData.allMongodbAiidprodEntities.nodes
+    .map((node) => node.name)
+    .sort();
 
   return (
     <div>
@@ -371,6 +386,7 @@ const SubmissionForm = ({ onChange = null }) => {
               icon={faCode}
               placeholder={t('Who created or built the technology involved in the incident?')}
               className="mt-3"
+              options={entityNames}
               {...TextInputGroupProps}
             />
 
@@ -380,6 +396,7 @@ const SubmissionForm = ({ onChange = null }) => {
               icon={faHandPointRight}
               placeholder={t('Who employed or was responsible for the technology?')}
               className="mt-3"
+              options={entityNames}
               {...TextInputGroupProps}
             />
 
@@ -389,6 +406,7 @@ const SubmissionForm = ({ onChange = null }) => {
               icon={faBolt}
               placeholder={t('Who experienced negative impacts?')}
               className="mt-3"
+              options={entityNames}
               {...TextInputGroupProps}
             />
             <hr />
