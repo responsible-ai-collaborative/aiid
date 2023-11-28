@@ -49,6 +49,12 @@ jobs:
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
+
+      - name: Delete netlify.toml
+        run: rm -f netlify.toml
+  
+      - name: Rename github-netlify.toml to netlify.toml
+        run: mv github-netlify.toml netlify.toml
         
       - name: Build using Netlify
         run: netlify build --context deploy-preview
