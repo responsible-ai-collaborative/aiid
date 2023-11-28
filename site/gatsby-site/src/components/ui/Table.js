@@ -74,6 +74,7 @@ export function SelectDatePickerFilter({
   startDate = null,
   endDate = null,
   setDates = null,
+  ...props
 }) {
   const [min, max] = React.useMemo(() => {
     let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
@@ -148,6 +149,7 @@ export function SelectDatePickerFilter({
           type="text"
           className="form-control col-4 p-2"
           defaultValue={defaultValue}
+          {...props}
         />
       </DateRangePicker>
     </div>
