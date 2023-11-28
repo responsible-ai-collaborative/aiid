@@ -164,7 +164,7 @@ module.exports.processEntities = async (allEntities, entitiesNames, createEntity
   const entityIds = [];
 
   for (const entityName of entitiesNames) {
-    const entityId = getEntityId(entityName);
+    const entityId = getEntityId(entityName.customOption ? entityName.label : entityName);
 
     entityIds.push(entityId);
 
