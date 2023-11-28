@@ -176,7 +176,7 @@ module.exports.processEntities = async (allEntities, entitiesNames, createEntity
           },
           entity: {
             entity_id: entityId,
-            name: entityName,
+            name: entityName.customOption ? entityName.label : entityName,
           },
         },
       });
