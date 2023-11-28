@@ -201,6 +201,9 @@ const config = {
   rollbar: {
     token: process.env.GATSBY_ROLLBAR_TOKEN,
   },
+  discover: {
+    taxa: ['CSETv0', 'CSETv1', 'GMF'],
+  },
 };
 
 module.exports = config;
