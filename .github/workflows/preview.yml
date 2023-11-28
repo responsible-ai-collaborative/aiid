@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: 
       - staging
+  pull_request_target:
+    branches:
+      - staging
+    types: [opened, synchronize, reopened]
 jobs:
   call-build:
     uses: ./.github/workflows/build.yml
