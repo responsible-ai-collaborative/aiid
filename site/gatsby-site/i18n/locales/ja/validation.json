@@ -1,0 +1,17 @@
+{
+  "*URL required": "*URL requerida",
+  "*Title is required": "*Título requerido",
+  "*Author is required. Anonymous or the publication can be entered.": "*Autor requerido. Anónimo o la publicación puede ser introducido",
+  "*Date published is required": "*Fecha de publicación requerida",
+  "*Date downloaded required": "*Fecha de descarga requerida",
+  "*Must enter URL in http://www.example.com/images/preview.png format": "*Debe introducir la URL en el formato http://www.ejemplo.com/imágenes/preview.png",
+  "Incident ID": "ID del Incidente",
+  "Incident ID {{value}} not found!": "Incidente {{value}} no encontrado!",
+  "Type and press Enter to add an item": "Escribe y presiona Enter para agregar un elemento",
+  "*Text must have at least 80 characters": "*Text must have at least 80 characters",
+  "*Text can’t be longer than 50000 characters": "*Text can’t be longer than 50000 characters",
+  "Please review report. Some data is missing.": "Por favor revisa el reporte. Faltan algunos datos.",
+  "Please review submission. Some data is missing.": "Por favor revisa el incidente. Faltan algunos datos.",
+  "Some data is missing.": "Faltan algunos datos.",
+  "Please review. Some data is missing.": "Por favor revisa el formulario. Faltan algunos datos."
+}

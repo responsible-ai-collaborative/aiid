@@ -1,0 +1,3 @@
+{
+    "wordcountAbout": "Esta es una lista de las palabras en los informes de incidentes clasificados por sus recuentos. Las palabras comunes (es decir, &quot;palabras vacías&quot;) se eliminan de la lista y se muestran las raíces de las palabras en lugar de las conjugaciones que se encuentran en el texto. No se incluyen palabras con menos de 10 apariciones y menos de 3 letras. Si desea explorar el contenido de los informes, debe trabajar a través de la <1> aplicación Discover</1>."
+}
