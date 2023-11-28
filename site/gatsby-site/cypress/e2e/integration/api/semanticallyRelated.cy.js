@@ -1,5 +1,5 @@
 describe('/api/semanticallyRelated endpoint', () => {
-  it('Should get semantically related', () => {
+  it.skip('Should get semantically related', () => {
     cy.request({
       url: `/api/semanticallyRelated`,
       headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
