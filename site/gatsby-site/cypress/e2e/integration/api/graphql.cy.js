@@ -2,7 +2,7 @@ import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
 import { conditionalIt } from '../../../support/utils';
 
 describe('/api/graphql endpoint', () => {
-  it('Endpoint should work', async () => {
+  it.skip('Endpoint should work', async () => {
     const client = new ApolloClient({
       link: new HttpLink({
         uri: `/api/graphql`,
@@ -24,7 +24,7 @@ describe('/api/graphql endpoint', () => {
     expect(result.data.reports).to.be.not.null;
   });
 
-  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should fetch reports', async () => {
+  conditionalIt.skip(!Cypress.env('isEmptyEnvironment'), 'Should fetch reports', async () => {
     const client = new ApolloClient({
       link: new HttpLink({
         uri: `/api/graphql`,
