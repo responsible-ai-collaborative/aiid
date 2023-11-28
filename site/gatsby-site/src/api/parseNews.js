@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 }
 
 // Runs first with { cookies: false },
-// then on error recurs with { cookies: true } as a fallback.
+// then on error recurses with { cookies: true } as a fallback.
 const getArticle = async (url, config) => {
   try {
     const parserConfig = { contentType: 'markdown' };
