@@ -1,0 +1,59 @@
+{
+    "field_name": "addChecklistNotifications",
+    "function_name": "addChecklistNotifications",
+    "input_type": {
+        "properties": {
+            "incidents": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "int"
+                }
+            },
+            "namespace": {
+                "bsonType": "string"
+            },
+            "new_attributes": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "short_name": {
+                            "bsonType": "string"
+                        },
+                        "value_json": {
+                            "bsonType": "string"
+                        }
+                    }
+                }
+            },
+            "old_attributes": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "properties": {
+                        "short_name": {
+                            "bsonType": "string"
+                        },
+                        "value_json": {
+                            "bsonType": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "title": "addChecklistNotificationsInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": {
+        "properties": {
+            "msg": {
+                "bsonType": "string"
+            }
+        },
+        "title": "addChecklistNotificationsPayload",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}

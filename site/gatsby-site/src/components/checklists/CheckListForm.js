@@ -20,6 +20,7 @@ import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import SubscribeButton from 'components/checklists/SubscribeButton';
 import { useUserContext } from '../../contexts/userContext';
 
 export default function CheckListForm({
@@ -30,6 +31,7 @@ export default function CheckListForm({
   tags,
   isSubmitting,
   submissionError,
+  checklistId,
   users,
 }) {
   const { user } = useUserContext();
@@ -44,6 +46,7 @@ export default function CheckListForm({
 
   const addToast = useToastContext();
 
+  // TODO: Also delete subscriptions to checklist
   const confirmDeleteChecklist = async (id) => {
     if (window.confirm('Delete this checklist?')) {
       try {
@@ -133,9 +136,7 @@ export default function CheckListForm({
         </HeaderInfo>
         <HeaderControls>
           <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
-          <Button color="light" onClick={() => alert('Coming soon')}>
-            <Trans>Subscribe</Trans>
-          </Button>
+          <SubscribeButton checklistId={checklistId} />
           {userIsOwner && (
             <DeleteButton type="button" onClick={() => confirmDeleteChecklist(values.id)}>
               <Trans>Delete</Trans>
@@ -257,6 +258,7 @@ const QueryTagInput = ({
     <Label for={id}>{title}</Label>
     <Tags
       id={id}
+      inputId={id}
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
       onChange={(value) => {

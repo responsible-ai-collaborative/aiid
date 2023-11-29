@@ -27,9 +27,6 @@
         "description": {
             "bsonType": "string"
         },
-        "modifiedBy": {
-            "bsonType": "string"
-        },
         "editor_notes": {
             "bsonType": "string"
         },
@@ -75,6 +72,9 @@
             "bsonType": "bool"
         },
         "language": {
+            "bsonType": "string"
+        },
+        "modifiedBy": {
             "bsonType": "string"
         },
         "plain_text": {

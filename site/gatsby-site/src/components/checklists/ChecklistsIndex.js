@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useUserContext } from '../../contexts/userContext';
 import ExportDropdown from 'components/checklists/ExportDropdown';
+import SubscribeButton from 'components/checklists/SubscribeButton';
 import {
   DeleteButton,
   removeTypename,
@@ -143,9 +144,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
         >
           <Trans>Clone</Trans>
         </Button>
-        <Button color="light" onClick={() => alert('Coming soon')}>
-          <Trans>Subscribe</Trans>
-        </Button>
+        <SubscribeButton checklistId={checklist.id} />
         {user.id == checklist.owner_id && (
           <DeleteButton
             type="button"

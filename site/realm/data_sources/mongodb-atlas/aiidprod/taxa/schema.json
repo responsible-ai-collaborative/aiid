@@ -54,6 +54,9 @@
                     "field_number": {
                         "bsonType": "string"
                     },
+                    "hide_search": {
+                        "bsonType": "bool"
+                    },
                     "instant_facet": {
                         "bsonType": "bool"
                     },
@@ -146,9 +149,6 @@
                         "bsonType": "string"
                     },
                     "public": {
-                        "bsonType": "bool"
-                    },
-                    "hide_search": {
                         "bsonType": "bool"
                     },
                     "required": {

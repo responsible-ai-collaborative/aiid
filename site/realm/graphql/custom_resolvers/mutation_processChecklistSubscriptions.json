@@ -1,0 +1,31 @@
+{
+    "field_name": "processChecklistSubscriptions",
+    "function_name": "processChecklistSubscriptions",
+    "input_type": {
+        "properties": {
+            "incident_id": {
+                "bsonType": "int"
+            },
+            "namespace": {
+                "bsonType": "string"
+            }
+        },
+        "title": "processChecklistSubscriptionsInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": {
+        "properties": {
+            "msg": {
+                "bsonType": "string"
+            },
+            "obj": {
+                "bsonType": "object"
+            }
+        },
+        "title": "processChecklistSubscriptionsPayload",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}

@@ -54,7 +54,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     skip: !active,
   });
 
-  //TODO: why does this fetch all classifications? 🤔
+  //TODO: We fetch all classifications
+  // so we can auto-complete user-provided values.
+  // There's probably a more efficient way to do this.
   const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { namespace: taxonomy.namespace } },
     skip: !active,
@@ -95,6 +97,15 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     refetchQueries: [FIND_CLASSIFICATION],
     awaitRefetchQueries: true,
   });
+
+  // TODO: Right now we're just echoing
+  const [addChecklistNotifications] = useMutation(gql`
+    mutation addChecklistNotifications($input: AddChecklistNotificationsInput) {
+      addChecklistNotifications(input: $input) {
+        msg
+      }
+    }
+  `);
 
   const allTaxonomyFields =
     taxonomy &&
@@ -209,6 +220,27 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           data,
         },
       });
+
+      if (incidentId) {
+        const oldClassification = allClassificationsData?.classifications?.find(
+          (c) =>
+            c.incidents.map((i) => i.incident_id).includes(incidentId) && c.namespace == namespace
+        );
+
+        const oldAttributes =
+          oldClassification?.attributes.map((a) => ({ ...a, __typename: undefined })) || [];
+
+        await addChecklistNotifications({
+          variables: {
+            input: {
+              incidents: [incidentId],
+              old_attributes: oldAttributes,
+              new_attributes: data.attributes,
+              namespace: data.namespace,
+            },
+          },
+        });
+      }
     } catch (e) {
       addToast({
         message: <>Error updating classification data: {e.message}</>,

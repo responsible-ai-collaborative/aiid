@@ -1,3 +1,4 @@
 {
-    "use_natural_pluralization": true
+    "use_natural_pluralization": true,
+    "disable_schema_introspection": false
 }

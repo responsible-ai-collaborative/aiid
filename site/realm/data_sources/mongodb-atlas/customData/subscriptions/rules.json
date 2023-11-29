@@ -5,13 +5,13 @@
         {
             "name": "Owner of the document",
             "apply_when": {
-                "%or": [
+                "$or": [
                     {
                         "%%root.userId": "%%user.id"
                     },
                     {
                         "%%user.custom_data.roles": {
-                            "%in": [
+                            "$in": [
                                 "admin",
                                 "incident_editor"
                             ]

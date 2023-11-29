@@ -3,6 +3,9 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "checklistId": {
+            "bsonType": "string"
+        },
         "entityId": {
             "bsonType": "string"
         },

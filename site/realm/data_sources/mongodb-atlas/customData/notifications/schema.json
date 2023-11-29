@@ -3,6 +3,9 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "checklist_id": {
+            "bsonType": "string"
+        },
         "incident_id": {
             "bsonType": "int"
         },

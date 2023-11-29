@@ -1,4 +1,10 @@
 {
+    "checklistId": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/checklists",
+        "source_key": "checklistId",
+        "foreign_key": "id",
+        "is_list": false
+    },
     "entityId": {
         "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
         "source_key": "entityId",
