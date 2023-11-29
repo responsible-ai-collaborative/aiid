@@ -1,78 +1,78 @@
 {
     "title": {
-        "title": "Título",
-        "text": "La mayoría de los trabajos tienen un título que debe ingresarse aquí palabra por palabra. En caso de que el trabajo no tenga título, intenta resumir el contenido en unas pocas palabras sin editorializar. Este texto ocupa un lugar destacado en los registros de incidentes."
+        "title": "ヘッドライン",
+        "text": "ほとんどの記事にはここにそのまま入力できるタイトルがあるでしょう。記事にタイトルがなければ、個人的な意見を含めずに本文を数単語でまとめてください。このテキストはインシデントレコードで特に目立つように表示されます"
     },
     "authors": {
-        "title": "Autores",
-        "text": "Ingresa los nombres de los creadores del contenido vinculado. Debes ingresar a todas las personas que contribuyeron al trabajo escrito separados por comas."
+        "title": "リンクされたコンテンツの作者",
+        "text": "リンクされたコンテンツの作者の名前を入力してください。Enterボタンで改行できます"
     },
     "submitters": {
-        "title": "¡Este eres tú!",
-        "text": "Ingresa tu nombre aquí. Si más de una persona contribuyó a recopilar el incidente, puedes ingresar varias personas separadas por comas. Alternativamente, puede ingresar \"Anónimo\" como remitente si no deseas  que se te atribuya en la base de datos. Las entradas en este campo se agregarán a la clasificación pública."
+        "title": "あなたです！",
+        "text": "あなたの名前をここに入力してください。インシデントを収集するのに複数の人が関わっている場合は、Enterキーを押下して改行してください。データベースに記録されたくなければ投稿者として代わりに\"Anonimous\"と入力しても構いません。このフィールドの内容は公開ランキングで使用されます"
     },
     "incident_date": {
-        "title": "¿Cuándo ocurrió el incidente por primera vez?",
-        "text": "Muchos incidentes de IA no son eventos discretos (es decir, ocurren durante un período de tiempo). Además, a menudo es difícil saber cuándo ocurrió el incidente por primera vez cuando el primer informe público sigue un período de tiempo después de la primera ocurrencia. En este campo, debes ingresar la fecha del primer informe del incidente o una suposición fundamentada de cuándo ocurrió probablemente el incidente por primera vez. Por ejemplo, si el incidente pertenece a una característica del motor de búsqueda que se lanzó en enero y el primer el informe de incidente público es en febrero, debes asignar una fecha de incidente en enero."
+        "title": "このインシデントが最初に発生したのはいつですか？",
+        "text": "AIインシデントの多くは独立したイベントではありません（つまり、ある一定の期間にわたって発生し続けます）。さらに、最初に発生してしばらくたってから初めてレポートが公開された場合は最初に発生したのがいつかを確認することが難しいこともよくあります。このフィールドにはインシデントが最初に報告された日か、最初に発生したと思われると推測される日を入力してください。例えば、一月にローンチされた検索エンジンの機能に付随するインシデントの最初のインシデントレポートが2月に公開されたとすると、インシデント発生日は1月になるでしょう"
     },
     "date_published": {
-        "title": "¿Cuándo estuvo disponible el informe?",
-        "text": "Los informes suelen tener una fecha de publicación en la URL, pero incluso cuando no la tiene, puede visitar el <linkto to=\"https://archive.org/web/\"> Wayback Machine</linkto> para encontrar cuándo se indexó por primera vez la URL del informe."
+        "title": "レポートが利用可能になったのはいつですか？",
+        "text": "レポートのURLに公開日がよく含まれていますが、なかったとしても<linkto to=\"https://archive.org/web/\">Wayback Machine</linkto>を見ると、レポートURLのインデックスが最初に登録された日を確認できます"
     },
     "date_downloaded": {
-        "title": "¿Cuándo copiaste el contenido del informe en este formulario?",
-        "text": "Las organizaciones de noticias suelen actualizar los informes a lo largo del tiempo. Esta fecha ayuda a determinar si el contenido podría estar obsoleto. Por lo general, colocarás la fecha de hoy aquí."
+        "title": "レポートの内容をこのフォームにコピーしたのはいつですか？",
+        "text": "時間の経過にしたがってレポートはニュース会社によって更新されることがあります。この日付は内容が古くなっているかどうかを判断するために利用できます。通常は今日の日付をここに入力してください"
     },
     "url": {
-        "title": "Enlace al informe disponible públicamente",
-        "text": "Esta dirección estará vinculada dentro de muchas interfaces de usuario de bases de datos de incidentes."
+        "title": "公開されたレポートへのリンク",
+        "text": "このアドレスは多くのインシデントデータベースのUIのリンクで使用されます"
     },
     "image_url": {
-        "title": "Una imagen utilizada para obtener una vista previa del informe del incidente",
-        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí. Si la URL ingresada no es válida, se usará una imagen alternativa en su lugar."
+        "title": "インシデントレポートのプレビューに使用される画像",
+        "text": "インデックスされレポートの次に表示される画像のURLです。今はほとんどの出版物にはヘッドライン画像があり、右クリックでURLを確認できます。代わりに図の画像をリンクすることもできます。不正なURLが入力されると、フォールバック画像が代わりに使用されます"
     },
     "incident_id": {
-        "title": "¿Es este un incidente existente?",
-        "text": "Muy a menudo, los informes se escriben sobre incidentes que ya están en la base de datos de incidentes. Antes de enviarlos, debes verificar si el incidente ya está en la base de datos visitando la aplicación \"Discover\" y buscando incidentes de similar naturaleza al que estás enviando ahora. Si existe un incidente para tu informe, pero el informe nunca se ha enviado, ingresa aquí el número de identificador de incidente correspondiente. Si el informe de incidente ya existe, no lo vuelvas a enviar."
+        "title": "すでに登録済みのインシデントですか？",
+        "text": "インシデントデータベースに登録済みのインシデントについてのレポートが投稿されることがよくあります。投稿する前に、\"Discover\"アプリを使用して投稿しようとしているインシデントレポートとにているインシデントを検索し、そのインシデントがすでにデータベースに存在するかどうかを確認してください。もしレポートが扱っているインシデントが存在し、そのレポートがまだ投稿されていないなら、対応するインシデント番号をここに入力してください。インシデントレポートがすでに存在する場合は、再投稿はしないでください"
     },
     "text": {
-        "title": "Texto del artículo o transcripción del rich media",
-        "text": "Copia, pega y valida que el contenido textual del informe de incidente coincida con el contenido de la URL vinculada anteriormente. Borra todos los anuncios y otros elementos que no deban indexarse."
+        "title": "記事のテキストか動画などの内容",
+        "text": "インシデントの文章による説明をコピー＆ペーストして上のリンクURLの内容と一致するか確認してください。インデックスされ、ユーザーがデータベースを検索するときに使用されることがないように、広告やその他のメディアはすべて取り除いてください"
     },
     "reportAddress": {
-        "title": "Enlace al informe disponible públicamente",
-        "text": "Esta dirección estará vinculada dentro de muchas interfaces de usuario de bases de datos de incidentes."
+        "title": "公開されたレポートへのリンク",
+        "text": "このアドレスは多くのインシデントデータベースのUIのリンクで使用されます"
     },
     "tags": {
-        "title": "Etiqueta el tipo de reporte de incidente",
-        "text": "El propósito de las etiquetas de informe es admitir la clasificación de informes en la página de citas para el incidente. En caso de duda, puede dejar este campo en blanco y un editor de base de datos seleccionará las etiquetas adecuadas en el momento de el procesamiento."
+        "title": "インシデントレポートのタイプを表すタグ",
+        "text": "レポートタグの目的はインシデントの引用ページでレポートの並び替えをサポートすることです。よくわからなければ、このフィールドを空白のままにしてください。データベース編集者が取り込むときに適切なタグを選択します"
     },
     "language": {
-        "title": "Idioma del informe del incidente",
-        "text": "Este es el idioma escrito del texto que se encuentra en el informe, no el idioma de las personas o países involucrados en el informe. Los informes se traducirán a los idiomas admitidos cuando procesemos el texto."
+        "title": "インシデントレポートに使用されている言語",
+        "text": "レポートのテキストを記述するために使用されている言語です。レポートに関係する人々や国の言語ではありません。レポートはテキストを取り込んだ後でサポートされている言語に翻訳されます"
     },
     "harmed_parties": {
-       "title": "Partes presuntamente perjudicadas o casi perjudicadas",
-       "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+       "title": "影響を受けたもしくは影響を受ける可能性のあった組織",
+       "text": "複数ある場合は、Enterを押下して新しい行を追加します"
      },
     "deployers": {
-        "title": "Presunto implementador del sistema de IA",
-        "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+        "title": "AIシステムを提供している組織",
+       "text": "複数ある場合は、Enterを押下して新しい行を追加します"
     },
     "developers": {
-        "title": "Presunto desarrollador del sistema de IA",
-        "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+        "title": "AIシステムを開発した組織",
+       "text": "複数ある場合は、Enterを押下して新しい行を追加します"
     },
     "description": {
-        "title": "Descripción",
-        "text": "Una descripción breve, fáctica, periodísticamente neutral y completa del incidente que mencione el incidente/problema, la ubicación y el daño."
+        "title": "説明",
+        "text": "インシデントに関するインシデント／問題、場所、障害についての、簡潔で、事実に基づき、ジャーナリストのように中立で、まとまった説明"
     },
     "inputs_outputs": {
-        "title": "Entradas / Salidas",
-        "text": "La secuencia de entradas de datos en el sistema inteligente y salidas producidas por el sistema involucrado en el incidente. Para un chatbot, esto generalmente presentará un ida y vuelta entre las respuestas de un humano y las del chatbot."
+        "title": "入力／出力",
+        "text": "インシデントに関係する知能システムに入力されるデータと、そのシステムによって生成される出力の流れ。チャットボットであれば、一般に人間とチャットボットの反応が交互に発生します"
     },
     "submittersLoggedIn": {
-        "title": "¡Este eres tú!",
-        "text": "Actualmente estás conectado, por lo que este reporte se asociará automáticamente con tu cuenta. Si deseas permanecer anónimo, por favor abre una ventana de navegación privada."
+        "title": "あなたです！",
+        "text": "現在ログイン中なのでこの投稿は自動的にあなたのアカウントに関連づけられます。匿名で投稿するには、ブラウザウィンドウを匿名モードで開いて投稿してください。"
     }
 }

@@ -1,6 +1,6 @@
 {
-  "New Incident Report": "Nuevo Informe de Incidente",
-  "New Incident Response": "Nueva Respuesta de Incidente",
+  "New Incident Report": "新しいインシデントレポート",
+  "New Incident Response": "新しいインシデントレスポンス",
   "submitFormDescription": "El siguiente formulario creará un nuevo informe de incidentes para <2>revisión</2> e inclusión en la base de datos de incidentes de AI. Verifique cuidadosamente sus entradas para detectar problemas de contenido (por ejemplo, copiar y pegar accidentalmente anuncios). Para obtener detalles sobre el proceso de ingestión de la base de datos, consulte las <5>páginas de investigación</5> o <8>contáctenos si tiene preguntas.</8>",
   "submitFormResponseDescription1": "El siguiente formulario creará un nueva respuesta para el incidente <3>#{{incident_id}}</3> para <6>revisión</6> e inclusión en la base de datos de incidentes de AI.",
   "submitFormResponseDescription2": "El siguiente formulario creará un nueva respuesta para <2>revisión</2> e inclusión en la base de datos de incidentes de AI.",
