@@ -60,7 +60,7 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="input-filter-Entity"]').type('microsoft');
 
-    cy.get('[data-cy="cell-responses"]').first().should('have.text', '2 Incident responses');
+    cy.get('[data-cy="cell-responses"]').first().should('have.text', '3 Incident responses');
   });
 
   conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should be able to sort', () => {
