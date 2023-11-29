@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Select(props) {
   const className = `
-    block w-full p-2.5 pr-5 text-sm rounded-lg border
+    block w-full p-2.5 pr-6 text-sm rounded-lg border
 
     dark:placeholder-gray-400
 
