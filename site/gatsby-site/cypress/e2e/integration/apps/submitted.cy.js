@@ -795,6 +795,7 @@ describe('Submitted reports', () => {
           entities: [
             { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
             { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+            { __typename: 'Entity', entity_id: 'Tesla', name: 'tesla' },
           ],
         },
       }
@@ -813,6 +814,13 @@ describe('Submitted reports', () => {
       'value',
       'YouTube to crack down on inappropriate content masked as kids’ cartoons'
     );
+
+    cy.get('input[name="harmed_parties"]').type('Tes');
+
+    cy.get('#harmed_parties-tags .dropdown-item')
+      .contains(/^Tesla$/)
+      .click();
+
     cy.get('input[label="Image Address"]').should(
       'have.attr',
       'value',
