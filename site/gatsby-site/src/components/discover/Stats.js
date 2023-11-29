@@ -8,13 +8,12 @@ export default function Stats({ className, ...props }) {
 
   return (
     <div className={'flex gap-3 items-center ' + className}>
-      <Trans count={count}>
-        <b>{{ count }}</b>{' '}
-        <span data-cy="display-options">
-          <DisplayOptions />
-        </span>{' '}
-        found
-      </Trans>
+      <span data-cy="display-options">
+        <DisplayOptions />
+      </span>
+      <div>
+        <b>{count}</b> <Trans>results found</Trans>
+      </div>
     </div>
   );
 }
