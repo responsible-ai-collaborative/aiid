@@ -152,7 +152,7 @@ function EditCitePage(props) {
       )}
 
       {loading && <DefaultSkeleton />}
-      {incident === null && !loading && <div>Report not found</div>}
+      {incident === null && !loading && <div>Incident not found</div>}
 
       {incident && (
         <Formik
