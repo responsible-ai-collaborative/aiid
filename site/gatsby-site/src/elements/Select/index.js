@@ -23,5 +23,5 @@ export default function Select(props) {
     ${props.className}
   `;
 
-  return <select {...{ className }}>{props.children}</select>;
+  return <select {...{ ...props, className }}>{props.children}</select>;
 }
