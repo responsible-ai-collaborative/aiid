@@ -69,7 +69,9 @@ exports = async function () {
 
         const userIds = subscriptionsToNewIncidents.map((subscription) => subscription.userId);
 
-        const recipients = await getRecipients(userIds);
+        const uniqueUserIds = [...new Set(userIds)];
+
+        const recipients = await getRecipients(uniqueUserIds);
 
         for (const pendingNotification of pendingNotificationsToNewIncidents) {
 
@@ -148,8 +150,10 @@ exports = async function () {
           if (subscriptionsToNewEntityIncidents.length > 0) {
 
             const userIds = subscriptionsToNewEntityIncidents.map((subscription) => subscription.userId);
+            
+            const uniqueUserIds = [...new Set(userIds)];
 
-            const recipients = await getRecipients(userIds);
+            const recipients = await getRecipients(uniqueUserIds);
 
             const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
@@ -226,7 +230,9 @@ exports = async function () {
 
             const userIds = subscriptionsToIncidentUpdates.map((subscription) => subscription.userId);
 
-            const recipients = await getRecipients(userIds);
+            const uniqueUserIds = [...new Set(userIds)];
+
+            const recipients = await getRecipients(uniqueUserIds);
 
             const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
@@ -293,7 +299,9 @@ exports = async function () {
 
         const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
 
-        const recipients = await getRecipients(userIds);
+        const uniqueUserIds = [...new Set(userIds)];
+
+        const recipients = await getRecipients(uniqueUserIds);
 
         for (const pendingNotification of pendingNotificationsToNewPromotions) {
 
