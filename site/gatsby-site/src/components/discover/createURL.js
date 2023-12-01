@@ -43,6 +43,8 @@ const convertRangeToQueryString = (range) => {
 const getQueryFromState = (searchState, locale) => {
   let query = {};
 
+  if (!searchState) return;
+
   if (searchState.query !== '') {
     query.s = searchState.query;
   }
