@@ -546,4 +546,48 @@ describe('The Discover app', () => {
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
     }
   );
+
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Loads filters based on URL', () => {
+    cy.visit(
+      url +
+        '?is_incident_report=true&submitters=Anonymous&page=3&classifications=CSETv0%3AIntent%3AAccident'
+    );
+
+    cy.waitForStableDOM();
+
+    cy.get('form#searchForm').as('form');
+
+    cy.contains('button', 'Submitters', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.get('[data-cy="classifications-item"]:contains("CSETv0:Intent:Accident")', {
+      timeout: 8000,
+    }).should('have.class', 'active');
+
+    cy.contains('button', 'Anonymous').should('have.class', 'active');
+
+    cy.contains('li.ais-Pagination-item--selected .ais-Pagination-link', '3');
+
+    cy.visit(
+      url +
+        '?authors=Christopher%20Knaus&incident_id=57&is_incident_report=true&language=en&source_domain=theguardian.com'
+    );
+
+    cy.contains('button', 'Authors', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.contains('button', 'Source', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.contains('button', 'Incident ID', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.contains('button', 'Language', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+  });
 });
