@@ -83,7 +83,7 @@ const SubmissionWizard = ({
           try {
             responseErrorText = await response.text();
           } catch (e) {
-            responseErrorText = 'Could not read parser error:\n\n' + e.message;
+            responseErrorText = 'Could not read parser error:' + '\n\n' + e.message;
           }
 
           if (responseErrorText) {
