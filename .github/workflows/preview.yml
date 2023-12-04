@@ -1,15 +1,35 @@
 name: Deploy Preview Branch
 
 on:
-  pull_request:
-    branches: 
-      - staging
   pull_request_target:
     branches:
       - staging
     types: [opened, synchronize, reopened]
 jobs:
+
+  permissions-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get User Permission
+        id: checkAccess
+        uses: actions-cool/check-user-permission@v2
+        with:
+          require: write
+          username: ${{ github.triggering_actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check User Permission
+        if: steps.checkAccess.outputs.require-result == 'false'
+        run: |
+          echo "${{ github.triggering_actor }} does not have permissions on this repo."
+          echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
+          echo "Job originally triggered by ${{ github.actor }}"
+          exit 1
+
   call-build:
+    needs: permissions-check
+    ## https://github.com/orgs/community/discussions/45058
+    if: !failure()
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
@@ -26,7 +46,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     needs: call-build
     secrets: inherit
-    permissions: 
+    permissions:
       pull-requests: write
     with:
       environment: staging
