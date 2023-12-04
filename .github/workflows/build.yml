@@ -18,11 +18,10 @@ jobs:
         working-directory: site/gatsby-site
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          # This is dangerous without the access check
-          ref: ${{  github.event.pull_request.head.sha }} 
+          ref: ${{ github.event.pull_request.head.sha }} # This is dangerous without the first access check
 
       - name: Cache node modules
         id: cache-nodemodules
