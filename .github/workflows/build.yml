@@ -20,15 +20,16 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # This is dangerous without the access check
+          ref: ${{  github.event.pull_request.head.sha }} 
 
-      # Cache 'node_modules' and '~/.cache/Cypress' folder
       - name: Cache node modules
         id: cache-nodemodules
         uses: actions/cache@v3.0.5
         env:
           cache-name: cache-install-folder
         with:
-          # caching node_modules
           path: |
             site/gatsby-site/node_modules
             ~/.cache/Cypress
