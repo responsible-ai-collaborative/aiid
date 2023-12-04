@@ -29,7 +29,7 @@ jobs:
   call-build:
     needs: permissions-check
     ## https://github.com/orgs/community/discussions/45058
-    if: !failure()
+    if: '!failure()'
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
