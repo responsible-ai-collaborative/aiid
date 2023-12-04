@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from 'flowbite-react';
 import isEqual from 'lodash/isEqual';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Configure, useInstantSearch } from 'react-instantsearch';
 
 const findIndex = (displayOptions, currentState) => {
@@ -55,6 +55,8 @@ const DisplayOptions = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
+  const { t } = useTranslation();
+
   const selectItem = useCallback((index) => {
     const { state } = displayOptions[index];
 
@@ -92,14 +94,20 @@ const DisplayOptions = () => {
 
       <Configure {...configure} />
 
-      <Dropdown label={displayOptions[selectedIndex]?.text} color={'light'} className="min-w-max">
+      <Dropdown
+        label={t(displayOptions[selectedIndex]?.text)}
+        color={'light'}
+        className="min-w-max"
+      >
         {displayOptions.map(({ text }, index) => (
           <Dropdown.Item
             key={text}
             onClick={() => selectItem(index)}
             className={`${text === displayOptions[selectedIndex]?.text ? 'bg-blue-100' : ''}`}
           >
-            <span>{text}</span>
+            <span>
+              <Trans>{text}</Trans>
+            </span>
           </Dropdown.Item>
         ))}
       </Dropdown>
