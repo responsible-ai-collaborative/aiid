@@ -67,6 +67,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
+            site/gatsby-site/src/api
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
