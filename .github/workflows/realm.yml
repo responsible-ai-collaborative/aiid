@@ -1,0 +1,25 @@
+name: Realm Deploy
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: Environment to deploy to
+        required: true
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Install the Realm CLI"
+        run: |
+          npm install -g mongodb-realm-cli
+      - name: Login
+        run: |
+          realm-cli login --api-key="${{ secrets.REALM_API_PUBLIC_KEY }}" --private-api-key="${{ secrets.REALM_API_PRIVATE_KEY }}" --realm-url https://realm.mongodb.com --atlas-url https://cloud.mongodb.com
+      - name: Push
+        run: |
+          cd site/realm
+          realm-cli push --remote="${{ secrets.GATSBY_REALM_APP_ID }}" -y

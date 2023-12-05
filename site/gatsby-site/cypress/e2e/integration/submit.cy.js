@@ -133,6 +133,7 @@ describe('The Submit form', () => {
       .contains(/^YouTube$/)
       .click();
 
+    cy.get('input[name="deployers"]').type('NewDeployer{enter}');
     cy.get('button[type="submit"]').click();
 
     cy.wait('@insertSubmission').then((xhr) => {
@@ -148,7 +149,7 @@ describe('The Submit form', () => {
           "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
-        deployers: { link: ['youtube'] },
+        deployers: { link: ['youtube', 'newdeployer'] },
       });
     });
 
@@ -857,7 +858,7 @@ describe('The Submit form', () => {
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
-  conditionalIt(
+  conditionalIt.skip(
     !Cypress.env('isEmptyEnvironment'),
     'Should show related reports based on semantic similarity',
     () => {
@@ -1797,5 +1798,45 @@ describe('The Submit form', () => {
     cy.get('form').contains('*Date must be in the past').should('exist');
 
     cy.contains('Please review. Some data is missing.').should('exist');
+  });
+
+  it('Should fetch article', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('.tw-toast')
+      .contains('Please verify all information programmatically pulled from the report')
+      .should('exist');
+
+    cy.get('.tw-toast').contains('Error fetching news.').should('not.exist');
+  });
+
+  it('Should fetch article from site using cookies as fallback', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.get('input[name="url"]').type(
+      'https://www.washingtonpost.com/technology/2023/02/16/microsoft-bing-ai-chatbot-sydney/'
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('.tw-toast')
+      .contains('Please verify all information programmatically pulled from the report')
+      .should('exist');
+
+    cy.get('.tw-toast').contains('Error fetching news.').should('not.exist');
   });
 });

@@ -84,4 +84,45 @@ describe('Login', () => {
     cy.contains('Forgot password?').click();
     cy.location('pathname').should('eq', '/forgotpassword/');
   });
+
+  it('Should give the option to resend Email verification if the user is not confirmed', () => {
+    cy.conditionalIntercept(
+      '**/login',
+      (req) => req.body.username == Cypress.env('e2eUsername'),
+      'Login',
+      {
+        statusCode: 401,
+        body: {
+          error: 'confirmation required',
+          error_code: 'AuthError',
+          link: 'https://realm.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95',
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/auth/providers/local-userpass/confirm/call',
+      (req) => req.body.email == Cypress.env('e2eUsername'),
+      'Confirmation',
+      {
+        statusCode: 204,
+      }
+    );
+
+    cy.visit(url);
+    cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
+    cy.get('input[name=password]').type(Cypress.env('e2ePassword'));
+    cy.get('[data-cy="login-btn"]').click();
+
+    cy.wait('@Login');
+
+    cy.get('[data-cy="toast"]').contains('Resend Verification email').should('exist');
+    cy.get('[data-cy="toast"]').contains('Resend Verification email').click();
+
+    cy.wait('@Confirmation');
+
+    cy.get('[data-cy="toast"]')
+      .contains(`Verification email sent to ${Cypress.env('e2eUsername')}`)
+      .should('exist');
+  });
 });

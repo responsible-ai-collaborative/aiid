@@ -317,10 +317,8 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
-### Prismic setup
+## Prismic setup
 This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
-
-#### Prismic Setup
 
 1. Sign up for a new [Prismic](https://prismic.io/) account or log in to your account if you already have one
 2. In `Create a new repository` section choose `Something else`
@@ -329,12 +327,12 @@ This project uses Prismic to fetch page content. You can still run the project w
 5. Click `Create repository`
 6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
 
-#### Adding the Prismic content types
+### Adding the Prismic content types
 
-## Prismic Custom Types
-You can find the list of all custom types in the folder custom_types
+#### Prismic Custom Types
+You can find the list of all custom types in the folder `custom_types`
 
-## How to create a new Custom Type
+#### How to create a new Custom Type
 1. From the prismic left menu click `Custom Types`
 2. Click `Create new custom type`
 3. Give it a name (name of the json in custom_types folder)
@@ -356,13 +354,13 @@ You can find the list of all custom types in the folder custom_types
 In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
 In order to do this, you need to create a Netlify Build Hook.
 
-**Prismic environment variables**
+#### Prismic environment variables
 
 Add the following environment variable on Netlify: 
 `GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
 `PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
 
-**Create Prismic/Netlify Hook**
+#### Create Prismic/Netlify Hook
 1. Login to your Netlify
 2. Go to `Deploys`
 3. Go to `Deploy settings`
@@ -376,6 +374,24 @@ Add the following environment variable on Netlify:
 11. Create a new webhook and paste the URL in the URL field
 12. In `Triggers` select `A document is published` and `A document is unpublished`
 13. Click `Add this webhook`
+
+## User Roles
+
+All site users have one or more roles assigned to them. The role determines what actions the user can take on the site.
+
+As soon as a user is signed in, the system assigns a `subscriber` role by default. Role assignment is handled manually by the site administrators.
+
+**The roles are:**
+
+| User Role                     | Permissions                                                                                                                             |
+|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `subscriber`                  | This is the default role assigned to all users. It allows the user to subscribe to new incidents, specific incidents, entities, and anything else that is subscribeable. |
+| `submitter`                   | This role allows the user to submit new incidents under their user account.                                                            |
+| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports. |
+| `taxonomy_editor`             | This role allows the user to edit all taxonomies.                                                                                      |
+| `taxonomy_editor_{taxonomy_name}` | This role allows the user to edit a specific taxonomy. ie: `taxonomy_editor_csetv1` role allows the user to edit the `CSETv1` taxonomy. |
+| `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
+
 
 ## Front-end development
 
@@ -804,3 +820,4 @@ NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
  
+

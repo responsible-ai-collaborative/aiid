@@ -5,7 +5,7 @@ import {
   FIND_INCIDENT_HISTORY,
   UPDATE_INCIDENT,
 } from '../../graphql/incidents';
-import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
+import { FIND_USERS } from '../../graphql/users';
 import { FIND_ENTITIES } from '../../graphql/entities';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
@@ -46,7 +46,7 @@ function IncidentHistoryPage(props) {
 
   const [incidentClassifications, setIncidentClassifications] = useState([]);
 
-  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
+  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
     fetchPolicy: 'network-only',

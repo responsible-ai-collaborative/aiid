@@ -22,7 +22,7 @@ function Attribute({ name, refinement, searchResults }) {
   }
 
   return (
-    <div>
+    <div data-cy={name}>
       <div
         className="text-sm cursor-pointer"
         role="button"
@@ -85,7 +85,7 @@ function Namespace({ taxonomy, refinement, searchResults }) {
   }, [searchResults]);
 
   return (
-    <div key={namespace} className="border p-2 rounded-md">
+    <div key={namespace} className="border p-2 rounded-md" data-cy={namespace}>
       <div
         className="font-bold cursor-pointer"
         role="button"
@@ -96,7 +96,7 @@ function Namespace({ taxonomy, refinement, searchResults }) {
         <div className="inline-block">{collapsed ? <>+</> : <>-</>} </div>
       </div>
       {!collapsed && (
-        <div className="space-y-2 mt-2 max-h-[240px]	overflow-y-scroll">
+        <div className="space-y-2 mt-2 max-h-[240px]	overflow-y-scroll" data-cy="attributes">
           {Object.keys(refinements)
             .filter(
               (name) =>
@@ -135,6 +135,7 @@ function SelectedRefinement({ attribute }) {
         role="button"
         tabIndex={0}
         onClick={() => refine(item.value)}
+        data-cy={item.value}
       >
         <div>
           <b>{namespace}</b> : {name} : {item.label}
@@ -179,7 +180,7 @@ function Search({ setSearchResults }) {
   }, [searchItems, isFromSearch]);
 
   return (
-    <div className="mt-2">
+    <div className="mt-2" data-cy="search">
       <TextInputGroup
         name="query"
         label={'Search'}
@@ -196,7 +197,7 @@ function Search({ setSearchResults }) {
   );
 }
 
-export default function Hierarchical({ taxa }) {
+export default function Classifications({ taxa }) {
   const { indexUiState } = useInstantSearch();
 
   const { items: namespaces } = useRefinementList({ attribute: 'namespaces' });
@@ -208,8 +209,8 @@ export default function Hierarchical({ taxa }) {
   const [searchResults, setSearchResults] = useState(null);
 
   return (
-    <div>
-      <div className="space-y-1">
+    <div data-cy="classifications">
+      <div className="space-y-1" data-cy="selected-refinements">
         {selectedAttributes.map((attribute) => {
           return <SelectedRefinement key={attribute} attribute={attribute} />;
         })}

@@ -1,0 +1,53 @@
+name: Deploy to Netlify
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+jobs:   
+
+  netlify-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions: 
+      pull-requests: write
+    steps:
+
+      # Extract commit hash to use as a cache key
+      - name: Extract commit hash
+        shell: bash
+        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
+        id: extract_commit_hash
+
+      # Cache 'public' folder
+      - name: Cache public folder
+        uses: actions/cache@v3.0.5
+        env:
+          cache-name: cache-public
+        with:
+          path: |
+            site/gatsby-site/public
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Upload to netlify
+        uses: netlify/actions/cli@master
+        id: deploy-netlify
+        with:
+            args: deploy --dir=site/gatsby-site/public
+        env:
+            NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+            NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Netlify Preview URL 
+        uses: unsplash/comment-on-pr@v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OUTPUT: "This pull request is being automatically deployed to Netlify.\n\n🔍 Inspect: ${{ steps.deploy-netlify.outputs.NETLIFY_LOGS_URL }}\n✅ Preview: ${{ steps.deploy-netlify.outputs.NETLIFY_URL }}"
+        with:
+          msg: ${{ env.OUTPUT }}
+          check_for_duplicate_msg: false
