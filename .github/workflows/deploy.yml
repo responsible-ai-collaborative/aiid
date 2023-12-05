@@ -27,7 +27,7 @@ jobs:
         uses: netlify/actions/cli@master
         id: deploy-netlify
         with:
-            args: deploy --dir=site/gatsby-site/public --alias=pr-${{ github.event.pull_request.number }}
+            args: deploy --dir=site/gatsby-site/public --functions=site/gatsby-site/src/api --alias=pr-${{ github.event.pull_request.number }}
         env:
             NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
             NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
