@@ -34,10 +34,6 @@ jobs:
             site/gatsby-site/node_modules
             ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
@@ -84,7 +80,6 @@ jobs:
           NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
 
-      # Cache 'public' folder
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
@@ -93,7 +88,3 @@ jobs:
           path: |
             site/gatsby-site/public
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
