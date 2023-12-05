@@ -87,5 +87,5 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-            site/gatsby-site/src/api
+            site/gatsby-site/.netlify
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
