@@ -42,16 +42,16 @@ jobs:
           working-directory: site/gatsby-site
           # just perform install
           runTests: false
-          install-command: npm ci --legacy-peer-deps
-
-      - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+          install-command: npm ci
 
       - name: Delete netlify.toml
         run: rm -f netlify.toml
   
       - name: Rename github-netlify.toml to netlify.toml
         run: mv github-netlify.toml netlify.toml
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
         
       - name: Build using Netlify
         run: netlify build --context deploy-preview
