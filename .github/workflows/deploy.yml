@@ -5,15 +5,13 @@ on:
       environment:
         type: string
         required: true
-jobs:   
-
+jobs:
   netlify-deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    permissions: 
+    permissions:
       pull-requests: write
     steps:
-
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
@@ -24,20 +22,30 @@ jobs:
             site/gatsby-site/.netlify
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
 
-      - name: Upload to netlify
-        uses: netlify/actions/cli@master
-        id: deploy-netlify
-        with:
-            args: deploy --dir=site/gatsby-site/public --functions=site/gatsby-site/src/api --alias=pr-${{ github.event.pull_request.number }}
-        env:
-            NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-            NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
 
-      - name: Netlify Preview URL 
-        uses: unsplash/comment-on-pr@v1.3.0
+      - name: Upload to netlify
+        id: deploy-netlify
+        working-directory: site/gatsby-site
+        run: |
+          DEPLOY_OUTPUT=$(netlify deploy --json --alias=pr-${{ github.event.pull_request.number }})
+          echo "::set-output name=deploy_log::$DEPLOY_OUTPUT"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OUTPUT: "This pull request is being automatically deployed to Netlify.\n\n🔍 Inspect: ${{ steps.deploy-netlify.outputs.NETLIFY_LOGS_URL }}\n✅ Preview: ${{ steps.deploy-netlify.outputs.NETLIFY_URL }}"
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Comment on PR
+        uses: actions/github-script@v5
         with:
-          msg: ${{ env.OUTPUT }}
-          check_for_duplicate_msg: false
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            const deployData = JSON.parse(deployOutput);
+            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.log}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
