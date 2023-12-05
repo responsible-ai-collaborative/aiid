@@ -14,7 +14,6 @@ jobs:
       pull-requests: write
     steps:
 
-      # Cache 'public' folder
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
@@ -23,16 +22,12 @@ jobs:
           path: |
             site/gatsby-site/public
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - name: Upload to netlify
         uses: netlify/actions/cli@master
         id: deploy-netlify
         with:
-            args: deploy --dir=site/gatsby-site/public
+            args: deploy --dir=site/gatsby-site/public --alias=pr-${{ github.event.pull_request.number }}
         env:
             NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
             NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
