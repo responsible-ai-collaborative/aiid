@@ -27,7 +27,7 @@ jobs:
           exit 1
 
   call-build:
-    if: contains(github.event.pull_request.labels.*.name, 'safe to test')
+    if: ${{ !failure() }}
     needs: permissions-check
     uses: ./.github/workflows/build.yml
     secrets: inherit
@@ -45,7 +45,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     needs: call-build
     secrets: inherit
-    permissions: 
+    permissions:
       pull-requests: write
     with:
       environment: staging

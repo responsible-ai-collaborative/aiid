@@ -6,6 +6,7 @@ on:
         type: string
         description: Environment to deploy
         required: true
+      
 
 jobs:   
   install-and-build:
@@ -18,11 +19,10 @@ jobs:
         working-directory: site/gatsby-site
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          # This is dangerous without the access check
-          ref: ${{  github.event.pull_request.head.sha }} 
+          ref: ${{ github.event.pull_request.head.sha }} # This is dangerous without the first access check
 
       - name: Cache node modules
         id: cache-nodemodules
@@ -34,10 +34,6 @@ jobs:
             site/gatsby-site/node_modules
             ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
@@ -84,13 +80,6 @@ jobs:
           NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
 
-      # Extract commit hash to use as a cache key
-      - name: Extract commit hash
-        shell: bash
-        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
-        id: extract_commit_hash
-
-      # Cache 'public' folder
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
@@ -98,8 +87,4 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}

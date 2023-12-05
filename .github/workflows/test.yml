@@ -59,12 +59,6 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
-      # Extract commit hash to use as a cache key
-      - name: Extract commit hash
-        shell: bash
-        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
-        id: extract_commit_hash
-
       # Cache 'public' folder
       - name: Cache public folder
         uses: actions/cache@v3.0.5
@@ -73,7 +67,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
