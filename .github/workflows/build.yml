@@ -6,6 +6,7 @@ on:
         type: string
         description: Environment to deploy
         required: true
+      
 
 jobs:   
   install-and-build:
@@ -83,12 +84,6 @@ jobs:
           NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
 
-      # Extract commit hash to use as a cache key
-      - name: Extract commit hash
-        shell: bash
-        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
-        id: extract_commit_hash
-
       # Cache 'public' folder
       - name: Cache public folder
         uses: actions/cache@v3.0.5
@@ -97,7 +92,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
