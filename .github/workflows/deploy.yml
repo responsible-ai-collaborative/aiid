@@ -29,7 +29,7 @@ jobs:
         id: deploy-netlify
         working-directory: site/gatsby-site
         run: |
-          DEPLOY_OUTPUT=$( netlify deploy --site NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID }} --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --json --alias=pr-${{ github.event.pull_request.number }})
+          DEPLOY_OUTPUT=$( netlify deploy --site=${{ secrets.NETLIFY_SITE_ID }} --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --json --alias=pr-${{ github.event.pull_request.number }})
           echo "::set-output name=deploy_log::$DEPLOY_OUTPUT"
 
       - name: Comment on PR
