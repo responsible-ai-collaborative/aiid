@@ -92,7 +92,5 @@ jobs:
           cache-name: cache-public
         with:
           path: |
-            site/gatsby-site/public
-            site/gatsby-site/.netlify
-            site/gatsby-site/.cache
+            site/gatsby-site
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
