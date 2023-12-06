@@ -88,7 +88,7 @@
     "remark-gfm": "^3.0.1",
     "rich-text-diff": "^0.2.3",
     "sass": "^1.54.5",
-    "sharp": "^0.32.4",
+    "sharp": "^0.32.6",
     "slugify": "^1.6.5",
     "stemmer": "^1.0.5",
     "stopword": "^1.0.7",
