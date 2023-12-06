@@ -18,9 +18,7 @@ jobs:
           cache-name: cache-public
         with:
           path: |
-            site/gatsby-site/public
-            site/gatsby-site/.netlify
-            site/gatsby-site/.cache
+            site/gatsby-site
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
 
       - name: Install Netlify CLI
@@ -36,7 +34,7 @@ jobs:
         id: deploy-netlify
         working-directory: site/gatsby-site
         run: |
-          DEPLOY_OUTPUT=$( netlify deploy --site=${{ secrets.NETLIFY_SITE_ID }} --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --json --alias=pr-${{ github.event.pull_request.number }})
+          DEPLOY_OUTPUT=$(netlify deploy --json --alias=pr-${{ github.event.pull_request.number }})
           echo "::set-output name=deploy_log::$DEPLOY_OUTPUT"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
