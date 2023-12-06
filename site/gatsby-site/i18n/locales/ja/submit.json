@@ -20,7 +20,7 @@
   "Report Language": "レポートの言語",
   "Leave empty to report a new incident": "新しいインシデントのレポートを空欄のままにする",
   "Incident Date": "インシデント発生日",
-  "Editor Notes": "編集者メモ",
+  "Editor Notes": "エディタメモ",
   "Optional context and notes about the incident": "インシデントに関する追加の情報やメモ",
   "Report URL": "レポートURL",
   "Incident ID": "インシデントID",
