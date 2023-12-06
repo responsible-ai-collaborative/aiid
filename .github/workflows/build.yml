@@ -52,12 +52,6 @@ jobs:
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         
       - name: Build using Netlify
         run: netlify build --context deploy-preview
@@ -94,4 +88,5 @@ jobs:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.netlify
+            site/gatsby-site/.cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
