@@ -128,7 +128,7 @@ describe('createCitationPages', () => {
 
       cy.wrap(createPage.getCall(3).args[0]).then((page) => {
         expect(page.path).contain('/ja/cite/1');
-        expect(page.context.locale).eq('jr');
+        expect(page.context.locale).eq('ja');
         expect(page.context.translate_es).eq(true);
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);

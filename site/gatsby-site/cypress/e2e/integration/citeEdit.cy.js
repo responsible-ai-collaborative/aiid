@@ -736,6 +736,20 @@ describe('Edit report', () => {
         );
       });
 
+    cy.wait('@updateOneReportTranslation')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.input.title).to.eq('Este es el Titulo en frances');
+        expect(variables.input.text).to.eq(
+          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!'
+        );
+        expect(variables.input.language).to.eq('ja');
+        expect(variables.input.report_number).to.eq(23);
+        expect(variables.input.plain_text).to.eq(
+          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!\n'
+        );
+      });
+
     cy.wait('@LinkReportsToIncidents').then((xhr) => {
       expect(xhr.request.body.variables.input).to.deep.eq({
         incident_ids: [2],
