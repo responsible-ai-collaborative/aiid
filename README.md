@@ -1,6 +1,7 @@
 # Artificial Intelligence Incident Database (AIID)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+[![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://raicollab.slack.com)
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
