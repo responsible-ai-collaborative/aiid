@@ -37,6 +37,11 @@
                 "title": "",
                 "text": ""
             },
+            "translations_ja": {
+                "__typename": "ReportTranslation",
+                "title": "",
+                "text": ""
+            },
             "date_modified": "2023-01-01",
             "epoch_date_modified": 1672531200,
             "is_incident_report": false

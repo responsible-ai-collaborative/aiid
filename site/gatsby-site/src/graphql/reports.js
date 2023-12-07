@@ -69,6 +69,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
         title
         text
       }
+      translations_ja: translations(input: "ja") {
+        title
+        text
+      }
     }
   }
 `;

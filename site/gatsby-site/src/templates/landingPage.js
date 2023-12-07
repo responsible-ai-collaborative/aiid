@@ -235,6 +235,17 @@ export const query = graphql`
         }
       }
     }
+    latestReports_ja: allMongodbTranslationsReportsJa(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
+      }
+    }
     latestReports_en: allMongodbTranslationsReportsEn(
       filter: { report_number: { in: $latestReportNumbers } }
     ) {

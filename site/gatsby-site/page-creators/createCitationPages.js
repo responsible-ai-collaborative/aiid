@@ -101,6 +101,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
           translate_es,
           translate_fr,
           translate_en,
+          translate_ja,
         },
       });
     }
