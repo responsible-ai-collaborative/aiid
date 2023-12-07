@@ -18,18 +18,13 @@ jobs:
           cache-name: cache-public
         with:
           path: |
-            site/gatsby-site
+            site/gatsby-site/public
+            site/gatsby-site/.netlify
             .git
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Upload to netlify
         id: deploy-netlify
