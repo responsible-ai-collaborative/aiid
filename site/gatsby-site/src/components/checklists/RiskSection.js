@@ -60,7 +60,13 @@ export default function RiskSection({
             {...{ updateRisk }}
           />
           {!risk.generated && userIsOwner && (
-            <button onClick={() => removeRisk((r) => risksEqual(risk, r))} disabled={!userIsOwner}>
+            <button
+              onClick={() =>
+                window.confirm(t('Delete risk "{{riskTitle}}" ?', { riskTitle: risk.title })) &&
+                removeRisk((r) => risksEqual(risk, r))
+              }
+              disabled={!userIsOwner}
+            >
               <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mr-1" />
             </button>
           )}

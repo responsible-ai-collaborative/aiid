@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { connectHits, connectStateResults } from 'react-instantsearch-dom';
+import React, { useMemo } from 'react';
+import { useHits, useInstantSearch, useRefinementList } from 'react-instantsearch';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
 import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
+import { VIEW_TYPES } from 'utils/discover';
 
-const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => {
+export default function Hits({ ...props }) {
+  const { status, results, indexUiState } = useInstantSearch();
+
+  const { hits } = useHits(props);
+
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
-  const [isMounted, setIsMounted] = useState(false);
+  const { refine } = useRefinementList({ attribute: 'incident_id' });
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isLoading = status === 'loading' || status === 'stalled';
 
-  if (!isSearchStalled && hits.length === 0) {
+  const viewType = useMemo(() => {
+    return indexUiState.configure.distinct === true &&
+      indexUiState.refinementList.is_incident_report.length > 0 &&
+      indexUiState.refinementList.is_incident_report[0] === 'true'
+      ? VIEW_TYPES.INCIDENTS
+      : VIEW_TYPES.REPORTS;
+  }, [indexUiState]);
+
+  if (!results.__isArtificial && results.nbHits === 0) {
     return (
       <div className="tw-no-results">
         <p>Your search returned no results.</p>
@@ -23,10 +34,6 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
       </div>
     );
   }
-
-  if (!isMounted) return <></>;
-
-  const isLoading = isSearchStalled && isMounted;
 
   return (
     <div
@@ -56,14 +63,14 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
             key={hit.objectID}
             item={hit}
             {...{
-              toggleFilterByIncidentId,
               viewType,
+              toggleFilterByIncidentId: () => {
+                refine(hit.incident_id);
+              },
             }}
           />
         ))
       )}
     </div>
   );
-};
-
-export default connectHits(connectStateResults(Hits));
+}

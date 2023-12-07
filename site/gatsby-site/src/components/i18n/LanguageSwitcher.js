@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from './useLocalizePath';
 import { Badge, Dropdown } from 'flowbite-react';
@@ -17,6 +17,16 @@ export default function LanguageSwitcher({ className = '' }) {
 
     window.location.href = newPath + search;
   };
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return false;
+  }
 
   return (
     <div
