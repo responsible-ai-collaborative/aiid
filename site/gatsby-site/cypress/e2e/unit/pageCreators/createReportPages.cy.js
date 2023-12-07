@@ -42,6 +42,14 @@ const languages = [
     langDir: 'ltr',
     dateFormat: 'DD-MM-YYYY',
   },
+  {
+    code: 'ja',
+    hrefLang: 'ja',
+    name: 'Japanese',
+    localName: '日本語',
+    langDir: 'ltr',
+    dateFormat: 'YYYY/MM/DD'
+  },
 ];
 
 describe('createReportPages', () => {
