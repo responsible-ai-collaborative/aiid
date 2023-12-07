@@ -19,6 +19,7 @@ jobs:
         with:
           path: |
             site/gatsby-site
+            .git
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
 
       - name: Install Netlify CLI
