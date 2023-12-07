@@ -50,6 +50,10 @@ describe('Pages', () => {
       code: 'fr',
       hrefLang: 'fr',
     },
+    {
+      code: 'ja',
+      hrefLang: 'ja',
+    },
   ];
 
   paths.forEach((path) => {
