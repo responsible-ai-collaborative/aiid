@@ -26,6 +26,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
       allMongodbTranslationsReportsFr,
+      allMongodbTranslationsReportsJa,
       incident,
       entities: entitiesData,
       responses,
@@ -48,6 +49,7 @@ function CitePage(props) {
       en: allMongodbTranslationsReportsEn,
       es: allMongodbTranslationsReportsEs,
       fr: allMongodbTranslationsReportsFr,
+      ja: allMongodbTranslationsReportsJa,
     },
     locale,
   });
