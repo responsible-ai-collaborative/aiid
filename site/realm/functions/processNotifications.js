@@ -271,69 +271,54 @@ exports = async function () {
     context.functions.execute('logRollbar', { error });
   }
 
-
   // Notifications to New Promotions
   try {
 
     // Finds all pending notifications to New Promotions
-    const pendingNotificationsToNewPromotions = await notificationsCollection.find({ processed: false, type: 'submission-promoted' }).toArray();
-
-    // Gets all incident ids from pending notifications to New Promotions
-    const pendingNotificationsIncidentIds = pendingNotificationsToNewPromotions.map((notification) => notification.incident_id);
+    const pendingNotificationsToNewPromotions = await notificationsCollection.find({ processed: false, type: 'submission-promoted' }).toArray();;
 
     if (pendingNotificationsToNewPromotions.length > 0) {
 
       result += pendingNotificationsToNewPromotions.length;
 
-      // Finds all subscriptions to New Promotions for those new incidents
-      const subscriptionsToNewPromotions = await subscriptionsCollection.find({ type: 'submission-promoted', incident_id: { $in: pendingNotificationsIncidentIds } }).toArray();
+      const userIds = pendingNotificationsToNewPromotions.map((subscription) => subscription.userId);
 
-      // Process subscriptions to New Incidents
-      if (subscriptionsToNewPromotions.length > 0) {
+      const recipients = await getRecipients(userIds);
 
-        const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
+      for (const pendingNotification of pendingNotificationsToNewPromotions) {
 
-        const recipients = await getRecipients(userIds);
+        // Mark the notification as processed before sending the email
+        await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
 
-        for (const pendingNotification of pendingNotificationsToNewPromotions) {
+        try {
+          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
-          // Mark the notification as processed before sending the email
-          await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
+          //Send email notification
+          const sendEmailParams = {
+            recipients,
+            subject: 'Your submission has been approved!',
+            dynamicData: {
+              incidentId: `${incident.incident_id}`,
+              incidentTitle: incident.title,
+              incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+              incidentDescription: incident.description,
+              incidentDate: incident.date,
+            },
+            templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
+          };
 
-          try {
-            const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+          await context.functions.execute('sendEmail', sendEmailParams);
 
-            //Send email notification
-            const sendEmailParams = {
-              recipients,
-              subject: 'Your submission has been approved!',
-              dynamicData: {
-                incidentId: `${incident.incident_id}`,
-                incidentTitle: incident.title,
-                incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
-                incidentDescription: incident.description,
-                incidentDate: incident.date,
-              },
-              templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
-            };
+        } catch (error) {
+          // If there is an error sending the email > Mark the notification as not processed
+          await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
 
-            await context.functions.execute('sendEmail', sendEmailParams);
-
-          } catch (error) {
-            // If there is an error sending the email > Mark the notification as not processed
-            await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
-
-            error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
-            context.functions.execute('logRollbar', { error });
-          }
+          error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
+          context.functions.execute('logRollbar', { error });
         }
+      }
 
-        console.log(`New Promotions: ${pendingNotificationsToNewPromotions.length} pending notifications were processed.`);
-      }
-      else {
-        // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed
-        await markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewPromotions);
-      }
+      console.log(`New Promotions: ${pendingNotificationsToNewPromotions.length} pending notifications were processed.`);
     }
     else {
       console.log('Submission Promoted: No pending notifications to process.');
