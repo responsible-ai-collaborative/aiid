@@ -110,6 +110,9 @@
                     "bsonType": "double"
                 }
             }
+        },
+        "created_at": {
+            "bsonType": "date"        
         }
     },
     "required": [
