@@ -20,7 +20,7 @@
   "Already have an account?": "すでにアカウントをお持ちですか？",
   "Verification email sent to {{email}}": "確認メールを{{email}}に送信しました",
   "Your Account": "あなたのアカウント",
-  "Subscribe": "購読予約",
-  "Subscribe to Major Updates": "主な更新を購読予約します",
-  "Subscribe to New Incidents": "新しいインシデントを購読予約します"
+  "Subscribe": "購読",
+  "Subscribe to Major Updates": "主な更新を購読します",
+  "Subscribe to New Incidents": "新しいインシデントを購読します"
 }
