@@ -59,7 +59,7 @@ exports.up = async ({ context: { client } }) => {
 
   await removeDuplicates(subscriptions, resultEntities);
 
-  // Remove duplicates of type "incident", "new-incidents" and "submission-promoted", based on type, incident_id and userId
+  // Remove duplicates of type "new-incidents" based on type, incident_id and userId
 
   const resultNewIncidents = await subscriptions
     .aggregate([
