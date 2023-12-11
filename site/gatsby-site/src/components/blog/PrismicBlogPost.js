@@ -12,7 +12,7 @@ import Outline from 'components/Outline';
 import AiidHelmet from 'components/AiidHelmet';
 
 const PrismicBlogPost = ({ post, location }) => {
-  const metaTitle = post.data.metaTitle;
+  const metaTitle = post.data.metatitle;
 
   const metaDescription = post.data.metaDescription;
 
