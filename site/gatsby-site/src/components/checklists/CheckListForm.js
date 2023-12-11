@@ -36,7 +36,7 @@ export default function CheckListForm({
 
   const userIsOwner = values.owner_id == user.id;
 
-  const owner = users.find((u) => (u.userId = values.owner_id));
+  const owner = users.find((u) => u.userId == values.owner_id);
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
