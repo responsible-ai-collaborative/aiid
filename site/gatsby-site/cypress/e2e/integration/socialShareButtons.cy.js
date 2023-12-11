@@ -38,6 +38,7 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     const canonicalUrl = `https://incidentdatabase.ai${url}`;
 
     // Twitter share
+    // TODO: https://github.com/responsible-ai-collaborative/aiid/issues/2481
     it.skip(`${page} page should have a Twitter share button`, () => {
       cy.visit(url);
 
