@@ -8,7 +8,7 @@ exports.up = async ({ context: { client } }) => {
 
   const subscriptions = db.collection('subscriptions');
 
-  // Remove duplicates of type "incident", "new-incidents" and "submission-promoted", based on type, incident_id and userId
+  // Remove duplicates of type "incident" and "submission-promoted", based on type, incident_id and userId
 
   const result = await subscriptions
     .aggregate([
