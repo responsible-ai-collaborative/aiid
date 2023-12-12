@@ -739,7 +739,7 @@ describe('Edit report', () => {
     cy.wait('@updateOneReportTranslation')
       .its('request.body.variables')
       .then((variables) => {
-        expect(variables.input.title).to.eq('Este es el Titulo en frances');
+        expect(variables.input.title).to.eq('Este es el Titulo en japonés');
         expect(variables.input.text).to.eq(
           'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!'
         );
