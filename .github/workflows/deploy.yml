@@ -7,8 +7,11 @@ on:
         required: true
 jobs:
   netlify-deploy:
-    runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-latest-16-core-64gb]
+    runs-on: ${{ matrix.os }}
     permissions:
       pull-requests: write
     steps:
@@ -45,7 +48,7 @@ jobs:
           script: |
             const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
             const deployData = JSON.parse(deployOutput);
-            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.log}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
+            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
