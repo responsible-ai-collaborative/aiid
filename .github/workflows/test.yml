@@ -6,12 +6,11 @@ on:
         type: string
         required: true
 
-jobs:   
-
+jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: [ ubuntu-latest-16-core-64gb, ubuntu-latest ]
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -29,7 +28,6 @@ jobs:
     # to prevent a hanging process from using all your CI minutes
     timeout-minutes: 20
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -116,4 +114,4 @@ jobs:
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
           # Since this is triggered on a pull request, we set the commit message to the pull request title
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
-          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
