@@ -69,9 +69,9 @@ const VariantCard = ({ variant, incidentId }) => {
             <div className="font-bold">
               <Trans>Incident Date</Trans>:
             </div>
-            <div>
-              {variant.date_published ? format(new Date(variant.date_published), 'yyyy-MM-dd') : ''}
-            </div>
+            {variant.date_published && (
+              <div>{format(new Date(variant.date_published), 'yyyy-MM-dd')}</div>
+            )}
           </div>
           {variant.text && (
             <>
