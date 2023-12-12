@@ -8,10 +8,8 @@ on:
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, ubuntu-latest-16-core-64gb]
-    runs-on: ${{ matrix.os }}
+    runs-on:
+      group: public
     permissions:
       pull-requests: write
     steps:
