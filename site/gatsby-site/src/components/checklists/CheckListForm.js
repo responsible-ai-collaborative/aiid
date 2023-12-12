@@ -118,6 +118,7 @@ export default function CheckListForm({
           </LocalizedLink>
           <h1 className="text-sm my-0">
             <EditableLabel
+              id="checklist-name"
               title={values.name}
               onChange={(event) => debouncedSetFieldValue('name', event.target.value)}
               textClasses="text-2xl m-0"
@@ -257,6 +258,7 @@ const QueryTagInput = ({
     <Label for={id}>{title}</Label>
     <Tags
       id={id}
+      inputId={id + '_input'}
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
       onChange={(value) => {

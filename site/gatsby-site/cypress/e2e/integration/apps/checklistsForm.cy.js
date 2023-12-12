@@ -109,4 +109,25 @@ describe('Checklists App Form', () => {
       cy.wait(['@upsertChecklist']);
     });
   });
+
+  maybeIt('Should edit checklist title', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({ ...defaultChecklist, owner_id: user.userId });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('[data-cy="EditableLabel-checklist-name"] [data-cy="edit-button"]').click();
+      cy.get('[data-cy="EditableLabel-checklist-name"] input').type(
+        '{selectall}{backspace}Modified Title'
+      );
+      cy.get('[data-cy="EditableLabel-checklist-name"] input').blur();
+
+      cy.wait(['@upsertChecklist']).then((xhr) => {
+        expect(xhr.request.body.variables.checklist).to.deep.nested.include({
+          name: 'Modified Title',
+        });
+      });
+    });
+  });
 });
