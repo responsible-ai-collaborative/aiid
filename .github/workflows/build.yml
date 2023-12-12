@@ -6,19 +6,17 @@ on:
         type: string
         description: Environment to deploy
         required: true
-      
 
-jobs:   
+jobs:
   install-and-build:
     name: NPM install and build site
     environment: ${{ inputs.environment }}
-    runs-on: [ ubuntu-latest-16-core-64gb, ubuntu-latest ]
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
         working-directory: site/gatsby-site
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -46,13 +44,13 @@ jobs:
 
       - name: Delete netlify.toml
         run: rm -f netlify.toml
-  
+
       - name: Rename github-netlify.toml to netlify.toml
         run: mv github-netlify.toml netlify.toml
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
-        
+
       - name: Build using Netlify
         run: netlify build --context deploy-preview
         working-directory: site/gatsby-site
@@ -78,7 +76,7 @@ jobs:
           GATSBY_PRISMIC_REPO_NAME: ${{ secrets.GATSBY_PRISMIC_REPO_NAME }}
           PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
           NODE_OPTIONS: --dns-result-order=ipv4first
-          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
 
       - name: Cache public folder
         uses: actions/cache@v3.0.5
