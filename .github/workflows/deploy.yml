@@ -29,8 +29,11 @@ jobs:
         id: deploy-netlify
         working-directory: site/gatsby-site
         run: |
-          DEPLOY_OUTPUT=$(netlify deploy --json --alias=pr-${{ github.event.pull_request.number }})
-          echo "deploy_log=$DEPLOY_OUTPUT" >> $GITHUB_OUTPUT
+          set -e
+          OUTPUT=$(bash -c "netlify deploy --json --alias=pr-${{ github.event.pull_request.number }}" | tr '\n' ' ')
+          set +e
+          NETLIFY_OUTPUT=$(echo "$OUTPUT")
+          echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
