@@ -11,10 +11,8 @@ jobs:
   install-and-build:
     name: NPM install and build site
     environment: ${{ inputs.environment }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, ubuntu-latest-16-core-64gb]
-    runs-on: ${{ matrix.os }}
+    runs-on:
+      group: public
     defaults:
       run:
         shell: bash
