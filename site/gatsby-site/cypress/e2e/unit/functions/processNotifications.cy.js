@@ -57,6 +57,7 @@ const pendingNotificationsToPromotedIncidents = [
     type: SUBSCRIPTION_TYPE.submissionPromoted,
     incident_id: 217,
     processed: false,
+    userId: '63320ce63ec803072c9f5291',
   },
 ];
 
@@ -98,14 +99,6 @@ const subscriptionsToIncidentUpdates = [
     userId: '63321072f27421740a80af22',
     type: SUBSCRIPTION_TYPE.incident,
     incident_id: 219,
-  },
-];
-
-const subscriptionsToPromotedIncidents = [
-  {
-    _id: '6356e39e863169c997309586',
-    type: SUBSCRIPTION_TYPE.submissionPromoted,
-    userId: '63320ce63ec803072c9f5291',
   },
 ];
 
@@ -269,17 +262,17 @@ const stubEverything = () => {
           .returns({ toArray: () => subscriptionsToIncidentUpdates });
       }
 
-      const incidentIds = pendingNotificationsToPromotedIncidents.map(
-        (pendingNotification) => pendingNotification.incident_id
-      );
-
-      stub
-        .withArgs({
-          type: SUBSCRIPTION_TYPE.submissionPromoted,
-          incident_id: { $in: incidentIds },
-        })
-        .as(`subscriptions.find("${SUBSCRIPTION_TYPE.submissionPromoted}")`)
-        .returns({ toArray: () => subscriptionsToPromotedIncidents });
+      for (const pendingNotification of pendingNotificationsToPromotedIncidents) {
+        stub
+          .withArgs({
+            type: SUBSCRIPTION_TYPE.submissionPromoted,
+            incident_id: pendingNotification.incident_id,
+          })
+          .as(
+            `notifications.find("${SUBSCRIPTION_TYPE.submissionPromoted}", "${pendingNotification.incident_id}")`
+          )
+          .returns({ toArray: () => pendingNotificationsToPromotedIncidents });
+      }
 
       return stub;
     })(),
@@ -443,26 +436,15 @@ describe('Functions', () => {
   });
 
   it('New Promotions - Should send pending submissions promoted notifications', () => {
-    const { notificationsCollection, subscriptionsCollection, incidentsCollection } =
-      stubEverything();
+    const { notificationsCollection, incidentsCollection } = stubEverything();
 
     cy.wrap(processNotifications()).then((result) => {
       expect(result, 'Notifications processed count').to.be.equal(7);
+
       expect(notificationsCollection.find.getCall(3).args[0]).to.deep.equal({
         processed: false,
         type: SUBSCRIPTION_TYPE.submissionPromoted,
       });
-
-      expect(subscriptionsCollection.find.getCall(5).args[0]).to.deep.equal({
-        type: SUBSCRIPTION_TYPE.submissionPromoted,
-        incident_id: { $in: [217] },
-      });
-
-      for (const subscription of subscriptionsToPromotedIncidents) {
-        expect(global.context.functions.execute).to.be.calledWith('getUser', {
-          userId: subscription.userId,
-        });
-      }
 
       for (let i = 0; i < pendingNotificationsToPromotedIncidents.length; i++) {
         const pendingNotification = pendingNotificationsToPromotedIncidents[i];
@@ -471,7 +453,13 @@ describe('Functions', () => {
           incident_id: pendingNotification.incident_id,
         });
 
-        const userIds = subscriptionsToPromotedIncidents.map((subscription) => subscription.userId);
+        expect(global.context.functions.execute).to.be.calledWith('getUser', {
+          userId: pendingNotificationsToPromotedIncidents[i].userId,
+        });
+
+        const userIds = pendingNotificationsToPromotedIncidents.map(
+          (subscription) => subscription.userId
+        );
 
         const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
 
@@ -778,8 +766,6 @@ describe('Functions', () => {
         type: SUBSCRIPTION_TYPE.submissionPromoted,
       });
 
-      expect(global.context.functions.execute).not.to.be.called;
-
       for (let i = 0; i < pendingNotificationsToNewIncidents.length; i++) {
         const pendingNotification = pendingNotificationsToNewIncidents[i];
 
@@ -835,7 +821,7 @@ describe('Functions', () => {
       expect(
         notificationsCollection.updateOne.getCalls().length,
         'Notifications marked as processed count'
-      ).to.be.equal(7);
+      ).to.be.equal(8);
     });
   });
 });

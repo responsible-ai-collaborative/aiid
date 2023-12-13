@@ -171,21 +171,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpsertSubscription' &&
-        req.body.variables?.query?.type === SUBSCRIPTION_TYPE.submissionPromoted,
-      'UpsertSubscriptionPromoted',
-      {
-        data: {
-          upsertOneSubscription: {
-            _id: 'dummyIncidentId',
-          },
-        },
-      }
-    );
-
     cy.get('select[data-cy="promote-select"]').as('dropdown');
 
     cy.get('@dropdown').select('Incident');
@@ -210,18 +195,6 @@ describe('Submitted reports', () => {
         expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.incident);
         expect(variables.subscription.incident_id.link).to.eq(182);
         expect(variables.subscription.userId.link).to.eq(user.userId);
-      });
-
-    cy.wait('@UpsertSubscriptionPromoted')
-      .its('request.body.variables')
-      .then((variables) => {
-        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
-        expect(variables.query.incident_id.incident_id).to.eq(182);
-        expect(variables.query.userId.userId).to.eq(submission.user.userId);
-
-        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
-        expect(variables.subscription.incident_id.link).to.eq(182);
-        expect(variables.subscription.userId.link).to.eq(submission.user.userId);
       });
 
     cy.contains(

@@ -260,10 +260,11 @@ describe('Functions', () => {
         modifiedBy: submission.user,
       });
 
-      expect(subscriptionsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+      expect(notificationsCollection.insertOne.firstCall.args[0]).to.deep.equal({
         type: SUBSCRIPTION_TYPE.submissionPromoted,
         incident_id: 2,
         userId: 'user1',
+        processed: false,
       });
     });
   });
