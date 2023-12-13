@@ -18,15 +18,13 @@ jobs:
         shell: bash
         working-directory: site/gatsby-site
     steps:
-      - uses: suzuki-shunsuke/get-pr-action@v0.1.0
-        id: pr
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: ${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
+          ${{ github.event.pull_request.head.sha }}
 
-      - name: Cache node modules
+      - name: Read node modules from cache
         id: cache-nodemodules
         uses: actions/cache@v3.0.5
         env:
@@ -83,12 +81,12 @@ jobs:
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
 
-      - name: Cache public folder
+      - name: Cache artifacts
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-public
+          cache-name: cache-artifacts
         with:
           path: |
             site/gatsby-site
             .git
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
