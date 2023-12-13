@@ -24,7 +24,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
+          ref: ${{fromJSON(steps.pr.outputs.pull_request).merge_commit_sha}}
 
       - name: Cache node modules
         id: cache-nodemodules
@@ -91,4 +91,4 @@ jobs:
           path: |
             site/gatsby-site
             .git
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.pull_request).merge_commit_sha}}

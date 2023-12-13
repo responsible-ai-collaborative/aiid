@@ -24,7 +24,7 @@ jobs:
           path: |
             site/gatsby-site
             .git
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.pull_request).merge_commit_sha}}
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
