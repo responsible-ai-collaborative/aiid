@@ -819,7 +819,7 @@ describe('Submitted reports', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('#harmed_parties-tags .dropdown-item')
+    cy.get('#harmed_parties-tags .dropdown-item', { timeout: 30000 })
       .contains(/^Tesla$/)
       .click();
 

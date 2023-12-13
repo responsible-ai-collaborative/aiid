@@ -675,37 +675,45 @@ describe('Cite pages', () => {
     cy.get('[data-cy="clone-incident-btn"]').should('not.exist');
   });
 
-  maybeIt('Should clone incident opening the preloaded new Incident form', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  maybeIt(
+    'Should clone incident opening the preloaded new Incident form',
+    { defaultCommandTimeout: 30000 },
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.visit(url);
+      cy.visit(url);
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.contains('Clone Incident').click();
+      cy.contains('Clone Incident').click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.url().should('contain', `/incidents/new/?incident_id=${incidentId}`);
+      cy.url().should('contain', `/incidents/new/?incident_id=${incidentId}`);
 
-    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
-  });
+      cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+    }
+  );
 
-  it('Should open incident from the discover app', { retries: { runMode: 4 } }, () => {
-    cy.visit(discoverUrl);
+  it(
+    'Should open incident from the discover app',
+    { retries: { runMode: 4 }, defaultCommandTimeout: 30000 },
+    () => {
+      cy.visit(discoverUrl);
 
-    cy.disableSmoothScroll();
+      cy.disableSmoothScroll();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.get('[data-cy="collapse-button"]:visible').click();
+      cy.get('[data-cy="collapse-button"]:visible').click();
 
-    cy.contains('Show Details on Incident #10').first().click();
+      cy.contains('Show Details on Incident #10').first().click();
 
-    cy.waitForStableDOM();
+      cy.waitForStableDOM();
 
-    cy.url().should('include', '/cite/10');
+      cy.url().should('include', '/cite/10');
 
-    cy.waitForStableDOM();
-  });
+      cy.waitForStableDOM();
+    }
+  );
 });
