@@ -28,8 +28,13 @@ jobs:
     # to prevent a hanging process from using all your CI minutes
     timeout-minutes: 20
     steps:
+      - uses: suzuki-shunsuke/get-pr-action@v0.1.0
+        id: pr
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+        with:
+          ref: ${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
 
       # Cache node_modules folder
       - name: Cache node modules
@@ -66,11 +71,8 @@ jobs:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.netlify
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ fromJSON(steps.pr.outputs.result).merge_commit_sha }}
+
       # Extract branch name
       - name: Extract branch name
         shell: bash

@@ -13,6 +13,9 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - uses: suzuki-shunsuke/get-pr-action@v0.1.0
+        id: pr
+
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
@@ -21,7 +24,7 @@ jobs:
           path: |
             site/gatsby-site
             .git
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g

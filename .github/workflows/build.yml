@@ -18,10 +18,13 @@ jobs:
         shell: bash
         working-directory: site/gatsby-site
     steps:
+      - uses: suzuki-shunsuke/get-pr-action@v0.1.0
+        id: pr
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }} # This is dangerous without the first access check
+          ref: ${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
 
       - name: Cache node modules
         id: cache-nodemodules
@@ -88,4 +91,4 @@ jobs:
           path: |
             site/gatsby-site
             .git
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{fromJSON(steps.pr.outputs.result).merge_commit_sha}}
