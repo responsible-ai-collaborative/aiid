@@ -691,7 +691,7 @@ describe('Cite pages', () => {
 
       cy.url().should('contain', `/incidents/new/?incident_id=${incidentId}`);
 
-      cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+      cy.get('[data-cy="incident-form"]').should('be.visible');
     }
   );
 
