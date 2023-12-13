@@ -22,9 +22,9 @@ jobs:
         id: pr
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: ${{fromJSON(steps.pr.outputs.pull_request).merge_commit_sha}}
+          ref: ${{steps.pr.outputs.merge_commit_sha}}
 
       - name: Cache node modules
         id: cache-nodemodules
