@@ -40,7 +40,10 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
             userId: '642188372947d07020c1319d',
             entity_id: 'trans-women',
           },
-          uniqueIds: ['5f9f6b9b5f9c4c0001a3b3a5', '5f9f6b9b5f9c4c0001a3b3a6'],
+          uniqueIds: [
+            new ObjectID('5f9f6b9b5f9c4c0001a3b3a5'),
+            new ObjectID('5f9f6b9b5f9c4c0001a3b3a6'),
+          ],
         },
       ],
       'new-incidents': [
@@ -49,7 +52,10 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
             type: 'new-incidents',
             userId: '642188372947d07020c1319d',
           },
-          uniqueIds: ['5f9f6b9b5f9c4c0001a3b3a7', '5f9f6b9b5f9c4c0001a3b3a8'],
+          uniqueIds: [
+            new ObjectID('5f9f6b9b5f9c4c0001a3b3a7'),
+            new ObjectID('5f9f6b9b5f9c4c0001a3b3a8'),
+          ],
         },
       ],
     };
@@ -59,7 +65,6 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
       aggregate: cy.stub().callsFake((query) => {
         const type = query[0].$match.type.$in[0];
 
-        console.log(type);
         return {
           toArray: cy.stub().resolves(testSubscriptions[type]),
         };
