@@ -169,7 +169,7 @@ describe('Report History', () => {
 
       cy.waitForStableDOM();
 
-      cy.wait('@FindReportHistory', { timeout: 30000 });
+      cy.wait('@FindReportHistory', { timeout: 80000 });
     }
   );
 

@@ -218,7 +218,7 @@ describe('Incidents', () => {
 
       cy.waitForStableDOM();
 
-      cy.wait(['@FindIncidentHistory', '@FindEntities'], { timeout: 8000 });
+      cy.wait(['@FindIncidentHistory', '@FindEntities'], { timeout: 30000 });
     }
   );
 

@@ -6,12 +6,11 @@ on:
         type: string
         required: true
 
-jobs:   
-
+jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest-16-core-64gb
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -29,7 +28,6 @@ jobs:
     # to prevent a hanging process from using all your CI minutes
     timeout-minutes: 20
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -59,12 +57,6 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
-      # Extract commit hash to use as a cache key
-      - name: Extract commit hash
-        shell: bash
-        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
-        id: extract_commit_hash
-
       # Cache 'public' folder
       - name: Cache public folder
         uses: actions/cache@v3.0.5
@@ -73,7 +65,8 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
+            site/gatsby-site/.netlify
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -121,4 +114,4 @@ jobs:
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
           # Since this is triggered on a pull request, we set the commit message to the pull request title
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
-          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }} 
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
