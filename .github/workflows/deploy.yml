@@ -20,7 +20,9 @@ jobs:
           cache-name: cache-artifacts
         with:
           path: |
-            site/gatsby-site
+            site/gatsby-site/public
+            site/gatsby-site/.netlify/functions
+            site/gatsby-site/.netlify/functions-internal
             .git
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
           fail-on-cache-miss: true
