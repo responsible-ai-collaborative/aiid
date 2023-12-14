@@ -30,6 +30,9 @@ jobs:
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
       - name: Upload to netlify
         id: deploy-netlify
         working-directory: site/gatsby-site
