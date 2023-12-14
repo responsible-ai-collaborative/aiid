@@ -13,6 +13,15 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - name: Read node modules from cache
+        id: cache-nodemodules-2
+        uses: actions/cache/restore@v3
+        env:
+          cache-name: cache-install-folder
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Read Artifacts from cache
         uses: actions/cache/restore@v3
