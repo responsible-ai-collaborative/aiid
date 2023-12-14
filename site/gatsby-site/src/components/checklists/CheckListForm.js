@@ -118,7 +118,7 @@ export default function CheckListForm({
           </LocalizedLink>
           <h1 className="text-sm my-0">
             <EditableLabel
-              id="checklist-name"
+              data-cy="edit-checklist-name"
               title={values.name}
               onChange={(event) => debouncedSetFieldValue('name', event.target.value)}
               textClasses="text-2xl m-0"

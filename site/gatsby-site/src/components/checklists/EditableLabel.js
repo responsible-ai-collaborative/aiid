@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-const EditableLabel = ({ title, onChange, textClasses, iconClasses, disabled, id }) => {
+const EditableLabel = (props) => {
+  const { title, onChange, textClasses, iconClasses, disabled } = props;
+
   const [displayTitle, setDisplayTitle] = useState(title);
 
   const [editingTitle, setEditingTitle] = useState(false);
 
   return (
-    <span data-cy={`EditableLabel-${id}`} className="inline-flex shrink flex-nowrap items-center">
+    <span data-cy={props['data-cy']} className="inline-flex shrink flex-nowrap items-center">
       {editingTitle ? (
         <input
           type="text"
