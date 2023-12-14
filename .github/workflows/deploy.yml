@@ -23,6 +23,7 @@ jobs:
             site/gatsby-site
             .git
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+          fail-on-cache-miss: true
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
