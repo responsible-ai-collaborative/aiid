@@ -67,6 +67,34 @@ describe('Process New Promotions Pending Notifications', () => {
         uniquePendingNotifications.length
       );
 
+      // Check that the emails are sent only once
+      for (let i = 0; i < sendEmailCalls.length; i++) {
+        const pendingNotification = uniquePendingNotifications[i];
+
+        const sendEmailCallArgs = sendEmailCalls[i].args[1];
+
+        const userIds = subscriptions
+          .filter((s) => s.incident_id === pendingNotification.incident_id)
+          .map((subscription) => subscription.userId);
+
+        const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
+
+        const sendEmailParams = {
+          recipients: recipients.filter((r) => userIds.includes(r.userId)),
+          subject: 'Your submission has been approved!',
+          dynamicData: {
+            incidentId: `${incident.incident_id}`,
+            incidentTitle: incident.title,
+            incidentUrl: `https://incidentdatabase.ai/cite/${pendingNotification.incident_id}`,
+            incidentDescription: incident.description,
+            incidentDate: incident.date,
+          },
+          templateId: 'SubmissionApproved', // Template value from function name sufix from "site/realm/functions/config.json"
+        };
+
+        expect(sendEmailCallArgs, 'Send email args').to.be.deep.equal(sendEmailParams);
+      }
+
       //No Rollbar error logs
       expect(
         global.context.functions.execute.getCalls().filter((call) => call.args[0] === 'logRollbar')

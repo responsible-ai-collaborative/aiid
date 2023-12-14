@@ -79,6 +79,51 @@ describe('Process Entity Pending Notifications', () => {
         uniquePendingNotifications.length
       );
 
+      // Check that the emails are sent only once
+      for (let i = 0; i < sendEmailCalls.length; i++) {
+        const pendingNotification = uniquePendingNotifications[i];
+
+        const sendEmailCallArgs = sendEmailCalls[i].args[1];
+
+        const userIds = subscriptions
+          .filter((s) => s.entityId === pendingNotification.entity_id)
+          .map((subscription) => subscription.userId);
+
+        const isIncidentUpdate = pendingNotification.isUpdate;
+
+        const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
+
+        const entity = entities.find(
+          (entity) => entity.entity_id === pendingNotification.entity_id
+        );
+
+        const sendEmailParams = {
+          recipients: recipients.filter((r) => userIds.includes(r.userId)),
+          subject: isIncidentUpdate
+            ? 'Update Incident for {{entityName}}'
+            : 'New Incident for {{entityName}}',
+          dynamicData: {
+            incidentId: `${incident.incident_id}`,
+            incidentTitle: incident.title,
+            incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+            incidentDescription: incident.description,
+            incidentDate: incident.date,
+            entityName: entity.name,
+            entityUrl: `https://incidentdatabase.ai/entities/${entity.entity_id}`,
+            developers: buildEntityList(entities, incident['Alleged developer of AI system']),
+            deployers: buildEntityList(entities, incident['Alleged deployer of AI system']),
+            entitiesHarmed: buildEntityList(
+              entities,
+              incident['Alleged harmed or nearly harmed parties']
+            ),
+          },
+          // Template value from function name sufix from "site/realm/functions/config.json"
+          templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident',
+        };
+
+        expect(sendEmailCallArgs, 'Send email args').to.be.deep.equal(sendEmailParams);
+      }
+
       //No Rollbar error logs
       expect(
         global.context.functions.execute.getCalls().filter((call) => call.args[0] === 'logRollbar')

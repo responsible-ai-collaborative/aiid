@@ -73,6 +73,43 @@ describe('Process Incident Updates Pending Notifications', () => {
         uniquePendingNotifications.length
       );
 
+      // Check that the emails are sent only once
+      for (let i = 0; i < sendEmailCalls.length; i++) {
+        const pendingNotification = uniquePendingNotifications[i];
+
+        const sendEmailCallArgs = sendEmailCalls[i].args[1];
+
+        const userIds = subscriptions
+          .filter((s) => s.incident_id === pendingNotification.incident_id)
+          .map((subscription) => subscription.userId);
+
+        const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
+
+        const newReportNumber = pendingNotification.report_number;
+
+        const newReport = newReportNumber
+          ? reports.find((r) => r.report_number == pendingNotification.report_number)
+          : null;
+
+        const sendEmailParams = {
+          recipients: recipients.filter((r) => userIds.includes(r.userId)),
+          subject: 'Incident {{incidentId}} was updated',
+          dynamicData: {
+            incidentId: `${incident.incident_id}`,
+            incidentTitle: incident.title,
+            incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+            reportUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}#r${newReportNumber}`,
+            reportTitle: newReportNumber ? newReport.title : '',
+            reportAuthor: newReportNumber && newReport.authors[0] ? newReport.authors[0] : '',
+          },
+          templateId: newReportNumber // Template value from function name sufix from "site/realm/functions/config.json"
+            ? 'NewReportAddedToAnIncident'
+            : 'IncidentUpdate',
+        };
+
+        expect(sendEmailCallArgs, 'Send email args').to.be.deep.equal(sendEmailParams);
+      }
+
       //No Rollbar error logs
       expect(
         global.context.functions.execute.getCalls().filter((call) => call.args[0] === 'logRollbar')
