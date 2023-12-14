@@ -35,7 +35,7 @@ jobs:
 
       - name: Read node modules from cache
         id: cache-nodemodules-2
-        uses: actions/cache@v3.0.5
+        uses: actions/cache/restore@v3
         env:
           cache-name: cache-install-folder
         with:
@@ -56,11 +56,11 @@ jobs:
       - name: Read Artifacts from cache
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-public
+          cache-name: cache-artifacts
         with:
           path: |
             site/gatsby-site/public
-            site/gatsby-site/.netlify
+            .git
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
 
       - name: Extract branch name
