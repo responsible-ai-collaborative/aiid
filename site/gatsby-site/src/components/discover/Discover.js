@@ -17,6 +17,7 @@ import { queryConfig } from './queryParams';
 import { history } from 'instantsearch.js/es/lib/routers';
 import Pagination from './Pagination';
 import debounce from 'lodash/debounce';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -31,6 +32,19 @@ function mapping() {
 }
 
 export default function Discover() {
+  const { taxas } = useStaticQuery(graphql`
+    {
+      taxas: allMongodbAiidprodTaxa {
+        nodes {
+          id
+          namespace
+        }
+      }
+    }
+  `);
+
+  console.log('taxas', taxas);
+
   const { locale } = useLocalization();
 
   const [indexName] = useState(`instant_search-${locale}-featured`);
@@ -69,7 +83,8 @@ export default function Discover() {
           getLocation: () => {
             return window.location;
           },
-          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig }),
+          parseURL: ({ location }) =>
+            parseURL({ location, indexName, queryConfig, taxas: taxas?.nodes }),
           createURL: ({ routeState }) => createURL({ indexName, locale, queryConfig, routeState }),
           push: (url) => {
             navigate(`?${url}`);
