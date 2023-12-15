@@ -4,6 +4,7 @@ import { graphql } from 'gatsby';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const SORT_ORDER = {
   ASC: 'asc',
@@ -47,8 +48,11 @@ export default function Incidents({ data, ...props }) {
 
   const [sortedIncidents, setSortedIncidents] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    const incidents = [...data.allMongodbAiidprodIncidents.nodes]; // Copy the incidents array
+    setIsLoading(true);
+    const incidents = [...data.allMongodbAiidprodIncidents.nodes];
 
     incidents.sort((a, b) => {
       if (sortOrder === SORT_ORDER.ASC) {
@@ -59,6 +63,7 @@ export default function Incidents({ data, ...props }) {
     });
 
     setSortedIncidents(incidents);
+    setIsLoading(false);
   }, [sortOrder, data]);
 
   return (
@@ -83,6 +88,7 @@ export default function Incidents({ data, ...props }) {
             }`}
             onClick={() => setSortOrder(SORT_ORDER.ASC)}
             disabled={sortOrder === SORT_ORDER.ASC}
+            data-cy="sort-ascending-button"
           >
             ascending
           </button>
@@ -93,11 +99,13 @@ export default function Incidents({ data, ...props }) {
             }`}
             onClick={() => setSortOrder(SORT_ORDER.DESC)}
             disabled={sortOrder === SORT_ORDER.DESC}
+            data-cy="sort-descending-button"
           >
             descending
           </button>
         </div>
-        <IncidentList incidents={sortedIncidents} />
+        {isLoading && <ListSkeleton />}
+        {!isLoading && <IncidentList incidents={sortedIncidents} />}
       </div>
     </>
   );
