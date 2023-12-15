@@ -43,8 +43,6 @@ export default function Discover() {
     }
   `);
 
-  console.log('taxas', taxas);
-
   const { locale } = useLocalization();
 
   const [indexName] = useState(`instant_search-${locale}-featured`);
