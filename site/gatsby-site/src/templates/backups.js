@@ -15,6 +15,22 @@ const Backups = ({ pageContext, ...props }) => {
     return null;
   }
 
+  const parseCreationDate = (key) => {
+    const stringDate = key.split('backup-')[1].split('.')[0];
+
+    const year = stringDate.substring(0, 4);
+
+    const month = stringDate.substring(4, 6);
+
+    const day = stringDate.substring(6, 8);
+
+    const hour = stringDate.substring(8, 10);
+
+    const minute = stringDate.substring(10, 12);
+
+    return new Date(year, month - 1, day, hour, minute);
+  };
+
   return (
     <>
       <AiidHelmet path={props.location.pathname}>
@@ -65,10 +81,11 @@ const Backups = ({ pageContext, ...props }) => {
                   .map((b) => ({
                     ...b,
                     Url: `${config.cloudflareR2.publicBucketUrl}/${b.Key}`,
+                    CreationDate: parseCreationDate(b.Key),
                   }))
                   .map((value) => (
                     <li key={`snapshot-${value['Key']}`}>
-                      {format(new Date(value['LastModified']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
+                      {format(new Date(value['CreationDate']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
                       {(value['Size'] / 1000000).toFixed(2)} MB &middot;{' '}
                       <Link to={value['Url']}>{value['Key']}</Link>
                     </li>
