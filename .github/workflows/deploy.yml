@@ -13,6 +13,11 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Read node modules from cache
         id: cache-nodemodules-2
         uses: actions/cache/restore@v3
@@ -22,6 +27,14 @@ jobs:
           path: |
             site/gatsby-site/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-nodemodules-2.outputs.cache-hit != 'true'
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: site/gatsby-site
+          runTests: false
+          install-command: npm ci
 
       - name: Use new netlify.toml
         run: |
