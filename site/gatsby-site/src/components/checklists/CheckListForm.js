@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
+import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 
@@ -36,7 +36,7 @@ export default function CheckListForm({
 
   const userIsOwner = values.owner_id == user.id;
 
-  const owner = users.find((u) => (u.userId = values.owner_id));
+  const owner = users.find((u) => u.userId == values.owner_id);
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
@@ -69,8 +69,18 @@ export default function CheckListForm({
     ...(values['tags_other'] || []),
   ];
 
+  const apolloClient = useApolloClient();
+
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, addToast, t });
+    searchRisks({
+      values,
+      setFieldValue,
+      setRisksLoading,
+      setAllPrecedents,
+      addToast,
+      t,
+      apolloClient,
+    });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   useEffect(() => {
@@ -333,20 +343,22 @@ const Header = (props) => {
     lg:min-h-[5.5rem]
     flex justify-between flex-wrap gap-4
     pb-2 -mt-2
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <header {...{ ...props, className }}>{props.children}</header>;
 };
 
 const HeaderInfo = (props) => {
-  const className = `flex flex-col justify-center ${props.className}`;
+  const className = `flex flex-col justify-center ${props.className || ''}`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 const HeaderControls = (props) => {
-  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`;
+  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${
+    props.className || ''
+  }`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
@@ -356,14 +368,14 @@ const SideBySide = (props) => {
     flex flex-col md:flex-row gap-2
     [&>*]:w-full [&>*]:md:w-1/2
     [&>*]:h-full 
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 function SavingIndicator({ isSubmitting, submissionError, className }) {
-  className = `text-lg text-gray-500 inline-block ${className}`;
+  className = `text-lg text-gray-500 inline-block ${className || ''}`;
 
   if (isSubmitting) {
     return (
@@ -394,7 +406,9 @@ function Info({ children, className }) {
   if (hide) return <></>;
   return (
     <div
-      className={`${className} bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
+      className={`${
+        className || ''
+      } bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
     >
       <button
         className="border-0 bg-none float-right text-xl pl-4 pb-2 -mt-3"
@@ -412,16 +426,28 @@ function Info({ children, className }) {
 //
 // Example resulting values.risks:
 //
-// [ { "tag": "GMF:Failure:Gaming Vulnerability",
-//     "precedents": [
-//       { "incident_id": 146,
-//         "url": "https://incidentdatabase.ai/cite/146",
-//         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-//         "description": "A publicly accessible research model[...]moral judgments.",
-//         "tags": [ "GMF:Known AI Technology:Language Modeling", ],
-//         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
+// [ {
+//     /* GraphQL API Results */
+//     title: "Gaming Vulnerability",
+//     tags: ["GMF:Failure:Gaming Vulnerability"],
+//     precedents: [
+//       { incident_id: 146,
+//         url: "https://incidentdatabase.ai/cite/146",
+//         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+//         description: "A publicly accessible research model [...] moral judgments.",
+//         tags: [ "GMF:Known AI Technology:Language Modeling", ],
 //       },
-//     ]
+//     ],
+//
+//     /* Defaults Risk Annotations */
+//     risk_status: "Not Mitigated",
+//     risk_notes: "",
+//     severity: "",
+//
+//     /* UI properties*/
+//     startClosed: true,
+//     touched: false,
+//     generated: true,
 //   }
 // ]
 //
@@ -433,6 +459,7 @@ const searchRisks = async ({
   setAllPrecedents,
   addToast,
   t,
+  apolloClient,
 }) => {
   const queryTags = [
     ...(values['tags_goals'] || []),
@@ -444,14 +471,27 @@ const searchRisks = async ({
 
   setRisksLoading(true);
 
-  const response = await fetch(
-    '/api/riskManagement/v1/risks?tags=' + encodeURIComponent(queryTags.join('___'))
-  );
+  const risksResponse = await apolloClient.query({
+    query: gql`
+      query {
+        risks(input: { tags: [${queryTags.map((t) => `"${t}"`).join(', ')}] }) {
+          tags
+          title
+          precedents {
+            incident_id
+            title
+            description
+            tags
+          }
+        }
+      }
+    `,
+  });
 
   const allPrecedents = [];
 
-  if (response.ok) {
-    const results = await response.json();
+  if (risksResponse.data) {
+    const results = risksResponse.data.risks;
 
     const risksToAdd = [];
 
@@ -460,8 +500,8 @@ const searchRisks = async ({
 
       const newRisk = {
         ...emptyRisk(),
-        title: abbreviatedTag(result.tag),
-        tags: [result.tag],
+        title: result.title,
+        tags: result.tags,
         precedents: result.precedents,
         description: result.description,
         startClosed: true,
