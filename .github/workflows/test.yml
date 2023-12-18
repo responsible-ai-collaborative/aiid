@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with: 
+        with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Read node modules from cache
@@ -87,6 +87,11 @@ jobs:
           NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ secrets.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
 
       - name: Extract branch name
         shell: bash
@@ -128,3 +133,8 @@ jobs:
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           # Since this is triggered on a pull request, we set the commit message to the pull request title
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ secrets.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}

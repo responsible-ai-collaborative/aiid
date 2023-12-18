@@ -11,9 +11,9 @@ jobs:
     runs-on:
       group: public
     defaults:
-        run:
-          shell: bash
-          working-directory: site/gatsby-site
+      run:
+        shell: bash
+        working-directory: site/gatsby-site
     permissions:
       pull-requests: write
     steps:
@@ -34,7 +34,7 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
-        
+
       - name: Install dependencies
         if: steps.cache-nodemodules-2.outputs.cache-hit != 'true'
         run: npm ci
@@ -73,6 +73,11 @@ jobs:
           NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ secrets.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
