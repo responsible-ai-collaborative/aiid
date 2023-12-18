@@ -343,20 +343,22 @@ const Header = (props) => {
     lg:min-h-[5.5rem]
     flex justify-between flex-wrap gap-4
     pb-2 -mt-2
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <header {...{ ...props, className }}>{props.children}</header>;
 };
 
 const HeaderInfo = (props) => {
-  const className = `flex flex-col justify-center ${props.className}`;
+  const className = `flex flex-col justify-center ${props.className || ''}`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 const HeaderControls = (props) => {
-  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`;
+  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${
+    props.className || ''
+  }`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
@@ -366,14 +368,14 @@ const SideBySide = (props) => {
     flex flex-col md:flex-row gap-2
     [&>*]:w-full [&>*]:md:w-1/2
     [&>*]:h-full 
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 function SavingIndicator({ isSubmitting, submissionError, className }) {
-  className = `text-lg text-gray-500 inline-block ${className}`;
+  className = `text-lg text-gray-500 inline-block ${className || ''}`;
 
   if (isSubmitting) {
     return (
@@ -404,7 +406,9 @@ function Info({ children, className }) {
   if (hide) return <></>;
   return (
     <div
-      className={`${className} bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
+      className={`${
+        className || ''
+      } bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
     >
       <button
         className="border-0 bg-none float-right text-xl pl-4 pb-2 -mt-3"
