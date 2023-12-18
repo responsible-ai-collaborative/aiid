@@ -54,7 +54,9 @@ const risksEqual = (risk1, risk2) => {
 };
 
 const Label = (props) => (
-  <label {...{ ...props, className: `mb-1 block ${props.className}` }}>{props.children}</label>
+  <label {...{ ...props, className: `mb-1 block ${props.className || ''}` }}>
+    {props.children}
+  </label>
 );
 
 const emptyRisk = (properties) => ({

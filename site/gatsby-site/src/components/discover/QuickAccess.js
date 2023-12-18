@@ -7,7 +7,7 @@ import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 export default function DiscoverQuickAccess({ className = '', isCollapsed = false }) {
   return (
     <div
-      className={`${className} ${
+      className={`${className || ''} ${
         isCollapsed ? 'opacity-0 h-0 p-0 m-0' : 'p-4 h-24'
       } md:bg-text-light-gray transition-all duration-500 opacity-1 font-karla font-bold text-[#001934] flex items-center justify-center`}
     >

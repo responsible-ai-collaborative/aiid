@@ -282,7 +282,7 @@ const RiskBody = (props) => (
   <div
     {...{
       ...props,
-      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className}`,
+      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className || ''}`,
     }}
   >
     {props.children}
@@ -306,7 +306,7 @@ const RiskDetails = (props) => (
           [&>summary]:before:content-['⏵']
     [&[open]>summary]:before:w-4
           [&>summary]:before:w-4
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -329,7 +329,7 @@ const RiskHeaderSummary = (props) => (
     before:text-lg 
     ${props.generated ? 'before:text-gray-400' : 'before:text-red-700'}
 
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -341,7 +341,7 @@ const HeaderItemsGroup = (props) => (
   <div
     {...{
       ...props,
-      className: `md:flex px-2 gap-2 bg-white items-center ${props.className}`,
+      className: `md:flex px-2 gap-2 bg-white items-center ${props.className || ''}`,
     }}
   >
     {props.children}
@@ -356,7 +356,7 @@ const HeaderTextWithIcon = (props) => (
     inline-flex flex gap-1 items-center
     inline-block bg-${props.color || 'gray'}-200 px-3 rounded-lg 
     text-${props.color || 'gray'}-800
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -365,17 +365,17 @@ const HeaderTextWithIcon = (props) => (
 );
 
 const PrecedentsQuery = (props) => (
-  <div {...{ ...props, className: `col-span-2 ${props.className}` }}>{props.children}</div>
+  <div {...{ ...props, className: `col-span-2 ${props.className || ''}` }}>{props.children}</div>
 );
 
 const Precedents = (props) => (
-  <div {...{ ...props, className: `col-span-1 flex flex-col h-full ${props.className}` }}>
+  <div {...{ ...props, className: `col-span-1 flex flex-col h-full ${props.className || ''}` }}>
     {props.children}
   </div>
 );
 
 const RiskFields = (props) => (
-  <div {...{ ...props, className: `col-span-1 flex flex-col gap-2 ${props.className}` }}>
+  <div {...{ ...props, className: `col-span-1 flex flex-col gap-2 ${props.className || ''}` }}>
     {props.children}
   </div>
 );
@@ -392,7 +392,7 @@ const PrecedentsList = (props) => (
     border-1 border-gray-200 
     rounded 
     shadow-inner
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -424,7 +424,7 @@ function ProgressCircle({ progress, className }) {
   const clearLength = c - filledLength;
 
   return (
-    <div title={Math.round(progress * 100) + '%'} className={`${className} inline`}>
+    <div title={Math.round(progress * 100) + '%'} className={`${className || ''} inline`}>
       <svg width="20" height="20" viewBox="0 0 60 60">
         <circle stroke="#d8dadc" strokeWidth="10" fill="transparent" r={r} cx="30" cy="30" />
         <circle

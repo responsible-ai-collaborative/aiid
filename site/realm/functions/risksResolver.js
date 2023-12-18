@@ -58,9 +58,8 @@ exports = async (input) => {
 
   // TODO: These should probably be defined in the taxa
   const failureTags = [
-    { namespace: "GMF", short_name: "Known AI Technical Failure"},
-    { namespace: "GMF", short_name: "Potential AI Technical Failure" }
-  ]
+    { namespace: "GMF", short_name: "Known AI Technical Failure" },
+  ];
 
   // TODO: This selects every field.
   // For performance, we should only select those we need.
@@ -85,21 +84,24 @@ exports = async (input) => {
   const matchingClassificationsByFailure = groupByMultiple(
     failureClassificationsMatchingIncidentIds,
     classification => tagsFromClassification(classification).filter(
-      tag => tag.startsWith('GMF:Known AI Technical Failure:') 
+      tag => failureTags.some(
+        f => tag.startsWith(`${f.namespace}:${f.short_name}:`) 
+      )
     )
   );
-  
+
   const risks = Object.keys(matchingClassificationsByFailure).map(
     failure => ({
       api_message: "This is an experimental an unsupported API",
       tag: failure,
+      title: failure.replace(/.*:/g, ''),
+      tags: [failure],
       precedents: matchingClassificationsByFailure[failure].map(
-        failureClassification => {
-          const incidents = incidentsMatchingSearchTags.filter(
-            incident => failureClassification.incidents.includes(incident.incident_id)
-          );
-          return incidents;
-        }
+        failureClassification => (
+          incidentsMatchingSearchTags
+            .filter(incident => failureClassification.incidents.includes(incident.incident_id))
+            .map(incident => ({...incident, tags: tagsByIncidentId[incident.incident_id]}) )
+        )
       ).flat()
     })
   ).sort((a, b) => b.precedents.length - a.precedents.length);
