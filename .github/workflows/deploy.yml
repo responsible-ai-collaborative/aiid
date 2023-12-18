@@ -5,49 +5,102 @@ on:
       environment:
         type: string
         required: true
-jobs:   
-
+jobs:
   netlify-deploy:
-    runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    permissions: 
+    runs-on:
+      group: public
+    defaults:
+        run:
+          shell: bash
+          working-directory: site/gatsby-site
+    permissions:
       pull-requests: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
-      # Extract commit hash to use as a cache key
-      - name: Extract commit hash
-        shell: bash
-        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
-        id: extract_commit_hash
-
-      # Cache 'public' folder
-      - name: Cache public folder
-        uses: actions/cache@v3.0.5
+      - name: Read node modules from cache
+        id: cache-nodemodules-2
+        uses: actions/cache/restore@v3
         env:
-          cache-name: cache-public
+          cache-name: cache-install-folder
         with:
           path: |
-            site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        
+      - name: Install dependencies
+        if: steps.cache-nodemodules-2.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Use new netlify.toml
+        run: |
+          rm -f netlify.toml
+          mv github-netlify.toml netlify.toml
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Build using Netlify
+        run: netlify build --context deploy-preview
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_ALGOLIA_APP_ID: ${{ secrets.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ secrets.GATSBY_ALGOLIA_SEARCH_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ secrets.GATSBY_AVAILABLE_LANGUAGES }}
+          GATSBY_REALM_APP_ID: ${{ secrets.GATSBY_REALM_APP_ID }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+          GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
+          GATSBY_PRISMIC_REPO_NAME: ${{ secrets.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
 
       - name: Upload to netlify
-        uses: netlify/actions/cli@master
         id: deploy-netlify
-        with:
-            args: deploy --dir=site/gatsby-site/public
+        working-directory: site/gatsby-site
+        run: |
+          set -e
+          OUTPUT=$(bash -c "netlify deploy --json --alias=pr-${{ github.event.pull_request.number }}" | tr '\n' ' ')
+          set +e
+          NETLIFY_OUTPUT=$(echo "$OUTPUT")
+          echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
         env:
-            NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-            NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      - name: Netlify Preview URL 
-        uses: unsplash/comment-on-pr@v1.3.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OUTPUT: "This pull request is being automatically deployed to Netlify.\n\n🔍 Inspect: ${{ steps.deploy-netlify.outputs.NETLIFY_LOGS_URL }}\n✅ Preview: ${{ steps.deploy-netlify.outputs.NETLIFY_URL }}"
+      - name: Comment on PR
+        uses: actions/github-script@v5
         with:
-          msg: ${{ env.OUTPUT }}
-          check_for_duplicate_msg: false
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            const deployData = JSON.parse(deployOutput);
+            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
