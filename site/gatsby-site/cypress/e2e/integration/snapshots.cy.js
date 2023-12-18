@@ -3,12 +3,12 @@ import { conditionalIt } from '../../support/utils';
 describe('The Database Snapshots Page', () => {
   const url = '/research/snapshots';
 
-  it('Successfully loads', () => {
+  conditionalIt(Cypress.env('snapshotsEnabled'), 'Successfully loads', () => {
     cy.visit(url);
   });
 
   conditionalIt(
-    !Cypress.env('isEmptyEnvironment'),
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('snapshotsEnabled'),
     'Should display a list of snapshots to download',
     () => {
       cy.visit(url);

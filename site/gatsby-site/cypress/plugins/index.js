@@ -22,6 +22,7 @@ module.exports = (on, config) => {
   config.env.e2ePassword = process.env.E2E_ADMIN_PASSWORD;
   config.env.realmAppId = process.env.GATSBY_REALM_APP_ID;
   config.env.isEmptyEnvironment = process.env.IS_EMPTY_ENVIRONMENT == 'true';
+  config.env.snapshotsEnabled = !!process.env.CLOUDFLARE_R2_ACCOUNT_ID;
 
   return config;
 };
