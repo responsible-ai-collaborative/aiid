@@ -274,14 +274,7 @@ const QueryTagInput = ({
           const selectedTags = [];
 
           for (const v of value) {
-            let tag;
-
-            if (v.includes(':')) {
-              tag = v;
-            } else {
-              tag = tags.find((t) => t.replace(/.*:/g, '') == v);
-            }
-            selectedTags.push(tag);
+            selectedTags.push(v.includes(':') ? v : tags.find((t) => t.replace(/.*:/g, '') == v));
           }
           setFieldValue(id, selectedTags);
         } else {
