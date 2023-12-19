@@ -16,6 +16,10 @@ import {
   faComputer,
   faHashtag,
   faTrash,
+  faBarsProgress,
+  faNoteSticky,
+  faRotateLeft,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
@@ -143,6 +147,7 @@ export default function RiskSection({
         {showPrecedentFilters && (
           <PrecedentsQuery>
             <Label>
+              <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <Trans>Precedents Filter</Trans>
             </Label>
             <div className="bootstrap">
@@ -159,7 +164,10 @@ export default function RiskSection({
         )}
         <Precedents>
           <div className="flex justify-between">
-            <Label>Precedents</Label>
+            <Label>
+              <FontAwesomeIcon icon={faRotateLeft} className="mr-2" />
+              {t('Precedents')}
+            </Label>
             <button
               className="text-gray-600 mb-1"
               onClick={() => setShowPrecedentFilters((value) => !value)}
@@ -192,6 +200,7 @@ export default function RiskSection({
         </Precedents>
         <RiskFields>
           <label className="-mb-1" htmlFor="risk_status">
+            <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
             Risk Status
           </label>
           <Select
@@ -224,7 +233,10 @@ const RiskSeverity = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
 
   return (
     <div>
-      <Label>{t('Severity')}</Label>
+      <Label>
+        <FontAwesomeIcon icon={faBolt} className="mr-2" />
+        {t('Severity')}
+      </Label>
       <TextInput
         value={displaySeverity}
         disabled={!userIsOwner}
@@ -244,7 +256,10 @@ const RiskLikelihood = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
 
   return (
     <div>
-      <Label>{t('Likelihood')}</Label>
+      <Label>
+        <FontAwesomeIcon icon={faPercent} className="mr-2" />
+        {t('Likelihood')}
+      </Label>
       <TextInput
         value={displayLikelihood}
         disabled={!userIsOwner}
@@ -264,7 +279,10 @@ const RiskNotes = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
 
   return (
     <div className="md:h-full flex flex-col">
-      <Label>{t('Risk Notes')}</Label>
+      <Label>
+        <FontAwesomeIcon icon={faNoteSticky} className="mr-2" />
+        {t('Risk Notes')}
+      </Label>
       <Textarea
         className="md:h-full shrink-1"
         value={displayNotes}
