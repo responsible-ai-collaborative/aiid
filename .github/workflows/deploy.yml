@@ -79,9 +79,6 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
 
-      - name: Install Netlify CLI
-        run: npm install netlify-cli -g
-
       - name: Upload to netlify
         id: deploy-netlify
         working-directory: site/gatsby-site
