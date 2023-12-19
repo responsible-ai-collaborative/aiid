@@ -255,13 +255,13 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
 const QueryTagInput = ({
   title,
   id,
-  labelKey,
   include,
   idValue,
   tags,
   setFieldValue,
   placeHolder,
   userIsOwner,
+  trimTaxonomy = false,
 }) => (
   <div className="bootstrap">
     <Label for={id}>{title}</Label>
@@ -269,19 +269,51 @@ const QueryTagInput = ({
       id={id}
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
-      onChange={(value) => {
-        if (labelKey == abbreviatedTag) {
+      onChange={(tagInputArray) => {
+        //
+        // Example tagInputArray:
+        //
+        // ["GMF:Known AI Technology:Transformer", "Language Model"]
+        //     |                                         |
+        //  ,  |    Not fully-qualified, entered by direct text entry
+        //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
+        //     |    "GMF:Known AI Technology:Language Model"
+        //     |
+        //  Fully-qualified, entered from menu
+        //
+        if (trimTaxonomy) {
+          // If `trimTaxonomy` is enabled, then
+          // "GMF:Known AI Technology:Transformer"
+          // displays in the menu as just "Transformer".
+          // Users would therefore expect that typing "Transformer"
+          // will mean the same thing as clicking "Transformer" in the menu.
+          // So we have to convert it to its fully-qualified version.
           const selectedTags = [];
 
-          for (const v of value) {
-            selectedTags.push(v.includes(':') ? v : tags.find((t) => t.replace(/.*:/g, '') == v));
+          for (const tagInput of tagInputArray) {
+            let selectedTag;
+
+            if (tagInput.includes(':')) {
+              // If there's a colon, it's already fully-qualified,
+              selectedTag = tagInput;
+            } else {
+              // If there's no colon, then it's not fully-qualified,
+              // so we find the full tag which abbreviates
+              // to the unqualified one.
+              selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+            }
+            if (selectedTag) {
+              selectedTags.push(selectedTag);
+            }
           }
           setFieldValue(id, selectedTags);
         } else {
-          setFieldValue(id, value);
+          // If `trimTaxonomy` is disabled,
+          // then we can leave the input as it is.
+          setFieldValue(id, tagInputArray);
         }
       }}
-      labelKey={labelKey}
+      labelKey={trimTaxonomy ? abbreviatedTag : undefined}
       placeHolder={placeHolder}
       disabled={!userIsOwner}
       allowNew={false}
@@ -295,7 +327,7 @@ const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
       title: 'Goals',
       id: 'tags_goals',
       idValue: values['tags_goals'],
-      labelKey: abbreviatedTag,
+      trimTaxonomy: true,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]) &&
@@ -313,7 +345,7 @@ const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
       title: 'Methods',
       id: 'tags_methods',
       idValue: values['tags_methods'],
-      labelKey: abbreviatedTag,
+      trimTaxonomy: true,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]) &&
@@ -331,7 +363,6 @@ const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
       title: 'Other',
       id: 'tags_other',
       idValue: values['tags_other'],
-      labelKey: (tag) => tag,
       include: (tagParts) =>
         tagParts[0] != 'GMF' ||
         ![
