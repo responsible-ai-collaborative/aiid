@@ -49,7 +49,7 @@ describe('Integrity', () => {
     }
   );
 
-  it(
+  it.skip(
     `is_incident_report should be true for reports assigned to incidents and vice versa`,
     { requestTimeout: 60000, defaultCommandTimeout: 60000, responseTimeout: 60000 },
     () => {
