@@ -10,7 +10,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className = '' }) => {
   return (
     <div
       data-cy="social-share-buttons"
-      className={`flex social-btn-container ${page} ${className}`}
+      className={`flex social-btn-container ${page} ${className || ''}`}
     >
       {/* Twitter */}
       <button

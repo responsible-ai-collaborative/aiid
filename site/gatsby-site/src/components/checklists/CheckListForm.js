@@ -5,6 +5,17 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faEnvelope,
+  faPlusCircle,
+  faWindowMaximize,
+  faWindowMinimize,
+  faBullseye,
+  faMicrochip,
+  faArrowsTurnToDots,
+  faTag,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import {
@@ -144,6 +155,7 @@ export default function CheckListForm({
         <HeaderControls>
           <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
           <Button color="light" onClick={() => alert('Coming soon')}>
+            <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
             <Trans>Subscribe</Trans>
           </Button>
           {userIsOwner && (
@@ -176,6 +188,7 @@ export default function CheckListForm({
                 )
               }
             >
+              <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
               <Trans>Expand all</Trans>
             </Button>
             <Button
@@ -187,6 +200,7 @@ export default function CheckListForm({
                 )
               }
             >
+              <FontAwesomeIcon icon={faWindowMinimize} className="mr-2" />
               <Trans>Collapse all</Trans>
             </Button>
             {userIsOwner && (
@@ -198,6 +212,7 @@ export default function CheckListForm({
                   );
                 }}
               >
+                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
                 <Trans>Add Risk</Trans>
               </Button>
             )}
@@ -235,6 +250,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
   return (
     <section>
       <Label for="about-system">
+        <FontAwesomeIcon icon={faMicrochip} className="mr-2" />
         <Trans>About System</Trans>
       </Label>
       <Textarea
@@ -262,9 +278,13 @@ const QueryTagInput = ({
   setFieldValue,
   placeHolder,
   userIsOwner,
+  icon,
 }) => (
   <div className="bootstrap">
-    <Label for={id}>{title}</Label>
+    <Label for={id}>
+      {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
+      {title}
+    </Label>
     <Tags
       id={id}
       value={idValue}
@@ -285,6 +305,7 @@ const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Goals',
       id: 'tags_goals',
+      icon: faBullseye,
       idValue: values['tags_goals'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
@@ -303,6 +324,7 @@ const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Methods',
       id: 'tags_methods',
+      icon: faArrowsTurnToDots,
       idValue: values['tags_methods'],
       labelKey: abbreviatedTag,
       include: (tagParts) =>
@@ -321,6 +343,7 @@ const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Other',
       id: 'tags_other',
+      icon: faTag,
       idValue: values['tags_other'],
       labelKey: (tag) => tag,
       include: (tagParts) =>
@@ -343,20 +366,22 @@ const Header = (props) => {
     lg:min-h-[5.5rem]
     flex justify-between flex-wrap gap-4
     pb-2 -mt-2
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <header {...{ ...props, className }}>{props.children}</header>;
 };
 
 const HeaderInfo = (props) => {
-  const className = `flex flex-col justify-center ${props.className}`;
+  const className = `flex flex-col justify-center ${props.className || ''}`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 const HeaderControls = (props) => {
-  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`;
+  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${
+    props.className || ''
+  }`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
@@ -366,14 +391,14 @@ const SideBySide = (props) => {
     flex flex-col md:flex-row gap-2
     [&>*]:w-full [&>*]:md:w-1/2
     [&>*]:h-full 
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 function SavingIndicator({ isSubmitting, submissionError, className }) {
-  className = `text-lg text-gray-500 inline-block ${className}`;
+  className = `text-lg text-gray-500 inline-block ${className || ''}`;
 
   if (isSubmitting) {
     return (
@@ -404,7 +429,9 @@ function Info({ children, className }) {
   if (hide) return <></>;
   return (
     <div
-      className={`${className} bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
+      className={`${
+        className || ''
+      } bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
     >
       <button
         className="border-0 bg-none float-right text-xl pl-4 pb-2 -mt-3"
