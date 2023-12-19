@@ -680,6 +680,8 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('Clone Incident').click();
 
     cy.waitForStableDOM();
