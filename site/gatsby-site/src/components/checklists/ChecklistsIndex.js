@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckToSlot } from '@fortawesome/free-solid-svg-icons';
+import { faCheckToSlot, faEnvelope, faPlusCircle, faClone, faTrash } from '@fortawesome/free-solid-svg-icons';
 import gql from 'graphql-tag';
 
 import CardSkeleton from 'elements/Skeletons/Card';
@@ -175,6 +175,7 @@ const ChecklistsIndex = ({ users }) => {
                   window.location = '/apps/checklists?id=' + newChecklist.id;
                 }}
               >
+                <FontAwesomeIcon icon={faPlusCircle} className="mr-2"/>
                 <Trans>New</Trans>
               </Button>
             )}
@@ -262,9 +263,11 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
             }
           }}
         >
+          <FontAwesomeIcon icon={faPlusCircle} className="mr-2"/>
           <Trans>Clone</Trans>
         </Button>
         <Button color="light" onClick={() => alert('Coming soon')}>
+          <FontAwesomeIcon icon={faEnvelope} className="mr-2"/>
           <Trans>Subscribe</Trans>
         </Button>
         {user.id == checklist.owner_id && (
@@ -283,6 +286,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
               }
             }}
           >
+            <FontAwesomeIcon icon={faTrash} className="mr-2"/>
             <Trans>Delete</Trans>
           </DeleteButton>
         )}
