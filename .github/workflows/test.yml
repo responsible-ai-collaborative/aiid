@@ -10,7 +10,8 @@ jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on:
+      group: public
     defaults:
       run:
         shell: bash
