@@ -270,7 +270,23 @@ const QueryTagInput = ({
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
       onChange={(value) => {
-        setFieldValue(id, value);
+        if (labelKey == abbreviatedTag) {
+          const selectedTags = [];
+
+          for (const v of value) {
+            let tag;
+
+            if (v.includes(':')) {
+              tag = v;
+            } else {
+              tag = tags.find((t) => t.replace(/.*:/g, '') == v);
+            }
+            selectedTags.push(tag);
+          }
+          setFieldValue(id, selectedTags);
+        } else {
+          setFieldValue(id, value);
+        }
       }}
       labelKey={labelKey}
       placeHolder={placeHolder}
