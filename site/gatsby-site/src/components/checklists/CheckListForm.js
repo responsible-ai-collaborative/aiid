@@ -313,7 +313,7 @@ const QueryTagInput = ({
           setFieldValue(id, tagInputArray);
         }
       }}
-      labelKey={trimTaxonomy ? abbreviatedTag : undefined}
+      labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
       placeHolder={placeHolder}
       disabled={!userIsOwner}
       allowNew={false}
