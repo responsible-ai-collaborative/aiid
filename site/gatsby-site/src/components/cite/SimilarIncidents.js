@@ -170,7 +170,7 @@ const SimilarIncidents = ({
   );
 
   return (
-    <div className={`tw-similar-incidents ${className}`}>
+    <div className={`tw-similar-incidents ${className || ''}`}>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <LocalizedLink
           to={'/summaries/spatial?incident=' + parentIncident.incident_id}
