@@ -546,4 +546,43 @@ describe('The Discover app', () => {
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
     }
   );
+
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Performs a search and filters results classifications',
+    () => {
+      cy.visit(url);
+
+      cy.waitForStableDOM();
+
+      cy.get('form#searchForm').as('form');
+
+      // Filter by classifications
+      cy.get('[data-cy=expand-filters]').click();
+
+      cy.waitForStableDOM();
+
+      cy.contains('button', 'Classifications').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="classifications"] [placeholder="Type Here"]', { timeout: 8000 })
+        .type('CSETv0:Intent:Accident')
+        .type('{enter}');
+
+      cy.get('[data-cy="classifications-item"]:contains("CSETv0:Intent:Accident")', {
+        timeout: 8000,
+      })
+        .first()
+        .click();
+
+      cy.waitForStableDOM();
+
+      cy.url().should('include', 'classifications=CSETv0%3AIntent%3AAccident');
+
+      cy.waitForStableDOM();
+
+      cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
+    }
+  );
 });
