@@ -20,7 +20,7 @@ export default function Select(props) {
     dark:focus:ring-blue-500
          focus:ring-blue-500
 
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <select {...{ ...props, className }}>{props.children}</select>;

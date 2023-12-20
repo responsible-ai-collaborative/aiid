@@ -28,7 +28,7 @@ export default function Tags({
 
   return (
     <Typeahead
-      className={`Typeahead ${className}`}
+      className={`Typeahead ${className || ''}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === ',') {
