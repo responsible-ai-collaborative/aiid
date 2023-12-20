@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'use-query-params';
 import { DisplayModeEnumParam } from './queryParams';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faThList, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'flowbite-react';
+import { useInstantSearch } from 'react-instantsearch';
 
 const modes = {
   details: {
@@ -20,8 +21,46 @@ const modes = {
 export default function DisplayModeSwitch() {
   const [display, setDisplay] = useQueryParam('display', DisplayModeEnumParam);
 
+  const { indexUiState, setIndexUiState } = useInstantSearch();
+
+  console.log('indexUiState', indexUiState);
+
+  const [, setConfigure] = useState({ ...indexUiState.configure });
+
+  // const { items } = useCurrentRefinements();
+
+  useEffect(() => {
+    setConfigure((configure) => ({ ...configure, ...indexUiState.configure }));
+  }, [indexUiState]);
+
   const onChange = (key) => {
     setDisplay(key);
+    setIndexUiState((previousState) => {
+      const test = {
+        ...previousState,
+        refinementList: {
+          ...previousState.refinementList,
+          display: [key],
+        },
+        configure: {
+          ...previousState.configure,
+        },
+      };
+
+      console.log(test);
+      return {
+        ...previousState,
+        refinementList: {
+          ...previousState.refinementList,
+          display: [key],
+        },
+        configure: {
+          ...previousState.configure,
+        },
+      };
+    });
+
+    setConfigure((configure) => ({ ...configure }));
   };
 
   return (

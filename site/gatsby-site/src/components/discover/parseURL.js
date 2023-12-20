@@ -12,6 +12,7 @@ const convertStringToRefinement = (obj) => {
     'is_incident_report',
     'tags',
     'language',
+    'display',
   ];
 
   let newObj = {};
@@ -69,6 +70,8 @@ export default function ({ location, indexName, queryConfig }) {
   const query = decodeQueryParams(queryConfig, object);
 
   const searchState = generateSearchState({ query });
+
+  console.log('searchState', searchState?.refinementList);
 
   return { [indexName]: searchState };
 }
