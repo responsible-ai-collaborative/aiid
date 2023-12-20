@@ -25,25 +25,18 @@ jobs:
           echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
           echo "Job originally triggered by ${{ github.actor }}"
           exit 1
-
-  call-build:
-    if: ${{ !failure() }}
-    needs: permissions-check
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      environment: staging
-
   call-test:
+    if: ${{ !failure() }}
     uses: ./.github/workflows/test.yml
-    needs: call-build
+    needs: permissions-check
     secrets: inherit
     with:
       environment: staging
 
   call-deploy:
+    if: ${{ !failure() }}
     uses: ./.github/workflows/deploy.yml
-    needs: call-build
+    needs: permissions-check
     secrets: inherit
     permissions:
       pull-requests: write

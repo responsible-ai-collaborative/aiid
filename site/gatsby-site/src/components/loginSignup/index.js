@@ -17,7 +17,7 @@ const LoginSignup = ({ className = '', location = null }) => {
 
   return (
     <>
-      <div className={`flex items-center ${className}`}>
+      <div className={`flex items-center ${className || ''}`}>
         {isUserLoggedIn ? <Subscriptions /> : <Subscribe location={location} />}
       </div>
     </>

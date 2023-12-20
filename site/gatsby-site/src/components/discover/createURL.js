@@ -82,7 +82,7 @@ const getQueryFromState = ({ state, locale, taxa }) => {
       SORTING_LIST.find((s) => s[`value_${locale}`] === state.sortBy)?.name || state.sortBy;
   }
 
-  if (state.configure.distinct === true) {
+  if (state.configure?.distinct === true) {
     query.hideDuplicates = 1;
   }
 
@@ -94,7 +94,7 @@ const getQueryFromState = ({ state, locale, taxa }) => {
 };
 
 export default function ({ routeState, indexName, locale, queryConfig, taxa }) {
-  const state = routeState[indexName];
+  const state = routeState[indexName] || {};
 
   const query = getQueryFromState({ state, locale, taxa });
 
