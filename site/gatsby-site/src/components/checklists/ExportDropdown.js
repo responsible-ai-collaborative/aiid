@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const ExportDropdown = ({ checklist }) => {
   const label = (
     <>
-      <FontAwesomeIcon icon={faDownload} className="mr-2"/>
+      <FontAwesomeIcon icon={faDownload} className="mr-2" />
       <Trans>Export</Trans>
     </>
   );
