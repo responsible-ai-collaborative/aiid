@@ -16,6 +16,10 @@ import {
   faComputer,
   faHashtag,
   faTrash,
+  faBarsProgress,
+  faNoteSticky,
+  faRotateLeft,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
@@ -143,6 +147,7 @@ export default function RiskSection({
         {showPrecedentFilters && (
           <PrecedentsQuery>
             <Label>
+              <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <Trans>Precedents Filter</Trans>
             </Label>
             <div className="bootstrap">
@@ -159,7 +164,10 @@ export default function RiskSection({
         )}
         <Precedents>
           <div className="flex justify-between">
-            <Label>Precedents</Label>
+            <Label>
+              <FontAwesomeIcon icon={faRotateLeft} className="mr-2" />
+              {t('Precedents')}
+            </Label>
             <button
               className="text-gray-600 mb-1"
               onClick={() => setShowPrecedentFilters((value) => !value)}
@@ -192,6 +200,7 @@ export default function RiskSection({
         </Precedents>
         <RiskFields>
           <label className="-mb-1" htmlFor="risk_status">
+            <FontAwesomeIcon icon={faBarsProgress} className="mr-2" />
             Risk Status
           </label>
           <Select
@@ -224,7 +233,10 @@ const RiskSeverity = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
 
   return (
     <div>
-      <Label>{t('Severity')}</Label>
+      <Label>
+        <FontAwesomeIcon icon={faBolt} className="mr-2" />
+        {t('Severity')}
+      </Label>
       <TextInput
         value={displaySeverity}
         disabled={!userIsOwner}
@@ -244,7 +256,10 @@ const RiskLikelihood = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
 
   return (
     <div>
-      <Label>{t('Likelihood')}</Label>
+      <Label>
+        <FontAwesomeIcon icon={faPercent} className="mr-2" />
+        {t('Likelihood')}
+      </Label>
       <TextInput
         value={displayLikelihood}
         disabled={!userIsOwner}
@@ -264,7 +279,10 @@ const RiskNotes = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
 
   return (
     <div className="md:h-full flex flex-col">
-      <Label>{t('Risk Notes')}</Label>
+      <Label>
+        <FontAwesomeIcon icon={faNoteSticky} className="mr-2" />
+        {t('Risk Notes')}
+      </Label>
       <Textarea
         className="md:h-full shrink-1"
         value={displayNotes}
@@ -282,7 +300,7 @@ const RiskBody = (props) => (
   <div
     {...{
       ...props,
-      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className}`,
+      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className || ''}`,
     }}
   >
     {props.children}
@@ -306,7 +324,7 @@ const RiskDetails = (props) => (
           [&>summary]:before:content-['⏵']
     [&[open]>summary]:before:w-4
           [&>summary]:before:w-4
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -329,7 +347,7 @@ const RiskHeaderSummary = (props) => (
     before:text-lg 
     ${props.generated ? 'before:text-gray-400' : 'before:text-red-700'}
 
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -341,7 +359,7 @@ const HeaderItemsGroup = (props) => (
   <div
     {...{
       ...props,
-      className: `md:flex px-2 gap-2 bg-white items-center ${props.className}`,
+      className: `md:flex px-2 gap-2 bg-white items-center ${props.className || ''}`,
     }}
   >
     {props.children}
@@ -356,7 +374,7 @@ const HeaderTextWithIcon = (props) => (
     inline-flex flex gap-1 items-center
     inline-block bg-${props.color || 'gray'}-200 px-3 rounded-lg 
     text-${props.color || 'gray'}-800
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -365,17 +383,17 @@ const HeaderTextWithIcon = (props) => (
 );
 
 const PrecedentsQuery = (props) => (
-  <div {...{ ...props, className: `col-span-2 ${props.className}` }}>{props.children}</div>
+  <div {...{ ...props, className: `col-span-2 ${props.className || ''}` }}>{props.children}</div>
 );
 
 const Precedents = (props) => (
-  <div {...{ ...props, className: `col-span-1 flex flex-col h-full ${props.className}` }}>
+  <div {...{ ...props, className: `col-span-1 flex flex-col h-full ${props.className || ''}` }}>
     {props.children}
   </div>
 );
 
 const RiskFields = (props) => (
-  <div {...{ ...props, className: `col-span-1 flex flex-col gap-2 ${props.className}` }}>
+  <div {...{ ...props, className: `col-span-1 flex flex-col gap-2 ${props.className || ''}` }}>
     {props.children}
   </div>
 );
@@ -392,7 +410,7 @@ const PrecedentsList = (props) => (
     border-1 border-gray-200 
     rounded 
     shadow-inner
-    ${props.className}
+    ${props.className || ''}
   `,
     }}
   >
@@ -424,7 +442,7 @@ function ProgressCircle({ progress, className }) {
   const clearLength = c - filledLength;
 
   return (
-    <div title={Math.round(progress * 100) + '%'} className={`${className} inline`}>
+    <div title={Math.round(progress * 100) + '%'} className={`${className || ''} inline`}>
       <svg width="20" height="20" viewBox="0 0 60 60">
         <circle stroke="#d8dadc" strokeWidth="10" fill="transparent" r={r} cx="30" cy="30" />
         <circle

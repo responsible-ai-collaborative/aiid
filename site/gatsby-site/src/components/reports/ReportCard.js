@@ -120,9 +120,9 @@ const ReportCard = ({
   return (
     <>
       <div
-        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative ${
-          expanded ? 'expanded' : ''
-        }`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${
+          className || ''
+        } p-4 relative ${expanded ? 'expanded' : ''}`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"

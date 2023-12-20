@@ -253,7 +253,7 @@ export default function Table({
   } = table;
 
   return (
-    <div className={`max-w-full ${className}`} {...props}>
+    <div className={`max-w-full ${className || ''}`} {...props}>
       {/* eslint-disable react/jsx-key */}
       <div className="max-w-full overflow-x-scroll">
         <table {...getTableProps()} className={`${tableClassName} w-full`}>
