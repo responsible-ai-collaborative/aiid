@@ -1,7 +1,9 @@
 <p align="center">
-  <a href="https://incidentdatabase.ai">
-    <img src="./site/gatsby-site/static/logos/Blue_AIID.svg#gh-light-mode-only" height="100">
-    <img src="./site/gatsby-site/static/logos/White_AIID.svg#gh-dark-mode-only" height="100">
+  <a href="https://incidentdatabase.ai#gh-light-mode-only">
+    <img src="./site/gatsby-site/static/logos/Blue_AIID.svg" height="100">
+  </a>
+  <a href="https://incidentdatabase.ai#gh-dark-mode-only">
+    <img src="./site/gatsby-site/static/logos/White_AIID.svg" height="100">
   </a>
 </p>
 <h1 align="center">
