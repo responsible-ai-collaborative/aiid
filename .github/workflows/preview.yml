@@ -25,6 +25,7 @@ jobs:
           echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
           echo "Job originally triggered by ${{ github.actor }}"
           exit 1
+
   call-test:
     if: ${{ !failure() }}
     uses: ./.github/workflows/test.yml

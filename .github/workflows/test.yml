@@ -10,8 +10,7 @@ jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on:
-      group: public
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -44,6 +43,7 @@ jobs:
             site/gatsby-site/node_modules
             ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install NPM dependencies
         if: steps.cache-nodemodules-2.outputs.cache-hit != 'true'
         uses: cypress-io/github-action@v4

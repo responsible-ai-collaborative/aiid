@@ -1,5 +1,5 @@
 describe('/api/parseNews endpoint', () => {
-  it.skip('Should parse news', () => {
+  it('Should parse news', () => {
     const newsUrl = 'https://incidentdatabase.ai/blog/improv-ai/';
 
     cy.request('GET', `/api/parseNews?url=${encodeURIComponent(newsUrl)}`).then((response) => {
