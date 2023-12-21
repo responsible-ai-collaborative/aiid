@@ -249,6 +249,7 @@ const plugins = [
           'variants',
           'footer',
           'sponsors',
+          'incidents',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,

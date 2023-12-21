@@ -109,4 +109,27 @@ describe('Checklists App Form', () => {
       cy.wait(['@upsertChecklist']);
     });
   });
+
+  maybeIt('Should trigger GraphQL update on removing tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+        tags_goals: ['GMF:Known AI Goal:Code Generation'],
+      });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('[option="GMF:Known AI Goal:Code Generation"] .close').click();
+
+      cy.wait(['@upsertChecklist']).then((xhr) => {
+        expect(xhr.request.body.variables.checklist).to.deep.nested.include({
+          tags_goals: [],
+        });
+      });
+
+      cy.visit(url);
+    });
+  });
 });

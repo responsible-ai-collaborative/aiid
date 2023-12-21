@@ -5,6 +5,17 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faEnvelope,
+  faPlusCircle,
+  faWindowMaximize,
+  faWindowMinimize,
+  faBullseye,
+  faMicrochip,
+  faArrowsTurnToDots,
+  faTag,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import {
@@ -144,6 +155,7 @@ export default function CheckListForm({
         <HeaderControls>
           <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
           <Button color="light" onClick={() => alert('Coming soon')}>
+            <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
             <Trans>Subscribe</Trans>
           </Button>
           {userIsOwner && (
@@ -176,6 +188,7 @@ export default function CheckListForm({
                 )
               }
             >
+              <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
               <Trans>Expand all</Trans>
             </Button>
             <Button
@@ -187,6 +200,7 @@ export default function CheckListForm({
                 )
               }
             >
+              <FontAwesomeIcon icon={faWindowMinimize} className="mr-2" />
               <Trans>Collapse all</Trans>
             </Button>
             {userIsOwner && (
@@ -198,6 +212,7 @@ export default function CheckListForm({
                   );
                 }}
               >
+                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
                 <Trans>Add Risk</Trans>
               </Button>
             )}
@@ -235,6 +250,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
   return (
     <section>
       <Label for="about-system">
+        <FontAwesomeIcon icon={faMicrochip} className="mr-2" />
         <Trans>About System</Trans>
       </Label>
       <Textarea
@@ -255,24 +271,69 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
 const QueryTagInput = ({
   title,
   id,
-  labelKey,
   include,
   idValue,
   tags,
   setFieldValue,
   placeHolder,
   userIsOwner,
+  icon,
+  trimTaxonomy = false,
 }) => (
   <div className="bootstrap">
-    <Label for={id}>{title}</Label>
+    <Label for={id}>
+      {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
+      {title}
+    </Label>
     <Tags
       id={id}
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
-      onChange={(value) => {
-        setFieldValue(id, value);
+      onChange={(tagInputArray) => {
+        //
+        // Example tagInputArray:
+        //
+        // ["GMF:Known AI Technology:Transformer", "Language Model"]
+        //     |                                         |
+        //  ,  |    Not fully-qualified, entered by direct text entry
+        //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
+        //     |    "GMF:Known AI Technology:Language Model"
+        //     |
+        //  Fully-qualified, entered from menu
+        //
+        if (trimTaxonomy) {
+          // If `trimTaxonomy` is enabled, then
+          // "GMF:Known AI Technology:Transformer"
+          // displays in the menu as just "Transformer".
+          // Users would therefore expect that typing "Transformer"
+          // will mean the same thing as clicking "Transformer" in the menu.
+          // So we have to convert it to its fully-qualified version.
+          const selectedTags = [];
+
+          for (const tagInput of tagInputArray) {
+            let selectedTag;
+
+            if (tagInput.includes(':')) {
+              // If there's a colon, it's already fully-qualified,
+              selectedTag = tagInput;
+            } else {
+              // If there's no colon, then it's not fully-qualified,
+              // so we find the full tag which abbreviates
+              // to the unqualified one.
+              selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+            }
+            if (selectedTag) {
+              selectedTags.push(selectedTag);
+            }
+          }
+          setFieldValue(id, selectedTags);
+        } else {
+          // If `trimTaxonomy` is disabled,
+          // then we can leave the input as it is.
+          setFieldValue(id, tagInputArray);
+        }
       }}
-      labelKey={labelKey}
+      labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
       placeHolder={placeHolder}
       disabled={!userIsOwner}
       allowNew={false}
@@ -285,8 +346,9 @@ const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Goals',
       id: 'tags_goals',
+      icon: faBullseye,
       idValue: values['tags_goals'],
-      labelKey: abbreviatedTag,
+      trimTaxonomy: true,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]) &&
@@ -303,8 +365,9 @@ const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Methods',
       id: 'tags_methods',
+      icon: faArrowsTurnToDots,
       idValue: values['tags_methods'],
-      labelKey: abbreviatedTag,
+      trimTaxonomy: true,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]) &&
@@ -321,8 +384,8 @@ const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Other',
       id: 'tags_other',
+      icon: faTag,
       idValue: values['tags_other'],
-      labelKey: (tag) => tag,
       include: (tagParts) =>
         tagParts[0] != 'GMF' ||
         ![
