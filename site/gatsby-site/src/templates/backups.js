@@ -1,11 +1,12 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import { format } from 'date-fns';
+import config from '../../config';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
@@ -59,15 +60,16 @@ const Backups = ({ pageContext, ...props }) => {
         <Container>
           <Row>
             <Col xs={12}>
-              <ul className="pl-8 leading-6">
+              <ul className="pl-8 leading-6" data-cy="snapshots-list">
                 {backups
                   .map((b) => ({
                     ...b,
-                    Url: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
+                    Url: `${config.cloudflareR2.publicBucketUrl}/${b.Key}`,
                   }))
                   .map((value) => (
                     <li key={`snapshot-${value['Key']}`}>
-                      {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
+                      {format(new Date(value['LastModified']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
+                      {(value['Size'] / 1000000).toFixed(2)} MB &middot;{' '}
                       <Link to={value['Url']}>{value['Key']}</Link>
                     </li>
                   ))}

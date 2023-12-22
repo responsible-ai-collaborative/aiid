@@ -26,7 +26,7 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     });
   }
 
-  urlsToTest.forEach(({ page, url, shareButtonSections }) => {
+  urlsToTest.forEach(({ page, url, title, shareButtonSections }) => {
     it(`${page} page should have ${shareButtonSections} Social Share button sections`, () => {
       cy.visit(url);
 
@@ -38,8 +38,7 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     const canonicalUrl = `https://incidentdatabase.ai${url}`;
 
     // Twitter share
-    // TODO: https://github.com/responsible-ai-collaborative/aiid/issues/2481
-    it.skip(`${page} page should have a Twitter share button`, () => {
+    it(`${page} page should have a Twitter share button`, () => {
       cy.visit(url);
 
       cy.get('[data-cy=btn-share-twitter]').should('exist');
@@ -57,9 +56,8 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
       cy.get('@popup_twitter', { timeout: 8000 }).should('be.called');
       cy.url().should(
         'contain',
-        `https://twitter.com/i/flow/login?redirect_after_login=%2Fintent%2Ftweet%3Ftext%3D`
+        `https://twitter.com/intent/tweet?text=${encodeURI(title)}&url=${canonicalUrl}`
       );
-      cy.url().should('contain', `url%3D${encodeURIComponent(canonicalUrl)}`);
     });
 
     // LinkedIn share
