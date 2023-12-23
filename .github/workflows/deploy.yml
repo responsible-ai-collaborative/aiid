@@ -8,8 +8,7 @@ on:
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
-    runs-on:
-      group: public
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash

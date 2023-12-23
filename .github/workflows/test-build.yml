@@ -10,9 +10,7 @@ jobs:
   test:
     name: Build site for testing
     environment: ${{ inputs.environment }}
-    runs-on:
-      group: public
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
