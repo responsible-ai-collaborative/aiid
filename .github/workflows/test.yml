@@ -59,6 +59,8 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
+            site/gatsby-site/src
+            site/gatsby-site/config.js
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
 
       - name: Extract branch name
