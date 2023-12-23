@@ -6,7 +6,6 @@ on:
       - staging
     types: [opened, synchronize, reopened]
 jobs:
-
   permissions-check:
     runs-on: ubuntu-latest
     steps:
@@ -26,10 +25,18 @@ jobs:
           echo "Job originally triggered by ${{ github.actor }}"
           exit 1
 
+  call-test-build:
+    if: ${{ !failure() }}
+    uses: ./.github/workflows/test-build.yml
+    needs: permissions-check
+    secrets: inherit
+    with:
+      environment: staging
+
   call-test:
     if: ${{ !failure() }}
     uses: ./.github/workflows/test.yml
-    needs: permissions-check
+    needs: call-test-build
     secrets: inherit
     with:
       environment: staging

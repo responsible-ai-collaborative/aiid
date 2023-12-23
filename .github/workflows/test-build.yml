@@ -1,21 +1,18 @@
-name: Deploy to Netlify
+name: Deploy
 on:
   workflow_call:
     inputs:
       environment:
         type: string
         required: true
+
 jobs:
-  netlify-deploy:
+  test:
+    name: Build site for testing
     environment: ${{ inputs.environment }}
     runs-on:
       group: public
-    defaults:
-      run:
-        shell: bash
-        working-directory: site/gatsby-site
-    permissions:
-      pull-requests: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,25 +27,29 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
+            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-
-      - name: Install dependencies
+      - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        run: npm ci
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: site/gatsby-site
+          runTests: false
+          install-command: npm ci
 
       - name: Use new netlify.toml
         run: |
           rm -f netlify.toml
           mv github-netlify.toml netlify.toml
-
+        working-directory: site/gatsby-site
+      
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
         run: netlify build --context deploy-preview
+        working-directory: site/gatsby-site
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -79,30 +80,11 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
 
-      - name: Upload to netlify
-        id: deploy-netlify
-        working-directory: site/gatsby-site
-        run: |
-          set -e
-          OUTPUT=$(bash -c "netlify deploy --json --alias=pr-${{ github.event.pull_request.number }}" | tr '\n' ' ')
-          set +e
-          NETLIFY_OUTPUT=$(echo "$OUTPUT")
-          echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
+      - name: Cache build
+        uses: actions/cache/save@v3
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      - name: Comment on PR
-        uses: actions/github-script@v5
+          cache-name: cache-build-folder
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
-            const deployData = JSON.parse(deployOutput);
-            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+          path: |
+            site/gatsby-site/public
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
