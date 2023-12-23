@@ -85,6 +85,5 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-            site/gatsby-site/src
-            site/gatsby-site/config.js
+            site/gatsby-site/.cache/functions
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
