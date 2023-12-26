@@ -8,25 +8,9 @@ on:
 
 jobs:
   test:
-    name: Run Cypress tests
+    name: Build site for testing
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: site/gatsby-site
-    strategy:
-      # when one test fails, DO NOT cancel the other
-      # containers, because this will kill Cypress processes
-      # leaving the Dashboard hanging ...
-      # https://github.com/cypress-io/github-action/issues/48
-      fail-fast: false
-      matrix:
-        # run 10 copies of the current job in parallel
-        containers: [1, 2, 3, 4]
-    # stop the job if it runs over 20 minutes
-    # to prevent a hanging process from using all your CI minutes
-    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,37 +36,21 @@ jobs:
           runTests: false
           install-command: npm ci
 
-      - name: Restore build cache
-        uses: actions/cache/restore@v3
-        env:
-          cache-name: cache-build-folder
-        with:
-          path: |
-            site/gatsby-site/public
-            site/gatsby-site/.cache/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+      - name: Use new netlify.toml
+        run: |
+          rm -f netlify.toml
+          mv github-netlify.toml netlify.toml
+        working-directory: site/gatsby-site
+      
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: site/gatsby-site
-          install: false
-          config-file: cypress.config.js
-          record: true
-          parallel: true
-          group: "Cypress e2e tests"
-          tag: ${{ steps.extract_branch.outputs.branch }}
-          start: node node_modules/.bin/gatsby serve -p 8000 -H 127.0.0.1
-          wait-on: http://127.0.0.1:8000
-          wait-on-timeout: 60
+      - name: Build using Netlify
+        run: netlify build --context deploy-preview
+        working-directory: site/gatsby-site
         env:
-          # Recommended: pass the GitHub token lets this action correctly
-          # determine the unique run id necessary to re-run the checks
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -99,11 +67,23 @@ jobs:
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
+          GATSBY_PRISMIC_REPO_NAME: ${{ secrets.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
-          # Since this is triggered on a pull request, we set the commit message to the pull request title
-          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
           CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
           GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ secrets.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+
+      - name: Cache build
+        uses: actions/cache/save@v3
+        env:
+          cache-name: cache-build-folder
+        with:
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/.cache/functions
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
