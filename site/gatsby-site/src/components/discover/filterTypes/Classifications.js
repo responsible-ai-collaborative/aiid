@@ -85,7 +85,7 @@ function Namespace({ taxonomy, refinement, searchResults }) {
   }, [searchResults]);
 
   return (
-    <div key={namespace} className="border p-2 rounded-md" data-cy={namespace}>
+    <div className="border p-2 rounded-md" data-cy={namespace}>
       <div
         className="font-bold cursor-pointer"
         role="button"
@@ -117,6 +117,16 @@ function Namespace({ taxonomy, refinement, searchResults }) {
             })}
         </div>
       )}
+    </div>
+  );
+}
+
+function EmptyNamespace({ taxonomy }) {
+  const { namespace } = taxonomy;
+
+  return (
+    <div className="border p-2 rounded-md" data-cy={namespace}>
+      <div className="font-bold">{namespace} (0)</div>
     </div>
   );
 }
@@ -220,24 +230,22 @@ export default function Classifications({ taxa }) {
 
       {searchResults == null || searchResults.length > 0 ? (
         <div className="mt-3 space-y-2">
-          {namespaces
-            .filter(
-              (ns) =>
-                searchResults == null ||
-                searchResults.map((r) => r.value.split(':')[0]).includes(ns.value)
-            )
-            .map((refinement) => {
-              const taxonomy = taxa.find((t) => t.namespace === refinement.value);
+          {taxa.map((taxonomy) => {
+            const refinement = namespaces.find((r) => r.value === taxonomy.namespace);
 
-              return (
-                <Namespace
-                  key={refinement.value}
-                  taxonomy={taxonomy}
-                  refinement={refinement}
-                  searchResults={searchResults}
-                />
-              );
-            })}
+            if (!refinement) {
+              return <EmptyNamespace key={taxonomy.namespace} taxonomy={taxonomy} />;
+            }
+
+            return (
+              <Namespace
+                key={taxonomy.namespace}
+                taxonomy={taxonomy}
+                refinement={refinement}
+                searchResults={searchResults}
+              />
+            );
+          })}
         </div>
       ) : (
         <div className="mt-3">No results</div>
