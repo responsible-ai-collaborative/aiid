@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Label from './Label';
 import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import 'react-datetime/css/react-datetime.css';
 
 const TextInputGroup = ({
   name = '',
