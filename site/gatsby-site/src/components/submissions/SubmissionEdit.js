@@ -28,7 +28,7 @@ const SubmissionEdit = ({ id }) => {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const { data: userData, loading: userLoading } = useQuery(FIND_USERS_BY_ROLE, {
-    variables: { role: ['editor', 'admin'] },
+    variables: { role: ['incident_editor', 'admin'] },
   });
 
   const addToast = useToastContext();

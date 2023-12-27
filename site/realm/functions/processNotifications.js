@@ -4,7 +4,7 @@ const getRecipients = async (userIds) => {
   for (const userId of userIds) {
     const userResponse = await context.functions.execute('getUser', { userId });
 
-    if (userResponse.email) {
+    if (userResponse?.email) {
       recipients.push({
         email: userResponse.email,
         userId,
@@ -14,13 +14,21 @@ const getRecipients = async (userIds) => {
   return recipients;
 }
 
-const markNotificationsAsProcessed = async (notificationsCollection, notifications) => {
+const markNotifications = async (notificationsCollection, notifications, isProcessed) => {
   for (const pendingNotification of notifications) {
     await notificationsCollection.updateOne(
       { _id: pendingNotification._id },
-      { $set: { processed: true } }
+      { $set: { processed: isProcessed, sentDate: new Date() } }
     );
   }
+}
+
+const markNotificationsAsProcessed = async (notificationsCollection, notifications) => {
+  await markNotifications(notificationsCollection, notifications, true);
+}
+
+const markNotificationsAsNotProcessed = async (notificationsCollection, notifications) => {
+  await markNotifications(notificationsCollection, notifications, false);
 }
 
 const buildEntityList = (allEntities, entityIds) => {
@@ -61,43 +69,57 @@ exports = async function () {
 
         const userIds = subscriptionsToNewIncidents.map((subscription) => subscription.userId);
 
-        const recipients = await getRecipients(userIds);
+        const uniqueUserIds = [...new Set(userIds)];
+
+        const recipients = await getRecipients(uniqueUserIds);
+
+        let uniqueNotifications = [];
 
         for (const pendingNotification of pendingNotificationsToNewIncidents) {
 
-          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+          // Mark the notification as processed before sending the email
+          await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
 
-          //Send email notification
-          const sendEmailParams = {
-            recipients,
-            subject: 'New Incident {{incidentId}} was created',
-            dynamicData: {
-              incidentId: `${incident.incident_id}`,
-              incidentTitle: incident.title,
-              incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
-              incidentDescription: incident.description,
-              incidentDate: incident.date,
-              developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
-              deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
-              entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
-            },
-            templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
-          };
-          const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+          // Send only one email per Incident
+          if (!uniqueNotifications.includes(pendingNotification.incident_id)) {
+            uniqueNotifications.push(pendingNotification.incident_id);
 
-          //If notification was sucessfully sent > Mark the notification as processed
-          if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
-            await notificationsCollection.updateOne(
-              { _id: pendingNotification._id },
-              { $set: { processed: true, sentDate: new Date() } }
-            );
+            try {
+              const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+
+              //Send email notification
+              const sendEmailParams = {
+                recipients,
+                subject: 'New Incident {{incidentId}} was created',
+                dynamicData: {
+                  incidentId: `${incident.incident_id}`,
+                  incidentTitle: incident.title,
+                  incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                  incidentDescription: incident.description,
+                  incidentDate: incident.date,
+                  developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
+                  deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
+                  entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
+                },
+                templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
+              };
+
+              await context.functions.execute('sendEmail', sendEmailParams);
+
+            } catch (error) {
+              // If there is an error sending the email > Mark the notification as not processed
+              await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
+
+              error.message = `[Process Pending Notifications: New Incidents]: ${error.message}`;
+              context.functions.execute('logRollbar', { error });
+            }
           }
         }
 
         console.log(`New Incidents: ${pendingNotificationsToNewIncidents.length} pending notifications were processed.`);
       }
       else {
-        // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
+        // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed
         await markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewIncidents);
       }
     }
@@ -120,61 +142,71 @@ exports = async function () {
 
       const allEntities = await entitiesCollection.find({}).toArray();
 
+      let uniqueNotifications = [];
+
       for (const pendingNotification of pendingNotificationsToNewEntityIncidents) {
 
-        const subscriptionsToNewEntityIncidents = await subscriptionsCollection.find({
-          type: 'entity',
-          entityId: pendingNotification.entity_id
-        }).toArray();
+        // Mark the notification as processed before sending the email
+        await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
 
-        // Process subscriptions to New Entity Incidents
-        if (subscriptionsToNewEntityIncidents.length > 0) {
+        // Process each entity only once
+        if (!uniqueNotifications.includes(pendingNotification.entity_id)) {
+          uniqueNotifications.push(pendingNotification.entity_id);
 
-          const userIds = subscriptionsToNewEntityIncidents.map((subscription) => subscription.userId);
+          try {
 
-          const recipients = await getRecipients(userIds);
+            const subscriptionsToNewEntityIncidents = await subscriptionsCollection.find({
+              type: 'entity',
+              entityId: pendingNotification.entity_id
+            }).toArray();
 
-          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+            // Process subscriptions to New Entity Incidents
+            if (subscriptionsToNewEntityIncidents.length > 0) {
 
-          const entity = allEntities.find(entity => entity.entity_id === pendingNotification.entity_id);
+              const userIds = subscriptionsToNewEntityIncidents.map((subscription) => subscription.userId);
 
-          const isIncidentUpdate = pendingNotification.isUpdate;
+              const uniqueUserIds = [...new Set(userIds)];
 
-          //Send email notification
-          const sendEmailParams = {
-            recipients,
-            subject: isIncidentUpdate ? 'Update Incident for {{entityName}}'
-              : 'New Incident for {{entityName}}',
-            dynamicData: {
-              incidentId: `${incident.incident_id}`,
-              incidentTitle: incident.title,
-              incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
-              incidentDescription: incident.description,
-              incidentDate: incident.date,
-              entityName: entity.name,
-              entityUrl: `https://incidentdatabase.ai/entities/${entity.entity_id}`,
-              developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
-              deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
-              entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
-            },
-            // Template value from function name sufix from "site/realm/functions/config.json"
-            templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident'
-          };
-          const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+              const recipients = await getRecipients(uniqueUserIds);
 
-          //If notification was sucessfully sent > Mark the notification as processed
-          if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
-            await notificationsCollection.updateOne(
-              { _id: pendingNotification._id },
-              { $set: { processed: true, sentDate: new Date() } }
-            );
+              const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+
+              const entity = allEntities.find(entity => entity.entity_id === pendingNotification.entity_id);
+
+              const isIncidentUpdate = pendingNotification.isUpdate;
+
+              //Send email notification
+              const sendEmailParams = {
+                recipients,
+                subject: isIncidentUpdate ? 'Update Incident for {{entityName}}'
+                  : 'New Incident for {{entityName}}',
+                dynamicData: {
+                  incidentId: `${incident.incident_id}`,
+                  incidentTitle: incident.title,
+                  incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                  incidentDescription: incident.description,
+                  incidentDate: incident.date,
+                  entityName: entity.name,
+                  entityUrl: `https://incidentdatabase.ai/entities/${entity.entity_id}`,
+                  developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
+                  deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
+                  entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
+                },
+                // Template value from function name sufix from "site/realm/functions/config.json"
+                templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident'
+              };
+
+              await context.functions.execute('sendEmail', sendEmailParams);
+
+              console.log(`New "${entity.name}" Entity Incidents: pending notification was processed.`);
+            }
+          } catch (error) {
+            // If there is an error sending the email > Mark the notification as not processed
+            await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
+
+            error.message = `[Process Pending Notifications: New Entity Incidents]: ${error.message}`;
+            context.functions.execute('logRollbar', { error });
           }
-
-          console.log(`New "${entity.name}" Entity Incidents: pending notification was processed.`);
-        }
-        else {
-          // If there are no subscribers to New Entity Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
-          await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
         }
       }
     }
@@ -197,57 +229,65 @@ exports = async function () {
 
       result += pendingNotificationsToIncidentUpdates.length;
 
+      let uniqueNotifications = [];
+
       for (const pendingNotification of pendingNotificationsToIncidentUpdates) {
 
-        const subscriptionsToIncidentUpdates = await subscriptionsCollection.find({
-          type: 'incident',
-          incident_id: pendingNotification.incident_id
-        }).toArray();
+        // Mark the notification as processed before sending the email
+        await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
 
-        // Process subscriptions to Incident updates
-        if (subscriptionsToIncidentUpdates.length > 0) {
+        // Process each Incident only once
+        if (!uniqueNotifications.some(n => n.incident_id === pendingNotification.incident_id && n.type === pendingNotification.type)) {
+          uniqueNotifications.push(pendingNotification);
 
-          const userIds = subscriptionsToIncidentUpdates.map((subscription) => subscription.userId);
+        try {
+          const subscriptionsToIncidentUpdates = await subscriptionsCollection.find({
+            type: 'incident',
+            incident_id: pendingNotification.incident_id
+          }).toArray();
 
-          const recipients = await getRecipients(userIds);
+          // Process subscriptions to Incident updates
+          if (subscriptionsToIncidentUpdates.length > 0) {
 
-          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+            const userIds = subscriptionsToIncidentUpdates.map((subscription) => subscription.userId);
 
-          const newReportNumber = pendingNotification.report_number;
+            const uniqueUserIds = [...new Set(userIds)];
 
-          const newReport = newReportNumber ? await reportsCollection.findOne({ report_number: newReportNumber }) : null;
+            const recipients = await getRecipients(uniqueUserIds);
 
-          //Send email notification
-          const sendEmailParams = {
-            recipients,
-            subject: 'Incident {{incidentId}} was updated',
-            dynamicData: {
-              incidentId: `${incident.incident_id}`,
-              incidentTitle: incident.title,
-              incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
-              reportUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}#r${newReportNumber}`,
-              reportTitle: newReportNumber ? newReport.title : '',
-              reportAuthor: newReportNumber && newReport.authors[0] ? newReport.authors[0] : '',
-            },
-            // Template value from function name sufix from "site/realm/functions/config.json"
-            templateId: newReportNumber ? 'NewReportAddedToAnIncident' : 'IncidentUpdate',
-          };
+            const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
-          const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+            const newReportNumber = pendingNotification.report_number;
 
-          //If notification was sucessfully sent > Mark the notification as processed
-          if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
-            await notificationsCollection.updateOne(
-              { _id: pendingNotification._id },
-              { $set: { processed: true, sentDate: new Date() } }
-            );
+            const newReport = newReportNumber ? await reportsCollection.findOne({ report_number: newReportNumber }) : null;
+
+            //Send email notification
+            const sendEmailParams = {
+              recipients,
+              subject: 'Incident {{incidentId}} was updated',
+              dynamicData: {
+                incidentId: `${incident.incident_id}`,
+                incidentTitle: incident.title,
+                incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                reportUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}#r${newReportNumber}`,
+                reportTitle: newReportNumber ? newReport.title : '',
+                reportAuthor: newReportNumber && newReport.authors[0] ? newReport.authors[0] : '',
+              },
+              // Template value from function name sufix from "site/realm/functions/config.json"
+              templateId: newReportNumber ? 'NewReportAddedToAnIncident' : 'IncidentUpdate',
+            };
+
+            await context.functions.execute('sendEmail', sendEmailParams);
+
+            console.log(`Incident ${incident.incident_id} updates: Pending notification was processed.`);
           }
+        } catch (error) {
+          // If there is an error sending the email > Mark the notification as not processed
+          await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
 
-          console.log(`Incident ${incident.incident_id} updates: Pending notification was processed.`);
+          error.message = `[Process Pending Notifications: Incidents Updates]: ${error.message}`;
+          context.functions.execute('logRollbar', { error });
         }
-        else {
-          // If there are no subscribers to New Entity Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
-          await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
         }
       }
     }
@@ -262,55 +302,72 @@ exports = async function () {
 
   // Notifications to New Promotions
   try {
+
+    // Finds all pending notifications to New Promotions
     const pendingNotificationsToNewPromotions = await notificationsCollection.find({ processed: false, type: 'submission-promoted' }).toArray();
 
     if (pendingNotificationsToNewPromotions.length > 0) {
 
       result += pendingNotificationsToNewPromotions.length;
 
-      const subscriptionsToNewPromotions = await subscriptionsCollection.find({ type: 'submission-promoted' }).toArray();
+      let uniqueNotifications = [];
 
-      // Process subscriptions to New Incidents
-      if (subscriptionsToNewPromotions.length > 0) {
+      for (const pendingNotification of pendingNotificationsToNewPromotions) {
 
-        const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
+        // Mark the notification as processed before sending the email
+        await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
 
-        const recipients = await getRecipients(userIds);
+        // Process each Incident only once
+        if (!uniqueNotifications.includes(pendingNotification.incident_id)) {
+          uniqueNotifications.push(pendingNotification.incident_id);
 
-        for (const pendingNotification of pendingNotificationsToNewPromotions) {
+          // Finds all subscriptions to New Promotions for this Incident
+          const subscriptionsToNewPromotions = await subscriptionsCollection.find({
+            type: 'submission-promoted',
+            incident_id: pendingNotification.incident_id
+          }).toArray();
 
-          const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+          // Process subscriptions to New Incidents
+          if (subscriptionsToNewPromotions.length > 0) {
 
-          //Send email notification
-          const sendEmailParams = {
-            recipients,
-            subject: 'Your submission has been approved!',
-            dynamicData: {
-              incidentId: `${incident.incident_id}`,
-              incidentTitle: incident.title,
-              incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
-              incidentDescription: incident.description,
-              incidentDate: incident.date,
-            },
-            templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
-          };
-          const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+            const userIds = subscriptionsToNewPromotions.map((subscription) => subscription.userId);
 
-          //If notification was sucessfully sent > Mark the notification as processed
-          if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
-            await notificationsCollection.updateOne(
-              { _id: pendingNotification._id },
-              { $set: { processed: true, sentDate: new Date() } }
-            );
+            const uniqueUserIds = [...new Set(userIds)];
+
+            const recipients = await getRecipients(uniqueUserIds);
+
+            try {
+              const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+
+              //Send email notification
+              const sendEmailParams = {
+                recipients,
+                subject: 'Your submission has been approved!',
+                dynamicData: {
+                  incidentId: `${incident.incident_id}`,
+                  incidentTitle: incident.title,
+                  incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                  incidentDescription: incident.description,
+                  incidentDate: incident.date,
+                },
+                templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
+              };
+
+              await context.functions.execute('sendEmail', sendEmailParams);
+
+              console.log(`Promoted notification for incident ${incident.incident_id} was processed.`);
+
+            } catch (error) {
+              // If there is an error sending the email > Mark the notification as not processed
+              await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
+
+              error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
+              context.functions.execute('logRollbar', { error });
+            }
           }
         }
-
-        console.log(`New Promotions: ${pendingNotificationsToNewPromotions.length} pending notifications were processed.`);
       }
-      else {
-        // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
-        await markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewPromotions);
-      }
+      console.log(`New Promotions: ${pendingNotificationsToNewPromotions.length} pending notifications were processed.`);
     }
     else {
       console.log('Submission Promoted: No pending notifications to process.');

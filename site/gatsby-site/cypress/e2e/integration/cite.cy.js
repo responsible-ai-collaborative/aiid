@@ -285,6 +285,8 @@ describe('Cite pages', () => {
   it('Should pre-fill submit report response form', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('New Response').scrollIntoView().click();
 
     cy.waitForStableDOM();
@@ -736,5 +738,23 @@ describe('Cite pages', () => {
     cy.url().should('contain', `/incidents/new/?incident_id=${incidentId}`);
 
     cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
+  });
+
+  it('Should open incident from the discover app', { retries: { runMode: 4 } }, () => {
+    cy.visit(discoverUrl);
+
+    cy.disableSmoothScroll();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="collapse-button"]:visible').click();
+
+    cy.contains('Show Details on Incident #10').first().click();
+
+    cy.waitForStableDOM();
+
+    cy.url().should('include', '/cite/10');
+
+    cy.waitForStableDOM();
   });
 });

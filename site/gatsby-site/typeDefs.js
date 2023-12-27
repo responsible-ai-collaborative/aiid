@@ -63,10 +63,10 @@ const typeDefs = `
         image_url: String
         url: String
         submitters: [String]
-        date_published: String
-        date_submitted: String
-        date_modified: String
-        date_downloaded: String
+        date_published: Date
+        date_submitted: Date
+        date_modified: Date
+        date_downloaded: Date
         source_domain: String
         mongodb_id: String
         text: String

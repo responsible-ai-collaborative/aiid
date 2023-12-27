@@ -42,7 +42,7 @@ const FlowbiteSearchInput = ({
           props.touched[name] && props.errors[name]
             ? 'border-red-600 focus:border-red-600 focus:ring-red-500'
             : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
-        } ${className}`}
+        } ${className || ''}`}
         placeholder={placeholder}
         onChange={handleChange}
         onBlur={handleBlur}

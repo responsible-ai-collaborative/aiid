@@ -1,3 +1,5 @@
+const { SUBSCRIPTION_TYPE } = require('../../../../src/utils/subscriptions');
+
 const promoteSubmissionToReport = require('../../../../../realm/functions/promoteSubmissionToReport');
 
 //should be on its own /cypress/unit folder or something
@@ -223,10 +225,10 @@ describe('Functions', () => {
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
-        date_downloaded: '2020-10-30',
-        date_modified: '2021-07-27',
-        date_published: '2017-05-03',
-        date_submitted: '2020-10-30',
+        date_downloaded: new Date('2020-10-30'),
+        date_modified: new Date('2021-07-27'),
+        date_published: new Date('2017-05-03'),
+        date_submitted: new Date('2020-10-30'),
         epoch_date_downloaded: 1604016000,
         epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,
@@ -256,6 +258,12 @@ describe('Functions', () => {
       expect(reportsHistoryCollection.insertOne.firstCall.args[0]).to.deep.eq({
         ...expectedReport,
         modifiedBy: submission.user,
+      });
+
+      expect(subscriptionsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+        type: SUBSCRIPTION_TYPE.submissionPromoted,
+        incident_id: 2,
+        userId: 'user1',
       });
     });
   });
@@ -376,10 +384,10 @@ describe('Functions', () => {
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
-        date_downloaded: '2020-10-30',
-        date_modified: '2021-07-27',
-        date_published: '2017-05-03',
-        date_submitted: '2020-10-30',
+        date_downloaded: new Date('2020-10-30'),
+        date_modified: new Date('2021-07-27'),
+        date_published: new Date('2017-05-03'),
+        date_submitted: new Date('2020-10-30'),
         epoch_date_downloaded: 1604016000,
         epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,
@@ -414,6 +422,8 @@ describe('Functions', () => {
         ...expectedReport,
         modifiedBy: submission_with_embedding.user,
       });
+
+      expect(subscriptionsCollection.insertOne.called).to.be.false;
     });
   });
 
@@ -531,10 +541,10 @@ describe('Functions', () => {
         report_number: 2,
         is_incident_report: false,
         title: 'Submisssion 1 title',
-        date_downloaded: '2020-10-30',
-        date_modified: '2021-07-27',
-        date_published: '2017-05-03',
-        date_submitted: '2020-10-30',
+        date_downloaded: new Date('2020-10-30'),
+        date_modified: new Date('2021-07-27'),
+        date_published: new Date('2017-05-03'),
+        date_submitted: new Date('2020-10-30'),
         epoch_date_downloaded: 1604016000,
         epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,
@@ -565,6 +575,8 @@ describe('Functions', () => {
         ...expectedReport,
         modifiedBy: submission.user,
       });
+
+      expect(subscriptionsCollection.insertOne.called).to.be.false;
     });
   });
 
@@ -831,10 +843,10 @@ describe('Functions', () => {
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
-        date_downloaded: '2020-10-30',
-        date_modified: '2021-07-27',
-        date_published: '2017-05-03',
-        date_submitted: '2020-10-30',
+        date_downloaded: new Date('2020-10-30'),
+        date_modified: new Date('2021-07-27'),
+        date_published: new Date('2017-05-03'),
+        date_submitted: new Date('2020-10-30'),
         epoch_date_downloaded: 1604016000,
         epoch_date_modified: 1686182943,
         epoch_date_published: 1493769600,

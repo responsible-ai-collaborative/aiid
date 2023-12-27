@@ -1,6 +1,7 @@
 # Artificial Intelligence Incident Database (AIID)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+[![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://forms.gle/v7UHJvEkYSJQ7jHj7)
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
@@ -34,7 +35,7 @@ Please make sure your code is well organized and commented before opening the pu
 The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
 
 The process of completing work through GitHub issues at the highest level is:
-Create Issue -> Assign Issue -> Review and Publish
+`Create Issue` -> `Assign Issue` -> `Review and Publish`
 
 Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
 
@@ -50,35 +51,25 @@ Labels help streamline the process and ensure issues do not get lost or neglecte
 
 ### Assign Issue
 
-Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
+Add the label `Current Backlog` to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
 
 ![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
 
-### Review and Publish:
+### Pull Request (PR) Review: Draft, Assign, and Publish
 
-Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
+Once the issue has a deliverable output(s), use the Pull Request process to have the contribution reviewed and accepted.
 
-![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+The person opening the PR should create it in a draft status until the work is finished, then they should click on "Ready for review" button and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
 
+#### Assigning a reviewer
+In general, PR reviews can be assigned to any member of the [@responsible-ai-collaboraite/aiid-dev](https://github.com/orgs/responsible-ai-collaborative/teams/aiid-dev ) team, or to the team alias itself.
+**Don't be shy!** Above all, contributors and reviewers should assume good intentions. As such, reviewers are also encouraged to re-assign PR reviews based on familiarity and time constraints.
 
-## PR labeling strategy
+When something is mergeable, then someone else with maintainer permissions (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
 
-On a daily basis, all PRs should be labeled with one of the review process tags:
-- `PR: Needs Review`
-- `PR: Work Needed`
-- `PR: Mergeable`
-
-The person opening the PR should create it in a draft status until the work is finished, then she/he should click on "Ready for review" button and apply the `PR: Needs Review` label and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
+After merging to staging, the code quality is everyone’s responsibility.
 
 For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
-
-The reviewer can change the PR label to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
-
-Please respond to review requests in a timely manner, or indicate if another reviewer would be better. Code review is everyone’s responsibility.
-
-When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
-
-After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
@@ -327,10 +318,8 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
-### Prismic setup
+## Prismic setup
 This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
-
-#### Prismic Setup
 
 1. Sign up for a new [Prismic](https://prismic.io/) account or log in to your account if you already have one
 2. In `Create a new repository` section choose `Something else`
@@ -339,12 +328,12 @@ This project uses Prismic to fetch page content. You can still run the project w
 5. Click `Create repository`
 6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
 
-#### Adding the Prismic content types
+### Adding the Prismic content types
 
-## Prismic Custom Types
-You can find the list of all custom types in the folder custom_types
+#### Prismic Custom Types
+You can find the list of all custom types in the folder `custom_types`
 
-## How to create a new Custom Type
+#### How to create a new Custom Type
 1. From the prismic left menu click `Custom Types`
 2. Click `Create new custom type`
 3. Give it a name (name of the json in custom_types folder)
@@ -366,13 +355,13 @@ You can find the list of all custom types in the folder custom_types
 In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
 In order to do this, you need to create a Netlify Build Hook.
 
-**Prismic environment variables**
+#### Prismic environment variables
 
 Add the following environment variable on Netlify: 
 `GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
 `PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
 
-**Create Prismic/Netlify Hook**
+#### Create Prismic/Netlify Hook
 1. Login to your Netlify
 2. Go to `Deploys`
 3. Go to `Deploy settings`
@@ -386,6 +375,24 @@ Add the following environment variable on Netlify:
 11. Create a new webhook and paste the URL in the URL field
 12. In `Triggers` select `A document is published` and `A document is unpublished`
 13. Click `Add this webhook`
+
+## User Roles
+
+All site users have one or more roles assigned to them. The role determines what actions the user can take on the site.
+
+As soon as a user is signed in, the system assigns a `subscriber` role by default. Role assignment is handled manually by the site administrators.
+
+**The roles are:**
+
+| User Role                     | Permissions                                                                                                                             |
+|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `subscriber`                  | This is the default role assigned to all users. It allows the user to subscribe to new incidents, specific incidents, entities, and anything else that is subscribeable. |
+| `submitter`                   | This role allows the user to submit new incidents under their user account.                                                            |
+| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports. |
+| `taxonomy_editor`             | This role allows the user to edit all taxonomies.                                                                                      |
+| `taxonomy_editor_{taxonomy_name}` | This role allows the user to edit a specific taxonomy. ie: `taxonomy_editor_csetv1` role allows the user to edit the `CSETv1` taxonomy. |
+| `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
+
 
 ## Front-end development
 
@@ -442,6 +449,12 @@ GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployment stability
 NODE_VERSION=18 # this is required by Gatsby v5
 NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
+# The following "CLOUDFLARE_R2" variables are required to create the /research/snapshots/ page
+CLOUDFLARE_R2_ACCOUNT_ID=[The Cloudflare R2 account ID (e.g.: 8f4144a9d995a9921d0200db59f6a00e)]
+CLOUDFLARE_R2_ACCESS_KEY_ID=[The Cloudflare R2 access key ID (e.g.: 7aa73208bc89cee3195879e578b291ee)]
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
+CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
+GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 

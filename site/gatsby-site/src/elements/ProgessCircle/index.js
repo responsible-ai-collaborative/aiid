@@ -18,7 +18,7 @@ const ProgressCircle = ({
   }, [size, strokeWidth, percentage]);
 
   return (
-    <svg className={`circular-progress ${className}`} width={size} height={size}>
+    <svg className={`circular-progress ${className || ''}`} width={size} height={size}>
       <circle
         className="progress-background"
         cx={size / 2}

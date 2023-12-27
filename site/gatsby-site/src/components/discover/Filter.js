@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { InstantSearch } from 'react-instantsearch-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import componentsMap from './filterTypes';
-import useSearch from './useSearch';
-import VirtualFilters from './VirtualFilters';
 import { Trans } from 'react-i18next';
 import { Accordion, Badge, Card } from 'flowbite-react';
+import { useInstantSearch } from 'react-instantsearch';
 
 function ToggleContent({ label, touched, faIcon, toggled, accordion = false }) {
   return (
@@ -116,14 +114,7 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
 function FilterContent({ type, filterProps }) {
   const { default: Component } = componentsMap[type];
 
-  const instantSearch = useSearch();
-
-  return (
-    <InstantSearch {...instantSearch}>
-      <VirtualFilters />
-      <Component {...filterProps} />
-    </InstantSearch>
-  );
+  return <Component {...filterProps} />;
 }
 
 const FilterOverlay = React.forwardRef(function Container(
@@ -147,25 +138,21 @@ const FilterOverlay = React.forwardRef(function Container(
   );
 });
 
-export default function Filter({ type, className = '', ...filterProps }) {
+export default function Filter({ type, ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
 
-  const instantSearch = useSearch();
+  const { indexUiState } = useInstantSearch();
 
-  const { searchState } = instantSearch;
-
-  const touched = touchedCount({ searchState, attribute });
+  const touched = touchedCount({ searchState: indexUiState, attribute });
 
   return (
     <>
       <ButtonToggle
         label={label}
         faIcon={faIcon}
-        attribute={attribute}
         touched={touched}
-        className={className}
         type={type}
         filterProps={filterProps}
       />
@@ -178,11 +165,9 @@ function AccordionFilter({ type, ...filterProps }) {
 
   const { touchedCount } = componentsMap[type];
 
-  const instantSearch = useSearch();
+  const { indexUiState } = useInstantSearch();
 
-  const { searchState } = instantSearch;
-
-  const touched = touchedCount({ searchState, attribute });
+  const touched = touchedCount({ searchState: indexUiState, attribute });
 
   const [toggled, setToggled] = useState(true);
 
