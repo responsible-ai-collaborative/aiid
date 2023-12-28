@@ -1,4 +1,4 @@
-name: Deploy
+name: Run tests
 on:
   workflow_call:
     inputs:
@@ -22,7 +22,7 @@ jobs:
       # https://github.com/cypress-io/github-action/issues/48
       fail-fast: false
       matrix:
-        # run 10 copies of the current job in parallel
+        # run 4 copies of the current job in parallel
         containers: [1, 2, 3, 4]
     # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
@@ -46,7 +46,7 @@ jobs:
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         with:
           working-directory: site/gatsby-site
           runTests: false
@@ -64,7 +64,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
         id: extract_branch
 
       - name: Cypress run
