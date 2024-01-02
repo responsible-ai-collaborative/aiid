@@ -28,7 +28,7 @@ export default function Tags({
 
   return (
     <Typeahead
-      className={`Typeahead ${className}`}
+      className={`Typeahead ${className || ''}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === ',') {
@@ -50,7 +50,7 @@ export default function Tags({
       renderMenu={options ? undefined : () => null}
       onChange={(value) => onChange(value)}
       options={options || []}
-      selected={value}
+      selected={(value || []).filter((v) => v)}
       placeholder={placeHolder}
       {...{
         disabled,
