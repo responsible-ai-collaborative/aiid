@@ -7,7 +7,6 @@
   "dependencies": {
     "@apollo/client": "^3.7.8",
     "@aws-sdk/client-s3": "^3.435.0",
-    "@babel/plugin-proposal-export-default-from": "^7.12.13",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
     "@cloudinary/base": "^1.0.0-beta.4",
@@ -115,10 +114,13 @@
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-export-default-from": "^7.23.3",
+    "@cypress/code-coverage": "^3.12.15",
     "@netlify/plugin-gatsby": "^3.7.0",
     "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.7",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "cypress": "^13.0.0",
     "cypress-wait-for-stable-dom": "^0.1.0",
     "eslint": "^7.17.0",
