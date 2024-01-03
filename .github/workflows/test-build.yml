@@ -36,10 +36,10 @@ jobs:
           runTests: false
           install-command: npm ci
 
-      - name: Use new netlify.toml
+      - name: Use tests specific netlify.toml  
         run: |
           rm -f netlify.toml
-          mv github-netlify.toml netlify.toml
+          mv tests-netlify.toml netlify.toml
         working-directory: site/gatsby-site
       
       - name: Install Netlify CLI
@@ -49,6 +49,7 @@ jobs:
         run: netlify build --context deploy-preview
         working-directory: site/gatsby-site
         env:
+          INSTRUMENT: true
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
