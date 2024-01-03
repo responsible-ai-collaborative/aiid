@@ -536,7 +536,7 @@ const searchRisks = async ({
 
   const risksResponse = await apolloClient.query({
     query: gql`
-      query {
+      query findRisks {
         risks(input: { tags: [${queryTags.map((t) => `"${t}"`).join(', ')}] }) {
           tags
           title
