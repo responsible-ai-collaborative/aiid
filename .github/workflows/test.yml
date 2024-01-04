@@ -1,4 +1,4 @@
-name: Deploy
+name: Run tests
 on:
   workflow_call:
     inputs:
@@ -22,7 +22,7 @@ jobs:
       # https://github.com/cypress-io/github-action/issues/48
       fail-fast: false
       matrix:
-        # run 10 copies of the current job in parallel
+        # run 4 copies of the current job in parallel
         containers: [1, 2, 3, 4]
     # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
@@ -46,7 +46,7 @@ jobs:
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         with:
           working-directory: site/gatsby-site
           runTests: false
@@ -64,7 +64,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
         id: extract_branch
 
       - name: Cypress run
@@ -84,15 +84,15 @@ jobs:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+          CYPRESS_PROJECT_ID: ${{ vars.CYPRESS_PROJECT_ID }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
-          GATSBY_ALGOLIA_APP_ID: ${{ secrets.GATSBY_ALGOLIA_APP_ID }}
-          GATSBY_ALGOLIA_SEARCH_KEY: ${{ secrets.GATSBY_ALGOLIA_SEARCH_KEY }}
-          GATSBY_AVAILABLE_LANGUAGES: ${{ secrets.GATSBY_AVAILABLE_LANGUAGES }}
-          GATSBY_REALM_APP_ID: ${{ secrets.GATSBY_REALM_APP_ID }}
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          GATSBY_REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
           GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
           MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
           MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
@@ -104,6 +104,11 @@ jobs:
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
-          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ secrets.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

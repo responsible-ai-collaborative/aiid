@@ -1,4 +1,14 @@
-# Artificial Intelligence Incident Database (AIID)
+<p align="center">
+  <a href="https://incidentdatabase.ai#gh-light-mode-only">
+    <img src="./site/gatsby-site/static/logos/Blue_AIID.svg" height="100">
+  </a>
+  <a href="https://incidentdatabase.ai#gh-dark-mode-only">
+    <img src="./site/gatsby-site/static/logos/White_AIID.svg" height="100">
+  </a>
+</p>
+<h1 align="center">
+ Artificial Intelligence Incident Database
+</h1>
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
 [![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://forms.gle/v7UHJvEkYSJQ7jHj7)
