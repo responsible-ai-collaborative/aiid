@@ -41,7 +41,11 @@ const ChecklistsIndex = ({ users }) => {
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
   /************************** Get Checklists **************************/
-  const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS, {
+  const {
+    data: checklistsData,
+    loading: checklistsLoading,
+    error: checklistsError,
+  } = useQuery(FIND_CHECKLISTS, {
     variables: { query: { owner_id: user?.id } },
     skip: !user?.id,
   });
@@ -53,6 +57,17 @@ const ChecklistsIndex = ({ users }) => {
   useEffect(() => {
     setChecklists(checklistsData?.checklists || []);
   }, [checklistsData]);
+
+  useEffect(() => {
+    if (checklistsError) {
+      addToast({
+        message: t('Could not fetch checklists.'),
+        severity: SEVERITY.danger,
+        error: checklistsError,
+      });
+      console.error(checklistsError);
+    }
+  }, [checklistsError]);
 
   const riskQueryableChecklists = (checklistsData?.checklists || []).filter(
     (c) => allTags(c).length > 0
@@ -105,7 +120,18 @@ const ChecklistsIndex = ({ users }) => {
       }
     `;
 
-  const { data: risksData } = useQuery(gql(riskQuery), { skip: skipRisksQuery });
+  const { data: risksData, error: risksError } = useQuery(gql(riskQuery), { skip: skipRisksQuery });
+
+  useEffect(() => {
+    if (risksError) {
+      addToast({
+        message: t('Could not fetch generated risks.'),
+        severity: SEVERITY.danger,
+        error: risksError,
+      });
+      console.error(risksError);
+    }
+  }, [risksError]);
 
   /************************ Prepare Display ***************************/
   const [sortBy, setSortBy] = useState('alphabetical');
@@ -122,7 +148,7 @@ const ChecklistsIndex = ({ users }) => {
     .map((checklist) => {
       const generatedRisks = risksData?.[identifier(checklist)] || [];
 
-      const manualRisks = checklist.risks;
+      const manualRisks = checklist.risks || [];
 
       const newGeneratedRisks = generatedRisks.filter((generatedRisk) =>
         manualRisks.every((manualRisk) => manualRisk.title != generatedRisk.title)
@@ -253,7 +279,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
     <Card data-cy="checklist-card" className="bg-white shadow" key={checklist.id}>
       <div className="flex items-center gap-2 flex-wrap border-b border-gray-200 p-4">
         <LocalizedLink className="mr-auto" to={`/apps/checklists?id=${checklist.id}`}>
-          <h2 className="mb-0">{checklist.name}</h2>
+          <h2 className="mb-0">{checklist.name || 'Untitled Checklist'}</h2>
         </LocalizedLink>
         <Button
           color="light"
@@ -362,7 +388,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
                     className={`text-${statusColor(risk.risk_status || 'Unclear')}-600`}
                     title={risk.risk_status || 'Unclear'}
                   />
-                  {risk.title || abbreviatedTag(risk.tag)}
+                  {risk.title || (risk.tag ? abbreviatedTag(risk.tag) : 'Untitled Risk')}
                 </li>
               ))}
           </ul>
@@ -376,9 +402,9 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
 };
 
 const allTags = (checklist) => [
-  ...checklist.tags_goals,
-  ...checklist.tags_methods,
-  ...checklist.tags_other,
+  ...(checklist.tags_goals || []),
+  ...(checklist.tags_methods || []),
+  ...(checklist.tags_other || []),
 ];
 
 const identifier = (checklist) =>

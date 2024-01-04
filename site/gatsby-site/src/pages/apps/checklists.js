@@ -71,7 +71,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
             .filter((risk) => !risk.generated)
             .map((risk) => ({
               ...risk,
-              risk_status: checkedRiskStatus(risk.risk_status),
+              risk_status: checkedRiskStatus(risk.risk_status || 'Unclear'),
               startClosed: undefined,
             })),
         },

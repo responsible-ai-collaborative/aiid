@@ -577,7 +577,7 @@ const searchRisks = async ({
       if (notDuplicate) {
         risksToAdd.push(newRisk);
       }
-      for (const precedent of result.precedents) {
+      for (const precedent of result?.precedents || []) {
         if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
           allPrecedents.push(precedent);
         }
@@ -586,12 +586,15 @@ const searchRisks = async ({
 
     setAllPrecedents(allPrecedents);
 
-    setFieldValue('risks', values.risks.concat(risksToAdd));
-  } else {
+    setFieldValue('risks', (values.risks || []).concat(risksToAdd));
+  }
+  if (risksResponse.error) {
     addToast({
       message: t('Failure searching for risks.'),
       severity: SEVERITY.danger,
+      error: risksResponse.error,
     });
+    console.error(risksResponse.error);
   }
 
   setRisksLoading(false);
@@ -599,6 +602,8 @@ const searchRisks = async ({
 
 function areDuplicates(A, B) {
   return (
+    A.tags &&
+    B.tags &&
     A.tags.length == B.tags.length &&
     A.tags.every((aTag) => B.tags.some((bTag) => shouldBeGrouped(bTag, aTag))) &&
     B.tags.every((bTag) => A.tags.some((aTag) => shouldBeGrouped(aTag, bTag)))
