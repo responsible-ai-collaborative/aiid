@@ -4,7 +4,7 @@ const getRecipients = async (userIds) => {
   for (const userId of userIds) {
     const userResponse = await context.functions.execute('getUser', { userId });
 
-    if (userResponse?.email && recipients.every(r => r.email !== userResponse.email)) { //Avoid adding duplicated emails
+    if (userResponse?.email) {
       recipients.push({
         email: userResponse.email,
         userId,
@@ -311,7 +311,9 @@ exports = async function () {
 
       const userIds = pendingNotificationsToNewPromotions.map((subscription) => subscription.userId);
 
-      const recipients = await getRecipients(userIds);
+      const uniqueUserIds = [...new Set(userIds)];
+
+      const recipients = await getRecipients(uniqueUserIds);
 
       let uniqueNotifications = [];
 
