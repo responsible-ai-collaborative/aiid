@@ -15,6 +15,15 @@ const Backups = ({ pageContext, ...props }) => {
     return null;
   }
 
+  /**
+   * Parses the creation date from the backup key.
+   *
+   * The expected format of the key is "backup-YYYYMMDDHHmmss.tar.bz2" (e.g. "backup-20240101101425.tar.bz2").
+   * The function extracts the date and time from the key and returns a JavaScript Date object.
+   *
+   * @param {string} key - The backup key.
+   * @returns {Date} The creation date of the backup.
+   */
   const parseCreationDate = (key) => {
     const stringDate = key.split('backup-')[1].split('.')[0];
 
