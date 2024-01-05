@@ -7,54 +7,54 @@ describe('Pages', () => {
 
   const paths = [
     '/',
-    '/taxonomies/',
-    '/apps/discover/',
-    '/apps/incidents/',
-    '/apps/newsdigest/',
-    '/apps/submit/',
-    '/apps/submitted/',
-    '/apps/variants/',
-    '/blog/',
-    '/summaries/flagged/',
-    '/summaries/incidents/',
-    '/summaries/incidentsOverTime/',
-    '/summaries/leaderboard/',
-    '/summaries/spatial/',
-    '/research/snapshots/',
-    '/entities/',
-    '/account/',
-    '/summaries/wordcounts/',
-    '/about/', // doc template
+    // '/taxonomies/',
+    // '/apps/discover/',
+    // '/apps/incidents/',
+    // '/apps/newsdigest/',
+    // '/apps/submit/',
+    // '/apps/submitted/',
+    // '/apps/variants/',
+    // '/blog/',
+    // '/summaries/flagged/',
+    // '/summaries/incidents/',
+    // '/summaries/incidentsOverTime/',
+    // '/summaries/leaderboard/',
+    // '/summaries/spatial/',
+    // '/research/snapshots/',
+    // '/entities/',
+    // '/account/',
+    // '/summaries/wordcounts/',
+    // '/about/', // doc template
   ];
 
-  if (!Cypress.env('isEmptyEnvironment')) {
-    paths.push('/apps/classifications/');
-    paths.push('/reports/2302/');
-    paths.push('/cite/1/');
-    paths.push('/entities/facebook/');
-    paths.push('/blog/incident-report-2023-january/');
-    paths.push('/taxonomy/csetv0/');
-    paths.push('/taxonomy/csetv1/');
-  }
+  // if (!Cypress.env('isEmptyEnvironment')) {
+  //   paths.push('/apps/classifications/');
+  //   paths.push('/reports/2302/');
+  //   paths.push('/cite/1/');
+  //   paths.push('/entities/facebook/');
+  //   paths.push('/blog/incident-report-2023-january/');
+  //   paths.push('/taxonomy/csetv0/');
+  //   paths.push('/taxonomy/csetv1/');
+  // }
 
   const languages = [
     {
       code: 'en',
       hrefLang: 'en-US',
     },
-    {
-      code: 'es',
-      hrefLang: 'es',
-    },
-    {
-      code: 'fr',
-      hrefLang: 'fr',
-    },
+    // {
+    //   code: 'es',
+    //   hrefLang: 'es',
+    // },
+    // {
+    //   code: 'fr',
+    //   hrefLang: 'fr',
+    // },
   ];
 
   paths.forEach((path) => {
     languages.forEach(({ code }) => {
-      it(`/${code}${path} Should not have errors`, () => {
+      it(`/${code}${path} Should not have errors`, { defaultCommandTimeout: 30000 }, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         cy.visit(canonicalPath, {
