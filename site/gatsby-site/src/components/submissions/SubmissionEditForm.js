@@ -39,8 +39,6 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const localizedPath = useLocalizePath();
 
-  const [subscribeToNewSubmissionPromotionMutation] = useMutation(UPSERT_SUBSCRIPTION);
-
   useEffect(() => {
     if (!isEmpty(touched)) {
       setSaving(true);
@@ -219,27 +217,6 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     const incident_id = incident_ids[0];
 
     await subscribeToNewReports(incident_id);
-
-    if (values.user) {
-      await subscribeToNewSubmissionPromotionMutation({
-        variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.submissionPromoted,
-            userId: { userId: values.user.userId },
-            incident_id: { incident_id: incident_id },
-          },
-          subscription: {
-            type: SUBSCRIPTION_TYPE.submissionPromoted,
-            userId: {
-              link: values.user.userId,
-            },
-            incident_id: {
-              link: incident_id,
-            },
-          },
-        },
-      });
-    }
 
     addToast({
       message: (

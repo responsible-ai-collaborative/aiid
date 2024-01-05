@@ -1,0 +1,107 @@
+name: Deploy to Netlify
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+jobs:
+  netlify-deploy:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: site/gatsby-site
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Read node modules from cache
+        id: cache-nodemodules
+        uses: actions/cache/restore@v3
+        env:
+          cache-name: cache-install-folder
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Use new netlify.toml
+        run: |
+          rm -f netlify.toml
+          mv github-netlify.toml netlify.toml
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Build using Netlify
+        run: netlify build --context deploy-preview
+        env:
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_PROJECT_ID: ${{ vars.CYPRESS_PROJECT_ID }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          GATSBY_REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+          GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
+          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+
+      - name: Upload to netlify
+        id: deploy-netlify
+        working-directory: site/gatsby-site
+        run: |
+          set -e
+          OUTPUT=$(bash -c "netlify deploy --json --alias=pr-${{ github.event.pull_request.number }}" | tr '\n' ' ')
+          set +e
+          NETLIFY_OUTPUT=$(echo "$OUTPUT")
+          echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+
+      - name: Comment on PR
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            const deployData = JSON.parse(deployOutput);
+            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

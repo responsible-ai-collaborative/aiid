@@ -14,7 +14,7 @@ import {
 } from '../../graphql/reports';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
@@ -184,11 +184,13 @@ function EditCitePage(props) {
 
       const now = new Date();
 
-      values.date_modified = format(now, 'yyyy-MM-dd');
+      values.date_modified = now;
 
-      values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(now);
+
+      values.date_published = new Date(values.date_published);
+      values.date_downloaded = new Date(values.date_downloaded);
 
       const updated = pick(values, reportFields);
 

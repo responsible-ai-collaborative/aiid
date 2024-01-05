@@ -499,14 +499,14 @@ describe('Variants App', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.date_published === new Date(new_date_published).toISOString() &&
           req.body.variables.set.submitters[0] === variant.submitters[0] &&
           req.body.variables.set.submitters[1] === new_submitter &&
           req.body.variables.set.text === new_text &&
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === undefined &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.date_modified == now.toISOString() &&
           req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {

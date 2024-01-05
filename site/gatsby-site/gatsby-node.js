@@ -10,8 +10,6 @@ const { startCase, differenceWith } = require('lodash');
 
 const config = require('./config');
 
-const createMdxPages = require('./page-creators/createMdxPages');
-
 const createCitationPages = require('./page-creators/createCitationPages');
 
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
@@ -31,6 +29,8 @@ const createEntitiesPages = require('./page-creators/createEntitiesPages');
 const createReportPages = require('./page-creators/createReportPages');
 
 const createBlogPages = require('./page-creators/createBlogPages');
+
+const createDocPages = require('./page-creators/createDocPages');
 
 const algoliasearch = require('algoliasearch');
 
@@ -72,7 +72,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
   for (const pageCreator of [
     createBlogPages,
-    createMdxPages,
     createCitationPages,
     createWordCountsPages,
     createBackupsPage,
@@ -82,6 +81,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createTsneVisualizationPage,
     createEntitiesPages,
     createReportPages,
+    createDocPages,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
@@ -114,6 +114,15 @@ exports.onCreateBabelConfig = ({ actions }) => {
   actions.setBabelPlugin({
     name: '@babel/plugin-proposal-export-default-from',
   });
+
+  if (process.env.INSTRUMENT) {
+    actions.setBabelPlugin({
+      name: 'babel-plugin-istanbul',
+      options: {
+        include: ['src/**/*.js'],
+      },
+    });
+  }
 };
 
 exports.onCreateNode = async ({ node, getNode, actions }) => {

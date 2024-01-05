@@ -42,41 +42,6 @@ const SubmissionList = ({ data }) => {
     }
   }, [data]);
 
-  const claimSubmission = async (submissionId) => {
-    setClaiming({ submissionId, value: true });
-    try {
-      const submission = data.submissions.find((submission) => submission._id === submissionId);
-
-      const incidentEditors = [...submission.incident_editors];
-
-      const isAlreadyEditor = submission.incident_editors.find(
-        (editor) => editor.userId === user.customData.userId
-      );
-
-      if (!isAlreadyEditor) {
-        incidentEditors.push(user.customData.userId);
-
-        await updateSubmission({
-          variables: {
-            query: {
-              _id: submissionId,
-            },
-            set: { incident_editors: { link: incidentEditors } },
-          },
-        });
-      }
-
-      setClaiming({ submissionId: null, value: false });
-    } catch (error) {
-      addToast({
-        message: t(`There was an error claiming this submission. Please try again.`),
-        severity: SEVERITY.danger,
-      });
-
-      setClaiming({ submissionId: null, value: false });
-    }
-  };
-
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -177,6 +142,11 @@ const SubmissionList = ({ data }) => {
           value={dateFilter}
           onChange={(e) => {
             setDateFilter(e.target.value || undefined);
+            setTableState({
+              pageIndex: 0,
+              filters: table.state.filters,
+              sortBy: table.state.sortBy,
+            });
           }}
         >
           <option value="incident_date">Incident date</option>
@@ -191,7 +161,13 @@ const SubmissionList = ({ data }) => {
               endDate={dateValues.length > 1 ? dateValues[1] : null}
               setDates={(vals) => {
                 setDateValues(vals);
+                setTableState({
+                  pageIndex: 0,
+                  filters: table.state.filters,
+                  sortBy: table.state.sortBy,
+                });
               }}
+              data-cy="date-picker-filter"
             />
           }
         </div>
@@ -211,6 +187,7 @@ const SubmissionList = ({ data }) => {
         className: 'min-w-[150px]',
         title: t('Submitters'),
         accessor: 'submitters',
+        disableSortBy: true,
         width: 150,
         Filter: SelectColumnFilter,
         Cell: ({ row: { values } }) => {
@@ -299,6 +276,7 @@ const SubmissionList = ({ data }) => {
         title: t('Editors'),
         accessor: 'incident_editors',
         className: 'min-w-[150px]',
+        disableSortBy: true,
         width: 150,
         Filter: SelectEditorsColumnFilter,
         filter: (rows, [field], value) =>
@@ -379,51 +357,78 @@ const SubmissionList = ({ data }) => {
         disableFilters: true,
         disableSortBy: true,
         disableResizing: true,
-        Cell: ({ row: { values } }) => (
-          <div className="flex gap-2">
-            <Button
-              color={'gray'}
-              data-cy="review-submission"
-              onClick={async (event) => {
-                event.preventDefault();
-                await setSubmissionStatus(values);
-                window.location.href = `?editSubmission=${values._id}`;
-              }}
-              disabled={reviewing.value}
-            >
-              {reviewing.value && values._id === reviewing.submissionId ? (
-                <Trans>Reviewing...</Trans>
-              ) : (
-                <Trans>Review</Trans>
-              )}
-            </Button>
-            {!values.editor && (
+        Cell: ({ row: { values } }) => {
+          const isAlreadyEditor = values?.incident_editors?.find(
+            (editor) => editor.userId === user.customData.userId
+          );
+
+          return (
+            <div className="flex gap-2">
               <Button
                 color={'gray'}
-                data-cy="claim-submission"
-                onClick={() => claimSubmission(values._id)}
-                disabled={claiming.value}
+                data-cy="review-submission"
+                onClick={async (event) => {
+                  event.preventDefault();
+                  await setSubmissionStatus(values);
+                  window.location.href = `?editSubmission=${values._id}`;
+                }}
+                disabled={reviewing.value}
               >
-                {claiming.value && values._id === claiming.submissionId ? (
-                  <Trans>Claiming...</Trans>
+                {reviewing.value && values._id === reviewing.submissionId ? (
+                  <Trans>Reviewing...</Trans>
                 ) : (
-                  <Trans>Claim</Trans>
+                  <Trans>Review</Trans>
                 )}
               </Button>
-            )}
-          </div>
-        ),
+              {!values.editor && (
+                <Button
+                  color={'gray'}
+                  data-cy="claim-submission"
+                  onClick={() =>
+                    isAlreadyEditor ? unclaimSubmission(values._id) : claimSubmission(values._id)
+                  }
+                  disabled={claiming.value}
+                >
+                  {isAlreadyEditor ? (
+                    <>
+                      {claiming.value && values._id === claiming.submissionId ? (
+                        <Trans>Unclaiming...</Trans>
+                      ) : (
+                        <Trans>Unclaim</Trans>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {claiming.value && values._id === claiming.submissionId ? (
+                        <Trans>Claiming...</Trans>
+                      ) : (
+                        <Trans>Claim</Trans>
+                      )}
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          );
+        },
       });
     }
 
     return columns;
   }, [isLoggedIn, claiming, reviewing, dateFilter]);
 
+  const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
+
   const table = useTable(
     {
       columns,
       data: tableData,
       defaultColumn,
+      initialState: {
+        pageIndex: tableState.pageIndex,
+        filters: tableState.filters,
+        sortBy: tableState.sortBy,
+      },
     },
     useFilters,
     useSortBy,
@@ -431,6 +436,81 @@ const SubmissionList = ({ data }) => {
     useBlockLayout,
     useResizeColumns
   );
+
+  useEffect(() => {
+    setTableState({ pageIndex: 0, filters: table.state.filters, sortBy: table.state.sortBy });
+  }, [table.state.filters, table.state.sortBy]);
+
+  useEffect(() => {
+    table.gotoPage(tableState.pageIndex);
+  }, [claiming, reviewing, tableState.pageIndex]);
+
+  const claimSubmission = async (submissionId) => {
+    setClaiming({ submissionId, value: true });
+    try {
+      const submission = data.submissions.find((submission) => submission._id === submissionId);
+
+      const incidentEditors = [...submission.incident_editors];
+
+      const isAlreadyEditor = submission.incident_editors.find(
+        (editor) => editor.userId === user.customData.userId
+      );
+
+      if (!isAlreadyEditor) {
+        incidentEditors.push(user.customData.userId);
+
+        await updateSubmission({
+          variables: {
+            query: {
+              _id: submissionId,
+            },
+            set: { incident_editors: { link: incidentEditors } },
+          },
+        });
+      }
+
+      setClaiming({ submissionId: null, value: false });
+    } catch (error) {
+      addToast({
+        message: t(`There was an error claiming this submission. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+
+      setClaiming({ submissionId: null, value: false });
+    }
+  };
+
+  const unclaimSubmission = async (submissionId) => {
+    setClaiming({ submissionId, value: true });
+    const submission = data.submissions.find((submission) => submission._id === submissionId);
+
+    const incidentEditors = [...submission.incident_editors];
+
+    const isAlreadyEditor = submission.incident_editors.find(
+      (editor) => editor.userId === user.customData.userId
+    );
+
+    if (isAlreadyEditor) {
+      const index = incidentEditors.findIndex((editor) => editor.userId === user.customData.userId);
+
+      incidentEditors.splice(index, 1);
+
+      await updateSubmission({
+        variables: {
+          query: {
+            _id: submissionId,
+          },
+          set: { incident_editors: { link: incidentEditors } },
+        },
+      });
+
+      setClaiming({ submissionId: null, value: false });
+    }
+  };
+
+  useEffect(() => {
+    setTableState({ ...table.state });
+  }, [table.state.pageIndex]);
 
   const setSubmissionStatus = async (submission) => {
     if (submission.status !== STATUS.inReview.name) {

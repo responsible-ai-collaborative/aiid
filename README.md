@@ -1,6 +1,17 @@
-# Artificial Intelligence Incident Database (AIID)
+<p align="center">
+  <a href="https://incidentdatabase.ai#gh-light-mode-only">
+    <img src="./site/gatsby-site/static/logos/Blue_AIID.svg" height="100">
+  </a>
+  <a href="https://incidentdatabase.ai#gh-dark-mode-only">
+    <img src="./site/gatsby-site/static/logos/White_AIID.svg" height="100">
+  </a>
+</p>
+<h1 align="center">
+ Artificial Intelligence Incident Database
+</h1>
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+[![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://forms.gle/v7UHJvEkYSJQ7jHj7)
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
@@ -317,10 +328,8 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
-### Prismic setup
+## Prismic setup
 This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
-
-#### Prismic Setup
 
 1. Sign up for a new [Prismic](https://prismic.io/) account or log in to your account if you already have one
 2. In `Create a new repository` section choose `Something else`
@@ -329,12 +338,12 @@ This project uses Prismic to fetch page content. You can still run the project w
 5. Click `Create repository`
 6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
 
-#### Adding the Prismic content types
+### Adding the Prismic content types
 
-## Prismic Custom Types
-You can find the list of all custom types in the folder custom_types
+#### Prismic Custom Types
+You can find the list of all custom types in the folder `custom_types`
 
-## How to create a new Custom Type
+#### How to create a new Custom Type
 1. From the prismic left menu click `Custom Types`
 2. Click `Create new custom type`
 3. Give it a name (name of the json in custom_types folder)
@@ -356,13 +365,13 @@ You can find the list of all custom types in the folder custom_types
 In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.
 In order to do this, you need to create a Netlify Build Hook.
 
-**Prismic environment variables**
+#### Prismic environment variables
 
 Add the following environment variable on Netlify: 
 `GATSBY_PRISMIC_REPO_NAME=[name_of_your_repository]` (step 3 from Prismic Setup section)
 `PRISMIC_ACCESS_TOKEN=[you_prismic_access_token]` (step 6 from Prismic Setup section)
 
-**Create Prismic/Netlify Hook**
+#### Create Prismic/Netlify Hook
 1. Login to your Netlify
 2. Go to `Deploys`
 3. Go to `Deploy settings`
@@ -376,6 +385,24 @@ Add the following environment variable on Netlify:
 11. Create a new webhook and paste the URL in the URL field
 12. In `Triggers` select `A document is published` and `A document is unpublished`
 13. Click `Add this webhook`
+
+## User Roles
+
+All site users have one or more roles assigned to them. The role determines what actions the user can take on the site.
+
+As soon as a user is signed in, the system assigns a `subscriber` role by default. Role assignment is handled manually by the site administrators.
+
+**The roles are:**
+
+| User Role                     | Permissions                                                                                                                             |
+|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `subscriber`                  | This is the default role assigned to all users. It allows the user to subscribe to new incidents, specific incidents, entities, and anything else that is subscribeable. |
+| `submitter`                   | This role allows the user to submit new incidents under their user account.                                                            |
+| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports. |
+| `taxonomy_editor`             | This role allows the user to edit all taxonomies.                                                                                      |
+| `taxonomy_editor_{taxonomy_name}` | This role allows the user to edit a specific taxonomy. ie: `taxonomy_editor_csetv1` role allows the user to edit the `CSETv1` taxonomy. |
+| `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
+
 
 ## Front-end development
 
@@ -432,6 +459,12 @@ GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployment stability
 NODE_VERSION=18 # this is required by Gatsby v5
 NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
+# The following "CLOUDFLARE_R2" variables are required to create the /research/snapshots/ page
+CLOUDFLARE_R2_ACCOUNT_ID=[The Cloudflare R2 account ID (e.g.: 8f4144a9d995a9921d0200db59f6a00e)]
+CLOUDFLARE_R2_ACCESS_KEY_ID=[The Cloudflare R2 access key ID (e.g.: 7aa73208bc89cee3195879e578b291ee)]
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
+CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
+GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
