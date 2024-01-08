@@ -12,12 +12,14 @@ const pendingNotifications = [
     type: SUBSCRIPTION_TYPE.submissionPromoted,
     incident_id: 217,
     processed: false,
+    userId: '63320ce63ec803072c9f5291',
   },
   {
     _id: '63616f82d0db19c07d081401',
     type: SUBSCRIPTION_TYPE.submissionPromoted,
     incident_id: 218,
     processed: false,
+    userId: '63320ce63ec803072c9f5291',
   },
   //Duplicated pending notification
   {
@@ -25,6 +27,7 @@ const pendingNotifications = [
     type: SUBSCRIPTION_TYPE.submissionPromoted,
     incident_id: 218,
     processed: false,
+    userId: '63320ce63ec803072c9f5291',
   },
 ];
 
@@ -73,9 +76,7 @@ describe('Process New Promotions Pending Notifications', () => {
 
         const sendEmailCallArgs = sendEmailCalls[i].args[1];
 
-        const userIds = subscriptions
-          .filter((s) => s.incident_id === pendingNotification.incident_id)
-          .map((subscription) => subscription.userId);
+        const userIds = pendingNotifications.map((n) => n.userId);
 
         const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
 
@@ -107,12 +108,11 @@ describe('Process New Promotions Pending Notifications', () => {
   });
 
   it('New Promotions - Should send pending submissions promoted notifications', () => {
-    const { notificationsCollection, subscriptionsCollection, incidentsCollection } =
-      stubEverything({
-        subscriptionType: SUBSCRIPTION_TYPE.submissionPromoted,
-        pendingNotifications,
-        subscriptions,
-      });
+    const { notificationsCollection, incidentsCollection } = stubEverything({
+      subscriptionType: SUBSCRIPTION_TYPE.submissionPromoted,
+      pendingNotifications,
+      subscriptions,
+    });
 
     cy.wrap(processNotifications()).then(() => {
       expect(notificationsCollection.find.getCall(3).args[0]).to.deep.equal({
@@ -120,30 +120,20 @@ describe('Process New Promotions Pending Notifications', () => {
         type: SUBSCRIPTION_TYPE.submissionPromoted,
       });
 
-      for (const subscription of subscriptions) {
+      for (const notification of pendingNotifications) {
         expect(global.context.functions.execute).to.be.calledWith('getUser', {
-          userId: subscription.userId,
+          userId: notification.userId,
         });
       }
 
       for (let i = 0; i < uniquePendingNotifications.length; i++) {
         const pendingNotification = uniquePendingNotifications[i];
 
-        expect(
-          subscriptionsCollection.find.getCall(i).args[0],
-          'Get subscriptions for Incident'
-        ).to.deep.equal({
-          type: SUBSCRIPTION_TYPE.submissionPromoted,
-          incident_id: pendingNotification.incident_id,
-        });
-
         expect(incidentsCollection.findOne.getCall(i).args[0], 'Find incident').to.deep.equal({
           incident_id: pendingNotification.incident_id,
         });
 
-        const userIds = subscriptions
-          .filter((s) => s.incident_id === pendingNotification.incident_id)
-          .map((subscription) => subscription.userId);
+        const userIds = pendingNotifications.map((n) => n.userId);
 
         const incident = incidents.find((i) => i.incident_id == pendingNotification.incident_id);
 
@@ -176,7 +166,7 @@ describe('Process New Promotions Pending Notifications', () => {
   });
 
   it('New Promotions - Should mark pending notifications as processed if there are no subscribers', () => {
-    const { notificationsCollection, subscriptionsCollection } = stubEverything({
+    const { notificationsCollection } = stubEverything({
       subscriptionType: SUBSCRIPTION_TYPE.submissionPromoted,
       pendingNotifications,
       subscriptions: [],
@@ -203,15 +193,8 @@ describe('Process New Promotions Pending Notifications', () => {
         type: SUBSCRIPTION_TYPE.submissionPromoted,
       });
 
-      expect(global.context.functions.execute).not.to.be.called;
-
       for (let i = 0; i < uniquePendingNotifications.length; i++) {
         const pendingNotification = uniquePendingNotifications[i];
-
-        expect(subscriptionsCollection.find.getCall(i).args[0]).to.deep.equal({
-          type: SUBSCRIPTION_TYPE.submissionPromoted,
-          incident_id: pendingNotification.incident_id,
-        });
 
         expect(notificationsCollection.updateOne.getCall(i).args[0]).to.deep.equal({
           _id: pendingNotification._id,
