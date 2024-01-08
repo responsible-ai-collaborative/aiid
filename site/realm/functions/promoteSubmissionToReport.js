@@ -54,16 +54,12 @@ exports = async (input) => {
       await incidents.insertOne({ ...newIncident, incident_id: BSON.Int32(newIncident.incident_id) });
 
       if (submission.user) {
-        await subscriptionsCollection.insertOne({
-          type: 'submission-promoted',
-          incident_id: BSON.Int32(newIncident.incident_id),
-          userId: submission.user
-        });
 
         await notificationsCollection.insertOne({
           type: 'submission-promoted',
           incident_id: BSON.Int32(newIncident.incident_id),
-          processed: false
+          processed: false,
+          userId: submission.user
         });
       }
 
