@@ -3,3 +3,6 @@
 
 [build.processing.html]
   pretty_urls = false
+
+[context.deploy-preview]
+  publish = "public/"
