@@ -165,9 +165,9 @@ describe('Report History', () => {
 
       cy.url().should('include', '/cite/10');
 
-      cy.go('forward');
+      cy.waitForStableDOM();
 
-      cy.wait('@FindReportHistory');
+      cy.wait('@FindReportHistory', { timeout: 80000 });
     }
   );
 

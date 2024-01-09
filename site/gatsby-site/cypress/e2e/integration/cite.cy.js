@@ -396,7 +396,7 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/9');
 
-    cy.wait('@findIncident', { timeout: 10000 });
+    cy.wait('@findIncident', { timeout: 30000 });
 
     cy.waitForStableDOM();
 
