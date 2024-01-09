@@ -71,8 +71,11 @@ export default function DisplayModeSwitch() {
           onClick={() => onChange(key)}
           size="sm"
           className={`${
-            key == display ? 'bg-gray-700 hover:bg-gray-800' : 'bg-gray-500 hover:bg-gray-700'
+            key == display
+              ? 'bg-gray-700 hover:bg-gray-800 selected'
+              : 'bg-gray-500 hover:bg-gray-700'
           } text-white w-8`}
+          data-cy={`display-mode-${key}`}
         >
           <FontAwesomeIcon icon={modes[key].icon} />
         </Button>

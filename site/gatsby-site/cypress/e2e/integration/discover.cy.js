@@ -546,4 +546,30 @@ describe('The Discover app', () => {
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
     }
   );
+
+  it('Should update display types', () => {
+    cy.visit(url + '?display=list');
+
+    cy.get('[data-cy="display-mode-list"]').should('have.class', 'selected');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="display-mode-compact"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'display=compact');
+
+    cy.get('[data-cy="display-mode-compact"]').should('have.class', 'selected');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="display-mode-details"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'display=details');
+
+    cy.get('[data-cy="display-mode-details"]').should('have.class', 'selected');
+  });
 });
