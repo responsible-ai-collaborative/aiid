@@ -25,9 +25,9 @@ const LandingPage = (props) => {
 
   let { latestPrismicPost, latestPostOld, latestReportIncidents } = data;
 
-  const mdxDate = new Date(latestPostOld?.frontmatter?.date);
+  const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
 
-  const prismicDate = new Date(latestPrismicPost?.node?.data.date);
+  const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
 
   const latestPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
 
@@ -94,7 +94,7 @@ const LandingPage = (props) => {
           </div>
           {(latestPost?.edges?.length > 0 || latestPost?.nodes?.length > 0) && (
             <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-              {latestPost.nodes.length > 0 ? (
+              {latestPost.nodes.length > 0 && latestPost.nodes[0].data ? (
                 <PostPreviewNew post={latestPost.nodes[0]} latestPost={true} />
               ) : latestPost.nodes.length > 0 ? (
                 <Blog post={latestPost.nodes[0]} />
@@ -255,6 +255,7 @@ export const query = graphql`
     latestPrismicPost: allPrismicBlog(
       filter: { data: { language: { eq: $locale } } }
       sort: { data: { date: DESC } }
+      limit: 1
     ) {
       nodes {
         uid
