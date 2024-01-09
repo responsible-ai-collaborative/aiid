@@ -20,8 +20,6 @@ export default function PostsListing({ posts, mdxBlogPosts }) {
 
   const sortedPosts = mergedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  console.log(sortedPosts);
-
   return (
     <>
       <div className="tw-post-listing">
