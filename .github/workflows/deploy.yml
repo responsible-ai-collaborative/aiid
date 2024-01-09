@@ -47,7 +47,7 @@ jobs:
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
-        run: netlify build --context deploy-preview
+        run: netlify build --context deploy-preview --offline
         env:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
