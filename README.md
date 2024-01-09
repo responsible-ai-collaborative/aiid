@@ -475,8 +475,69 @@ GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
-
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
+
+### Deployment Workflows on GitHub Actions
+
+We have integrated our testing and deployment processes with GitHub Actions. There are three primary workflows for deployment: Deploy Previews, Staging, and Production. Each of these workflows is designed to ensure a smooth and reliable deployment process.
+
+#### 1) Deploy Previews Workflow 
+
+- **File:** [/.github/workflows/preview.yml](/.github/workflows/preview.yml)
+- **Trigger:** This workflow is activated for every pull request that is based on the `staging` branch.
+- **Process:** It executes both the integration tests and deploys the application to Netlify.
+- **Post-Deployment:** Upon a successful deployment, the workflow automatically posts a comment on the pull request. This comment includes a link to the Netlify preview of the changes and a link to the Netlify deploy log.
+- **Environment:** This workflow is tied to the `staging` GitHub environment.
+
+#### 2) Staging Workflow (WIP)
+
+- **Trigger:** Runs only on pushes to the `staging` branch.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
+- **Environment:** This workflow is tied to the `staging` GitHub environment.
+
+#### 3) Production Workflow (WIP)
+
+- **Trigger:** Activated only on pushes to the `master` branch.
+- **Process:** Runs the tests and, if they succeed, proceeds to deploy to the production environment.
+- **Environment:** Tied to the `production` GitHub environment.
+
+### GitHub Configuration
+
+All three workflows share a common set of environment variables, which need to be defined for each environment. These variables are categorized into secrets and standard values.
+
+#### Secrets
+
+- `ALGOLIA_ADMIN_KEY`
+- `CLOUDFLARE_R2_ACCESS_KEY_ID`
+- `CLOUDFLARE_R2_ACCOUNT_ID`
+- `CLOUDFLARE_R2_BUCKET_NAME`
+- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+- `CYPRESS_RECORD_KEY`
+- `E2E_ADMIN_PASSWORD`
+- `E2E_ADMIN_USERNAME`
+- `GOOGLE_TRANSLATE_API_KEY`
+- `MONGODB_CONNECTION_STRING`
+- `MONGODB_MIGRATIONS_CONNECTION_STRING`
+- `MONGODB_REPLICA_SET`
+- `MONGODB_TRANSLATIONS_CONNECTION_STRING`
+- `NETLIFY_AUTH_TOKEN`
+- `PRISMIC_ACCESS_TOKEN`
+- `REALM_API_PRIVATE_KEY`
+- `REALM_GRAPHQL_API_KEY`
+- `REALM_API_PUBLIC_KEY`
+- `GATSBY_ROLLBAR_TOKEN`
+
+#### Values
+
+- `CYPRESS_PROJECT_ID`
+- `GATSBY_ALGOLIA_APP_ID`
+- `GATSBY_ALGOLIA_SEARCH_KEY`
+- `GATSBY_AVAILABLE_LANGUAGES`
+- `GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL`
+- `GATSBY_PRISMIC_REPO_NAME`
+- `GATSBY_REALM_APP_ID`
+- `NETLIFY_SITE_ID`
 
 ### Testing
 
