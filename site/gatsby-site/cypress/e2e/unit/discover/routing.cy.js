@@ -10,7 +10,7 @@ describe('Discover routing', () => {
 
     const location = {
       search:
-        '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&epoch_date_published_max=1670371200&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
+        '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&display=details&epoch_date_published_max=1670371200&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
     };
 
     const result = parseURL({ location, indexName, queryConfig });
@@ -25,6 +25,7 @@ describe('Discover routing', () => {
       authors: ['Christopher Knaus', 'Sam Levin'],
       classifications: ['CSETv0:Intent:Accident'],
       is_incident_report: ['true'],
+      display: ['details'],
     });
     expect(state.range).to.deep.eq({
       epoch_date_published: `:1670371200`,
