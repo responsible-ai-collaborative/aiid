@@ -57,6 +57,8 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const { i18n, t } = useTranslation(['submitted']);
 
+  const { t: tValidation } = useTranslation(['validation']);
+
   const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',
   });
@@ -124,7 +126,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       const [error] = e.errors;
 
       addToast({
-        message: t(error),
+        message: tValidation(error),
         severity: SEVERITY.danger,
         error: e,
       });
