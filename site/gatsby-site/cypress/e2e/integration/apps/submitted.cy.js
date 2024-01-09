@@ -171,21 +171,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpsertSubscription' &&
-        req.body.variables?.query?.type === SUBSCRIPTION_TYPE.submissionPromoted,
-      'UpsertSubscriptionPromoted',
-      {
-        data: {
-          upsertOneSubscription: {
-            _id: 'dummyIncidentId',
-          },
-        },
-      }
-    );
-
     cy.get('select[data-cy="promote-select"]').as('dropdown');
 
     cy.get('@dropdown').select('Incident');

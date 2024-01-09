@@ -46,7 +46,7 @@ jobs:
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
-        run: netlify build --context deploy-preview
+        run: netlify build --context deploy-preview --offline
         working-directory: site/gatsby-site
         env:
           INSTRUMENT: true
