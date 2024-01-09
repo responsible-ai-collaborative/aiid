@@ -27,3 +27,5 @@ jobs:
       pull-requests: write
     with:
       environment: staging
+      context: production
+      alias: staging-aiid

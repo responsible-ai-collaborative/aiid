@@ -50,3 +50,5 @@ jobs:
       pull-requests: write
     with:
       environment: staging
+      context: deploy-preview
+      alias: pr-${{ github.event.pull_request.number }}
