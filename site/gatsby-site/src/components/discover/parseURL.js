@@ -71,7 +71,5 @@ export default function ({ location, indexName, queryConfig }) {
 
   const searchState = generateSearchState({ query });
 
-  console.log('searchState', searchState?.refinementList);
-
   return { [indexName]: searchState };
 }
