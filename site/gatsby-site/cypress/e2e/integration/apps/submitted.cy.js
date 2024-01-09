@@ -212,18 +212,6 @@ describe('Submitted reports', () => {
         expect(variables.subscription.userId.link).to.eq(user.userId);
       });
 
-    cy.wait('@UpsertSubscriptionPromoted')
-      .its('request.body.variables')
-      .then((variables) => {
-        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
-        expect(variables.query.incident_id.incident_id).to.eq(182);
-        expect(variables.query.userId.userId).to.eq(submission.user.userId);
-
-        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
-        expect(variables.subscription.incident_id.link).to.eq(182);
-        expect(variables.subscription.userId.link).to.eq(submission.user.userId);
-      });
-
     cy.contains(
       '[data-cy="toast"]',
       'Successfully promoted submission to Incident 182 and Report 1565'

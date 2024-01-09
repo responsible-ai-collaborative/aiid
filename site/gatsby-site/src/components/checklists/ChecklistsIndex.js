@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'flowbite-react';
+import { Button, Tooltip } from 'flowbite-react';
 import Card from 'elements/Card';
 import Select from 'elements/Select';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckToSlot } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheckToSlot,
+  faEnvelope,
+  faPlusCircle,
+  faClone,
+} from '@fortawesome/free-solid-svg-icons';
 import gql from 'graphql-tag';
+import { format, parseISO } from 'date-fns';
 
 import CardSkeleton from 'elements/Skeletons/Card';
 import { useUserContext } from '../../contexts/userContext';
@@ -175,6 +181,7 @@ const ChecklistsIndex = ({ users }) => {
                   window.location = '/apps/checklists?id=' + newChecklist.id;
                 }}
               >
+                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
                 <Trans>New</Trans>
               </Button>
             )}
@@ -227,6 +234,21 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
+  let dateCreatedYmd;
+
+  let dateCreatedYmdHm;
+
+  let dateUpdatedYmdHm;
+
+  if (checklist.date_created) {
+    dateCreatedYmd = format(parseISO(checklist.date_created), 'yyyy-MM-dd');
+    dateCreatedYmdHm = format(parseISO(checklist.date_created), 'yyyy-MM-dd hh:mm');
+  }
+
+  if (checklist.date_updated) {
+    dateUpdatedYmdHm = format(parseISO(checklist.date_updated), 'yyyy-MM-dd hh:mm');
+  }
+
   return (
     <Card data-cy="checklist-card" className="bg-white shadow" key={checklist.id}>
       <div className="flex items-center gap-2 flex-wrap border-b border-gray-200 p-4">
@@ -262,9 +284,11 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
             }
           }}
         >
+          <FontAwesomeIcon icon={faClone} className="mr-2" />
           <Trans>Clone</Trans>
         </Button>
         <Button color="light" onClick={() => alert('Coming soon')}>
+          <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
           <Trans>Subscribe</Trans>
         </Button>
         {user.id == checklist.owner_id && (
@@ -289,11 +313,43 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
         <ExportDropdown {...{ checklist }} />
       </div>
       <div className="p-4">
-        {owner && owner.first_name && owner.last_name && (
-          <span className="float-right text-gray-700">
-            by {owner.first_name} {owner.last_name}
-          </span>
-        )}
+        <div className="flex float-right text-gray-700 fit-content">
+          {[
+            owner && owner.first_name && owner.last_name && (
+              <>
+                {owner.first_name} {owner.last_name}
+              </>
+            ),
+            checklist.date_created && (
+              <>
+                {' '}
+                <Tooltip
+                  content={
+                    <>
+                      Created {dateCreatedYmdHm}
+                      <br />
+                      Updated {dateUpdatedYmdHm}
+                    </>
+                  }
+                >
+                  <time dateTime={checklist.date_created}>{dateCreatedYmd}</time>
+                </Tooltip>
+              </>
+            ),
+          ]
+            .filter((e) => e)
+            .reduce(
+              (result, fragment, i) =>
+                i == 0 ? (
+                  <>{fragment}</>
+                ) : (
+                  <>
+                    {result} • {fragment}
+                  </>
+                ),
+              []
+            )}
+        </div>
 
         {checklist?.risks && (
           <ul className="flex gap-2 flex-wrap">
