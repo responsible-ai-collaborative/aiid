@@ -31,7 +31,7 @@ const parseRefinements = ({ query }) => {
               result[refinementKey] = [];
             }
 
-            result[`${namespace}.${attribute}`].push(...value);
+            result[refinementKey].push(...value);
           }
         } else {
           result[key] = value.split('||');
