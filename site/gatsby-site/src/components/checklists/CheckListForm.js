@@ -167,6 +167,7 @@ export default function CheckListForm({
         </HeaderControls>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
+      <Info>Checklists are not private data. They will appear in public database snapshots.</Info>
       <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
       <section>
         <SideBySide className="my-4">
