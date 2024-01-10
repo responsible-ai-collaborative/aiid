@@ -546,4 +546,32 @@ describe('The Discover app', () => {
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
     }
   );
+
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Search using the classifications filter',
+    () => {
+      cy.visit(url);
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy=expand-filters]').click();
+
+      cy.contains('button', 'Classifications').click();
+
+      cy.get('[data-cy="search"] input').type('Buenos Aires');
+
+      cy.get('[data-cy="attributes"] [data-cy="Named Entities"]').contains('Buenos Aires').click();
+
+      cy.waitForStableDOM();
+
+      cy.url().should('include', 'classifications=CSETv0%3ANamed%20Entities%3ABuenos%20Aires');
+
+      cy.get('[data-cy="selected-refinements"]')
+        .contains('CSETv0 : Named Entities : Buenos Aires')
+        .should('be.visible');
+
+      cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 1);
+    }
+  );
 });
