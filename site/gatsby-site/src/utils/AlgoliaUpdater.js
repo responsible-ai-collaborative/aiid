@@ -46,7 +46,22 @@ const includedCSETAttributes = [
   'Technology Purveyor',
 ];
 
-const getClassificationArray = ({ classification, taxonomy }) => {
+/**
+ *
+ * @returns classifications in both tree and list format:
+ *
+ * {
+ *  tree: {
+ *    CSETv0: {
+ *      'Sector of Deployment': 'Defense',
+ *      'Problem Nature': 'Cybersecurity',
+ *    }
+ *  },
+ *  list: ['CSETv0:Sector of Deployment:Defense', 'CSETv0:Sector of Deployment:Healthcare'],
+ * }
+ */
+
+const getClassificationObject = ({ classification, taxonomy }) => {
   const attributes = {};
 
   const list = [];
@@ -164,7 +179,7 @@ class AlgoliaUpdater {
       const incidentClassifications = classifications
         .filter((c) => c.incidents.includes(incident.incident_id))
         .map((classification) =>
-          getClassificationArray({
+          getClassificationObject({
             classification,
             taxonomy: taxa.find((t) => t.namespace == classification.namespace),
           })
@@ -177,7 +192,7 @@ class AlgoliaUpdater {
           const reportClassifications = classifications
             .filter((c) => c.reports.includes(report.report_number))
             .map((classification) =>
-              getClassificationArray({
+              getClassificationObject({
                 classification,
                 taxonomy: taxa.find((t) => t.namespace == classification.namespace),
               })
