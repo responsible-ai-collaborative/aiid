@@ -176,9 +176,9 @@ export default function CheckListForm({
         <OtherTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
       </section>
       <section>
-        <header className="flex mt-6">
+        <header className="flex flex-wrap mt-6">
           <h2>Risks</h2>
-          <div className="flex gap-2 ml-auto">
+          <div className="flex flex-wrap gap-2 ml-auto">
             <Button
               color="light"
               onClick={() =>
@@ -220,7 +220,9 @@ export default function CheckListForm({
         </header>
 
         {!risksLoading && values.risks?.length == 0 && (
-          <Trans>No risks yet. Try adding some system tags.</Trans>
+          <p>
+            <Trans>No risks yet. Try adding some system tags.</Trans>
+          </p>
         )}
         <RiskSections
           {...{
