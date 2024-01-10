@@ -78,6 +78,7 @@ jobs:
           GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
 
       - name: Cache build
         uses: actions/cache/save@v3
