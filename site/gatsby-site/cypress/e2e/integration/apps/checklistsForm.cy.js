@@ -147,7 +147,6 @@ describe('Checklists App Form', () => {
       cy.get('[data-cy="edit-risk-title"] input').type('{selectall}{backspace}Modified Risk Title');
       cy.get('[data-cy="edit-risk-title"] input').blur();
 
-      cy.wait(10000000);
       cy.wait(['@upsertChecklist']).then((xhr) => {
         expect(xhr.request.body.variables.checklist.risks[0]).to.deep.nested.include({
           title: 'Modified Risk Title',
