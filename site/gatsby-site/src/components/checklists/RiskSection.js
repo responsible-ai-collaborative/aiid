@@ -51,10 +51,15 @@ export default function RiskSection({
     ) / 3;
 
   return (
-    <RiskDetails open={risk.startClosed ? undefined : true} generated={risk.generated}>
+    <RiskDetails
+      data-cy="risk-details"
+      open={risk.startClosed ? undefined : true}
+      generated={risk.generated}
+    >
       <RiskHeaderSummary generated={risk.generated}>
         <HeaderItemsGroup>
           <EditableLabel
+            data-cy="edit-risk-title"
             title={risk.title}
             onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
             textClasses={`text-lg font-500 text-${
