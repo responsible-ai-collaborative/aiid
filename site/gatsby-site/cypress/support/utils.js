@@ -4,13 +4,13 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 export const maybeIt = Cypress.env('e2eUsername') && Cypress.env('e2ePassword') ? it : it.skip;
 
-export const conditionalIt = (condition, name, fn) => {
-  if (condition) {
-    it(name, fn);
-  } else {
-    it.skip(name, fn);
-  }
-};
+export const conditionalIt = (condition, ...rest) =>
+  condition ? it.call(null, ...rest) : it.skip.call(null, ...rest);
+
+conditionalIt.only = (condition, ...rest) =>
+  condition ? it.only.call(null, ...rest) : it.skip.call(null, ...rest);
+
+conditionalIt.skip = (condition, ...rest) => it.skip.call(null, ...rest);
 
 export const getApolloClient = () => {
   const email = Cypress.env('e2eUsername');

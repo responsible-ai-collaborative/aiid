@@ -11,7 +11,7 @@ import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
 import { VariantStatusBadge } from './VariantList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import Link from 'components/ui/Link';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
@@ -59,7 +59,7 @@ export default function VariantEditModal({
   const handleSubmit = async (values) => {
     try {
       const updated = {
-        date_published: values.date_published,
+        date_published: new Date(values.date_published),
         submitters: values.submitters,
         text: values.text,
         inputs_outputs: values.inputs_outputs,
@@ -74,7 +74,7 @@ export default function VariantEditModal({
 
       const today = new Date();
 
-      updated.date_modified = format(today, 'yyyy-MM-dd');
+      updated.date_modified = today;
       updated.epoch_date_modified = getUnixTime(today);
 
       await updateVariant({

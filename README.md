@@ -1,6 +1,17 @@
-# Artificial Intelligence Incident Database (AIID)
+<p align="center">
+  <a href="https://incidentdatabase.ai#gh-light-mode-only">
+    <img src="./site/gatsby-site/static/logos/Blue_AIID.svg" height="100">
+  </a>
+  <a href="https://incidentdatabase.ai#gh-dark-mode-only">
+    <img src="./site/gatsby-site/static/logos/White_AIID.svg" height="100">
+  </a>
+</p>
+<h1 align="center">
+ Artificial Intelligence Incident Database
+</h1>
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+[![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://forms.gle/v7UHJvEkYSJQ7jHj7)
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
@@ -448,6 +459,12 @@ GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployment stability
 NODE_VERSION=18 # this is required by Gatsby v5
 NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
+# The following "CLOUDFLARE_R2" variables are required to create the /research/snapshots/ page
+CLOUDFLARE_R2_ACCOUNT_ID=[The Cloudflare R2 account ID (e.g.: 8f4144a9d995a9921d0200db59f6a00e)]
+CLOUDFLARE_R2_ACCESS_KEY_ID=[The Cloudflare R2 access key ID (e.g.: 7aa73208bc89cee3195879e578b291ee)]
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
+CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
+GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 

@@ -24,6 +24,12 @@
                     "items": {
                         "bsonType": "object",
                         "properties": {
+                            "tags": {
+                                "bsonType": "array",
+                                "items": {
+                                    "bsonType": "string"
+                                }
+                            },
                             "Alleged deployer of AI system": {
                                 "bsonType": "array",
                                 "items": {
@@ -139,6 +145,15 @@
                     }
                 },
                 "tag": {
+                    "bsonType": "string"
+                },
+                "tags": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "title": {
                     "bsonType": "string"
                 }
             }

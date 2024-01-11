@@ -32,7 +32,7 @@ const EditableLabel = (props) => {
           onClick={() => setEditingTitle((editingTitle) => !editingTitle)}
         >
           <FontAwesomeIcon
-            className={`${iconClasses} align-baseline`}
+            className={`${iconClasses || ''} align-baseline`}
             icon={editingTitle ? faCheck : faEdit}
           />
         </button>

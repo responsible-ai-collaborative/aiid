@@ -111,7 +111,10 @@ const Header = ({ location = null }) => {
           );
 
         var HeaderLink = ({ className }) => (
-          <Link to={finalLogoLink} className={`hover:no-underline flex items-center ${className}`}>
+          <Link
+            to={finalLogoLink}
+            className={`hover:no-underline flex items-center ${className || ''}`}
+          >
             <div className="md:w-64 text-center">
               <img
                 className={'hidden md:inline ml-[10px] mr-[10px] w-[200px]'}
@@ -138,7 +141,7 @@ const Header = ({ location = null }) => {
           <a
             href="#content"
             className={`
-              ${className}
+              ${className || ''}
               relative 
               overflow-hidden
               text-white
@@ -205,7 +208,7 @@ const Header = ({ location = null }) => {
 };
 
 var Divider = ({ className }) => (
-  <span className={`divider hidden md:inline-block w-px h-[30px] bg-gray-400 ${className}`} />
+  <span className={`divider hidden md:inline-block w-px h-[30px] bg-gray-400 ${className || ''}`} />
 );
 
 export default Header;

@@ -30,7 +30,7 @@ export default function WebArchiveLink({ url, date, children, className = '' }) 
   };
 
   return (
-    <div className={`flex items-center ${className}`} data-cy="web-archive-link">
+    <div className={`flex items-center ${className || ''}`} data-cy="web-archive-link">
       <a className="text-black" href={url}>
         {children}
       </a>

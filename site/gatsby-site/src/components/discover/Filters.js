@@ -2,9 +2,25 @@ import React from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import Filter from './Filter';
 import { useMenuContext } from 'contexts/MenuContext';
+import { graphql, useStaticQuery } from 'gatsby';
 
 function Filters() {
   const { isCollapsed } = useMenuContext();
+
+  const {
+    taxa: { nodes: taxa },
+  } = useStaticQuery(graphql`
+    query FiltersTaxaQuery {
+      taxa: allMongodbAiidprodTaxa(filter: { namespace: { in: ["CSETv1", "CSETv0", "GMF"] } }) {
+        nodes {
+          namespace
+          field_list {
+            short_name
+          }
+        }
+      }
+    }
+  `);
 
   return (
     <div className="hidden md:flex gap-y-2 mt-3 flex-wrap">
@@ -16,7 +32,7 @@ function Filters() {
           } px-1 ${list.hidden ? 'hidden' : ''}`}
           data-cy={list.attribute}
         >
-          <Filter className="w-full" type={list.type} {...list} />
+          <Filter className="w-full" type={list.type} {...list} taxa={taxa} />
         </div>
       ))}
     </div>

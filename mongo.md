@@ -54,10 +54,10 @@ Administering data requires administrative access to the database. This access i
 
 ### Dates
 
-* `date_downloaded`:`2019-07-25` # (String) Date the report was downloaded.
-* `date_submitted`:`2019-07-25` # (String) Date the report was submitted to the AIID. This determines citation order.
-* `date_modified`: `2019-07-25` # (String) Date the report was edited.
-* `date_published`: `2019-07-25` # (String) The publication date of the report.
+* `date_downloaded`:`2019-07-25` # (Date) Date the report was downloaded.
+* `date_submitted`:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
+* `date_modified`: `2019-07-25` # (Date) Date the report was edited.
+* `date_published`: `2019-07-25` # (Date) The publication date of the report.
 * `epoch_incident_date`: `1564016400` # (Int) Date the incident occurred in the Unix Epoch.
 * `epoch_date_downloaded`:`1564016400` # (Int) Date the report was downloaded in the Unix Epoch.
 * `epoch_date_submitted`:`1564016400` # (Int) Date the report was submitted to the AIID in the Unix Epoch.

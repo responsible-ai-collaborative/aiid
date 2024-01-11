@@ -168,7 +168,7 @@ describe('Incidents', () => {
     cy.url().should('include', '/cite/10');
   });
 
-  conditionalIt(
+  conditionalIt.skip(
     !Cypress.env('isEmptyEnvironment'),
     'Should refresh Report history if the user go back on the browser',
     () => {

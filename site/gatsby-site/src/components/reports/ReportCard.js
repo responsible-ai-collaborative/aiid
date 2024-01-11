@@ -120,9 +120,9 @@ const ReportCard = ({
   return (
     <>
       <div
-        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative ${
-          expanded ? 'expanded' : ''
-        }`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${
+          className || ''
+        } p-4 relative ${expanded ? 'expanded' : ''}`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -165,7 +165,7 @@ const ReportCard = ({
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
               {item.date_published
-                ? item.date_published.substring(0, 4)
+                ? format(new Date(item.date_published), 'yyyy')
                 : item.epoch_date_published
                 ? format(fromUnixTime(item.epoch_date_published), 'yyyy')
                 : 'Needs publish date'}

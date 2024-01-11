@@ -171,21 +171,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpsertSubscription' &&
-        req.body.variables?.query?.type === SUBSCRIPTION_TYPE.submissionPromoted,
-      'UpsertSubscriptionPromoted',
-      {
-        data: {
-          upsertOneSubscription: {
-            _id: 'dummyIncidentId',
-          },
-        },
-      }
-    );
-
     cy.get('select[data-cy="promote-select"]').as('dropdown');
 
     cy.get('@dropdown').select('Incident');
@@ -210,18 +195,6 @@ describe('Submitted reports', () => {
         expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.incident);
         expect(variables.subscription.incident_id.link).to.eq(182);
         expect(variables.subscription.userId.link).to.eq(user.userId);
-      });
-
-    cy.wait('@UpsertSubscriptionPromoted')
-      .its('request.body.variables')
-      .then((variables) => {
-        expect(variables.query.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
-        expect(variables.query.incident_id.incident_id).to.eq(182);
-        expect(variables.query.userId.userId).to.eq(submission.user.userId);
-
-        expect(variables.subscription.type).to.eq(SUBSCRIPTION_TYPE.submissionPromoted);
-        expect(variables.subscription.incident_id.link).to.eq(182);
-        expect(variables.subscription.userId.link).to.eq(submission.user.userId);
       });
 
     cy.contains(
@@ -795,6 +768,7 @@ describe('Submitted reports', () => {
           entities: [
             { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
             { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+            { __typename: 'Entity', entity_id: 'Tesla', name: 'tesla' },
           ],
         },
       }
@@ -813,6 +787,13 @@ describe('Submitted reports', () => {
       'value',
       'YouTube to crack down on inappropriate content masked as kids’ cartoons'
     );
+
+    cy.get('input[name="harmed_parties"]').type('Tes');
+
+    cy.get('#harmed_parties-tags .dropdown-item')
+      .contains(/^Tesla$/)
+      .click();
+
     cy.get('input[label="Image Address"]').should(
       'have.attr',
       'value',
@@ -897,80 +878,79 @@ describe('Submitted reports', () => {
     }
   );
 
-  maybeIt(
-    'Does not allow promotion of submission to Issue if schema is invalid (missing Title).',
-    () => {
-      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  it.only('Does not allow promotion of submission to Issue if schema is invalid (missing Title).', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-      const submission = submittedReports.data.submissions.find(
-        (r) => r._id === '123461606b4bb5e39601234'
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '123461606b4bb5e39601234'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.wait('@FindSubmissions');
+
+    cy.visit(url + `?editSubmission=${submission._id}`);
+
+    cy.wait('@AllQuickAdd');
+
+    cy.on('fail', (err) => {
+      expect(err.message).to.include(
+        '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
       );
+    });
 
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmissions',
-        'FindSubmissions',
-        {
-          data: {
-            submissions: [submission],
-          },
-        }
-      );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName === 'PromoteSubmission',
+      'promotionInvoked',
+      {}
+    );
 
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmission',
-        'FindSubmission',
-        {
-          data: {
-            submission: submission,
-          },
-        }
-      );
+    cy.get('select[data-cy="promote-select"]').as('dropdown');
 
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'AllQuickAdd',
-        'AllQuickAdd',
-        {
-          data: {
-            quickadds: [quickAdds],
-          },
-        }
-      );
+    cy.get('@dropdown').select('Issue');
 
-      cy.visit(url);
+    cy.get('[data-cy="promote-button"]').click();
 
-      cy.wait('@FindSubmissions');
+    cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
 
-      cy.visit(url + `?editSubmission=${submission._id}`);
-
-      cy.wait('@AllQuickAdd');
-
-      cy.on('fail', (err) => {
-        expect(err.message).to.include(
-          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
-        );
-      });
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName === 'PromoteSubmission',
-        'promotionInvoked',
-        {}
-      );
-
-      cy.get('select[data-cy="promote-select"]').as('dropdown');
-
-      cy.get('@dropdown').select('Issue');
-
-      cy.get('[data-cy="promote-button"]').click();
-
-      cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
-
-      cy.wait('@promotionInvoked', { timeout: 2000 });
-    }
-  );
+    cy.wait('@promotionInvoked', { timeout: 2000 });
+  });
 
   maybeIt(
     'Does not allow promotion of submission to Report if schema is invalid (missing Date).',

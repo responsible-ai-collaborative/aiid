@@ -175,7 +175,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown className="variants-markdown">{values.text}</Markdown>
+            <Markdown className="variants-markdown overflow-auto">{values.text}</Markdown>
           </div>
         ),
       },
@@ -191,7 +191,9 @@ export default function VariantsTable({ data, refetch, setLoading }) {
               (input_output, index) =>
                 input_output != '' && (
                   <div
-                    className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                    className={`overflow-auto border-1 rounded-lg px-3 ${
+                      index % 2 == 1 ? 'bg-gray-200' : ''
+                    }`}
                     key={`inputs_outputs.${index}`}
                     data-cy="variant-inputs-outputs"
                   >

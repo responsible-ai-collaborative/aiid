@@ -133,6 +133,7 @@ describe('The Submit form', () => {
       .contains(/^YouTube$/)
       .click();
 
+    cy.get('input[name="deployers"]').type('NewDeployer{enter}');
     cy.get('button[type="submit"]').click();
 
     cy.wait('@insertSubmission').then((xhr) => {
@@ -148,7 +149,7 @@ describe('The Submit form', () => {
           "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
-        deployers: { link: ['youtube'] },
+        deployers: { link: ['youtube', 'newdeployer'] },
       });
     });
 

@@ -5,22 +5,26 @@ import axios from 'axios';
 const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
 
 export default async function handler(req, res) {
-  const { url } = req.query;
+  try {
+    const { url } = req.query;
 
-  const article = await getArticle(url, { cookies: false });
+    const article = await getArticle(url, { cookies: false });
 
-  const response = {
-    title: article.title,
-    authors: article.author,
-    date_published: article.date_published
-      ? format(parseISO(article.date_published), 'yyyy-MM-dd')
-      : null,
-    date_downloaded: format(new Date(), 'yyyy-MM-dd'),
-    image_url: article.lead_image_url,
-    text: article.content?.replace(stripImages, '').trim(),
-  };
+    const response = {
+      title: article.title,
+      authors: article.author,
+      date_published: article.date_published
+        ? format(parseISO(article.date_published), 'yyyy-MM-dd')
+        : null,
+      date_downloaded: format(new Date(), 'yyyy-MM-dd'),
+      image_url: article.lead_image_url,
+      text: article.content?.replace(stripImages, '').trim(),
+    };
 
-  res.status(200).json(response);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).send([error.message, error.stack].filter((e) => e).join('\n\n'));
+  }
 }
 
 // Runs first with { cookies: false },

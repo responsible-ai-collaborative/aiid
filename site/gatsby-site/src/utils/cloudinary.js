@@ -74,7 +74,7 @@ const Image = ({
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={alt}
-        className={`${className} ${
+        className={`${className || ''} ${
           !publicID || publicID == '' || loadFailed ? '' : 'hidden'
         } h-full w-full object-cover`}
         height={height}
@@ -85,7 +85,7 @@ const Image = ({
         data-cy={'cloudinary-image'}
         ref={imageElement}
         alt={alt}
-        className={`${className} ${
+        className={`${className || ''} ${
           !publicID || publicID == '' || loadFailed ? 'hidden' : ''
         } h-full w-full object-cover`}
         cldImg={image}

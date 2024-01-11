@@ -14,7 +14,9 @@ export default function CardSkeleton({
       role="status"
       className={`${
         maxWidthSmall ? 'max-w-sm' : ''
-      } p-4 rounded border border-gray-200 shadow animate-pulse md:p-6 dark:border-gray-700 ${className}`}
+      } p-4 rounded border border-gray-200 shadow animate-pulse md:p-6 dark:border-gray-700 ${
+        className || ''
+      }`}
       style={style}
     >
       {image && (

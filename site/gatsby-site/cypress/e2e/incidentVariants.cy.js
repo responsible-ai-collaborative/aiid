@@ -6,7 +6,7 @@ import {
   isCompleteReport,
   VARIANT_STATUS,
 } from '../../src/utils/variants';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
 const incidentId = 464;
@@ -192,14 +192,14 @@ describe('Variants pages', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.date_published === new Date(new_date_published).toISOString() &&
           req.body.variables.set.submitters[0] === variant.submitters[0] &&
           req.body.variables.set.submitters[1] === variant.submitters[1] &&
           req.body.variables.set.text === new_text &&
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.date_modified == now.toISOString() &&
           req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
@@ -269,14 +269,14 @@ describe('Variants pages', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.date_published === new Date(new_date_published).toISOString() &&
           req.body.variables.set.submitters[0] === variant.submitters[0] &&
           req.body.variables.set.submitters[1] === new_submitter &&
           req.body.variables.set.text === new_text &&
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
-          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.date_modified == now.toISOString() &&
           req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
@@ -346,14 +346,14 @@ describe('Variants pages', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.date_published === new Date(new_date_published).toISOString() &&
           req.body.variables.set.submitters[0] === variant.submitters[0] &&
           req.body.variables.set.submitters[1] === new_submitter &&
           req.body.variables.set.text === new_text &&
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === variant.inputs_outputs[1] &&
           req.body.variables.set.tags == undefined &&
-          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
+          req.body.variables.set.date_modified == now.toISOString() &&
           req.body.variables.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {

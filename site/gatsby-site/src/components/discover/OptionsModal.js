@@ -8,6 +8,7 @@ import DisplayModeSwitch from './DisplayModeSwitch';
 import Button from 'elements/Button';
 import DisplayOptions from './DisplayOptions';
 import { Accordion, Modal } from 'flowbite-react';
+import { graphql, useStaticQuery } from 'gatsby';
 import { useRange, useRefinementList } from 'react-instantsearch';
 
 const VirtualRefinementList = ({ attribute }) => {
@@ -24,6 +25,7 @@ const VirtualRange = ({ attribute }) => {
 
 const componentsMap = {
   refinement: VirtualRefinementList,
+  classifications: VirtualRefinementList,
   range: VirtualRange,
 };
 
@@ -43,6 +45,21 @@ function OptionsModal() {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
+
+  const {
+    taxa: { nodes: taxa },
+  } = useStaticQuery(graphql`
+    query FiltersTaxaQuery {
+      taxa: allMongodbAiidprodTaxa(filter: { namespace: { in: ["CSETv1", "CSETv0", "GMF"] } }) {
+        nodes {
+          namespace
+          field_list {
+            short_name
+          }
+        }
+      }
+    }
+  `);
 
   return (
     <div>
@@ -74,7 +91,12 @@ function OptionsModal() {
             </div>
             <Accordion>
               {REFINEMENT_LISTS.map((list) => (
-                <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
+                <AccordionFilter
+                  key={list.attribute}
+                  attribute={list.attribute}
+                  {...list}
+                  taxa={taxa}
+                />
               ))}
             </Accordion>
           </div>

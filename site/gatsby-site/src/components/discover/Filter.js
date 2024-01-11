@@ -125,7 +125,7 @@ const FilterOverlay = React.forwardRef(function Container(
     <div
       ref={ref}
       {...overlayProps}
-      style={{ ...overlayProps.style, width: '280px', zIndex: 1055 }}
+      style={{ ...overlayProps.style, width: `${filterProps.width || 280}px`, zIndex: 1055 }}
       data-cy={filterProps.attribute}
       className="absolute left-0"
     >

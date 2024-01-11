@@ -1,6 +1,6 @@
 AI Incident Database: A program for the archiving of artificial intelligence incidents.
 
-Copyright (C) 2022  Responsible AI Collaborative, Inc.
+Copyright (C) 2023  Responsible AI Collaborative, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

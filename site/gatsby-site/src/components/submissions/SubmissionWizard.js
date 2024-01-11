@@ -76,7 +76,20 @@ const SubmissionWizard = ({
         const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error('Parser error');
+          let errorText = 'Parser error';
+
+          let responseErrorText = null;
+
+          try {
+            responseErrorText = await response.text();
+          } catch (e) {
+            responseErrorText = 'Could not read parser error:' + '\n\n' + e.message;
+          }
+
+          if (responseErrorText) {
+            errorText += '\n\n' + responseErrorText;
+          }
+          throw new Error(errorText);
         }
 
         const news = await response.json();
@@ -122,13 +135,12 @@ const SubmissionWizard = ({
 
         setData(newValues);
       } catch (e) {
-        const message =
-          e.message == 'Parser error'
-            ? t(
-                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
-                { newsUrl }
-              )
-            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
+        const message = e.message.startsWith('Parser error')
+          ? t(
+              `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+              { newsUrl }
+            )
+          : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
         addToast({
           message: <>{message}</>,

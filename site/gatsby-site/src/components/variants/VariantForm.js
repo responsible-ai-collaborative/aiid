@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Field, FieldArray, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
@@ -6,10 +6,14 @@ import { Button } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
+import { dateRegExp, isPastDate } from 'utils/date';
 
 // Schema for yup
 export const schema = yup.object().shape({
-  date_published: yup.date(),
+  date_published: yup
+    .string()
+    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+    .test(isPastDate),
   submitters: yup
     .string()
     .matches(/^.{3,}$/, {
@@ -33,9 +37,28 @@ export const schema = yup.object().shape({
 });
 
 const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
-  const { values, errors, touched, handleChange, handleBlur, isSubmitting } = useFormikContext();
+  const { values, errors, touched, handleChange, handleBlur, isSubmitting, setFieldValue } =
+    useFormikContext();
 
   const { t } = useTranslation(['variants']);
+
+  useEffect(() => {
+    if (values?.date_published) {
+      const publishedDate = new Date(values.date_published);
+
+      const formattedDate = publishedDate.toISOString().split('T')[0];
+
+      setFieldValue('date_published', formattedDate);
+    }
+
+    if (values?.date_downloaded) {
+      const publishedDate = new Date(values.date_downloaded);
+
+      const formattedDate = publishedDate.toISOString().split('T')[0];
+
+      setFieldValue('date_downloaded', formattedDate);
+    }
+  }, [values?.date_published, values?.date_downloaded]);
 
   return (
     <div className="flex w-full min-w-6xl flex-col" data-cy="variant-form">

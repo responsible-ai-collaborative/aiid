@@ -197,10 +197,9 @@ describe('Edit report', () => {
     const expectedReport = {
       authors: ['Test Author'],
       cloudinary_id: 'reports/test.com/test.jpg',
-      date_downloaded: '2022-01-01',
+      date_downloaded: new Date('2022-01-01').toISOString(),
       date_modified: format(now, 'yyyy-MM-dd'),
-      date_published: '2022-02-02',
-      epoch_date_downloaded: 1640995200,
+      date_published: new Date('2022-02-02').toISOString(),
       epoch_date_modified: getUnixTime(now),
       epoch_date_published: 1643760000,
       flag: null,
@@ -220,8 +219,10 @@ describe('Edit report', () => {
 
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(expectedReport.report_number);
-
-      expect(xhr.request.body.variables.set).to.deep.eq(expectedReport);
+      expect({
+        ...xhr.request.body.variables.set,
+        date_modified: format(new Date(xhr.request.body.variables.set.date_modified), 'yyyy-MM-dd'),
+      }).to.deep.eq(expectedReport);
     });
 
     cy.wait('@logReportHistory')
@@ -232,6 +233,7 @@ describe('Edit report', () => {
           ...expectedReport,
           modifiedBy: user.userId,
           user: report10.data.report.user.userId,
+          date_modified: input.date_modified,
         };
 
         expect(input).to.deep.eq(expectedResult);
@@ -401,10 +403,9 @@ describe('Edit report', () => {
     const expectedReport = {
       authors: ['Test Author'],
       cloudinary_id: 'reports/test.com/test.jpg',
-      date_downloaded: '2022-01-01',
+      date_downloaded: new Date('2022-01-01').toISOString(),
       date_modified: format(now, 'yyyy-MM-dd'),
-      date_published: '2022-02-02',
-      epoch_date_downloaded: 1640995200,
+      date_published: new Date('2022-02-02').toISOString(),
       epoch_date_modified: getUnixTime(now),
       epoch_date_published: 1643760000,
       flag: null,
@@ -424,8 +425,10 @@ describe('Edit report', () => {
 
     cy.wait('@updateReport').then((xhr) => {
       expect(xhr.request.body.variables.query.report_number).eq(10);
-
-      expect(xhr.request.body.variables.set).deep.eq(expectedReport);
+      expect({
+        ...xhr.request.body.variables.set,
+        date_modified: format(new Date(xhr.request.body.variables.set.date_modified), 'yyyy-MM-dd'),
+      }).to.deep.eq(expectedReport);
     });
 
     cy.wait('@logReportHistory')
@@ -436,6 +439,7 @@ describe('Edit report', () => {
           ...expectedReport,
           modifiedBy: user.userId,
           user: report10.data.report.user.userId,
+          date_modified: input.date_modified,
         };
 
         expect(input).to.deep.eq(expectedResult);
@@ -666,11 +670,10 @@ describe('Edit report', () => {
       authors: ['Marco Acevedo'],
       cloudinary_id:
         'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
-      date_downloaded: '2019-04-13',
+      date_downloaded: new Date('2019-04-13').toISOString(),
       date_modified: format(now, 'yyyy-MM-dd'),
-      date_published: '2015-07-11',
+      date_published: new Date('2015-07-11').toISOString(),
       editor_notes: '',
-      epoch_date_downloaded: 1555113600,
       epoch_date_modified: getUnixTime(now),
       epoch_date_published: 1436572800,
       flag: null,
@@ -692,7 +695,10 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set).deep.eq(expectedReport);
+        expect({
+          ...variables.set,
+          date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+        }).deep.eq(expectedReport);
       });
 
     cy.wait('@logReportHistory')
@@ -703,6 +709,7 @@ describe('Edit report', () => {
           ...expectedReport,
           modifiedBy: user.userId,
           user: report10.data.report.user.userId,
+          date_modified: input.date_modified,
         };
 
         expect(input).to.deep.eq(expectedResult);
@@ -934,8 +941,8 @@ describe('Edit report', () => {
       authors: ['Marco Acevedo'],
       cloudinary_id:
         'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
-      date_downloaded: '2019-04-13',
-      date_published: '2015-07-11',
+      date_downloaded: new Date('2019-04-13').toISOString(),
+      date_published: new Date('2015-07-11').toISOString(),
       flag: null,
       image_url:
         'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
@@ -950,7 +957,6 @@ describe('Edit report', () => {
       editor_notes: '',
       language: 'en',
       source_domain: 'change.org',
-      epoch_date_downloaded: 1555113600,
       epoch_date_published: 1436572800,
       date_modified: format(now, 'yyyy-MM-dd'),
       epoch_date_modified: getUnixTime(now),
@@ -960,7 +966,10 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set).deep.eq(expectedReport);
+        expect({
+          ...variables.set,
+          date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+        }).deep.eq(expectedReport);
       });
 
     cy.wait('@logReportHistory')
@@ -971,6 +980,7 @@ describe('Edit report', () => {
           ...expectedReport,
           modifiedBy: user.userId,
           user: report10.data.report.user.userId,
+          date_modified: input.date_modified,
         };
 
         expect(input).to.deep.eq(expectedResult);
@@ -1128,8 +1138,8 @@ describe('Edit report', () => {
       authors: ['Marco Acevedo'],
       cloudinary_id:
         'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
-      date_downloaded: '2019-04-13',
-      date_published: '2015-07-11',
+      date_downloaded: new Date('2019-04-13').toISOString(),
+      date_published: new Date('2015-07-11').toISOString(),
       flag: null,
       image_url:
         'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
@@ -1144,7 +1154,6 @@ describe('Edit report', () => {
       editor_notes: '',
       language: 'en',
       source_domain: 'change.org',
-      epoch_date_downloaded: 1555113600,
       epoch_date_published: 1436572800,
       date_modified: format(now, 'yyyy-MM-dd'),
       epoch_date_modified: getUnixTime(now),
@@ -1154,7 +1163,10 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set).deep.eq(expectedReport);
+        expect({
+          ...variables.set,
+          date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+        }).deep.eq(expectedReport);
       });
 
     cy.wait('@logReportHistory')
@@ -1165,6 +1177,7 @@ describe('Edit report', () => {
           ...expectedReport,
           modifiedBy: user.userId,
           user: report10.data.report.user.userId,
+          date_modified: input.date_modified,
         };
 
         expect(input).to.deep.eq(expectedResult);
