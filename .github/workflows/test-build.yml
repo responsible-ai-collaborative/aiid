@@ -36,19 +36,20 @@ jobs:
           runTests: false
           install-command: npm ci
 
-      - name: Use new netlify.toml
+      - name: Use tests specific netlify.toml  
         run: |
           rm -f netlify.toml
-          mv github-netlify.toml netlify.toml
+          mv tests-netlify.toml netlify.toml
         working-directory: site/gatsby-site
       
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
-        run: netlify build --context deploy-preview
+        run: netlify build --context deploy-preview --offline
         working-directory: site/gatsby-site
         env:
+          INSTRUMENT: true
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,6 +78,7 @@ jobs:
           GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
 
       - name: Cache build
         uses: actions/cache/save@v3
