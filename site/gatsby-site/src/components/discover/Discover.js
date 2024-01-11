@@ -57,6 +57,8 @@ export default function Discover() {
     return null;
   }
 
+  const taxa = config.discover.taxa;
+
   return (
     <InstantSearch
       searchClient={searchClient}
@@ -69,8 +71,9 @@ export default function Discover() {
           getLocation: () => {
             return window.location;
           },
-          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig }),
-          createURL: ({ routeState }) => createURL({ indexName, locale, queryConfig, routeState }),
+          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig, taxa }),
+          createURL: ({ routeState }) =>
+            createURL({ indexName, locale, queryConfig, routeState, taxa }),
           push: (url) => {
             navigate(`?${url}`);
           },

@@ -1,8 +1,8 @@
 import { parse } from 'query-string';
 import { decodeQueryParams } from 'use-query-params';
 
-const convertStringToRefinement = (obj) => {
-  const stringKeys = [
+const parseRefinements = ({ query }) => {
+  const refinementKeys = [
     'source_domain',
     'authors',
     'submitters',
@@ -14,21 +14,33 @@ const convertStringToRefinement = (obj) => {
     'language',
   ];
 
-  let newObj = {};
+  const result = {};
 
-  for (const attr in obj) {
-    if (stringKeys.includes(attr) && obj[attr] !== undefined) {
-      // TODO: we have to make the other namespaces available here too
-      if (obj[attr].indexOf('CSET') >= 0) {
-        // The facet separator is double pipe sign - "||"
-        newObj[attr] = obj[attr].split('||CSET').map((i) => 'CSET' + i);
-        newObj[attr][0] = newObj[attr][0].substr(4);
-      } else {
-        newObj[attr] = obj[attr].split('||');
+  for (const [key, value] of Object.entries(query)) {
+    if (value) {
+      if (refinementKeys.includes(key)) {
+        if (key == 'classifications') {
+          const facets = value.split('||');
+
+          for (const facet of facets) {
+            const [namespace, attribute, ...value] = facet.split(':');
+
+            const refinementKey = `${namespace}.${attribute}`;
+
+            if (!result[refinementKey]) {
+              result[refinementKey] = [];
+            }
+
+            result[refinementKey].push(...value);
+          }
+        } else {
+          result[key] = value.split('||');
+        }
       }
     }
   }
-  return newObj;
+
+  return result;
 };
 
 const convertStringToRange = (query) => {
@@ -50,7 +62,7 @@ const generateSearchState = ({ query }) => {
     page: query.page,
     query: query.s ?? '',
     refinementList: {
-      ...convertStringToRefinement(query),
+      ...parseRefinements({ query }),
     },
     range: {
       ...convertStringToRange(query),

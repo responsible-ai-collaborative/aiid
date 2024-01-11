@@ -3,6 +3,8 @@ import gql from 'graphql-tag';
 const allChecklistFields = `
   id
   owner_id
+  date_created
+  date_updated
   name
   about
   tags_goals
@@ -28,8 +30,8 @@ const allChecklistFields = `
 `;
 
 export const FIND_CHECKLISTS = gql`
-  query findChecklists {
-    checklists {
+  query findChecklists($query: ChecklistQueryInput) {
+    checklists(query: $query) {
       ${allChecklistFields}
     }
   }

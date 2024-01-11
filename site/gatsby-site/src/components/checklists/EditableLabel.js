@@ -26,7 +26,7 @@ const EditableLabel = ({ title, onChange, textClasses, iconClasses, disabled }) 
       {!disabled && (
         <button className="px-2" onClick={() => setEditingTitle((editingTitle) => !editingTitle)}>
           <FontAwesomeIcon
-            className={`${iconClasses} align-baseline`}
+            className={`${iconClasses || ''} align-baseline`}
             icon={editingTitle ? faCheck : faEdit}
           />
         </button>
