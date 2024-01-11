@@ -48,7 +48,7 @@ jobs:
       - name: Use new netlify.toml
         run: |
           rm -f netlify.toml
-          mv github-netlify.toml netlify.toml
+          mv deploy-netlify.toml netlify.toml
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
