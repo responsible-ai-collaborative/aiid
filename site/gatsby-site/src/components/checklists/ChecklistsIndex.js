@@ -65,7 +65,6 @@ const ChecklistsIndex = ({ users }) => {
         severity: SEVERITY.danger,
         error: checklistsError,
       });
-      console.error(checklistsError);
     }
   }, [checklistsError]);
 
@@ -129,7 +128,6 @@ const ChecklistsIndex = ({ users }) => {
         severity: SEVERITY.danger,
         error: risksError,
       });
-      console.error(risksError);
     }
   }, [risksError]);
 

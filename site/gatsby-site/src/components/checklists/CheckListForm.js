@@ -594,7 +594,6 @@ const searchRisks = async ({
       severity: SEVERITY.danger,
       error: risksResponse.error,
     });
-    console.error(risksResponse.error);
   }
 
   setRisksLoading(false);
