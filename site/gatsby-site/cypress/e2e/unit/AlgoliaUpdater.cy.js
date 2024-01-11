@@ -59,19 +59,41 @@ const reports = [
     title: 'Report 23 title',
     url: 'https://url.com/stuff',
   },
+
+  // this report hast no parent incidents
+  {
+    _id: new ObjectID('60dd465f80935bc89e6f9b07'),
+    authors: ['Test User'],
+    date_downloaded: '2019-04-13',
+    date_modified: '2020-06-14',
+    date_published: '2015-05-19',
+    date_submitted: '2019-06-01',
+    description: 'Description of report 40',
+    epoch_date_downloaded: 1555113600,
+    epoch_date_modified: 1592092800,
+    epoch_date_published: 1431993600,
+    epoch_date_submitted: 1559347200,
+    image_url: 'http://url.com',
+    cloudinary_id: 'http://cloudinary.com',
+    language: 'es',
+    report_number: 40,
+    source_domain: 'blogs.wsj.com',
+    submitters: ['Roman Yampolskiy'],
+    tags: [],
+    text: 'Report 40 **text**',
+    plain_text: 'Report 40 text',
+    title: 'Report 40 title',
+    url: 'https://url.com/stuff',
+  },
 ];
 
 const classifications = [
   {
     _id: '60dd465f80935bc89e6f9b00',
     incidents: [1],
+    reports: [],
     namespace: 'CSETv0',
     attributes: [
-      // { short_name: 'Annotator', value_json: '"1"' },
-      // { short_name: 'Annotation Status', value_json: '"6. Complete and final"' },
-      // { short_name: 'Reviewer', value_json: '"5"' },
-      // { short_name: 'Quality Control', value_json: 'false' },
-      // { short_name: 'Full Description', value_json: '"On December 5, 2018, a robot punctured."' },
       { short_name: 'Named Entities', value_json: '["Amazon"]' },
       {
         short_name: 'Harm Type',
@@ -83,7 +105,8 @@ const classifications = [
   },
   {
     _id: '60dd465f80935bc89e6f9b01',
-    incidents: [1],
+    incidents: [],
+    reports: [],
     namespace: 'SHOULD NOT BE INCLUDED',
     attributes: [{ short_name: 'Something', value_json: '"Great"' }],
     notes: 'Nothing to see here',
@@ -265,7 +288,11 @@ describe('Algolia', () => {
     });
 
     cy.wrap(updater.run()).then(() => {
-      expect(mongoClient.connect.callCount).to.eq(4);
+      expect(mongoClient.connect.callCount).to.eq(1);
+
+      // english
+
+      expect(enIndex.replaceAllObjects.getCalls().length).eq(1);
 
       expect(enIndex.replaceAllObjects.getCall(0).args[0].length).eq(2);
 
@@ -290,11 +317,16 @@ describe('Algolia', () => {
         incident_id: 1,
         epoch_incident_date: 1592092800,
         incident_date: '2020-06-14',
+        namespaces: ['CSETv0'],
         classifications: [
           'CSETv0:Named Entities:Amazon',
           'CSETv0:Harm Type:Harm to physical health/safety',
           'CSETv0:Harm Type:Harm to physical property',
         ],
+        CSETv0: {
+          'Named Entities': ['Amazon'],
+          'Harm Type': ['Harm to physical health/safety', 'Harm to physical property'],
+        },
       });
 
       expect(enIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
@@ -318,12 +350,28 @@ describe('Algolia', () => {
         incident_id: 1,
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
+        namespaces: ['CSETv0'],
         classifications: [
           'CSETv0:Named Entities:Amazon',
           'CSETv0:Harm Type:Harm to physical health/safety',
           'CSETv0:Harm Type:Harm to physical property',
         ],
+        CSETv0: {
+          'Named Entities': ['Amazon'],
+          'Harm Type': ['Harm to physical health/safety', 'Harm to physical property'],
+        },
       });
+
+      expect(enIndex.deleteBy.getCall(0).args[0]).deep.eq({
+        filters: 'incident_id = 247',
+      });
+
+      ``;
+      // spanish
+
+      expect(esIndex.replaceAllObjects.getCalls().length).eq(1);
+
+      expect(esIndex.replaceAllObjects.getCall(0).args[0].length).eq(2);
 
       expect(esIndex.replaceAllObjects.getCall(0).args[0][0]).to.deep.nested.include({
         authors: ['Alistair Barr'],
@@ -346,11 +394,16 @@ describe('Algolia', () => {
         incident_id: 1,
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
+        namespaces: ['CSETv0'],
         classifications: [
           'CSETv0:Named Entities:Amazon',
           'CSETv0:Harm Type:Harm to physical health/safety',
           'CSETv0:Harm Type:Harm to physical property',
         ],
+        CSETv0: {
+          'Named Entities': ['Amazon'],
+          'Harm Type': ['Harm to physical health/safety', 'Harm to physical property'],
+        },
         featured: 0,
       });
 
@@ -375,23 +428,24 @@ describe('Algolia', () => {
         incident_id: 1,
         incident_date: '2020-06-14',
         epoch_incident_date: 1592092800,
+        namespaces: ['CSETv0'],
         classifications: [
           'CSETv0:Named Entities:Amazon',
           'CSETv0:Harm Type:Harm to physical health/safety',
           'CSETv0:Harm Type:Harm to physical property',
         ],
+        CSETv0: {
+          'Named Entities': ['Amazon'],
+          'Harm Type': ['Harm to physical health/safety', 'Harm to physical property'],
+        },
         featured: 2,
-      });
-
-      expect(enIndex.deleteBy.getCall(0).args[0]).deep.eq({
-        filters: 'incident_id = 247',
       });
 
       expect(esIndex.deleteBy.getCall(0).args[0]).deep.eq({
         filters: 'incident_id = 247',
       });
 
-      expect(mongoClient.close.callCount).to.eq(4);
+      expect(mongoClient.close.callCount).to.eq(1);
     });
   });
 });
