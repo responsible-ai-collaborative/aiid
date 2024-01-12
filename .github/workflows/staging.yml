@@ -31,4 +31,4 @@ jobs:
       environment: staging
       sha: ${{ github.sha }}
       context: production
-      alias: staging-aiid
+      alias: 

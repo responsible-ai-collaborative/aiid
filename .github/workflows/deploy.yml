@@ -95,7 +95,11 @@ jobs:
         working-directory: site/gatsby-site
         run: |
           set -e
-          OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.alias }}" | tr '\n' ' ')
+          if [[ -z "${{ inputs.alias }}" ]]; then
+            OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
+          else
+            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.alias }}" | tr '\n' ' ')
+          fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
           echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
