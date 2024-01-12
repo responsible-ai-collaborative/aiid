@@ -5,6 +5,10 @@ on:
       environment:
         type: string
         required: true
+      sha:
+        description: 'The SHA of the commit to build'
+        type: string
+        required: true
 
 jobs:
   test:
@@ -15,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ inputs.sha }}
 
       - name: Read node modules from cache
         id: cache-nodemodules
@@ -88,4 +92,4 @@ jobs:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.cache/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}

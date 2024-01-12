@@ -31,6 +31,7 @@ jobs:
     needs: permissions-check
     secrets: inherit
     with:
+      sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
 
   call-test:
@@ -39,6 +40,7 @@ jobs:
     needs: call-test-build
     secrets: inherit
     with:
+      sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
 
   call-deploy:
@@ -49,6 +51,7 @@ jobs:
     permissions:
       pull-requests: write
     with:
+      sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
       context: deploy-preview
       alias: pr-${{ github.event.pull_request.number }}

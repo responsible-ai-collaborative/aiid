@@ -11,6 +11,10 @@ on:
       alias:
           type: string
           required: true
+      sha:
+        description: "The commit SHA to deploy"
+        type: string
+        required: true
   
 jobs:
   netlify-deploy:
@@ -26,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ inputs.sha }}
 
       - name: Read node modules from cache
         id: cache-nodemodules

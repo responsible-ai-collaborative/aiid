@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/test-build.yml
     secrets: inherit
     with:
+      sha: ${{ github.sha }}
       environment: staging
 
   call-test:
@@ -17,6 +18,7 @@ jobs:
     needs: call-test-build
     secrets: inherit
     with:
+      sha: ${{ github.sha }}
       environment: staging
 
   call-deploy:
@@ -27,5 +29,6 @@ jobs:
       pull-requests: write
     with:
       environment: staging
+      sha: ${{ github.sha }}
       context: production
       alias: staging-aiid
