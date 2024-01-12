@@ -1,7 +1,8 @@
 import React from 'react';
-import { faShield, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faShield, faWarning, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuidv4 } from 'uuid';
 import ReactDOMServer from 'react-dom/server';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const riskStatusFeatures = {
   'Not Mitigated': {
@@ -54,7 +55,9 @@ const risksEqual = (risk1, risk2) => {
 };
 
 const Label = (props) => (
-  <label {...{ ...props, className: `mb-1 block ${props.className}` }}>{props.children}</label>
+  <label {...{ ...props, className: `mb-1 block ${props.className || ''}` }}>
+    {props.children}
+  </label>
 );
 
 const emptyRisk = (properties) => ({
@@ -277,6 +280,7 @@ const DeleteButton = (props) => (
   `,
     }}
   >
+    <FontAwesomeIcon icon={faTrash} className="mr-2" />
     {props.children}
   </button>
 );

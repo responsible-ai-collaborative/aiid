@@ -47,6 +47,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       submitters
       date_published
       date_downloaded
+      date_modified
       image_url
       text
       plain_text

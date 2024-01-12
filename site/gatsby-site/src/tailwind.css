@@ -598,7 +598,7 @@
   }
 
   .Typeahead input {
-    @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
+    @apply text-sm leading-5 pt-2.5 pr-2.5 pb-2.5 border !important;
   }
 
   .Typeahead .rbt-menu.dropdown-menu {

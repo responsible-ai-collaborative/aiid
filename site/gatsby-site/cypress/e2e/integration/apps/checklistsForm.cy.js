@@ -4,6 +4,18 @@ const { gql } = require('@apollo/client');
 describe('Checklists App Form', () => {
   const url = '/apps/checklists?id=testChecklist';
 
+  const defaultChecklist = {
+    __typename: 'Checklist',
+    about: '',
+    id: 'testChecklist',
+    name: 'Test Checklist',
+    owner_id: 'a-fake-user-id-that-does-not-exist',
+    risks: [],
+    tags_goals: [],
+    tags_methods: [],
+    tags_other: [],
+  };
+
   const usersQuery = {
     query: gql`
       {
@@ -19,27 +31,36 @@ describe('Checklists App Form', () => {
     timeout: 120000, // mongodb admin api is extremely slow
   };
 
-  it('Should have read-only access for non-logged-in users', () => {
+  const withLogin = (callback) => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.query(usersQuery).then(({ data: { users } }) => {
+      const user = users.find((user) => user.adminData.email == Cypress.env('e2eUsername'));
+
+      callback({ user });
+    });
+  };
+
+  const interceptFindChecklist = (checklist) => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'findChecklist',
       'findChecklist',
-      {
-        data: {
-          checklist: {
-            __typename: 'Checklist',
-            about: '',
-            id: 'testChecklist',
-            name: 'Test Checklist',
-            owner_id: 'a-fake-user-id-that-does-not-exist',
-            risks: [],
-            tags_goals: [],
-            tags_methods: [],
-            tags_other: [],
-          },
-        },
-      }
+      { data: { checklist } }
     );
+  };
+
+  const interceptUpsertChecklist = (checklist) => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'upsertChecklist',
+      'upsertChecklist',
+      { data: { checklist } }
+    );
+  };
+
+  it('Should have read-only access for non-logged-in users', () => {
+    interceptFindChecklist(defaultChecklist);
 
     cy.visit(url);
 
@@ -55,26 +76,7 @@ describe('Checklists App Form', () => {
   maybeIt('Should have read-only access for logged-in non-owners', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'findChecklist',
-      'findChecklist',
-      {
-        data: {
-          checklist: {
-            __typename: 'Checklist',
-            about: '',
-            id: 'testChecklist',
-            name: 'Test Checklist',
-            owner_id: 'a-fake-user-id-that-does-not-exist',
-            risks: [],
-            tags_goals: [],
-            tags_methods: [],
-            tags_other: [],
-          },
-        },
-      }
-    );
+    interceptFindChecklist(defaultChecklist);
 
     cy.visit(url);
 
@@ -88,51 +90,13 @@ describe('Checklists App Form', () => {
   });
 
   maybeIt('Should allow editing for owner', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.query(usersQuery).then(({ data: { users } }) => {
-      const user = users.find((user) => user.adminData.email == Cypress.env('e2eUsername'));
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'findChecklist',
-        'findChecklist',
-        {
-          data: {
-            checklist: {
-              __typename: 'Checklist',
-              about: '',
-              id: 'testChecklist',
-              name: 'Test Checklist',
-              owner_id: user.userId,
-              risks: [],
-              tags_goals: [],
-              tags_methods: [],
-              tags_other: [],
-            },
-          },
-        }
-      );
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'upsertChecklist',
-        'upsertChecklist',
-        {
-          data: {
-            checklist: {
-              __typename: 'Checklist',
-              about: "It's a system that does something probably.",
-              id: 'testChecklist',
-              name: 'Test Checklist',
-              owner_id: user.userId,
-              risks: [],
-              tags_goals: [],
-              tags_methods: [],
-              tags_other: [],
-            },
-          },
-        }
-      );
+    withLogin(({ user }) => {
+      interceptFindChecklist({ ...defaultChecklist, owner_id: user.userId });
+      interceptUpsertChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+        about: "It's a system that does something probably.",
+      });
 
       cy.visit(url);
 
@@ -143,6 +107,62 @@ describe('Checklists App Form', () => {
       cy.get('[data-cy="about"]').type("It's a system that does something probably.");
 
       cy.wait(['@upsertChecklist']);
+    });
+  });
+
+  maybeIt('Should trigger GraphQL update on removing tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+        tags_goals: ['GMF:Known AI Goal:Code Generation'],
+      });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('[option="GMF:Known AI Goal:Code Generation"] .close').click();
+
+      cy.wait(['@upsertChecklist']).then((xhr) => {
+        expect(xhr.request.body.variables.checklist).to.deep.nested.include({
+          tags_goals: [],
+        });
+      });
+
+      cy.visit(url);
+    });
+  });
+
+  it('Should remove a manually-created risk', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+        risks: [
+          {
+            __typename: 'ChecklistRisk',
+            generated: false,
+            id: '5bb31fa6-2d32-4a01-b0a0-fa3fb4ec4b7d',
+            likelihood: '',
+            precedents: [],
+            risk_notes: '',
+            risk_status: 'Mitigated',
+            severity: '',
+            tags: ['GMF:Known AI Goal:Content Search'],
+            title: 'Manual Test Risk',
+            touched: false,
+          },
+        ],
+      });
+      interceptUpsertChecklist({ ...defaultChecklist, owner_id: user.userId });
+
+      cy.visit(url);
+
+      cy.contains('Manual Test Risk').get('svg > title').contains('Delete Risk').parent().click();
+
+      cy.wait('@upsertChecklist');
+
+      cy.contains('Manual Test Risk').should('not.exist');
     });
   });
 });
