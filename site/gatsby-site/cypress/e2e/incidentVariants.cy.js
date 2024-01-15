@@ -66,7 +66,7 @@ describe('Variants pages', () => {
     cy.disableSmoothScroll();
   });
 
-  it.skip('Should display Variant list', async () => {
+  it('Should display Variant list', async () => {
     cy.visit(url);
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
