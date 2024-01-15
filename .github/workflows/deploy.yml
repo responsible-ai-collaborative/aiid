@@ -3,19 +3,22 @@ on:
   workflow_call:
     inputs:
       environment:
+        description: 'The Github environment to load secrets from'
         type: string
         required: true
       context:
+        description: "The Netlify context use when building"
         type: string
         required: true
       alias:
-          type: string
-          required: true
+        description: The Netlify alias to deploy to (empty deploys to production)
+        type: string
+        required: true
       sha:
         description: "The commit SHA to deploy"
         type: string
         required: true
-  
+
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
@@ -115,13 +118,13 @@ jobs:
             const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
             const deployData = JSON.parse(deployOutput);
             const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
-      
+
             const { data: pullRequests } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
               owner: context.repo.owner,
               repo: context.repo.repo,
               commit_sha: '${{ inputs.sha }}'
             });
-      
+
             for (const pr of pullRequests) {
               if (pr.state === 'open') {
                 github.rest.issues.createComment({

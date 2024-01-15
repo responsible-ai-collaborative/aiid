@@ -3,6 +3,7 @@ on:
   workflow_call:
     inputs:
       environment:
+        description: 'The Github environment to load secrets from'
         type: string
         required: true
       sha:
