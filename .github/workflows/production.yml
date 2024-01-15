@@ -1,0 +1,34 @@
+name: Deploy Production Branch
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+
+  call-test-build:
+    uses: ./.github/workflows/test-build.yml
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+
+  call-test:
+    uses: ./.github/workflows/test.yml
+    needs: call-test-build
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    needs: call-test
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: production
+      sha: ${{ github.sha }}
+      context: production
+      alias: 
