@@ -1,12 +1,11 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import PostsListing from 'components/blog/PostsListing';
-import AiidHelmet from 'components/AiidHelmet';
+import AiidHead from 'components/AiidHead';
 
 const BlogPage = (props) => {
   return (
     <>
-      <AiidHelmet metaTitle={'AIID Blog'} path={props.location.pathname} />
       <div className={'titleWrapper'}>
         <h1>Blog</h1>
       </div>
@@ -18,6 +17,12 @@ const BlogPage = (props) => {
 };
 
 export default BlogPage;
+
+export const Head = (props) => (
+  <>
+    <AiidHead metaTitle={'AIID Blog'} path={props.location.pathname} />
+  </>
+);
 
 export const IndexQuery = graphql`
   query BlogPosts($locale: String!) {

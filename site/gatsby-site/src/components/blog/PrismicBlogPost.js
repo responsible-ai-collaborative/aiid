@@ -9,20 +9,9 @@ import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
 import Outline from 'components/Outline';
-import AiidHelmet from 'components/AiidHelmet';
 
 const PrismicBlogPost = ({ post, location }) => {
   const metaTitle = post.data.metatitle;
-
-  const metaDescription = post.data.metaDescription;
-
-  const postImage = post.data.image?.gatsbyImageData?.images?.fallback?.src;
-
-  let metaImage = null;
-
-  if (postImage) {
-    metaImage = `${config.gatsby.siteUrl}${postImage}`;
-  }
 
   const canonicalUrl = config.gatsby.siteUrl + location.pathname;
 
@@ -42,7 +31,6 @@ const PrismicBlogPost = ({ post, location }) => {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <LocalizedLink to="/blog" className="text-lg">
           <Trans>AIID Blog</Trans>

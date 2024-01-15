@@ -1,5 +1,4 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -19,6 +18,7 @@ import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
 import sortBy from 'lodash/sortBy';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
+import AiidHead from 'components/AiidHead';
 
 const LandingPage = (props) => {
   const { data } = props;
@@ -170,10 +170,10 @@ export function Head({ location }) {
   return (
     <>
       <script type="application/ld+json">{stringified}</script>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}>
-        <title>{title}</title>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
+      <title>{title}</title>
+      <meta property="og:type" content="website" />
+
+      <AiidHead {...{ metaTitle, metaDescription, path: location.pathname, metaImage }} />
     </>
   );
 }

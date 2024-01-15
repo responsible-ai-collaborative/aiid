@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import config from '../../config';
@@ -11,6 +10,7 @@ import Outline from 'components/Outline';
 import DateLabel from 'components/ui/DateLabel';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useLayoutContext } from 'contexts/LayoutContext';
+import AiidHead from 'components/AiidHead';
 
 export default function Post(props) {
   const {
@@ -19,16 +19,6 @@ export default function Post(props) {
   } = props;
 
   const metaTitle = mdx.frontmatter.metaTitle;
-
-  const metaDescription = mdx.frontmatter.metaDescription;
-
-  const postImage = mdx.frontmatter.image?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
-
-  let metaImage = null;
-
-  if (postImage) {
-    metaImage = `${config.gatsby.siteUrl}${postImage}`;
-  }
 
   const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
 
@@ -48,7 +38,6 @@ export default function Post(props) {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <LocalizedLink to="/blog" className="text-lg">
           <Trans>AIID Blog</Trans>
@@ -86,6 +75,33 @@ export default function Post(props) {
 }
 
 var Author = ({ name }) => <span>{name}</span>;
+
+export const Head = (props) => {
+  const mdx = props?.data?.mdx;
+
+  const metaTitle = mdx.frontmatter.metaTitle;
+
+  const metaDescription = mdx.frontmatter.metaDescription;
+
+  const postImage = mdx.frontmatter.image?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
+
+  let metaImage = null;
+
+  if (postImage) {
+    metaImage = `${config.gatsby.siteUrl}${postImage}`;
+  }
+
+  return (
+    <>
+      <AiidHead
+        metaTitle={metaTitle}
+        metaDescription={metaDescription}
+        path={props.location.pathname}
+        metaImage={metaImage}
+      />
+    </>
+  );
+};
 
 export const pageQuery = graphql`
   query PostTemplateQuery($slug: String!, $locale: String!) {
