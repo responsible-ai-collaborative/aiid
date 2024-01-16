@@ -7,29 +7,21 @@ import { graphql } from 'gatsby';
 import { useQueryParams, StringParam } from 'use-query-params';
 import { useQuery, useMutation } from '@apollo/client';
 
-import AiidHelmet from 'components/AiidHelmet';
 import CheckListForm from 'components/checklists/CheckListForm';
 import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { removeTypename, checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
+import AiidHead from 'components/AiidHead';
 
 const ChecklistsPage = (props) => {
-  const {
-    location: { pathname },
-    data,
-  } = props;
+  const { data } = props;
 
   const [taxa, classifications, users] = ['taxa', 'classifications', 'users'].map(
     (e) => data[e]?.nodes
   );
 
-  const { t } = useTranslation();
-
   return (
     <>
-      <AiidHelmet path={pathname}>
-        <title>{t('Risk Checklists')}</title>
-      </AiidHelmet>
       <ChecklistsPageBody {...{ taxa, classifications, users }} />
     </>
   );
@@ -227,5 +219,19 @@ export const query = graphql`
     }
   }
 `;
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  return (
+    <AiidHead path={pathname}>
+      <title>{t('Risk Checklists')}</title>
+    </AiidHead>
+  );
+};
 
 export default ChecklistsPage;
