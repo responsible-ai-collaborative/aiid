@@ -1,6 +1,8 @@
 import { maybeIt } from '../../support/utils';
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
+import upsertDuplicateClassification from '../../fixtures/classifications/upsertDuplicateClassification.json';
+import updateIncident50 from '../../fixtures/incidents/updateIncident50.json';
 import { format, getUnixTime } from 'date-fns';
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 import incident10 from '../../fixtures/incidents/fullIncident10.json';
@@ -215,6 +217,55 @@ describe('Cite pages', () => {
     cy.get('[aria-label="Close"]').click();
 
     cy.get('@modal').should('not.exist');
+  });
+
+  maybeIt('Should remove duplicate', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertClassification',
+      'upsertClassification',
+      upsertDuplicateClassification
+    );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      updateIncident50
+    );
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertDuplicate',
+      'insertDuplicate',
+      {
+        data: {
+          insertOneDuplicate: {
+            __typename: 'Duplicate',
+            duplicate_incident_number: 10,
+            true_incident_number: 50,
+          },
+        },
+      }
+    );
+
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+    cy.waitForStableDOM();
+
+    cy.visit('/cite/10');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="remove-duplicate"]').click();
+    cy.waitForStableDOM();
+
+    cy.get('#input-duplicateIncidentId').type('50');
+    cy.waitForStableDOM();
+
+    cy.get('#duplicateIncidentId > a[aria-label="50"]').click();
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="confirm-remove-duplicate"]').click();
+    cy.waitForStableDOM();
+
+    cy.contains('Incident 10 marked as duplicate').should('exist');
   });
 
   it('Should pre-fill submit report form', () => {

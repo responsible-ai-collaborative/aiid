@@ -40,48 +40,63 @@ const convertRangeToQueryString = (range) => {
   return result;
 };
 
-const getQueryFromState = (searchState, locale) => {
+const getQueryFromState = ({ state, locale, taxa }) => {
   let query = {};
 
-  if (searchState.query !== '') {
-    query.s = searchState.query;
+  if (state.query !== '') {
+    query.s = state.query;
   }
 
-  if (searchState.refinementList) {
+  if (state.refinementList) {
+    const classifications = [];
+
+    const other = {};
+
+    for (const [key, values] of Object.entries(state.refinementList)) {
+      const [namespace, ...attribute] = key.split('.');
+
+      if (taxa.includes(namespace)) {
+        for (const value of values) {
+          classifications.push(`${namespace}:${attribute}:${value}`);
+        }
+      } else {
+        other[key] = values;
+      }
+    }
+
     query = {
       ...query,
-      ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+      ...convertArrayToString(removeEmptyAttributes({ classifications, ...other })),
     };
   }
 
-  if (searchState.range) {
+  if (state.range) {
     query = {
       ...query,
-      ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
+      ...convertRangeToQueryString(removeEmptyAttributes(state.range)),
     };
   }
 
-  if (searchState.sortBy) {
+  if (state.sortBy) {
     query.sortBy =
-      SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.name ||
-      searchState.sortBy;
+      SORTING_LIST.find((s) => s[`value_${locale}`] === state.sortBy)?.name || state.sortBy;
   }
 
-  if (searchState.configure?.distinct === true) {
+  if (state.configure?.distinct === true) {
     query.hideDuplicates = 1;
   }
 
-  if (searchState.page) {
-    query.page = searchState.page;
+  if (state.page) {
+    query.page = state.page;
   }
 
   return query;
 };
 
-export default function ({ routeState, indexName, locale, queryConfig }) {
+export default function ({ routeState, indexName, locale, queryConfig, taxa }) {
   const state = routeState[indexName] || {};
 
-  const query = getQueryFromState(state, locale);
+  const query = getQueryFromState({ state, locale, taxa });
 
   const encoded = encodeQueryParams(queryConfig, query);
 
