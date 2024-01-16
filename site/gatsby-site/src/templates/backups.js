@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import AiidHead from 'components/AiidHead';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
@@ -8,7 +8,7 @@ import Col from 'elements/Col';
 import { format } from 'date-fns';
 import config from '../../config';
 
-const Backups = ({ pageContext, ...props }) => {
+const Backups = ({ pageContext }) => {
   const { backups } = pageContext;
 
   if (!backups) {
@@ -42,9 +42,6 @@ const Backups = ({ pageContext, ...props }) => {
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Database Backups and Snapshots</title>
-      </AiidHelmet>
       <div className="titleWrapper">
         <h1>Database Snapshots</h1>
       </div>
@@ -105,6 +102,20 @@ const Backups = ({ pageContext, ...props }) => {
         </Container>
       </div>
     </>
+  );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Database Backups and Snapshots';
+
+  return (
+    <AiidHead path={pathname} metaTitle={metaTitle}>
+      <title>{metaTitle}</title>
+    </AiidHead>
   );
 };
 

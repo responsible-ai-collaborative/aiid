@@ -1,12 +1,12 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
-import AiidHelmet from 'components/AiidHelmet';
+import AiidHead from 'components/AiidHead';
 import { getClassificationValue } from 'utils/classifications';
 import { isAiHarm } from 'utils/cset';
 import GroupBarChart from 'components/taxa/GroupBarChart';
 
-export default function CsetChartsPage({ data, ...props }) {
+export default function CsetChartsPage({ data }) {
   const metaTitle = 'CSET Charts';
 
   const allVsHarmDefinition = {
@@ -24,10 +24,6 @@ export default function CsetChartsPage({ data, ...props }) {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1>{metaTitle}</h1>
       </div>
@@ -108,6 +104,21 @@ export default function CsetChartsPage({ data, ...props }) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'CSET Charts';
+
+  return (
+    <AiidHead path={pathname} metaTitle={metaTitle}>
+      <title>{metaTitle}</title>
+      <meta property="og:type" content="website" />
+    </AiidHead>
+  );
+};
 
 export const pageQuery = graphql`
   query Classifications {

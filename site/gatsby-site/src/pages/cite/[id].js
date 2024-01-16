@@ -4,7 +4,7 @@ import { CloudinaryImage } from '@cloudinary/base';
 import { Trans } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
-import AiidHelmet from 'components/AiidHelmet';
+import AiidHead from 'components/AiidHead';
 import { sortIncidentsByDatePublished } from 'utils/cite';
 import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
@@ -25,6 +25,46 @@ function CiteDynamicPage(props) {
 
   const [incident, setIncident] = useState(null);
 
+  const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
+    variables: { query: { incident_id } },
+  });
+
+  useEffect(() => {
+    if (incidentData?.incident) {
+      const incidentTemp = { ...incidentData.incident };
+
+      setIncident(incidentTemp);
+    }
+  }, [incidentData]);
+
+  return (
+    <div {...props}>
+      {loading ? (
+        <Spinner />
+      ) : !loading && incident ? (
+        <CiteDynamicTemplate
+          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+          entitiesData={entitiesData}
+          incident_id={incident.incident_id}
+          responses={responses}
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          locationPathName={props.location.pathname}
+        />
+      ) : (
+        <Trans>Incident {{ incident_id }} not found</Trans>
+      )}
+    </div>
+  );
+}
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    params: { id: incident_id },
+  } = props;
+
   // meta tags
 
   const [metaTitle, setMetaTitle] = useState(null);
@@ -33,7 +73,7 @@ function CiteDynamicPage(props) {
 
   const [metaImage, setMetaImage] = useState(null);
 
-  const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
+  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
     variables: { query: { incident_id } },
   });
 
@@ -54,35 +94,15 @@ function CiteDynamicPage(props) {
       setMetaTitle(`Incident ${incidentTemp.incident_id}: ${incidentTemp.title}`);
       setMetaDescription(incidentTemp.description);
       setMetaImage(image.createCloudinaryURL());
-      setIncident(incidentTemp);
     }
   }, [incidentData]);
 
   return (
-    <div {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
-      {loading ? (
-        <Spinner />
-      ) : !loading && incident ? (
-        <CiteDynamicTemplate
-          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-          entitiesData={entitiesData}
-          incident_id={incident.incident_id}
-          responses={responses}
-          nlp_similar_incidents={nlp_similar_incidents}
-          editor_similar_incidents={editor_similar_incidents}
-          editor_dissimilar_incidents={editor_dissimilar_incidents}
-          locationPathName={props.location.pathname}
-        />
-      ) : (
-        <Trans>Incident {{ incident_id }} not found</Trans>
-      )}
-    </div>
+    <AiidHead {...{ metaTitle, metaDescription, path: pathname, metaImage }}>
+      <meta property="og:type" content="website" />
+    </AiidHead>
   );
-}
+};
 
 export const query = graphql`
   query CitationPageQuery {

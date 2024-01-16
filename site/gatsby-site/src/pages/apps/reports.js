@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from '../../components/AiidHelmet';
+import AiidHead from '../../components/AiidHead';
 import Link from '../../components/ui/Link';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -207,10 +207,6 @@ export default function Incidents(props) {
 
   return (
     <div {...props}>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Incident List</title>
-      </AiidHelmet>
-
       {loading && <ListSkeleton />}
       {!loading && (
         <div
@@ -228,3 +224,19 @@ export default function Incidents(props) {
     </div>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const metaTitle = t('Incident List');
+
+  return (
+    <AiidHead path={pathname} metaTitle={metaTitle}>
+      <title>{metaTitle}</title>
+    </AiidHead>
+  );
+};
