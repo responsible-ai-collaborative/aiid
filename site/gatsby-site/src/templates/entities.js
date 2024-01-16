@@ -3,7 +3,7 @@ import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import AiidHelmet from 'components/AiidHelmet';
+import AiidHead from 'components/AiidHead';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -52,14 +52,6 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
 
   return (
     <div {...props}>
-      <AiidHelmet
-        {...{
-          metaTitle,
-          metaDescription: t('Entities involved in AI Incidents'),
-          canonicalUrl: 'https://incidentdatabase.ai/entities',
-          path: props.location.pathname,
-        }}
-      />
       <div className="w-full">
         <div className="titleWrapper">
           <h1>{t(metaTitle)}</h1>
@@ -67,6 +59,26 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
         <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
       </div>
     </div>
+  );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation(['entities']);
+
+  const metaTitle = t('Entities');
+
+  const metaDescription = t('Entities involved in AI Incidents');
+
+  const canonicalUrl = 'https://incidentdatabase.ai/entities';
+
+  return (
+    <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }}>
+      <title>{metaTitle}</title>
+    </AiidHead>
   );
 };
 
