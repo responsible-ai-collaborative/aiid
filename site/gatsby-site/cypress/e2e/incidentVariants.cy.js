@@ -79,7 +79,7 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=variant-card]')
           .eq(index)
-          .within(async () => {
+          .within(() => {
             cy.get('[data-cy=variant-status-badge]').contains(
               getVariantStatusText(getVariantStatus(variant))
             );
