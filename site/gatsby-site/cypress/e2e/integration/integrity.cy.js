@@ -49,7 +49,7 @@ describe('Integrity', () => {
     }
   );
 
-  it.skip(
+  it(
     `is_incident_report should be true for reports assigned to incidents and vice versa`,
     { requestTimeout: 60000, defaultCommandTimeout: 60000, responseTimeout: 60000 },
     () => {
@@ -85,7 +85,7 @@ describe('Integrity', () => {
 
   it(
     `Classifications should be linked to one and only one incident`,
-    { requestTimeout: 30000, defaultCommandTimeout: 30000, responseTimeout: 30000 },
+    { requestTimeout: 60000, defaultCommandTimeout: 60000, responseTimeout: 60000 },
     () => {
       cy.query({
         query: gql`
