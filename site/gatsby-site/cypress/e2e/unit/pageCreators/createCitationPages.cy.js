@@ -85,7 +85,7 @@ const languages = [
     name: 'Japanese',
     localName: '日本語',
     langDir: 'ltr',
-    dateFormat: 'YYYY/MM/DD'
+    dateFormat: 'YYYY/MM/DD',
   },
 ];
 
@@ -96,7 +96,7 @@ describe('createCitationPages', () => {
     const createPage = cy.stub();
 
     cy.wrap(createCitationPages(graphql, createPage, { languages })).then(() => {
-      expect(createPage.callCount).to.eq(3);
+      expect(createPage.callCount).to.eq(4);
 
       cy.wrap(createPage.getCall(0).args[0]).then((page) => {
         expect(page.path).contain('/cite/1');
