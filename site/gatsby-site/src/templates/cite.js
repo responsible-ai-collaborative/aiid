@@ -118,7 +118,7 @@ function CitePage(props) {
 
 export const Head = (props) => {
   const {
-    location: { pathname },
+    location: { pathname: path },
     data: {
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
@@ -157,7 +157,7 @@ export const Head = (props) => {
   const metaImage = image.createCloudinaryURL();
 
   return (
-    <AiidHead {...{ metaTitle, metaDescription, pathname, metaImage }}>
+    <AiidHead {...{ metaTitle, metaDescription, path, metaImage }}>
       <title>{metaTitle}</title>
       <meta property="og:type" content="website" />
     </AiidHead>

@@ -984,7 +984,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in valuesStep1) {
-      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+      cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
     }
 
     cy.setEditorText(
@@ -1333,7 +1333,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in values) {
-      cy.get(`[name="${key}"]`).type(values[key]);
+      cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
     cy.setEditorText(
@@ -1390,7 +1390,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in valuesStep1) {
-      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+      cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
     }
 
     cy.clickOutside();
@@ -1451,7 +1451,7 @@ describe('The Submit form', () => {
 
         cy.get(`[role="option"]`).first().click();
       } else {
-        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
       }
     }
 
@@ -1472,7 +1472,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in valuesStep2) {
-      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+      cy.get(`input[name="${key}"]`).type(valuesStep2[key]);
     }
 
     cy.get('[data-cy="to-step-3"]').click();
@@ -1667,7 +1667,7 @@ describe('The Submit form', () => {
 
         cy.get(`[role="option"]`).first().click();
       } else {
-        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
       }
     }
 

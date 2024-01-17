@@ -188,11 +188,7 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  const { t } = useTranslation(['submitted']);
-
-  const [id] = useQueryParam('editSubmission');
-
-  const metaTitle = id ? t('Edit submission') : t('Submitted Incident Report List');
+  const metaTitle = 'Submissions';
 
   return (
     <AiidHead path={pathname} metaTitle={metaTitle}>
