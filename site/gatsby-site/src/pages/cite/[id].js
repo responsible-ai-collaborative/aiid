@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
-import { CloudinaryImage } from '@cloudinary/base';
 import { Trans } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
-import AiidHead from 'components/AiidHead';
-import { sortIncidentsByDatePublished } from 'utils/cite';
-import config from '../../../config';
-import { isCompleteReport } from 'utils/variants';
 import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
 import CiteDynamicTemplate from 'templates/citeDynamicTemplate';
 
@@ -58,51 +53,6 @@ function CiteDynamicPage(props) {
     </div>
   );
 }
-
-export const Head = (props) => {
-  const {
-    location: { pathname },
-    params: { id: incident_id },
-  } = props;
-
-  // meta tags
-
-  const [metaTitle, setMetaTitle] = useState(null);
-
-  const [metaDescription, setMetaDescription] = useState(null);
-
-  const [metaImage, setMetaImage] = useState(null);
-
-  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id } },
-  });
-
-  useEffect(() => {
-    if (incidentData?.incident) {
-      const incidentTemp = { ...incidentData.incident };
-
-      const sortedIncidentReports = sortIncidentsByDatePublished(incidentTemp.reports);
-
-      const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
-
-      const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
-
-      const image = new CloudinaryImage(publicID, {
-        cloudName: config.cloudinary.cloudName,
-      });
-
-      setMetaTitle(`Incident ${incidentTemp.incident_id}: ${incidentTemp.title}`);
-      setMetaDescription(incidentTemp.description);
-      setMetaImage(image.createCloudinaryURL());
-    }
-  }, [incidentData]);
-
-  return (
-    <AiidHead {...{ metaTitle, metaDescription, path: pathname, metaImage }}>
-      <meta property="og:type" content="website" />
-    </AiidHead>
-  );
-};
 
 export const query = graphql`
   query CitationPageQuery {
