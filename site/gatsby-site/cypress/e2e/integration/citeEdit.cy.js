@@ -748,12 +748,12 @@ describe('Edit report', () => {
       .then((variables) => {
         expect(variables.input.title).to.eq('Este es el Titulo en japonés');
         expect(variables.input.text).to.eq(
-          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!'
+          'Este es el texto que tiene un largo mayor a ochenta caracteres en japonés!'
         );
         expect(variables.input.language).to.eq('ja');
         expect(variables.input.report_number).to.eq(23);
         expect(variables.input.plain_text).to.eq(
-          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!\n'
+          'Este es el texto que tiene un largo mayor a ochenta caracteres en japonés!\n'
         );
       });
 
