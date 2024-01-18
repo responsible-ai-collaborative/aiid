@@ -53,5 +53,5 @@ jobs:
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
-      context: deploy-preview
-      alias: pr-${{ github.event.pull_request.number }}
+      netlify-context: deploy-preview
+      netlify-alias: pr-${{ github.event.pull_request.number }}

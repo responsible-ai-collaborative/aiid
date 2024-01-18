@@ -6,11 +6,11 @@ on:
         description: The Github environment to load secrets from
         type: string
         required: true
-      context:
+      netlify-context:
         description: The Netlify context use when building
         type: string
         required: true
-      alias:
+      netlify-alias:
         description: The Netlify alias to deploy to (empty deploys to production)
         type: string
         required: true
@@ -99,11 +99,11 @@ jobs:
         run: |
           set -e
           # If no alias is specified, deploy to production
-          if [[ -z "${{ inputs.alias }}" ]]; then 
+          if [[ -z "${{ inputs.netlify-alias }}" ]]; then 
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
-            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.alias }}" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
           fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
