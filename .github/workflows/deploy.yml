@@ -3,11 +3,11 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'The Github environment to load secrets from'
+        description: The Github environment to load secrets from
         type: string
         required: true
       context:
-        description: "The Netlify context use when building"
+        description: The Netlify context use when building
         type: string
         required: true
       alias:
@@ -15,7 +15,7 @@ on:
         type: string
         required: true
       sha:
-        description: "The commit SHA to deploy"
+        description: The commit SHA to deploy
         type: string
         required: true
 
@@ -98,8 +98,10 @@ jobs:
         working-directory: site/gatsby-site
         run: |
           set -e
-          if [[ -z "${{ inputs.alias }}" ]]; then
+          # If no alias is specified, deploy to production
+          if [[ -z "${{ inputs.alias }}" ]]; then 
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
+          # Otherwise, deploy to the specified alias
           else
             OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.alias }}" | tr '\n' ' ')
           fi
