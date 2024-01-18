@@ -466,6 +466,55 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
 CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
 GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
 ```
+
+### New Netlify Setup
+
+This guide walks you through the steps to set up a Netlify site for your project by importing an existing project from GitHub.
+
+### Prerequisites
+
+- Ensure you have a GitHub account and your project is already pushed to a repository.
+- Make sure you have a Netlify account. If not, sign up at [Netlify](https://www.netlify.com/).
+
+### Steps to Set Up
+
+#### 1. Add New Site
+
+- Go to your Netlify dashboard.
+- Click on **Add New Site**.
+
+#### 2. Import Existing Project
+
+- Choose **Import Existing Project**.
+
+#### 3. Deploy with GitHub
+
+- Select **Deploy with GitHub** to connect your GitHub account.
+
+#### 4. Select Repository
+
+- Choose the repository where your project is located.
+- For this guide, we will refer to it as `aiid` repository.
+
+#### 5. Configure Deployment
+
+- Under **Branch to Deploy**, select `master`. This setting doesn't matter for now.
+- Leave all other settings as default.
+- Click on **Deploy Site**.
+
+#### 6. Site Configuration
+
+##### Build and Deploy
+
+- Navigate to **Site Configuration** > **Build & Deploy**.
+- Under **Build Settings** > **Build Status**, find **Stopped Builds**.
+- Click **Save**.
+
+##### Site Details
+
+- Go to **Site Configuration** > **Site Details**.
+- Copy the **NETLIFY_SITE_ID**. This will be useful when setting up the GitHub environment.
+
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
 
