@@ -110,6 +110,24 @@ describe('Checklists App Form', () => {
     });
   });
 
+  maybeIt('Should trigger GraphQL upsert query on adding tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({ ...defaultChecklist, owner_id: user.userId });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('#tags_goals_input').type('Code Generation');
+      cy.get('#tags_goals').contains('Code Generation').click();
+
+      cy.wait(['@upsertChecklist']).then((xhr) => {
+        expect(xhr.request.body.variables.checklist).to.deep.nested.include({
+          tags_goals: ['GMF:Known AI Goal:Code Generation'],
+        });
+      });
+    });
+  });
+
   maybeIt('Should trigger GraphQL update on removing tag', () => {
     withLogin(({ user }) => {
       interceptFindChecklist({

@@ -66,12 +66,12 @@ describe('Variants pages', () => {
     cy.disableSmoothScroll();
   });
 
-  it('Should display Variant list', async () => {
+  it('Should display Variant list', () => {
     cy.visit(url);
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
-    getVariants(async (variants) => {
+    getVariants((variants) => {
       cy.get('[data-cy=variant-card]').should('have.length', variants.length);
 
       for (let index = 0; index < variants.length; index++) {
@@ -79,7 +79,7 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=variant-card]')
           .eq(index)
-          .within(async () => {
+          .within(() => {
             cy.get('[data-cy=variant-status-badge]').contains(
               getVariantStatusText(getVariantStatus(variant))
             );
