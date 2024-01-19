@@ -55,7 +55,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const addToast = useToastContext();
 
-  const { i18n, t } = useTranslation(['submitted']);
+  const { i18n, t } = useTranslation(['submitted', 'validation']);
 
   const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',

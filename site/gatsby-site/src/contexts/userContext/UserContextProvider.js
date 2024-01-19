@@ -2,28 +2,32 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as Realm from 'realm-web';
 import { realmApp } from '../../services/realmApp';
 import { UserContext } from './UserContext';
-import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
 import config from '../../../config';
 import fetch from 'cross-fetch';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import { navigate } from 'gatsby';
 import useLocalizePath from '../../components/i18n/useLocalizePath';
+import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
 import CustomButton from '../../elements/Button';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
 const getApolloCLient = (getValidAccessToken) =>
   new ApolloClient({
-    link: new HttpLink({
-      uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
-      fetch: async (uri, options) => {
-        const accessToken = await getValidAccessToken();
+    link: ApolloLink.from([
+      removeTypenameFromVariables(),
+      new HttpLink({
+        uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+        fetch: async (uri, options) => {
+          const accessToken = await getValidAccessToken();
 
-        options.headers.Authorization = `Bearer ${accessToken}`;
-        return fetch(uri, options);
-      },
-    }),
+          options.headers.Authorization = `Bearer ${accessToken}`;
+          return fetch(uri, options);
+        },
+      }),
+    ]),
     cache: new InMemoryCache({
       typePolicies: {
         Incident: {

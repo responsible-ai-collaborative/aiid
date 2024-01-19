@@ -110,6 +110,24 @@ describe('Checklists App Form', () => {
     });
   });
 
+  maybeIt('Should trigger GraphQL upsert query on adding tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({ ...defaultChecklist, owner_id: user.userId });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('#tags_goals_input').type('Code Generation');
+      cy.get('#tags_goals').contains('Code Generation').click();
+
+      cy.wait(['@upsertChecklist']).then((xhr) => {
+        expect(xhr.request.body.variables.checklist).to.deep.nested.include({
+          tags_goals: ['GMF:Known AI Goal:Code Generation'],
+        });
+      });
+    });
+  });
+
   maybeIt('Should trigger GraphQL update on removing tag', () => {
     withLogin(({ user }) => {
       interceptFindChecklist({
@@ -130,6 +148,39 @@ describe('Checklists App Form', () => {
       });
 
       cy.visit(url);
+    });
+  });
+
+  it('Should remove a manually-created risk', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+        risks: [
+          {
+            __typename: 'ChecklistRisk',
+            generated: false,
+            id: '5bb31fa6-2d32-4a01-b0a0-fa3fb4ec4b7d',
+            likelihood: '',
+            precedents: [],
+            risk_notes: '',
+            risk_status: 'Mitigated',
+            severity: '',
+            tags: ['GMF:Known AI Goal:Content Search'],
+            title: 'Manual Test Risk',
+            touched: false,
+          },
+        ],
+      });
+      interceptUpsertChecklist({ ...defaultChecklist, owner_id: user.userId });
+
+      cy.visit(url);
+
+      cy.contains('Manual Test Risk').get('svg > title').contains('Delete Risk').parent().click();
+
+      cy.wait('@upsertChecklist');
+
+      cy.contains('Manual Test Risk').should('not.exist');
     });
   });
 });
