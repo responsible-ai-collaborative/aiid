@@ -62,6 +62,7 @@ export const IndexQuery = graphql`
           slug
           title
         }
+        body
         excerpt
         frontmatter {
           date

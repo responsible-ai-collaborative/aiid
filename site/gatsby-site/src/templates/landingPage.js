@@ -294,6 +294,7 @@ export const query = graphql`
           title
           locale
         }
+        body
         excerpt
         frontmatter {
           slug
