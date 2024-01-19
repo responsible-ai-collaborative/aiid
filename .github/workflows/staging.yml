@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging
+
 jobs:
 
   call-test-build:
