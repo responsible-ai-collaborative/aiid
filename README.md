@@ -6,12 +6,18 @@
     <img src="./site/gatsby-site/static/logos/White_AIID.svg" height="100">
   </a>
 </p>
+
 <h1 align="center">
  Artificial Intelligence Incident Database
 </h1>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
-[![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://forms.gle/v7UHJvEkYSJQ7jHj7)
+<p align="center">
+  <a href="https://app.netlify.com/sites/aiid/deploys"><img src="https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status"></a>
+  &nbsp;
+  <a href="https://codecov.io/gh/responsible-ai-collaborative/aiid"><img src="https://codecov.io/gh/responsible-ai-collaborative/aiid/graph/badge.svg?token=SKMVE2G1GU"></a>
+  &nbsp;
+  <a href="https://forms.gle/v7UHJvEkYSJQ7jHj7"><img src="https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack&"></a>
+</p>
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
