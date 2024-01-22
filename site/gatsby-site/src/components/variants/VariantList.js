@@ -18,6 +18,7 @@ import VariantEditModal from './VariantEditModal';
 import { Formik } from 'formik';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_VARIANT, FIND_INCIDENT_VARIANTS } from '../../graphql/variants';
+import { format } from 'date-fns';
 
 export const VariantStatusBadge = ({ status }) => {
   let badgeClass;
@@ -68,7 +69,9 @@ const VariantCard = ({ variant, incidentId }) => {
             <div className="font-bold">
               <Trans>Incident Date</Trans>:
             </div>
-            <div>{variant.date_published}</div>
+            {variant.date_published && (
+              <div>{format(new Date(variant.date_published), 'yyyy-MM-dd')}</div>
+            )}
           </div>
           {variant.text && (
             <>

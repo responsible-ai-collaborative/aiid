@@ -1,8 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import {
   faEdit,
   faPlus,
   faSearch,
   faClone,
+  faTrash,
   faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,11 +12,11 @@ import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
 import { Button, ToggleSwitch } from 'flowbite-react';
-import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
+import RemoveDuplicateModal from 'components/cite/RemoveDuplicateModal';
 
 function Tools({
   incident,
@@ -26,6 +28,8 @@ function Tools({
   setIsLiveData,
 }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
   const { t } = useTranslation();
 
@@ -92,19 +96,43 @@ function Tools({
         </Button>
         <CitationFormat incidentReports={incidentReports} incident={incident} />
         {isUserLoggedIn && isRole('incident_editor') && (
-          <Button
-            color="gray"
-            href={'/incidents/edit?incident_id=' + incident.incident_id}
-            className="hover:no-underline"
-          >
-            <FontAwesomeIcon
-              className="mr-2"
-              icon={faEdit}
-              title={t('Edit Incident')}
-              titleId="edit-incident-icon"
-            />
-            <Trans>Edit Incident</Trans>
-          </Button>
+          <>
+            <Button
+              className="hover:no-underline"
+              color="gray"
+              href={'/incidents/edit?incident_id=' + incident.incident_id}
+            >
+              <FontAwesomeIcon
+                className="mr-2"
+                icon={faEdit}
+                title={t('Edit Incident')}
+                titleId="edit-incident-icon"
+              />
+              <Trans>Edit Incident</Trans>
+            </Button>
+            <Button
+              data-cy="remove-duplicate"
+              color="gray"
+              onClick={() => {
+                setShowRemoveDuplicateModal(true);
+              }}
+            >
+              <FontAwesomeIcon
+                className="mr-2"
+                icon={faTrash}
+                title={t('Remove Duplicate')}
+                titleId="remove-duplicate-icon"
+              />
+              <Trans>Remove Duplicate</Trans>
+            </Button>
+            {showRemoveDuplicateModal && (
+              <RemoveDuplicateModal
+                incident={incident}
+                show={showRemoveDuplicateModal}
+                onClose={() => setShowRemoveDuplicateModal(false)}
+              />
+            )}
+          </>
         )}
         {isUserLoggedIn && isRole('taxonomy_editor') && (
           <Button

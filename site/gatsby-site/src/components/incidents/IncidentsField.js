@@ -10,7 +10,7 @@ const filterBy = (option, text) => {
   );
 };
 
-export default function IncidentsField({ id, name, placeHolder = '' }) {
+export default function IncidentsField({ id, name, placeHolder = '', multiple = true, className }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
@@ -57,13 +57,13 @@ export default function IncidentsField({ id, name, placeHolder = '' }) {
   return (
     <>
       <AsyncTypeahead
-        className="Typeahead incident-ids-field"
+        className={`Typeahead incident-ids-field ${className}`}
         filterBy={() => true}
         id={id}
         inputProps={{ id: 'input-' + id, name }}
         selected={selected}
         options={options}
-        multiple
+        multiple={multiple}
         labelKey={(option) => `${option.id}`}
         isLoading={loading}
         onSearch={handleSearch}

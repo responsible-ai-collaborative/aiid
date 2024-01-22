@@ -2,9 +2,20 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
+import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faEnvelope,
+  faPlusCircle,
+  faWindowMaximize,
+  faWindowMinimize,
+  faBullseye,
+  faMicrochip,
+  faArrowsTurnToDots,
+  faTag,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
 import {
@@ -36,7 +47,7 @@ export default function CheckListForm({
 
   const userIsOwner = values.owner_id == user.id;
 
-  const owner = users.find((u) => (u.userId = values.owner_id));
+  const owner = users.find((u) => u.userId == values.owner_id);
 
   const [deleteChecklist] = useMutation(DELETE_CHECKLIST);
 
@@ -69,8 +80,18 @@ export default function CheckListForm({
     ...(values['tags_other'] || []),
   ];
 
+  const apolloClient = useApolloClient();
+
   useEffect(() => {
-    searchRisks({ values, setFieldValue, setRisksLoading, setAllPrecedents, addToast, t });
+    searchRisks({
+      values,
+      setFieldValue,
+      setRisksLoading,
+      setAllPrecedents,
+      addToast,
+      t,
+      apolloClient,
+    });
   }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   useEffect(() => {
@@ -134,6 +155,7 @@ export default function CheckListForm({
         <HeaderControls>
           <SavingIndicator className="mr-2" {...{ isSubmitting, submissionError }} />
           <Button color="light" onClick={() => alert('Coming soon')}>
+            <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
             <Trans>Subscribe</Trans>
           </Button>
           {userIsOwner && (
@@ -145,6 +167,7 @@ export default function CheckListForm({
         </HeaderControls>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
+      <Info>Checklists are not private data. They will appear in public database snapshots.</Info>
       <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
       <section>
         <SideBySide className="my-4">
@@ -166,6 +189,7 @@ export default function CheckListForm({
                 )
               }
             >
+              <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
               <Trans>Expand all</Trans>
             </Button>
             <Button
@@ -177,6 +201,7 @@ export default function CheckListForm({
                 )
               }
             >
+              <FontAwesomeIcon icon={faWindowMinimize} className="mr-2" />
               <Trans>Collapse all</Trans>
             </Button>
             {userIsOwner && (
@@ -188,6 +213,7 @@ export default function CheckListForm({
                   );
                 }}
               >
+                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
                 <Trans>Add Risk</Trans>
               </Button>
             )}
@@ -225,6 +251,7 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
   return (
     <section>
       <Label for="about-system">
+        <FontAwesomeIcon icon={faMicrochip} className="mr-2" />
         <Trans>About System</Trans>
       </Label>
       <Textarea
@@ -245,24 +272,70 @@ const AboutSystem = ({ formAbout, debouncedSetFieldValue, userIsOwner }) => {
 const QueryTagInput = ({
   title,
   id,
-  labelKey,
   include,
   idValue,
   tags,
   setFieldValue,
   placeHolder,
   userIsOwner,
+  icon,
+  trimTaxonomy = false,
 }) => (
   <div className="bootstrap">
-    <Label for={id}>{title}</Label>
+    <Label for={id}>
+      {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
+      {title}
+    </Label>
     <Tags
       id={id}
+      inputId={`${id}_input`}
       value={idValue}
       options={tags.filter((tag) => include(tag.split(':')))}
-      onChange={(value) => {
-        setFieldValue(id, value);
+      onChange={(tagInputArray) => {
+        //
+        // Example tagInputArray:
+        //
+        // ["GMF:Known AI Technology:Transformer", "Language Model"]
+        //     |                                         |
+        //  ,  |    Not fully-qualified, entered by direct text entry
+        //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
+        //     |    "GMF:Known AI Technology:Language Model"
+        //     |
+        //  Fully-qualified, entered from menu
+        //
+        if (trimTaxonomy) {
+          // If `trimTaxonomy` is enabled, then
+          // "GMF:Known AI Technology:Transformer"
+          // displays in the menu as just "Transformer".
+          // Users would therefore expect that typing "Transformer"
+          // will mean the same thing as clicking "Transformer" in the menu.
+          // So we have to convert it to its fully-qualified version.
+          const selectedTags = [];
+
+          for (const tagInput of tagInputArray) {
+            let selectedTag;
+
+            if (tagInput.includes(':')) {
+              // If there's a colon, it's already fully-qualified,
+              selectedTag = tagInput;
+            } else {
+              // If there's no colon, then it's not fully-qualified,
+              // so we find the full tag which abbreviates
+              // to the unqualified one.
+              selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+            }
+            if (selectedTag) {
+              selectedTags.push(selectedTag);
+            }
+          }
+          setFieldValue(id, selectedTags);
+        } else {
+          // If `trimTaxonomy` is disabled,
+          // then we can leave the input as it is.
+          setFieldValue(id, tagInputArray);
+        }
       }}
-      labelKey={labelKey}
+      labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
       placeHolder={placeHolder}
       disabled={!userIsOwner}
       allowNew={false}
@@ -275,8 +348,9 @@ const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Goals',
       id: 'tags_goals',
+      icon: faBullseye,
       idValue: values['tags_goals'],
-      labelKey: abbreviatedTag,
+      trimTaxonomy: true,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Goal', 'Potential AI Goal'].includes(tagParts[1]) &&
@@ -293,8 +367,9 @@ const MethodsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Methods',
       id: 'tags_methods',
+      icon: faArrowsTurnToDots,
       idValue: values['tags_methods'],
-      labelKey: abbreviatedTag,
+      trimTaxonomy: true,
       include: (tagParts) =>
         tagParts[0] == 'GMF' &&
         ['Known AI Technology', 'Potential AI Technology'].includes(tagParts[1]) &&
@@ -311,8 +386,8 @@ const OtherTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
     {...{
       title: 'Other',
       id: 'tags_other',
+      icon: faTag,
       idValue: values['tags_other'],
-      labelKey: (tag) => tag,
       include: (tagParts) =>
         tagParts[0] != 'GMF' ||
         ![
@@ -333,20 +408,22 @@ const Header = (props) => {
     lg:min-h-[5.5rem]
     flex justify-between flex-wrap gap-4
     pb-2 -mt-2
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <header {...{ ...props, className }}>{props.children}</header>;
 };
 
 const HeaderInfo = (props) => {
-  const className = `flex flex-col justify-center ${props.className}`;
+  const className = `flex flex-col justify-center ${props.className || ''}`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 const HeaderControls = (props) => {
-  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${props.className}`;
+  const className = `flex flex-wrap md:flex-nowrap shrink-0 gap-2 items-center max-w-full ${
+    props.className || ''
+  }`;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
@@ -356,14 +433,14 @@ const SideBySide = (props) => {
     flex flex-col md:flex-row gap-2
     [&>*]:w-full [&>*]:md:w-1/2
     [&>*]:h-full 
-    ${props.className}
+    ${props.className || ''}
   `;
 
   return <div {...{ ...props, className }}>{props.children}</div>;
 };
 
 function SavingIndicator({ isSubmitting, submissionError, className }) {
-  className = `text-lg text-gray-500 inline-block ${className}`;
+  className = `text-lg text-gray-500 inline-block ${className || ''}`;
 
   if (isSubmitting) {
     return (
@@ -394,7 +471,9 @@ function Info({ children, className }) {
   if (hide) return <></>;
   return (
     <div
-      className={`${className} bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
+      className={`${
+        className || ''
+      } bg-amber-50 text-amber-900 border border-amber-300 p-4 rounded shadow-md my-4`}
     >
       <button
         className="border-0 bg-none float-right text-xl pl-4 pb-2 -mt-3"
@@ -412,16 +491,28 @@ function Info({ children, className }) {
 //
 // Example resulting values.risks:
 //
-// [ { "tag": "GMF:Failure:Gaming Vulnerability",
-//     "precedents": [
-//       { "incident_id": 146,
-//         "url": "https://incidentdatabase.ai/cite/146",
-//         "title": "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-//         "description": "A publicly accessible research model[...]moral judgments.",
-//         "tags": [ "GMF:Known AI Technology:Language Modeling", ],
-//         "risk_tags": [ "GMF:Known AI Technical Failure:Distributional Bias", ]
+// [ {
+//     /* GraphQL API Results */
+//     title: "Gaming Vulnerability",
+//     tags: ["GMF:Failure:Gaming Vulnerability"],
+//     precedents: [
+//       { incident_id: 146,
+//         url: "https://incidentdatabase.ai/cite/146",
+//         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+//         description: "A publicly accessible research model [...] moral judgments.",
+//         tags: [ "GMF:Known AI Technology:Language Modeling", ],
 //       },
-//     ]
+//     ],
+//
+//     /* Defaults Risk Annotations */
+//     risk_status: "Not Mitigated",
+//     risk_notes: "",
+//     severity: "",
+//
+//     /* UI properties*/
+//     startClosed: true,
+//     touched: false,
+//     generated: true,
 //   }
 // ]
 //
@@ -433,6 +524,7 @@ const searchRisks = async ({
   setAllPrecedents,
   addToast,
   t,
+  apolloClient,
 }) => {
   const queryTags = [
     ...(values['tags_goals'] || []),
@@ -444,14 +536,27 @@ const searchRisks = async ({
 
   setRisksLoading(true);
 
-  const response = await fetch(
-    '/api/riskManagement/v1/risks?tags=' + encodeURIComponent(queryTags.join('___'))
-  );
+  const risksResponse = await apolloClient.query({
+    query: gql`
+      query {
+        risks(input: { tags: [${queryTags.map((t) => `"${t}"`).join(', ')}] }) {
+          tags
+          title
+          precedents {
+            incident_id
+            title
+            description
+            tags
+          }
+        }
+      }
+    `,
+  });
 
   const allPrecedents = [];
 
-  if (response.ok) {
-    const results = await response.json();
+  if (risksResponse.data) {
+    const results = risksResponse.data.risks;
 
     const risksToAdd = [];
 
@@ -460,8 +565,8 @@ const searchRisks = async ({
 
       const newRisk = {
         ...emptyRisk(),
-        title: abbreviatedTag(result.tag),
-        tags: [result.tag],
+        title: result.title,
+        tags: result.tags,
         precedents: result.precedents,
         description: result.description,
         startClosed: true,
