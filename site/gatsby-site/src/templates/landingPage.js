@@ -297,6 +297,7 @@ export const query = graphql`
         body
         excerpt
         frontmatter {
+          metaDescription
           slug
           date
           author

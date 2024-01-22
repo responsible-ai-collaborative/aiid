@@ -65,6 +65,7 @@ export const IndexQuery = graphql`
         body
         excerpt
         frontmatter {
+          metaDescription
           date
           author
           slug
