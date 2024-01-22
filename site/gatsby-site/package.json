@@ -158,5 +158,8 @@
   "overrides": {
     "minimist": "1.2.8",
     "d3-color": "3.1.0"
+  },
+  "optionalDependencies": {
+    "@parcel/watcher-linux-x64-glibc": "^2.4.0"
   }
 }
