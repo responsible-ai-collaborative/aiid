@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging
+
 jobs:
 
   call-test-build:
@@ -30,5 +31,5 @@ jobs:
     with:
       environment: staging
       sha: ${{ github.sha }}
-      context: production
-      alias: 
+      netlify-context: production
+      netlify-alias: 
