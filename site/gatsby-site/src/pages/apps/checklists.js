@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import { graphql } from 'gatsby';
 import { useQueryParams, StringParam } from 'use-query-params';
 import { useQuery, useMutation } from '@apollo/client';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import AiidHelmet from 'components/AiidHelmet';
 import CheckListForm from 'components/checklists/CheckListForm';
@@ -105,12 +106,18 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   }
   if (query.id && savedChecklistLoading) {
     return <Spinner />;
-  }
-  if (query.id && savedChecklist) {
+  } else if (query.id && savedChecklistData && savedChecklist) {
     return (
       <Formik onSubmit={submit} initialValues={savedChecklist}>
         {(FormProps) => <CheckListForm {...{ ...FormProps, tags, users, submissionError }} />}
       </Formik>
+    );
+  } else if (query.id && savedChecklistData && !savedChecklist) {
+    return (
+      <p>
+        No checklist with id {query.id}.{' '}
+        <LocalizedLink href="/apps/checklists">Return to checklists</LocalizedLink>.
+      </p>
     );
   }
 };
