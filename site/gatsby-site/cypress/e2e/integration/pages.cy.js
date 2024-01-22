@@ -101,7 +101,7 @@ describe('Pages', () => {
 
         cy.get('[rel="canonical"]').invoke('attr', 'href').should('equal', url);
 
-        cy.get('[rel="alternate"]').should('have.length', 5);
+        cy.get('[rel="alternate"]').should('have.length', 6);
 
         cy.get('[rel="alternate"][hrefLang="x-default"]')
           .invoke('attr', 'href')
