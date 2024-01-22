@@ -5,6 +5,7 @@ on:
     branches:
       - staging
     types: [opened, synchronize, reopened]
+
 jobs:
   permissions-check:
     runs-on: ubuntu-latest
@@ -31,6 +32,7 @@ jobs:
     needs: permissions-check
     secrets: inherit
     with:
+      sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
 
   call-test:
@@ -39,6 +41,7 @@ jobs:
     needs: call-test-build
     secrets: inherit
     with:
+      sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
 
   call-deploy:
@@ -49,4 +52,7 @@ jobs:
     permissions:
       pull-requests: write
     with:
+      sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
+      netlify-context: deploy-preview
+      netlify-alias: pr-${{ github.event.pull_request.number }}
