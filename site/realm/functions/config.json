@@ -60,6 +60,10 @@
         "private": true
     },
     {
+        "name": "setCreatedAtField",
+        "private": true
+    },
+    {
         "name": "sendEmail",
         "private": false
     },
