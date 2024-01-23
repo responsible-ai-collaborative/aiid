@@ -52,7 +52,7 @@ const AiidHead = ({
         <link rel="shortcut icon" type="image/svg" href={config.siteMetadata.favicon} />
       )}
 
-      {children && <>{children}</>}
+      {children}
     </>
   );
 };

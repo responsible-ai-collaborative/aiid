@@ -13,14 +13,12 @@ export const Head = (props) => {
   const post = props?.data?.post;
 
   return (
-    <>
-      <AiidHead
-        metaTitle={post.data.metatitle}
-        metaDescription={post.data.metadescription}
-        path={props.location.pathname}
-        metaImage={post.data.image?.gatsbyImageData?.images?.fallback?.src}
-      />
-    </>
+    <AiidHead
+      metaTitle={post.data.metatitle}
+      metaDescription={post.data.metadescription}
+      path={props.location.pathname}
+      metaImage={post.data.image?.gatsbyImageData?.images?.fallback?.src}
+    />
   );
 };
 
