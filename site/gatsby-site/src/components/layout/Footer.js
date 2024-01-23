@@ -294,7 +294,9 @@ export default function Footer() {
       )}
 
       {process.env.GATSBY_COMMIT_SHA && (
-        <div className="text-muted-gray text-xs">{process.env.GATSBY_COMMIT_SHA}</div>
+        <div className="text-muted-gray text-xs" data-cy="commit-sha">
+          {process.env.GATSBY_COMMIT_SHA}
+        </div>
       )}
     </footer>
   );
