@@ -46,7 +46,7 @@ export default function RiskSection({
 
   const progress =
     ['risk_notes', 'severity', 'likelihood'].reduce(
-      (sum, item) => sum + (risk[item].length > 1 ? 1 : 0),
+      (sum, item) => sum + (risk[item] && risk[item].length > 1 ? 1 : 0),
       0
     ) / 3;
 
@@ -134,10 +134,10 @@ export default function RiskSection({
           )}
           <HeaderTextWithIcon
             className="hidden xl:block"
-            color={statusColor(risk.risk_status)}
+            color={statusColor(risk.risk_status || 'Unclear')}
             onClick={changeSort(byProperty('risk_status'))}
           >
-            <FontAwesomeIcon icon={statusIcon(risk.risk_status)} className={`mr-1`} />
+            <FontAwesomeIcon icon={statusIcon(risk.risk_status || 'Unclear')} className={`mr-1`} />
             <span className="inline-block">{risk.risk_status || 'Unassessed'}</span>
           </HeaderTextWithIcon>
           <ProgressCircle progress={progress} className="-mb-1 hidden xl:block" />
