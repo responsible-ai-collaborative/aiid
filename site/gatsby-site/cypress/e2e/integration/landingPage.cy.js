@@ -175,4 +175,10 @@ describe('The Landing page', () => {
 
     cy.get('[data-cy="random-incidents-carousel-item"]').should('have.length', 5);
   });
+
+  it('Renders commit sha in the footer', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="commit-sha"]').should('be.visible');
+  });
 });

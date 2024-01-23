@@ -3,6 +3,11 @@ on:
   workflow_call:
     inputs:
       environment:
+        description: 'The Github environment to load secrets from'
+        type: string
+        required: true
+      sha:
+        description: 'The SHA of the commit to build'
         type: string
         required: true
 
@@ -15,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ inputs.sha }}
 
       - name: Read node modules from cache
         id: cache-nodemodules
@@ -79,6 +84,7 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
 
       - name: Cache build
         uses: actions/cache/save@v3
@@ -88,4 +94,4 @@ jobs:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.cache/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}
