@@ -92,6 +92,7 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
 
       - name: Upload to netlify
         id: deploy-netlify
