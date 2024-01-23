@@ -210,7 +210,7 @@ export default function Footer() {
 
       {allPrismicFooter.edges.length <= 0 && (
         <div>
-          <h3 className="text-base mt-4">2023 - AI Incident Database</h3>
+          <h3 className="text-base mt-4">2024 - AI Incident Database</h3>
 
           <LocalizedLink to="/terms-of-use" className="tw-footer-link">
             <Trans ns="footer">Terms of use</Trans>
@@ -290,6 +290,12 @@ export default function Footer() {
               />
             </a>
           </div>
+        </div>
+      )}
+
+      {process.env.GATSBY_COMMIT_SHA && (
+        <div className="text-muted-gray text-xs" data-cy="commit-sha">
+          {process.env.GATSBY_COMMIT_SHA}
         </div>
       )}
     </footer>
