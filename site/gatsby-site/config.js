@@ -194,7 +194,8 @@ const config = {
     mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
   },
   i18n: {
-    availableLanguages: String(process.env.GATSBY_AVAILABLE_LANGUAGES).split(',') || ['en'],
+    //availableLanguages: String(process.env.GATSBY_AVAILABLE_LANGUAGES).split(',') || ['en'],
+    availableLanguages: ['en', 'es', 'fr', 'ja'], //TODO: This harcoded value is just for testing purposes
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
     defaultLanguage: 'en',
   },
