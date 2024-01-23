@@ -5,6 +5,7 @@ on:
     branches:
       - staging
     types: [opened, synchronize, reopened]
+
 jobs:
   permissions-check:
     runs-on: ubuntu-latest
