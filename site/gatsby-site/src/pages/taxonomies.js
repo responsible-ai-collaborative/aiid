@@ -71,6 +71,10 @@ export default function Taxonomies({ data }) {
 export const Head = (props) => {
   const { t } = useTranslation();
 
+  const {
+    location: { pathname },
+  } = props;
+
   const title = t('Taxonomies');
 
   const metaTitle = t('List of taxonomies');
@@ -78,9 +82,12 @@ export const Head = (props) => {
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
   return (
-    <AiidHead {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
-      <title>{title}</title>
-    </AiidHead>
+    <AiidHead
+      path={pathname}
+      title={title}
+      metaTitle={metaTitle}
+      metaDescription={metaDescription}
+    />
   );
 };
 

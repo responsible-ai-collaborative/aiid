@@ -56,11 +56,7 @@ export const Head = (props) => {
 
   const metaDescription = mdx.frontmatter.metaDescription;
 
-  return (
-    <AiidHead path={pathname} {...{ metaTitle, metaDescription }}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} {...{ metaTitle, metaDescription }} />;
 };
 
 export const pageQuery = graphql`

@@ -102,9 +102,5 @@ export const Head = (props) => {
 
   const metaTitle = t('Variants');
 
-  return (
-    <AiidHead path={pathname} metaTitle={metaTitle}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={metaTitle} />;
 };

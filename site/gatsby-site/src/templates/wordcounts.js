@@ -79,11 +79,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Word Counts';
 
-  return (
-    <AiidHead path={pathname} {...{ metaTitle }}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} {...{ metaTitle }} />;
 };
 
 export default WordCounts;

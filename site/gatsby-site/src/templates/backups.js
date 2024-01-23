@@ -112,11 +112,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Database Backups and Snapshots';
 
-  return (
-    <AiidHead path={pathname} metaTitle={metaTitle}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={metaTitle} />;
 };
 
 export default Backups;

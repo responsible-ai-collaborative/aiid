@@ -25,9 +25,7 @@ export const Head = (props) => {
       path={pathname}
       metaTitle={metaTitle}
       metaDescription={t('Find AI related incidents and reports')}
-    >
-      <title>{metaTitle}</title>
-    </AiidHead>
+    />
   );
 };
 

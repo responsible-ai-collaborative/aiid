@@ -13,9 +13,7 @@ const Default404 = () => {
 };
 
 export const Head = (props) => (
-  <AiidHead path={props.location.pathname}>
-    <title>Page not found</title>
-  </AiidHead>
+  <AiidHead path={props.location.pathname} metaTitle={'Page not found'} />
 );
 
 export default Default404;

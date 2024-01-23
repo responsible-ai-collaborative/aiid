@@ -572,9 +572,5 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  return (
-    <AiidHead path={pathname}>
-      <title>Artificial Intelligence Incident Database</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={'Artificial Intelligence Incident Database'} />;
 };

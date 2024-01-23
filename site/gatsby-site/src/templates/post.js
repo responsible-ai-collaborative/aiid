@@ -92,14 +92,12 @@ export const Head = (props) => {
   }
 
   return (
-    <>
-      <AiidHead
-        metaTitle={metaTitle}
-        metaDescription={metaDescription}
-        path={props.location.pathname}
-        metaImage={metaImage}
-      />
-    </>
+    <AiidHead
+      metaTitle={metaTitle}
+      metaDescription={metaDescription}
+      path={props.location.pathname}
+      metaImage={metaImage}
+    />
   );
 };
 

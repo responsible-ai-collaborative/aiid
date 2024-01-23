@@ -44,11 +44,7 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  return (
-    <AiidHead path={pathname}>
-      <title>Admin</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={'Admin'} />;
 };
 
 export default AdminPage;

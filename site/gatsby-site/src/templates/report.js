@@ -95,10 +95,8 @@ export const Head = (props) => {
         metaDescription: report.description,
         metaImage: report.image_url,
       }}
-    >
-      <title>{metaTitle}</title>
-      <meta property="og:type" content="website" />
-    </AiidHead>
+      metaType="website"
+    />
   );
 };
 

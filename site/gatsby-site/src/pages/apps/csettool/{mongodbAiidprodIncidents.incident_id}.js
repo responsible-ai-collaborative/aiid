@@ -90,11 +90,7 @@ export const Head = (props) => {
 
   const metaTitle = 'CSET Tool';
 
-  return (
-    <AiidHead path={pathname} metaTitle={metaTitle}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={metaTitle} />;
 };
 
 export default ToolPage;

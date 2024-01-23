@@ -75,11 +75,7 @@ export const Head = (props) => {
 
   const metaDescription = t('AIID incidents list');
 
-  return (
-    <AiidHead path={pathname} metaTitle={metaTitle} metaDescription={metaDescription}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export const query = graphql`

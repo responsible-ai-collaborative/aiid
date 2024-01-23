@@ -296,11 +296,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Entity: ' + name;
 
-  return (
-    <AiidHead path={pathname} {...{ metaTitle }}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} {...{ metaTitle }} />;
 };
 
 function UnsubscribeButton({

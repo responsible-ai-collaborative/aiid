@@ -493,9 +493,5 @@ export const Head = (props) => {
 
   const title = t('Related News Digest');
 
-  return (
-    <AiidHead path={pathname}>
-      <title>{title}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={title} />;
 };

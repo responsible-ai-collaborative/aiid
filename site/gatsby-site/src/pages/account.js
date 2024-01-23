@@ -50,11 +50,7 @@ const Account = () => {
 export const Head = (props) => {
   const { t } = useTranslation(['account']);
 
-  return (
-    <AiidHead path={props.location.pathname}>
-      <title>{t('Account Details')}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={props.location.pathname} metaTitle={t('Account Details')} />;
 };
 
 export default Account;

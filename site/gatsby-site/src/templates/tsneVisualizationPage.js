@@ -65,12 +65,7 @@ export const Head = (props) => {
 
   const metaDescription = t('Spatial Visualization');
 
-  return (
-    <AiidHead path={pathname} {...{ metaTitle, metaDescription }}>
-      <title>{metaTitle}</title>
-      <meta property="og:type" content="website" />
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} {...{ metaTitle, metaDescription }} metaType="website" />;
 };
 
 export default TsneVisulizationPage;

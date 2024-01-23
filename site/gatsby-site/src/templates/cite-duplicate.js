@@ -41,11 +41,7 @@ export const Head = (props) => {
 
   const canonicalUrl = getCanonicalUrl(true_incident_number);
 
-  return (
-    <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
 };
 
 export default IncidentCite;

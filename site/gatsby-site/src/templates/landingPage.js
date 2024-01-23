@@ -170,10 +170,11 @@ export function Head({ location }) {
   return (
     <>
       <script type="application/ld+json">{stringified}</script>
-      <title>{title}</title>
-      <meta property="og:type" content="website" />
-
-      <AiidHead {...{ metaTitle, metaDescription, path: location.pathname, metaImage }} />
+      <AiidHead
+        {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}
+        metaType="website"
+        title={title}
+      />
     </>
   );
 }

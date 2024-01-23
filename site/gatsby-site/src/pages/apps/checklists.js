@@ -234,11 +234,7 @@ export const Head = (props) => {
 
   const { t } = useTranslation();
 
-  return (
-    <AiidHead path={pathname}>
-      <title>{t('Risk Checklists')}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} metaTitle={t('Risk Checklists')} />;
 };
 
 export default ChecklistsPage;

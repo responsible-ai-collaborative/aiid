@@ -75,11 +75,7 @@ export const Head = (props) => {
 
   const canonicalUrl = 'https://incidentdatabase.ai/entities';
 
-  return (
-    <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }}>
-      <title>{metaTitle}</title>
-    </AiidHead>
-  );
+  return <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
 };
 
 export const query = graphql`

@@ -156,12 +156,7 @@ export const Head = (props) => {
 
   const metaImage = image.createCloudinaryURL();
 
-  return (
-    <AiidHead {...{ metaTitle, metaDescription, path, metaImage }}>
-      <title>{metaTitle}</title>
-      <meta property="og:type" content="website" />
-    </AiidHead>
-  );
+  return <AiidHead {...{ metaTitle, metaDescription, path, metaImage }} metaType="website" />;
 };
 
 export const query = graphql`
