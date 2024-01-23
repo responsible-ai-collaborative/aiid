@@ -561,9 +561,15 @@ describe('The Discover app', () => {
       .find('span.badge', { timeout: 8000 })
       .should('contain.text', '1');
 
-    cy.get('[data-cy="classifications-item"]:contains("CSETv0:Intent:Accident")', {
-      timeout: 8000,
-    }).should('have.class', 'active');
+    cy.get('[data-cy="Accident"]', { timeout: 8000 })
+      .should('exist')
+      .find('b')
+      .contains('CSETv0')
+      .parent()
+      .contains('Intent')
+      .should('exist')
+      .parent()
+      .should('have.class', 'active');
 
     cy.contains('button', 'Anonymous').should('have.class', 'active');
 
