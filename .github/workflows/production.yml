@@ -21,6 +21,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: production
+      netlify-context: production
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
