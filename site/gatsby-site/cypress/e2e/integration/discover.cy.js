@@ -569,6 +569,9 @@ describe('The Discover app', () => {
       .contains('Intent')
       .should('exist')
       .parent()
+      .contains('Accident')
+      .should('exist')
+      .parent()
       .should('have.class', 'active');
 
     cy.contains('button', 'Anonymous').should('have.class', 'active');
