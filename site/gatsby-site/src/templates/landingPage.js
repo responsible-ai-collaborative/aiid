@@ -25,11 +25,20 @@ const LandingPage = (props) => {
 
   let { latestPrismicPost, latestPostOld, latestReportIncidents } = data;
 
-  const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
+  let latestBlogPost = null;
 
-  const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
+  if (!latestPostOld) {
+    latestBlogPost = latestPrismicPost;
+  } else if (!latestPrismicPost) {
+    latestBlogPost = latestPostOld;
+  } else {
+    const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
 
-  const latestPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
+    const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
+
+    // Display prismic post if it's the latest post or if it's newer than the latest mdx post
+    latestBlogPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
+  }
 
   let { sponsors } = props.pageContext;
 
@@ -92,12 +101,12 @@ const LandingPage = (props) => {
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
-          {(latestPost?.edges?.length > 0 || latestPost?.nodes?.length > 0) && (
+          {(latestBlogPost?.edges?.length > 0 || latestBlogPost?.nodes?.length > 0) && (
             <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-              {latestPost.nodes.length > 0 && latestPost.nodes[0].data ? (
-                <PostPreviewNew post={latestPost.nodes[0]} latestPost={true} />
-              ) : latestPost.nodes.length > 0 ? (
-                <Blog post={latestPost.nodes[0]} />
+              {latestBlogPost.nodes.length > 0 && latestBlogPost.nodes[0].data ? (
+                <PostPreviewNew post={latestBlogPost.nodes[0]} latestBlogPost={true} />
+              ) : latestBlogPost.nodes.length > 0 ? (
+                <Blog post={latestBlogPost.nodes[0]} />
               ) : (
                 <></>
               )}
