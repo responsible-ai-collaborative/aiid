@@ -27,9 +27,9 @@ const LandingPage = (props) => {
 
   let latestBlogPost = null;
 
-  if (!latestPostOld) {
+  if (!latestPostOld || latestPostOld.nodes.length === 0) {
     latestBlogPost = latestPrismicPost;
-  } else if (!latestPrismicPost) {
+  } else if (!latestPrismicPost || latestPrismicPost.nodes.length === 0) {
     latestBlogPost = latestPostOld;
   } else {
     const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
