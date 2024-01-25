@@ -14,7 +14,9 @@ class Translator {
     translateClient,
     languages,
     reporter,
-    dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
+    // TODO: rollback this temporary hack
+    //dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
+    dryRun = true,
   }) {
     this.translateClient = translateClient;
     /**
