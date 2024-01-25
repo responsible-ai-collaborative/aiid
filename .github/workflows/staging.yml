@@ -17,6 +17,7 @@ jobs:
   call-test-build:
     uses: ./.github/workflows/test-build.yml
     secrets: inherit
+    needs: call-atlas
     with:
       sha: ${{ github.sha }}
       environment: staging
