@@ -10,6 +10,10 @@ on:
         description: 'The SHA of the commit to build'
         type: string
         required: true
+      netlify-context:
+        description: The Netlify context use when building
+        type: string
+        required: true
 
 jobs:
   test:
@@ -51,7 +55,7 @@ jobs:
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
-        run: netlify build --context deploy-preview --offline
+        run: netlify build --context ${{ inputs.netlify-context }} --offline
         working-directory: site/gatsby-site
         env:
           INSTRUMENT: true
