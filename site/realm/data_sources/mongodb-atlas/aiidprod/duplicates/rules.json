@@ -3,6 +3,17 @@
     "database": "aiidprod",
     "roles": [
         {
+            "name": "admin",
+            "apply_when": {
+                "%%user.custom_data.roles": "admin"
+            },
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
             "name": "default",
             "apply_when": {},
             "read": true,
