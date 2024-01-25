@@ -1,0 +1,35 @@
+name: Deploy Production Branch every 12 hours
+
+on:
+  schedule:
+    - cron: "0 6,18 * * *"
+
+jobs:
+
+  call-test-build:
+    uses: ./.github/workflows/test-build.yml
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+      netlify-context: production
+
+  call-test:
+    uses: ./.github/workflows/test.yml
+    needs: call-test-build
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    needs: call-test
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: production
+      sha: ${{ github.sha }}
+      netlify-context: production
+      netlify-alias: 
