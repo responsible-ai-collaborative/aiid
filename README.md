@@ -557,9 +557,16 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 - **Deployment Criteria:** If the tests fail, no deployment will be carried out.
 - **Environment:** This workflow uses the `production` GitHub environment.
 
+#### 4) Empty Environment Workflow (WIP)
+
+- **Trigger:** Runs only on pushes to the `staging` branch.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
+- **Environment:** This workflow uses the `empty` GitHub environment.
+
 ### GitHub Environment Configuration
 
-All three workflows share a common set of environment variables, which need to be defined for each environment. (Currently, we have only two environments: `staging` and `production`.) These variables are categorized into secrets and standard variables, and are accessed via GitHub actions as such.
+All three workflows share a common set of environment variables, which need to be defined for each environment. (Currently, we have three environments: `empty`, `staging` and `production`.) These variables are categorized into secrets and standard variables, and are accessed via GitHub actions as such.
 
 #### Secrets
 
