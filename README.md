@@ -536,7 +536,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 - **Trigger:** This workflow is activated for every pull request that is based on the `staging` branch.
 - **Process:** It executes both the integration tests and deploys the application to Netlify.
 - **Post-Deployment:** Upon a successful deployment, the workflow automatically posts a comment on the pull request. This comment includes a link to the Netlify preview of the changes and a link to the Netlify deploy log.
-- **Environment:** This workflow is tied to the `staging` GitHub environment.
+- **Environment:** This workflow uses the `staging` GitHub environment.
 
 #### 2) Staging Workflow (WIP)
 
