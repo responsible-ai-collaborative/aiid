@@ -549,7 +549,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 
 - **Trigger:** Activated only on pushes to the `master` branch.
 - **Process:** Runs the tests and, if they succeed, proceeds to deploy to the production environment.
-- **Environment:** Tied to the `production` GitHub environment.
+- **Environment:** This workflow uses the `production` GitHub environment.
 
 ### GitHub Configuration
 
