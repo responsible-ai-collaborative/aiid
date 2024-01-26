@@ -543,7 +543,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 - **Trigger:** Runs only on pushes to the `staging` branch.
 - **Process:** Executes both the integration tests and deploys to Netlify.
 - **Deployment Criteria:** If the tests fail, no deployment will be carried out.
-- **Environment:** This workflow is tied to the `staging` GitHub environment.
+- **Environment:** This workflow uses the `staging` GitHub environment.
 
 #### 3) Production Workflow (WIP)
 
