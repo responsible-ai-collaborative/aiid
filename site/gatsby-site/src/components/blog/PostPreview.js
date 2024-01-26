@@ -9,8 +9,8 @@ function PostPreview({ post, latestPost = false }) {
 
   if (post.excerpt) {
     previewText = post.excerpt;
-  } else if (post.frontmatter.metaDescription && post.frontmatter.metaDescription !== '') {
-    previewText = post.frontmatter.metaDescription;
+  } else if (post.frontmatter.previewText && post.frontmatter.previewText !== '') {
+    previewText = post.frontmatter.previewText;
   } else {
     // Remove HTML tags
     previewText = post?.body.replace(/<[^>]*>?/gm, '');
