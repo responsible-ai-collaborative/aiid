@@ -1,0 +1,44 @@
+name: Deploy staging branch to Empty env 
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+
+  call-atlas:
+    uses: ./.github/workflows/realm.yml
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: empty
+
+  call-test-build:
+    uses: ./.github/workflows/test-build.yml
+    secrets: inherit
+    needs: call-atlas
+    with:
+      sha: ${{ github.sha }}
+      environment: empty
+      netlify-context: production # we have to run migrations so tests pass
+
+  call-test:
+    uses: ./.github/workflows/test.yml
+    needs: call-test-build
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: empty
+
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    needs: call-test
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: empty
+      sha: ${{ github.sha }}
+      netlify-context: production 
+      netlify-alias: 
