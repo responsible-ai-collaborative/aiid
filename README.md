@@ -513,7 +513,7 @@ This guide walks you through the steps to set up a Netlify site for your project
 ##### Site Details
 
 - Go to **Site Configuration** > **Site Details**.
-- Copy the **NETLIFY_SITE_ID**. This will be useful when setting up the GitHub environment.
+- Copy the `NETLIFY_SITE_ID`. This will be useful when setting up the GitHub environment.
 
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
