@@ -551,7 +551,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 - **Process:** Runs the tests and, if they succeed, proceeds to deploy to the production environment.
 - **Environment:** This workflow uses the `production` GitHub environment.
 
-### GitHub Configuration
+### GitHub Environment Configuration
 
 All three workflows share a common set of environment variables, which need to be defined for each environment. These variables are categorized into secrets and standard values.
 
