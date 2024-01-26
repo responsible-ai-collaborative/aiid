@@ -7,9 +7,17 @@ on:
 
 jobs:
 
+  call-atlas:
+    uses: ./.github/workflows/realm.yml
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+
   call-test-build:
     uses: ./.github/workflows/test-build.yml
     secrets: inherit
+    needs: call-atlas
     with:
       sha: ${{ github.sha }}
       environment: staging
