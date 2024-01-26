@@ -23,7 +23,7 @@ function ReportPage(props) {
 
   const { loading, isRole } = useUserContext();
 
-  if (report.language !== locale) {
+  if (report.language !== locale && data[locale]) {
     report.title = data[locale].title;
     report.text = data[locale].text;
   }
