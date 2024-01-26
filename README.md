@@ -494,7 +494,6 @@ This guide walks you through the steps to set up a Netlify site for your project
 #### 4. Select Repository
 
 - Choose the repository where your project is located.
-- For this guide, we will refer to it as `aiid` repository.
 
 #### 5. Configure Deployment
 
@@ -548,7 +547,8 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 #### 3) Production Workflow (WIP)
 
 - **Trigger:** Runs only on pushes to the `master` branch.
-- **Process:** Runs the tests and, if they succeed, proceeds to deploy to the production environment.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
 - **Environment:** This workflow uses the `production` GitHub environment.
 
 ### GitHub Environment Configuration
