@@ -553,7 +553,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 
 ### GitHub Environment Configuration
 
-All three workflows share a common set of environment variables, which need to be defined for each environment. These variables are categorized into secrets and standard values.
+All three workflows share a common set of environment variables, which need to be defined for each environment. (Currently, we have only two environments: `staging` and `production`.) These variables are categorized into secrets and standard variables, and are accessed via GitHub actions as such.
 
 #### Secrets
 
