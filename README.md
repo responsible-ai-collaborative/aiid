@@ -528,7 +528,7 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 
 ### Deployment Workflows on GitHub Actions
 
-We have integrated our testing and deployment processes with GitHub Actions. There are three primary workflows for deployment: Deploy Previews, Staging, and Production. Each of these workflows is designed to ensure a smooth and reliable deployment process.
+We have integrated our testing and deployment processes with GitHub Actions. There are three primary workflows for deployment: Deploy Previews, Staging, and Production. The goal of these workflows is to continuously test and integrate changes in pull requests across environments. 
 
 #### 1) Deploy Previews Workflow 
 
