@@ -13,6 +13,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: staging
+      netlify-context: production
 
   call-test:
     uses: ./.github/workflows/test.yml
