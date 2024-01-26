@@ -577,7 +577,7 @@ All three workflows share a common set of environment variables, which need to b
 - `REALM_API_PUBLIC_KEY`
 - `GATSBY_ROLLBAR_TOKEN`
 
-#### Values
+#### Variables
 
 - `CYPRESS_PROJECT_ID`
 - `GATSBY_ALGOLIA_APP_ID`
