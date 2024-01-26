@@ -534,7 +534,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 
 - **File:** [/.github/workflows/preview.yml](/.github/workflows/preview.yml)
 - **Trigger:** This workflow is activated for pushes to pull requests that target the `staging` branch.
-- **Process:** It executes both the integration tests and deploys the application to Netlify.
+- **Process:** Executes both the integration tests and deploys the application to Netlify.
 - **Post-Deployment:** Upon a successful deployment, the workflow automatically posts a comment on the pull request. This comment includes a link to the Netlify preview of the changes and a link to the Netlify deploy log.
 - **Environment:** This workflow uses the `staging` GitHub environment.
 
