@@ -7,7 +7,7 @@ import DateLabel from 'components/ui/DateLabel';
 function PostPreview({ post, latestPost = false }) {
   let previewText = '';
 
-  if (post.excerpt) {
+  if (post.excerpt && post.excerpt !== '') {
     previewText = post.excerpt;
   } else if (post.frontmatter.previewText && post.frontmatter.previewText !== '') {
     previewText = post.frontmatter.previewText;

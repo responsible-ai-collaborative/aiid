@@ -302,6 +302,7 @@ export const query = graphql`
           slug
           title
           locale
+          previewText
         }
         body
         excerpt
