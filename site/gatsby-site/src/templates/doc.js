@@ -10,9 +10,14 @@ import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Doc(props) {
   const {
-    data: { mdx },
+    data: { mdx: localeMdx, enMdx },
     children,
   } = props;
+
+  let mdx = localeMdx;
+
+  // If the doc is not translated, use the English version
+  if (!mdx) mdx = enMdx;
 
   // meta tags
   const metaTitle = mdx.frontmatter.metaTitle;
@@ -61,6 +66,25 @@ export const pageQuery = graphql`
       }
     }
     mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
+      fields {
+        id
+        title
+        slug
+      }
+      tableOfContents
+      parent {
+        ... on File {
+          relativePath
+        }
+      }
+      frontmatter {
+        metaTitle
+        metaDescription
+        aiTranslated
+        slug
+      }
+    }
+    enMdx: mdx(fields: { locale: { eq: "en" } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         id
         title

@@ -41,12 +41,12 @@ const LandingPage = (props) => {
     const report = sortedReports.map((report) => report)[0];
 
     if (report.language !== language) {
-      const translation = data[`latestReports_${language}`].edges.find(
+      const translation = data[`latestReports_${language}`]?.edges.find(
         (translation) => translation.node.report_number === report.report_number
       );
 
-      report.title = translation.node.title;
-      report.text = translation.node.text;
+      report.title = translation?.node?.title || '';
+      report.text = translation?.node?.text || '';
     }
     const updatedIncident = {
       incident_id: incident.node.incident_id,
