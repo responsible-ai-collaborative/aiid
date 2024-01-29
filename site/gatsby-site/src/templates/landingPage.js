@@ -17,13 +17,14 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
-import sortBy from 'lodash/sortBy';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
 
 const LandingPage = (props) => {
   const { data } = props;
 
   let { latestPrismicPost, latestPostOld, latestReportIncidents } = data;
+
+  const { latestReportNumbers } = props.pageContext;
 
   let latestBlogPost = null;
 
@@ -45,9 +46,7 @@ const LandingPage = (props) => {
   const { locale: language } = useLocalization();
 
   const latestReports = latestReportIncidents.edges.map((incident) => {
-    const sortedReports = sortBy(incident.node.reports, ['epoch_date_submitted'], ['desc']);
-
-    const report = sortedReports.map((report) => report)[0];
+    const report = incident.node.reports.find((r) => latestReportNumbers.includes(r.report_number));
 
     if (report.language !== language) {
       const translation = data[`latestReports_${language}`].edges.find(
