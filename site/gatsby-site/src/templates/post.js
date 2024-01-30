@@ -14,9 +14,16 @@ import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Post(props) {
   const {
-    data: { mdx },
+    data: { mdx: translatedMdx, enMdx },
     children,
   } = props;
+
+  let mdx = translatedMdx;
+
+  // If the doc is not translated, use the English version
+  if (!mdx) {
+    mdx = enMdx;
+  }
 
   const metaTitle = mdx.frontmatter.metaTitle;
 
@@ -96,6 +103,30 @@ export const pageQuery = graphql`
       }
     }
     mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
+      fields {
+        title
+      }
+      tableOfContents
+      parent {
+        ... on File {
+          relativePath
+        }
+      }
+      frontmatter {
+        metaTitle
+        metaDescription
+        author
+        date
+        aiTranslated
+        slug
+        image {
+          childImageSharp {
+            gatsbyImageData(layout: FIXED)
+          }
+        }
+      }
+    }
+    enMdx: mdx(fields: { locale: { eq: "en" } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         title
       }
