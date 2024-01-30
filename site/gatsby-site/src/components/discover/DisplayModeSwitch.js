@@ -27,8 +27,6 @@ export default function DisplayModeSwitch() {
 
   const [, setConfigure] = useState({ ...indexUiState.configure });
 
-  // const { items } = useCurrentRefinements();
-
   useEffect(() => {
     setConfigure((configure) => ({ ...configure, ...indexUiState.configure }));
   }, [indexUiState]);
