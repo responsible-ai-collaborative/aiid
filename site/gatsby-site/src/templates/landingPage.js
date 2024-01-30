@@ -57,7 +57,7 @@ const LandingPage = (props) => {
         report.title = translation.node.title;
         report.text = translation.node.text;
       } else {
-        console.warn(`No latestReports_${language}`);
+        console.warn(`No latestReports_${language} for report ${report.report_number}`);
       }
     }
     const updatedIncident = {
