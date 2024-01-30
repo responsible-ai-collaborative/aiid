@@ -14,7 +14,7 @@ jobs:
     secrets: inherit
     with:
       sha: ${{ github.sha }}
-      environment: staging
+      environment: production
 
   call-test-build:
     uses: ./.github/workflows/test-build.yml
