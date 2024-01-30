@@ -115,7 +115,7 @@ export default function Footer() {
       id="main-footer"
       className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5 z-50"
     >
-      {footerContent.map((group) => {
+      {footerContent.map((group, i) => {
         const title = group.title;
 
         const items = group.items;
@@ -202,6 +202,14 @@ export default function Footer() {
                     return null;
                   })}
                 </div>
+              )}
+
+              {i == footerContent.length - 1 && process.env.GATSBY_COMMIT_SHA && (
+                <li>
+                  <div className="text-muted-gray text-xs" data-cy="commit-sha">
+                    {process.env.GATSBY_COMMIT_SHA.toString().substring(0, 7)}
+                  </div>
+                </li>
               )}
             </ul>
           </div>
@@ -290,12 +298,6 @@ export default function Footer() {
               />
             </a>
           </div>
-        </div>
-      )}
-
-      {process.env.GATSBY_COMMIT_SHA && (
-        <div className="text-muted-gray text-xs" data-cy="commit-sha">
-          {process.env.GATSBY_COMMIT_SHA}
         </div>
       )}
     </footer>
