@@ -127,4 +127,14 @@ const REFINEMENT_LISTS = [
   },
 ];
 
-export default REFINEMENT_LISTS;
+const FIRST_ROW = REFINEMENT_LISTS.filter((refinement) =>
+  [
+    'classifications',
+    'epoch_incident_date',
+    'epoch_date_published',
+    'source_domain',
+    'language',
+  ].includes(refinement.attribute)
+);
+
+export { REFINEMENT_LISTS as default, FIRST_ROW };
