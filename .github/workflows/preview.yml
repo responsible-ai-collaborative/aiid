@@ -34,6 +34,7 @@ jobs:
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
+      netlify-context: deploy-preview
 
   call-test:
     if: ${{ !failure() }}

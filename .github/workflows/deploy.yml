@@ -61,7 +61,7 @@ jobs:
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
-        run: netlify build --context ${{ inputs.context }} --offline
+        run: netlify build --context ${{ inputs.netlify-context }} --offline
         env:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -92,6 +92,7 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
 
       - name: Upload to netlify
         id: deploy-netlify
