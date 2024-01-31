@@ -9,15 +9,15 @@ import Outline from 'components/Outline';
 import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Doc(props) {
-  const {
-    data: { mdx: localeMdx, enMdx },
+  let {
+    data: { mdx, enMdx },
     children,
   } = props;
 
-  let mdx = localeMdx;
-
   // If the doc is not translated, use the English version
-  if (!mdx) mdx = enMdx;
+  if (!mdx) {
+    mdx = enMdx;
+  }
 
   // meta tags
   const metaTitle = mdx.frontmatter.metaTitle;

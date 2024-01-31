@@ -13,14 +13,15 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Post(props) {
-  const {
-    data: { mdx: localMdx, enMdx },
+  let {
+    data: { mdx, enMdx },
     children,
   } = props;
 
-  let mdx = localMdx;
-
-  if (!mdx) mdx = enMdx;
+  // If the doc is not translated, use the English version
+  if (!mdx) {
+    mdx = enMdx;
+  }
 
   const metaTitle = mdx.frontmatter.metaTitle;
 
