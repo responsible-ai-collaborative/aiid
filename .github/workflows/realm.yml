@@ -11,10 +11,15 @@ on:
         description: The commit SHA to deploy
         type: string
         required: true
-
+      runner-label:
+        description: The label of the runner to use
+        type: string
+        default: ubuntu-latest
 jobs:
   push:
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: ${{ inputs.runner-label }}
+
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout

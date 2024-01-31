@@ -14,12 +14,17 @@ on:
         description: The Netlify context use when building
         type: string
         required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
+        required: false
 
 jobs:
   test:
     name: Build site for testing
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on: 
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
