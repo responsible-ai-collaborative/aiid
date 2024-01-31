@@ -7,11 +7,11 @@
             "apply_when": {
                 "%%user.custom_data.roles": "admin"
             },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "default",
@@ -19,8 +19,7 @@
             "read": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }
