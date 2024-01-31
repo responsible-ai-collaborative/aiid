@@ -13,6 +13,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: staging
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
   call-test-build:
     uses: ./.github/workflows/test-build.yml
@@ -22,6 +23,7 @@ jobs:
       sha: ${{ github.sha }}
       environment: staging
       netlify-context: production
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
   call-test:
     uses: ./.github/workflows/test.yml
@@ -30,6 +32,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: staging
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
@@ -42,3 +45,4 @@ jobs:
       sha: ${{ github.sha }}
       netlify-context: production
       netlify-alias: 
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
