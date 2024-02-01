@@ -17,7 +17,6 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
-import sortBy from 'lodash/sortBy';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
 
 const LandingPage = (props) => {
@@ -25,20 +24,29 @@ const LandingPage = (props) => {
 
   let { latestPrismicPost, latestPostOld, latestReportIncidents } = data;
 
-  const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
+  const { latestReportNumbers } = props.pageContext;
 
-  const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
+  let latestBlogPost = null;
 
-  const latestPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
+  if (!latestPostOld || latestPostOld.nodes.length === 0) {
+    latestBlogPost = latestPrismicPost;
+  } else if (!latestPrismicPost || latestPrismicPost.nodes.length === 0) {
+    latestBlogPost = latestPostOld;
+  } else {
+    const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
+
+    const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
+
+    // Display prismic post if it's the latest post or if it's newer than the latest mdx post
+    latestBlogPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
+  }
 
   let { sponsors } = props.pageContext;
 
   const { locale: language } = useLocalization();
 
   const latestReports = latestReportIncidents.edges.map((incident) => {
-    const sortedReports = sortBy(incident.node.reports, ['epoch_date_submitted'], ['desc']);
-
-    const report = sortedReports.map((report) => report)[0];
+    const report = incident.node.reports.find((r) => latestReportNumbers.includes(r.report_number));
 
     if (report.language !== language) {
       const translation = data[`latestReports_${language}`]?.edges.find(
@@ -96,12 +104,12 @@ const LandingPage = (props) => {
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
-          {(latestPost?.edges?.length > 0 || latestPost?.nodes?.length > 0) && (
+          {(latestBlogPost?.edges?.length > 0 || latestBlogPost?.nodes?.length > 0) && (
             <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-              {latestPost.nodes.length > 0 && latestPost.nodes[0].data ? (
-                <PostPreviewNew post={latestPost.nodes[0]} latestPost={true} />
-              ) : latestPost.nodes.length > 0 ? (
-                <Blog post={latestPost.nodes[0]} />
+              {latestBlogPost.nodes.length > 0 && latestBlogPost.nodes[0].data ? (
+                <PostPreviewNew post={latestBlogPost.nodes[0]} latestBlogPost={true} />
+              ) : latestBlogPost.nodes.length > 0 ? (
+                <Blog post={latestBlogPost.nodes[0]} />
               ) : (
                 <></>
               )}
@@ -297,9 +305,12 @@ export const query = graphql`
           slug
           title
           locale
+          previewText
         }
+        body
         excerpt
         frontmatter {
+          metaDescription
           slug
           date
           author
