@@ -51,7 +51,7 @@ exports.up = async ({ context: { client } }) => {
     updatedCount++;
   }
 
-  console.log(`Updated ${updatedCount} incidents`);
+  console.log(`Updated ${updatedCount} incidents with new created_at field`);
 
   updatedCount = 0;
 
@@ -74,7 +74,7 @@ exports.up = async ({ context: { client } }) => {
     updatedCount++;
   }
 
-  console.log(`Updated ${updatedCount} incidents history`);
+  console.log(`Updated ${updatedCount} incidents history with new created_at field`);
 
   updatedCount = 0;
 
@@ -97,7 +97,7 @@ exports.up = async ({ context: { client } }) => {
     updatedCount++;
   }
 
-  console.log(`Updated ${updatedCount} submissions`);
+  console.log(`Updated ${updatedCount} submissions with new created_at field`);
 
   updatedCount = 0;
 
@@ -120,5 +120,5 @@ exports.up = async ({ context: { client } }) => {
     updatedCount++;
   }
 
-  console.log(`Updated ${updatedCount} submissions history`);
+  console.log(`Updated ${updatedCount} submissions history with new created_at field`);
 };
