@@ -14,6 +14,8 @@ exports.up = async ({ context: { client } }) => {
     .db(config.realm.production_db.db_name)
     .collection('submissions');
 
+  const reportsCollection = client.db(config.realm.production_db.db_name).collection('reports');
+
   const incidentsHistoryCollection = client
     .db(config.realm.production_db.db_history_name)
     .collection('incidents');
@@ -22,6 +24,10 @@ exports.up = async ({ context: { client } }) => {
     .db(config.realm.production_db.db_history_name)
     .collection('submissions');
 
+  const reportsHistoryCollection = client
+    .db(config.realm.production_db.db_history_name)
+    .collection('reports');
+
   const incidentsCursor = incidentsCollection.find({});
 
   const incidentsHistoryCursor = incidentsHistoryCollection.find({});
@@ -29,6 +35,10 @@ exports.up = async ({ context: { client } }) => {
   const submissionsCursor = submissionsCollection.find({});
 
   const submissionsHistoryCursor = submissionsHistoryCollection.find({});
+
+  const reportsCursor = reportsCollection.find({});
+
+  const reportsHistoryCursor = reportsHistoryCollection.find({});
 
   let updatedCount = 0;
 
@@ -121,4 +131,50 @@ exports.up = async ({ context: { client } }) => {
   }
 
   console.log(`Updated ${updatedCount} submissions history with new created_at field`);
+
+  updatedCount = 0;
+
+  while (await reportsCursor.hasNext()) {
+    const report = await reportsCursor.next();
+
+    const created_at = new Date(report.date_submitted);
+
+    await reportsCollection.updateOne(
+      { _id: report._id },
+      {
+        $set: {
+          created_at: created_at,
+        },
+      }
+    );
+
+    report.created_at = created_at;
+
+    updatedCount++;
+  }
+
+  console.log(`Updated ${updatedCount} reports with new created_at field`);
+
+  updatedCount = 0;
+
+  while (await reportsHistoryCursor.hasNext()) {
+    const report = await reportsHistoryCursor.next();
+
+    const created_at = new Date(report.date_submitted);
+
+    await reportsHistoryCollection.updateOne(
+      { _id: report._id },
+      {
+        $set: {
+          created_at: created_at,
+        },
+      }
+    );
+
+    report.created_at = created_at;
+
+    updatedCount++;
+  }
+
+  console.log(`Updated ${updatedCount} reports history with new created_at field`);
 };
