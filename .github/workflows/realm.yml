@@ -15,11 +15,11 @@ on:
         description: The label of the runner to use
         type: string
         default: ubuntu-latest
+
 jobs:
   push:
     runs-on:
       labels: ${{ inputs.runner-label }}
-
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout

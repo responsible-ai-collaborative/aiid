@@ -3,11 +3,11 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'The Github environment to load secrets from'
+        description: The Github environment to load secrets from
         type: string
         required: true
       sha:
-        description: 'The SHA of the commit to build'
+        description: The SHA of the commit to build
         type: string
         required: true
       netlify-context:
@@ -18,13 +18,14 @@ on:
         description: The label of the runner to use
         type: string
         required: false
+        default: ubuntu-latest
 
 jobs:
   test:
     name: Build site for testing
     environment: ${{ inputs.environment }}
-    runs-on: 
-      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+    runs-on:
+      labels: ${{ inputs.runner-label }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,12 +51,12 @@ jobs:
           runTests: false
           install-command: npm ci
 
-      - name: Use tests specific netlify.toml  
+      - name: Use tests specific netlify.toml
         run: |
           rm -f netlify.toml
           mv tests-netlify.toml netlify.toml
         working-directory: site/gatsby-site
-      
+
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
