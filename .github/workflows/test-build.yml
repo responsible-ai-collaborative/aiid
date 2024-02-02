@@ -28,7 +28,7 @@ jobs:
 
       - name: Read node modules from cache
         id: cache-nodemodules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-install-folder
         with:
@@ -91,7 +91,7 @@ jobs:
           GATSBY_COMMIT_SHA: ${{ inputs.sha }}
 
       - name: Cache build
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         env:
           cache-name: cache-build-folder
         with:
