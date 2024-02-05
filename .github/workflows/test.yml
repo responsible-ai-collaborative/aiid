@@ -58,7 +58,7 @@ jobs:
           install-command: npm ci
 
       - name: Restore build cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-build-folder
         with:
