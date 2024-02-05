@@ -7,47 +7,119 @@
             "apply_when": {
                 "%%user.custom_data.roles": "admin"
             },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "taxonomy_editor",
             "apply_when": {
                 "%%user.custom_data.roles": "taxonomy_editor"
             },
+            "read": true,
             "write": true,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
-            "name": "taxonomy_editor_cset",
+            "name": "taxonomy_editor_csetv0",
             "apply_when": {
-                "%%root.namespace": "CSET",
-                "%%user.custom_data.roles": "taxonomy_editor_cset"
+                "%%user.custom_data.roles": "taxonomy_editor_csetv0"
             },
+            "document_filters": {
+                "write": {
+                    "namespace": "CSETv0"
+                }
+            },
+            "read": true,
             "write": true,
-            "insert": false,
+            "insert": true,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
-            "name": "taxonomy_editor_tech",
+            "name": "taxonomy_editor_csetv1",
             "apply_when": {
-                "%%root.namespace": "TECH",
-                "%%user.custom_data.roles": "taxonomy_editor_tech"
+                "%%user.custom_data.roles": "taxonomy_editor_csetv1"
             },
+            "document_filters": {
+                "write": {
+                    "namespace": "CSETv1"
+                }
+            },
+            "read": true,
             "write": true,
-            "insert": false,
+            "insert": true,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
+        {
+            "name": "taxonomy_editor_csetv1_annotator-1",
+            "apply_when": {
+                "%%user.custom_data.roles": "taxonomy_editor_csetv1_annotator-1"
+            },
+            "document_filters": {
+                "write": {
+                    "namespace": "CSETv1_Annotator-1"
+                }
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": false,
+            "search": true
+        },
+        {
+            "name": "taxonomy_editor_csetv1_annotator-2",
+            "apply_when": {
+                "%%user.custom_data.roles": "taxonomy_editor_csetv1_annotator-2"
+            },
+            "document_filters": {
+                "write": {
+                    "namespace": "CSETv1_Annotator-2"
+                }
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": false,
+            "search": true
+        },
+        {
+            "name": "taxonomy_editor_csetv1_annotator-3",
+            "apply_when": {
+                "%%user.custom_data.roles": "taxonomy_editor_csetv1_annotator-3"
+            },
+            "document_filters": {
+                "write": {
+                    "namespace": "CSETv1_Annotator-3"
+                }
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": false,
+            "search": true
+        },
+        {
+            "name": "taxonomy_editor_gmf",
+            "apply_when": {
+                "%%user.custom_data.roles": "taxonomy_editor_gmf"
+            },
+            "document_filters": {
+                "write": {
+                    "namespace": "GMF"
+                }
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": false,
+            "search": true
+        },        
         {
             "name": "default",
             "apply_when": {},
@@ -55,8 +127,7 @@
             "write": false,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }
