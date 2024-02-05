@@ -3,6 +3,11 @@ on:
   workflow_call:
     inputs:
       environment:
+        description: 'The Github environment to load secrets from'
+        type: string
+        required: true
+      sha:
+        description: "The commit SHA to run the tests against"
         type: string
         required: true
 
@@ -31,11 +36,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ inputs.sha }}
 
       - name: Read node modules from cache
         id: cache-nodemodules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-install-folder
         with:
@@ -53,14 +58,14 @@ jobs:
           install-command: npm ci
 
       - name: Restore build cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-build-folder
         with:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.cache/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.event.pull_request.head.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}
 
       - name: Extract branch name
         shell: bash
@@ -111,6 +116,6 @@ jobs:
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
