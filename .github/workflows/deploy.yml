@@ -21,13 +21,12 @@ on:
       runner-label:
         description: The label of the runner to use
         type: string
-        default: ubuntu-latest
 
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: ${{ inputs.runner-label }}
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash

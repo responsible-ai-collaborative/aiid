@@ -13,14 +13,13 @@ on:
       runner-label:
         description: The label of the runner to use
         type: string
-        default: ubuntu-latest
 
 jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
     runs-on: 
-      labels: ${{ inputs.runner-label }}
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash

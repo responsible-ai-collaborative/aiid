@@ -18,14 +18,13 @@ on:
         description: The label of the runner to use
         type: string
         required: false
-        default: ubuntu-latest
 
 jobs:
   test:
     name: Build site for testing
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: ${{ inputs.runner-label }}
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
