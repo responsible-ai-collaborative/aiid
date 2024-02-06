@@ -34,13 +34,16 @@ module.exports = (on, config) => {
 
     getLocaleConfigurations: () => {
       const configPath = path.resolve('./i18n/config.json');
+
       if (fs.existsSync(configPath)) {
         const configFile = fs.readFileSync(configPath, 'utf8');
+
         const configJson = JSON.parse(configFile);
+
         return configJson;
       }
       return null;
-    }
+    },
   });
 
   config.env.e2eUsername = process.env.E2E_ADMIN_USERNAME;

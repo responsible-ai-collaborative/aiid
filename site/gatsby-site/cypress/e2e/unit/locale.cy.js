@@ -13,7 +13,6 @@ describe('Locale', () => {
     }
   });
 
-
   it('should have a configuration for each available language', () => {
     cy.task('getLocaleConfigurations').then((configurations) => {
       // Ensure the configurations were loaded
@@ -22,7 +21,8 @@ describe('Locale', () => {
       const availableLanguages = Cypress.env('availableLanguages').split(',');
 
       availableLanguages.forEach((locale) => {
-        const hasConfig = configurations.some(config => config.code === locale);
+        const hasConfig = configurations.some((config) => config.code === locale);
+
         expect(hasConfig, `Locale ${locale} should have configuration`).to.be.true;
       });
     });
