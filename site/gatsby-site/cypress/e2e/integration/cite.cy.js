@@ -82,14 +82,19 @@ describe('Cite pages', () => {
     }
   );
 
-  it.skip('Should scroll to report when clicking on a report in the timeline', () => {
+  it('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
 
     cy.disableSmoothScroll();
 
     cy.waitForStableDOM();
 
-    cy.get('text').contains('For some Starbucks workers, job leaves bitter taste').parents('a');
+    cy.get('text')
+      .contains('For some Starbucks workers, job leaves bitter taste')
+      .parents('a')
+      .click();
+
+    cy.waitForStableDOM();
 
     cy.get('h5')
       .contains('For some Starbucks workers, job leaves bitter taste')
