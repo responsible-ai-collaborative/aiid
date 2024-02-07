@@ -162,6 +162,25 @@ describe('Pages', () => {
             });
         }
       );
+
+      it.only(`/${code}${path} Should have open graph tags`, () => {
+        const canonicalPath = switchLocalizedPath({ newLang: code, path });
+
+        cy.visit(canonicalPath);
+        cy.get('head meta[name="description"]').should('exist');
+
+        cy.get('head meta[name="twitter:site"]').should('exist');
+        cy.get('head meta[name="twitter:creator"]').should('exist');
+
+        cy.get('head meta[property="og:url"]').should('exist');
+        cy.get('head meta[property="og:type"]').should('exist');
+        cy.get('head meta[property="og:title"]').should('exist');
+        cy.get('head meta[property="og:description"]').should('exist');
+        cy.get('head meta[property="og:image"]').first().should('exist');
+        cy.get('head meta[property="twitter:title"]').should('exist');
+        cy.get('head meta[property="twitter:description"]').should('exist');
+        cy.get('head meta[property="twitter:image"]').should('exist');
+      });
     });
   });
 });

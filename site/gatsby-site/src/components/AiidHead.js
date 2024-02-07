@@ -4,7 +4,7 @@ import config from '../../config';
 const AiidHead = ({
   children,
   metaTitle = null,
-  metaDescription = null,
+  metaDescription = metaTitle,
   path,
   metaImage = null,
   metaType = 'website',

@@ -20,9 +20,9 @@ export const Head = (props) => {
 
   const doc = props?.data?.doc;
 
-  const metaTitle = doc?.data?.metaTitle;
+  const metaTitle = doc?.data?.metatitle;
 
-  const metaDescription = doc?.data?.metaDescription;
+  const metaDescription = doc?.data?.metadescription;
 
   return <AiidHead path={pathname} {...{ metaTitle, metaDescription }} />;
 };

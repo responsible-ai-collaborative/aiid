@@ -92,7 +92,7 @@ export const Head = (props) => {
       path={pathname}
       {...{
         metaTitle,
-        metaDescription: report.description,
+        metaDescription: report.description || metaTitle,
         metaImage: report.image_url,
       }}
       metaType="website"
