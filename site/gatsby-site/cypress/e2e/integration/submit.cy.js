@@ -1159,7 +1159,7 @@ describe('The Submit form', () => {
     const keys = ['url', 'title', 'authors', 'incident_date'];
 
     keys.forEach((key) => {
-      cy.get(`[name="${key}"]`).should('have.value', '');
+      cy.get(`input[name="${key}"]`).should('have.value', '');
     });
   });
 
