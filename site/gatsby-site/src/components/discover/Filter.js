@@ -86,10 +86,10 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
       <button
         id="dropdownDefaultButton"
         data-dropdown-toggle="dropdown"
-        className={`${
+        className={`text-white ${
           touched
-            ? 'text-white focus:ring-green-300 bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
-            : 'text-black focus:ring-white-300 border-1 bg-white-700 hover:bg-white-800 dark:bg-white-600 dark:hover:bg-white-700 dark:focus:ring-white-800'
+            ? 'focus:ring-green-300 bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
+            : 'focus:ring-blue-300 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
         } focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center  w-full justify-between ${
           filterProps.hidden ? 'hidden' : ''
         }`}
