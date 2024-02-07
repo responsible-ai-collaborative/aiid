@@ -282,5 +282,7 @@
   "Not every incident in AIID meets this definition of AI harm. The below bar charts show the annotated results for both all AIID incidents and incidents that meet the CSET definition of AI harm.": "AIIDに含まれる全てのインシデントがこのAI危害の定義を満たすわけではありません。以下の棒グラフはすべてのAIIDインシデントとCSETのAI危害定義を満たすインシデント両方の注釈付きの結果を示します。",
   "csetChartDeveloped": "CSETは下線部について特別な定義を作成しましたが、それは他の組織とは異なる可能性があります。そのため、他の組織はある特定のAIインシデントがAI危害かどうかについて異なった評価を行う可能性があります。CSETのAI危害についての詳細については<1>ここ</1>を参照してください",
   "csetChartMail": "すべてのインシデントは2人のCSETアノテーターによって独立して分類されます。アノテーションはピアレビューされ、最終的に公開に先立って品質管理のためにランダムで選択されます。この厳密なプロセスにも関わらず、誤りは起こり得るため、読者が閲覧中にエラーに遭遇した場合には<1>レポート</1>を促されます",
-  "[Untitled Report]": "[タイトルのないレポート]"
+  "[Untitled Report]": "[タイトルのないレポート]",
+  "Blog": "ブログ",
+  "AI News Digest": "AIニュースダイジェスト"
 }
