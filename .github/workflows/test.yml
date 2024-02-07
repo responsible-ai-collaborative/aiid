@@ -10,12 +10,16 @@ on:
         description: "The commit SHA to run the tests against"
         type: string
         required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
 
 jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on: 
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash

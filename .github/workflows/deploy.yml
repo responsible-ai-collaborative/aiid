@@ -18,11 +18,15 @@ on:
         description: The commit SHA to deploy
         type: string
         required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
 
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash
