@@ -892,6 +892,32 @@ describe('The Submit form', () => {
     cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
   });
 
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should *not* show related orphan reports',
+    () => {
+      cy.visit(url);
+
+      const values = {
+        authors: 'Ashley Belanger',
+      };
+
+      for (const key in values) {
+        cy.get(`input[name="${key}"]`).type(values[key]);
+      }
+
+      cy.clickOutside();
+
+      cy.get('[data-cy=related-byAuthors] [data-cy=result] a[data-cy=title]', {
+        timeout: 20000,
+      }).should(
+        'not.contain',
+        'Thousands scammed by AI voices mimicking loved ones in emergencies'
+      );
+      cy.clickOutside();
+    }
+  );
+
   it('Should show fallback preview image on initial load', () => {
     const values = {
       url: 'https://incidentdatabase.ai',

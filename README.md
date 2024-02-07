@@ -11,8 +11,11 @@
  Artificial Intelligence Incident Database
 </h1>
 
+
 <p align="center">
-  <a href="https://app.netlify.com/sites/aiid/deploys"><img src="https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status"></a>
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml/badge.svg?branch=master"></a>
+  &nbsp;
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml/badge.svg?branch=staging"></a>
   &nbsp;
   <a href="https://codecov.io/gh/responsible-ai-collaborative/aiid"><img src="https://codecov.io/gh/responsible-ai-collaborative/aiid/graph/badge.svg?token=SKMVE2G1GU"></a>
   &nbsp;
@@ -472,6 +475,54 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
 CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
 GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
 ```
+
+### New Netlify Setup
+
+This guide walks you through the steps to set up a Netlify site for your project by importing an existing project from GitHub.
+
+### Prerequisites
+
+- Ensure you have a GitHub account and your project is already pushed to a repository.
+- Make sure you have a Netlify account. If not, sign up at [Netlify](https://www.netlify.com/).
+
+### Steps to Set Up
+
+#### 1. Add New Site
+
+- Go to your Netlify dashboard.
+- Click on **Add New Site**.
+
+#### 2. Import Existing Project
+
+- Choose **Import Existing Project**.
+
+#### 3. Deploy with GitHub
+
+- Select **Deploy with GitHub** to connect your GitHub account.
+
+#### 4. Select Repository
+
+- Choose the repository where your project is located.
+
+#### 5. Configure Deployment
+
+- Under **Branch to Deploy**, select `master`. This setting doesn't matter for now.
+- Leave all other settings as default.
+- Click on **Deploy Site**.
+
+#### 6. Site Configuration
+
+##### Build and Deploy
+
+- Navigate to **Site Configuration** > **Build & Deploy**.
+- Under **Build Settings** > **Build Status**, find **Stopped Builds**.
+- Click **Save**.
+
+##### Site Details
+
+- Go to **Site Configuration** > **Site Details**.
+- Copy the `NETLIFY_SITE_ID`. This will be useful when setting up the GitHub environment.
+
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
 
@@ -481,8 +532,70 @@ GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
-
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
+
+### Deployment Workflows on GitHub Actions
+
+We have integrated our testing and deployment processes with GitHub Actions. There are three primary workflows for deployment: Deploy Previews, Staging, and Production. The goal of these workflows is to continuously test and integrate changes in pull requests across environments. 
+
+#### 1) Deploy Previews Workflow 
+
+- **File:** [/.github/workflows/preview.yml](/.github/workflows/preview.yml)
+- **Trigger:** This workflow is activated for pushes to pull requests that target the `staging` branch.
+- **Process:** Executes both the integration tests and deploys the application to Netlify.
+- **Post-Deployment:** Upon a successful deployment, the workflow automatically posts a comment on the pull request. This comment includes a link to the Netlify preview of the changes and a link to the Netlify deploy log.
+- **Environment:** This workflow uses the `staging` GitHub environment.
+
+#### 2) Staging Workflow (WIP)
+
+- **Trigger:** Runs only on pushes to the `staging` branch.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
+- **Environment:** This workflow uses the `staging` GitHub environment.
+
+#### 3) Production Workflow (WIP)
+
+- **Trigger:** Runs only on pushes to the `master` branch.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
+- **Environment:** This workflow uses the `production` GitHub environment.
+
+### GitHub Environment Configuration
+
+All three workflows share a common set of environment variables, which need to be defined for each environment. (Currently, we have only two environments: `staging` and `production`.) These variables are categorized into secrets and standard variables, and are accessed via GitHub actions as such.
+
+#### Secrets
+
+- `ALGOLIA_ADMIN_KEY`
+- `CLOUDFLARE_R2_ACCESS_KEY_ID`
+- `CLOUDFLARE_R2_ACCOUNT_ID`
+- `CLOUDFLARE_R2_BUCKET_NAME`
+- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+- `CYPRESS_RECORD_KEY`
+- `E2E_ADMIN_PASSWORD`
+- `E2E_ADMIN_USERNAME`
+- `GOOGLE_TRANSLATE_API_KEY`
+- `MONGODB_CONNECTION_STRING`
+- `MONGODB_MIGRATIONS_CONNECTION_STRING`
+- `MONGODB_REPLICA_SET`
+- `MONGODB_TRANSLATIONS_CONNECTION_STRING`
+- `NETLIFY_AUTH_TOKEN`
+- `PRISMIC_ACCESS_TOKEN`
+- `REALM_API_PRIVATE_KEY`
+- `REALM_GRAPHQL_API_KEY`
+- `REALM_API_PUBLIC_KEY`
+- `GATSBY_ROLLBAR_TOKEN`
+
+#### Variables
+
+- `CYPRESS_PROJECT_ID`
+- `GATSBY_ALGOLIA_APP_ID`
+- `GATSBY_ALGOLIA_SEARCH_KEY`
+- `GATSBY_AVAILABLE_LANGUAGES`
+- `GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL`
+- `GATSBY_PRISMIC_REPO_NAME`
+- `GATSBY_REALM_APP_ID`
+- `NETLIFY_SITE_ID`
 
 ### Testing
 
