@@ -19,7 +19,6 @@ const AiidHead = ({
   return (
     <>
       {title ? <title>{title}</title> : metaTitle ? <title>{metaTitle}</title> : <></>}
-      {metaTitle && <meta name="title" content={metaTitle} />}
       {metaTitle && <meta property="og:title" content={metaTitle} />}
       {metaTitle && <meta property="twitter:title" content={metaTitle} />}
       {metaDescription && <meta property="og:description" content={metaDescription} />}

@@ -737,13 +737,13 @@ describe('The Submit form', () => {
 
     for (const key in values) {
       if (key == 'incident_ids') {
-        cy.get(`input[name="${key}"]`).type(values[key]);
+        cy.get(`[name="${key}"]`).type(values[key]);
 
         cy.waitForStableDOM();
 
         cy.get(`[role="option"]`).first().click();
       } else {
-        cy.get(`input[name="${key}"]`).type(values[key]);
+        cy.get(`[name="${key}"]`).type(values[key]);
       }
     }
 
@@ -836,13 +836,13 @@ describe('The Submit form', () => {
 
     for (const key in values) {
       if (key == 'incident_ids') {
-        cy.get(`input[name="${key}"]`).type(values[key]);
+        cy.get(`[name="${key}"]`).type(values[key]);
 
         cy.waitForStableDOM();
 
         cy.get(`[role="option"]`).first().click();
       } else {
-        cy.get(`input[name="${key}"]`).type(values[key]);
+        cy.get(`[name="${key}"]`).type(values[key]);
       }
     }
 
@@ -903,7 +903,7 @@ describe('The Submit form', () => {
       };
 
       for (const key in values) {
-        cy.get(`input[name="${key}"]`).type(values[key]);
+        cy.get(`[name="${key}"]`).type(values[key]);
       }
 
       cy.clickOutside();
@@ -1010,7 +1010,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in valuesStep1) {
-      cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
     }
 
     cy.setEditorText(
@@ -1159,7 +1159,7 @@ describe('The Submit form', () => {
     const keys = ['url', 'title', 'authors', 'incident_date'];
 
     keys.forEach((key) => {
-      cy.get(`input[name="${key}"]`).should('have.value', '');
+      cy.get(`[name="${key}"]`).should('have.value', '');
     });
   });
 
@@ -1210,7 +1210,7 @@ describe('The Submit form', () => {
     const keys = ['url', 'title', 'authors', 'incident_date'];
 
     keys.forEach((key) => {
-      cy.get(`input[name="${key}"]`).should('have.value', '');
+      cy.get(`[name="${key}"]`).should('have.value', '');
     });
   });
 
@@ -1359,7 +1359,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in values) {
-      cy.get(`input[name="${key}"]`).type(values[key]);
+      cy.get(`[name="${key}"]`).type(values[key]);
     }
 
     cy.setEditorText(
@@ -1416,7 +1416,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in valuesStep1) {
-      cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
     }
 
     cy.clickOutside();
@@ -1471,13 +1471,13 @@ describe('The Submit form', () => {
 
     for (const key in valuesStep1) {
       if (key == 'incident_ids') {
-        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
 
         cy.waitForStableDOM();
 
         cy.get(`[role="option"]`).first().click();
       } else {
-        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
       }
     }
 
@@ -1498,7 +1498,7 @@ describe('The Submit form', () => {
     };
 
     for (const key in valuesStep2) {
-      cy.get(`input[name="${key}"]`).type(valuesStep2[key]);
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
 
     cy.get('[data-cy="to-step-3"]').click();
@@ -1687,13 +1687,13 @@ describe('The Submit form', () => {
 
     for (const key in valuesStep1) {
       if (key == 'incident_ids') {
-        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
 
         cy.waitForStableDOM();
 
         cy.get(`[role="option"]`).first().click();
       } else {
-        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
       }
     }
 
@@ -1790,7 +1790,7 @@ describe('The Submit form', () => {
     cy.waitForStableDOM();
 
     for (const key in values) {
-      cy.get(`input[name="${key}"]`).should('have.value', '');
+      cy.get(`[name="${key}"]`).should('have.value', '');
     }
   });
 
