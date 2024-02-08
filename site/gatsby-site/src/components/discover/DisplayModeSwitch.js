@@ -23,8 +23,6 @@ export default function DisplayModeSwitch() {
 
   const { indexUiState, setIndexUiState } = useInstantSearch();
 
-  console.log('indexUiState', indexUiState);
-
   const [, setConfigure] = useState({ ...indexUiState.configure });
 
   useEffect(() => {
