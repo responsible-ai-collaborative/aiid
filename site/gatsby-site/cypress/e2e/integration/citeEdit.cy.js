@@ -1,4 +1,4 @@
-import { maybeIt } from '../../support/utils';
+import { conditionalIt, maybeIt } from '../../support/utils';
 import updateOneReport from '../../fixtures/reports/updateOneReport.json';
 import updateOneReportTranslation from '../../fixtures/reports/updateOneReportTranslation.json';
 import { format, getUnixTime } from 'date-fns';
@@ -500,7 +500,9 @@ describe('Edit report', () => {
 
     cy.visit(url);
 
-    cy.wait(['@FindIncidents', '@FindIncidentsTitles', '@FindReportWithTranslations']);
+    cy.wait('@FindIncidents');
+    cy.wait('@FindReportWithTranslations');
+    !Cypress.env('isEmptyEnvironment') && cy.wait('@FindIncidentsTitles');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -753,57 +755,61 @@ describe('Edit report', () => {
     cy.contains('[data-cy="toast"]', 'Incident report 23 updated successfully', { timeout: 8000 });
   });
 
-  maybeIt('Should display an error message if data is missing', () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindReportWithTranslations',
-      'findReportWithTranslations',
-      reportWithTranslations
-    );
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should display an error message if data is missing',
+    () => {
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindReportWithTranslations',
+        'findReportWithTranslations',
+        reportWithTranslations
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'ProbablyRelatedReports',
-      'ProbablyRelatedReports',
-      {
-        data: { reports: [] },
-      }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedReports',
+        'ProbablyRelatedReports',
+        {
+          data: { reports: [] },
+        }
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
-      'ProbablyRelatedIncidents',
-      {
-        data: { incidents: [] },
-      }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+        'ProbablyRelatedIncidents',
+        {
+          data: { incidents: [] },
+        }
+      );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidents',
-      'FindIncidents',
-      { data: { incidents: [] } }
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidents',
+        'FindIncidents',
+        { data: { incidents: [] } }
+      );
 
-    cy.visit(`/cite/edit?report_number=23`);
+      cy.visit(`/cite/edit?report_number=23`);
 
-    cy.wait('@findReportWithTranslations');
+      cy.wait('@findReportWithTranslations');
 
-    cy.get('form[data-cy="report"]').should('be.visible');
+      cy.get('form[data-cy="report"]').should('be.visible');
 
-    cy.get('[name="title"]').clear();
+      cy.get('[name="title"]').clear();
 
-    cy.contains('Please review report. Some data is missing.').should('exist');
+      cy.contains('Please review report. Some data is missing.').should('exist');
 
-    cy.contains('button', 'Submit').should('be.disabled');
+      cy.contains('button', 'Submit').should('be.disabled');
 
-    cy.get('[name="title"]').type(
-      'Remove YouTube Kids app until it eliminates its inappropriate content'
-    );
+      cy.get('[name="title"]').type(
+        'Remove YouTube Kids app until it eliminates its inappropriate content'
+      );
 
-    cy.contains('button', 'Submit').should('not.be.disabled');
-  });
+      cy.contains('button', 'Submit').should('not.be.disabled');
+    }
+  );
 
   maybeIt('Should convert an issue to a incident report', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));

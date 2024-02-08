@@ -80,10 +80,7 @@ exports = async (input) => {
         };
     }
     else {
-        return {
-            status: 500,
-            message: "Can't create the Admin user.",
-        }
+        return response;
     }
 }
 
