@@ -92,7 +92,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const { user, isRole } = useUserContext();
 
-  const canEditIncidents = isRole('submitter') || isRole('incident_editor') || isRole('admin');
+  const canEditSubmissions = isRole('submitter') || isRole('incident_editor') || isRole('admin');
 
   const subscribeToNewReports = async (incident_id) => {
     if (user) {
@@ -429,7 +429,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <div className="flex flex-col gap-2 w-full mb-2">
               <Button
                 onClick={promoteToReport}
-                disabled={!canEditIncidents || deleting || promoting || saving}
+                disabled={!canEditSubmissions || deleting || promoting || saving}
                 data-cy="promote-to-report-button"
               >
                 <FontAwesomeIcon className="mr-2" icon={faCheck} />
@@ -465,7 +465,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <Button
               onClick={promote}
               disabled={
-                !canEditIncidents || deleting || promoting || saving || promoType === 'none'
+                !canEditSubmissions || deleting || promoting || saving || promoType === 'none'
               }
               data-cy="promote-button"
             >
@@ -478,7 +478,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <Button
               color={'failure'}
               onClick={reject}
-              disabled={!canEditIncidents || deleting || promoting || saving}
+              disabled={!canEditSubmissions || deleting || promoting || saving}
               data-cy="reject-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faXmark} />
