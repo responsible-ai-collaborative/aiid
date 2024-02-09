@@ -163,11 +163,10 @@ describe('Pages', () => {
         }
       );
 
-      it.only(`/${code}${path} Should have open graph tags`, () => {
+      it(`/${code}${path} Should have open graph tags`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         cy.visit(canonicalPath);
-        cy.get('head meta[name="description"]').should('exist');
 
         cy.get('head meta[name="twitter:site"]').should('exist');
         cy.get('head meta[name="twitter:creator"]').should('exist');

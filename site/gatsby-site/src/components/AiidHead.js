@@ -23,7 +23,6 @@ const AiidHead = ({
       {metaTitle && <meta property="twitter:title" content={metaTitle} />}
       {metaDescription && <meta property="og:description" content={metaDescription} />}
       {metaDescription && <meta property="twitter:description" content={metaDescription} />}
-      {metaDescription && <meta name="description" content={metaDescription} />}
       {metaImage && <meta property="twitter:image" content={metaImage} />}
       {metaImage && <meta property="og:image" content={metaImage} />}
 
