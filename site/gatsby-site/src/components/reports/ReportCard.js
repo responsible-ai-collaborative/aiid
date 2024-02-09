@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
 import { format, fromUnixTime } from 'date-fns';
+import { useLocation } from '@reach/router';
 
 const ReportCard = ({
   item,
@@ -116,6 +117,36 @@ const ReportCard = ({
       };
     }
   }, [expanded]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location?.hash) {
+      const id = location.hash.replace('#', '');
+
+      const tryScrollToElement = () => {
+        const element = document.getElementById(id);
+
+        if (element) {
+          element.scrollIntoView();
+          return true; // Element found and scrolled to
+        }
+        return false; // Element not found
+      };
+
+      if (!tryScrollToElement()) {
+        // If element wasn't found, start polling
+        const intervalId = setInterval(() => {
+          if (tryScrollToElement()) {
+            clearInterval(intervalId); // Stop polling once element is found and scrolled to
+          }
+        }, 100); // Check every 100 milliseconds
+
+        // Clean up the interval on component unmount
+        return () => clearInterval(intervalId);
+      }
+    }
+  }, [location?.hash]);
 
   return (
     <>
