@@ -35,7 +35,7 @@ jobs:
         containers: [1, 2, 3, 4]
     # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
-    timeout-minutes: 40
+    timeout-minutes: 80
     steps:
       - name: Checkout
         uses: actions/checkout@v4
