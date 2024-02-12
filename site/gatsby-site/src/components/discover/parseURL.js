@@ -12,7 +12,6 @@ const parseRefinements = ({ query }) => {
     'is_incident_report',
     'tags',
     'language',
-    'display',
   ];
 
   const result = {};
