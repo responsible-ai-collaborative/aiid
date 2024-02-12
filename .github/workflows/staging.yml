@@ -5,6 +5,12 @@ on:
     branches:
       - staging
   workflow_dispatch:
+    inputs:
+      force-deploy:
+        description: "Force deploy"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
 
@@ -37,7 +43,7 @@ jobs:
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
-    if: ${{ vars.FORCE_DEPLOY == 'true' }}
+    if: ${{ github.event.inputs.force-deploy }}
     needs: call-test
     secrets: inherit
     permissions:

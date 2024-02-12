@@ -7,6 +7,12 @@ on:
   schedule:
     - cron: "0 6,18 * * *"
   workflow_dispatch:
+    inputs:
+      force-deploy:
+        description: "Force deploy"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   call-atlas:
@@ -38,7 +44,7 @@ jobs:
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
-    if: ${{ vars.FORCE_DEPLOY == 'true' }}
+    if: ${{ github.event.inputs.force-deploy }}
     needs: call-test
     secrets: inherit
     permissions:
