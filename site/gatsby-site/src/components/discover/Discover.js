@@ -43,7 +43,20 @@ export default function Discover() {
     }, 1000)
   ).current;
 
+  const [display, setDisplay] = useState('');
+
   useEffect(() => {
+    const queryString = window.location.search;
+
+    const urlParams = new URLSearchParams(queryString);
+
+    const display = urlParams.get('display');
+
+    setDisplay((prev) => {
+      if (display && display !== prev) {
+        return display;
+      }
+    });
     window.addEventListener('resize', handleWindowSizeChange);
 
     handleWindowSizeChange();
@@ -72,8 +85,9 @@ export default function Discover() {
             return window.location;
           },
           parseURL: ({ location }) => parseURL({ location, indexName, queryConfig, taxa }),
-          createURL: ({ routeState }) =>
-            createURL({ indexName, locale, queryConfig, routeState, taxa }),
+          createURL: ({ routeState }) => {
+            return createURL({ indexName, locale, queryConfig, routeState, taxa, display });
+          },
           push: (url) => {
             navigate(`?${url}`);
           },
