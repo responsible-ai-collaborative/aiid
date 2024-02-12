@@ -43,7 +43,7 @@ jobs:
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
-    if: ${{ github.event.inputs.force-deploy }}
+    if: github.event.inputs.force-deploy || success()
     needs: call-test
     secrets: inherit
     permissions:
