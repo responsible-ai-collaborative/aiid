@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging
+  workflow_dispatch:
 
 jobs:
 
@@ -36,6 +37,7 @@ jobs:
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
+    if: ${{ vars.FORCE_DEPLOY == 'true' }}
     needs: call-test
     secrets: inherit
     permissions:

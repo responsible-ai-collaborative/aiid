@@ -6,6 +6,7 @@ on:
       - master
   schedule:
     - cron: "0 6,18 * * *"
+  workflow_dispatch:
 
 jobs:
   call-atlas:
@@ -37,6 +38,7 @@ jobs:
 
   call-deploy:
     uses: ./.github/workflows/deploy.yml
+    if: ${{ vars.FORCE_DEPLOY == 'true' }}
     needs: call-test
     secrets: inherit
     permissions:
