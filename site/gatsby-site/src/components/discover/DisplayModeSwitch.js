@@ -32,18 +32,6 @@ export default function DisplayModeSwitch() {
   const onChange = (key) => {
     setDisplay(key);
     setIndexUiState((previousState) => {
-      const test = {
-        ...previousState,
-        refinementList: {
-          ...previousState.refinementList,
-          display: [key],
-        },
-        configure: {
-          ...previousState.configure,
-        },
-      };
-
-      console.log(test);
       return {
         ...previousState,
         refinementList: {
