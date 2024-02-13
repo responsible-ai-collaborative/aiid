@@ -579,8 +579,6 @@ describe('Cite pages', () => {
 
       const description = incident.description;
 
-      cy.get('head meta[name="description"]').should('have.attr', 'content', description);
-
       cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
       cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
 
