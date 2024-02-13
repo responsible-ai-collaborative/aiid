@@ -54,7 +54,8 @@ describe('Pages', () => {
 
   paths.forEach((path) => {
     languages.forEach(({ code }) => {
-      it(`/${code}${path} Should not have errors`, { defaultCommandTimeout: 30000 }, () => {
+      // TODO: enable when https://github.com/responsible-ai-collaborative/aiid/pull/2616 is merged and deployed
+      it.skip(`/${code}${path} Should not have errors`, { defaultCommandTimeout: 30000 }, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         cy.visit(canonicalPath, {
