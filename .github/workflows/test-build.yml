@@ -51,7 +51,6 @@ jobs:
 
       - name: Use tests specific netlify.toml
         run: |
-          rm -f netlify.toml
           mv tests-netlify.toml netlify.toml
         working-directory: site/gatsby-site
 
