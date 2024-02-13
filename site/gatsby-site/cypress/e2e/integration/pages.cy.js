@@ -169,6 +169,8 @@ describe('Pages', () => {
 
         cy.visit(canonicalPath);
 
+        cy.waitForStableDOM();
+
         cy.get('head meta[name="twitter:site"]').should('exist');
         cy.get('head meta[name="twitter:creator"]').should('exist');
 
