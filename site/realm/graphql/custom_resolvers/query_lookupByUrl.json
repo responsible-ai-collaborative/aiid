@@ -1,0 +1,70 @@
+{
+    "on_type": "Query",
+    "field_name": "lookupByUrl",
+    "function_name": "lookupByUrl",
+    "input_type_format": "custom",
+    "payload_type_format": "custom",
+    "input_type": {
+        "properties": {
+            "urls": {
+                "items": {
+                    "type": "string"
+                },
+                "type": "array"
+            }
+        },
+        "title": "LookupByUrlQueryInput",
+        "type": "object"
+    },
+    "payload_type": {
+        "properties": {
+            "results": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "incidents": {
+                            "items": {
+                                "properties": {
+                                    "incident_id": {
+                                        "type": "integer"
+                                    },
+                                    "permalink": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "reports": {
+                            "items": {
+                                "properties": {
+                                    "report_number": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "url": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "title": "LookupByUrlPayload",
+        "type": "object"
+    }
+}
