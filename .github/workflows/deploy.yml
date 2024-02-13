@@ -57,8 +57,7 @@ jobs:
         run: npm ci
 
       - name: Use deploy specific netlify.toml
-        run: |
-          mv deploy-netlify.toml netlify.toml
+        run: mv deploy-netlify.toml netlify.toml
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
