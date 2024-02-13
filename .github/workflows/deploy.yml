@@ -21,6 +21,11 @@ on:
       runner-label:
         description: The label of the runner to use
         type: string
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
 
 jobs:
   netlify-deploy:
@@ -47,7 +52,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
