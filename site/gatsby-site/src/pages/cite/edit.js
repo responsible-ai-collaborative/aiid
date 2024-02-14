@@ -41,7 +41,6 @@ const reportFields = [
   'date_modified',
   'date_published',
   'editor_notes',
-  'epoch_date_downloaded',
   'epoch_date_modified',
   'epoch_date_published',
   'flag',

@@ -29,7 +29,6 @@ const query = gql`
         submitters
         epoch_date_submitted
         epoch_date_modified
-        epoch_date_downloaded
         report_number
         flag
         date_downloaded

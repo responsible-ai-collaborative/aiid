@@ -27,7 +27,7 @@ const createWordCountsPage = async (graphql, createPage) => {
       }
       latestReport: allMongodbAiidprodReports(
         filter: { is_incident_report: { eq: true } }
-        sort: { epoch_date_submitted: DESC }
+        sort: { date_submitted: DESC }
         limit: 1
       ) {
         nodes {
@@ -36,7 +36,7 @@ const createWordCountsPage = async (graphql, createPage) => {
       }
       latestReports: allMongodbAiidprodIncidents(
         filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
-        sort: { reports: { epoch_date_submitted: DESC } }
+        sort: { reports: { date_submitted: DESC } }
         limit: 5
       ) {
         nodes {
@@ -127,7 +127,7 @@ const createWordCountsPage = async (graphql, createPage) => {
 
   const latestReportNumbers = result.data.latestReports.nodes.map((node) => {
     const sortedArray = node.reports.sort((a, b) => {
-      return a.epoch_date_submitted - b.epoch_date_submitted;
+      return a.date_submitted - b.date_submitted;
     });
 
     return sortedArray[0].report_number;

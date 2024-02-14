@@ -12,7 +12,6 @@ export const FIND_REPORT = gql`
       date_downloaded
       date_modified
       date_submitted
-      epoch_date_downloaded
       epoch_date_modified
       epoch_date_published
       epoch_date_submitted
@@ -85,7 +84,6 @@ export const UPDATE_REPORT = gql`
       date_downloaded
       date_modified
       epoch_date_published
-      epoch_date_downloaded
       epoch_date_modified
       image_url
       text
@@ -153,7 +151,6 @@ export const FIND_REPORT_HISTORY = gql`
         from_text_hash
         vector
       }
-      epoch_date_downloaded
       epoch_date_modified
       epoch_date_published
       epoch_date_submitted

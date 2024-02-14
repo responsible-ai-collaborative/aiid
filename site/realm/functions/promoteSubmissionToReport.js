@@ -139,7 +139,6 @@ exports = async (input) => {
     date_modified: new Date(submission.date_modified),
     date_published: new Date(submission.date_published),
     date_submitted: new Date(submission.date_submitted),
-    epoch_date_downloaded: getUnixTime(submission.date_downloaded),
     epoch_date_modified: submission.epoch_date_modified,
     epoch_date_published: getUnixTime(submission.date_published),
     epoch_date_submitted: getUnixTime(submission.date_submitted),

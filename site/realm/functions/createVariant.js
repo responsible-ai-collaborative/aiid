@@ -48,7 +48,6 @@ exports = async (input) => {
     date_modified: now,
     date_published: input.variant.date_published ? new Date(input.variant.date_published) : now,
     date_submitted: now,
-    epoch_date_downloaded: getUnixTime(todayFormated),
     epoch_date_modified: getUnixTime(now.toString()),
     epoch_date_published: getUnixTime(input.variant.date_published ? input.variant.date_published : todayFormated),
     epoch_date_submitted: getUnixTime(todayFormated),

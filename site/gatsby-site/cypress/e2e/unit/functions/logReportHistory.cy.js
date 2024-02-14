@@ -12,7 +12,6 @@ const report = {
   date_modified: '2023-06-14',
   date_published: '2023-06-09',
   date_submitted: '2023-06-09',
-  epoch_date_downloaded: 1686268800,
   epoch_date_modified: 1686765044,
   epoch_date_published: 1686268800,
   epoch_date_submitted: 1686268800,
