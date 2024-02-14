@@ -7,7 +7,7 @@ const config = require('../config');
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  // New created_at field on incidents and submissions collections
+  // New created_at field on incidents, reports, submissions collections from production db and history db
   const incidentsCollection = client.db(config.realm.production_db.db_name).collection('incidents');
 
   const submissionsCollection = client
