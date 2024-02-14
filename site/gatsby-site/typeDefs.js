@@ -73,6 +73,7 @@ const typeDefs = `
         authors: [String]
         epoch_date_modified: Int
         epoch_date_published: Int
+        epoch_date_submitted: Int
         cloudinary_id: String
         tags: [String]
         plain_text: String
