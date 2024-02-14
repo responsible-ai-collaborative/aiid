@@ -216,9 +216,11 @@ const RelatedIncidents = ({
 
         const result = await client.query({ query, variables });
 
-        const reports = await column.getReports(result, client);
+        let reports = await column.getReports(result, client);
 
         setLoading((loading) => ({ ...loading, [key]: false }));
+
+        reports = reports.filter((r) => r.incident_id);
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
 

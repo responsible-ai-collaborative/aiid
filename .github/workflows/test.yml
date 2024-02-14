@@ -10,12 +10,16 @@ on:
         description: "The commit SHA to run the tests against"
         type: string
         required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
 
 jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on: 
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash
@@ -31,7 +35,7 @@ jobs:
         containers: [1, 2, 3, 4]
     # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
-    timeout-minutes: 40
+    timeout-minutes: 80
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,7 +44,7 @@ jobs:
 
       - name: Read node modules from cache
         id: cache-nodemodules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-install-folder
         with:
@@ -58,7 +62,7 @@ jobs:
           install-command: npm ci
 
       - name: Restore build cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-build-folder
         with:
@@ -116,6 +120,6 @@ jobs:
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

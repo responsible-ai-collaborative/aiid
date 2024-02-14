@@ -18,11 +18,15 @@ on:
         description: The commit SHA to deploy
         type: string
         required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
 
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash
@@ -37,7 +41,7 @@ jobs:
 
       - name: Read node modules from cache
         id: cache-nodemodules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         env:
           cache-name: cache-install-folder
         with:
@@ -46,7 +50,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
 
       - name: Install dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
