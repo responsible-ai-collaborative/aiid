@@ -2,51 +2,33 @@ describe('Locale', () => {
   it('Locale folder should contain specific JSON files for all specified languages', () => {
     let availableLanguages = Cypress.env('availableLanguages');
 
-    // Define the list of files you expect to find in each locale directory
-    const expectedFiles = [
-      'account.json',
-      'actions.json',
-      'entities.json',
-      'footer.json',
-      'incidents.json',
-      'landing.json',
-      'leaderboard.json',
-      'login.json',
-      'popovers.json',
-      'sponsors.json',
-      'submit.json',
-      'submitted.json',
-      'translation.json',
-      'validation.json',
-      'variants.json',
-      'wordcount.json',
-    ];
+    let enFiles = [];
 
-    if (availableLanguages) {
-      availableLanguages = availableLanguages.split(',');
+    cy.task('listFiles', `./i18n/locales/en`).then((files) => {
+      enFiles = files;
 
-      availableLanguages.forEach((locale) => {
-        expectedFiles.forEach((fileName) => {
-          const filePath = `./i18n/locales/${locale}/${fileName}`;
+      if (availableLanguages) {
+        availableLanguages = availableLanguages.split(',');
 
-          cy.readFile(filePath).then((content) => {
-            if (content) {
-              expect(true).to.be.true; // File exists
-            } else {
-              assert.fail(`File not found: ${filePath}`); // File does not exist
-            }
+        // check that each locale directory exists with the expected files
+        availableLanguages
+          .filter((a) => a !== 'en')
+          .forEach((locale) => {
+            cy.task('listFiles', `./i18n/locales/${locale}`).then((otherLocaleFiles) => {
+              expect(otherLocaleFiles.sort()).to.deep.equal(
+                enFiles.sort(),
+                `Locale ${locale} folder should contain the same files as the en folder`
+              );
+            });
           });
-        });
-      });
-    }
+      }
+    });
   });
 
   it('should have a configuration for each available language', () => {
-    const configPath = './i18n/config.json'; // Adjust the path as needed
+    const configPath = './i18n/config.json';
 
-    // Use Cypress.readFile to read and parse the JSON file
     cy.readFile(configPath).then((configurations) => {
-      // Ensure the configurations were loaded
       expect(configurations).to.be.an('array');
 
       const availableLanguages = Cypress.env('availableLanguages').split(',');

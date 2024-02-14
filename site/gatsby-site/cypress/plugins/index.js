@@ -14,10 +14,35 @@
 
 require('dotenv').config();
 
+const fs = require('fs');
+
+const path = require('path');
+
 /**
  * @type {Cypress.PluginConfig}
  */
 module.exports = (on, config) => {
+  on('task', {
+    listFiles(directoryPath) {
+      return new Promise((resolve, reject) => {
+        fs.readdir(directoryPath, (err, files) => {
+          if (err) {
+            reject(err);
+          } else {
+            const jsonFiles = files.filter((file) => {
+              return (
+                path.extname(file).toLowerCase() === '.json' &&
+                fs.statSync(path.join(directoryPath, file)).isFile()
+              );
+            });
+
+            resolve(jsonFiles);
+          }
+        });
+      });
+    },
+  });
+
   config.env.e2eUsername = process.env.E2E_ADMIN_USERNAME;
   config.env.e2ePassword = process.env.E2E_ADMIN_PASSWORD;
   config.env.realmAppId = process.env.GATSBY_REALM_APP_ID;
