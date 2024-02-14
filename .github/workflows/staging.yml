@@ -30,6 +30,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: staging
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
   call-test-build:
     uses: ./.github/workflows/test-build.yml

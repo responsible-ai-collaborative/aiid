@@ -32,6 +32,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: production
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
 
   call-test-build:
     uses: ./.github/workflows/test-build.yml
