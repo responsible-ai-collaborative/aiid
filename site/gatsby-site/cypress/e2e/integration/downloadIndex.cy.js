@@ -81,6 +81,7 @@ describe('Download Algolia Index', () => {
             epoch_date_modified: 1592092800,
             epoch_date_published: 1458777600,
             epoch_incident_date: 1458777600,
+            epoch_date_submitted: 1559347200,
             submitters: ['Anonymous'],
             report_number: 922,
             incident_id: 6,
