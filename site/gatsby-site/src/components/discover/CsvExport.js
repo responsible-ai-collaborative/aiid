@@ -16,7 +16,7 @@ const convertData = (hits) => {
     'date published': format(fromUnixTime(hit.epoch_date_published), 'yyyy-MM-dd'),
     'date submitted': format(fromUnixTime(hit.epoch_date_submitted), 'yyyy-MM-dd'),
     'date modified': format(fromUnixTime(hit.epoch_date_modified), 'yyyy-MM-dd'),
-    'date downloaded': format(hit.date_downloaded, 'yyyy-MM-dd'),
+    'date downloaded': format(new Date(hit.date_downloaded), 'yyyy-MM-dd'),
     url: hit.url,
     'source domain': hit.source_domain,
     language: hit.language,
