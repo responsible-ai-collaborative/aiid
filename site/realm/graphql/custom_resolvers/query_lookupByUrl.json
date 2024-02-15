@@ -19,9 +19,7 @@
     "payload_type": {
         "properties": {
             "results": {
-                "type": "array",
                 "items": {
-                    "type": "object",
                     "properties": {
                         "incidents": {
                             "items": {
@@ -60,8 +58,10 @@
                         "url": {
                             "type": "string"
                         }
-                    }
-                }
+                    },
+                    "type": "object"
+                },
+                "type": "array"
             }
         },
         "title": "LookupByUrlPayload",
