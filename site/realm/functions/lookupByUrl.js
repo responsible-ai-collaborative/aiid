@@ -48,3 +48,8 @@ exports = async (input) => {
 
   return { results };
 };
+
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}

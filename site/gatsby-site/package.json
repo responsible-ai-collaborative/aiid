@@ -123,6 +123,7 @@
     "babel-eslint": "^10.1.0",
     "babel-plugin-istanbul": "^6.1.1",
     "cypress": "^13.0.0",
+    "cypress-diff": "^0.0.5",
     "cypress-wait-for-stable-dom": "^0.1.0",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
