@@ -60,6 +60,7 @@
     "i18next": "^20.6.1",
     "is-absolute-url": "^3.0.3",
     "json-diff-ts": "^1.2.6",
+    "lru-cache": "^10.2.0",
     "md5": "^2.3.0",
     "mongodb": "^4.17.0",
     "object-hash": "^3.0.0",
