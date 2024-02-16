@@ -61,10 +61,8 @@ jobs:
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Use new netlify.toml
-        run: |
-          rm -f netlify.toml
-          mv deploy-netlify.toml netlify.toml
+      - name: Use deploy specific netlify.toml
+        run: mv deploy-netlify.toml netlify.toml
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
