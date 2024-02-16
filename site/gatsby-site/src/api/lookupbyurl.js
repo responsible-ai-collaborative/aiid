@@ -24,7 +24,10 @@ query Lookup($urls: [String]){
   }
 }`;
 
-const cache = new LRUCache({ max: 1000 });
+// netlify-lambda has a max memory of 1024MB
+// average size of the response is 1KB per URL
+
+const cache = new LRUCache({ max: 1000000 });
 
 export default async function handler(req, res) {
   let data = null;
