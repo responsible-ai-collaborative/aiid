@@ -8,17 +8,14 @@ exports = async (input) => {
   for (const url of input.urls) {
     
     const result = {url, reports: [], incidents: []};
-    
+
     const parsedURL = new URL(url);
-    
-    console.log('looking for', url);
 
     const reportDocs = await reportsCollection.find({url: {
       $regex: parsedURL.host + parsedURL.pathname,
       $options: 'i',
     }}).toArray();
     
-    console.log('reports found', reportDocs.length);
 
     for(const doc of reportDocs) {
       
@@ -30,7 +27,6 @@ exports = async (input) => {
       
       const incidentDocs = await incidentsCollection.find({reports: doc.report_number}).toArray();
       
-      console.log('incidents found', incidentDocs.length);
 
       for(const incidentDoc of incidentDocs) {
         
