@@ -209,7 +209,6 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
       },
     };
 
-    console.log({ newPage });
     createPage(newPage);
     //mdx exits here.  all other pages will be handled next
 
@@ -236,8 +235,6 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
       // Split the filename in three parts split by the dot. We expect two or three components.
       let fileNamePieces = fileName.split('.');
-
-      console.log({ thePath, fileName, ext, fileNamePieces });
 
       if (fileNamePieces.length == 2) {
         // ex: index.mdx
