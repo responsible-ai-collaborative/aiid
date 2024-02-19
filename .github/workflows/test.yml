@@ -3,22 +3,27 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'The Github environment to load secrets from'
+        description: The Github environment to load secrets from
         type: string
         required: true
       sha:
-        description: "The commit SHA to run the tests against"
+        description: The commit SHA to run the tests against
         type: string
         required: true
       runner-label:
         description: The label of the runner to use
         type: string
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
 
 jobs:
   test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
-    runs-on: 
+    runs-on:
       labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
     defaults:
       run:
@@ -51,7 +56,7 @@ jobs:
           path: |
             site/gatsby-site/node_modules
             ~/.cache/Cypress
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
@@ -69,7 +74,7 @@ jobs:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.cache/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
 
       - name: Extract branch name
         shell: bash

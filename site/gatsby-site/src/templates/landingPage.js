@@ -49,12 +49,16 @@ const LandingPage = (props) => {
     const report = incident.node.reports.find((r) => latestReportNumbers.includes(r.report_number));
 
     if (report.language !== language) {
-      const translation = data[`latestReports_${language}`].edges.find(
+      const translation = data[`latestReports_${language}`]?.edges.find(
         (translation) => translation.node.report_number === report.report_number
       );
 
-      report.title = translation.node.title;
-      report.text = translation.node.text;
+      if (translation) {
+        report.title = translation.node.title;
+        report.text = translation.node.text;
+      } else {
+        console.warn(`No latestReports_${language}`);
+      }
     }
     const updatedIncident = {
       incident_id: incident.node.incident_id,
