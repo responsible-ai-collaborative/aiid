@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -26,20 +26,22 @@ const LandingPage = (props) => {
 
   const { latestReportNumbers } = props.pageContext;
 
-  let latestBlogPost = null;
+  const [latestBlogPost, setLatestBlogPost] = useState(null);
 
-  if (!latestPostOld || latestPostOld.nodes.length === 0) {
-    latestBlogPost = latestPrismicPost;
-  } else if (!latestPrismicPost || latestPrismicPost.nodes.length === 0) {
-    latestBlogPost = latestPostOld;
-  } else {
-    const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
+  useEffect(() => {
+    if (!latestPostOld || latestPostOld.nodes.length === 0) {
+      setLatestBlogPost(latestPrismicPost);
+    } else if (!latestPrismicPost || latestPrismicPost.nodes.length === 0) {
+      setLatestBlogPost(latestPostOld);
+    } else {
+      const mdxDate = new Date(latestPostOld?.nodes[0]?.frontmatter?.date);
 
-    const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
+      const prismicDate = new Date(latestPrismicPost?.nodes[0]?.data.date);
 
-    // Display prismic post if it's the latest post or if it's newer than the latest mdx post
-    latestBlogPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
-  }
+      // Display prismic post if it's the latest post or if it's newer than the latest mdx post
+      setLatestBlogPost(mdxDate > prismicDate ? latestPostOld : latestPrismicPost);
+    }
+  }, [latestPostOld, latestPrismicPost, latestReportIncidents]);
 
   let { sponsors } = props.pageContext;
 
