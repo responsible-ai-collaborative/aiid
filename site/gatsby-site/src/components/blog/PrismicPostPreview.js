@@ -3,6 +3,7 @@ import { GatsbyImage as Img } from 'gatsby-plugin-image';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 import DateLabel from 'components/ui/DateLabel';
+import { substring } from 'stringz';
 
 function PrismicPostPreview({ post, latestPost = false }) {
   return (
@@ -36,7 +37,7 @@ function PrismicPostPreview({ post, latestPost = false }) {
             <DateLabel date={new Date(post.data.date)} />
           </p>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            {post.data.content.text.slice(0, 140)}...{' '}
+            {substring(post.data.content.text, 0, 140)}...{' '}
           </p>
         </div>
         <div className="flex items-end flex-1 p-6">
