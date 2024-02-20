@@ -7,7 +7,12 @@
     "prettier",
     "prettier/react"
   ],
-  "plugins": ["react", "import", "jsx-a11y", "cypress"],
+  "plugins": [
+    "react",
+    "import",
+    "jsx-a11y",
+    "cypress"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -15,37 +20,113 @@
     "import/resolver": {
       "alias": {
         "map": [
-          ["components", "./src/components"],
-          ["elements", "./src/elements"],
-          ["hooks", "./src/hooks"],
-          ["contexts", "./src/contexts"],
-          ["mongodb", "./src/mongodb"],
-          ["pages", "./src/pages"],
-          ["services", "./src/services"],
-          ["templates", "./src/templates"],
-          ["utils", "./src/utils"],
-          ["plugins", "./plugins"],
-          ["@reach/router", "@gatsbyjs/reach-router"]
+          [
+            "components",
+            "./src/components"
+          ],
+          [
+            "elements",
+            "./src/elements"
+          ],
+          [
+            "hooks",
+            "./src/hooks"
+          ],
+          [
+            "contexts",
+            "./src/contexts"
+          ],
+          [
+            "mongodb",
+            "./src/mongodb"
+          ],
+          [
+            "pages",
+            "./src/pages"
+          ],
+          [
+            "services",
+            "./src/services"
+          ],
+          [
+            "templates",
+            "./src/templates"
+          ],
+          [
+            "utils",
+            "./src/utils"
+          ],
+          [
+            "plugins",
+            "./plugins"
+          ],
+          [
+            "@reach/router",
+            "@gatsbyjs/reach-router"
+          ]
         ],
-        "extensions": [".js", ".jsx"]
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      },
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     }
   },
   "rules": {
     "react/prop-types": 0,
     "react/react-in-jsx-scope": "off",
-    "lines-between-class-members": ["error", "always"],
-    "import/namespace": [2, { "allowComputed": true }],
+    "lines-between-class-members": [
+      "error",
+      "always"
+    ],
+    "import/namespace": [
+      2,
+      {
+        "allowComputed": true
+      }
+    ],
     "padding-line-between-statements": [
       "error",
-      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
       {
         "blankLine": "always",
-        "prev": ["const", "let", "var"],
-        "next": ["const", "let", "var"]
+        "prev": [
+          "const",
+          "let",
+          "var"
+        ],
+        "next": "*"
       },
-      { "blankLine": "always", "prev": "directive", "next": "*" },
-      { "blankLine": "any", "prev": "directive", "next": "directive" }
+      {
+        "blankLine": "always",
+        "prev": [
+          "const",
+          "let",
+          "var"
+        ],
+        "next": [
+          "const",
+          "let",
+          "var"
+        ]
+      },
+      {
+        "blankLine": "always",
+        "prev": "directive",
+        "next": "*"
+      },
+      {
+        "blankLine": "any",
+        "prev": "directive",
+        "next": "directive"
+      }
     ],
     "jsx-a11y/no-onchange": "off"
   },
