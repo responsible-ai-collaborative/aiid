@@ -46,6 +46,8 @@ const typeDefs = require('./typeDefs');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
+const LookupIndex = require('./src/utils/LookupIndex');
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createRedirect, createPage } = actions;
 
@@ -324,6 +326,17 @@ exports.onPreBootstrap = async ({ reporter }) => {
   } else {
     reporter.warn('Netlify CONTEXT is not production, skipping translations.');
   }
+
+  reporter.log('Creating lookup index...');
+
+  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+
+  const lookupIndex = new LookupIndex({
+    client: mongoClient,
+    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
+  });
+
+  await lookupIndex.run();
 };
 
 exports.onPreBuild = function ({ reporter }) {

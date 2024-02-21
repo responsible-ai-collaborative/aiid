@@ -81,3 +81,6 @@ package-lock.json
 
 # appservices cli
 .mdb
+
+
+site/gatsby-site/src/api/lookupIndex.json
