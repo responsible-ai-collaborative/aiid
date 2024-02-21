@@ -5,6 +5,27 @@ import { Trans } from 'react-i18next';
 import DateLabel from 'components/ui/DateLabel';
 
 function PostPreview({ post, latestPost = false }) {
+  let previewText = '';
+
+  if (post.excerpt && post.excerpt !== '') {
+    previewText = post.excerpt;
+  } else if (post.frontmatter.previewText && post.frontmatter.previewText !== '') {
+    previewText = post.frontmatter.previewText;
+  } else {
+    // Remove HTML tags
+    previewText = post?.body.replace(/<[^>]*>?/gm, '');
+
+    // Remove Markdown image syntax
+    previewText = previewText.replace(/!\[.*?\]\(.*?\)/g, '');
+
+    // Remove Markdown
+    previewText = previewText.replace(/!\[.*?\]\(.*?\)|\]\(.*?\)/g, '$1');
+
+    previewText = previewText.substring(0, 200);
+
+    previewText = previewText.trim();
+  }
+
   return (
     <>
       <div className="flex flex-col w-full h-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -35,7 +56,7 @@ function PostPreview({ post, latestPost = false }) {
           <p className="text-sm text-muted-gray">
             <DateLabel date={new Date(post.frontmatter.date)} />
           </p>
-          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.excerpt}... </p>
+          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{previewText}... </p>
         </div>
         <div className="flex items-end flex-1 p-6">
           <a

@@ -24,7 +24,7 @@ const ReportCard = ({
   incidentId = null,
   readOnly = false,
 }) => {
-  item.incident_id = incidentId;
+  item.incident_id = incidentId || item.incident_id;
 
   const { t } = useTranslation();
 

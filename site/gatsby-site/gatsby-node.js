@@ -158,6 +158,12 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
       node,
       value: node.frontmatter.title || startCase(parent.name),
     });
+
+    createNodeField({
+      name: 'previewText',
+      node,
+      value: node.frontmatter.previewText || startCase(parent.name),
+    });
   }
 
   if (node.internal.type == 'mongodbAiidprodClassifications') {
