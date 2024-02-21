@@ -237,6 +237,21 @@ exports.createResolvers = ({ createResolvers }) => {
   createResolvers(resolvers);
 };
 
+exports.onPreInit = async ({ reporter }) => {
+  reporter.log('Creating lookup index...');
+
+  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+
+  const lookupIndex = new LookupIndex({
+    client: mongoClient,
+    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
+  });
+
+  await lookupIndex.run();
+
+  reporter.log('Lookup index created.');
+};
+
 exports.onPreBootstrap = async ({ reporter }) => {
   const migrationsActivity = reporter.activityTimer(`Migrations`);
 
@@ -326,17 +341,6 @@ exports.onPreBootstrap = async ({ reporter }) => {
   } else {
     reporter.warn('Netlify CONTEXT is not production, skipping translations.');
   }
-
-  reporter.log('Creating lookup index...');
-
-  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
-
-  const lookupIndex = new LookupIndex({
-    client: mongoClient,
-    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
-  });
-
-  await lookupIndex.run();
 };
 
 exports.onPreBuild = function ({ reporter }) {
