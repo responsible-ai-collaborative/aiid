@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
+import CommonEntities from 'components/entities/CommonEntities';
 import config from '../../config';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
 
@@ -86,6 +87,12 @@ const LandingPage = (props) => {
             </div>
           </div>
         )}
+
+        <div className="mb-5 md:mb-10">
+          <div>
+            <CommonEntities />
+          </div>
+        </div>
 
         <div className="mb-5 md:mb-10">
           <div className="flex flex-col items-center">
