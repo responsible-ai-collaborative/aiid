@@ -126,7 +126,9 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                     </Trans>
                   </p>
                   {sortedQuickAdds.length < 1 ? (
-                    <Trans>No reports found</Trans>
+                    <p data-cy="no-results">
+                      <Trans>No reports found</Trans>
+                    </p>
                   ) : (
                     <ListGroup className="mb-5">
                       {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
