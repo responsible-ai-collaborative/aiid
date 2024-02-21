@@ -20,7 +20,7 @@
             },
             "read": true,
             "write": true,
-            "insert": false,
+            "insert": true,
             "delete": false,
             "search": true
         },

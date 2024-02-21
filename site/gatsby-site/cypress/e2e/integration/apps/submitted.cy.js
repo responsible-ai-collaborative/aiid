@@ -21,6 +21,10 @@ describe('Submitted reports', () => {
             userId
             first_name
             last_name
+            roles
+            adminData {
+              email
+            }
           }
         }
       `,
@@ -94,6 +98,10 @@ describe('Submitted reports', () => {
 
   maybeIt('Promotes a submission to a new report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '5f9c3ebfd4896d392493f03c'
@@ -206,6 +214,10 @@ describe('Submitted reports', () => {
   maybeIt('Promotes a submission to a new report and links it to an existing incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     const submission = submittedReports.data.submissions.find(
       (r) => r.incident_ids.length == 1 && r.incident_ids.includes(10)
     );
@@ -310,6 +322,10 @@ describe('Submitted reports', () => {
 
   maybeIt('Promotes a submission to a new report and links it to multiple incidents', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id == '444461606b4bb5e39601234'
@@ -448,6 +464,10 @@ describe('Submitted reports', () => {
   maybeIt('Promotes a submission to a new issue', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '62d561606b4bb5e39605555'
     );
@@ -531,6 +551,10 @@ describe('Submitted reports', () => {
   maybeIt('Rejects a submission', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     const submission = submittedReports.data.submissions.find(
       (r) => r.incident_ids.length == 1 && r.incident_ids.includes(10)
     );
@@ -598,6 +622,10 @@ describe('Submitted reports', () => {
 
   maybeIt('Edits a submission - update just a text', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -733,6 +761,10 @@ describe('Submitted reports', () => {
   maybeIt('Edits a submission - uses fetch info', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
@@ -808,6 +840,10 @@ describe('Submitted reports', () => {
     () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+      if (user.adminData.email == Cypress.env('e2eUsername')) {
+        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+      }
+
       const submission = submittedReports.data.submissions.find(
         (r) => r._id === '62d561606b4bb5e396034444'
       );
@@ -878,84 +914,95 @@ describe('Submitted reports', () => {
     }
   );
 
-  it.only('Does not allow promotion of submission to Issue if schema is invalid (missing Title).', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  maybeIt(
+    'Does not allow promotion of submission to Issue if schema is invalid (missing Title).',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find(
-      (r) => r._id === '123461606b4bb5e39601234'
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
+      if (user.adminData.email == Cypress.env('e2eUsername')) {
+        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
       }
-    );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmission',
-      'FindSubmission',
-      {
-        data: {
-          submission: submission,
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'AllQuickAdd',
-      'AllQuickAdd',
-      {
-        data: {
-          quickadds: [quickAdds],
-        },
-      }
-    );
-
-    cy.visit(url);
-
-    cy.waitForStableDOM();
-
-    cy.wait('@FindSubmissions');
-
-    cy.visit(url + `?editSubmission=${submission._id}`);
-
-    cy.wait('@AllQuickAdd');
-
-    cy.on('fail', (err) => {
-      expect(err.message).to.include(
-        '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+      const submission = submittedReports.data.submissions.find(
+        (r) => r._id === '123461606b4bb5e39601234'
       );
-    });
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName === 'PromoteSubmission',
-      'promotionInvoked',
-      {}
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        {
+          data: {
+            submissions: [submission],
+          },
+        }
+      );
 
-    cy.get('select[data-cy="promote-select"]').as('dropdown');
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
 
-    cy.get('@dropdown').select('Issue');
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
 
-    cy.get('[data-cy="promote-button"]').click();
+      cy.visit(url);
 
-    cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
+      cy.waitForStableDOM();
 
-    cy.wait('@promotionInvoked', { timeout: 2000 });
-  });
+      cy.wait('@FindSubmissions');
+
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
+      cy.wait('@AllQuickAdd');
+
+      cy.on('fail', (err) => {
+        expect(err.message).to.include(
+          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+        );
+      });
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+      cy.get('@dropdown').select('Issue');
+
+      cy.get('[data-cy="promote-button"]').click();
+
+      cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
+
+      cy.wait('@promotionInvoked', { timeout: 2000 });
+    }
+  );
 
   maybeIt(
     'Does not allow promotion of submission to Report if schema is invalid (missing Date).',
     () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      if (user.adminData.email == Cypress.env('e2eUsername')) {
+        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+      }
 
       const submission = submittedReports.data.submissions.find(
         (r) => r._id === '333561606b4bb5e39601234'
@@ -1026,6 +1073,10 @@ describe('Submitted reports', () => {
   it.skip('Should display an error message if data is missing', () => {
     // With new submission list, we allow to save changes always
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '62d561606b4bb5e39601234'
@@ -1102,6 +1153,10 @@ describe('Submitted reports', () => {
   maybeIt('Should display submission image on edit page', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     const submission = submittedReports.data.submissions.find(
       (s) => s.cloudinary_id && s.cloudinary_id != 'reports/' && s.cloudinary_id != ''
     );
@@ -1173,6 +1228,10 @@ describe('Submitted reports', () => {
   maybeIt('Should display fallback image on edit modal if submission doesnt have an image', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     const submission = submittedReports.data.submissions.find((s) => s.cloudinary_id === null);
 
     cy.conditionalIntercept(
@@ -1221,6 +1280,10 @@ describe('Submitted reports', () => {
 
   maybeIt('Should display an error message if Date Published is not in the past', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '62d561606b4bb5e39601234'
@@ -1439,6 +1502,10 @@ describe('Submitted reports', () => {
   maybeIt('Claims a submission', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
+
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '5f9c3ebfd4896d392493f03c'
     );
@@ -1508,6 +1575,10 @@ describe('Submitted reports', () => {
 
   maybeIt('Unclaims a submission', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '6123bf345e740c1a81850e89'
@@ -1583,6 +1654,10 @@ describe('Submitted reports', () => {
 
   maybeIt('Should maintain current page while claiming', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    if (user.adminData.email == Cypress.env('e2eUsername')) {
+      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+    }
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '433346160eeeeqdd5e382bei234'
