@@ -46,21 +46,16 @@ const Controls = () => {
         <Sorting />
       </div>
 
-      <div className="mx-1">
+      <div className="ml-1 mr-auto">
         <CsvExport />
       </div>
 
-      <div className="order-1 ml-auto mr-1">
-        <ClearFilters>
-          <Trans>Clear Filters</Trans>
-        </ClearFilters>
-      </div>
-
-      <div className="basis-full order-3" />
-
-      <Filters {...{ expandFilters }} />
-
-      <div className="order-2 mx-1">
+      <div className="order-2 mx-1 flex gap-1">
+        <div>
+          <ClearFilters>
+            <Trans>Clear Filters</Trans>
+          </ClearFilters>
+        </div>
         <div className="grid place-content-center">
           <button
             id="expand-filters"
@@ -77,6 +72,10 @@ const Controls = () => {
           </button>
         </div>
       </div>
+
+      <div className="basis-full order-3" />
+
+      <Filters {...{ expandFilters }} />
     </div>
   );
 };
