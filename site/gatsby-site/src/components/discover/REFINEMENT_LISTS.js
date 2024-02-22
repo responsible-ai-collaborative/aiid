@@ -16,7 +16,8 @@ const REFINEMENT_LISTS = [
     label: 'Classifications',
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
-    type: 'refinement',
+    type: 'classifications',
+    width: 420,
 
     // algolia specific
     showMore: true,

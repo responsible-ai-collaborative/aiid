@@ -2,8 +2,24 @@ import React from 'react';
 
 import REFINEMENT_LISTS, { FIRST_ROW } from 'components/discover/REFINEMENT_LISTS';
 import Filter from './Filter';
+import { graphql, useStaticQuery } from 'gatsby';
 
 function Filters({ expandFilters }) {
+  const {
+    taxa: { nodes: taxa },
+  } = useStaticQuery(graphql`
+    query FiltersTaxaQuery {
+      taxa: allMongodbAiidprodTaxa(filter: { namespace: { in: ["CSETv1", "CSETv0", "GMF"] } }) {
+        nodes {
+          namespace
+          field_list {
+            short_name
+          }
+        }
+      }
+    }
+  `);
+
   return (
     <>
       {REFINEMENT_LISTS.map((list, i) => {
@@ -27,7 +43,7 @@ function Filters({ expandFilters }) {
         }
         return (
           <div key={list.attribute} className={className} data-cy={list.attribute}>
-            <Filter className="w-full" type={list.type} {...list} />
+            <Filter className="w-full" type={list.type} taxa={taxa} {...list} />
           </div>
         );
       })}

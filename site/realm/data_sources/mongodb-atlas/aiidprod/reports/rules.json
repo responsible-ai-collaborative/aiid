@@ -7,30 +7,22 @@
             "apply_when": {
                 "%%user.custom_data.roles": "admin"
             },
-            "fields": {
-                "flag": {},
-                "tags": {}
-            },
+            "read": true,
             "write": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "incident_editor",
             "apply_when": {
                 "%%user.custom_data.roles": "incident_editor"
             },
-            "fields": {
-                "flag": {},
-                "tags": {}
-            },
+            "read": true,
             "write": true,
-            "insert": false,
+            "insert": true,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         },
         {
             "name": "Variant",
@@ -54,10 +46,6 @@
         {
             "name": "default",
             "apply_when": {},
-            "document_filters": {
-                "write": {},
-                "read": {}
-            },
             "fields": {
                 "flag": {
                     "write": true,

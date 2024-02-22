@@ -3,6 +3,8 @@ import { dateRegExp, isPastDate } from '../../utils/date';
 
 const incident_title = yup
   .string()
+  .nullable()
+  .default('')
   .min(6, '*Title must have at least 6 characters')
   .max(500, "*Titles can't be longer than 500 characters");
 
@@ -36,6 +38,8 @@ const incident_date = yup
 
 const description = yup
   .string()
+  .nullable()
+  .default('')
   .matches(/^.{3,}/, {
     excludeEmptyString: true,
     message: 'Description must have at least 3 characters',
@@ -139,17 +143,17 @@ export const schema = yup.object().shape({
 });
 
 export const incidentSchema = schema.shape({
-  incident_title: incident_title.required('*Incident Title is required.'),
-  developers: developers.required(),
-  deployers: deployers.required(),
-  harmed_parties: harmed_parties.required(),
-  description: description.required('*Description is required.'),
+  incident_title: incident_title.required('*Incident Title is required'),
+  developers: developers.required('*Alleged developer of AI system is required'),
+  deployers: deployers.required('*Alleged deployer of AI system is required'),
+  harmed_parties: harmed_parties.required('*Alleged harmed or nearly harmed parties is required'),
+  description: description.required('*Description is required'),
   incident_date: incident_date.required('*Incident Date required'),
   incident_ids: yup.mixed(),
 });
 
 export const reportSchema = schema.shape({
-  incident_ids: incident_ids.required('*Must be a number'),
+  incident_ids: incident_ids.required('*Incident ID(s) must be a number'),
 });
 
 export const issueSchema = schema.shape({

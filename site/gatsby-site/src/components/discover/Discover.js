@@ -43,7 +43,20 @@ export default function Discover() {
     }, 1000)
   ).current;
 
+  const [display, setDisplay] = useState('');
+
   useEffect(() => {
+    const queryString = window.location.search;
+
+    const urlParams = new URLSearchParams(queryString);
+
+    const display = urlParams.get('display');
+
+    setDisplay((prev) => {
+      if (display && display !== prev) {
+        return display;
+      }
+    });
     window.addEventListener('resize', handleWindowSizeChange);
 
     handleWindowSizeChange();
@@ -57,6 +70,8 @@ export default function Discover() {
     return null;
   }
 
+  const taxa = config.discover.taxa;
+
   return (
     <InstantSearch
       searchClient={searchClient}
@@ -69,8 +84,10 @@ export default function Discover() {
           getLocation: () => {
             return window.location;
           },
-          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig }),
-          createURL: ({ routeState }) => createURL({ indexName, locale, queryConfig, routeState }),
+          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig, taxa }),
+          createURL: ({ routeState }) => {
+            return createURL({ indexName, locale, queryConfig, routeState, taxa, display });
+          },
           push: (url) => {
             navigate(`?${url}`);
           },

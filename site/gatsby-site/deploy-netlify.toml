@@ -1,14 +1,15 @@
+[build]
+  base = "/site/gatsby-site"
+  publish = "public"
+
 [[plugins]]
   package = "@netlify/plugin-gatsby"
 
 [[plugins]]
   package = "/plugins/netlify-plugin-create-admin-user"
 
-# [[plugins]]
-#   package = "/plugins/netlify-plugin-process-notifications"
+[[plugins]]
+  package = "/plugins/netlify-plugin-process-notifications"
 
 [build.processing.html]
   pretty_urls = false
-
-[context.deploy-preview]
-  publish = "public/"
