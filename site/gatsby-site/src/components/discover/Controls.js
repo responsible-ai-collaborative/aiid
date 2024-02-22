@@ -31,7 +31,7 @@ const Controls = () => {
 
   return (
     <div className="flex flex-wrap items-center gap-y-2 mt-4">
-      <div className="mx-1">
+      <div data-cy="display-options" className="mx-1">
         <DisplayOptions />
       </div>
       <div className="mx-1">
