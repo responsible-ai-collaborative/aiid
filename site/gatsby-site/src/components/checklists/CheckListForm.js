@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMutation, useApolloClient, gql } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,7 +72,7 @@ export default function CheckListForm({
 
   const [risksLoading, setRisksLoading] = useState(false);
 
-  const [allPrecedents, setAllPrecedents] = useState([]);
+  //const [allPrecedents, setAllPrecedents] = useState([]);
 
   const searchTags = [
     ...(values['tags_goals'] || []),
@@ -82,17 +82,64 @@ export default function CheckListForm({
 
   const apolloClient = useApolloClient();
 
-  useEffect(() => {
-    searchRisks({
-      values,
-      setFieldValue,
-      setRisksLoading,
-      setAllPrecedents,
-      addToast,
-      t,
-      apolloClient,
-    });
-  }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
+//  useEffect(() => {
+//    searchRisks({
+//      values,
+//      setFieldValue,
+//      setRisksLoading,
+//      setAllPrecedents,
+//      addToast,
+//      t,
+//      apolloClient,
+//    });
+//  }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
+
+  const { data: generatedRisksData, loading: generatedRisksLoading, errors: generatedRisksErrors } = useQuery(
+    gql`
+      query {
+        risks(input: { tags: [${searchTags.map((t) => `"${t}"`).join(', ')}] }) {
+          tags
+          title
+          precedents {
+            incident_id
+            title
+            description
+            tags
+          }
+        }
+      }
+    `,
+    { skip: searchTags.length == 0 }
+  );
+
+  const generatedRisks = (generatedRisksData?.risks || []).map(
+    result => ({
+      ...emptyRisk(),
+      title: result.title,
+      tags: result.tags,
+      precedents: result.precedents,
+      description: result.description,
+      startClosed: true,
+    })
+  );
+
+  const allPrecedents = generatedRisks.reduce((allPrecedents, generatedRisk) => {
+
+    const newPrecedents = generatedRisk.precedents.filter(
+      (precedent) => (
+        allPrecedents.every(
+          (existingPrecedent) => (
+            existingPrecedent.incident_id != precedent.incident_id
+          )
+        )
+      )
+    );
+
+    return allPrecedents.concat(newPrecedents);
+  }, []);
+
+  console.log(`generatedRisks`, generatedRisks);
+
 
   useEffect(() => {
     if (userIsOwner) {
@@ -115,15 +162,20 @@ export default function CheckListForm({
   };
 
   const updateRisk = (risk, attributeValueMap) => {
+    console.log(`updateRisk(${risk}, ${attributeValueMap})`);
     const updatedRisks = [...values.risks];
 
     const updatedRisk = updatedRisks.find((r) => risksEqual(r, risk));
 
-    for (const attribute in attributeValueMap) {
-      if (attribute != 'precedents') {
-        updatedRisk.generated = false;
+    if (updatedRisk) {
+      for (const attribute in attributeValueMap) {
+        if (attribute != 'precedents') {
+          updatedRisk.generated = false;
+        }
+        updatedRisk[attribute] = attributeValueMap[attribute];
       }
-      updatedRisk[attribute] = attributeValueMap[attribute];
+    } else {
+      updatedRisks.push({ ...risk, generated: false, startClosed: false });
     }
 
     setFieldValue('risks', updatedRisks);
@@ -226,6 +278,7 @@ export default function CheckListForm({
         <RiskSections
           {...{
             risks: values.risks,
+            generatedRisks,
             setFieldValue,
             submitForm,
             tags,
@@ -280,68 +333,80 @@ const QueryTagInput = ({
   userIsOwner,
   icon,
   trimTaxonomy = false,
-}) => (
-  <div className="bootstrap">
-    <Label for={id}>
-      {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
-      {title}
-    </Label>
-    <Tags
-      id={id}
-      inputId={`${id}_input`}
-      value={idValue}
-      options={tags.filter((tag) => include(tag.split(':')))}
-      onChange={(tagInputArray) => {
-        //
-        // Example tagInputArray:
-        //
-        // ["GMF:Known AI Technology:Transformer", "Language Model"]
-        //     |                                         |
-        //  ,  |    Not fully-qualified, entered by direct text entry
-        //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
-        //     |    "GMF:Known AI Technology:Language Model"
-        //     |
-        //  Fully-qualified, entered from menu
-        //
-        if (trimTaxonomy) {
-          // If `trimTaxonomy` is enabled, then
-          // "GMF:Known AI Technology:Transformer"
-          // displays in the menu as just "Transformer".
-          // Users would therefore expect that typing "Transformer"
-          // will mean the same thing as clicking "Transformer" in the menu.
-          // So we have to convert it to its fully-qualified version.
-          const selectedTags = [];
+}) => {
+  const [realValue, setRealValue] = useState(idValue);
 
-          for (const tagInput of tagInputArray) {
-            let selectedTag;
+  useEffect(() => {
+  // setFieldValue(id, selectedTags);
 
-            if (tagInput.includes(':')) {
-              // If there's a colon, it's already fully-qualified,
-              selectedTag = tagInput;
-            } else {
-              // If there's no colon, then it's not fully-qualified,
-              // so we find the full tag which abbreviates
-              // to the unqualified one.
-              selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+    console.log(`useEffect() setFieldValue(id, realValue);`, id, realValue);
+    setFieldValue(id, realValue);
+  }, [realValue]);
+
+  return (
+    <div className="bootstrap">
+      <Label for={id}>
+        {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
+        {title}
+      </Label>
+      <Tags
+        id={id}
+        inputId={`${id}_input`}
+        value={realValue}
+        options={tags.filter((tag) => include(tag.split(':')))}
+        onChange={(tagInputArray) => {
+          console.log(`Tags.onChange(`, tagInputArray, ')');
+          //
+          // Example tagInputArray:
+          //
+          // ["GMF:Known AI Technology:Transformer", "Language Model"]
+          //     |                                         |
+          //  ,  |    Not fully-qualified, entered by direct text entry
+          //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
+          //     |    "GMF:Known AI Technology:Language Model"
+          //     |
+          //  Fully-qualified, entered from menu
+          //
+          if (trimTaxonomy) {
+            // If `trimTaxonomy` is enabled, then
+            // "GMF:Known AI Technology:Transformer"
+            // displays in the menu as just "Transformer".
+            // Users would therefore expect that typing "Transformer"
+            // will mean the same thing as clicking "Transformer" in the menu.
+            // So we have to convert it to its fully-qualified version.
+            const selectedTags = [];
+
+            for (const tagInput of tagInputArray) {
+              let selectedTag;
+
+              if (tagInput.includes(':')) {
+                // If there's a colon, it's already fully-qualified,
+                selectedTag = tagInput;
+              } else {
+                // If there's no colon, then it's not fully-qualified,
+                // so we find the full tag which abbreviates
+                // to the unqualified one.
+                selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+              }
+              if (selectedTag) {
+                selectedTags.push(selectedTag);
+              }
             }
-            if (selectedTag) {
-              selectedTags.push(selectedTag);
-            }
+            setRealValue(selectedTags);
+          } else {
+            // If `trimTaxonomy` is disabled,
+            // then we can leave the input as it is.
+            setRealValue(tagInputArray);
           }
-          setFieldValue(id, selectedTags);
-        } else {
-          // If `trimTaxonomy` is disabled,
-          // then we can leave the input as it is.
-          setFieldValue(id, tagInputArray);
-        }
-      }}
-      labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
-      placeHolder={placeHolder}
-      disabled={!userIsOwner}
-      allowNew={false}
-    />
-  </div>
-);
+        }}
+        labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
+        placeHolder={placeHolder}
+        disabled={!userIsOwner}
+        allowNew={false}
+      />
+    </div>
+  ); 
+}
 
 const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
@@ -526,6 +591,7 @@ const searchRisks = async ({
   t,
   apolloClient,
 }) => {
+  console.log(`searchRisks()`, values);
   const queryTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
@@ -558,37 +624,53 @@ const searchRisks = async ({
   if (risksResponse.data) {
     const results = risksResponse.data.risks;
 
-    const risksToAdd = [];
-
-    for (let i = 0; i < results.length; i++) {
-      const result = results[i];
-
-      const newRisk = {
+    setFieldValue(
+      'generatedRisks', 
+      results.map(result=> ({
         ...emptyRisk(),
         title: result.title,
         tags: result.tags,
         precedents: result.precedents,
         description: result.description,
         startClosed: true,
-      };
+      }))
+    );
 
-      const notDuplicate = [...risksToAdd, ...(values.risks || [])].every(
-        (existingRisk) => !areDuplicates(existingRisk, newRisk)
-      );
-
-      if (notDuplicate) {
-        risksToAdd.push(newRisk);
-      }
-      for (const precedent of result.precedents) {
-        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
-          allPrecedents.push(precedent);
-        }
-      }
-    }
-
-    setAllPrecedents(allPrecedents);
-
-    setFieldValue('risks', values.risks.concat(risksToAdd));
+//    const risksToAdd = [];
+//
+//    const manualRisks = (values.risks || []).filter(risk => !risk.generated);
+//
+//    for (let i = 0; i < results.length; i++) {
+//      const result = results[i];
+//
+//      const newRisk = {
+//        ...emptyRisk(),
+//        title: result.title,
+//        tags: result.tags,
+//        precedents: result.precedents,
+//        description: result.description,
+//        startClosed: true,
+//      };
+//
+//      const notDuplicate = [...risksToAdd, ...(manualRisks || [])].every(
+//        (existingRisk) => !areDuplicates(existingRisk, newRisk)
+//      );
+//
+//      if (notDuplicate) {
+//        risksToAdd.push(newRisk);
+//      }
+//      for (const precedent of result.precedents) {
+//        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
+//          allPrecedents.push(precedent);
+//        }
+//      }
+//    }
+//
+//    setAllPrecedents(allPrecedents);
+//
+//    const newRisks = manualRisks.concat(risksToAdd);
+//    console.log(`newRisks`, newRisks);
+//    setFieldValue('risks', newRisks);
   } else {
     addToast({
       message: t('Failure searching for risks.'),
