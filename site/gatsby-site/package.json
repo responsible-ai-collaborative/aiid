@@ -93,6 +93,7 @@
     "stemmer": "^1.0.5",
     "stopword": "^1.0.7",
     "stream": "^0.0.2",
+    "stringz": "^2.1.0",
     "strip-markdown": "^4.2.0",
     "topojson-client": "^3.1.0",
     "tsne-js": "^1.0.3",

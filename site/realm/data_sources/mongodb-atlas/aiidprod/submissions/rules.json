@@ -14,6 +14,17 @@
             "search": true
         },
         {
+            "name": "incident_editor",
+            "apply_when": {
+                "%%user.custom_data.roles": "incident_editor"
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true
+        },
+        {
             "name": "default",
             "apply_when": {},
             "read": true,
