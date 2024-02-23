@@ -1,10 +1,11 @@
+import Rollbar from 'rollbar';
 import siteConfig from '../../config';
 
 import Cors from 'cors';
 
 const cors = Cors();
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   const urls = decodeURIComponent(req.query.urls).split(',');
 
   const index = require('./lookupIndex.json');
@@ -64,4 +65,23 @@ export default async function handler(req, res) {
   });
 
   res.status(200).json({ results });
+}
+
+const rollbar = new Rollbar({
+  accessToken: 'POST_SERVER_ITEM_ACCESS_TOKEN',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+  payload: {
+    code_version: '1.0.0',
+  },
+});
+
+export default async function (req, res) {
+  try {
+    await handler(req, res);
+  } catch (error) {
+    rollbar.error(error);
+
+    res.status(500).send('An error occurred');
+  }
 }
