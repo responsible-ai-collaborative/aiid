@@ -66,10 +66,6 @@
         {
             "name": "default",
             "apply_when": {},
-            "document_filters": {
-                "write": {},
-                "read": {}
-            },
             "read": true,
             "write": false,
             "insert": false,

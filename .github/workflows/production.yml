@@ -1,9 +1,11 @@
-name: Deploy Staging Branch
+name: Deploy Production Branch
 
 on:
   push:
     branches:
-      - staging
+      - master
+  schedule:
+    - cron: "0 6,18 * * *"
   workflow_dispatch:
     inputs:
       skip-cache:
@@ -12,12 +14,12 @@ on:
         default: true
         type: boolean
       force-deploy:
-          description: "Deploy even if tests fail"
-          required: true
-          default: false
-          type: boolean
-
+        description: "Deploy even if tests fail"
+        required: true
+        default: false
+        type: boolean
 jobs:
+
   cache-modifier:
     uses: ./.github/workflows/cache-modifier.yml
     with:
@@ -29,8 +31,8 @@ jobs:
     needs: cache-modifier
     with:
       sha: ${{ github.sha }}
-      environment: staging
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      environment: production
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
 
   call-test-build:
     uses: ./.github/workflows/test-build.yml
@@ -38,19 +40,19 @@ jobs:
     needs: [cache-modifier, call-atlas]
     with:
       sha: ${{ github.sha }}
-      environment: staging
+      environment: production
       netlify-context: production
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier }}
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
-  call-test: 
+  call-test:
     uses: ./.github/workflows/test.yml
     needs: [cache-modifier, call-test-build]
     secrets: inherit
     with:
       sha: ${{ github.sha }}
-      environment: staging
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      environment: production
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
   call-deploy:
@@ -61,9 +63,9 @@ jobs:
     permissions:
       pull-requests: write
     with:
-      environment: staging
+      environment: production
       sha: ${{ github.sha }}
       netlify-context: production
       netlify-alias:
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}

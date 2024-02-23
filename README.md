@@ -11,8 +11,11 @@
  Artificial Intelligence Incident Database
 </h1>
 
+
 <p align="center">
-  <a href="https://app.netlify.com/sites/aiid/deploys"><img src="https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status"></a>
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml/badge.svg?branch=master"></a>
+  &nbsp;
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml/badge.svg?branch=staging"></a>
   &nbsp;
   <a href="https://codecov.io/gh/responsible-ai-collaborative/aiid"><img src="https://codecov.io/gh/responsible-ai-collaborative/aiid/graph/badge.svg?token=SKMVE2G1GU"></a>
   &nbsp;
@@ -404,7 +407,7 @@ As soon as a user is signed in, the system assigns a `subscriber` role by defaul
 |-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | `subscriber`                  | This is the default role assigned to all users. It allows the user to subscribe to new incidents, specific incidents, entities, and anything else that is subscribeable. |
 | `submitter`                   | This role allows the user to submit new incidents under their user account.                                                            |
-| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports. |
+| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports.<br>- Approve and reject new submissions. Which involves converting a submission into an incident or report (create incident or report and linked notifications), or deleting the submission |
 | `taxonomy_editor`             | This role allows the user to edit all taxonomies.                                                                                      |
 | `taxonomy_editor_{taxonomy_name}` | This role allows the user to edit a specific taxonomy. ie: `taxonomy_editor_csetv1` role allows the user to edit the `CSETv1` taxonomy. |
 | `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |

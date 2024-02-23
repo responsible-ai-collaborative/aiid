@@ -19,6 +19,8 @@ const PrismicDocPost = ({ doc, location }) => {
     Sponsors: <Sponsors />,
   };
 
+  if (!doc) return <></>;
+
   const metaTitle = doc.data.metatitle;
 
   const metaDescription = doc.data.metadescription;
