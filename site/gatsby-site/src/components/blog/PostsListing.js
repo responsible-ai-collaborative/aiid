@@ -1,31 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PostPreview from './PostPreview';
 import PrismicPostPreview from './PrismicPostPreview';
 
 export default function PostsListing({ posts, mdxBlogPosts }) {
-  const [sortedPosts, setSortedPosts] = useState([]);
+  let sortedPosts = [];
 
-  useEffect(() => {
-    // Add an mdx field to each object and flatten the structure
-    const mdxBlogPostsWithFlag = mdxBlogPosts.map((post) => ({
-      ...post,
-      date: post.frontmatter.date,
-      mdx: true,
-    }));
+  // Add an mdx field to each object and flatten the structure
+  const mdxBlogPostsWithFlag = mdxBlogPosts.map((post) => ({
+    ...post,
+    date: post.frontmatter.date,
+    mdx: true,
+  }));
 
-    const postsWithFlag = posts.map((post) => ({
-      ...post,
-      date: post.node.data.date,
-      mdx: false,
-    }));
+  const postsWithFlag = posts.map((post) => ({
+    ...post,
+    date: post.node.data.date,
+    mdx: false,
+  }));
 
-    const mergedPosts = [...mdxBlogPostsWithFlag, ...postsWithFlag];
+  const mergedPosts = [...mdxBlogPostsWithFlag, ...postsWithFlag];
 
-    const sortedPosts = mergedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    setSortedPosts(sortedPosts);
-  }),
-    [posts, mdxBlogPosts];
+  sortedPosts = mergedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <>

@@ -4,11 +4,10 @@ import config from '../../config';
 const HeadContent = ({
   children,
   metaTitle = null,
-  metaDescription = metaTitle,
+  metaDescription = null,
   path,
   metaImage = null,
   metaType = 'website',
-  title = null,
 }) => {
   const twitter = config.siteMetadata.twitterAccount;
 
@@ -18,21 +17,43 @@ const HeadContent = ({
 
   return (
     <>
-      {title ? <title>{title}</title> : metaTitle ? <title>{metaTitle}</title> : <></>}
-      {metaTitle && <meta property="og:title" content={metaTitle} />}
-      {metaTitle && <meta property="twitter:title" content={metaTitle} />}
-      {metaDescription && <meta property="og:description" content={metaDescription} />}
-      {metaDescription && <meta property="twitter:description" content={metaDescription} />}
-      {metaImage && <meta property="twitter:image" content={metaImage} />}
-      {metaImage && <meta property="og:image" content={metaImage} />}
+      {metaTitle && (
+        <>
+          <title>{metaTitle}</title>
+          <meta property="og:title" content={metaTitle} />
+          <meta property="twitter:title" content={metaTitle} />
+        </>
+      )}
+
+      {metaDescription && (
+        <>
+          <meta property="og:description" content={metaDescription} />
+          <meta property="twitter:description" content={metaDescription} />
+        </>
+      )}
+
+      {metaImage && (
+        <>
+          <meta property="twitter:image" content={metaImage} />
+          <meta property="og:image" content={metaImage} />
+        </>
+      )}
 
       <meta property="og:type" content={metaType} />
 
-      {twitter && <meta name="twitter:site" content={twitter} />}
-      {twitter && <meta name="twitter:creator" content={twitter} />}
+      {twitter && (
+        <>
+          <meta name="twitter:site" content={twitter} />
+          <meta name="twitter:creator" content={twitter} />
+        </>
+      )}
 
-      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-      {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+      {canonicalUrl && (
+        <>
+          <link rel="canonical" href={canonicalUrl} />
+          <meta property="og:url" content={canonicalUrl} />
+        </>
+      )}
 
       <meta property="twitter:card" content="summary_large_image" />
       {config.siteMetadata.favicon && (
