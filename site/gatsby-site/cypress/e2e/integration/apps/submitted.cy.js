@@ -1726,4 +1726,23 @@ describe('Submitted reports', () => {
     });
     cy.get(".pagination [aria-current='page'] button").contains('2').should('exist');
   });
+
+  maybeIt('Should display "No reports found" if no quick adds are found', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="no-results"]').should('contain', 'No reports found');
+  });
 });

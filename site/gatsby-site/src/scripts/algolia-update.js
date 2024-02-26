@@ -18,7 +18,7 @@ const { getLanguages } = require('../../i18n');
 const reporter = { log: console.log };
 
 (async () => {
-  console.log('Updating Algolia indexes...');
+  console.log(`Updating Algolia indexes of algolia app ID ${config.header.search.algoliaAppId}...`);
 
   const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
