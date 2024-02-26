@@ -229,52 +229,6 @@ export default function CheckListForm({
         <OtherTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
       </section>
       <section>
-        <header className="flex mt-6">
-          <h2>Risks</h2>
-          <div className="flex gap-2 ml-auto">
-            <Button
-              color="light"
-              onClick={() =>
-                setFieldValue(
-                  'risks',
-                  values.risks.map((r) => ({ ...r, startClosed: false }))
-                )
-              }
-            >
-              <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
-              <Trans>Expand all</Trans>
-            </Button>
-            <Button
-              color="light"
-              onClick={() =>
-                setFieldValue(
-                  'risks',
-                  values.risks.map((r) => ({ ...r, startClosed: true }))
-                )
-              }
-            >
-              <FontAwesomeIcon icon={faWindowMinimize} className="mr-2" />
-              <Trans>Collapse all</Trans>
-            </Button>
-            {userIsOwner && (
-              <Button
-                onClick={() => {
-                  setFieldValue(
-                    'risks',
-                    [emptyRisk({ generated: false })].concat(values.risks || [])
-                  );
-                }}
-              >
-                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
-                <Trans>Add Risk</Trans>
-              </Button>
-            )}
-          </div>
-        </header>
-
-        {!risksLoading && values.risks?.length == 0 && (
-          <Trans>No risks yet. Try adding some system tags.</Trans>
-        )}
         <RiskSections
           {...{
             risks: values.risks,
