@@ -25,7 +25,6 @@ const LandingPage = (props) => {
 
   const { latestReportNumbers } = props.pageContext;
 
-  // const [latestBlogPost, setLatestBlogPost] = useState(null);
   let latestBlogPost = null;
 
   if (!latestPostOld || latestPostOld.nodes.length === 0) {
