@@ -36,6 +36,47 @@ const REFINEMENT_LISTS = [
     showMoreLimit: 50,
   },
   {
+    attribute: 'epoch_incident_date',
+    placeholder: 'Type Here',
+    label: 'Incident Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+    type: 'range',
+  },
+  {
+    attribute: 'epoch_date_published',
+    placeholder: 'none',
+    label: 'Published Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+    type: 'range',
+  },
+  {
+    attribute: 'language',
+    placeholder: 'Type Here',
+    label: 'Language',
+    faIcon: faGlobe,
+    faClasses: 'far fa-globe',
+    type: 'refinement',
+    hidden: false,
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
+  },
+  {
+    attribute: 'incident_id',
+    placeholder: 'Type Here',
+    label: 'Incident ID',
+    faIcon: faHashtag,
+    faClasses: 'fas fa-hashtag',
+    type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
+  },
+  {
     attribute: 'authors',
     placeholder: 'Type Here',
     label: 'Authors',
@@ -58,34 +99,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-  },
-  {
-    attribute: 'incident_id',
-    placeholder: 'Type Here',
-    label: 'Incident ID',
-    faIcon: faHashtag,
-    faClasses: 'fas fa-hashtag',
-    type: 'refinement',
-
-    // algolia specific
-    showMore: true,
-    showMoreLimit: 50,
-  },
-  {
-    attribute: 'epoch_incident_date',
-    placeholder: 'Type Here',
-    label: 'Incident Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-    type: 'range',
-  },
-  {
-    attribute: 'epoch_date_published',
-    placeholder: 'none',
-    label: 'Published Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-    type: 'range',
   },
   {
     attribute: 'flag',
@@ -112,19 +125,6 @@ const REFINEMENT_LISTS = [
     faClasses: 'far fa-tags',
     type: 'refinement',
     hidden: false,
-  },
-  {
-    attribute: 'language',
-    placeholder: 'Type Here',
-    label: 'Language',
-    faIcon: faGlobe,
-    faClasses: 'far fa-globe',
-    type: 'refinement',
-    hidden: false,
-
-    // algolia specific
-    showMore: true,
-    showMoreLimit: 50,
   },
 ];
 

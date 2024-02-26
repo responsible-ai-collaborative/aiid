@@ -1,6 +1,6 @@
 import React from 'react';
 
-import REFINEMENT_LISTS, { FIRST_ROW } from 'components/discover/REFINEMENT_LISTS';
+import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import Filter from './Filter';
 import { graphql, useStaticQuery } from 'gatsby';
 
@@ -20,10 +20,12 @@ function Filters({ expandFilters }) {
     }
   `);
 
+  const firstRow = REFINEMENT_LISTS.slice(0, 5);
+
   return (
     <>
       {REFINEMENT_LISTS.map((list, i) => {
-        const secondRowNotExpanded = !expandFilters && !FIRST_ROW.includes(list);
+        const secondRowNotExpanded = !expandFilters && !firstRow.includes(list);
 
         const isFirstFew = i < 2;
 
