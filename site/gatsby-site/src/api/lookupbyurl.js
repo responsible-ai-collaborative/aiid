@@ -68,7 +68,7 @@ async function handler(req, res) {
 }
 
 const rollbar = new Rollbar({
-  accessToken: 'POST_SERVER_ITEM_ACCESS_TOKEN',
+  accessToken: siteConfig.rollbar.token,
   captureUncaught: true,
   captureUnhandledRejections: true,
   payload: {
