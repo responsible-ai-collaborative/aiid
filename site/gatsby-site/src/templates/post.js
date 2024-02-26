@@ -13,12 +13,10 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useLayoutContext } from 'contexts/LayoutContext';
 
 export default function Post(props) {
-  const {
-    data: { mdx: translatedMdx, enMdx },
+  let {
+    data: { mdx, enMdx }, // "mdx" is the translated version of the doc, "enMdx" is the English version
     children,
   } = props;
-
-  let mdx = translatedMdx;
 
   // If the doc is not translated, use the English version
   if (!mdx) {
