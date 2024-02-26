@@ -23,9 +23,9 @@ function ReportPage(props) {
 
   const { loading, isRole } = useUserContext();
 
-  if (report.language !== locale) {
-    report.title = data[locale].title;
-    report.text = data[locale].text;
+  if (report.language !== locale && data[locale]) {
+    report.title = data[locale]?.title;
+    report.text = data[locale]?.text;
   }
 
   const defaultTitle = t('Report {{report_number}}', { ...report });

@@ -17,6 +17,11 @@ on:
       runner-label:
         description: The label of the runner to use
         type: string
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
 
 jobs:
   test:
@@ -39,7 +44,7 @@ jobs:
           path: |
             site/gatsby-site/node_modules
             ~/.cache/Cypress
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier}}
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
@@ -50,9 +55,7 @@ jobs:
           install-command: npm ci
 
       - name: Use tests specific netlify.toml
-        run: |
-          rm -f netlify.toml
-          mv tests-netlify.toml netlify.toml
+        run: mv tests-netlify.toml netlify.toml
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
@@ -102,4 +105,4 @@ jobs:
           path: |
             site/gatsby-site/public
             site/gatsby-site/.cache/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
