@@ -230,7 +230,7 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
       let ext = path.extname(mdxFile);
 
       if (ext !== '.mdx') {
-        console.error(`Unexpected file format in mdx path parsing: ${mdxFile}`);
+        throw new Error(`Unexpected file extension in mdx path parsing: ${mdxFile}`);
       }
 
       // Split the filename in three parts split by the dot. We expect two or three components.
@@ -244,7 +244,7 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
         // Keep everything except the language code.
         theFilePath = `${path.join(thePath, fileNamePieces.at(0))}${ext}`;
       } else {
-        console.error(`Unexpected file format in mdx path parsing: ${mdxFile}`);
+        throw new Error(`Unexpected file format in mdx path parsing: ${mdxFile}`);
       }
 
       // If we use a non-default language, and the language file is on the disk, then use it.
