@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
@@ -156,7 +156,7 @@ export const Head = (props) => {
 
   const metaImage = image.createCloudinaryURL();
 
-  return <AiidHead {...{ metaTitle, metaDescription, path, metaImage }} metaType="website" />;
+  return <HeadContent {...{ metaTitle, metaDescription, path, metaImage }} metaType="website" />;
 };
 
 export const query = graphql`

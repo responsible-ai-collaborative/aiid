@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 
 const ReportList = ({ report }) => (
@@ -63,7 +63,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Incident List';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };
 
 export const pageQuery = graphql`

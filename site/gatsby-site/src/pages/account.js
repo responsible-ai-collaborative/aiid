@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import UserSubscriptions from 'components/UserSubscriptions';
 import UserDetails from 'components/users/UserDetails';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const Account = () => {
   const { user, loading } = useUserContext();
@@ -50,7 +50,7 @@ const Account = () => {
 export const Head = (props) => {
   const { t } = useTranslation(['account']);
 
-  return <AiidHead path={props.location.pathname} metaTitle={t('Account Details')} />;
+  return <HeadContent path={props.location.pathname} metaTitle={t('Account Details')} />;
 };
 
 export default Account;

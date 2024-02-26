@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import CsetTaxonomyPage from 'components/taxa/CsetTaxonomyPage';
 import FacetTaxonomyPage from 'components/taxa/FacetTaxonomyPage';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const Taxonomy = (props) => {
   if (!props || !props.pageContext || !props.data) {
@@ -20,7 +20,7 @@ export const Head = (props) => {
 
   const metaTitle = `${namespace} Charts`;
 
-  return <AiidHead metaTitle={metaTitle} path={props.location.pathname} metaType="website" />;
+  return <HeadContent metaTitle={metaTitle} path={props.location.pathname} metaType="website" />;
 };
 
 export const pageQuery = graphql`

@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { getClassificationValue } from 'utils/classifications';
 import { isAiHarm } from 'utils/cset';
 import GroupBarChart from 'components/taxa/GroupBarChart';
@@ -112,7 +112,7 @@ export const Head = (props) => {
 
   const metaTitle = 'CSET Charts';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} metaType="website" />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaType="website" />;
 };
 
 export const pageQuery = graphql`

@@ -5,7 +5,7 @@ import { Spinner } from 'flowbite-react';
 import VariantsTable from '../../components/variants/VariantsTable';
 import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
-import AiidHead from '../../components/AiidHead';
+import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { getVariantStatus, isCompleteReport } from '../../utils/variants';
 
@@ -102,5 +102,5 @@ export const Head = (props) => {
 
   const metaTitle = t('Variants');
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };

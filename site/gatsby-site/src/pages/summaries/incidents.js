@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
@@ -130,7 +130,7 @@ export const Head = (props) => {
 
   const metaTitle = t('Incident List', { ns: 'incidents' });
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };
 
 export const pageQuery = graphql`

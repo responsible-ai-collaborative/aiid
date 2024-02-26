@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
@@ -61,7 +61,7 @@ export const Head = (props) => {
 
   const metaDescription = mdx.frontmatter.metaDescription;
 
-  return <AiidHead path={pathname} {...{ metaTitle, metaDescription }} />;
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
 };
 
 export const pageQuery = graphql`

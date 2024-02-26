@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 import Link from 'components/ui/Link';
 
@@ -41,7 +41,7 @@ export const Head = (props) => {
 
   const canonicalUrl = getCanonicalUrl(true_incident_number);
 
-  return <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
 };
 
 export default IncidentCite;

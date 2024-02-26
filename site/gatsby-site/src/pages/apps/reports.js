@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHead from '../../components/AiidHead';
+import HeadContent from '../../components/HeadContent';
 import Link from '../../components/ui/Link';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -234,5 +234,5 @@ export const Head = (props) => {
 
   const metaTitle = t('Incident List');
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };

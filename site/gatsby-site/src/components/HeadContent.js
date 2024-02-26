@@ -1,7 +1,7 @@
 import React from 'react';
 import config from '../../config';
 
-const AiidHead = ({
+const HeadContent = ({
   children,
   metaTitle = null,
   metaDescription = metaTitle,
@@ -44,4 +44,4 @@ const AiidHead = ({
   );
 };
 
-export default AiidHead;
+export default HeadContent;

@@ -16,7 +16,7 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import config from '../../config';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const LandingPage = (props) => {
   const { data } = props;
@@ -177,7 +177,7 @@ export function Head({ location }) {
   return (
     <>
       <script type="application/ld+json">{stringified}</script>
-      <AiidHead
+      <HeadContent
         {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}
         metaType="website"
         title={title}

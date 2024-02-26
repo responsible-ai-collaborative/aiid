@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import PrismicDocPost from 'components/doc/PrismicDocPost';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 export default function PrismicDoc(props) {
   let doc = props?.data?.doc;
@@ -29,7 +29,7 @@ export const Head = (props) => {
 
   const metaDescription = doc?.data?.metadescription;
 
-  return <AiidHead path={pathname} {...{ metaTitle, metaDescription }} />;
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
 };
 
 export const pageQuery = graphql`

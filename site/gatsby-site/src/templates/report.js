@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
@@ -88,7 +88,7 @@ export const Head = (props) => {
   const metaTitle = `Report ${report.report_number}`;
 
   return (
-    <AiidHead
+    <HeadContent
       path={pathname}
       {...{
         metaTitle,

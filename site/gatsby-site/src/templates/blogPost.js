@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import PrismicBlogPost from 'components/blog/PrismicBlogPost';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 export default function BlogPost(props) {
   const post = props?.data?.post;
@@ -13,7 +13,7 @@ export const Head = (props) => {
   const post = props?.data?.post;
 
   return (
-    <AiidHead
+    <HeadContent
       metaTitle={post.data.metatitle}
       metaDescription={post.data.metadescription}
       path={props.location.pathname}

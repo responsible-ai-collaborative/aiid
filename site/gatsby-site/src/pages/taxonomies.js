@@ -4,7 +4,7 @@ import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
-import AiidHead from 'components/AiidHead.js';
+import HeadContent from 'components/HeadContent.js';
 
 export default function Taxonomies({ data }) {
   const { t } = useTranslation();
@@ -82,7 +82,7 @@ export const Head = (props) => {
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
   return (
-    <AiidHead
+    <HeadContent
       path={pathname}
       title={title}
       metaTitle={metaTitle}

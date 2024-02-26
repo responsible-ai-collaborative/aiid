@@ -9,7 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
 import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 import TextInputGroup from 'components/forms/TextInputGroup';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -184,7 +184,7 @@ export const Head = (props) => {
   const { t } = useTranslation();
 
   return (
-    <AiidHead
+    <HeadContent
       metaTitle={t('AIID - Login')}
       path={props.location.pathname}
       metaDescription={t('Login to your account')}

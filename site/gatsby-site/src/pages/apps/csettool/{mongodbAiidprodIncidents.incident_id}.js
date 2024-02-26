@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { useQuery } from '@apollo/client/react';
 import ListSkeleton from 'elements/Skeletons/List';
 import { FIND_CLASSIFICATION } from '../../../graphql/classifications';
@@ -90,7 +90,7 @@ export const Head = (props) => {
 
   const metaTitle = 'CSET Tool';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };
 
 export default ToolPage;

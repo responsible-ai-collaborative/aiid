@@ -3,7 +3,7 @@ import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -75,7 +75,7 @@ export const Head = (props) => {
 
   const canonicalUrl = 'https://incidentdatabase.ai/entities';
 
-  return <AiidHead path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
 };
 
 export const query = graphql`

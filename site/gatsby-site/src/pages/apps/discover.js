@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import Discover from 'components/discover/Discover';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,7 @@ export const Head = (props) => {
   const metaTitle = t('Artificial Intelligence Incident Database - Discover');
 
   return (
-    <AiidHead
+    <HeadContent
       path={pathname}
       metaTitle={metaTitle}
       metaDescription={t('Find AI related incidents and reports')}

@@ -13,7 +13,7 @@ import {
   faTag,
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { useUserContext } from 'contexts/userContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
@@ -493,5 +493,5 @@ export const Head = (props) => {
 
   const title = t('Related News Digest');
 
-  return <AiidHead path={pathname} metaTitle={title} />;
+  return <HeadContent path={pathname} metaTitle={title} />;
 };

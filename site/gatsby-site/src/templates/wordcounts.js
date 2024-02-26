@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import ReactWordcloud from 'react-d3-cloud';
 
 import Link from 'components/ui/Link';
@@ -79,7 +79,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Word Counts';
 
-  return <AiidHead path={pathname} {...{ metaTitle }} />;
+  return <HeadContent path={pathname} {...{ metaTitle }} />;
 };
 
 export default WordCounts;

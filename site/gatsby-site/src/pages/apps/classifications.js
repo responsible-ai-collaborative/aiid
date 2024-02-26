@@ -19,7 +19,7 @@ import Table, {
   SelectDatePickerFilter,
 } from 'components/ui/Table';
 import { v4 as uuidv4 } from 'uuid';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
@@ -572,5 +572,5 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  return <AiidHead path={pathname} metaTitle={'Artificial Intelligence Incident Database'} />;
+  return <HeadContent path={pathname} metaTitle={'Artificial Intelligence Incident Database'} />;
 };

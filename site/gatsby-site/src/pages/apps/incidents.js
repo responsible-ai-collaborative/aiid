@@ -3,7 +3,7 @@ import IncidentsTable from '../../components/incidents/IncidentsTable';
 import { FIND_INCIDENTS_TABLE } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import AiidHead from '../../components/AiidHead';
+import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
@@ -75,7 +75,7 @@ export const Head = (props) => {
 
   const metaDescription = t('AIID incidents list');
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export const query = graphql`

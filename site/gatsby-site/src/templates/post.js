@@ -10,7 +10,7 @@ import Outline from 'components/Outline';
 import DateLabel from 'components/ui/DateLabel';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useLayoutContext } from 'contexts/LayoutContext';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 export default function Post(props) {
   let {
@@ -97,7 +97,7 @@ export const Head = (props) => {
   }
 
   return (
-    <AiidHead
+    <HeadContent
       metaTitle={metaTitle}
       metaDescription={metaDescription}
       path={props.location.pathname}

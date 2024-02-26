@@ -1,4 +1,4 @@
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import React from 'react';
 
 const Default404 = () => {
@@ -13,7 +13,7 @@ const Default404 = () => {
 };
 
 export const Head = (props) => (
-  <AiidHead path={props.location.pathname} metaTitle={'Page not found'} />
+  <HeadContent path={props.location.pathname} metaTitle={'Page not found'} />
 );
 
 export default Default404;

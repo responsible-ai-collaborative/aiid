@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -65,7 +65,7 @@ export const Head = (props) => {
 
   const metaDescription = t('Spatial Visualization');
 
-  return <AiidHead path={pathname} {...{ metaTitle, metaDescription }} metaType="website" />;
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} metaType="website" />;
 };
 
 export default TsneVisulizationPage;

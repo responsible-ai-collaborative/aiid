@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
@@ -112,7 +112,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Database Backups and Snapshots';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };
 
 export default Backups;

@@ -12,7 +12,7 @@ import CheckListForm from 'components/checklists/CheckListForm';
 import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { removeTypename, checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const ChecklistsPage = (props) => {
   const { data } = props;
@@ -234,7 +234,7 @@ export const Head = (props) => {
 
   const { t } = useTranslation();
 
-  return <AiidHead path={pathname} metaTitle={t('Risk Checklists')} />;
+  return <HeadContent path={pathname} metaTitle={t('Risk Checklists')} />;
 };
 
 export default ChecklistsPage;

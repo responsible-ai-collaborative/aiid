@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 import Link from 'components/ui/Link';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
@@ -42,5 +42,5 @@ export const Head = (props) => {
 
   const metaTitle = 'Submissions Leaderboard';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };

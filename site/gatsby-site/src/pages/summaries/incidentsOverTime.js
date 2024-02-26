@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import { TextInput, Label } from 'flowbite-react';
 import { format } from 'date-fns';
@@ -122,7 +122,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Incidents Over Time';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} metaType="website" />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaType="website" />;
 };
 
 export const pageQuery = graphql`

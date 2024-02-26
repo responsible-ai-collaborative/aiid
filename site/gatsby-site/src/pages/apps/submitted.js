@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AiidHead from '../../components/AiidHead';
+import HeadContent from '../../components/HeadContent';
 import { ObjectId } from 'bson';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
@@ -190,7 +190,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Submissions';
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };
 
 export default SubmittedIncidentsPage;

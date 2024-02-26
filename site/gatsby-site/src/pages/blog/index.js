@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import PostsListing from 'components/blog/PostsListing';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { useTranslation } from 'react-i18next';
 
 const BlogPage = (props) => {
@@ -23,7 +23,7 @@ export const Head = (props) => {
   const { t } = useTranslation();
 
   return (
-    <AiidHead
+    <HeadContent
       metaTitle={t('AIID Blog')}
       path={props.location.pathname}
       metaDescription={t("Explore AIID's articles")}

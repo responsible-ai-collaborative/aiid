@@ -8,7 +8,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -296,7 +296,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Entity: ' + name;
 
-  return <AiidHead path={pathname} {...{ metaTitle }} />;
+  return <HeadContent path={pathname} {...{ metaTitle }} />;
 };
 
 function UnsubscribeButton({

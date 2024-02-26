@@ -1,6 +1,6 @@
 import React from 'react';
 import SubmitForm from 'components/forms/SubmitForm';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 import { useTranslation } from 'react-i18next';
 
 const SubmitPage = (props) => {
@@ -20,7 +20,7 @@ export const Head = (props) => {
 
   const metaTitle = t('New Incident Report');
 
-  return <AiidHead path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} />;
 };
 
 export default SubmitPage;

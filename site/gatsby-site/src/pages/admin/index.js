@@ -8,7 +8,7 @@ import { Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import AiidHead from 'components/AiidHead';
+import HeadContent from 'components/HeadContent';
 
 const AdminPage = (props) => {
   const { data, loading } = useQuery(FIND_USERS);
@@ -44,7 +44,7 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  return <AiidHead path={pathname} metaTitle={'Admin'} />;
+  return <HeadContent path={pathname} metaTitle={'Admin'} />;
 };
 
 export default AdminPage;
