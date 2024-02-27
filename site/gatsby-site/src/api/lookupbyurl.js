@@ -5,6 +5,15 @@ import Cors from 'cors';
 
 const cors = Cors();
 
+const isValidURL = (string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
 async function handler(req, res) {
   const urls = decodeURIComponent(req.query.urls).split(',');
 
@@ -19,7 +28,15 @@ async function handler(req, res) {
 
     const incidents = index.reduce((filtered, incident) => {
       if (
-        incident.reports.some((report) => report.url.includes(parsedURL.host + parsedURL.pathname))
+        incident.reports
+          // some reports are missing the url, it should be fixed in the source but for now we'll filter them out
+          // https://github.com/responsible-ai-collaborative/aiid/issues/2664
+          .filter((report) => isValidURL(report.url))
+          .some((report) => {
+            const reportURL = new URL(report.url);
+
+            return reportURL.host + reportURL.pathname === parsedURL.host + parsedURL.pathname;
+          })
       ) {
         filtered.push({
           incident_id: incident.incident_id,
@@ -34,15 +51,19 @@ async function handler(req, res) {
     result.incidents = incidents;
 
     const reports = index.reduce((filtered, incident) => {
-      incident.reports.forEach((report) => {
-        if (report.url.includes(parsedURL.host + parsedURL.pathname)) {
-          filtered.push({
-            report_number: report.report_number,
-            title: report.title,
-            url: report.url,
-          });
-        }
-      });
+      incident.reports
+        .filter((report) => isValidURL(report.url))
+        .forEach((report) => {
+          const reportURL = new URL(report.url);
+
+          if (reportURL.host + reportURL.pathname === parsedURL.host + parsedURL.pathname) {
+            filtered.push({
+              report_number: report.report_number,
+              title: report.title,
+              url: report.url,
+            });
+          }
+        });
 
       return filtered;
     }, []);
@@ -80,6 +101,7 @@ export default async function (req, res) {
   try {
     await handler(req, res);
   } catch (error) {
+    console.error(error);
     rollbar.error(error);
 
     res.status(500).send('An error occurred');
