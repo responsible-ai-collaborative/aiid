@@ -1,17 +1,31 @@
-import React, { useEffect } from 'react';
-import 'swagger-ui-react/swagger-ui.css';
-import spec from '../api/spec.json';
-import SwaggerUI from 'swagger-ui';
+import React from 'react';
 
 const ApiSpec = () => {
-  useEffect(() => {
-    SwaggerUI({
-      dom_id: '#swagger-ui',
-      spec,
-    });
-  }, []);
+  return (
+    <>
+      <div id="swagger-ui" />
+      <script
+        src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js"
+        crossOrigin
+      ></script>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+        window.onload = () => {
+          window.ui = SwaggerUIBundle({
+            url: '/spec.json',
+            dom_id: '#swagger-ui',
+          });
+        };
+    `,
+        }}
+      ></script>
+    </>
+  );
+};
 
-  return <div id="swagger-ui" />;
+export const Head = () => {
+  return <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />;
 };
 
 export default ApiSpec;
