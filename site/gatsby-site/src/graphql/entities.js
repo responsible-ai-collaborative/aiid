@@ -17,3 +17,13 @@ export const FIND_ENTITIES = gql`
     }
   }
 `;
+
+export const FIND_ENTITY = gql`
+  query FindEntity($query: EntityQueryInput) {
+    entity(query: $query) {
+      entity_id
+      name
+      created_at
+    }
+  }
+`;
