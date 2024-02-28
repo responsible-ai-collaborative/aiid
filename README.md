@@ -874,7 +874,7 @@ appId = [Atlas Service App ID, eg: "62cc98647e6a26c53d5b4b53"]
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
-The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
+The URL format is https://services.cloud.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
 Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.

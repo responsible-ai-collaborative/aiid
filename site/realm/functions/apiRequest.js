@@ -6,7 +6,7 @@ exports = async (input) => {
     const appId = context.values.get('appId');
 
     const loginResponse = await context.http.post({
-        url: 'https://realm.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login',
+        url: 'https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login',
         body: {
             username: publicApiKey,
             apiKey: privateApiKey,
@@ -25,7 +25,7 @@ exports = async (input) => {
 
     let response = null;
 
-    const url = `https://realm.mongodb.com/api/admin/v3.0/groups/${groupId}/apps/${appId}${input.path}`;
+    const url = `https://services.cloud.mongodb.com/api/admin/v3.0/groups/${groupId}/apps/${appId}${input.path}`;
     const headers = { "Authorization": [`Bearer ${loginResponseJSON.access_token}`] };
 
     if (input.method == 'GET') {
