@@ -5,7 +5,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 
 import Tags from 'components/forms/Tags';
-import { Label, risksEqual, statusIcon, statusColor } from 'utils/checklists';
+import { Label, risksEqual, statusIcon, statusColor, tagsIdentifier } from 'utils/checklists';
 import EditableLabel from 'components/checklists/EditableLabel';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,10 +31,13 @@ export default function RiskSection({
   updateRisk,
   changeSort,
   userIsOwner,
+  open,
+  setOpenSections,
+  generated,
 }) {
   const { t } = useTranslation();
 
-  const [showPrecedentFilters, setShowPrecedentFilters] = useState(!risk.generated);
+  const [showPrecedentFilters, setShowPrecedentFilters] = useState(!generated);
 
   const [precedents, setPrecedents] = useState([]);
 
@@ -50,25 +53,46 @@ export default function RiskSection({
       0
     ) / 3;
 
+  const toggleOpen = (event) => {
+    event.preventDefault();
+    console.log(`event.target.tagName`, event.target.tagName);
+    if (event.target.tagName == 'SUMMARY') {
+      const thisId = tagsIdentifier(risk);
+      setOpenSections(
+        (openSections) => (
+          open 
+            ? openSections.filter(id => id != thisId) 
+            : openSections.concat(thisId) 
+        )
+      );
+    }
+  };
+
   return (
-    <RiskDetails open={risk.startClosed ? undefined : true} generated={risk.generated}>
-      <RiskHeaderSummary generated={risk.generated}>
+    <RiskDetails open={open} generated={generated}>
+      <RiskHeaderSummary generated={generated} onClick={toggleOpen}>
         <HeaderItemsGroup>
           <EditableLabel
             title={risk.title}
             onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
             textClasses={`text-lg font-500 text-${
-              risk.generated ? 'gray' : 'red'
+              generated ? 'gray' : 'red'
             }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
-            disabled={!userIsOwner}
+            disabled={generated || !userIsOwner}
             {...{ updateRisk }}
           />
-          {!risk.generated && userIsOwner && (
+          {!generated && userIsOwner && (
             <button
-              onClick={() =>
-                window.confirm(t('Delete risk "{{riskTitle}}" ?', { riskTitle: risk.title })) &&
-                removeRisk((r) => risksEqual(risk, r))
-              }
+              onClick={() => {
+                if (window.confirm(t('Delete risk "{{riskTitle}}" ?', { riskTitle: risk.title }))) {
+                  removeRisk((r) => risk.id == r.id);
+                  setOpenSections(
+                    (openSections) => openSections.filter(
+                      (id) => id != tagsIdentifier(risk)
+                    )
+                  );
+                }
+              }}
               disabled={!userIsOwner}
             >
               <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mr-1" />
@@ -76,9 +100,9 @@ export default function RiskSection({
           )}
         </HeaderItemsGroup>
         <HeaderItemsGroup className="ml-auto mr-6">
-          {risk.generated ? (
+          {generated ? (
             <HeaderTextWithIcon
-              onClick={changeSort(byProperty('generated'))}
+              onClick={undefined /*changeSort(byProperty('generated'))*/}
               title={t(
                 'This risk was generated according to ' +
                   'the tags applied to the system above. ' +
@@ -92,7 +116,7 @@ export default function RiskSection({
             </HeaderTextWithIcon>
           ) : (
             <HeaderTextWithIcon
-              onClick={changeSort(byProperty('generated'))}
+              onClick={undefined /*changeSort(byProperty('generated'))*/}
               title={t(
                 'This risk is edited manually. It will persist through changes to the applied tags.'
               )}

@@ -42,7 +42,7 @@ const statusColor = (status) => riskStatusFeatures[checkedRiskStatus(status)].co
 
 const abbreviatedTag = (tag) => tag.replace(/^.*:/g, '');
 
-const risksEqual = (risk1, risk2) => {
+/*const risksEqual = (risk1, risk2) => {
   if (risk1.generated != risk2.generated) {
     return false;
   }
@@ -52,7 +52,7 @@ const risksEqual = (risk1, risk2) => {
   if (!risk1.generated && !risk1.generated) {
     return risk1.id == risk2.id;
   }
-};
+};*/
 
 const Label = (props) => (
   <label {...{ ...props, className: `mb-1 block ${props.className || ''}` }}>
@@ -60,6 +60,7 @@ const Label = (props) => (
   </label>
 );
 
+/*
 const emptyRisk = (properties) => ({
   id: generateId(),
   title: 'Untitled Risk',
@@ -74,6 +75,11 @@ const emptyRisk = (properties) => ({
   startClosed: false,
   ...(properties || {}),
 });
+*/
+
+const tagsIdentifier = (risk) => (
+  risk.tags.join("___")
+);
 
 const removeTypename = (obj) => {
   const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
@@ -81,8 +87,25 @@ const removeTypename = (obj) => {
   return JSON.parse(replaced);
 };
 
-const exportJson = (checklist) => {
-  const json = JSON.stringify(checklist).replace(/"__typename":"[A-Za-z]*",/g, '');
+const joinManualAndGeneratedRisks = (manualRisks, generatedRisks) => {
+
+  const manualRiskTagIds = manualRisks.map(risk => tagsIdentifier(risk));
+
+  const unannotatedGeneratedRisks = generatedRisks.filter(
+    generatedRisk => !manualRiskTagIds.includes(tagsIdentifier(generatedRisk))
+  );
+
+  return manualRisks.concat(unannotatedGeneratedRisks);
+};
+
+const exportJson = (checklist, generatedRisks) => {
+  
+  generatedRisks ||= [];
+
+  const json = JSON.stringify({ 
+    ...checklist, 
+    risks: joinManualAndGeneratedRisks(checklist.risks, generatedRisks) 
+  }).replace(/"__typename":"[A-Za-z]*",/g, '');
 
   const a = document.createElement('a');
 
@@ -109,7 +132,8 @@ const rowsToCsv = (rows) => {
     .join('\n');
 };
 
-const exportHtml = (checklist) => {
+const exportHtml = (checklist, generatedRisks) => {
+  generatedRisks ||= [];
   const html =
     '<!doctype html>' +
     ReactDOMServer.renderToStaticMarkup(
@@ -149,7 +173,7 @@ const exportHtml = (checklist) => {
           </section>
           <section className="risks">
             <h2 className="title">Risks</h2>
-            {checklist.risks.map((risk) => (
+            {joinManualAndGeneratedRisks(checklist.risks, generatedRisks).map((risk) => (
               <section key={risk.tags.join(',')} className="risk">
                 <h3>{risk.title}</h3>
                 {risk.tags?.length > 0 && (
@@ -221,8 +245,15 @@ const exportHtml = (checklist) => {
   a.click();
 };
 
-const exportCsv = (checklist) => {
-  const csv = rowsToCsv([
+const exportCsv = (checklist, generatedRisks) => {
+
+  generatedRisks ||= [];
+
+  const allRisks = joinManualAndGeneratedRisks(checklist.risks, generatedRisks);
+
+  console.log(`allRisks`, allRisks);
+
+  const rows = [
     ['Title', checklist.name],
     ['About', checklist.about],
     ['Goals Tags', (checklist.tags_goals || []).join(', ')],
@@ -231,20 +262,36 @@ const exportCsv = (checklist) => {
     [''],
     ['== Risks =='],
     [''],
-    ...checklist.risks.map((r, i) =>
-      [
-        ['Title', /*         */ r.title],
-        ['Tags', /*          */ r.tags],
-        ['Status', /*        */ r.risk_status],
-        ['Severity', /*      */ r.severity],
-        ['Likelihood', /*    */ r.likelihood],
-        ['Precedents (AIID #)', (r.precedents || []).map((p) => p.incident_id).join(', ')],
-        ['Notes', /*         */ r.risk_notes],
+    ['Title', 'Tags', 'Status', 'Severity', 'Likelihood', 'Precedents', 'Notes'],
+    ...allRisks.map(r => [
+      r.title,
+      r.tags,
+      r.risk_status,
+      r.severity,
+      r.likelihood,
+      (r.precedents || []).map((p) => p.incident_id).join(', '),
+      r.risk_notes,
+    ])
+  ];
 
-        // Show headings in first row, values in rest
-      ].map((pair) => (i == 0 ? pair[0] : pair[1]))
-    ),
-  ]);
+
+//    ...([].concat(allRisks).map((r, i) =>
+//      [
+//        ['ID', /*            */ r.id],
+//        ['Title', /*         */ r.title],
+//        ['Tags', /*          */ r.tags],
+//        ['Status', /*        */ r.risk_status],
+//        ['Severity', /*      */ r.severity],
+//        ['Likelihood', /*    */ r.likelihood],
+//        ['Precedents (AIID #)', (r.precedents || []).map((p) => p.incident_id).join(', ')],
+//        ['Notes', /*         */ r.risk_notes],
+//
+//        // Show headings in first row, values in rest
+//      ].map((pair) => (i == 0 ? pair[0] : pair[1]))
+//    )),
+//  ]
+  console.log(`rows`, rows);
+  const csv = rowsToCsv(rows);
 
   const a = document.createElement('a');
 
@@ -297,15 +344,16 @@ const shouldBeGrouped = (tag1, tag2) => {
   return false;
 };
 
+
 const generateId = () => uuidv4();
 
 export {
   abbreviatedTag,
   Label,
   DeleteButton,
-  emptyRisk,
-  risksEqual,
+  /*risksEqual,*/
   removeTypename,
+  tagsIdentifier,
   checkedRiskStatus,
   statusIcon,
   statusColor,

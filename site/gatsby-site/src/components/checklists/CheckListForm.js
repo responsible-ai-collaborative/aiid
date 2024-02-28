@@ -22,9 +22,9 @@ import {
   Label,
   DeleteButton,
   abbreviatedTag,
-  emptyRisk,
   shouldBeGrouped,
   risksEqual,
+  generateId,
 } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import EditableLabel from 'components/checklists/EditableLabel';
@@ -114,12 +114,14 @@ export default function CheckListForm({
 
   const generatedRisks = (generatedRisksData?.risks || []).map(
     result => ({
-      ...emptyRisk(),
       title: result.title,
       tags: result.tags,
       precedents: result.precedents,
       description: result.description,
-      startClosed: true,
+      risk_status: 'Not Mitigated',
+      risk_notes: '',
+      severity: '',
+      likelihood: '',
     })
   );
 
@@ -155,6 +157,9 @@ export default function CheckListForm({
       values.risks.filter((risk) => !findFunction(risk))
     );
   };
+  const addRisk = (newRisk) => {
+    setFieldValue('risks', [newRisk].concat(values.risks || []));
+  };
 
   const changeSort = (sortFunction) => (event) => {
     event.preventDefault();
@@ -165,7 +170,7 @@ export default function CheckListForm({
     console.log(`updateRisk(${risk}, ${attributeValueMap})`);
     const updatedRisks = [...values.risks];
 
-    const updatedRisk = updatedRisks.find((r) => risksEqual(r, risk));
+    const updatedRisk = updatedRisks.find((r) => r.id == risk.id);
 
     if (updatedRisk) {
       for (const attribute in attributeValueMap) {
@@ -175,7 +180,7 @@ export default function CheckListForm({
         updatedRisk[attribute] = attributeValueMap[attribute];
       }
     } else {
-      updatedRisks.push({ ...risk, generated: false, startClosed: false });
+      updatedRisks.push({ ...risk, id: generateId() });
     }
 
     setFieldValue('risks', updatedRisks);
@@ -215,7 +220,7 @@ export default function CheckListForm({
               <Trans>Delete</Trans>
             </DeleteButton>
           )}
-          <ExportDropdown checklist={values} />
+          <ExportDropdown checklist={values} generatedRisks={generatedRisks} />
         </HeaderControls>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
@@ -239,9 +244,10 @@ export default function CheckListForm({
             searchTags,
             allPrecedents,
             risksLoading,
+            addRisk,
             removeRisk,
-            changeSort,
             updateRisk,
+            changeSort,
             userIsOwner,
           }}
         />
@@ -575,62 +581,64 @@ const searchRisks = async ({
 
   const allPrecedents = [];
 
-  if (risksResponse.data) {
-    const results = risksResponse.data.risks;
-
-    setFieldValue(
-      'generatedRisks', 
-      results.map(result=> ({
-        ...emptyRisk(),
-        title: result.title,
-        tags: result.tags,
-        precedents: result.precedents,
-        description: result.description,
-        startClosed: true,
-      }))
-    );
-
-//    const risksToAdd = [];
+//  if (risksResponse.data) {
+//    const results = risksResponse.data.risks;
 //
-//    const manualRisks = (values.risks || []).filter(risk => !risk.generated);
-//
-//    for (let i = 0; i < results.length; i++) {
-//      const result = results[i];
-//
-//      const newRisk = {
-//        ...emptyRisk(),
+//    setFieldValue(
+//      'generatedRisks', 
+//      results.map(result=> ({
 //        title: result.title,
 //        tags: result.tags,
 //        precedents: result.precedents,
 //        description: result.description,
-//        startClosed: true,
-//      };
+//        risk_status: 'Not Mitigated',
+//        risk_notes: '',
+//        severity: '',
+//        likelihood: '',
+//      }))
+//    );
 //
-//      const notDuplicate = [...risksToAdd, ...(manualRisks || [])].every(
-//        (existingRisk) => !areDuplicates(existingRisk, newRisk)
-//      );
-//
-//      if (notDuplicate) {
-//        risksToAdd.push(newRisk);
-//      }
-//      for (const precedent of result.precedents) {
-//        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
-//          allPrecedents.push(precedent);
-//        }
-//      }
-//    }
-//
-//    setAllPrecedents(allPrecedents);
-//
-//    const newRisks = manualRisks.concat(risksToAdd);
-//    console.log(`newRisks`, newRisks);
-//    setFieldValue('risks', newRisks);
-  } else {
-    addToast({
-      message: t('Failure searching for risks.'),
-      severity: SEVERITY.danger,
-    });
-  }
+////    const risksToAdd = [];
+////
+////    const manualRisks = (values.risks || []).filter(risk => !risk.generated);
+////
+////    for (let i = 0; i < results.length; i++) {
+////      const result = results[i];
+////
+////      const newRisk = {
+////        ...emptyRisk(),
+////        title: result.title,
+////        tags: result.tags,
+////        precedents: result.precedents,
+////        description: result.description,
+////        startClosed: true,
+////      };
+////
+////      const notDuplicate = [...risksToAdd, ...(manualRisks || [])].every(
+////        (existingRisk) => !areDuplicates(existingRisk, newRisk)
+////      );
+////
+////      if (notDuplicate) {
+////        risksToAdd.push(newRisk);
+////      }
+////      for (const precedent of result.precedents) {
+////        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
+////          allPrecedents.push(precedent);
+////        }
+////      }
+////    }
+////
+////    setAllPrecedents(allPrecedents);
+////
+////    const newRisks = manualRisks.concat(risksToAdd);
+////    console.log(`newRisks`, newRisks);
+////    setFieldValue('risks', newRisks);
+//  } else {
+//    addToast({
+//      message: t('Failure searching for risks.'),
+//      severity: SEVERITY.danger,
+//    });
+//  }
 
   setRisksLoading(false);
 };

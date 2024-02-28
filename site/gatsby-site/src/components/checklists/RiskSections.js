@@ -5,7 +5,7 @@ import { faWindowMaximize, faWindowMinimize, faPlusCircle } from '@fortawesome/f
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import RiskSection from 'components/checklists/RiskSection';
-import { shouldBeGrouped } from 'utils/checklists';
+import { shouldBeGrouped, generateId, tagsIdentifier } from 'utils/checklists';
 
 const RiskSections = ({
   risks,
@@ -20,6 +20,7 @@ const RiskSections = ({
   changeSort,
   updateRisk,
   userIsOwner,
+  addRisk,
 }) => {
 
   const [openSections, setOpenSections] = useState([]);
@@ -45,6 +46,10 @@ const RiskSections = ({
     userIsOwner,
   };
 
+  const manualRiskIdentifiers = (
+    risks.map(risk => tagsIdentifier(risk))
+  );
+
   return (
     <section>
       <header className="flex mt-6">
@@ -52,7 +57,17 @@ const RiskSections = ({
         <div className="flex gap-2 ml-auto">
           <Button
             color="light"
-            onClick={() => {}}
+            onClick={() => {
+              /*
+              const riskIds = risks.map(risk => risk.id);
+              const generatedRiskIds =  generatedRisks.map(risk => risk.id);
+              */
+              setOpenSections(
+                [...risks, ...generatedRisks].map(
+                  (risk) => tagsIdentifier(risk)
+                )
+              );
+            }}
           >
             <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
             <Trans>Expand all</Trans>
@@ -67,9 +82,17 @@ const RiskSections = ({
           {userIsOwner && (
             <Button
               onClick={() => {
-                setFieldValue(
-                  'risks',
-                  [emptyRisk({ generated: false })].concat(values.risks || [])
+                addRisk(
+                  {
+                    id: generateId(),
+                    title: 'Untitled Risk',
+                    tags: [],
+                    precedents: [],
+                    risk_status: 'Not Mitigated',
+                    risk_notes: '',
+                    severity: '',
+                    likelihood: '',
+                  }
                 );
               }}
             >
@@ -79,14 +102,26 @@ const RiskSections = ({
           )}
         </div>
       </header>
+      {openSections.join(", ")}
       <div className="flex flex-col gap-8 mt-8">
 
         {(risks || []).map((risk) => (
-          <RiskSection open={openSections.includes(risk.id) ? true : undefined} key={risk.id} {...{ ...riskSectionProps, risk }} />
+          <RiskSection
+            key={risk.id}
+            open={openSections.includes(tagsIdentifier(risk)) ? true : undefined}
+            generated={false}
+            {...{ ...riskSectionProps, risk, setOpenSections }} />
         ))}
         
-        {unannotatedRisks.map(risk => (
-            <RiskSection open={openSections.includes(risk.id) ? true : undefined} key={risk.id} {...{ ...riskSectionProps, risk }} />
+        {unannotatedRisks
+          .filter(risk => !manualRiskIdentifiers.includes(tagsIdentifier(risk)))
+          .map(risk => (
+            <RiskSection
+              key={tagsIdentifier(risk)}
+              generated={true}
+              open={openSections.includes(tagsIdentifier(risk)) ? true : undefined}
+              {...{ ...riskSectionProps, risk, setOpenSections }}
+            />
         ))}
 
         {/*
