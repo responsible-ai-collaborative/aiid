@@ -130,6 +130,14 @@ class Translator {
     let reportsQuery = {};
 
     if (this.submissionDateStart) {
+      // Check if the date is valid
+      if (isNaN(Date.parse(this.submissionDateStart))) {
+        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
+
+        this.reporter.error(errorMessage);
+        throw errorMessage;
+      }
+
       this.reporter.log(
         `Translating incident reports submitted after [${this.submissionDateStart}]`
       );
