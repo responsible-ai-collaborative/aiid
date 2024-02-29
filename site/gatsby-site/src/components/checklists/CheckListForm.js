@@ -72,8 +72,6 @@ export default function CheckListForm({
 
   const [risksLoading, setRisksLoading] = useState(false);
 
-  //const [allPrecedents, setAllPrecedents] = useState([]);
-
   const searchTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
@@ -81,18 +79,6 @@ export default function CheckListForm({
   ];
 
   const apolloClient = useApolloClient();
-
-//  useEffect(() => {
-//    searchRisks({
-//      values,
-//      setFieldValue,
-//      setRisksLoading,
-//      setAllPrecedents,
-//      addToast,
-//      t,
-//      apolloClient,
-//    });
-//  }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
 
   const { data: generatedRisksData, loading: generatedRisksLoading, errors: generatedRisksErrors } = useQuery(
     gql`
@@ -140,9 +126,6 @@ export default function CheckListForm({
     return allPrecedents.concat(newPrecedents);
   }, []);
 
-  console.log(`generatedRisks`, generatedRisks);
-
-
   useEffect(() => {
     if (userIsOwner) {
       submitForm();
@@ -167,7 +150,6 @@ export default function CheckListForm({
   };
 
   const updateRisk = (risk, attributeValueMap) => {
-    console.log(`updateRisk(${risk}, ${attributeValueMap})`);
     const updatedRisks = [...values.risks];
 
     const updatedRisk = updatedRisks.find((r) => r.id == risk.id);
@@ -297,9 +279,6 @@ const QueryTagInput = ({
   const [realValue, setRealValue] = useState(idValue);
 
   useEffect(() => {
-  // setFieldValue(id, selectedTags);
-
-    console.log(`useEffect() setFieldValue(id, realValue);`, id, realValue);
     setFieldValue(id, realValue);
   }, [realValue]);
 
@@ -315,7 +294,6 @@ const QueryTagInput = ({
         value={realValue}
         options={tags.filter((tag) => include(tag.split(':')))}
         onChange={(tagInputArray) => {
-          console.log(`Tags.onChange(`, tagInputArray, ')');
           //
           // Example tagInputArray:
           //
@@ -551,7 +529,6 @@ const searchRisks = async ({
   t,
   apolloClient,
 }) => {
-  console.log(`searchRisks()`, values);
   const queryTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
@@ -580,65 +557,6 @@ const searchRisks = async ({
   });
 
   const allPrecedents = [];
-
-//  if (risksResponse.data) {
-//    const results = risksResponse.data.risks;
-//
-//    setFieldValue(
-//      'generatedRisks', 
-//      results.map(result=> ({
-//        title: result.title,
-//        tags: result.tags,
-//        precedents: result.precedents,
-//        description: result.description,
-//        risk_status: 'Not Mitigated',
-//        risk_notes: '',
-//        severity: '',
-//        likelihood: '',
-//      }))
-//    );
-//
-////    const risksToAdd = [];
-////
-////    const manualRisks = (values.risks || []).filter(risk => !risk.generated);
-////
-////    for (let i = 0; i < results.length; i++) {
-////      const result = results[i];
-////
-////      const newRisk = {
-////        ...emptyRisk(),
-////        title: result.title,
-////        tags: result.tags,
-////        precedents: result.precedents,
-////        description: result.description,
-////        startClosed: true,
-////      };
-////
-////      const notDuplicate = [...risksToAdd, ...(manualRisks || [])].every(
-////        (existingRisk) => !areDuplicates(existingRisk, newRisk)
-////      );
-////
-////      if (notDuplicate) {
-////        risksToAdd.push(newRisk);
-////      }
-////      for (const precedent of result.precedents) {
-////        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
-////          allPrecedents.push(precedent);
-////        }
-////      }
-////    }
-////
-////    setAllPrecedents(allPrecedents);
-////
-////    const newRisks = manualRisks.concat(risksToAdd);
-////    console.log(`newRisks`, newRisks);
-////    setFieldValue('risks', newRisks);
-//  } else {
-//    addToast({
-//      message: t('Failure searching for risks.'),
-//      severity: SEVERITY.danger,
-//    });
-//  }
 
   setRisksLoading(false);
 };

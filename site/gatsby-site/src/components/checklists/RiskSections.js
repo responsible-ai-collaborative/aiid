@@ -25,9 +25,6 @@ const RiskSections = ({
 
   const [openSections, setOpenSections] = useState([]);
 
-  console.log(`risks`, risks);
-  console.log(`allPrecedents`, allPrecedents);
-
   const unannotatedRisks = (generatedRisks || []).filter(
     generatedRisk => risks.every(
       (manualRisk) => !areDuplicates(generatedRisk, manualRisk)
@@ -58,10 +55,6 @@ const RiskSections = ({
           <Button
             color="light"
             onClick={() => {
-              /*
-              const riskIds = risks.map(risk => risk.id);
-              const generatedRiskIds =  generatedRisks.map(risk => risk.id);
-              */
               setOpenSections(
                 [...risks, ...generatedRisks].map(
                   (risk) => tagsIdentifier(risk)
@@ -102,7 +95,6 @@ const RiskSections = ({
           )}
         </div>
       </header>
-      {openSections.join(", ")}
       <div className="flex flex-col gap-8 mt-8">
 
         {(risks || []).map((risk) => (
@@ -123,24 +115,6 @@ const RiskSections = ({
               {...{ ...riskSectionProps, risk, setOpenSections }}
             />
         ))}
-
-        {/*
-          {risksLoading ? (
-            <div className="flex flex-row">
-              <Spinner />
-              <span className="ml-2">
-                <Trans>Searching for risks matching tags…</Trans>
-              </span>
-            </div>
-          ) : (
-            (generatedRisks || []).filter().map(risk => (
-              <RiskSection key={risk.id} {...{ ...riskSectionProps, risk }} />
-            ))
-          )}
-        </>
-        */}
-
-        <pre>{JSON.stringify(allPrecedents, null, 2)}</pre>
       </div>
     </section>
   );

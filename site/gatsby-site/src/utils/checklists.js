@@ -42,40 +42,11 @@ const statusColor = (status) => riskStatusFeatures[checkedRiskStatus(status)].co
 
 const abbreviatedTag = (tag) => tag.replace(/^.*:/g, '');
 
-/*const risksEqual = (risk1, risk2) => {
-  if (risk1.generated != risk2.generated) {
-    return false;
-  }
-  if (risk1.generated && risk2.generated) {
-    return risk1.title == risk2.title;
-  }
-  if (!risk1.generated && !risk1.generated) {
-    return risk1.id == risk2.id;
-  }
-};*/
-
 const Label = (props) => (
   <label {...{ ...props, className: `mb-1 block ${props.className || ''}` }}>
     {props.children}
   </label>
 );
-
-/*
-const emptyRisk = (properties) => ({
-  id: generateId(),
-  title: 'Untitled Risk',
-  tags: [],
-  risk_status: 'Not Mitigated',
-  risk_notes: '',
-  severity: '',
-  likelihood: '',
-  precedents: [],
-  touched: false,
-  generated: true,
-  startClosed: false,
-  ...(properties || {}),
-});
-*/
 
 const tagsIdentifier = (risk) => (
   risk.tags.join("___")
@@ -274,23 +245,6 @@ const exportCsv = (checklist, generatedRisks) => {
     ])
   ];
 
-
-//    ...([].concat(allRisks).map((r, i) =>
-//      [
-//        ['ID', /*            */ r.id],
-//        ['Title', /*         */ r.title],
-//        ['Tags', /*          */ r.tags],
-//        ['Status', /*        */ r.risk_status],
-//        ['Severity', /*      */ r.severity],
-//        ['Likelihood', /*    */ r.likelihood],
-//        ['Precedents (AIID #)', (r.precedents || []).map((p) => p.incident_id).join(', ')],
-//        ['Notes', /*         */ r.risk_notes],
-//
-//        // Show headings in first row, values in rest
-//      ].map((pair) => (i == 0 ? pair[0] : pair[1]))
-//    )),
-//  ]
-  console.log(`rows`, rows);
   const csv = rowsToCsv(rows);
 
   const a = document.createElement('a');
@@ -351,7 +305,6 @@ export {
   abbreviatedTag,
   Label,
   DeleteButton,
-  /*risksEqual,*/
   removeTypename,
   tagsIdentifier,
   checkedRiskStatus,

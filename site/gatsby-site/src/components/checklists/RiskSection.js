@@ -55,8 +55,12 @@ export default function RiskSection({
 
   const toggleOpen = (event) => {
     event.preventDefault();
-    console.log(`event.target.tagName`, event.target.tagName);
-    if (event.target.tagName == 'SUMMARY') {
+
+    const clickedBackground = event.target.tagName == 'SUMMARY';
+
+    const clickedTitle = event.target.getAttribute("data-cy") == "risk-title-no-edit";
+
+    if (clickedBackground || clickedTitle) {
       const thisId = tagsIdentifier(risk);
       setOpenSections(
         (openSections) => (
@@ -102,7 +106,6 @@ export default function RiskSection({
         <HeaderItemsGroup className="ml-auto mr-6">
           {generated ? (
             <HeaderTextWithIcon
-              onClick={undefined /*changeSort(byProperty('generated'))*/}
               title={t(
                 'This risk was generated according to ' +
                   'the tags applied to the system above. ' +
@@ -116,7 +119,6 @@ export default function RiskSection({
             </HeaderTextWithIcon>
           ) : (
             <HeaderTextWithIcon
-              onClick={undefined /*changeSort(byProperty('generated'))*/}
               title={t(
                 'This risk is edited manually. It will persist through changes to the applied tags.'
               )}
