@@ -330,6 +330,12 @@ The dry run is disabled through an environment variable as follows:
 TRANSLATE_DRY_RUN=false
 ```
 
+In addition to the Dry Run mode, you can also limit the number of reports to translate by setting the following environment variable. This variable sets the date from which the reports will be translated (using the `date_submitted` report field):
+
+```
+TRANSLATE_SUBMISSION_DATE_START=2024-01-01
+```
+
 ### Geocoding
 If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
 
