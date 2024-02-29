@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Spinner, Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
-import { faWindowMaximize, faWindowMinimize, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faWindowMaximize,
+  faWindowMinimize,
+  faPlusCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import RiskSection from 'components/checklists/RiskSection';
@@ -10,25 +14,22 @@ import { shouldBeGrouped, generateId, tagsIdentifier } from 'utils/checklists';
 const RiskSections = ({
   risks,
   generatedRisks,
+  generatedRisksLoading,
   setFieldValue,
   submitForm,
   tags,
   searchTags,
   allPrecedents,
-  risksLoading,
   removeRisk,
   changeSort,
   updateRisk,
   userIsOwner,
   addRisk,
 }) => {
-
   const [openSections, setOpenSections] = useState([]);
 
-  const unannotatedRisks = (generatedRisks || []).filter(
-    generatedRisk => risks.every(
-      (manualRisk) => !areDuplicates(generatedRisk, manualRisk)
-    )
+  const unannotatedRisks = (generatedRisks || []).filter((generatedRisk) =>
+    risks.every((manualRisk) => !areDuplicates(generatedRisk, manualRisk))
   );
 
   const riskSectionProps = {
@@ -43,9 +44,7 @@ const RiskSections = ({
     userIsOwner,
   };
 
-  const manualRiskIdentifiers = (
-    risks.map(risk => tagsIdentifier(risk))
-  );
+  const manualRiskIdentifiers = risks.map((risk) => tagsIdentifier(risk));
 
   return (
     <section>
@@ -55,11 +54,7 @@ const RiskSections = ({
           <Button
             color="light"
             onClick={() => {
-              setOpenSections(
-                [...risks, ...generatedRisks].map(
-                  (risk) => tagsIdentifier(risk)
-                )
-              );
+              setOpenSections([...risks, ...generatedRisks].map((risk) => tagsIdentifier(risk)));
             }}
           >
             <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
@@ -67,7 +62,9 @@ const RiskSections = ({
           </Button>
           <Button
             color="light"
-            onClick={() => { setOpenSections([]) }}
+            onClick={() => {
+              setOpenSections([]);
+            }}
           >
             <FontAwesomeIcon icon={faWindowMinimize} className="mr-2" />
             <Trans>Collapse all</Trans>
@@ -75,18 +72,16 @@ const RiskSections = ({
           {userIsOwner && (
             <Button
               onClick={() => {
-                addRisk(
-                  {
-                    id: generateId(),
-                    title: 'Untitled Risk',
-                    tags: [],
-                    precedents: [],
-                    risk_status: 'Not Mitigated',
-                    risk_notes: '',
-                    severity: '',
-                    likelihood: '',
-                  }
-                );
+                addRisk({
+                  id: generateId(),
+                  title: 'Untitled Risk',
+                  tags: [],
+                  precedents: [],
+                  risk_status: 'Not Mitigated',
+                  risk_notes: '',
+                  severity: '',
+                  likelihood: '',
+                });
               }}
             >
               <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
@@ -96,25 +91,27 @@ const RiskSections = ({
         </div>
       </header>
       <div className="flex flex-col gap-8 mt-8">
-
         {(risks || []).map((risk) => (
           <RiskSection
             key={risk.id}
             open={openSections.includes(tagsIdentifier(risk)) ? true : undefined}
             generated={false}
-            {...{ ...riskSectionProps, risk, setOpenSections }} />
+            {...{ ...riskSectionProps, risk, setOpenSections }}
+          />
         ))}
-        
+
         {unannotatedRisks
-          .filter(risk => !manualRiskIdentifiers.includes(tagsIdentifier(risk)))
-          .map(risk => (
+          .filter((risk) => !manualRiskIdentifiers.includes(tagsIdentifier(risk)))
+          .map((risk) => (
             <RiskSection
               key={tagsIdentifier(risk)}
               generated={true}
               open={openSections.includes(tagsIdentifier(risk)) ? true : undefined}
               {...{ ...riskSectionProps, risk, setOpenSections }}
             />
-        ))}
+          ))}
+
+        {generatedRisksLoading && <Spinner />}
       </div>
     </section>
   );

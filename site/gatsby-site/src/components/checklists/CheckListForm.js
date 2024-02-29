@@ -2,15 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useQuery, useMutation, useApolloClient, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEnvelope,
-  faPlusCircle,
-  faWindowMaximize,
-  faWindowMinimize,
   faBullseye,
   faMicrochip,
   faArrowsTurnToDots,
@@ -18,14 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
-import {
-  Label,
-  DeleteButton,
-  abbreviatedTag,
-  shouldBeGrouped,
-  risksEqual,
-  generateId,
-} from 'utils/checklists';
+import { Label, DeleteButton, abbreviatedTag, generateId } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
@@ -70,17 +60,48 @@ export default function CheckListForm({
     }
   };
 
-  const [risksLoading, setRisksLoading] = useState(false);
-
   const searchTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
     ...(values['tags_other'] || []),
   ];
 
-  const apolloClient = useApolloClient();
-
-  const { data: generatedRisksData, loading: generatedRisksLoading, errors: generatedRisksErrors } = useQuery(
+  // Hits the risk management API with the specified query tags
+  // to populate values.risks and allPrecedents.
+  //
+  // Example resulting values.risks:
+  //
+  // [ {
+  //     /* GraphQL API Results */
+  //     title: "Gaming Vulnerability",
+  //     tags: ["GMF:Failure:Gaming Vulnerability"],
+  //     precedents: [
+  //       { incident_id: 146,
+  //         url: "https://incidentdatabase.ai/cite/146",
+  //         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+  //         description: "A publicly accessible research model [...] moral judgments.",
+  //         tags: [ "GMF:Known AI Technology:Language Modeling", ],
+  //       },
+  //     ],
+  //
+  //     /* Defaults Risk Annotations */
+  //     risk_status: "Not Mitigated",
+  //     risk_notes: "",
+  //     severity: "",
+  //
+  //     /* UI properties*/
+  //     startClosed: true,
+  //     touched: false,
+  //     generated: true,
+  //   }
+  // ]
+  //
+  // TODO: Group known and potential in GMF Taxonomy
+  const {
+    data: generatedRisksData,
+    loading: generatedRisksLoading,
+    errors: generatedRisksErrors,
+  } = useQuery(
     gql`
       query {
         risks(input: { tags: [${searchTags.map((t) => `"${t}"`).join(', ')}] }) {
@@ -98,28 +119,28 @@ export default function CheckListForm({
     { skip: searchTags.length == 0 }
   );
 
-  const generatedRisks = (generatedRisksData?.risks || []).map(
-    result => ({
-      title: result.title,
-      tags: result.tags,
-      precedents: result.precedents,
-      description: result.description,
-      risk_status: 'Not Mitigated',
-      risk_notes: '',
-      severity: '',
-      likelihood: '',
-    })
-  );
+  if (generatedRisksErrors) {
+    addToast({
+      message: t('Failure searching for risks.'),
+      severity: SEVERITY.danger,
+    });
+  }
+
+  const generatedRisks = (generatedRisksData?.risks || []).map((result) => ({
+    title: result.title,
+    tags: result.tags,
+    precedents: result.precedents,
+    description: result.description,
+    risk_status: 'Not Mitigated',
+    risk_notes: '',
+    severity: '',
+    likelihood: '',
+  }));
 
   const allPrecedents = generatedRisks.reduce((allPrecedents, generatedRisk) => {
-
-    const newPrecedents = generatedRisk.precedents.filter(
-      (precedent) => (
-        allPrecedents.every(
-          (existingPrecedent) => (
-            existingPrecedent.incident_id != precedent.incident_id
-          )
-        )
+    const newPrecedents = generatedRisk.precedents.filter((precedent) =>
+      allPrecedents.every(
+        (existingPrecedent) => existingPrecedent.incident_id != precedent.incident_id
       )
     );
 
@@ -140,6 +161,7 @@ export default function CheckListForm({
       values.risks.filter((risk) => !findFunction(risk))
     );
   };
+
   const addRisk = (newRisk) => {
     setFieldValue('risks', [newRisk].concat(values.risks || []));
   };
@@ -162,7 +184,8 @@ export default function CheckListForm({
         updatedRisk[attribute] = attributeValueMap[attribute];
       }
     } else {
-      updatedRisks.push({ ...risk, id: generateId() });
+      // A generated risk being promoted to a manual one
+      updatedRisks.push({ ...risk, ...attributeValueMap, id: generateId() });
     }
 
     setFieldValue('risks', updatedRisks);
@@ -220,12 +243,12 @@ export default function CheckListForm({
           {...{
             risks: values.risks,
             generatedRisks,
+            generatedRisksLoading,
             setFieldValue,
             submitForm,
             tags,
             searchTags,
             allPrecedents,
-            risksLoading,
             addRisk,
             removeRisk,
             updateRisk,
@@ -343,8 +366,8 @@ const QueryTagInput = ({
         allowNew={false}
       />
     </div>
-  ); 
-}
+  );
+};
 
 const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
@@ -486,85 +509,5 @@ function Info({ children, className }) {
       </button>
       <strong>INFO</strong>: {children}
     </div>
-  );
-}
-
-// Hits the risk management API with the specified query tags
-// to populate values.risks and allPrecedents.
-//
-// Example resulting values.risks:
-//
-// [ {
-//     /* GraphQL API Results */
-//     title: "Gaming Vulnerability",
-//     tags: ["GMF:Failure:Gaming Vulnerability"],
-//     precedents: [
-//       { incident_id: 146,
-//         url: "https://incidentdatabase.ai/cite/146",
-//         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-//         description: "A publicly accessible research model [...] moral judgments.",
-//         tags: [ "GMF:Known AI Technology:Language Modeling", ],
-//       },
-//     ],
-//
-//     /* Defaults Risk Annotations */
-//     risk_status: "Not Mitigated",
-//     risk_notes: "",
-//     severity: "",
-//
-//     /* UI properties*/
-//     startClosed: true,
-//     touched: false,
-//     generated: true,
-//   }
-// ]
-//
-// TODO: Group known and potential in GMF Taxonomy
-const searchRisks = async ({
-  values,
-  setFieldValue,
-  setRisksLoading,
-  setAllPrecedents,
-  addToast,
-  t,
-  apolloClient,
-}) => {
-  const queryTags = [
-    ...(values['tags_goals'] || []),
-    ...(values['tags_methods'] || []),
-    ...(values['tags_other'] || []),
-  ];
-
-  if (queryTags.length == 0) return;
-
-  setRisksLoading(true);
-
-  const risksResponse = await apolloClient.query({
-    query: gql`
-      query {
-        risks(input: { tags: [${queryTags.map((t) => `"${t}"`).join(', ')}] }) {
-          tags
-          title
-          precedents {
-            incident_id
-            title
-            description
-            tags
-          }
-        }
-      }
-    `,
-  });
-
-  const allPrecedents = [];
-
-  setRisksLoading(false);
-};
-
-function areDuplicates(A, B) {
-  return (
-    A.tags.length == B.tags.length &&
-    A.tags.every((aTag) => B.tags.some((bTag) => shouldBeGrouped(bTag, aTag))) &&
-    B.tags.every((bTag) => A.tags.some((aTag) => shouldBeGrouped(aTag, bTag)))
   );
 }
