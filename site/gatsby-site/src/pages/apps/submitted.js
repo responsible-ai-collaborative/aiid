@@ -125,62 +125,67 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                       landing page
                     </Trans>
                   </p>
-                  <ListGroup className="mb-5">
-                    {sortedQuickAdds.length < 1 && <ListSkeleton />}
-                    {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
-                      <div
-                        key={_id}
-                        className="flex flex-row md:flex-wrap flex-nowrap border-b last:border-none m-0 p-2"
-                      >
-                        <div className="flex">
-                          <div className="flex items-center mr-10">
-                            <Button
-                              variant="outline-secondary"
-                              disabled={!isAdmin}
-                              onClick={() => {
-                                if (
-                                  window.confirm(
-                                    t('Are you sure you want to delete “{{url}}”?', { url })
-                                  )
-                                ) {
-                                  submitDeleteQuickAdd(_id);
-                                }
-                              }}
-                            >
-                              <Trans>Delete</Trans>
-                              <svg
-                                aria-hidden="true"
-                                className="ml-2 -mr-1 w-4 h-4"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg"
+                  {sortedQuickAdds.length < 1 ? (
+                    <p data-cy="no-results">
+                      <Trans>No reports found</Trans>
+                    </p>
+                  ) : (
+                    <ListGroup className="mb-5">
+                      {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
+                        <div
+                          key={_id}
+                          className="flex flex-row md:flex-wrap flex-nowrap border-b last:border-none m-0 p-2"
+                        >
+                          <div className="flex">
+                            <div className="flex items-center mr-10">
+                              <Button
+                                variant="outline-secondary"
+                                disabled={!isAdmin}
+                                onClick={() => {
+                                  if (
+                                    window.confirm(
+                                      t('Are you sure you want to delete “{{url}}”?', { url })
+                                    )
+                                  ) {
+                                    submitDeleteQuickAdd(_id);
+                                  }
+                                }}
                               >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                  clipRule="evenodd"
-                                ></path>
-                              </svg>
-                            </Button>
-                          </div>
-                          <div>
-                            {' '}
-                            <a
-                              href={url}
-                              className="break-all"
-                              style={{ overflowWrap: 'break-word' }}
-                            >
-                              {url}
-                            </a>
-                            <br />
-                            <div className="flex">
-                              <Badge>Sub: {date_submitted}</Badge>
+                                <Trans>Delete</Trans>
+                                <svg
+                                  aria-hidden="true"
+                                  className="ml-2 -mr-1 w-4 h-4"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                  ></path>
+                                </svg>
+                              </Button>
+                            </div>
+                            <div>
+                              {' '}
+                              <a
+                                href={url}
+                                className="break-all"
+                                style={{ overflowWrap: 'break-word' }}
+                              >
+                                {url}
+                              </a>
+                              <br />
+                              <div className="flex">
+                                <Badge>Sub: {date_submitted}</Badge>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </ListGroup>
+                      ))}
+                    </ListGroup>
+                  )}
                 </div>
               </div>
             </>
