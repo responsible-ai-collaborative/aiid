@@ -1,9 +1,10 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { Dropdown } from 'flowbite-react';
-import { exportJson, exportCsv, exportHtml } from 'utils/checklists';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { exportJson, exportCsv, exportHtml } from 'utils/checklists';
 
 const ExportDropdown = ({ checklist, generatedRisks }) => {
   const label = (
