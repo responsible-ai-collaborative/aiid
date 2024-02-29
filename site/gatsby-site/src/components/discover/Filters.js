@@ -1,5 +1,4 @@
 import React from 'react';
-
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import Filter from './Filter';
 import { graphql, useStaticQuery } from 'gatsby';
