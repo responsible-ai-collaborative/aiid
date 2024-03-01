@@ -14,9 +14,8 @@ class Translator {
     translateClient,
     languages,
     reporter,
-    // TODO: rollback this temporary hack
-    //dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
-    dryRun = true,
+    submissionDateStart = process.env.TRANSLATE_SUBMISSION_DATE_START,
+    dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
   }) {
     this.translateClient = translateClient;
     /**
@@ -26,6 +25,7 @@ class Translator {
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
+    this.submissionDateStart = submissionDateStart;
     this.dryRun = dryRun;
   }
 
@@ -127,7 +127,32 @@ class Translator {
   async run() {
     await this.mongoClient.connect();
 
-    const reports = await this.mongoClient.db('aiidprod').collection(`reports`).find({}).toArray();
+    let reportsQuery = {};
+
+    if (this.submissionDateStart) {
+      // Check if the date is valid
+      if (isNaN(Date.parse(this.submissionDateStart))) {
+        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
+
+        this.reporter.error(errorMessage);
+        throw errorMessage;
+      }
+
+      this.reporter.log(
+        `Translating incident reports submitted after [${this.submissionDateStart}]`
+      );
+      reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
+    } else {
+      this.reporter.log(`Translating all incident reports`);
+    }
+
+    const reports = await this.mongoClient
+      .db('aiidprod')
+      .collection(`reports`)
+      .find(reportsQuery)
+      .toArray();
+
+    this.reporter.log(`Processing traslation of ${reports.length} incident reports`);
 
     const concurrency = 10;
 
