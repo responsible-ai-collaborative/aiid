@@ -36,6 +36,47 @@ const REFINEMENT_LISTS = [
     showMoreLimit: 50,
   },
   {
+    attribute: 'epoch_incident_date',
+    placeholder: 'Type Here',
+    label: 'Incident Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+    type: 'range',
+  },
+  {
+    attribute: 'epoch_date_published',
+    placeholder: 'none',
+    label: 'Published Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+    type: 'range',
+  },
+  {
+    attribute: 'language',
+    placeholder: 'Type Here',
+    label: 'Language',
+    faIcon: faGlobe,
+    faClasses: 'far fa-globe',
+    type: 'refinement',
+    hidden: false,
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
+  },
+  {
+    attribute: 'incident_id',
+    placeholder: 'Type Here',
+    label: 'Incident ID',
+    faIcon: faHashtag,
+    faClasses: 'fas fa-hashtag',
+    type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
+  },
+  {
     attribute: 'authors',
     placeholder: 'Type Here',
     label: 'Authors',
@@ -58,34 +99,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-  },
-  {
-    attribute: 'incident_id',
-    placeholder: 'Type Here',
-    label: 'Incident ID',
-    faIcon: faHashtag,
-    faClasses: 'fas fa-hashtag',
-    type: 'refinement',
-
-    // algolia specific
-    showMore: true,
-    showMoreLimit: 50,
-  },
-  {
-    attribute: 'epoch_incident_date',
-    placeholder: 'Type Here',
-    label: 'Incident Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-    type: 'range',
-  },
-  {
-    attribute: 'epoch_date_published',
-    placeholder: 'none',
-    label: 'Published Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-    type: 'range',
   },
   {
     attribute: 'flag',
@@ -113,19 +126,16 @@ const REFINEMENT_LISTS = [
     type: 'refinement',
     hidden: false,
   },
-  {
-    attribute: 'language',
-    placeholder: 'Type Here',
-    label: 'Language',
-    faIcon: faGlobe,
-    faClasses: 'far fa-globe',
-    type: 'refinement',
-    hidden: false,
-
-    // algolia specific
-    showMore: true,
-    showMoreLimit: 50,
-  },
 ];
 
-export default REFINEMENT_LISTS;
+const FIRST_ROW = REFINEMENT_LISTS.filter((refinement) =>
+  [
+    'classifications',
+    'epoch_incident_date',
+    'epoch_date_published',
+    'source_domain',
+    'language',
+  ].includes(refinement.attribute)
+);
+
+export { REFINEMENT_LISTS as default, FIRST_ROW };
