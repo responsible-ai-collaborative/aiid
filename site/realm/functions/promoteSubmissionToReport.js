@@ -153,6 +153,7 @@ exports = async (input) => {
     source_domain: submission.source_domain,
     language: submission.language,
     tags: submission.tags,
+    quiet: submission.quiet
   };
   if (submission.embedding) {
     newReport.embedding = submission.embedding;

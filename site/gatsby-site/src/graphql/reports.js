@@ -34,6 +34,7 @@ export const FIND_REPORT = gql`
         from_text_hash
         vector
       }
+      quiet
     }
   }
 `;
@@ -70,6 +71,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
         title
         text
       }
+      quiet
     }
   }
 `;
@@ -172,6 +174,7 @@ export const FIND_REPORT_HISTORY = gql`
       url
       source_domain
       user
+      quiet
     }
   }
 `;
