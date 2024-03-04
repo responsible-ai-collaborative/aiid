@@ -36,7 +36,7 @@ const createWordCountsPage = async (graphql, createPage) => {
       }
       latestReports: allMongodbAiidprodIncidents(
         filter: {
-          reports: { elemMatch: { is_incident_report: { eq: true } }, quiet: { in: [null, false] } }
+          reports: { elemMatch: { is_incident_report: { eq: true }, quiet: { in: [null, false] } } }
         }
         sort: { reports: { epoch_date_submitted: DESC } }
         limit: 5
