@@ -97,6 +97,7 @@ export const UPDATE_REPORT = gql`
       report_number
       editor_notes
       language
+      quiet
     }
   }
 `;
