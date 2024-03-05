@@ -6,6 +6,7 @@ import updateIncident50 from '../../fixtures/incidents/updateIncident50.json';
 import { format, getUnixTime } from 'date-fns';
 import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 import incident10 from '../../fixtures/incidents/fullIncident10.json';
+import incident50 from '../../fixtures/incidents/fullIncident50.json';
 import { transformIncidentData, deleteIncidentTypenames } from '../../../src/utils/cite';
 import { transformReportData, deleteReportTypenames } from '../../../src/utils/reports';
 const { gql } = require('@apollo/client');
@@ -252,6 +253,22 @@ describe('Cite pages', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 10,
+      'findIncident',
+      incident10
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 10,
+      'findIncident',
+      incident50
+    );
+
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
     cy.waitForStableDOM();
 
@@ -265,6 +282,9 @@ describe('Cite pages', () => {
     cy.waitForStableDOM();
 
     cy.get('#duplicateIncidentId > a[aria-label="50"]').click();
+    cy.waitForStableDOM();
+
+    cy.get('#input-duplicateIncidentId').blur();
     cy.waitForStableDOM();
 
     cy.get('[data-cy="confirm-remove-duplicate"]').click();
