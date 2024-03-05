@@ -330,6 +330,12 @@ The dry run is disabled through an environment variable as follows:
 TRANSLATE_DRY_RUN=false
 ```
 
+In addition to the Dry Run mode, you can also limit the number of reports to translate by setting the following environment variable. This variable sets the date from which the reports will be translated (using the `date_submitted` report field):
+
+```
+TRANSLATE_SUBMISSION_DATE_START=2024-01-01
+```
+
 ### Geocoding
 If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
 
@@ -407,7 +413,7 @@ As soon as a user is signed in, the system assigns a `subscriber` role by defaul
 |-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | `subscriber`                  | This is the default role assigned to all users. It allows the user to subscribe to new incidents, specific incidents, entities, and anything else that is subscribeable. |
 | `submitter`                   | This role allows the user to submit new incidents under their user account.                                                            |
-| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports. |
+| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports.<br>- Approve and reject new submissions. Which involves converting a submission into an incident or report (create incident or report and linked notifications), or deleting the submission |
 | `taxonomy_editor`             | This role allows the user to edit all taxonomies.                                                                                      |
 | `taxonomy_editor_{taxonomy_name}` | This role allows the user to edit a specific taxonomy. ie: `taxonomy_editor_csetv1` role allows the user to edit the `CSETv1` taxonomy. |
 | `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
