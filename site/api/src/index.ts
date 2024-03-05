@@ -4,6 +4,7 @@ import { makeExecutableSchema, mergeSchemas } from '@graphql-tools/schema';
 import { wrapSchema, FilterRootFields, FilterTypes, FilterObjectFields, schemaFromExecutor } from '@graphql-tools/wrap';
 import { print } from 'graphql';
 import { MongoClient } from 'mongodb';
+import { ObjectIDResolver, LongResolver } from 'graphql-scalars';
 
 async function realmExecutor({ document, variables }: { document: any; variables?: any }) {
     const query = print(document);
@@ -26,11 +27,12 @@ async function realmExecutor({ document, variables }: { document: any; variables
 (async () => {
 
     const typeDefs = `
-
+        scalar Long
+        scalar ObjectId
         type QuickAdd {
-            # _id: ObjectId
+            _id: ObjectId
             date_submitted: String!
-            # incident_id: Long
+            incident_id: Long
             source_domain: String
             url: String!
         }
@@ -41,6 +43,8 @@ async function realmExecutor({ document, variables }: { document: any; variables
     `;
 
     const resolvers = {
+        ObjectId: ObjectIDResolver,
+        Long: LongResolver,
         Query: {
             quickadds: async () => {
 
