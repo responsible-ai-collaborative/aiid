@@ -19,7 +19,7 @@ const getApolloCLient = (getValidAccessToken) =>
     link: ApolloLink.from([
       removeTypenameFromVariables(),
       new HttpLink({
-        uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+        uri: config.gatsby.apiGateway,
         fetch: async (uri, options) => {
           const accessToken = await getValidAccessToken();
 

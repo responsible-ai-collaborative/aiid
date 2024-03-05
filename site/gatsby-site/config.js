@@ -3,6 +3,7 @@ const config = {
     pathPrefix: '/',
     siteUrl: 'https://incidentdatabase.ai',
     gaTrackingId: 'UA-23867277-2',
+    apiGateway: process.env.GATSBY_API_GATEWAY,
   },
   realm: {
     review_db: {

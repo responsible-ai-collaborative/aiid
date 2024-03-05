@@ -1,59 +1,98 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { makeExecutableSchema, mergeSchemas } from '@graphql-tools/schema';
+import { wrapSchema, FilterRootFields, FilterTypes, FilterObjectFields, schemaFromExecutor } from '@graphql-tools/wrap';
+import { print } from 'graphql';
+import { MongoClient } from 'mongodb';
 
-// A schema is a collection of type definitions (hence "typeDefs")
-// that together define the "shape" of queries that are executed against
-// your data.
-const typeDefs = `#graphql
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+async function realmExecutor({ document, variables }: { document: any; variables?: any }) {
+    const query = print(document);
 
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
+    const fetchResult = await fetch(
+        `https://realm.mongodb.com/api/client/v2.0/app/${process.env.REALM_APP_ID}/graphql`,
+        {
+            method: 'POST',
+            headers: {
+                apiKey: process.env.REALM_GRAPHQL_API_KEY!,
+            },
+            body: JSON.stringify({ query, variables }),
+        }
+    );
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    books: [Book]
-  }
-`;
-
-const books = [
-    {
-        title: 'The Awakening',
-        author: 'Kate Chopin',
-    },
-    {
-        title: 'City of Glass',
-        author: 'Paul Auster',
-    },
-];
-
-// Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
-const resolvers = {
-    Query: {
-        books: () => books,
-    },
-};
-
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-});
+    return fetchResult.json();
+}
 
 
 (async () => {
 
-    // Passing an ApolloServer instance to the `startStandaloneServer` function:
-    //  1. creates an Express app
-    //  2. installs your ApolloServer instance as middleware
-    //  3. prepares your app to handle incoming requests
+    const typeDefs = `
+
+        type QuickAdd {
+            # _id: ObjectId
+            date_submitted: String!
+            # incident_id: Long
+            source_domain: String
+            url: String!
+        }
+
+        type Query {
+            quickadds: [QuickAdd]
+        }
+    `;
+
+    const resolvers = {
+        Query: {
+            quickadds: async () => {
+
+                const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
+
+                const db = client.db('aiidprod');
+                const collection = db.collection('quickadd');
+                const items = await collection.find().toArray();
+
+                return items;
+            },
+        },
+    };
+
+
+    const localSchema = makeExecutableSchema({ typeDefs, resolvers });
+
+
+    const realmSubschema = wrapSchema({
+        schema: await schemaFromExecutor(realmExecutor),
+        executor: realmExecutor,
+        transforms: [
+            new FilterTypes((typeName) => {
+
+                if (typeName.name == 'QuickAdd') {
+
+                    return false;
+                }
+
+                return true
+
+            }),
+            new FilterObjectFields((typeName, fieldName) => {
+
+                if (typeName === 'Query' && fieldName === 'quickadds') {
+
+                    return false;
+                }
+
+                return true
+            })
+        ],
+    });
+
+    const gatewaySchema = mergeSchemas({
+        schemas: [realmSubschema, localSchema],
+    });
+
+    const server = new ApolloServer({
+        schema: gatewaySchema,
+    });
+
     const { url } = await startStandaloneServer(server, {
         listen: { port: 4000 },
     });
