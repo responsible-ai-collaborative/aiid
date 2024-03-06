@@ -16,6 +16,8 @@
                         "schema": {
                             "type": "string"
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Comma-separated list of encoded URLs to lookup"
                     }
                 ],
