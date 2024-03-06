@@ -4,7 +4,7 @@ import { Carousel } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleLeft, faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 
-export default function LatestReports({ latestReports }) {
+export default function LatestReports({ latestReports, fiveLatestIncidents }) {
   return (
     <>
       <Carousel
@@ -25,9 +25,9 @@ export default function LatestReports({ latestReports }) {
       >
         {latestReports.map((report, index) => (
           <LatestIncidentReport
-            report={report}
             isLatest={index === 0}
             key={`latest-report-${report.title}`}
+            {...{ report, fiveLatestIncidents }}
           />
         ))}
       </Carousel>

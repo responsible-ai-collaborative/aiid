@@ -40,6 +40,7 @@ const createWordCountsPage = async (graphql, createPage) => {
         limit: 5
       ) {
         nodes {
+          title
           reports {
             report_number
           }
@@ -133,6 +134,8 @@ const createWordCountsPage = async (graphql, createPage) => {
     return sortedArray[0].report_number;
   });
 
+  const fiveLatestIncidents = result.data.latestReports.nodes;
+
   PAGES_WITH_WORDCOUNT.forEach((page) => {
     createPage({
       path: page.path,
@@ -146,6 +149,7 @@ const createWordCountsPage = async (graphql, createPage) => {
             ? result.data.latestReport.nodes[0].report_number
             : 0,
         latestReportNumbers,
+        fiveLatestIncidents,
         sponsors: result.data.sponsors.edges,
       },
     });
