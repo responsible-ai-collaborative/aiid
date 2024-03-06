@@ -67,6 +67,8 @@ const LandingPage = (props) => {
     return updatedIncident;
   });
 
+  console.log(`props`, props);
+
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
     <div className="max-w-full 2xl:w-[72rem]" {...props}>
@@ -82,7 +84,10 @@ const LandingPage = (props) => {
         {latestReports.length > 0 && (
           <div className="mb-5 md:mb-10">
             <div>
-              <LatestReports latestReports={latestReports} />
+              <LatestReports
+                latestReports={latestReports}
+                fiveLatestIncidents={props.pageContext.fiveLatestIncidents}
+              />
             </div>
           </div>
         )}
