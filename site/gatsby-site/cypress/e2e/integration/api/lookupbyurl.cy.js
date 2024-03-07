@@ -13,7 +13,9 @@ describe('/api/lookupbyurl endpoint', () => {
 
       const url3 = 'https://noresults.com/none';
 
-      const url = `/api/lookupbyurl?urls=${encodeURIComponent(`${url1},${url2},${url3}`)}`;
+      const query = [url1, url2, url3].map((url) => `urls[]=${encodeURIComponent(url)}`).join('&');
+
+      const url = `/api/lookupbyurl?${query}`;
 
       cy.log(`GET ${url}`);
 
@@ -65,4 +67,28 @@ describe('/api/lookupbyurl endpoint', () => {
       });
     }
   );
+
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should throw 400', () => {
+    const url1 = 'badurl';
+
+    const query = [url1].map((url) => `urls[]=${encodeURIComponent(url)}`).join('&');
+
+    const url = `/api/lookupbyurl?${query}`;
+
+    cy.log(`GET ${url}`);
+
+    cy.request({ url, failOnStatusCode: false }).then((response) => {
+      expect(response.body).to.deep.eq({
+        status: 400,
+        errors: [
+          {
+            path: 'urls.0',
+            errorCode: 'format.openapi.requestValidation',
+            message: 'must match format "url"',
+            location: 'query',
+          },
+        ],
+      });
+    });
+  });
 });

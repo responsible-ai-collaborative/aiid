@@ -30,7 +30,7 @@ async function handler(req, res) {
     res.status(400).json(errors);
   }
 
-  const urls = decodeURIComponent(req.query.urls).split(',');
+  const urls = req.query.urls;
 
   const index = require('./lookupIndex.json');
 
