@@ -14,12 +14,17 @@ exports = async function (changeEvent) {
     return;
   }
 
-  const notificationWhitelistedFields = ['title', 'description', 'date', 'Alleged deployer of AI system', 'Alleged developer of AI system', 'Alleged harmed or nearly harmed parties', 'reports', 'editors', 'editor_notes'];
+  const notificationWhitelistedFields = [`title`, `description`, `date`, `Alleged deployer of AI system`, `Alleged developer of AI system`, `Alleged harmed or nearly harmed parties`, `reports`, `editors`, `editor_notes`];
 
   const updatedFields = Object.keys(updateDescription.updatedFields);
 
   const willNotifyIncidentUpdate = updatedFields.some(field => notificationWhitelistedFields.includes(field));
   const incidentId = fullDocument.incident_id;
+
+  if (!willNotifyIncidentUpdate) {
+    console.log(`The incident ${incidentId} update will not notify any subscribers, since a non whitelisted field has been updated.`);
+    return;
+  };
 
   console.log(`Processing updates on incident ${incidentId}`);
   console.log('updateDescription', JSON.stringify(updateDescription));
@@ -71,16 +76,12 @@ exports = async function (changeEvent) {
         }
       }
       else {
-        if (willNotifyIncidentUpdate) {
-          // If any other Incident field is updated > Insert a pending notification to process in the next build
-          notification = {
-            type: 'incident-updated',
-            incident_id: incidentId,
-            processed: false,
-          };
-        } else {
-          console.log(`The incident ${incidentId} update will not notify any subscribers, since a non whitelisted field has been updated.`);
-        }
+        // If any other Incident field is updated > Insert a pending notification to process in the next build
+        notification = {
+          type: 'incident-updated',
+          incident_id: incidentId,
+          processed: false,
+        };
       }
 
       if (notification) {
