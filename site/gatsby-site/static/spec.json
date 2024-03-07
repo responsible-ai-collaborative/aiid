@@ -21,7 +21,7 @@
                             }
                         },
                         "style": "form",
-                        "explode": false,
+                        "explode": true,
                         "description": "List of encoded URLs to lookup. URLs should be URI encoded. Can be sent as 'urls' with multiple values or 'urls[]' with single or multiple values."
                     }
                 ],
