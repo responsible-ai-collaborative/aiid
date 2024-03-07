@@ -89,9 +89,10 @@ export default function CheckListForm({
   //     risk_notes: "",
   //     severity: "",
   //
+  //
   //     /* UI properties*/
   //     startClosed: true,
-  //     touched: false,
+  //     touched: false,     // TODO: Remove these database-side.
   //     generated: true,
   //   }
   // ]
@@ -163,7 +164,7 @@ export default function CheckListForm({
   };
 
   const addRisk = (newRisk) => {
-    setFieldValue('risks', [newRisk].concat(values.risks || []));
+    setFieldValue('risks', [newRisk].concat(values.risks));
   };
 
   const changeSort = (sortFunction) => (event) => {

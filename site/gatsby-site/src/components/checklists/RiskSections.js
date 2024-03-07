@@ -26,11 +26,15 @@ const RiskSections = ({
   userIsOwner,
   addRisk,
 }) => {
+
+  // Contains strings yielded by tagIdentifiers,
+  // used to persist open or closed state of sections
+  // across manual and generated risks.
   const [openSections, setOpenSections] = useState([]);
 
-  const unannotatedRisks = (generatedRisks || []).filter((generatedRisk) =>
-    risks.every((manualRisk) => !areDuplicates(generatedRisk, manualRisk))
-  );
+  // We want to filter out the generated risks
+  // that match manually-annotated risks by tags.
+  const manualRiskIdentifiers = risks.map((risk) => tagsIdentifier(risk));
 
   const riskSectionProps = {
     setFieldValue,
@@ -43,8 +47,6 @@ const RiskSections = ({
     updateRisk,
     userIsOwner,
   };
-
-  const manualRiskIdentifiers = risks.map((risk) => tagsIdentifier(risk));
 
   return (
     <section>
@@ -100,7 +102,7 @@ const RiskSections = ({
           />
         ))}
 
-        {unannotatedRisks
+        {generatedRisks
           .filter((risk) => !manualRiskIdentifiers.includes(tagsIdentifier(risk)))
           .map((risk) => (
             <RiskSection

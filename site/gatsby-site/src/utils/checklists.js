@@ -49,7 +49,7 @@ const Label = (props) => (
 );
 
 const tagsIdentifier = (risk) => (
-  risk.tags.join("___")
+  risk.tags.sort().join("___")
 );
 
 const removeTypename = (obj) => {

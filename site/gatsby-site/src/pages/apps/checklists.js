@@ -74,7 +74,6 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
               ...risk,
               precedents: undefined,
               risk_status: checkedRiskStatus(risk.risk_status),
-              startClosed: undefined,
             })),
         },
       },
