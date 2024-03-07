@@ -20,6 +20,10 @@ const isValidURL = (string) => {
 };
 
 async function handler(req, res) {
+  if (!Array.isArray(req.query.urls)) {
+    req.query.urls = [req.query.urls];
+  }
+
   const errors = requestValidator.validateRequest(req);
 
   if (errors) {
