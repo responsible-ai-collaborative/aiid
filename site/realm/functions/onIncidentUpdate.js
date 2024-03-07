@@ -34,6 +34,8 @@ exports = async function (changeEvent) {
   const reportsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
   const subscriptionsToIncident = await subscriptionsCollection.find({ type: 'incident', incident_id: incidentId }).toArray();
 
+  console.log(`There are ${subscriptionsToIncident.length} subscribers to Incident: ${incidentId}`);
+
   // Process subscriptions to Incident updates
   try {
     if (subscriptionsToIncident.length > 0) {
