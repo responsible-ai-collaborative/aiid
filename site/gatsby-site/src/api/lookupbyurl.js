@@ -1,7 +1,12 @@
 import Rollbar from 'rollbar';
 import siteConfig from '../../config';
-
+import OpenAPIRequestValidator from 'openapi-request-validator';
 import Cors from 'cors';
+import spec from '../../static/spec.json';
+
+const requestValidator = new OpenAPIRequestValidator({
+  parameters: spec.paths['/api/lookupbyurl'].get.parameters,
+});
 
 const cors = Cors();
 
@@ -15,6 +20,12 @@ const isValidURL = (string) => {
 };
 
 async function handler(req, res) {
+  const errors = requestValidator.validateRequest(req);
+
+  if (errors) {
+    res.status(400).json(errors);
+  }
+
   const urls = decodeURIComponent(req.query.urls).split(',');
 
   const index = require('./lookupIndex.json');

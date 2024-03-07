@@ -14,11 +14,15 @@
                         "name": "urls",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "format": "url"
+                            }
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Comma-separated list of encoded URLs to lookup"
+                        "description": "List of encoded URLs to lookup. URLs should be URI encoded. Can be sent as 'urls' with multiple values or 'urls[]' with single or multiple values."
                     }
                 ],
                 "responses": {
