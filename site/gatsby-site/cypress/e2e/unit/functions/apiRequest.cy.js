@@ -41,7 +41,7 @@ describe('Functions', () => {
 
     cy.wrap(apiRequest({ method: 'GET', path: '/something' })).then((result) => {
       expect(global.context.http.post.getCall(0).args[0]).to.deep.nested.include({
-        url: 'https://realm.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login',
+        url: 'https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login',
         body: {
           username: 'public',
           apiKey: 'private',
@@ -50,7 +50,7 @@ describe('Functions', () => {
       });
 
       expect(global.context.http.get.getCall(0).args[0]).to.deep.nested.include({
-        url: 'https://realm.mongodb.com/api/admin/v3.0/groups/1/apps/1/something',
+        url: 'https://services.cloud.mongodb.com/api/admin/v3.0/groups/1/apps/1/something',
         headers: {
           Authorization: [`Bearer test`],
         },

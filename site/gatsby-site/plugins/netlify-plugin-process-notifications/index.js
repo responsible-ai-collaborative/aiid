@@ -18,7 +18,7 @@ const getValidAccessToken = async () => {
 
 const client = new apolloClient.ApolloClient({
   link: new apolloClient.HttpLink({
-    uri: `https://realm.mongodb.com/api/client/v2.0/app/${process.env.GATSBY_REALM_APP_ID}/graphql`,
+    uri: `https://services.cloud.mongodb.com/api/client/v2.0/app/${process.env.GATSBY_REALM_APP_ID}/graphql`,
     fetch: async (uri, options) => {
       const accessToken = await getValidAccessToken();
 
