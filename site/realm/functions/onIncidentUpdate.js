@@ -15,7 +15,7 @@ exports = async function (changeEvent) {
   }
 
   const updatedFields = Object.keys(updateDescription.updatedFields);
-  
+
   const incidentId = fullDocument.incident_id;
 
   console.log(`Processing updates on incident ${incidentId}`);
