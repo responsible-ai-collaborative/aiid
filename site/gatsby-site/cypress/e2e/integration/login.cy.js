@@ -95,7 +95,7 @@ describe('Login', () => {
         body: {
           error: 'confirmation required',
           error_code: 'AuthError',
-          link: 'https://realm.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95',
+          link: 'https://services.cloud.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95',
         },
       }
     );

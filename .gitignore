@@ -78,3 +78,5 @@ package-lock.json
 !themes/gatsby-starter-theme-workspace/package-lock.json
 
 .nyc_output
+
+site/gatsby-site/src/api/lookupIndex.json
