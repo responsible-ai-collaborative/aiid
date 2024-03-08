@@ -25,6 +25,7 @@ describe('Pages', () => {
     '/account/',
     '/summaries/wordcounts/',
     '/about/', // doc template
+    '/api-spec',
   ];
 
   if (!Cypress.env('isEmptyEnvironment')) {

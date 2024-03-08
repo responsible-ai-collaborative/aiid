@@ -21,7 +21,7 @@ export const getApolloClient = () => {
 
   const client = new ApolloClient({
     link: new HttpLink({
-      uri: `https://realm.mongodb.com/api/client/v2.0/app/${realmAppId}/graphql`,
+      uri: `https://services.cloud.mongodb.com/api/client/v2.0/app/${realmAppId}/graphql`,
 
       fetch: async (uri, options) => {
         options.headers.email = email;
