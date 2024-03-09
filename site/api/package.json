@@ -6,13 +6,15 @@
   "scripts": {
     "build": "tsc",
     "dev": "node --env-file=.env --watch -r ts-node/register src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.10.0",
+    "@graphql-tools/executor-http": "^1.0.9",
     "@graphql-tools/schema": "^10.0.3",
     "@graphql-tools/wrap": "^10.0.2",
     "graphql": "^16.8.1",
@@ -20,6 +22,10 @@
     "mongodb": "^6.4.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typescript": "4.0.6",
+    "@graphql-codegen/typescript-mongodb": "3.0.0",
+    "@graphql-codegen/typescript-resolvers": "4.0.6",
     "@types/node": "^20.11.20",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

@@ -1,0 +1,18 @@
+scalar Long
+scalar ObjectId
+
+type QuickAdd {
+  _id: ObjectId
+  date_submitted: String!
+  incident_id: Long
+  source_domain: String
+  url: String!
+}
+
+input QuickaddQueryInput {
+  _: String
+}
+
+type Query {
+  quickadds(query: QuickaddQueryInput!): [QuickAdd]
+}
