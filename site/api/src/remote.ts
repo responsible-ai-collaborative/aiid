@@ -18,6 +18,11 @@ const userExecutor = buildHTTPExecutor({
 });
 
 
+const ignoreTypes = ['QuickAdd', 'QuickaddQueryInput'];
+
+const ignoredQueries = ['quickadds'];
+
+
 export const getSchema = async () => {
 
     const schema = wrapSchema({
@@ -26,7 +31,7 @@ export const getSchema = async () => {
         transforms: [
             new FilterTypes((typeName) => {
 
-                if (typeName.name == 'QuickAdd' || typeName.name == 'QuickaddQueryInput') {
+                if (ignoreTypes.includes(typeName.name)) {
 
                     return false;
                 }
@@ -36,7 +41,7 @@ export const getSchema = async () => {
             }),
             new FilterObjectFields((typeName, fieldName) => {
 
-                if (typeName === 'Query' && fieldName === 'quickadds') {
+                if (typeName === 'Query' && ignoredQueries.includes(fieldName)) {
 
                     return false;
                 }
