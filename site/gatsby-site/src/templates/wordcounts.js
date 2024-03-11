@@ -79,7 +79,9 @@ export const Head = (props) => {
 
   const metaTitle = 'Word Counts';
 
-  return <HeadContent path={pathname} {...{ metaTitle }} />;
+  const metaDescription = 'Word Counts from Incident Reports.';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default WordCounts;

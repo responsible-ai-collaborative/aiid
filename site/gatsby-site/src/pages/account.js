@@ -50,7 +50,13 @@ const Account = () => {
 export const Head = (props) => {
   const { t } = useTranslation(['account']);
 
-  return <HeadContent path={props.location.pathname} metaTitle={t('Account Details')} />;
+  return (
+    <HeadContent
+      path={props.location.pathname}
+      metaTitle={t('Account Details')}
+      metaDescription={t('Account Deails')}
+    />
+  );
 };
 
 export default Account;

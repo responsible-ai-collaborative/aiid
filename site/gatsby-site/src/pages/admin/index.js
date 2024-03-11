@@ -44,7 +44,9 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  return <HeadContent path={pathname} metaTitle={'Admin'} />;
+  return (
+    <HeadContent path={pathname} metaTitle={'Admin'} metaDescription={'Administration page'} />
+  );
 };
 
 export default AdminPage;

@@ -234,5 +234,7 @@ export const Head = (props) => {
 
   const metaTitle = t('Incident List');
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = t("Website's list of incidents and reports.");
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };

@@ -286,5 +286,12 @@
   "Sign up for an account": "Créer un compte",
   "AIID - Sign Up": "AIID - Créer un compte",
   "AIID - Login": "AIID - Se connecter",
-  "Login to your account": "Connectez-vous à votre compte"
+  "Login to your account": "Connectez-vous à votre compte",
+  "Related News Digest": "Résumé des actualités connexes",
+  "This summary features AI-related news, identified and matched to our database via NLP for textual similarity, including potential incidents and highlighted harm keywords.": "Ce résumé présente des actualités liées à l'IA, identifiées et appariées à notre base de données via le TAL pour une similarité textuelle, incluant des incidents potentiels et des mots-clés de dommage mis en évidence.",
+  "Website's list of incidents and reports.": "Liste des incidents et des rapports du site Web.",
+  "Incidents Over Time": "Incidents au fil du temps",
+  "View how the number of incidents and reports has changed over time.": "Voir comment le nombre d'incidents et de rapports a changé au fil du temps.",
+  "Leaderboard of top submitters, authors, and domains by count.": "Classement des meilleurs soumissionnaires, auteurs et domaines par nombre.",
+  "Submissions Leaderboard": "Classement des soumissions"
 }

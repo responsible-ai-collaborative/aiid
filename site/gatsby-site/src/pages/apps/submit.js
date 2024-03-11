@@ -20,7 +20,11 @@ export const Head = (props) => {
 
   const metaTitle = t('New Incident Report');
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = t(
+    'Submit a new incident report to the Artificial Intelligence Incident Database'
+  );
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default SubmitPage;

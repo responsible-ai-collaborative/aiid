@@ -195,7 +195,9 @@ export const Head = (props) => {
 
   const metaTitle = 'Submissions';
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = 'Submitted incidents and quick adds';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default SubmittedIncidentsPage;

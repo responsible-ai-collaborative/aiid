@@ -296,7 +296,9 @@ export const Head = (props) => {
 
   const metaTitle = 'Entity: ' + name;
 
-  return <HeadContent path={pathname} {...{ metaTitle }} />;
+  const metaDescription = 'Information about ' + name + ' and its involvement in AI incidents.';
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
 };
 
 function UnsubscribeButton({

@@ -102,5 +102,7 @@ export const Head = (props) => {
 
   const metaTitle = t('Variants');
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = t('View all the variants in the database.');
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };

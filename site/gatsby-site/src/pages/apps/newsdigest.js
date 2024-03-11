@@ -493,5 +493,9 @@ export const Head = (props) => {
 
   const title = t('Related News Digest');
 
-  return <HeadContent path={pathname} metaTitle={title} />;
+  const metaDescription = t(
+    'This summary features AI-related news, identified and matched to our database via NLP for textual similarity, including potential incidents and highlighted harm keywords.'
+  );
+
+  return <HeadContent path={pathname} metaTitle={title} metaDescription={metaDescription} />;
 };

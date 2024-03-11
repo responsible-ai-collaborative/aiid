@@ -122,7 +122,16 @@ export const Head = (props) => {
 
   const metaTitle = 'Incidents Over Time';
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} metaType="website" />;
+  const metaDescription = 'View how the number of incidents and reports has changed over time.';
+
+  return (
+    <HeadContent
+      path={pathname}
+      metaTitle={metaTitle}
+      metaType="website"
+      metaDescription={metaDescription}
+    />
+  );
 };
 
 export const pageQuery = graphql`

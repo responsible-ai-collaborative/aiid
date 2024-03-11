@@ -13,7 +13,11 @@ const Default404 = () => {
 };
 
 export const Head = (props) => (
-  <HeadContent path={props.location.pathname} metaTitle={'Page not found'} />
+  <HeadContent
+    path={props.location.pathname}
+    metaTitle={'Page not found'}
+    metaDescription={'Unkown page.'}
+  />
 );
 
 export default Default404;

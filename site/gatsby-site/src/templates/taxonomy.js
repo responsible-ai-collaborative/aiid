@@ -20,7 +20,14 @@ export const Head = (props) => {
 
   const metaTitle = `${namespace} Charts`;
 
-  return <HeadContent metaTitle={metaTitle} path={props.location.pathname} metaType="website" />;
+  return (
+    <HeadContent
+      metaTitle={metaTitle}
+      metaDescription={metaTitle}
+      path={props.location.pathname}
+      metaType="website"
+    />
+  );
 };
 
 export const pageQuery = graphql`

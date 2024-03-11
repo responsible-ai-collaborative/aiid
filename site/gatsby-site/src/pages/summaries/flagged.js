@@ -63,7 +63,9 @@ export const Head = (props) => {
 
   const metaTitle = 'Incident List';
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = 'Flagged Incident List';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export const pageQuery = graphql`

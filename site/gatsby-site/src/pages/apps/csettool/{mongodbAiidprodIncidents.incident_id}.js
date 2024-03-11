@@ -90,7 +90,7 @@ export const Head = (props) => {
 
   const metaTitle = 'CSET Tool';
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaTitle} />;
 };
 
 export default ToolPage;

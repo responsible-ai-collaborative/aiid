@@ -112,7 +112,14 @@ export const Head = (props) => {
 
   const metaTitle = 'CSET Charts';
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} metaType="website" />;
+  return (
+    <HeadContent
+      path={pathname}
+      metaTitle={metaTitle}
+      metaType="website"
+      metaDescription={metaTitle}
+    />
+  );
 };
 
 export const pageQuery = graphql`

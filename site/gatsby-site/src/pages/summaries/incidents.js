@@ -130,7 +130,11 @@ export const Head = (props) => {
 
   const metaTitle = t('Incident List', { ns: 'incidents' });
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = t('Summary of all the incidents present in the database', {
+    ns: 'incidents',
+  });
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export const pageQuery = graphql`

@@ -234,7 +234,13 @@ export const Head = (props) => {
 
   const { t } = useTranslation();
 
-  return <HeadContent path={pathname} metaTitle={t('Risk Checklists')} />;
+  return (
+    <HeadContent
+      path={pathname}
+      metaTitle={t('Risk Checklists')}
+      metaDescription={t('Risk Checklists')}
+    />
+  );
 };
 
 export default ChecklistsPage;

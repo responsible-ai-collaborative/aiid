@@ -42,5 +42,7 @@ export const Head = (props) => {
 
   const metaTitle = 'Submissions Leaderboard';
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaDescription = 'Leaderboard of top submitters, authors, and domains by count.';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
