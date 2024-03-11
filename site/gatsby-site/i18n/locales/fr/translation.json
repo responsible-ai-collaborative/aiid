@@ -293,5 +293,7 @@
   "Incidents Over Time": "Incidents au fil du temps",
   "View how the number of incidents and reports has changed over time.": "Voir comment le nombre d'incidents et de rapports a changé au fil du temps.",
   "Leaderboard of top submitters, authors, and domains by count.": "Classement des meilleurs soumissionnaires, auteurs et domaines par nombre.",
-  "Submissions Leaderboard": "Classement des soumissions"
+  "Submissions Leaderboard": "Classement des soumissions",
+  "Database Backups and Snapshots": "Sauvegardes et instantanés de la base de données",
+  "Find and download the latest Database Backups and snapshots": "Trouver et télécharger les dernières sauvegardes et instantanés de la base de données"
 }

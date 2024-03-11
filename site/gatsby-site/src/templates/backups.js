@@ -7,6 +7,7 @@ import Row from 'elements/Row';
 import Col from 'elements/Col';
 import { format } from 'date-fns';
 import config from '../../config';
+import { useTranslation } from 'react-i18next';
 
 const Backups = ({ pageContext }) => {
   const { backups } = pageContext;
@@ -110,9 +111,13 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  const metaTitle = 'Database Backups and Snapshots';
+  const { t } = useTranslation();
 
-  return <HeadContent path={pathname} metaTitle={metaTitle} />;
+  const metaTitle = t('Database Backups and Snapshots');
+
+  const metaDescription = t('Find and download the latest Database Backups and snapshots');
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default Backups;
