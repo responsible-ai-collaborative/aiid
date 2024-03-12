@@ -20,6 +20,8 @@
   "Filter by Incident ID #{{id}}": "Filtrer par ID d'incident #{{id}}",
   "Flag Report": "Signaler",
   "Filters": "Filtres",
+  "More filters": "Plus de filtres",
+  "Fewer filters": "Moins de filtres",
   "Options": "Options",
   "Search Options": "Options de recherche",
   "1st report only": "Seulement le premier rapport",

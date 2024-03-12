@@ -21,7 +21,7 @@ function ClearButton({ children }) {
 
   return (
     <button
-      className="text-blue-600 cursor-pointer disabled:cursor-default disabled:text-gray-500 no-underline"
+      className="disabled:hidden cursor-pointer no-underline mr-1 mt-[1px]"
       onClick={() => {
         setIndexUiState((state) => ({
           ...state,

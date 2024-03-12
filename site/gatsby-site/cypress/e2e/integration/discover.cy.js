@@ -124,6 +124,38 @@ describe('The Discover app', () => {
     cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 4);
   });
 
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Shows expected filters', () => {
+    cy.viewport(1920, 1080);
+
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('not.be.visible');
+    cy.contains('button', 'Submitter').should('not.be.visible');
+
+    cy.viewport(1280, 1080);
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('be.visible');
+    cy.contains('button', 'Submitter').should('not.be.visible');
+
+    cy.get('[data-cy=expand-filters]').click();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('be.visible');
+    cy.contains('button', 'Submitter').should('be.visible');
+
+    cy.viewport(1920, 1080);
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('be.visible');
+    cy.contains('button', 'Submitter').should('be.visible');
+  });
+
   conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Filters by Tags using top filters', () => {
     cy.visit(url);
 
