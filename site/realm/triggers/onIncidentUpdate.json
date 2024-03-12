@@ -61,11 +61,6 @@
                     "updateDescription.updatedFields.editors": {
                         "$exists": true
                     }
-                },
-                {
-                    "updateDescription.updatedFields.editor_notes": {
-                        "$exists": true
-                    }
                 }
             ]
         },
