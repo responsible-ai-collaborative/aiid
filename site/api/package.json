@@ -16,6 +16,7 @@
     "@apollo/server": "^4.10.0",
     "@graphql-tools/executor-http": "^1.0.9",
     "@graphql-tools/schema": "^10.0.3",
+    "@graphql-tools/utils": "^10.1.0",
     "@graphql-tools/wrap": "^10.0.2",
     "graphql": "^16.8.1",
     "graphql-scalars": "^1.22.5",

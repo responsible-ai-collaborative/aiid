@@ -1,3 +1,10 @@
+directive @auth(requires: Role = admin) on OBJECT | FIELD_DEFINITION
+
+enum Role {
+  admin
+  subscriber
+}
+
 scalar Long
 scalar ObjectId
 
@@ -10,9 +17,19 @@ type QuickAdd {
 }
 
 input QuickaddQueryInput {
-  _: String
+  _id: ObjectId
 }
 
 type Query {
   quickadds(query: QuickaddQueryInput!): [QuickAdd]
+  bue: String
+}
+
+
+type DeleteManyPayload {
+  deletedCount: Int!
+}
+
+type Mutation {
+  deleteManyQuickadds(query: QuickaddQueryInput): DeleteManyPayload @auth(requires: admin)
 }

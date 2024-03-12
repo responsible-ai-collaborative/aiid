@@ -18,10 +18,18 @@ const userExecutor = buildHTTPExecutor({
 });
 
 
-const ignoreTypes = ['QuickAdd', 'QuickaddQueryInput'];
+const ignoreTypes = [
+    'QuickAdd',
+    'QuickaddQueryInput',
+];
 
-const ignoredQueries = ['quickadds'];
+const ignoredQueries = [
+    'quickadds',
+];
 
+const ignoredMutations = [
+    'deleteManyQuickadds',
+]
 
 export const getSchema = async () => {
 
@@ -42,6 +50,11 @@ export const getSchema = async () => {
             new FilterObjectFields((typeName, fieldName) => {
 
                 if (typeName === 'Query' && ignoredQueries.includes(fieldName)) {
+
+                    return false;
+                }
+
+                if (typeName === 'Mutation' && ignoredMutations.includes(fieldName)) {
 
                     return false;
                 }
