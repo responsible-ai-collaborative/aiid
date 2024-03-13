@@ -68,7 +68,6 @@ async function getUser(userId: string) {
     }
 }
 
-
 async function getUserFromHeader(header: string) {
 
     const token = extractToken(header);
@@ -89,8 +88,6 @@ async function getUserFromHeader(header: string) {
 }
 
 export const context = async ({ req }: { req: IncomingMessage }) => {
-
-    console.log('bue', req.url);
 
     const user = await getUserFromHeader(req.headers.authorization!);
 
