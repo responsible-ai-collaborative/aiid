@@ -24,7 +24,12 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleArrowLeft,
+  faCircleArrowRight,
+  faArrowLeft,
+  faArrowRight,
+} from '@fortawesome/free-solid-svg-icons';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
@@ -176,11 +181,30 @@ function CiteTemplate({
               </div>
             )}
             {!readOnly && (
-              <SocialShareButtons
-                metaTitle={metaTitle}
-                path={locationPathName}
-                page="cite"
-              ></SocialShareButtons>
+              <>
+                <SocialShareButtons
+                  metaTitle={metaTitle}
+                  path={locationPathName}
+                  page="cite"
+                ></SocialShareButtons>
+
+                <div className="ml-4 text-lg">
+                  <a
+                    title={t('Previous Incident')}
+                    className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
+                    href={localizePath({ path: `/cite/${prevIncident}` })}
+                  >
+                    <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
+                  </a>
+                  <a
+                    title={t('Next Incident')}
+                    className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
+                    href={localizePath({ path: `/cite/${nextIncident}` })}
+                  >
+                    <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
+                  </a>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -348,28 +372,7 @@ function CiteTemplate({
               />
             )}
 
-            {!readOnly && (
-              <div className="flex justify-between">
-                <Button
-                  color={'gray'}
-                  href={localizePath({ path: `/cite/${prevIncident}` })}
-                  disabled={!prevIncident}
-                  className="hover:no-underline"
-                >
-                  <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-                  <Trans>Previous Incident</Trans>
-                </Button>
-                <Button
-                  color={'gray'}
-                  href={localizePath({ path: `/cite/${nextIncident}` })}
-                  disabled={!nextIncident}
-                  className="hover:no-underline"
-                >
-                  <Trans>Next Incident</Trans>
-                  <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-                </Button>
-              </div>
-            )}
+            {!readOnly && <NextPreviousButtons {...{ prevIncident, nextIncident }} />}
           </Container>
         </div>
         {!readOnly && (
@@ -388,5 +391,32 @@ function CiteTemplate({
     </>
   );
 }
+
+const NextPreviousButtons = ({ prevIncident, nextIncident }) => {
+  const localizePath = useLocalizePath();
+
+  return (
+    <div className="flex justify-between">
+      <Button
+        color={'gray'}
+        href={localizePath({ path: `/cite/${prevIncident}` })}
+        disabled={!prevIncident}
+        className="hover:no-underline"
+      >
+        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+        <Trans>Previous Incident</Trans>
+      </Button>
+      <Button
+        color={'gray'}
+        href={localizePath({ path: `/cite/${nextIncident}` })}
+        disabled={!nextIncident}
+        className="hover:no-underline"
+      >
+        <Trans>Next Incident</Trans>
+        <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+      </Button>
+    </div>
+  );
+};
 
 export default CiteTemplate;
