@@ -92,6 +92,10 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
       {
         title: t('Is Issue Report?'),
         accessor: 'is_incident_report',
+        Filter: SelectColumnFilter,
+        Cell: ({ row: { values } }) => {
+          return <>{values.is_incident_report}</>;
+        },
       },
     ];
 
