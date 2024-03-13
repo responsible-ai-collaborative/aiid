@@ -1,20 +1,17 @@
 import { useUserContext } from 'contexts/userContext';
-import React, { useState } from 'react';
+import React from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button, ToggleSwitch } from 'flowbite-react';
 import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,
   SelectColumnFilter,
   SelectDatePickerFilter,
+  formatDateField,
 } from 'components/ui/Table';
-import ReportEditModal from './ReportEditModal';
-import { format } from 'date-fns';
 
 export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
-  const [reportNumberToEdit, setReportNumberToEdit] = useState(0);
-
   const { isLoggedIn, isRole } = useUserContext();
 
   const { t } = useTranslation();
@@ -45,26 +42,21 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
         accessor: 'title',
       },
       {
-        className: 'min-w-[340px]',
-        title: t('Description'),
-        accessor: 'description',
-      },
-      {
         title: t('Date Submitted'),
         accessor: 'date_submitted',
-        Cell: ({ value }) => format(new Date(value), 'yyyy-MM-dd'),
+        Cell: ({ value }) => formatDateField(value),
         Filter: SelectDatePickerFilter,
       },
       {
         title: t('Date Published'),
         accessor: 'date_published',
-        Cell: ({ value }) => format(new Date(value), 'yyyy-MM-dd'),
+        Cell: ({ value }) => formatDateField(value),
         Filter: SelectDatePickerFilter,
       },
       {
         title: t('Date Modified'),
         accessor: 'date_modified',
-        Cell: ({ value }) => format(new Date(value), 'yyyy-MM-dd'),
+        Cell: ({ value }) => formatDateField(value),
         Filter: SelectDatePickerFilter,
       },
       {
@@ -111,12 +103,12 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
           className: 'min-w-[120px]',
           Cell: ({ row: { values } }) => (
             <Button
-              color={'gray'}
-              data-cy="edit-incident"
-              variant="link"
-              onClick={() => setReportNumberToEdit(values.report_number)}
+              data-cy="edit-report"
+              color="gray"
+              href={`/cite/edit?report_number=${values.report_number}`}
+              className="hover:no-underline "
             >
-              Edit
+              <Trans>Edit</Trans>
             </Button>
           ),
         }
@@ -139,25 +131,22 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
 
   return (
     <>
-      <div className="flex justify-start ml-4 mb-2 pt-1">
-        <ToggleSwitch
-          checked={isLiveData}
-          label={t('Show Live data')}
-          onChange={(checked) => {
-            setIsLiveData(checked);
-          }}
-          name="live-data-switch"
-        />
+      <div className="flex items-center mb-2">
+        <div className="flex justify-start ml-4 mb-2 pt-1 mr-2">
+          <ToggleSwitch
+            checked={isLiveData}
+            label={t('Show Live data')}
+            onChange={(checked) => {
+              setIsLiveData(checked);
+            }}
+            name="live-data-switch"
+          />
+        </div>
+        <Button color="light" onClick={() => table.setAllFilters([])}>
+          Reset filters
+        </Button>
       </div>
-
       <Table table={table} />
-      {reportNumberToEdit !== 0 && (
-        <ReportEditModal
-          show={true}
-          onClose={() => setReportNumberToEdit(0)}
-          report_number={reportNumberToEdit}
-        />
-      )}
     </>
   );
 }

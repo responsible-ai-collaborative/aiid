@@ -10,8 +10,11 @@ import { makeEntitiesHash } from 'utils/entities';
 import { Button } from 'flowbite-react';
 import ReportsTable from 'components/reports/ReportsTable';
 import { FIND_REPORTS_TABLE } from '../../graphql/reports';
+import { useQueryParam } from 'use-query-params';
 
 const IncidentsPage = ({ data, ...props }) => {
+  const [view] = useQueryParam('view');
+
   const { data: incidents, loading: incidentsLoading } = useQuery(FIND_INCIDENTS_TABLE);
 
   const { data: reports, loading: reportsLoading } = useQuery(FIND_REPORTS_TABLE, {
@@ -38,53 +41,64 @@ const IncidentsPage = ({ data, ...props }) => {
 
   const [isLiveData, setIsLiveData] = useState(false);
 
-  const [selectedView, setSelectedView] = useState('incidents');
+  const [selectedView, setSelectedView] = useState(null);
 
   useEffect(() => {
-    if (selectedView === 'incidents') {
-      if (isLiveData) {
-        if (incidents) {
+    if (view) {
+      setSelectedView(view);
+    } else {
+      setSelectedView('incidents');
+    }
+  }, [view]);
+
+  useEffect(() => {
+    switch (selectedView) {
+      case 'incidents':
+        if (isLiveData && incidents) {
           setIncidentsData(incidents.incidents);
-        }
-      } else if (data?.incidents?.nodes) {
-        const entitiesHash = makeEntitiesHash(data?.entities?.nodes);
+        } else if (data?.incidents?.nodes) {
+          const entitiesHash = makeEntitiesHash(data?.entities?.nodes);
 
-        const incidents = [];
+          const processedIncidents = data.incidents.nodes.map((incident) => ({
+            ...incident,
+            AllegedDeployerOfAISystem: incident.Alleged_deployer_of_AI_system.map(
+              (id) => entitiesHash[id]
+            ),
+            AllegedDeveloperOfAISystem: incident.Alleged_developer_of_AI_system.map(
+              (id) => entitiesHash[id]
+            ),
+            AllegedHarmedOrNearlyHarmedParties:
+              incident.Alleged_harmed_or_nearly_harmed_parties.map((id) => entitiesHash[id]),
+          }));
 
-        for (const incident of data.incidents.nodes) {
-          incident.AllegedDeployerOfAISystem = incident.Alleged_deployer_of_AI_system.map(
-            (entity_id) => entitiesHash[entity_id]
-          );
-          incident.AllegedDeveloperOfAISystem = incident.Alleged_developer_of_AI_system.map(
-            (entity_id) => entitiesHash[entity_id]
-          );
-          incident.AllegedHarmedOrNearlyHarmedParties =
-            incident.Alleged_harmed_or_nearly_harmed_parties.map(
-              (entity_id) => entitiesHash[entity_id]
-            );
-          incidents.push(incident);
+          setIncidentsData(processedIncidents);
         }
+        break;
+      case 'issueReports':
+        if (isLiveData && issueReports) {
+          setIssueReportsData(transformReports(issueReports.reports));
+        } else if (data?.issueReports?.nodes) {
+          setIssueReportsData(transformReports(data.issueReports.nodes));
+        }
+        break;
 
-        setIncidentsData(incidents);
-      }
-    } else if (selectedView === 'issueReports') {
-      if (isLiveData) {
-        if (issueReports) {
-          setIssueReportsData(issueReports.reports);
+      case 'reports':
+        if (isLiveData && reports) {
+          setReportsData(transformReports(reports.reports));
+        } else if (data?.reports?.nodes) {
+          setReportsData(transformReports(data.reports.nodes));
         }
-      } else if (data?.issueReports?.nodes) {
-        setIssueReportsData(data?.issueReports?.nodes);
-      }
-    } else if (selectedView === 'reports') {
-      if (isLiveData) {
-        if (reports) {
-          setReportsData(reports.reports);
-        }
-      } else if (data?.reports?.nodes) {
-        setReportsData(data?.reports?.nodes);
-      }
+        break;
+      default:
     }
   }, [isLiveData, incidents, data, selectedView]);
+
+  function transformReports(reports) {
+    return reports.map((report) => ({
+      ...report,
+      flag: report.flag ? 'Yes' : 'No',
+    }));
+  }
 
   const { t } = useTranslation();
 
@@ -97,20 +111,38 @@ const IncidentsPage = ({ data, ...props }) => {
         <Button.Group className="mb-4">
           <Button
             color={`${selectedView === 'incidents' ? 'dark' : 'gray'}`}
-            onClick={() => setSelectedView('incidents')}
+            onClick={() => {
+              setSelectedView('incidents');
+              const url = new URL(window.location);
+
+              url.searchParams.set('view', 'incidents');
+              window.history.replaceState({}, '', url);
+            }}
           >
             Incidents
           </Button>
           <Button
             className={`rounded-none`}
             color={`${selectedView === 'issueReports' ? 'dark' : 'gray'}`}
-            onClick={() => setSelectedView('issueReports')}
+            onClick={() => {
+              setSelectedView('issueReports');
+              const url = new URL(window.location);
+
+              url.searchParams.set('view', 'issueReports');
+              window.history.replaceState({}, '', url);
+            }}
           >
             Issue Reports
           </Button>
           <Button
             color={`${selectedView === 'reports' ? 'dark' : 'gray'}`}
-            onClick={() => setSelectedView('reports')}
+            onClick={() => {
+              setSelectedView('reports');
+              const url = new URL(window.location);
+
+              url.searchParams.set('view', 'reports');
+              window.history.replaceState({}, '', url);
+            }}
           >
             Reports
           </Button>
@@ -197,7 +229,10 @@ export const query = graphql`
         name
       }
     }
-    reports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
+    reports: allMongodbAiidprodReports(
+      filter: { is_incident_report: { eq: true } }
+      sort: { report_number: DESC }
+    ) {
       nodes {
         report_number
         title
@@ -216,7 +251,10 @@ export const query = graphql`
       }
     }
 
-    issueReports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: false } }) {
+    issueReports: allMongodbAiidprodReports(
+      filter: { is_incident_report: { eq: false } }
+      sort: { report_number: DESC }
+    ) {
       nodes {
         report_number
         title
