@@ -89,6 +89,10 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
           return <>{values.flag}</>;
         },
       },
+      {
+        title: t('Is Issue Report?'),
+        accessor: 'is_incident_report',
+      },
     ];
 
     if (isRole('incident_editor')) {
@@ -129,6 +133,10 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
     usePagination
   );
 
+  const pageLength = table.page.length;
+
+  const allResultsCount = data.length;
+
   return (
     <>
       <div className="flex items-center mb-2">
@@ -146,6 +154,11 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
           Reset filters
         </Button>
       </div>
+      <p>
+        <Trans>
+          Displaying {{ pageLength }} of {{ allResultsCount }} reports
+        </Trans>
+      </p>
       <Table table={table} />
     </>
   );

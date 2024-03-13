@@ -97,6 +97,7 @@ const IncidentsPage = ({ data, ...props }) => {
     return reports.map((report) => ({
       ...report,
       flag: report.flag ? 'Yes' : 'No',
+      is_incident_report: report.is_incident_report ? 'No' : 'Yes',
     }));
   }
 
@@ -248,6 +249,7 @@ export const query = graphql`
         language
         source_domain
         submitters
+        is_incident_report
       }
     }
 
@@ -270,6 +272,7 @@ export const query = graphql`
         language
         source_domain
         submitters
+        is_incident_report
       }
     }
   }

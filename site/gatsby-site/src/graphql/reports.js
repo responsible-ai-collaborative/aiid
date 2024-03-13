@@ -222,6 +222,7 @@ export const FIND_REPORTS_TABLE = gql`
       tags
       inputs_outputs
       editor_notes
+      is_incident_report
     }
   }
 `;

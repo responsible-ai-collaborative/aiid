@@ -278,5 +278,6 @@
   "Incident and Issue Reports": "Incidents et rapports de problèmes",
   "Issue Reports": "Rapports de problèmes",
   "found": "trouvés",
-  "results found": "résultats trouvés"
+  "results found": "résultats trouvés",
+  "Displaying {{pageLength}} of {{allResultsCount}} reports": "Affichage de {{pageLength}} sur {{allResultsCount}} rapports"
 }
