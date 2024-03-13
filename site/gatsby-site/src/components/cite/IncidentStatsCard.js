@@ -2,7 +2,13 @@ import React, { Fragment } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../../elements/Card';
 
-const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) => {
+const IncidentStatsCard = ({
+  incidentId,
+  reportCount,
+  incidentDate,
+  editors,
+  taxonomiesWithClassifications,
+}) => {
   const { t } = useTranslation();
 
   const STATS = [
@@ -52,6 +58,16 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
             <div>{stats[stat.key]}</div>
           </Fragment>
         ))}
+
+        <div className="pr-4 my-0.5">Applied Taxonomies</div>
+        <div>
+          {taxonomiesWithClassifications.map((t, i) => (
+            <>
+              {i > 0 && ', '}
+              <a href={`#${t}-classifications`}>{t}</a>
+            </>
+          ))}
+        </div>
       </Card.Body>
     </Card>
   );

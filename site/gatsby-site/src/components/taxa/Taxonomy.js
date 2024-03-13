@@ -31,7 +31,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
           'tw-taxa-card-header tw-card-header bg-gray-50' + (editing && ' sticky top-0 z-50')
         }
       >
-        <h4 className="pr-0.8">
+        <h4 id={`${taxonomy.namespace}-classifications`} className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
             {{ namespace: taxonomy.namespace }} Taxonomy Classifications
           </Trans>
