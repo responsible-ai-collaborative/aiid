@@ -67,6 +67,9 @@ export const FIND_INCIDENTS_TABLE = gql`
         entity_id
         name
       }
+      reports {
+        report_number
+      }
     }
   }
 `;

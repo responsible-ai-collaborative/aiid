@@ -198,3 +198,30 @@ export const FIND_REPORTS = gql`
     }
   }
 `;
+
+export const FIND_REPORTS_TABLE = gql`
+  query FindReports($query: ReportQueryInput!) {
+    reports(query: $query, limit: 999) {
+      _id
+      submitters
+      date_published
+      date_downloaded
+      date_submitted
+      date_modified
+      report_number
+      title
+      description
+      url
+      image_url
+      cloudinary_id
+      source_domain
+      text
+      authors
+      epoch_date_submitted
+      language
+      tags
+      inputs_outputs
+      editor_notes
+    }
+  }
+`;
