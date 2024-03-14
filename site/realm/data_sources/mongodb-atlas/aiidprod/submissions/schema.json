@@ -147,6 +147,9 @@
         },
         "status": {
             "bsonType": "string"
+        },
+        "quiet": {
+            "bsonType": "bool"
         }
     },
     "required": [

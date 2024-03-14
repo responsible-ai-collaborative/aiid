@@ -199,7 +199,7 @@ describe('Cite pages', () => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          date_modified: format(now, 'yyyy-MM-dd'),
+          date_modified: now.toISOString(),
           epoch_date_modified: getUnixTime(now),
         });
       });
@@ -212,7 +212,7 @@ describe('Cite pages', () => {
         );
 
         expectedReport.modifiedBy = '';
-        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.date_modified = now.toISOString();
         expectedReport.epoch_date_modified = getUnixTime(now);
 
         expect(input).to.deep.eq(expectedReport);

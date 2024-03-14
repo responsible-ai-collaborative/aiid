@@ -35,6 +35,7 @@ const submission = {
   editor_similar_incidents: [],
   tags: [],
   user: 'user1',
+  quiet: false,
 };
 
 const submission_with_embedding = {
@@ -68,6 +69,7 @@ const submission_with_embedding = {
   editor_similar_incidents: [],
   tags: [],
   user: 'user1',
+  quiet: false,
   embedding: {
     vector: [1, 2, 3],
     from_reports: [1],
@@ -244,6 +246,7 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
+        quiet: false,
       };
 
       expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);
@@ -404,6 +407,7 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
+        quiet: false,
         embedding: {
           vector: [1, 2, 3],
           from_reports: [1],
@@ -561,6 +565,7 @@ describe('Functions', () => {
         language: 'en',
         tags: [],
         user: 'user1',
+        quiet: false,
       };
 
       expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);
@@ -862,6 +867,7 @@ describe('Functions', () => {
         source_domain: 'projects.tampabay.com',
         language: 'en',
         tags: [],
+        quiet: false,
       };
 
       expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.eq(expectedReport);

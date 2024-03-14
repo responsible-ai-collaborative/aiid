@@ -156,6 +156,8 @@ describe('Edit report', () => {
       cy.get(`[name=${key}]`).clear().type(updates[key]);
     });
 
+    cy.get(`[name="quiet"]`).click();
+
     cy.setEditorText(
       '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!',
       '[data-cy="text"] .CodeMirror'
@@ -215,6 +217,7 @@ describe('Edit report', () => {
       source_domain: 'test.com',
       editor_notes: 'Pro iustitia tantum',
       language: 'en',
+      quiet: true,
     };
 
     cy.wait('@updateReport').then((xhr) => {

@@ -59,6 +59,7 @@ export const FIND_SUBMISSIONS = gql`
       user {
         userId
       }
+      quiet
     }
   }
 `;
@@ -110,6 +111,7 @@ export const FIND_SUBMISSION = gql`
       editor_similar_incidents
       editor_dissimilar_incidents
       status
+      quiet
     }
   }
 `;

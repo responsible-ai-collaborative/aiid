@@ -109,6 +109,9 @@
         },
         "user": {
             "bsonType": "string"
+        },
+        "quiet": {
+            "bsonType": "bool"
         }
     },
     "required": [

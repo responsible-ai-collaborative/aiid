@@ -2,7 +2,7 @@ import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
 import config from '../../../config';
 import path from 'path';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { deleteReportTypenames, transformReportData } from '../../../src/utils/reports';
 import { conditionalIt } from '../../support/utils';
 
@@ -267,7 +267,7 @@ describe('The Discover app', () => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          date_modified: format(now, 'yyyy-MM-dd'),
+          date_modified: now.toISOString(),
           epoch_date_modified: getUnixTime(now),
         });
       });
@@ -280,7 +280,7 @@ describe('The Discover app', () => {
         );
 
         expectedReport.modifiedBy = '';
-        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.date_modified = now.toISOString();
         expectedReport.epoch_date_modified = getUnixTime(now);
 
         expect(input).to.deep.eq(expectedReport);

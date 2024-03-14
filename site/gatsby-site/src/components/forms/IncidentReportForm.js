@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Select } from 'flowbite-react';
+import { Checkbox, Select } from 'flowbite-react';
 import { Form, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';
@@ -424,6 +424,21 @@ const IncidentReportForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <div className="mt-3">
+          <div className="flex items-center">
+            <Label popover="quiet" label={t('Quiet')} />
+          </div>
+          <div className="mt-1">
+            <Checkbox
+              name="quiet"
+              checked={values.quiet}
+              onChange={(e) => {
+                setFieldValue('quiet', e.target.checked);
+              }}
+            />
+          </div>
+        </div>
 
         <h4 className="mt-3">Translations</h4>
 
