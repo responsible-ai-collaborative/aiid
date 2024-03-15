@@ -28,6 +28,8 @@ async function handler(req, res) {
 
   if (errors) {
     res.status(400).json(errors);
+
+    return;
   }
 
   const urls = req.query.urls;
