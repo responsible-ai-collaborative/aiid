@@ -48,9 +48,7 @@ const Label = (props) => (
   </label>
 );
 
-const tagsIdentifier = (risk) => (
-  risk.tags.sort().join("___")
-);
+const tagsIdentifier = (risk) => risk.tags.sort().join('___');
 
 const removeTypename = (obj) => {
   const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
@@ -59,23 +57,24 @@ const removeTypename = (obj) => {
 };
 
 const joinManualAndGeneratedRisks = (manualRisks, generatedRisks) => {
-
-  const manualRiskTagIds = manualRisks.map(risk => tagsIdentifier(risk));
+  const manualRiskTagIds = manualRisks.map((risk) => tagsIdentifier(risk));
 
   const unannotatedGeneratedRisks = generatedRisks.filter(
-    generatedRisk => !manualRiskTagIds.includes(tagsIdentifier(generatedRisk))
+    (generatedRisk) => !manualRiskTagIds.includes(tagsIdentifier(generatedRisk))
   );
 
   return manualRisks.concat(unannotatedGeneratedRisks);
 };
 
 const exportJson = (checklist, generatedRisks) => {
-  
   generatedRisks ||= [];
 
-  const json = JSON.stringify({ 
-    ...checklist, 
-    risks: joinManualAndGeneratedRisks(checklist.risks, generatedRisks) 
+  const json = JSON.stringify({
+    ...checklist,
+    risks: joinManualAndGeneratedRisks(checklist.risks, generatedRisks),
+
+    // These are auto-generated, they clutter the file,
+    // and they're not meaningful externally.
   }).replace(/"__typename":"[A-Za-z]*",/g, '');
 
   const a = document.createElement('a');
@@ -217,7 +216,6 @@ const exportHtml = (checklist, generatedRisks) => {
 };
 
 const exportCsv = (checklist, generatedRisks) => {
-
   generatedRisks ||= [];
 
   const allRisks = joinManualAndGeneratedRisks(checklist.risks, generatedRisks);
@@ -234,7 +232,7 @@ const exportCsv = (checklist, generatedRisks) => {
     ['== Risks =='],
     [''],
     ['Title', 'Tags', 'Status', 'Severity', 'Likelihood', 'Precedents', 'Notes'],
-    ...allRisks.map(r => [
+    ...allRisks.map((r) => [
       r.title,
       r.tags,
       r.risk_status,
@@ -242,7 +240,7 @@ const exportCsv = (checklist, generatedRisks) => {
       r.likelihood,
       (r.precedents || []).map((p) => p.incident_id).join(', '),
       r.risk_notes,
-    ])
+    ]),
   ];
 
   const csv = rowsToCsv(rows);
@@ -297,7 +295,6 @@ const shouldBeGrouped = (tag1, tag2) => {
   }
   return false;
 };
-
 
 const generateId = () => uuidv4();
 
