@@ -27,6 +27,9 @@ async function handler(req, res) {
   const errors = requestValidator.validateRequest(req);
 
   if (errors) {
+    console.warn(req.query, errors);
+    rollbar.warning(req.query, errors);
+
     res.status(400).json(errors);
 
     return;
