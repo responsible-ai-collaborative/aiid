@@ -4,6 +4,7 @@ import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,
   SelectDatePickerFilter,
+  filterDate,
 } from 'components/ui/Table';
 import { Badge, Button } from 'flowbite-react';
 import UserEditModal from './UserEditModal';
@@ -39,16 +40,6 @@ export default function UsersTable({ data, className = '', ...props }) {
   );
 
   const client = useApolloClient();
-
-  const filterDate = (rows, id, filterValue) =>
-    rows.filter((row) => {
-      const rowValue = row.values[id];
-
-      if (!rowValue) return false;
-      const filterValueDate = new Date(rowValue).getTime();
-
-      return filterValueDate >= filterValue[0] && filterValueDate <= filterValue[1];
-    });
 
   useEffect(() => {
     const fetchUserAdminData = async () => {
