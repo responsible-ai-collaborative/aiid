@@ -9,6 +9,7 @@ import Table, {
   SelectColumnFilter,
   SelectDatePickerFilter,
   formatDateField,
+  sortDateField,
 } from 'components/ui/Table';
 
 export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
@@ -46,18 +47,27 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
         accessor: 'date_submitted',
         Cell: ({ value }) => formatDateField(value),
         Filter: SelectDatePickerFilter,
+        sortType: (rowA, rowB) => {
+          return sortDateField(rowA, rowB, 'date_submitted');
+        },
       },
       {
         title: t('Date Published'),
         accessor: 'date_published',
         Cell: ({ value }) => formatDateField(value),
         Filter: SelectDatePickerFilter,
+        sortType: (rowA, rowB) => {
+          return sortDateField(rowA, rowB, 'date_published');
+        },
       },
       {
         title: t('Date Modified'),
         accessor: 'date_modified',
         Cell: ({ value }) => formatDateField(value),
         Filter: SelectDatePickerFilter,
+        sortType: (rowA, rowB) => {
+          return sortDateField(rowA, rowB, 'date_modified');
+        },
       },
       {
         title: t('Language'),

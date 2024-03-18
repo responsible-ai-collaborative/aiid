@@ -230,6 +230,29 @@ export function formatDateField(date) {
   }
 }
 
+export function sortDateField(rowA, rowB, fieldName) {
+  if (
+    rowA.original[fieldName] &&
+    rowA.original[fieldName] !== '' &&
+    rowB.original[fieldName] &&
+    rowB.original[fieldName] !== ''
+  ) {
+    const dateRowA = new Date(rowA.original[fieldName]);
+
+    const dateRowB = new Date(rowB.original[fieldName]);
+
+    if (dateRowA > dateRowB) {
+      return 1;
+    }
+
+    if (dateRowA < dateRowB) {
+      return -1;
+    }
+
+    return 0;
+  }
+}
+
 export default function Table({
   table,
   showPagination = true,
