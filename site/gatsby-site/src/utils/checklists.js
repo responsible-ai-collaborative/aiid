@@ -50,12 +50,6 @@ const Label = (props) => (
 
 const tagsIdentifier = (risk) => risk.tags.sort().join('___');
 
-const removeTypename = (obj) => {
-  const replaced = JSON.stringify(obj).replace(/"__typename":"[A-Za-z]*",/g, '');
-
-  return JSON.parse(replaced);
-};
-
 const joinManualAndGeneratedRisks = (manualRisks, generatedRisks) => {
   const manualRiskTagIds = manualRisks.map((risk) => tagsIdentifier(risk));
 
@@ -302,7 +296,6 @@ export {
   abbreviatedTag,
   Label,
   DeleteButton,
-  removeTypename,
   tagsIdentifier,
   checkedRiskStatus,
   statusIcon,
