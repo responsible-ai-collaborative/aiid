@@ -189,20 +189,24 @@ function CiteTemplate({
                 ></SocialShareButtons>
 
                 <div className="ml-4 text-lg">
-                  <a
-                    title={t('Previous Incident')}
-                    className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
-                    href={localizePath({ path: `/cite/${prevIncident}` })}
-                  >
-                    <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
-                  </a>
-                  <a
-                    title={t('Next Incident')}
-                    className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
-                    href={localizePath({ path: `/cite/${nextIncident}` })}
-                  >
-                    <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
-                  </a>
+                  {prevIncident && (
+                    <a
+                      title={t('Previous Incident')}
+                      className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
+                      href={localizePath({ path: `/cite/${prevIncident}` })}
+                    >
+                      <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
+                    </a>
+                  )}
+                  {nextIncident && (
+                    <a
+                      title={t('Next Incident')}
+                      className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
+                      href={localizePath({ path: `/cite/${nextIncident}` })}
+                    >
+                      <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
+                    </a>
+                  )}
                 </div>
               </>
             )}
