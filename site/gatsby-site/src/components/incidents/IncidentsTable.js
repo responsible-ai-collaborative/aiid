@@ -5,7 +5,14 @@ import IncidentEditModal from './IncidentEditModal';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import { Button, ToggleSwitch } from 'flowbite-react';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  SelectDatePickerFilter,
+  filterDate,
+  formatDateField,
+  sortDateField,
+} from 'components/ui/Table';
 
 function ListCell({ cell }) {
   return (
@@ -78,6 +85,12 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
       {
         title: t('Date'),
         accessor: 'date',
+        Cell: ({ value }) => formatDateField(value),
+        Filter: SelectDatePickerFilter,
+        sortType: (rowA, rowB) => {
+          return sortDateField(rowA, rowB, 'date');
+        },
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         title: t('Alleged Deployer of AI System'),

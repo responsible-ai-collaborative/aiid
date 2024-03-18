@@ -253,6 +253,17 @@ export function sortDateField(rowA, rowB, fieldName) {
   }
 }
 
+export function filterDate(rows, id, filterValue) {
+  return rows.filter((row) => {
+    const rowValue = row.values[id];
+
+    if (!rowValue) return false;
+    const filterValueDate = new Date(rowValue).getTime();
+
+    return filterValueDate >= filterValue[0] && filterValueDate <= filterValue[1];
+  });
+}
+
 export default function Table({
   table,
   showPagination = true,

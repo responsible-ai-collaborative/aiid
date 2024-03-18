@@ -8,6 +8,7 @@ import Table, {
   DefaultColumnHeader,
   SelectColumnFilter,
   SelectDatePickerFilter,
+  filterDate,
   formatDateField,
   sortDateField,
 } from 'components/ui/Table';
@@ -50,6 +51,7 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
         sortType: (rowA, rowB) => {
           return sortDateField(rowA, rowB, 'date_submitted');
         },
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         title: t('Date Published'),
@@ -59,6 +61,7 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
         sortType: (rowA, rowB) => {
           return sortDateField(rowA, rowB, 'date_published');
         },
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         title: t('Date Modified'),
@@ -68,6 +71,7 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
         sortType: (rowA, rowB) => {
           return sortDateField(rowA, rowB, 'date_modified');
         },
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         title: t('Language'),
