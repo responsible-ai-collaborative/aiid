@@ -9,7 +9,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import RiskSection from 'components/checklists/RiskSection';
-import { shouldBeGrouped, generateId, tagsIdentifier } from 'utils/checklists';
+import { generateId, tagsIdentifier } from 'utils/checklists';
 
 const RiskSections = ({
   risks,
@@ -26,7 +26,6 @@ const RiskSections = ({
   userIsOwner,
   addRisk,
 }) => {
-
   // Contains strings yielded by tagIdentifiers,
   // used to persist open or closed state of sections
   // across manual and generated risks.
@@ -103,6 +102,10 @@ const RiskSections = ({
         ))}
 
         {generatedRisks
+          // If `tagsIdentifier(risk)` is in `manualRiskIdentifiers`,
+          // then the tags of `risks` exactly match
+          // those of some manually-annotated risk.
+          // We don't want to show a generated risk with the same tags.
           .filter((risk) => !manualRiskIdentifiers.includes(tagsIdentifier(risk)))
           .map((risk) => (
             <RiskSection
@@ -118,13 +121,5 @@ const RiskSections = ({
     </section>
   );
 };
-
-function areDuplicates(A, B) {
-  return (
-    A.tags.length == B.tags.length &&
-    A.tags.every((aTag) => B.tags.some((bTag) => shouldBeGrouped(bTag, aTag))) &&
-    B.tags.every((bTag) => A.tags.some((aTag) => shouldBeGrouped(aTag, bTag)))
-  );
-}
 
 export default RiskSections;
