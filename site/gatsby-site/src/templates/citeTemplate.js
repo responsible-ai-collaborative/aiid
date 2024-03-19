@@ -191,6 +191,7 @@ function CiteTemplate({
                 <div className="ml-4 text-lg">
                   {prevIncident && (
                     <a
+                      data-cy="header-previous-incident-link"
                       title={t('Previous Incident')}
                       className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
                       href={localizePath({ path: `/cite/${prevIncident}` })}
@@ -200,6 +201,7 @@ function CiteTemplate({
                   )}
                   {nextIncident && (
                     <a
+                      data-cy="header-next-incident-link"
                       title={t('Next Incident')}
                       className="text-black hover:text-primary-blue h-[50px] leading-[50px]"
                       href={localizePath({ path: `/cite/${nextIncident}` })}
