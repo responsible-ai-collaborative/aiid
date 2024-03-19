@@ -141,7 +141,7 @@ function SelectedRefinement({ attribute }) {
     .map((item) => (
       <div
         key={item.value}
-        className="cursor-pointer border text-xs p-2 rounded-md bg-green-100 hover:bg-red-200 flex justify-between items-center"
+        className="active cursor-pointer border text-xs p-2 rounded-md bg-green-100 hover:bg-red-200 flex justify-between items-center"
         role="button"
         tabIndex={0}
         onClick={() => refine(item.value)}

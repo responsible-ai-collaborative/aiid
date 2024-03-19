@@ -103,7 +103,7 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
         id="dropdown"
         className={`z-10 ${
           toggled ? 'hidden' : 'block '
-        } bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
+        } bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700`}
       >
         <FilterOverlay type={type} filterProps={filterProps} />
       </div>
