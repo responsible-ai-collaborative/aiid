@@ -109,7 +109,7 @@ describe('/api/lookupbyurl endpoint', () => {
     expect(req.query.urls).to.deep.eq(['https://url1.com']);
   });
 
-  it('Should left request unchanged', () => {
+  it('Should leave request unchanged', () => {
     const req = { query: { urls: ['https://url1.com'] } };
 
     normalizeRequest(req);
