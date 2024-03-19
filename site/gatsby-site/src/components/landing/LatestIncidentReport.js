@@ -7,7 +7,10 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
 import Link from 'components/ui/Link';
 
-const LatestIncidentReport = ({ report, key, isLatest = false, fiveLatestIncidents }) => {
+const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
+  
+  const report = incident.reports[0];
+
   const {
     image_url,
     cloudinary_id,
@@ -24,9 +27,9 @@ const LatestIncidentReport = ({ report, key, isLatest = false, fiveLatestInciden
 
   const reportLink = `/cite/${incident_id}#r${report_number}`;
 
-  const incident = fiveLatestIncidents.find((incident) =>
-    incident.reports.map((r) => r.report_number).includes(report.report_number)
-  );
+//  const incident = fiveLatestIncidents.find((incident) =>
+//    incident.reports.map((r) => r.report_number).includes(report.report_number)
+//  );
 
   console.log(`incident`, incident);
 

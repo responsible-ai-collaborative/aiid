@@ -41,8 +41,16 @@ const createWordCountsPage = async (graphql, createPage) => {
       ) {
         nodes {
           title
+          incident_id
           reports {
+            cloudinary_id
+            epoch_date_submitted
+            image_url
             report_number
+            source_domain
+            text
+            title
+            url
           }
         }
       }
@@ -126,14 +134,6 @@ const createWordCountsPage = async (graphql, createPage) => {
     }
   }
 
-  const latestReportNumbers = result.data.latestReports.nodes.map((node) => {
-    const sortedArray = node.reports.sort((a, b) => {
-      return a.epoch_date_submitted - b.epoch_date_submitted;
-    });
-
-    return sortedArray[0].report_number;
-  });
-
   const fiveLatestIncidents = result.data.latestReports.nodes;
 
   PAGES_WITH_WORDCOUNT.forEach((page) => {
@@ -144,11 +144,6 @@ const createWordCountsPage = async (graphql, createPage) => {
         wordClouds,
         wordCountsSorted,
         wordsPerCloud,
-        latestReportNumber:
-          result.data.latestReport.nodes.length > 0
-            ? result.data.latestReport.nodes[0].report_number
-            : 0,
-        latestReportNumbers,
         fiveLatestIncidents,
         sponsors: result.data.sponsors.edges,
       },

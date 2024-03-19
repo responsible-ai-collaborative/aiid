@@ -23,8 +23,6 @@ const LandingPage = (props) => {
 
   let { latestPrismicPost, latestPostOld, latestReportIncidents } = data;
 
-  const { latestReportNumbers } = props.pageContext;
-
   let latestBlogPost = null;
 
   if (!latestPostOld || latestPostOld.nodes.length === 0) {
@@ -44,30 +42,6 @@ const LandingPage = (props) => {
 
   const { locale: language } = useLocalization();
 
-  const latestReports = latestReportIncidents.edges.map((incident) => {
-    const report = incident.node.reports.find((r) => latestReportNumbers.includes(r.report_number));
-
-    if (report.language !== language) {
-      const translation = data[`latestReports_${language}`]?.edges.find(
-        (translation) => translation.node.report_number === report.report_number
-      );
-
-      if (translation) {
-        report.title = translation.node.title;
-        report.text = translation.node.text;
-      } else {
-        console.warn(`No latestReports_${language}`);
-      }
-    }
-    const updatedIncident = {
-      incident_id: incident.node.incident_id,
-      ...report,
-    };
-
-    return updatedIncident;
-  });
-
-  console.log(`props`, props);
 
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
@@ -81,11 +55,10 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        {latestReports.length > 0 && (
+        {props.pageContext.fiveLatestIncidents.length > 0 && (
           <div className="mb-5 md:mb-10">
             <div>
               <LatestReports
-                latestReports={latestReports}
                 fiveLatestIncidents={props.pageContext.fiveLatestIncidents}
               />
             </div>
@@ -131,7 +104,7 @@ const LandingPage = (props) => {
           <div className="flex-1 lg:max-w-[50%]">
             <NewsletterSignup />
           </div>
-          {latestReports.length > 0 && (
+          {props.pageContext.fiveLatestIncidents.length > 0 && (
             <div className="flex-1 lg:max-w-[50%]">
               <RandomIncidents />
             </div>
