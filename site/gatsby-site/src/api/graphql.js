@@ -8,9 +8,22 @@ import { typeDefs } from '../graphql/schema';
 
 const cors = Cors();
 
-const userExecutor = buildHTTPExecutor({
+const remoteExecutor = buildHTTPExecutor({
   endpoint: `https://realm.mongodb.com/api/client/v2.0/app/${siteConfig.realm.production_db.realm_app_id}/graphql`,
   headers(executorRequest) {
+    // we allow read operations to be executed without an authorization header
+
+    if (
+      !executorRequest?.context.req.headers.authorization &&
+      executorRequest?.info.operation.operation == 'query'
+    ) {
+      return {
+        apiKey: siteConfig.realm.graphqlApiKey,
+      };
+    }
+
+    // if a header is present do a 1 to 1 pass through
+
     return {
       authorization: executorRequest?.context.req.headers.authorization,
     };
@@ -27,7 +40,7 @@ export default async function handler(req, res) {
 
     const wrappedRemoteSchema = wrapSchema({
       schema: remoteSchema,
-      executor: userExecutor,
+      executor: remoteExecutor,
     });
 
     graphqlMiddleware = createHandler({ schema: wrappedRemoteSchema, context: (req) => ({ req }) });
