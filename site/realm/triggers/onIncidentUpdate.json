@@ -20,6 +20,48 @@
                         "$exists": false
                     }
                 }
+            ],
+            "$or": [
+                {
+                    "updateDescription.updatedFields.title": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.description": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.date": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.\"Alleged deployer of AI system\"": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.\"Alleged developer of AI system\"": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.\"Alleged harmed or nearly harmed parties\"": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.reports": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.editors": {
+                        "$exists": true
+                    }
+                }
             ]
         },
         "project": {},

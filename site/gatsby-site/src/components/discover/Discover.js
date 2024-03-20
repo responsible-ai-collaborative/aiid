@@ -6,7 +6,7 @@ import algoliasearch from 'algoliasearch/lite';
 import config from '../../../config';
 import { navigate } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { InstantSearch } from 'react-instantsearch';
+import { Configure, InstantSearch } from 'react-instantsearch';
 import SearchBox from 'components/discover/SearchBox';
 import Hits from 'components/discover/Hits';
 import Controls from './Controls';
@@ -37,6 +37,8 @@ export default function Discover() {
 
   const [width, setWidth] = useState(0);
 
+  const [currentPage, setCurrentPage] = useState(0);
+
   const handleWindowSizeChange = useRef(
     debounce(() => {
       setWidth(window.innerWidth);
@@ -64,6 +66,15 @@ export default function Discover() {
     return () => {
       window.removeEventListener('resize', handleWindowSizeChange);
     };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const page = parseInt(params.get('page'), 10);
+
+    // Set the current page from the URL, defaulting to 0 (Algolia's pagination is zero-based)
+    setCurrentPage(!isNaN(page) ? page - 1 : 0);
   }, []);
 
   if (width == 0) {
@@ -95,6 +106,7 @@ export default function Discover() {
         stateMapping: mapping(),
       }}
     >
+      <Configure hitsPerPage={28} page={currentPage} />
       <Container className="ml-auto mr-auto w-full lg:max-w-6xl xl:max-w-7xl mt-6">
         <Row className="px-0 mx-0">
           <Col className="px-0 mx-0">
