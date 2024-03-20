@@ -2,15 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
 import { Button, Textarea, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMutation, useApolloClient, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEnvelope,
-  faPlusCircle,
-  faWindowMaximize,
-  faWindowMinimize,
   faBullseye,
   faMicrochip,
   faArrowsTurnToDots,
@@ -18,14 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { DELETE_CHECKLIST } from '../../graphql/checklists';
-import {
-  Label,
-  DeleteButton,
-  abbreviatedTag,
-  emptyRisk,
-  shouldBeGrouped,
-  risksEqual,
-} from 'utils/checklists';
+import { Label, DeleteButton, abbreviatedTag, generateId } from 'utils/checklists';
 import Tags from 'components/forms/Tags';
 import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
@@ -70,29 +60,93 @@ export default function CheckListForm({
     }
   };
 
-  const [risksLoading, setRisksLoading] = useState(false);
-
-  const [allPrecedents, setAllPrecedents] = useState([]);
-
   const searchTags = [
     ...(values['tags_goals'] || []),
     ...(values['tags_methods'] || []),
     ...(values['tags_other'] || []),
   ];
 
-  const apolloClient = useApolloClient();
+  // Hits the risk management API with the specified query tags
+  // to populate values.risks and allPrecedents.
+  //
+  // Example resulting values.risks:
+  //
+  // [ {
+  //     /* GraphQL API Results */
+  //     title: "Gaming Vulnerability",
+  //     tags: ["GMF:Failure:Gaming Vulnerability"],
+  //     precedents: [
+  //       { incident_id: 146,
+  //         url: "https://incidentdatabase.ai/cite/146",
+  //         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
+  //         description: "A publicly accessible research model [...] moral judgments.",
+  //         tags: [ "GMF:Known AI Technology:Language Modeling", ],
+  //       },
+  //     ],
+  //
+  //     /* Defaults Risk Annotations */
+  //     risk_status: "Not Mitigated",
+  //     risk_notes: "",
+  //     severity: "",
+  //
+  //
+  //     /* UI properties*/
+  //     startClosed: true,
+  //     touched: false,     // TODO: Remove these database-side.
+  //     generated: true,
+  //   }
+  // ]
+  //
+  // TODO: Group known and potential in GMF Taxonomy
+  const {
+    data: generatedRisksData,
+    loading: generatedRisksLoading,
+    errors: generatedRisksErrors,
+  } = useQuery(
+    gql`
+      query {
+        risks(input: { tags: [${searchTags.map((t) => `"${t}"`).join(', ')}] }) {
+          tags
+          title
+          precedents {
+            incident_id
+            title
+            description
+            tags
+          }
+        }
+      }
+    `,
+    { skip: searchTags.length == 0 }
+  );
 
-  useEffect(() => {
-    searchRisks({
-      values,
-      setFieldValue,
-      setRisksLoading,
-      setAllPrecedents,
-      addToast,
-      t,
-      apolloClient,
+  if (generatedRisksErrors) {
+    addToast({
+      message: t('Failure searching for risks.'),
+      severity: SEVERITY.danger,
     });
-  }, [values['tags_goals'], values['tags_methods'], values['tags_other']]);
+  }
+
+  const generatedRisks = (generatedRisksData?.risks || []).map((result) => ({
+    title: result.title,
+    tags: result.tags,
+    precedents: result.precedents,
+    description: result.description,
+    risk_status: 'Not Mitigated',
+    risk_notes: '',
+    severity: '',
+    likelihood: '',
+  }));
+
+  const allPrecedents = generatedRisks.reduce((allPrecedents, generatedRisk) => {
+    const newPrecedents = generatedRisk.precedents.filter((precedent) =>
+      allPrecedents.every(
+        (existingPrecedent) => existingPrecedent.incident_id != precedent.incident_id
+      )
+    );
+
+    return allPrecedents.concat(newPrecedents);
+  }, []);
 
   useEffect(() => {
     if (userIsOwner) {
@@ -109,6 +163,10 @@ export default function CheckListForm({
     );
   };
 
+  const addRisk = (newRisk) => {
+    setFieldValue('risks', [newRisk].concat(values.risks));
+  };
+
   const changeSort = (sortFunction) => (event) => {
     event.preventDefault();
     setFieldValue('risks', values.risks.sort(sortFunction));
@@ -117,13 +175,18 @@ export default function CheckListForm({
   const updateRisk = (risk, attributeValueMap) => {
     const updatedRisks = [...values.risks];
 
-    const updatedRisk = updatedRisks.find((r) => risksEqual(r, risk));
+    const updatedRisk = updatedRisks.find((r) => r.id == risk.id);
 
-    for (const attribute in attributeValueMap) {
-      if (attribute != 'precedents') {
-        updatedRisk.generated = false;
+    if (updatedRisk) {
+      for (const attribute in attributeValueMap) {
+        if (attribute != 'precedents') {
+          updatedRisk.generated = false;
+        }
+        updatedRisk[attribute] = attributeValueMap[attribute];
       }
-      updatedRisk[attribute] = attributeValueMap[attribute];
+    } else {
+      // A generated risk being promoted to a manual one
+      updatedRisks.push({ ...risk, ...attributeValueMap, id: generateId() });
     }
 
     setFieldValue('risks', updatedRisks);
@@ -163,7 +226,7 @@ export default function CheckListForm({
               <Trans>Delete</Trans>
             </DeleteButton>
           )}
-          <ExportDropdown checklist={values} />
+          <ExportDropdown checklist={values} generatedRisks={generatedRisks} />
         </HeaderControls>
       </Header>
       <Info>This feature is in development. Data entered will not be retained.</Info>
@@ -177,64 +240,20 @@ export default function CheckListForm({
         <OtherTagInput {...{ values, tags, setFieldValue, userIsOwner }} />
       </section>
       <section>
-        <header className="flex mt-6">
-          <h2>Risks</h2>
-          <div className="flex gap-2 ml-auto">
-            <Button
-              color="light"
-              onClick={() =>
-                setFieldValue(
-                  'risks',
-                  values.risks.map((r) => ({ ...r, startClosed: false }))
-                )
-              }
-            >
-              <FontAwesomeIcon icon={faWindowMaximize} className="mr-2" />
-              <Trans>Expand all</Trans>
-            </Button>
-            <Button
-              color="light"
-              onClick={() =>
-                setFieldValue(
-                  'risks',
-                  values.risks.map((r) => ({ ...r, startClosed: true }))
-                )
-              }
-            >
-              <FontAwesomeIcon icon={faWindowMinimize} className="mr-2" />
-              <Trans>Collapse all</Trans>
-            </Button>
-            {userIsOwner && (
-              <Button
-                onClick={() => {
-                  setFieldValue(
-                    'risks',
-                    [emptyRisk({ generated: false })].concat(values.risks || [])
-                  );
-                }}
-              >
-                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
-                <Trans>Add Risk</Trans>
-              </Button>
-            )}
-          </div>
-        </header>
-
-        {!risksLoading && values.risks?.length == 0 && (
-          <Trans>No risks yet. Try adding some system tags.</Trans>
-        )}
         <RiskSections
           {...{
             risks: values.risks,
+            generatedRisks,
+            generatedRisksLoading,
             setFieldValue,
             submitForm,
             tags,
             searchTags,
             allPrecedents,
-            risksLoading,
+            addRisk,
             removeRisk,
-            changeSort,
             updateRisk,
+            changeSort,
             userIsOwner,
           }}
         />
@@ -280,68 +299,76 @@ const QueryTagInput = ({
   userIsOwner,
   icon,
   trimTaxonomy = false,
-}) => (
-  <div className="bootstrap">
-    <Label for={id}>
-      {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
-      {title}
-    </Label>
-    <Tags
-      id={id}
-      inputId={`${id}_input`}
-      value={idValue}
-      options={tags.filter((tag) => include(tag.split(':')))}
-      onChange={(tagInputArray) => {
-        //
-        // Example tagInputArray:
-        //
-        // ["GMF:Known AI Technology:Transformer", "Language Model"]
-        //     |                                         |
-        //  ,  |    Not fully-qualified, entered by direct text entry
-        //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
-        //     |    "GMF:Known AI Technology:Language Model"
-        //     |
-        //  Fully-qualified, entered from menu
-        //
-        if (trimTaxonomy) {
-          // If `trimTaxonomy` is enabled, then
-          // "GMF:Known AI Technology:Transformer"
-          // displays in the menu as just "Transformer".
-          // Users would therefore expect that typing "Transformer"
-          // will mean the same thing as clicking "Transformer" in the menu.
-          // So we have to convert it to its fully-qualified version.
-          const selectedTags = [];
+}) => {
+  const [realValue, setRealValue] = useState(idValue);
 
-          for (const tagInput of tagInputArray) {
-            let selectedTag;
+  useEffect(() => {
+    setFieldValue(id, realValue);
+  }, [realValue]);
 
-            if (tagInput.includes(':')) {
-              // If there's a colon, it's already fully-qualified,
-              selectedTag = tagInput;
-            } else {
-              // If there's no colon, then it's not fully-qualified,
-              // so we find the full tag which abbreviates
-              // to the unqualified one.
-              selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+  return (
+    <div className="bootstrap">
+      <Label for={id}>
+        {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
+        {title}
+      </Label>
+      <Tags
+        id={id}
+        inputId={`${id}_input`}
+        value={realValue}
+        options={tags.filter((tag) => include(tag.split(':')))}
+        onChange={(tagInputArray) => {
+          //
+          // Example tagInputArray:
+          //
+          // ["GMF:Known AI Technology:Transformer", "Language Model"]
+          //     |                                         |
+          //  ,  |    Not fully-qualified, entered by direct text entry
+          //     |    when `trimTaxonomy` is enabled. Needs to be resolved to:
+          //     |    "GMF:Known AI Technology:Language Model"
+          //     |
+          //  Fully-qualified, entered from menu
+          //
+          if (trimTaxonomy) {
+            // If `trimTaxonomy` is enabled, then
+            // "GMF:Known AI Technology:Transformer"
+            // displays in the menu as just "Transformer".
+            // Users would therefore expect that typing "Transformer"
+            // will mean the same thing as clicking "Transformer" in the menu.
+            // So we have to convert it to its fully-qualified version.
+            const selectedTags = [];
+
+            for (const tagInput of tagInputArray) {
+              let selectedTag;
+
+              if (tagInput.includes(':')) {
+                // If there's a colon, it's already fully-qualified,
+                selectedTag = tagInput;
+              } else {
+                // If there's no colon, then it's not fully-qualified,
+                // so we find the full tag which abbreviates
+                // to the unqualified one.
+                selectedTag = tags.find((t) => abbreviatedTag(t) == tagInput);
+              }
+              if (selectedTag) {
+                selectedTags.push(selectedTag);
+              }
             }
-            if (selectedTag) {
-              selectedTags.push(selectedTag);
-            }
+            setRealValue(selectedTags);
+          } else {
+            // If `trimTaxonomy` is disabled,
+            // then we can leave the input as it is.
+            setRealValue(tagInputArray);
           }
-          setFieldValue(id, selectedTags);
-        } else {
-          // If `trimTaxonomy` is disabled,
-          // then we can leave the input as it is.
-          setFieldValue(id, tagInputArray);
-        }
-      }}
-      labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
-      placeHolder={placeHolder}
-      disabled={!userIsOwner}
-      allowNew={false}
-    />
-  </div>
-);
+        }}
+        labelKey={trimTaxonomy ? abbreviatedTag : (a) => a}
+        placeHolder={placeHolder}
+        disabled={!userIsOwner}
+        allowNew={false}
+      />
+    </div>
+  );
+};
 
 const GoalsTagInput = ({ values, tags, setFieldValue, userIsOwner }) => (
   <QueryTagInput
@@ -483,126 +510,5 @@ function Info({ children, className }) {
       </button>
       <strong>INFO</strong>: {children}
     </div>
-  );
-}
-
-// Hits the risk management API with the specified query tags
-// to populate values.risks and allPrecedents.
-//
-// Example resulting values.risks:
-//
-// [ {
-//     /* GraphQL API Results */
-//     title: "Gaming Vulnerability",
-//     tags: ["GMF:Failure:Gaming Vulnerability"],
-//     precedents: [
-//       { incident_id: 146,
-//         url: "https://incidentdatabase.ai/cite/146",
-//         title: "Research Prototype AI, Delphi, Reportedly Gave Racially Biased Answers on Ethics",
-//         description: "A publicly accessible research model [...] moral judgments.",
-//         tags: [ "GMF:Known AI Technology:Language Modeling", ],
-//       },
-//     ],
-//
-//     /* Defaults Risk Annotations */
-//     risk_status: "Not Mitigated",
-//     risk_notes: "",
-//     severity: "",
-//
-//     /* UI properties*/
-//     startClosed: true,
-//     touched: false,
-//     generated: true,
-//   }
-// ]
-//
-// TODO: Group known and potential in GMF Taxonomy
-const searchRisks = async ({
-  values,
-  setFieldValue,
-  setRisksLoading,
-  setAllPrecedents,
-  addToast,
-  t,
-  apolloClient,
-}) => {
-  const queryTags = [
-    ...(values['tags_goals'] || []),
-    ...(values['tags_methods'] || []),
-    ...(values['tags_other'] || []),
-  ];
-
-  if (queryTags.length == 0) return;
-
-  setRisksLoading(true);
-
-  const risksResponse = await apolloClient.query({
-    query: gql`
-      query {
-        risks(input: { tags: [${queryTags.map((t) => `"${t}"`).join(', ')}] }) {
-          tags
-          title
-          precedents {
-            incident_id
-            title
-            description
-            tags
-          }
-        }
-      }
-    `,
-  });
-
-  const allPrecedents = [];
-
-  if (risksResponse.data) {
-    const results = risksResponse.data.risks;
-
-    const risksToAdd = [];
-
-    for (let i = 0; i < results.length; i++) {
-      const result = results[i];
-
-      const newRisk = {
-        ...emptyRisk(),
-        title: result.title,
-        tags: result.tags,
-        precedents: result.precedents,
-        description: result.description,
-        startClosed: true,
-      };
-
-      const notDuplicate = [...risksToAdd, ...(values.risks || [])].every(
-        (existingRisk) => !areDuplicates(existingRisk, newRisk)
-      );
-
-      if (notDuplicate) {
-        risksToAdd.push(newRisk);
-      }
-      for (const precedent of result.precedents) {
-        if (allPrecedents.every((p) => p.incident_id != precedent.incident_id)) {
-          allPrecedents.push(precedent);
-        }
-      }
-    }
-
-    setAllPrecedents(allPrecedents);
-
-    setFieldValue('risks', values.risks.concat(risksToAdd));
-  } else {
-    addToast({
-      message: t('Failure searching for risks.'),
-      severity: SEVERITY.danger,
-    });
-  }
-
-  setRisksLoading(false);
-};
-
-function areDuplicates(A, B) {
-  return (
-    A.tags.length == B.tags.length &&
-    A.tags.every((aTag) => B.tags.some((bTag) => shouldBeGrouped(bTag, aTag))) &&
-    B.tags.every((bTag) => A.tags.some((aTag) => shouldBeGrouped(aTag, bTag)))
   );
 }
