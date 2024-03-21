@@ -6,10 +6,10 @@ import HeadContent from 'components/HeadContent';
 export default function PrismicDoc(props) {
   let doc = props?.data?.doc;
 
-  const enDoc = props?.data?.enDoc;
-
   // If the doc is not translated, use the English version
-  if (!doc) doc = enDoc;
+  if (!doc) {
+    doc = props?.data?.enDoc;
+  }
 
   return (
     <>

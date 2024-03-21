@@ -295,5 +295,10 @@
   "Leaderboard of top submitters, authors, and domains by count.": "Classement des meilleurs soumissionnaires, auteurs et domaines par nombre.",
   "Submissions Leaderboard": "Classement des soumissions",
   "Database Backups and Snapshots": "Sauvegardes et instantanés de la base de données",
-  "Find and download the latest Database Backups and snapshots": "Trouver et télécharger les dernières sauvegardes et instantanés de la base de données"
+  "Find and download the latest Database Backups and snapshots": "Trouver et télécharger les dernières sauvegardes et instantanés de la base de données",
+  "Blog": "Blog",
+  "AI News Digest": "Résumé de l’Actualité sur l’IA",
+  "Remove Duplicate": "Supprimer le doublon",
+  "View History": "Voir l'historique",
+  "CSET Annotators Table": "Tableau des annotateurs CSET"
 }

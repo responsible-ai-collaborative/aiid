@@ -14,7 +14,7 @@ import HeadContent from 'components/HeadContent';
 
 export default function Post(props) {
   let {
-    data: { mdx, enMdx },
+    data: { mdx, enMdx }, // "mdx" is the translated version of the doc, "enMdx" is the English version
     children,
   } = props;
 
@@ -138,7 +138,6 @@ export const pageQuery = graphql`
         }
       }
     }
-
     enMdx: mdx(fields: { locale: { eq: "en" } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         title
