@@ -56,7 +56,7 @@ const LandingPage = (props) => {
         report.title = translation.node.title;
         report.text = translation.node.text;
       } else {
-        console.warn(`No latestReports_${language}`);
+        console.warn(`No latestReports_${language} for report ${report.report_number}`);
       }
     }
     const updatedIncident = {
@@ -236,6 +236,17 @@ export const query = graphql`
       }
     }
     latestReports_fr: allMongodbTranslationsReportsFr(
+      filter: { report_number: { in: $latestReportNumbers } }
+    ) {
+      edges {
+        node {
+          title
+          text
+          report_number
+        }
+      }
+    }
+    latestReports_ja: allMongodbTranslationsReportsJa(
       filter: { report_number: { in: $latestReportNumbers } }
     ) {
       edges {

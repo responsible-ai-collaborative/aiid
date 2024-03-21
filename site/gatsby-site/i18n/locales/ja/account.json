@@ -1,0 +1,15 @@
+{
+  "Account Details": "アカウント詳細",
+  "Subscriptions": "購読",
+  "You don't have active subscriptions to Incident updates": "インシデントアップデートの購読はありません",
+  "You don't have active subscriptions to Entities": "組織の購読はありません",
+  "Do you want to delete this subscription?": "この購読を削除しますか？",
+  "Updates on incident ": "インシデントの更新 ",
+  "Notify me of new Incidents": "新しいインシデントを通知します",
+  "New <2>{{name}}</2> Entity incidents": "組織<2>{{name}}</2>の新しいインシデント",
+  "First Name": "名",
+  "Last Name": "姓",
+  "About You": "自分について",
+  "completeInfoAlertTitle": "インシデント報告のユーザー情報管理",
+  "completeInfoAlertMessage": "インシデントを新しく作成したり編集すると、それらの操作はあなたのユーザーアカウントとここで入力する名前と関連づけられます。常に匿名を維持したい場合はブラウザの匿名モードでこのサイトを使用してください"
+}

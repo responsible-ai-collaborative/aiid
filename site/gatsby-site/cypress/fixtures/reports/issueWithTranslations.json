@@ -24,8 +24,8 @@
             "language": "en",
             "translations_es": {
                 "__typename": "ReportTranslation",
-                "title": "Este es el Titulo",
-                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres!"
+                "title": "Este es el Título en español",
+                "text": "Este es un texto de prueba que tiene un largo mayor a ochenta caracteres (en español)"
             },
             "translations_en": {
                 "__typename": "ReportTranslation",
@@ -34,8 +34,13 @@
             },
             "translations_fr": {
                 "__typename": "ReportTranslation",
-                "title": "",
-                "text": ""
+                "title": "C'est le Titre en français",
+                "text": "Il s'agit d'un texte de test de plus de quatre-vingts caractères - lorem ipsum (en français)"
+            },
+            "translations_ja": {
+                "__typename": "ReportTranslation",
+                "title": "これは日本語でのタイトルです",
+                "text": "解サオライ協立なーづ民手ぶみドに即記朝ぐ奥置ぱで地更トるあて栄厚ぜづを祭屋ん来派どてゃ読速ヘ誌約カタシネ原39業理る。外ヒヱフ社第むせゆ由更混ソエ夕野しりすよ顔飛リの兆基う公言や置17謝后嘘5供フキヌア星集ヘラ辞勘壇崇さびわ。（日本語で）"
             },
             "date_modified": "2023-01-01",
             "epoch_date_modified": 1672531200,
