@@ -107,4 +107,25 @@ describe('Quickadds', () => {
         expect(quickadd.url).toBe('http://example2.com');
         expect(quickadd._id).toMatch(/^[0-9a-fA-F]{24}$/);
     });
+
+    it(`deleteManyQuickadds mutation throws if missing roles`, async () => {
+
+        const mutationData = {
+            query: `
+            mutation {
+                deleteManyQuickadds(query: { _id: "5f5f3e3e3e3e3e3e3e3e3e3f" }) {
+                  deletedCount
+                }
+            }
+            `,
+        };
+
+        const response = await request(url).post('/').send(mutationData);
+
+        expect(response.statusCode).toBe(200);
+
+        expect(response.body.errors.length).toBe(1);
+
+        expect(response.body.errors[0].message).toBe('not authorized');
+    });
 });
