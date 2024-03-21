@@ -24,6 +24,16 @@ export const FIND_ENTITY = gql`
       entity_id
       name
       created_at
+      date_modified
+    }
+  }
+`;
+
+export const UPDATE_ENTITY = gql`
+  mutation UpdateEntity($query: EntityQueryInput, $set: EntityUpdateInput!) {
+    updateOneEntity(query: $query, set: $set) {
+      entity_id
+      name
     }
   }
 `;

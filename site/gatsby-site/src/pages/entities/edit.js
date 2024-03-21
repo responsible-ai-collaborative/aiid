@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
-//import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_ENTITY } from '../../graphql/entities';
-import { /*useMutation,*/ useQuery } from '@apollo/client/react/hooks';
+import { FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Form, Formik } from 'formik';
 //import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
@@ -14,6 +14,7 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 //import { getUnixTime } from 'date-fns';
 //import { useUserContext } from 'contexts/userContext';
 import * as Yup from 'yup';
+import { format } from 'date-fns';
 
 const schema = Yup.object().shape({
   name: Yup.string().required(),
@@ -28,10 +29,12 @@ function EditEntityPage(props) {
 
   const [entityId] = useQueryParam('entity_id', withDefault(StringParam, ''));
 
+  console.log('entityId', entityId);
+
   const {
     data: entityData,
     loading: loadingEntity,
-    error,
+    refetch,
   } = useQuery(FIND_ENTITY, {
     variables: { query: { entity_id: entityId } },
   });
@@ -40,33 +43,22 @@ function EditEntityPage(props) {
 
   const loading = loadingEntity;
 
-  // const [updateIncident] = useMutation(UPDATE_INCIDENT);
+  const [updateEntityMutation] = useMutation(UPDATE_ENTITY);
 
-  // const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+  const addToast = useToastContext();
 
-  // const addToast = useToastContext();
+  const updateSuccessToast = () => ({
+    message: t('Entity updated successfully.'),
+    severity: SEVERITY.success,
+  });
 
-  // const { logIncidentHistory } = useLogIncidentHistory();
-
-  // const updateSuccessToast = ({ incidentId }) => ({
-  //   message: (
-  //     <Trans i18n={i18n} incidentId={incidentId}>
-  //       Incident {{ incidentId }} updated successfully.{' '}
-  //       <LocalizedLink to={'/cite/' + incidentId}>View incident {{ incidentId }}</LocalizedLink>.
-  //     </Trans>
-  //   ),
-  //   severity: SEVERITY.success,
-  // });
-
-  // const updateErrorToast = ({ incidentId, error }) => ({
-  //   message: t('Error updating incident {{incidentId}}.', { incidentId }),
-  //   severity: SEVERITY.danger,
-  //   error,
-  // });
+  const updateErrorToast = ({ entityId, error }) => ({
+    message: t('Error updating entity {{entityId}}.', { entityId }),
+    severity: SEVERITY.danger,
+    error,
+  });
 
   useEffect(() => {
-    console.log('entityData', entityData, error);
-
     if (entityData?.entity) {
       setEntity({
         ...entityData.entity,
@@ -74,8 +66,28 @@ function EditEntityPage(props) {
     }
   }, [entityData]);
 
-  const handleSubmit = async (/*values*/) => {
-    alert('submitting...');
+  const handleSubmit = async (values) => {
+    try {
+      await updateEntityMutation({
+        variables: {
+          query: {
+            entity_id: entityId,
+          },
+          set: {
+            name: values.name,
+            date_modified: new Date(),
+          },
+        },
+      });
+
+      refetch();
+
+      addToast(updateSuccessToast());
+    } catch (error) {
+      addToast(updateErrorToast({ entityId, error }));
+    }
+
+    return;
 
     // try {
     //   const updated = {
@@ -186,9 +198,9 @@ function EditEntityPage(props) {
             }) => (
               <>
                 <Form>
-                  <div className="mb-3" id="formBasicEmail">
+                  <div className="mb-3 flex flex-col gap-2">
                     <TextInputGroup
-                      label={t('Name')}
+                      label={`*${t('Name')}`}
                       type="text"
                       placeholder={t('Name')}
                       name="name"
@@ -198,6 +210,28 @@ function EditEntityPage(props) {
                       errors={errors}
                       touched={touched}
                       handleBlur={handleBlur}
+                    />
+
+                    <TextInputGroup
+                      name="created_at"
+                      label={t('Creation Date')}
+                      type="date"
+                      value={
+                        values.created_at ? format(new Date(values.created_at), 'yyyy-MM-dd') : null
+                      }
+                      disabled={true}
+                    />
+
+                    <TextInputGroup
+                      name="date_modified"
+                      label={t('Last modified')}
+                      type="date"
+                      value={
+                        values.date_modified
+                          ? format(new Date(values.date_modified), 'yyyy-MM-dd')
+                          : null
+                      }
+                      disabled={true}
                     />
                   </div>
 

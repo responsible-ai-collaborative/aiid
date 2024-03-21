@@ -6,6 +6,9 @@
         "created_at": {
             "bsonType": "date"
         },
+        "date_modified": {
+            "bsonType": "date"
+        },
         "entity_id": {
             "bsonType": "string"
         },
@@ -14,7 +17,6 @@
         }
     },
     "required": [
-        "created_at",
         "entity_id",
         "name"
     ],
