@@ -223,12 +223,19 @@ const EntityPage = ({ pageContext, data, ...props }) => {
               <Spinner size="sm" />
             ) : subscriptions?.subscriptions.length > 0 ? (
               <UnsubscribeButton
-                {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
+                {...{
+                  unsubscribeToEntity,
+                  unsubscribing,
+                  subscriptionNetworkStatus,
+                  entityName: name,
+                }}
               >
                 <Trans>Unfollow</Trans>
               </UnsubscribeButton>
             ) : (
-              <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
+              <NotifyButton
+                {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus, entityName: name }}
+              >
                 <Trans>Follow</Trans>
               </NotifyButton>
             )}
@@ -294,6 +301,7 @@ function UnsubscribeButton({
   unsubscribeToEntity,
   unsubscribing,
   subscriptionNetworkStatus,
+  entityName,
 }) {
   const { t } = useTranslation();
 
@@ -303,7 +311,7 @@ function UnsubscribeButton({
       color={'light'}
       disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-1"
-      title={t('Unsubscribe from New {{name}} Incidents', { name })}
+      title={t('Unsubscribe from New {{name}} Incidents', { name: entityName })}
     >
       <div className="flex gap-2 items-center">
         {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
@@ -319,7 +327,13 @@ function UnsubscribeButton({
   );
 }
 
-function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNetworkStatus }) {
+function NotifyButton({
+  children,
+  subscribeToEntity,
+  subscribing,
+  subscriptionNetworkStatus,
+  entityName,
+}) {
   const { t } = useTranslation();
 
   return (
@@ -328,7 +342,7 @@ function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNe
       onClick={subscribeToEntity}
       disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-2 whitespace-nowrap"
-      title={t('Notify Me of New {{name}} Incidents', { name })}
+      title={t('Notify Me of New {{name}} Incidents', { name: entityName })}
     >
       <div className="flex gap-2 items-center">
         {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
