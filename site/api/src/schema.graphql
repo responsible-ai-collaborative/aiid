@@ -21,8 +21,7 @@ input QuickaddQueryInput {
 }
 
 type Query {
-  quickadds(query: QuickaddQueryInput!): [QuickAdd]
-  bue: String
+  quickadds(query: QuickaddQueryInput): [QuickAdd]
 }
 
 

@@ -12,12 +12,17 @@ export const startTestServer = async () => {
     return { server, url }
 }
 
-export const seedCollection = async ({ name, docs }: { name: string, docs: Record<string, unknown>[] }) => {
+export const seedCollection = async ({ name, docs, drop = true }: { name: string, docs: Record<string, unknown>[], drop?: boolean }) => {
 
     const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
 
     const db = client.db('aiidprod');
     const collection = db.collection(name);
+
+    if (drop && (await db.listCollections().toArray()).find(c => c.name === name )) {
+        
+        await collection.drop();
+    }
 
     const result = await collection.insertMany(docs);
 

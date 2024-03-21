@@ -7,6 +7,7 @@ import { QuickAdd, Resolvers } from './generated/graphql';
 import { LongResolver, ObjectIDResolver } from 'graphql-scalars';
 import path from 'path';
 import { MongoClient } from 'mongodb';
+import { convertToObjectID } from './utils';
 
 function authDirectiveTransformer(schema: GraphQLSchema, directiveName: string) {
 
@@ -57,13 +58,16 @@ export const getSchema = async () => {
         ObjectId: ObjectIDResolver,
         Long: LongResolver,
         Query: {
-            quickadds: async () => {
+            async quickadds(_, { query = {} }: { query?: any } = {}) {
 
                 const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
 
                 const db = client.db('aiidprod');
                 const collection = db.collection<QuickAdd>('quickadd');
-                const items = await collection.find().toArray();
+
+                const filter = convertToObjectID<QuickAdd>(query);
+
+                const items = await collection.find(filter).toArray();
 
                 return items;
             },
