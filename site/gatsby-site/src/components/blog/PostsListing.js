@@ -3,6 +3,8 @@ import PostPreview from './PostPreview';
 import PrismicPostPreview from './PrismicPostPreview';
 
 export default function PostsListing({ posts, mdxBlogPosts }) {
+  let sortedPosts = [];
+
   // Add an mdx field to each object and flatten the structure
   const mdxBlogPostsWithFlag = mdxBlogPosts.map((post) => ({
     ...post,
@@ -18,7 +20,7 @@ export default function PostsListing({ posts, mdxBlogPosts }) {
 
   const mergedPosts = [...mdxBlogPostsWithFlag, ...postsWithFlag];
 
-  const sortedPosts = mergedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+  sortedPosts = mergedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <>

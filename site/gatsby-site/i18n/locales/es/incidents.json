@@ -3,5 +3,6 @@
     "This is a simple numeric listing of all incidents and their reports within the database. If you would like to explore the contents of the reports, you should work through the<1> Discover app</1>.": "Se trata de una lista numérica simple de todos los incidentes y sus reportes dentro de la base de datos. Si desea explorar el contenido de los reportes, debe navegar a través de<1> Descubrir Incidentes</1>.",
     "Sort by incident ID": "Ordenar por ID de incidente",
     "ascending": "ascendente",
-    "descending": "descendente"
+    "descending": "descendente",
+    "Summary of all the incidents present in the database": "Resumen de todos los incidentes presentes en la base de datos"
 }

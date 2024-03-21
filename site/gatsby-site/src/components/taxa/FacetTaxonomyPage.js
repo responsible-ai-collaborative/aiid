@@ -7,7 +7,6 @@ import BillboardJS from '@billboard.js/react';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge, Button } from 'flowbite-react';
-import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -37,8 +36,6 @@ export default function FacetTaxonomyPage(props) {
 
   return (
     <>
-      <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
-
       <div className={'titleWrapper'}>
         <h1>{namespace}</h1>
       </div>

@@ -6,7 +6,6 @@ import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
 import Outline from 'components/Outline';
-import AiidHelmet from 'components/AiidHelmet';
 import Leaderboards from 'components/landing/Leaderboards';
 import Sponsors from 'components/landing/Sponsors';
 import { RichText } from 'prismic-reactjs';
@@ -18,14 +17,6 @@ const PrismicDocPost = ({ doc, location }) => {
     Leaderboards: <Leaderboards />,
     Sponsors: <Sponsors />,
   };
-
-  if (!doc) return <></>;
-
-  const metaTitle = doc.data.metatitle;
-
-  const metaDescription = doc.data.metadescription;
-
-  let metaImage = null;
 
   const canonicalUrl = config.gatsby.siteUrl + location.pathname;
 
@@ -45,7 +36,6 @@ const PrismicDocPost = ({ doc, location }) => {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <h1>{doc.data.title}</h1>
       </div>

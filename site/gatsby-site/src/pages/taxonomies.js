@@ -1,25 +1,18 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import HeadContent from 'components/HeadContent.js';
 
-export default function Taxonomies({ data, ...props }) {
+export default function Taxonomies({ data }) {
   const { t } = useTranslation();
-
-  const title = t('Taxonomies');
 
   const metaTitle = t('List of taxonomies');
 
-  const metaDescription = t('This is the list of taxonomies supported in AIID');
-
   return (
     <>
-      <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
-        <title>{title}</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>{metaTitle}</h1>
         <TranslationBadge originalLanguage="en" />
@@ -74,6 +67,29 @@ export default function Taxonomies({ data, ...props }) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const { t } = useTranslation();
+
+  const {
+    location: { pathname },
+  } = props;
+
+  const title = t('Taxonomies');
+
+  const metaTitle = t('List of taxonomies');
+
+  const metaDescription = t('This is the list of taxonomies supported in AIID');
+
+  return (
+    <HeadContent
+      path={pathname}
+      title={title}
+      metaTitle={metaTitle}
+      metaDescription={metaDescription}
+    />
+  );
+};
 
 export const pageQuery = graphql`
   query TaxonomoyGraphCarouselTaxa {

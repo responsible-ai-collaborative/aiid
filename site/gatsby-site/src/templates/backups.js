@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
@@ -7,8 +7,9 @@ import Row from 'elements/Row';
 import Col from 'elements/Col';
 import { format } from 'date-fns';
 import config from '../../config';
+import { useTranslation } from 'react-i18next';
 
-const Backups = ({ pageContext, ...props }) => {
+const Backups = ({ pageContext }) => {
   const { backups } = pageContext;
 
   if (!backups) {
@@ -42,9 +43,6 @@ const Backups = ({ pageContext, ...props }) => {
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Database Backups and Snapshots</title>
-      </AiidHelmet>
       <div className="titleWrapper">
         <h1>Database Snapshots</h1>
       </div>
@@ -106,6 +104,20 @@ const Backups = ({ pageContext, ...props }) => {
       </div>
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const metaTitle = t('Database Backups and Snapshots');
+
+  const metaDescription = t('Find and download the latest Database Backups and snapshots');
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default Backups;
