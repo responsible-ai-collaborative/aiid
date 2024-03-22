@@ -33,7 +33,6 @@ export const UPDATE_ENTITY = gql`
   mutation UpdateEntity($query: EntityQueryInput, $set: EntityUpdateInput!) {
     updateOneEntity(query: $query, set: $set) {
       entity_id
-      name
     }
   }
 `;

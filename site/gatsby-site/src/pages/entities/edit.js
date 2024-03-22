@@ -6,13 +6,9 @@ import { Button, Spinner } from 'flowbite-react';
 import { FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Form, Formik } from 'formik';
-//import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
-//import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-//import { getUnixTime } from 'date-fns';
-//import { useUserContext } from 'contexts/userContext';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
 
@@ -21,15 +17,11 @@ const schema = Yup.object().shape({
 });
 
 function EditEntityPage(props) {
-  // const { user } = useUserContext();
-
-  const { t /*i18n*/ } = useTranslation();
+  const { t } = useTranslation();
 
   const [entity, setEntity] = useState(null);
 
   const [entityId] = useQueryParam('entity_id', withDefault(StringParam, ''));
-
-  console.log('entityId', entityId);
 
   const {
     data: entityData,
@@ -38,8 +30,6 @@ function EditEntityPage(props) {
   } = useQuery(FIND_ENTITY, {
     variables: { query: { entity_id: entityId } },
   });
-
-  // const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
   const loading = loadingEntity;
 
@@ -86,77 +76,6 @@ function EditEntityPage(props) {
     } catch (error) {
       addToast(updateErrorToast({ entityId, error }));
     }
-
-    return;
-
-    // try {
-    //   const updated = {
-    //     ...values,
-    //     editors: { link: values.editors },
-    //     reports: undefined,
-    //     embedding: {
-    //       ...values.embedding,
-    //       __typename: undefined,
-    //     },
-    //     tsne: {
-    //       ...values.tsne,
-    //       __typename: undefined,
-    //     },
-    //     __typename: undefined,
-    //   };
-
-    //   const { entities } = entitiesData;
-
-    //   updated.AllegedDeveloperOfAISystem = await processEntities(
-    //     entities,
-    //     values.AllegedDeveloperOfAISystem,
-    //     createEntityMutation
-    //   );
-
-    //   updated.AllegedDeployerOfAISystem = await processEntities(
-    //     entities,
-    //     values.AllegedDeployerOfAISystem,
-    //     createEntityMutation
-    //   );
-
-    //   updated.AllegedHarmedOrNearlyHarmedParties = await processEntities(
-    //     entities,
-    //     values.AllegedHarmedOrNearlyHarmedParties,
-    //     createEntityMutation
-    //   );
-
-    //   updated.epoch_date_modified = getUnixTime(new Date());
-
-    //   // Add the current user to the list of editors
-    //   if (user && user.providerType != 'anon-user' && !updated.editors.link.includes(user.id)) {
-    //     updated.editors.link.push(user.id);
-    //   }
-
-    //   await updateIncident({
-    //     variables: {
-    //       query: {
-    //         incident_id: incidentId,
-    //       },
-    //       set: {
-    //         ...updated,
-    //       },
-    //     },
-    //   });
-
-    //   await logIncidentHistory(
-    //     {
-    //       ...incident,
-    //       ...updated,
-    //       reports: incident.reports,
-    //       embedding: incident.embedding,
-    //     },
-    //     user
-    //   );
-
-    //   addToast(updateSuccessToast({ incidentId }));
-    // } catch (error) {
-    //   addToast(updateErrorToast({ incidentId, error }));
-    // }
   };
 
   return (
@@ -164,11 +83,11 @@ function EditEntityPage(props) {
       {!loading && entity && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
-            <Trans>Editing Entity {{ name: entity.name }}</Trans>
+            <Trans ns="entities">Editing Entity: {{ name: entity.name }}</Trans>
           </h1>
           <Link to={`/entities/${entityId}`} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
-              <Trans>Back to Entity {{ name: entity.name }}</Trans>
+              <Trans ns="entities">Back to Entity: {{ name: entity.name }}</Trans>
             </Button>
           </Link>
         </div>
@@ -215,7 +134,7 @@ function EditEntityPage(props) {
                     <TextInputGroup
                       name="created_at"
                       label={t('Creation Date')}
-                      type="date"
+                      type="text"
                       value={
                         values.created_at ? format(new Date(values.created_at), 'yyyy-MM-dd') : null
                       }
@@ -225,33 +144,15 @@ function EditEntityPage(props) {
                     <TextInputGroup
                       name="date_modified"
                       label={t('Last modified')}
-                      type="date"
+                      type="text"
                       value={
                         values.date_modified
-                          ? format(new Date(values.date_modified), 'yyyy-MM-dd')
+                          ? format(new Date(values.date_modified), 'yyyy-MM-dd hh:mm a')
                           : null
                       }
                       disabled={true}
                     />
                   </div>
-
-                  {/* <Button
-                    onClick={submitForm}
-                    type="submit"
-                    disabled={!isValid || isSubmitting}
-                    className="mt-3 flex disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Spinner size="sm" />
-                        <div className="ml-2">
-                          <Trans>Updating...</Trans>
-                        </div>
-                      </>
-                    ) : (
-                      <Trans>Save</Trans>
-                    )}
-                  </Button> */}
                 </Form>
                 <Button
                   onClick={submitForm}

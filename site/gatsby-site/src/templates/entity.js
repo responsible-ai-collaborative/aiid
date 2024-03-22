@@ -11,7 +11,7 @@ import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/enti
 import AiidHelmet from 'components/AiidHelmet';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
 import {
   DELETE_SUBSCRIPTIONS,
@@ -216,9 +216,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
         </LocalizedLink>
-        <div className="w-full flex flex-wrap items-center justify-between">
+        <div className="w-full flex flex-wrap items-center justify-between gap-2">
           <h1>{name}</h1>
-          <div className="flex items-center -mt-1">
+          <div className="flex items-center">
             {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
               <Spinner size="sm" />
             ) : subscriptions?.subscriptions.length > 0 ? (
@@ -238,6 +238,16 @@ const EntityPage = ({ pageContext, data, ...props }) => {
               >
                 <Trans>Follow</Trans>
               </NotifyButton>
+            )}
+            {subscriptionNetworkStatus != NetworkStatus.loading && isRole('admin') && (
+              <Button
+                className="hover:no-underline ml-2"
+                color="light"
+                href={localizePath({ path: `/entities/edit?entity_id=${id}` })}
+              >
+                <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Entity')} />
+                <Trans>Edit</Trans>
+              </Button>
             )}
           </div>
         </div>
@@ -308,7 +318,7 @@ function UnsubscribeButton({
   return (
     <Button
       onClick={unsubscribeToEntity}
-      color={'light'}
+      color="light"
       disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-1"
       title={t('Unsubscribe from New {{name}} Incidents', { name: entityName })}
