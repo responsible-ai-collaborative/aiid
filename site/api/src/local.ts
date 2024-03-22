@@ -73,12 +73,15 @@ export const getSchema = async () => {
             },
         },
         Mutation: {
-            deleteManyQuickadds: async (_, args) => {
+            deleteManyQuickadds: async (_, { query }: { query?: any }) => {
                 const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
 
                 const db = client.db('aiidprod');
                 const collection = db.collection<QuickAdd>('quickadd');
-                const result = await collection.deleteMany({ _id: { $eq: args.query?._id } });
+
+                const filter = convertToObjectID<QuickAdd>(query);
+
+                const result = await collection.deleteMany(filter);
 
                 return { deletedCount: result.deletedCount! };
             }

@@ -1,6 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import request from 'supertest';
-import { seedCollection, startTestServer } from "./utils";
+import { login, seedCollection, startTestServer } from "./utils";
 import { ObjectId } from "mongodb";
 
 describe('Quickadds', () => {
@@ -128,4 +128,60 @@ describe('Quickadds', () => {
 
         expect(response.body.errors[0].message).toBe('not authorized');
     });
+
+    it(`deleteManyQuickadds mutation`, async () => {
+
+        const authData = await login(process.env.E2E_ADMIN_USERNAME!, process.env.E2E_ADMIN_PASSWORD!);
+
+        await seedCollection({
+            name: 'quickadd',
+            docs: [
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3e'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 1,
+                    source_domain: "example1.com",
+                    url: "http://example1.com"
+                },
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3f'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 2,
+                    source_domain: "example2.com",
+                    url: "http://example2.com"
+                }
+            ]
+        });
+
+        await seedCollection({
+            name: 'users',
+            database: 'customData',
+            docs: [
+                {
+                    userId: authData.user_id,
+                    roles: ['admin']
+                }
+            ]
+        });
+
+        const mutationData = {
+            query: `
+            mutation {
+                deleteManyQuickadds(query: { _id: "5f5f3e3e3e3e3e3e3e3e3e3e" }) {
+                  deletedCount
+                }
+            }
+            `,
+        };
+
+        const response = await request(url)
+            .post('/')
+            .set('Authorization', `Bearer ${authData.access_token}`)
+            .send(mutationData);
+
+        expect(response.statusCode).toBe(200);
+
+        expect(response.body.data.deleteManyQuickadds.deletedCount).toBe(1);
+    });
+
 });
