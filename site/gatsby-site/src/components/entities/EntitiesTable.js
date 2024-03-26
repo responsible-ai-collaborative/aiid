@@ -280,6 +280,7 @@ export default function EntitiesTable({ data, className = '', ...props }) {
             className="hover:no-underline"
             color="light"
             href={localizePath({ path: `/entities/edit?entity_id=${values.id}` })}
+            data-cy="edit-entity-btn"
           >
             <Trans>Edit</Trans>
           </Button>
