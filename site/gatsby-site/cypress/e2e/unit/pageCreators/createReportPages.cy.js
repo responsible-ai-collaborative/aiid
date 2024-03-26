@@ -42,6 +42,14 @@ const languages = [
     langDir: 'ltr',
     dateFormat: 'DD-MM-YYYY',
   },
+  {
+    code: 'ja',
+    hrefLang: 'ja',
+    name: 'Japanese',
+    localName: '日本語',
+    langDir: 'ltr',
+    dateFormat: 'YYYY/MM/DD',
+  },
 ];
 
 describe('createReportPages', () => {
@@ -51,7 +59,7 @@ describe('createReportPages', () => {
     const createPage = cy.stub();
 
     cy.wrap(createReportPages(graphql, createPage, { languages })).then(() => {
-      expect(createPage.callCount).to.eq(6);
+      expect(createPage.callCount).to.eq(8);
 
       cy.wrap(createPage.getCall(0).args[0]).then((page) => {
         expect(page.path).contain('/reports/1/');
