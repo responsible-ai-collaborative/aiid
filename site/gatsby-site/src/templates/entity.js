@@ -244,6 +244,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
                 className="hover:no-underline ml-2"
                 color="light"
                 href={localizePath({ path: `/entities/edit?entity_id=${id}` })}
+                data-cy="edit-entity-btn"
               >
                 <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Entity')} />
                 <Trans>Edit</Trans>
