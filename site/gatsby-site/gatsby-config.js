@@ -305,6 +305,6 @@ module.exports = {
   plugins: plugins,
   trailingSlash: `always`,
   flags: {
-    DEV_SSR: false,
+    DEV_SSR: true,
   },
 };
