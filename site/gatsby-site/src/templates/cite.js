@@ -26,6 +26,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
       allMongodbTranslationsReportsFr,
+      allMongodbTranslationsReportsJa,
       incident,
       entities: entitiesData,
       responses,
@@ -48,6 +49,7 @@ function CitePage(props) {
       en: allMongodbTranslationsReportsEn,
       es: allMongodbTranslationsReportsEs,
       fr: allMongodbTranslationsReportsFr,
+      ja: allMongodbTranslationsReportsJa,
     },
     locale,
   });
@@ -136,6 +138,7 @@ export const query = graphql`
     $report_numbers: [Int]
     $translate_es: Boolean!
     $translate_fr: Boolean!
+    $translate_ja: Boolean!
     $translate_en: Boolean!
   ) {
     allMongodbAiidprodClassifications(
@@ -240,6 +243,14 @@ export const query = graphql`
     }
     allMongodbTranslationsReportsFr(filter: { report_number: { in: $report_numbers } })
       @include(if: $translate_fr) {
+      nodes {
+        title
+        text
+        report_number
+      }
+    }
+    allMongodbTranslationsReportsJa(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_ja) {
       nodes {
         title
         text

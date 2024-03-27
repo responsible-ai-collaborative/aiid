@@ -20,7 +20,6 @@ import { useUserContext } from '../../contexts/userContext';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import {
   DeleteButton,
-  removeTypename,
   statusIcon,
   statusColor,
   generateId,
@@ -267,7 +266,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
 
             try {
               await insertChecklist({
-                variables: { checklist: removeTypename(newChecklist) },
+                variables: { checklist: newChecklist },
               });
               setChecklists((checklists) => {
                 const newChecklists = [...checklists];

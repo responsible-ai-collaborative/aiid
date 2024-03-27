@@ -17,7 +17,7 @@ jobs:
           npm install -g mongodb-realm-cli
       - name: Login
         run: |
-          realm-cli login --api-key="${{ secrets.REALM_API_PUBLIC_KEY }}" --private-api-key="${{ secrets.REALM_API_PRIVATE_KEY }}" --realm-url https://realm.mongodb.com --atlas-url https://cloud.mongodb.com
+          realm-cli login --api-key="${{ secrets.REALM_API_PUBLIC_KEY }}" --private-api-key="${{ secrets.REALM_API_PRIVATE_KEY }}" --realm-url https://services.cloud.mongodb.com --atlas-url https://cloud.mongodb.com
       - name: Push
         run: |
           cd site/realm

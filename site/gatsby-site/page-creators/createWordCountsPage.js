@@ -11,10 +11,6 @@ const PAGES_WITH_WORDCOUNT = [
     path: '/summaries/wordcounts',
     componentPath: './src/templates/wordcounts.js',
   },
-  {
-    path: '/',
-    componentPath: './src/templates/landingPage.js',
-  },
 ];
 
 const createWordCountsPage = async (graphql, createPage) => {
@@ -23,68 +19,6 @@ const createWordCountsPage = async (graphql, createPage) => {
       allMongodbAiidprodReports {
         nodes {
           text
-        }
-      }
-      latestReport: allMongodbAiidprodReports(
-        filter: { is_incident_report: { eq: true } }
-        sort: { epoch_date_submitted: DESC }
-        limit: 1
-      ) {
-        nodes {
-          report_number
-        }
-      }
-      latestReports: allMongodbAiidprodIncidents(
-        filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
-        sort: { reports: { epoch_date_submitted: DESC } }
-        limit: 5
-      ) {
-        nodes {
-          title
-          incident_id
-          reports {
-            cloudinary_id
-            epoch_date_submitted
-            image_url
-            report_number
-            source_domain
-            text
-            title
-            url
-          }
-        }
-      }
-      sponsors: allPrismicSponsor(sort: { data: { order: { text: ASC } } }) {
-        edges {
-          node {
-            data {
-              title {
-                text
-                richText
-              }
-              order {
-                text
-              }
-              language {
-                text
-              }
-              items {
-                name {
-                  text
-                }
-                description {
-                  richText
-                }
-                logo {
-                  gatsbyImageData
-                  url
-                }
-                link {
-                  url
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -134,8 +68,6 @@ const createWordCountsPage = async (graphql, createPage) => {
     }
   }
 
-  const fiveLatestIncidents = result.data.latestReports.nodes;
-
   PAGES_WITH_WORDCOUNT.forEach((page) => {
     createPage({
       path: page.path,
@@ -144,8 +76,6 @@ const createWordCountsPage = async (graphql, createPage) => {
         wordClouds,
         wordCountsSorted,
         wordsPerCloud,
-        fiveLatestIncidents,
-        sponsors: result.data.sponsors.edges,
       },
     });
   });

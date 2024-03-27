@@ -17,21 +17,16 @@ const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
     title,
     text,
     epoch_date_submitted,
-    incident_id,
     report_number,
     source_domain,
     url,
   } = report;
 
+  const incident_id = incident.incident_id;
+
   const { t } = useTranslation();
 
   const reportLink = `/cite/${incident_id}#r${report_number}`;
-
-//  const incident = fiveLatestIncidents.find((incident) =>
-//    incident.reports.map((r) => r.report_number).includes(report.report_number)
-//  );
-
-  console.log(`incident`, incident);
 
   return (
     <Card key={key}>
@@ -93,9 +88,11 @@ const CardBody = ({
 }) => {
   return (
     <div className="h-full p-6">
-      <h4 className="text-2xl">
-        Incident {incident.incident_id || '###'}: {incident.title}
-      </h4>
+      <LocalizedLink to={`/cite/${incident.incident_id}`} className="text-gray-900">
+        <h4 className="text-2xl">
+          Incident {incident.incident_id}: {incident.title}
+        </h4>
+      </LocalizedLink>
       <ReportPreview
         {...{
           reportLink,
