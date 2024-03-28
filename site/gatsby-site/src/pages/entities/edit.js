@@ -132,7 +132,9 @@ function EditEntityPage(props) {
                       label={t('Creation Date')}
                       type="text"
                       value={
-                        values.created_at ? format(new Date(values.created_at), 'yyyy-MM-dd') : null
+                        values.created_at
+                          ? format(new Date(values.created_at), 'yyyy-MM-dd')
+                          : undefined
                       }
                       disabled={true}
                     />
@@ -144,7 +146,7 @@ function EditEntityPage(props) {
                       value={
                         values.date_modified
                           ? format(new Date(values.date_modified), 'yyyy-MM-dd hh:mm a')
-                          : null
+                          : undefined
                       }
                       disabled={true}
                     />
