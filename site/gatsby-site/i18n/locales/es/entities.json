@@ -25,5 +25,7 @@
     "Entities involved in AI Incidents": "^Entities involved in AI Incidents",
     "{{count}} Incident responses": "{{count}} respuestas de incidentes",
     "Editing Entity": "Editando Entidad",
-    "Back to Entity: {{name}}": "Volver a Entidad: {{name}}"
+    "Back to Entity: {{name}}": "Volver a Entidad: {{name}}",
+    "Entity updated successfully.": "Entidad actualizada con éxito.",
+    "Error updating Entity.": "Error al actualizar la Entidad."
 }
