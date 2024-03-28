@@ -79,7 +79,7 @@ function EditEntityPage(props) {
       {!loading && entity && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
-            <Trans ns="entities">Editing Entity: {{ name: entity.name }}</Trans>
+            <Trans ns="entities">Editing Entity</Trans>
           </h1>
           <Link to={`/entities/${entityId}`} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>

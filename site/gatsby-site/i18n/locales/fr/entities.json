@@ -24,6 +24,6 @@
     "Alleged: <1></1> developed an AI system deployed by <4></4>, which harmed <6></6>.": "Présumé : un système d'IA développé par <1></1> et mis en œuvre par <4></4>, endommagé <6></6>.",
     "Entities involved in AI Incidents": "Entités impliquées dans les incidents IA",
     "{{count}} Incident responses": "{{count}} réponses d'incident",
-    "Editing Entity: {{name}}": "Modification de l'entité : {{name}}",
-    "Back to Entity: {{name}}": "Retour à l'entité : {{name}}"
+    "Editing Entity": "Modification de l'entité",
+    "Back to Entity: {{name}}": "Retour à l'entité: {{name}}"
 }
