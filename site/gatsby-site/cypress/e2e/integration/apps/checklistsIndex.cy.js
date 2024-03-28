@@ -7,6 +7,13 @@ describe('Checklists App Index', () => {
 
   const newChecklistButtonQuery = '#new-checklist-button';
 
+  const testError = {
+    0: {
+      message: 'Test error',
+      locations: [{ line: 1, column: 1 }],
+    },
+  };
+
   const usersQuery = {
     query: gql`
       {
@@ -90,5 +97,35 @@ describe('Checklists App Index', () => {
 
       cy.get('[data-cy="checklist-card"]:last-child button').contains('Delete').should('not.exist');
     });
+  });
+
+  it('Should show toast on error fetching checklists', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'findChecklists',
+      'findChecklists',
+      { errors: [testError] }
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="toast"]').contains('Could not fetch checklists').should('exist');
+  });
+
+  maybeIt('Should show toast on error creating checklist', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'insertChecklist',
+      'insertChecklist',
+      { errors: [testError] }
+    );
+
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get(newChecklistButtonQuery).click();
+
+    cy.get('[data-cy="toast"]').contains('Could not create checklist.').should('exist');
   });
 });
