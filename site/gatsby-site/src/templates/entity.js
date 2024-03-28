@@ -11,7 +11,7 @@ import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/enti
 import AiidHelmet from 'components/AiidHelmet';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
 import {
   DELETE_SUBSCRIPTIONS,
@@ -216,21 +216,39 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
         </LocalizedLink>
-        <div className="w-full flex flex-wrap items-center justify-between">
+        <div className="w-full flex flex-wrap items-center justify-between gap-2">
           <h1>{name}</h1>
-          <div className="flex items-center -mt-1">
+          <div className="flex items-center">
             {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
               <Spinner size="sm" />
             ) : subscriptions?.subscriptions.length > 0 ? (
               <UnsubscribeButton
-                {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
+                {...{
+                  unsubscribeToEntity,
+                  unsubscribing,
+                  subscriptionNetworkStatus,
+                  entityName: name,
+                }}
               >
                 <Trans>Unfollow</Trans>
               </UnsubscribeButton>
             ) : (
-              <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
+              <NotifyButton
+                {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus, entityName: name }}
+              >
                 <Trans>Follow</Trans>
               </NotifyButton>
+            )}
+            {subscriptionNetworkStatus != NetworkStatus.loading && isRole('admin') && (
+              <Button
+                className="hover:no-underline ml-2"
+                color="light"
+                href={localizePath({ path: `/entities/edit?entity_id=${id}` })}
+                data-cy="edit-entity-btn"
+              >
+                <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Entity')} />
+                <Trans>Edit</Trans>
+              </Button>
             )}
           </div>
         </div>
@@ -294,16 +312,17 @@ function UnsubscribeButton({
   unsubscribeToEntity,
   unsubscribing,
   subscriptionNetworkStatus,
+  entityName,
 }) {
   const { t } = useTranslation();
 
   return (
     <Button
       onClick={unsubscribeToEntity}
-      color={'light'}
+      color="light"
       disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-1"
-      title={t('Unsubscribe from New {{name}} Incidents', { name })}
+      title={t('Unsubscribe from New {{name}} Incidents', { name: entityName })}
     >
       <div className="flex gap-2 items-center">
         {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
@@ -319,7 +338,13 @@ function UnsubscribeButton({
   );
 }
 
-function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNetworkStatus }) {
+function NotifyButton({
+  children,
+  subscribeToEntity,
+  subscribing,
+  subscriptionNetworkStatus,
+  entityName,
+}) {
   const { t } = useTranslation();
 
   return (
@@ -328,7 +353,7 @@ function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNe
       onClick={subscribeToEntity}
       disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-2 whitespace-nowrap"
-      title={t('Notify Me of New {{name}} Incidents', { name })}
+      title={t('Notify Me of New {{name}} Incidents', { name: entityName })}
     >
       <div className="flex gap-2 items-center">
         {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (

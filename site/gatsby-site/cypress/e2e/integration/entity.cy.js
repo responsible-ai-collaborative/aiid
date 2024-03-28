@@ -1,4 +1,4 @@
-import { maybeIt } from '../../support/utils';
+import { conditionalIt, maybeIt } from '../../support/utils';
 import emptySubscriptionsData from '../../fixtures/subscriptions/empty-subscriptions.json';
 import subscriptionsData from '../../fixtures/subscriptions/subscriptions.json';
 const { SUBSCRIPTION_TYPE } = require('../../../src/utils/subscriptions');
@@ -118,4 +118,25 @@ describe('Individual Entity page', () => {
       .contains(`Please log in to subscribe`)
       .should('exist');
   });
+
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should display Edit button only for Admin users',
+    () => {
+      cy.visit(url);
+      cy.get('[data-cy="edit-entity-btn"]').should('not.exist');
+
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+      cy.visit(url);
+      cy.get('[data-cy="edit-entity-btn"]').should(
+        'have.attr',
+        'href',
+        `/entities/edit?entity_id=${entity.entity_id}`
+      );
+      cy.get('[data-cy="edit-entity-btn"]').click();
+      cy.waitForStableDOM();
+      cy.location('pathname').should('eq', '/entities/edit/');
+      cy.location('search').should('eq', `?entity_id=${entity.entity_id}`);
+    }
+  );
 });

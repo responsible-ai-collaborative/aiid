@@ -3,6 +3,12 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "created_at": {
+            "bsonType": "date"
+        },
+        "date_modified": {
+            "bsonType": "date"
+        },
         "entity_id": {
             "bsonType": "string"
         },
@@ -10,5 +16,9 @@
             "bsonType": "string"
         }
     },
+    "required": [
+        "entity_id",
+        "name"
+    ],
     "title": "entity"
 }
