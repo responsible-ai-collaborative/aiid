@@ -37,17 +37,6 @@ function EditEntityPage(props) {
 
   const addToast = useToastContext();
 
-  const updateSuccessToast = () => ({
-    message: t('Entity updated successfully.'),
-    severity: SEVERITY.success,
-  });
-
-  const updateErrorToast = ({ entityId, error }) => ({
-    message: t('Error updating entity {{entityId}}.', { entityId }),
-    severity: SEVERITY.danger,
-    error,
-  });
-
   useEffect(() => {
     if (entityData?.entity) {
       setEntity({
@@ -72,9 +61,16 @@ function EditEntityPage(props) {
 
       refetch();
 
-      addToast(updateSuccessToast());
+      addToast({
+        message: t('Entity updated successfully.'),
+        severity: SEVERITY.success,
+      });
     } catch (error) {
-      addToast(updateErrorToast({ entityId, error }));
+      addToast({
+        message: t('Error updating Entity.'),
+        severity: SEVERITY.danger,
+        error,
+      });
     }
   };
 
