@@ -220,27 +220,45 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
     const [template, mdxFile] = page.component.split(`?__contentFilePath=`);
 
-    // if the mdxFile path possesses a language, let's strip the language to it
+    // If the mdxFile path has a language, let's strip the language from it.
     // ex: index.de.mdx ==> index.mdx
     if (mdxFile) {
-      //split the filename in three parts split by the dot.
-      let [thePath /* lang */, , ext] = mdxFile.split(`.`);
+      let thePath = path.dirname(mdxFile);
 
-      if (ext === `mdx`) {
-        //if there's data in the third part, just keep the first and last part, removing the language
-        theFilePath = `${thePath}.${ext}`;
-      } else {
-        //if there's no content in the third part, it means that there's no language part. No need to remove the language
-        theFilePath = mdxFile;
+      let fileName = path.basename(mdxFile);
+
+      let ext = path.extname(mdxFile);
+
+      if (ext !== '.mdx') {
+        throw new Error(`Unexpected file extension in mdx path parsing: ${mdxFile}`);
       }
 
-      //if we use a non-default language, and the language file is on the disk, then use it
-      [thePath, ext] = theFilePath.split(`.`);
-      if (ext === `mdx` && locale.code !== defaultLang) {
-        if (fs.existsSync(`${thePath}.${locale.code}.${ext}`)) {
-          theFilePath = `${thePath}.${locale.code}.${ext}`;
+      // Split the filename in three parts split by the dot. We expect two or three components.
+      let fileNamePieces = fileName.split('.');
+
+      if (fileNamePieces.length == 2) {
+        // ex: index.mdx
+        theFilePath = mdxFile;
+      } else if (fileNamePieces.length == 3) {
+        // ex: index.es.mdx
+        // Keep everything except the language code.
+        theFilePath = `${path.join(thePath, fileNamePieces.at(0))}${ext}`;
+      } else {
+        throw new Error(`Unexpected file format in mdx path parsing: ${mdxFile}`);
+      }
+
+      // If we use a non-default language, and the language file is on the disk, then use it.
+      if (ext === '.mdx' && locale.code !== defaultLang) {
+        // ex: /path/up/to/lang/code
+        let potentialPath = path.join(path.dirname(thePath), fileNamePieces.at(0));
+
+        // ex: /path/up/to/lang/code.es.mdx
+        let potentialLangfile = `${potentialPath}.${locale.code}${ext}`;
+
+        if (fs.existsSync(potentialLangfile)) {
+          theFilePath = potentialLangfile;
         } else {
-          //nothing to render if file doen't exist
+          // Nothing to render if file doen't exist.
           theFilePath = '';
         }
       }

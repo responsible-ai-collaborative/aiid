@@ -6,11 +6,12 @@ import { Formik } from 'formik';
 import { graphql } from 'gatsby';
 import { useQueryParams, StringParam } from 'use-query-params';
 import { useQuery, useMutation } from '@apollo/client';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import AiidHelmet from 'components/AiidHelmet';
 import CheckListForm from 'components/checklists/CheckListForm';
 import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
-import { removeTypename, checkedRiskStatus } from 'utils/checklists';
+import { checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
 
 const ChecklistsPage = (props) => {
@@ -48,8 +49,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
     variables: { query: { id: query.id } },
   });
 
-  const savedChecklist =
-    savedChecklistData?.checklist && removeTypename(savedChecklistData.checklist);
+  const savedChecklist = savedChecklistData?.checklist && savedChecklistData.checklist;
 
   const [saveChecklist] = useMutation(UPDATE_CHECKLIST);
 
@@ -61,7 +61,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
     setSubmitting(true);
     setSubmissionError(null);
 
-    const save = removeTypename({
+    const save = {
       variables: {
         query: { id: query.id },
         checklist: {
@@ -71,12 +71,12 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
             .filter((risk) => !risk.generated)
             .map((risk) => ({
               ...risk,
+              precedents: undefined,
               risk_status: checkedRiskStatus(risk.risk_status),
-              startClosed: undefined,
             })),
         },
       },
-    });
+    };
 
     try {
       await debouncedSaveChecklist(save);
@@ -105,12 +105,18 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   }
   if (query.id && savedChecklistLoading) {
     return <Spinner />;
-  }
-  if (query.id && savedChecklist) {
+  } else if (query.id && savedChecklistData && savedChecklist) {
     return (
       <Formik onSubmit={submit} initialValues={savedChecklist}>
         {(FormProps) => <CheckListForm {...{ ...FormProps, tags, users, submissionError }} />}
       </Formik>
+    );
+  } else if (query.id && savedChecklistData && !savedChecklist) {
+    return (
+      <p>
+        No checklist with id {query.id}.{' '}
+        <LocalizedLink href="/apps/checklists">Return to checklists</LocalizedLink>.
+      </p>
     );
   }
 };

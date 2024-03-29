@@ -124,6 +124,38 @@ describe('The Discover app', () => {
     cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 4);
   });
 
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Shows expected filters', () => {
+    cy.viewport(1920, 1080);
+
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('not.be.visible');
+    cy.contains('button', 'Submitter').should('not.be.visible');
+
+    cy.viewport(1280, 1080);
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('be.visible');
+    cy.contains('button', 'Submitter').should('not.be.visible');
+
+    cy.get('[data-cy=expand-filters]').click();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('be.visible');
+    cy.contains('button', 'Submitter').should('be.visible');
+
+    cy.viewport(1920, 1080);
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Classifications').should('be.visible');
+    cy.contains('button', 'Language').should('be.visible');
+    cy.contains('button', 'Submitter').should('be.visible');
+  });
+
   conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Filters by Tags using top filters', () => {
     cy.visit(url);
 
@@ -546,6 +578,85 @@ describe('The Discover app', () => {
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 8);
     }
   );
+
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Loads filters based on URL', () => {
+    cy.visit(
+      url +
+        '?is_incident_report=true&submitters=Anonymous&page=3&classifications=CSETv0%3AIntent%3AAccident'
+    );
+
+    cy.waitForStableDOM();
+
+    cy.get('form#searchForm').as('form');
+
+    cy.contains('button', 'Submitters', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.get('[data-cy="Accident"]', { timeout: 8000 })
+      .should('exist')
+      .find('b')
+      .contains('CSETv0')
+      .parent()
+      .contains('Intent')
+      .should('exist')
+      .parent()
+      .contains('Accident')
+      .should('exist')
+      .parent()
+      .should('have.class', 'active');
+
+    cy.contains('button', 'Anonymous').should('have.class', 'active');
+
+    cy.contains('li.ais-Pagination-item--selected .ais-Pagination-link', '3');
+
+    cy.visit(
+      url +
+        '?authors=Christopher%20Knaus&incident_id=57&is_incident_report=true&language=en&source_domain=theguardian.com'
+    );
+
+    cy.contains('button', 'Authors', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.contains('button', 'Source', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.contains('button', 'Incident ID', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+
+    cy.contains('button', 'Language', { timeout: 8000 })
+      .find('span.badge', { timeout: 8000 })
+      .should('contain.text', '1');
+  });
+
+  it('Should update display types', () => {
+    cy.visit(url + '?display=list');
+
+    cy.get('[data-cy="display-mode-list"]').should('have.class', 'selected');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="display-mode-compact"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'display=compact');
+
+    cy.get('[data-cy="display-mode-compact"]').should('have.class', 'selected');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="display-mode-details"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'display=details');
+
+    cy.get('[data-cy="display-mode-details"]').should('have.class', 'selected');
+  });
 
   conditionalIt(
     !Cypress.env('isEmptyEnvironment'),

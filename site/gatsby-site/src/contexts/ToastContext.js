@@ -49,12 +49,14 @@ export function ToastContextProvider({ children }) {
           return (
             <Toast className="tw-toast" data-cy="toast" key={id}>
               <div
-                className={`w-full h-full flex ${severity.className} items-center p-4 rounded gap-3 text-white`}
+                className={`w-full h-full flex ${severity.className} items-center p-4 rounded gap-3 text-white max-w-full`}
               >
                 <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white">
                   <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
                 </div>
-                <div className="text-sm font-normal">{message}</div>
+                <div className="text-sm font-normal max-w-full break-words overflow-auto">
+                  {message}
+                </div>
                 <Toast.Toggle className="mx-0" onClick={(e) => removeToast(e, index)} />
               </div>
             </Toast>

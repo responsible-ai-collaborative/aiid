@@ -1,0 +1,12 @@
+{
+    "Organization Founding Sponsor": "組織協賛スポンサー",
+    "Database Founding Sponsor": "データベース協賛スポンサー",
+    "Sponsors and Grants": "スポンサーと助成",
+    "In-Kind Sponsors": "協力スポンサー",
+    "sponsor-Waking Up Foundation": "Longview Philanthropyに従って、[Waking Up Foundation](https://www.wakingup.com/foundation)はAIインシデントデータベースに直接55万ドルの助成金を拠出しました。このうち3万3000ドルは財政スポンサーに委託され、組織の財務と税金の管理に使用されます。約5万ドルは財政スポンサーによって援助されているAIIDプログラムを指揮する非営利団体RAICを維持するために使用されます。残りの資金はスタッフがプログラミングや調査する時間を含む、プログラムに関係する成果をうみだすために使用されます",
+    "sponsor-Partnership on AI": "AIインシデントデータベース（AIID）の[協賛スポンサー](https://partnershiponai.org/resource/tracking-when-ai-systems-fail/)として、Partnership on AIは、Responsible AI Collaborativeの資金よりも前にプロジェクトをサポートするための基金を含め、データベースの立ち上げを援助してくれました。Partnership on AIはまた、AIIDの社会的な利益を促進するために、パートナーやそのほかの利害関係者へも投資し、その成果を支援することに継続的な関心を持っています",
+    "sponsor-Mozilla Foundation": "Responsible AI CollaborativeはMozilla Technology FundからAIリスクチェックリスト開発のために50,000ドルの助成を受けました。このプロジェクトの詳細については[ローンチのアナウンス](https://foundation.mozilla.org/en/blog/auditing-ai-announcing-the-2023-mozilla-technology-fund-cohort/)を開き、事前に私たちがアナウンスしたCollabブログを見てください",
+    "sponsor-Netlify": "[Netlify](https://www.netlify.com/)はResponsible AI Collaborativeに対して、AIインシデントデータベースに必要なホスティング、ビルド時間、アカウントを無料で提供してくれています",
+    "sponsor-Cloudinary": "[Cloudinary](https://www.cloudinary.com/)は画像・動画配信のためにクラウドホスティングサービスを安価に提供してくれています。データベースで多くの画像に高速にアクセスできるのはかれらのおかげです",
+    "sponsor-Algolia": "[Algolia](https://algolia.com/)はResponsible AI Collaborativeに対して、インシデントレポートのインスタント検索を提供してくれています"
+}

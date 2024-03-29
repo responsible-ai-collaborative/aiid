@@ -1,0 +1,100 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "REST API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/lookupbyurl": {
+            "get": {
+                "summary": "Lookup reports and incidents by URL",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "urls",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "format": "url"
+                            }
+                        },
+                        "style": "form",
+                        "explode": true,
+                        "description": "List of encoded URLs to lookup. URLs should be URI encoded. Can be sent as 'urls' with multiple values or 'urls[]' with single or multiple values."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "url": {
+                                                        "type": "string",
+                                                        "format": "uri",
+                                                        "description": "The input URL"
+                                                    },
+                                                    "reports": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "report_number": {
+                                                                    "type": "integer",
+                                                                    "description": "Unique identifier for the report"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string",
+                                                                    "description": "Title of the report"
+                                                                },
+                                                                "url": {
+                                                                    "type": "string",
+                                                                    "format": "uri",
+                                                                    "description": "URL of the report"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "incidents": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "incident_id": {
+                                                                    "type": "integer",
+                                                                    "description": "Unique identifier for the incident"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string",
+                                                                    "description": "Title of the incident"
+                                                                },
+                                                                "url": {
+                                                                    "type": "string",
+                                                                    "format": "uri",
+                                                                    "description": "URL of the incident"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

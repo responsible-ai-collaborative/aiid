@@ -6,12 +6,21 @@
     <img src="./site/gatsby-site/static/logos/White_AIID.svg" height="100">
   </a>
 </p>
+
 <h1 align="center">
  Artificial Intelligence Incident Database
 </h1>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
-[![Slack Link](https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack)](https://forms.gle/v7UHJvEkYSJQ7jHj7)
+
+<p align="center">
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml/badge.svg?branch=master"></a>
+  &nbsp;
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml/badge.svg?branch=staging"></a>
+  &nbsp;
+  <a href="https://codecov.io/gh/responsible-ai-collaborative/aiid"><img src="https://codecov.io/gh/responsible-ai-collaborative/aiid/graph/badge.svg?token=SKMVE2G1GU"></a>
+  &nbsp;
+  <a href="https://forms.gle/v7UHJvEkYSJQ7jHj7"><img src="https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack&"></a>
+</p>
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
@@ -321,6 +330,12 @@ The dry run is disabled through an environment variable as follows:
 TRANSLATE_DRY_RUN=false
 ```
 
+In addition to the Dry Run mode, you can also limit the number of reports to translate by setting the following environment variable. This variable sets the date from which the reports will be translated (using the `date_submitted` report field):
+
+```
+TRANSLATE_SUBMISSION_DATE_START=2024-01-01
+```
+
 ### Geocoding
 If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
 
@@ -398,7 +413,7 @@ As soon as a user is signed in, the system assigns a `subscriber` role by defaul
 |-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | `subscriber`                  | This is the default role assigned to all users. It allows the user to subscribe to new incidents, specific incidents, entities, and anything else that is subscribeable. |
 | `submitter`                   | This role allows the user to submit new incidents under their user account.                                                            |
-| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports. |
+| `incident_editor`             | This role allows the user to:<br>- Edit and clone incidents<br>- See the live incident data. The live data is the data that is currently stored in the database. Keep in mind that incident pages are generated on each build, so if a user edits an incident, the change will be only visible if the live data options is activated until the next build finishes.<br>- Add, edit, approve and delete incident variants<br>- View and submit incident candidates<br>- Restore previous versions of incidents and reports.<br>- Approve and reject new submissions. Which involves converting a submission into an incident or report (create incident or report and linked notifications), or deleting the submission |
 | `taxonomy_editor`             | This role allows the user to edit all taxonomies.                                                                                      |
 | `taxonomy_editor_{taxonomy_name}` | This role allows the user to edit a specific taxonomy. ie: `taxonomy_editor_csetv1` role allows the user to edit the `CSETv1` taxonomy. |
 | `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
@@ -466,6 +481,54 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
 CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
 GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
 ```
+
+### New Netlify Setup
+
+This guide walks you through the steps to set up a Netlify site for your project by importing an existing project from GitHub.
+
+### Prerequisites
+
+- Ensure you have a GitHub account and your project is already pushed to a repository.
+- Make sure you have a Netlify account. If not, sign up at [Netlify](https://www.netlify.com/).
+
+### Steps to Set Up
+
+#### 1. Add New Site
+
+- Go to your Netlify dashboard.
+- Click on **Add New Site**.
+
+#### 2. Import Existing Project
+
+- Choose **Import Existing Project**.
+
+#### 3. Deploy with GitHub
+
+- Select **Deploy with GitHub** to connect your GitHub account.
+
+#### 4. Select Repository
+
+- Choose the repository where your project is located.
+
+#### 5. Configure Deployment
+
+- Under **Branch to Deploy**, select `master`. This setting doesn't matter for now.
+- Leave all other settings as default.
+- Click on **Deploy Site**.
+
+#### 6. Site Configuration
+
+##### Build and Deploy
+
+- Navigate to **Site Configuration** > **Build & Deploy**.
+- Under **Build Settings** > **Build Status**, find **Stopped Builds**.
+- Click **Save**.
+
+##### Site Details
+
+- Go to **Site Configuration** > **Site Details**.
+- Copy the `NETLIFY_SITE_ID`. This will be useful when setting up the GitHub environment.
+
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a GitHub Environment named `production` and `staging`. 
 
@@ -475,8 +538,70 @@ GATSBY_REALM_APP_ID=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
-
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
+
+### Deployment Workflows on GitHub Actions
+
+We have integrated our testing and deployment processes with GitHub Actions. There are three primary workflows for deployment: Deploy Previews, Staging, and Production. The goal of these workflows is to continuously test and integrate changes in pull requests across environments. 
+
+#### 1) Deploy Previews Workflow 
+
+- **File:** [/.github/workflows/preview.yml](/.github/workflows/preview.yml)
+- **Trigger:** This workflow is activated for pushes to pull requests that target the `staging` branch.
+- **Process:** Executes both the integration tests and deploys the application to Netlify.
+- **Post-Deployment:** Upon a successful deployment, the workflow automatically posts a comment on the pull request. This comment includes a link to the Netlify preview of the changes and a link to the Netlify deploy log.
+- **Environment:** This workflow uses the `staging` GitHub environment.
+
+#### 2) Staging Workflow (WIP)
+
+- **Trigger:** Runs only on pushes to the `staging` branch.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
+- **Environment:** This workflow uses the `staging` GitHub environment.
+
+#### 3) Production Workflow (WIP)
+
+- **Trigger:** Runs only on pushes to the `master` branch.
+- **Process:** Executes both the integration tests and deploys to Netlify.
+- **Deployment Criteria:** If the tests fail, no deployment will be carried out.
+- **Environment:** This workflow uses the `production` GitHub environment.
+
+### GitHub Environment Configuration
+
+All three workflows share a common set of environment variables, which need to be defined for each environment. (Currently, we have only two environments: `staging` and `production`.) These variables are categorized into secrets and standard variables, and are accessed via GitHub actions as such.
+
+#### Secrets
+
+- `ALGOLIA_ADMIN_KEY`
+- `CLOUDFLARE_R2_ACCESS_KEY_ID`
+- `CLOUDFLARE_R2_ACCOUNT_ID`
+- `CLOUDFLARE_R2_BUCKET_NAME`
+- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+- `CYPRESS_RECORD_KEY`
+- `E2E_ADMIN_PASSWORD`
+- `E2E_ADMIN_USERNAME`
+- `GOOGLE_TRANSLATE_API_KEY`
+- `MONGODB_CONNECTION_STRING`
+- `MONGODB_MIGRATIONS_CONNECTION_STRING`
+- `MONGODB_REPLICA_SET`
+- `MONGODB_TRANSLATIONS_CONNECTION_STRING`
+- `NETLIFY_AUTH_TOKEN`
+- `PRISMIC_ACCESS_TOKEN`
+- `REALM_API_PRIVATE_KEY`
+- `REALM_GRAPHQL_API_KEY`
+- `REALM_API_PUBLIC_KEY`
+- `GATSBY_ROLLBAR_TOKEN`
+
+#### Variables
+
+- `CYPRESS_PROJECT_ID`
+- `GATSBY_ALGOLIA_APP_ID`
+- `GATSBY_ALGOLIA_SEARCH_KEY`
+- `GATSBY_AVAILABLE_LANGUAGES`
+- `GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL`
+- `GATSBY_PRISMIC_REPO_NAME`
+- `GATSBY_REALM_APP_ID`
+- `NETLIFY_SITE_ID`
 
 ### Testing
 
@@ -755,7 +880,7 @@ appId = [Atlas Service App ID, eg: "62cc98647e6a26c53d5b4b53"]
 To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
 
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
-The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
+The URL format is https://services.cloud.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
 Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.

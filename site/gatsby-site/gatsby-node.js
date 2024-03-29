@@ -46,6 +46,8 @@ const typeDefs = require('./typeDefs');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
+const LookupIndex = require('./src/utils/LookupIndex');
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createRedirect, createPage } = actions;
 
@@ -158,6 +160,12 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
       node,
       value: node.frontmatter.title || startCase(parent.name),
     });
+
+    createNodeField({
+      name: 'previewText',
+      node,
+      value: node.frontmatter.previewText || startCase(parent.name),
+    });
   }
 
   if (node.internal.type == 'mongodbAiidprodClassifications') {
@@ -227,6 +235,21 @@ exports.createResolvers = ({ createResolvers }) => {
   };
 
   createResolvers(resolvers);
+};
+
+exports.onPreInit = async ({ reporter }) => {
+  reporter.log('Creating lookup index...');
+
+  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+
+  const lookupIndex = new LookupIndex({
+    client: mongoClient,
+    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
+  });
+
+  await lookupIndex.run();
+
+  reporter.log('Lookup index created.');
 };
 
 exports.onPreBootstrap = async ({ reporter }) => {

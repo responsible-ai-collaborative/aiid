@@ -1,0 +1,69 @@
+name: Deploy Staging Branch
+
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+    inputs:
+      skip-cache:
+        description: "Skip Cache"
+        required: true
+        default: true
+        type: boolean
+      force-deploy:
+          description: "Deploy even if tests fail"
+          required: true
+          default: false
+          type: boolean
+
+jobs:
+  cache-modifier:
+    uses: ./.github/workflows/cache-modifier.yml
+    with:
+      skip-cache: ${{ github.event.inputs.skip-cache }}
+
+  call-atlas:
+    uses: ./.github/workflows/realm.yml
+    secrets: inherit
+    needs: cache-modifier
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+
+  call-test-build:
+    uses: ./.github/workflows/test-build.yml
+    secrets: inherit
+    needs: [cache-modifier, call-atlas]
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+      netlify-context: production
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier }}
+
+  call-test: 
+    uses: ./.github/workflows/test.yml
+    needs: [cache-modifier, call-test-build]
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+
+  call-deploy:
+    if: inputs.force-deploy == true || success()
+    uses: ./.github/workflows/deploy.yml
+    needs: [cache-modifier, call-test]
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: staging
+      sha: ${{ github.sha }}
+      netlify-context: production
+      netlify-alias:
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}

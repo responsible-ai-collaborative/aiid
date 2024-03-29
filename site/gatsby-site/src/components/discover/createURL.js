@@ -43,6 +43,8 @@ const convertRangeToQueryString = (range) => {
 const getQueryFromState = ({ state, locale, taxa }) => {
   let query = {};
 
+  if (!state) return query;
+
   if (state.query !== '') {
     query.s = state.query;
   }
@@ -93,14 +95,18 @@ const getQueryFromState = ({ state, locale, taxa }) => {
   return query;
 };
 
-export default function ({ routeState, indexName, locale, queryConfig, taxa }) {
+export default function ({ routeState, indexName, locale, queryConfig, taxa, display }) {
   const state = routeState[indexName] || {};
 
   const query = getQueryFromState({ state, locale, taxa });
 
   const encoded = encodeQueryParams(queryConfig, query);
 
-  const stringified = stringify(encoded);
+  let stringified = stringify(encoded);
+
+  if (display) {
+    stringified += `&display=${display}`;
+  }
 
   return stringified;
 }

@@ -20,6 +20,8 @@
   "Filter by Incident ID #{{id}}": "Filtrer par ID d'incident #{{id}}",
   "Flag Report": "Signaler",
   "Filters": "Filtres",
+  "More filters": "Plus de filtres",
+  "Fewer filters": "Moins de filtres",
   "Options": "Options",
   "Search Options": "Options de recherche",
   "1st report only": "Seulement le premier rapport",
@@ -68,9 +70,9 @@
   "Incidents reports matched by URL: <1>{{url}}</1>": "Rapports par URL : <1>{{url}}</1>",
   "AI Translated": "Traduit par IA",
   "View Original": "Voir l'original",
-  "Search over 1800 reports of AI harms": "Recherchez parmi +1800 rapports de dégâts causés par l'IA",
-  "Search 1800+ AI harm reports": "Rechercher +1800 dégâts d'IA",
-  "Search 1800+ reports": "Rechercher +1800 rapports",
+  "Search over 3000 reports of AI harms": "Recherchez parmi +3000 rapports de dégâts causés par l'IA",
+  "Search 3000+ AI harm reports": "Rechercher +3000 dégâts d'IA",
+  "Search 3000+ reports": "Rechercher +3000 rapports",
   "Search reports": "Recherche de rapports",
   "Discover Incidents": "Découvrir les incidents",
   "Submit Incident Reports": "Soumettre des rapports d'incident",
@@ -276,5 +278,10 @@
   "Incident and Issue Reports": "Incidents et rapports de problèmes",
   "Issue Reports": "Rapports de problèmes",
   "found": "trouvés",
-  "results found": "résultats trouvés"
+  "results found": "résultats trouvés",
+  "Blog": "Blog",
+  "AI News Digest": "Résumé de l’Actualité sur l’IA",
+  "Remove Duplicate": "Supprimer le doublon",
+  "View History": "Voir l'historique",
+  "CSET Annotators Table": "Tableau des annotateurs CSET"
 }
