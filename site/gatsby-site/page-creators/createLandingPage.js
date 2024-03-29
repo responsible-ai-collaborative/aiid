@@ -2,8 +2,7 @@ const path = require('path');
 
 const createLandingPage = async (graphql, createPage) => {
   const result = await graphql(`
-    query WordCounts {
-
+    query LandingPage {
       latestIncidents: allMongodbAiidprodIncidents(
         filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
         sort: { reports: { epoch_date_submitted: DESC } }
@@ -73,7 +72,7 @@ const createLandingPage = async (graphql, createPage) => {
 
   createPage({
     path: '/',
-    component: path.resolve( './src/templates/landingPage.js'),
+    component: path.resolve('./src/templates/landingPage.js'),
     context: {
       latestIncidents,
       latestIncidentsReportNumbers,
