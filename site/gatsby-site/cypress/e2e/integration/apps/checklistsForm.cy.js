@@ -62,12 +62,9 @@ describe('Checklists App Form', () => {
   };
 
   const interceptFindRisks = (risks) => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'findRisks',
-      'findRisks',
-      { data: { risks } }
-    );
+    cy.conditionalIntercept('**/graphql', (req) => req.body.query.includes('GMF'), 'findRisks', {
+      data: { risks },
+    });
   };
 
   it('Should have read-only access for non-logged-in users', () => {
