@@ -101,7 +101,7 @@ export default function CheckListForm({
   const {
     data: generatedRisksData,
     loading: generatedRisksLoading,
-    errors: generatedRisksErrors,
+    error: generatedRisksErrors,
   } = useQuery(
     gql`
       query {
@@ -124,6 +124,7 @@ export default function CheckListForm({
     addToast({
       message: t('Failure searching for risks.'),
       severity: SEVERITY.danger,
+      error: generatedRisksErrors,
     });
   }
 
