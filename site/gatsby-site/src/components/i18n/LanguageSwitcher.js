@@ -3,6 +3,8 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from './useLocalizePath';
 import { Badge, Dropdown } from 'flowbite-react';
 
+const isBetaLocale = ({ code }) => code === 'fr' || code === 'ja';
+
 export default function LanguageSwitcher({ className = '' }) {
   const { locale: currentLang, config } = useLocalization();
 
@@ -38,7 +40,7 @@ export default function LanguageSwitcher({ className = '' }) {
         label={
           <span className="flex">
             {currentLocale.localName}
-            {currentLocale.code === 'fr' && (
+            {isBetaLocale(currentLocale) && (
               <span className="mx-2 rounded hidden sm:flex">
                 <Badge>Beta</Badge>
               </span>
@@ -55,7 +57,7 @@ export default function LanguageSwitcher({ className = '' }) {
             className="flex"
           >
             {locale.localName}
-            {locale.code === 'fr' && (
+            {isBetaLocale(locale) && (
               <span className="ml-2 rounded">
                 <Badge>Beta</Badge>
               </span>

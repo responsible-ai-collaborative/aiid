@@ -70,6 +70,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
         title
         text
       }
+      translations_ja: translations(input: "ja") {
+        title
+        text
+      }
     }
   }
 `;
@@ -195,6 +199,34 @@ export const FIND_REPORTS = gql`
       language
       tags
       inputs_outputs
+    }
+  }
+`;
+
+export const FIND_REPORTS_TABLE = gql`
+  query FindReports($query: ReportQueryInput!) {
+    reports(query: $query, sort: { report_number: DESC }, limit: 999) {
+      _id
+      submitters
+      date_published
+      date_downloaded
+      date_submitted
+      date_modified
+      report_number
+      title
+      description
+      url
+      image_url
+      cloudinary_id
+      source_domain
+      text
+      authors
+      epoch_date_submitted
+      language
+      tags
+      inputs_outputs
+      editor_notes
+      is_incident_report
     }
   }
 `;
