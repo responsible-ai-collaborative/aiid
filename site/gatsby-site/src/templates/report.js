@@ -24,8 +24,8 @@ function ReportPage(props) {
   const { loading, isRole } = useUserContext();
 
   if (report.language !== locale && data[locale]) {
-    report.title = data[locale]?.title;
-    report.text = data[locale]?.text;
+    report.title = data[locale].title;
+    report.text = data[locale].text;
   }
 
   const defaultTitle = t('Report {{report_number}}', { ...report });
@@ -95,6 +95,7 @@ export const query = graphql`
     $report_number: Int
     $translate_es: Boolean!
     $translate_fr: Boolean!
+    $translate_ja: Boolean!
     $translate_en: Boolean!
   ) {
     report: mongodbAiidprodReports(report_number: { eq: $report_number }) {
@@ -121,6 +122,12 @@ export const query = graphql`
     }
     fr: mongodbTranslationsReportsFr(report_number: { eq: $report_number })
       @include(if: $translate_fr) {
+      title
+      text
+      report_number
+    }
+    ja: mongodbTranslationsReportsJa(report_number: { eq: $report_number })
+      @include(if: $translate_ja) {
       title
       text
       report_number

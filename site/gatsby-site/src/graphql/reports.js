@@ -59,6 +59,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       language
       is_incident_report
       inputs_outputs
+      quiet
       translations_es: translations(input: "es") {
         title
         text
@@ -71,7 +72,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
         title
         text
       }
-      quiet
+      translations_ja: translations(input: "ja") {
+        title
+        text
+      }
     }
   }
 `;

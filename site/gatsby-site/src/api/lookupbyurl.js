@@ -3,6 +3,7 @@ import siteConfig from '../../config';
 import OpenAPIRequestValidator from 'openapi-request-validator';
 import Cors from 'cors';
 import spec from '../../static/spec.json';
+import normalizeRequest from '../../src/utils/normalizeRequest';
 
 const requestValidator = new OpenAPIRequestValidator({
   parameters: spec.paths['/api/lookupbyurl'].get.parameters,
@@ -20,14 +21,17 @@ const isValidURL = (string) => {
 };
 
 async function handler(req, res) {
-  if (!Array.isArray(req.query.urls)) {
-    req.query.urls = [req.query.urls];
-  }
+  normalizeRequest(req);
 
   const errors = requestValidator.validateRequest(req);
 
   if (errors) {
+    console.warn(req.query, errors);
+    rollbar.warning(req.query, errors);
+
     res.status(400).json(errors);
+
+    return;
   }
 
   const urls = req.query.urls;

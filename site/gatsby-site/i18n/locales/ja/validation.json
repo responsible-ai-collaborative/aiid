@@ -1,0 +1,17 @@
+{
+  "*URL required": "*URLは必須です",
+  "*Title is required": "*タイトルは必須です",
+  "*Author is required. Anonymous or the publication can be entered.": "*作者は必須です。Anonymousや公開元を入力しても構いません",
+  "*Date published is required": "*公開日は必須です",
+  "*Date downloaded required": "*ダウンロード日は必須です",
+  "*Must enter URL in http://www.example.com/images/preview.png format": "*URLは http://www.example.com/images/preview.png のような形式でなければいけません",
+  "Incident ID": "インシデントID",
+  "Incident ID {{value}} not found!": "インシデント{{value}}が見つかりません！",
+  "Type and press Enter to add an item": "アイテムを追加するには入力してEnterを押下してください",
+  "*Text must have at least 80 characters": "*テキストは少なくとも80文字必要です",
+  "*Text can’t be longer than 50000 characters": "*50000文字を超えるテキストは登録できません",
+  "Please review report. Some data is missing.": "レポートを確認してください。足りない情報があります",
+  "Please review submission. Some data is missing.": "投稿を確認してください。足りない情報があります",
+  "Some data is missing.": "足りない情報があります",
+  "Please review. Some data is missing.": "確認してください。足りない情報があります"
+}
