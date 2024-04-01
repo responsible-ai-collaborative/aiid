@@ -21,9 +21,9 @@ import HeadContent from 'components/HeadContent';
 const LandingPage = (props) => {
   const { data } = props;
 
-  let { latestPrismicPost, latestPostOld, latestReportIncidents } = data;
+  const { latestIncidents, latestIncidentsReportNumbers, sponsors  } = props.pageContext;
 
-  const { latestReportNumbers } = props.pageContext;
+  let { latestPrismicPost, latestPostOld } = data;
 
   let latestBlogPost = null;
 
@@ -40,15 +40,13 @@ const LandingPage = (props) => {
     latestBlogPost = mdxDate > prismicDate ? latestPostOld : latestPrismicPost;
   }
 
-  let { sponsors } = props.pageContext;
-
   const { locale: language } = useLocalization();
 
-  const latestReports = latestReportIncidents.edges.map((incident) => {
-    const report = incident.node.reports.find((r) => latestReportNumbers.includes(r.report_number));
+  const latestIncidentsTranslated = latestIncidents.map((incident) => {
+    const report = incident.reports.find((r) => latestIncidentsReportNumbers.includes(r.report_number));
 
     if (report.language !== language) {
-      const translation = data[`latestReports_${language}`]?.edges.find(
+      const translation = data[`latestIncidentsReports_${language}`]?.edges.find(
         (translation) => translation.node.report_number === report.report_number
       );
 
@@ -60,8 +58,8 @@ const LandingPage = (props) => {
       }
     }
     const updatedIncident = {
-      incident_id: incident.node.incident_id,
-      ...report,
+      ...incident,
+      reports: [report]
     };
 
     return updatedIncident;
@@ -79,10 +77,10 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        {latestReports.length > 0 && (
+        {latestIncidents.length > 0 && (
           <div className="mb-5 md:mb-10">
             <div>
-              <LatestReports latestReports={latestReports} />
+              <LatestReports latestIncidents={latestIncidentsTranslated} />
             </div>
           </div>
         )}
@@ -126,7 +124,7 @@ const LandingPage = (props) => {
           <div className="flex-1 lg:max-w-[50%]">
             <NewsletterSignup />
           </div>
-          {latestReports.length > 0 && (
+          {latestIncidents.length > 0 && (
             <div className="flex-1 lg:max-w-[50%]">
               <RandomIncidents />
             </div>
@@ -185,7 +183,7 @@ export function Head({ location }) {
 }
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int, $latestReportNumbers: [Int], $locale: String!) {
+  query LandingPageQuery($latestReportNumber: Int, $latestIncidentsReportNumbers: [Int], $locale: String!) {
     latestReportIncident: allMongodbAiidprodIncidents(
       filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
     ) {
@@ -196,7 +194,7 @@ export const query = graphql`
       }
     }
     latestReportIncidents: allMongodbAiidprodIncidents(
-      filter: { reports: { elemMatch: { report_number: { in: $latestReportNumbers } } } }
+      filter: { reports: { elemMatch: { report_number: { in: $latestIncidentsReportNumbers } } } }
     ) {
       edges {
         node {
@@ -216,7 +214,7 @@ export const query = graphql`
         }
       }
     }
-    latestReport: mongodbAiidprodReports(report_number: { in: $latestReportNumbers }) {
+    latestReport: mongodbAiidprodReports(report_number: { in: $latestIncidentsReportNumbers }) {
       title
       text
       epoch_date_submitted
@@ -225,8 +223,8 @@ export const query = graphql`
       cloudinary_id
       language
     }
-    latestReports_es: allMongodbTranslationsReportsEs(
-      filter: { report_number: { in: $latestReportNumbers } }
+    latestIncidentsReports_es: allMongodbTranslationsReportsEs(
+      filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
       edges {
         node {
@@ -236,8 +234,8 @@ export const query = graphql`
         }
       }
     }
-    latestReports_fr: allMongodbTranslationsReportsFr(
-      filter: { report_number: { in: $latestReportNumbers } }
+    latestIncidentsReports_fr: allMongodbTranslationsReportsFr(
+      filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
       edges {
         node {
@@ -247,8 +245,8 @@ export const query = graphql`
         }
       }
     }
-    latestReports_ja: allMongodbTranslationsReportsJa(
-      filter: { report_number: { in: $latestReportNumbers } }
+    latestIncidentsReports_ja: allMongodbTranslationsReportsJa(
+      filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
       edges {
         node {
@@ -258,8 +256,8 @@ export const query = graphql`
         }
       }
     }
-    latestReports_en: allMongodbTranslationsReportsEn(
-      filter: { report_number: { in: $latestReportNumbers } }
+    latestIncidentsReports_en: allMongodbTranslationsReportsEn(
+      filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
       edges {
         node {
