@@ -7,6 +7,13 @@ describe('Checklists App Index', () => {
 
   const newChecklistButtonQuery = '#new-checklist-button';
 
+  const testError = {
+    0: {
+      message: 'Test error',
+      locations: [{ line: 1, column: 1 }],
+    },
+  };
+
   const usersQuery = {
     query: gql`
       {
@@ -89,6 +96,120 @@ describe('Checklists App Index', () => {
       cy.get('[data-cy="checklist-card"]:first-child button').contains('Delete').should('exist');
 
       cy.get('[data-cy="checklist-card"]:last-child button').contains('Delete').should('not.exist');
+    });
+  });
+
+  it('Should show toast on error fetching checklists', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'findChecklists',
+      'findChecklists',
+      { errors: [testError] }
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="toast"]').contains('Could not fetch checklists').should('exist');
+  });
+
+  it('Should show toast on error fetching risks', () => {
+    cy.query(usersQuery).then(({ data: { users } }) => {
+      const user = users.find((user) => user.adminData.email == Cypress.env('e2eUsername'));
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'findChecklists',
+        'findChecklists',
+        {
+          data: {
+            checklists: [
+              {
+                about: '',
+                id: 'fakeChecklist1',
+                name: 'My Checklist',
+                owner_id: user.userId,
+                risks: [],
+                tags_goals: ['GMF:Known AI Goal:Translation'],
+                tags_methods: [],
+                tags_other: [],
+              },
+              {
+                about: '',
+                id: 'fakeChecklist2',
+                name: "Somebody Else's Checklist",
+                owner_id: 'aFakeUserId',
+                risks: [],
+                tags_goals: [],
+                tags_methods: [],
+                tags_other: [],
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept('**/graphql', (req) => req.body.query.includes('GMF'), 'risks', {
+        errors: [testError],
+      });
+
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.visit(url);
+
+      cy.get('[data-cy="toast"]').contains('Failure searching for risks').should('exist');
+    });
+  });
+
+  maybeIt('Should show toast on error creating checklist', () => {
+    cy.query(usersQuery).then(({ data: { users } }) => {
+      const user = users.find((user) => user.adminData.email == Cypress.env('e2eUsername'));
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'insertChecklist',
+        'insertChecklist',
+        { errors: [testError] }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'findChecklists',
+        'findChecklists',
+        {
+          data: {
+            checklists: [
+              {
+                about: '',
+                id: 'fakeChecklist1',
+                name: 'My Checklist',
+                owner_id: user.userId,
+                risks: [],
+                tags_goals: [],
+                tags_methods: [],
+                tags_other: [],
+              },
+              {
+                about: '',
+                id: 'fakeChecklist2',
+                name: "Somebody Else's Checklist",
+                owner_id: 'aFakeUserId',
+                risks: [],
+                tags_goals: [],
+                tags_methods: [],
+                tags_other: [],
+              },
+            ],
+          },
+        }
+      );
+
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.visit(url);
+
+      cy.get(newChecklistButtonQuery).click();
+
+      cy.get('[data-cy="toast"]').contains('Could not create checklist.').should('exist');
     });
   });
 });

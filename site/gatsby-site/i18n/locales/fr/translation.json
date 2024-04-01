@@ -279,6 +279,8 @@
   "Issue Reports": "Rapports de problèmes",
   "found": "trouvés",
   "results found": "résultats trouvés",
+  "Displaying {{pageLength}} of {{allResultsCount}} reports": "Affichage de {{pageLength}} sur {{allResultsCount}} rapports",
+  "Displaying {{pageLength}} of {{allResultsCount}} incidents": "Affichage de {{pageLength}} sur {{allResultsCount}} incidents",
   "Blog": "Blog",
   "AI News Digest": "Résumé de l’Actualité sur l’IA",
   "Remove Duplicate": "Supprimer le doublon",

@@ -14,6 +14,8 @@ const createCitationPages = require('./page-creators/createCitationPages');
 
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
+const createLandingPage = require('./page-creators/createLandingPage');
+
 const createBackupsPage = require('./page-creators/createBackupsPage');
 
 const createTaxonomyPages = require('./page-creators/createTaxonomyPages');
@@ -76,6 +78,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createBlogPages,
     createCitationPages,
     createWordCountsPages,
+    createLandingPage,
     createBackupsPage,
     createTaxonomyPages,
     createDownloadIndexPage,

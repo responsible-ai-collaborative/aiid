@@ -34,6 +34,7 @@ export const FIND_REPORT = gql`
         from_text_hash
         vector
       }
+      quiet
     }
   }
 `;
@@ -58,6 +59,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       language
       is_incident_report
       inputs_outputs
+      quiet
       translations_es: translations(input: "es") {
         title
         text
@@ -99,6 +101,7 @@ export const UPDATE_REPORT = gql`
       report_number
       editor_notes
       language
+      quiet
     }
   }
 `;
@@ -176,6 +179,7 @@ export const FIND_REPORT_HISTORY = gql`
       url
       source_domain
       user
+      quiet
     }
   }
 `;
@@ -199,6 +203,34 @@ export const FIND_REPORTS = gql`
       language
       tags
       inputs_outputs
+    }
+  }
+`;
+
+export const FIND_REPORTS_TABLE = gql`
+  query FindReports($query: ReportQueryInput!) {
+    reports(query: $query, sort: { report_number: DESC }, limit: 999) {
+      _id
+      submitters
+      date_published
+      date_downloaded
+      date_submitted
+      date_modified
+      report_number
+      title
+      description
+      url
+      image_url
+      cloudinary_id
+      source_domain
+      text
+      authors
+      epoch_date_submitted
+      language
+      tags
+      inputs_outputs
+      editor_notes
+      is_incident_report
     }
   }
 `;
