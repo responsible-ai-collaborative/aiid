@@ -280,5 +280,10 @@
   "found": "trouvés",
   "results found": "résultats trouvés",
   "Displaying {{pageLength}} of {{allResultsCount}} reports": "Affichage de {{pageLength}} sur {{allResultsCount}} rapports",
-  "Displaying {{pageLength}} of {{allResultsCount}} incidents": "Affichage de {{pageLength}} sur {{allResultsCount}} incidents"
+  "Displaying {{pageLength}} of {{allResultsCount}} incidents": "Affichage de {{pageLength}} sur {{allResultsCount}} incidents",
+  "Blog": "Blog",
+  "AI News Digest": "Résumé de l’Actualité sur l’IA",
+  "Remove Duplicate": "Supprimer le doublon",
+  "View History": "Voir l'historique",
+  "CSET Annotators Table": "Tableau des annotateurs CSET"
 }

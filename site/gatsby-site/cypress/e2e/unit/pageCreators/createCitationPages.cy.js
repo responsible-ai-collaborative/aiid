@@ -79,6 +79,14 @@ const languages = [
     langDir: 'ltr',
     dateFormat: 'DD-MM-YYYY',
   },
+  {
+    code: 'ja',
+    hrefLang: 'ja',
+    name: 'Japanese',
+    localName: '日本語',
+    langDir: 'ltr',
+    dateFormat: 'YYYY/MM/DD',
+  },
 ];
 
 describe('createCitationPages', () => {
@@ -88,7 +96,7 @@ describe('createCitationPages', () => {
     const createPage = cy.stub();
 
     cy.wrap(createCitationPages(graphql, createPage, { languages })).then(() => {
-      expect(createPage.callCount).to.eq(3);
+      expect(createPage.callCount).to.eq(4);
 
       cy.wrap(createPage.getCall(0).args[0]).then((page) => {
         expect(page.path).contain('/cite/1');
@@ -96,6 +104,7 @@ describe('createCitationPages', () => {
         expect(page.context.translate_es).eq(true);
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);
+        expect(page.context.translate_ja).eq(true);
         expect(page.component).contain('/templates/cite.js');
       });
 
@@ -105,6 +114,7 @@ describe('createCitationPages', () => {
         expect(page.context.translate_es).eq(true);
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);
+        expect(page.context.translate_ja).eq(true);
       });
 
       cy.wrap(createPage.getCall(2).args[0]).then((page) => {
@@ -113,6 +123,16 @@ describe('createCitationPages', () => {
         expect(page.context.translate_es).eq(true);
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);
+        expect(page.context.translate_ja).eq(true);
+      });
+
+      cy.wrap(createPage.getCall(3).args[0]).then((page) => {
+        expect(page.path).contain('/ja/cite/1');
+        expect(page.context.locale).eq('ja');
+        expect(page.context.translate_es).eq(true);
+        expect(page.context.translate_en).eq(false);
+        expect(page.context.translate_fr).eq(true);
+        expect(page.context.translate_ja).eq(true);
       });
     });
   });

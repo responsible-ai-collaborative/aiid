@@ -21,7 +21,9 @@ const EditableLabel = ({ title, onChange, textClasses, iconClasses, disabled }) 
           className={`${textClasses} py-0 border-none flex-shrink-1`}
         />
       ) : (
-        <span className={`${textClasses} bg-white`}>{displayTitle}</span>
+        <span data-cy="risk-title-no-edit" className={`${textClasses} bg-white`}>
+          {displayTitle}
+        </span>
       )}
       {!disabled && (
         <button className="px-2" onClick={() => setEditingTitle((editingTitle) => !editingTitle)}>

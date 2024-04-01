@@ -1,3 +1,4 @@
+import normalizeRequest from '../../../../src/utils/normalizeRequest';
 import { conditionalIt } from '../../../support/utils';
 
 describe('/api/lookupbyurl endpoint', () => {
@@ -90,5 +91,29 @@ describe('/api/lookupbyurl endpoint', () => {
         ],
       });
     });
+  });
+
+  it('Should normalize request when on Netlify', () => {
+    const req = { query: { urls: 'https://url1.com, https://url2.com' } };
+
+    normalizeRequest(req);
+
+    expect(req.query.urls).to.deep.eq(['https://url1.com', 'https://url2.com']);
+  });
+
+  it('Should normalize request when running on node with only one param', () => {
+    const req = { query: { urls: 'https://url1.com' } };
+
+    normalizeRequest(req);
+
+    expect(req.query.urls).to.deep.eq(['https://url1.com']);
+  });
+
+  it('Should leave request unchanged', () => {
+    const req = { query: { urls: ['https://url1.com'] } };
+
+    normalizeRequest(req);
+
+    expect(req.query.urls).to.deep.eq(['https://url1.com']);
   });
 });

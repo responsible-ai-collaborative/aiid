@@ -718,28 +718,42 @@ describe('Edit report', () => {
     cy.wait('@updateOneReportTranslation')
       .its('request.body.variables')
       .then((variables) => {
-        expect(variables.input.title).to.eq('Este es el Titulo');
+        expect(variables.input.title).to.eq('Este es el Título en español');
         expect(variables.input.text).to.eq(
-          'Este es el texto que tiene un largo mayor a ochenta caracteres!'
+          'Este es un texto de prueba que tiene un largo mayor a ochenta caracteres (en español)'
         );
         expect(variables.input.language).to.eq('es');
         expect(variables.input.report_number).to.eq(23);
         expect(variables.input.plain_text).to.eq(
-          'Este es el texto que tiene un largo mayor a ochenta caracteres!\n'
+          'Este es un texto de prueba que tiene un largo mayor a ochenta caracteres (en español)\n'
         );
       });
 
     cy.wait('@updateOneReportTranslation')
       .its('request.body.variables')
       .then((variables) => {
-        expect(variables.input.title).to.eq('Este es el Titulo en frances');
+        expect(variables.input.title).to.eq(`C'est le Titre en français`);
         expect(variables.input.text).to.eq(
-          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!'
+          `Il s'agit d'un texte de test de plus de quatre-vingts caractères - lorem ipsum (en français)`
         );
         expect(variables.input.language).to.eq('fr');
         expect(variables.input.report_number).to.eq(23);
         expect(variables.input.plain_text).to.eq(
-          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!\n'
+          `Il s'agit d'un texte de test de plus de quatre-vingts caractères - lorem ipsum (en français)\n`
+        );
+      });
+
+    cy.wait('@updateOneReportTranslation')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.input.title).to.eq('これは日本語でのタイトルです');
+        expect(variables.input.text).to.eq(
+          '解サオライ協立なーづ民手ぶみドに即記朝ぐ奥置ぱで地更トるあて栄厚ぜづを祭屋ん来派どてゃ読速ヘ誌約カタシネ原39業理る。外ヒヱフ社第むせゆ由更混ソエ夕野しりすよ顔飛リの兆基う公言や置17謝后嘘5供フキヌア星集ヘラ辞勘壇崇さびわ。（日本語で）'
+        );
+        expect(variables.input.language).to.eq('ja');
+        expect(variables.input.report_number).to.eq(23);
+        expect(variables.input.plain_text).to.eq(
+          '解サオライ協立なーづ民手ぶみドに即記朝ぐ奥置ぱで地更トるあて栄厚ぜづを祭屋ん来派どてゃ読速ヘ誌約カタシネ原39業理る。外ヒヱフ社第むせゆ由更混ソエ夕野しりすよ顔飛リの兆基う公言や置17謝后嘘5供フキヌア星集ヘラ辞勘壇崇さびわ。（日本語で）\n'
         );
       });
 

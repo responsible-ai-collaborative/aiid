@@ -88,6 +88,8 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
 
       const translate_en = incident.reports.some((r) => r.language !== 'en');
 
+      const translate_ja = incident.reports.some((r) => r.language !== 'ja');
+
       createPage({
         path: pagePath,
         component: path.resolve('./src/templates/cite.js'),
@@ -99,6 +101,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
           translate_es,
           translate_fr,
           translate_en,
+          translate_ja,
         },
       });
     }
