@@ -20,6 +20,8 @@ describe('Cite pages', () => {
 
   let user;
 
+  let lastIncidentId;
+
   before('before', function () {
     // Skip all tests if the environment is empty since /cite/{incident_id} is not available
     Cypress.env('isEmptyEnvironment') && this.skip();
@@ -32,11 +34,33 @@ describe('Cite pages', () => {
             first_name
             last_name
           }
+          incidents(limit: 1, sortBy: INCIDENT_ID_DESC) {
+            incident_id
+          }
         }
       `,
-    }).then(({ data: { user: userData } }) => {
+    }).then(({ data: { user: userData, incidents: incidentsData } }) => {
       user = userData;
+      lastIncidentId = incidentsData[0].incident_id;
     });
+  });
+
+  it('Should disable Previous and Next incident buttons in header on first and last incidents', () => {
+    cy.visit('/cite/1');
+
+    cy.get(`[data-cy="header-previous-incident-link"]`).should('not.exist');
+
+    cy.get(`[data-cy="header-next-incident-link"]`)
+      .should('be.visible')
+      .should('have.attr', 'href', '/cite/2');
+
+    cy.visit(`/cite/${lastIncidentId}`);
+
+    cy.get(`[data-cy="header-next-incident-link"]`).should('not.exist');
+
+    cy.get(`[data-cy="header-previous-incident-link"]`)
+      .should('be.visible')
+      .should('have.attr', 'href', `/cite/${lastIncidentId - 1}`);
   });
 
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
