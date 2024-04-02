@@ -296,6 +296,8 @@
   "Submissions Leaderboard": "Classement des soumissions",
   "Database Backups and Snapshots": "Sauvegardes et instantanés de la base de données",
   "Find and download the latest Database Backups and snapshots": "Trouver et télécharger les dernières sauvegardes et instantanés de la base de données",
+  "Displaying {{pageLength}} of {{allResultsCount}} reports": "Affichage de {{pageLength}} sur {{allResultsCount}} rapports",
+  "Displaying {{pageLength}} of {{allResultsCount}} incidents": "Affichage de {{pageLength}} sur {{allResultsCount}} incidents",
   "Blog": "Blog",
   "AI News Digest": "Résumé de l’Actualité sur l’IA",
   "Remove Duplicate": "Supprimer le doublon",

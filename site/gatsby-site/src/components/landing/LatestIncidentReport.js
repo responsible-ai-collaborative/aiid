@@ -8,7 +8,6 @@ import DateLabel from 'components/ui/DateLabel';
 import Link from 'components/ui/Link';
 
 const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
-  
   const report = incident.reports[0];
 
   const {
