@@ -1,21 +1,16 @@
-import reports from '../../../fixtures/reports/reports.json';
-
 describe('Reports App', () => {
-  const url = '/apps/reports';
+  const url = '/apps/incidents';
 
-  it('Successfully loads', () => {
-    cy.visit(url);
+  it('Successfully loads reports', () => {
+    cy.visit(url + '?view=reports');
+  });
+
+  it('Successfully loads issue reports', () => {
+    cy.visit(url + '?view=issueReports');
   });
 
   it('Filters a report by title ', () => {
-    cy.visit(url);
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'ReportsQuery',
-      'ReportsQuery',
-      reports
-    );
+    cy.visit(url + '?view=reports');
 
     cy.get('[data-cy="filter"]', { timeout: 15000 })
       .eq(1)

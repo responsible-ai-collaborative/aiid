@@ -21,7 +21,7 @@ import PostPreviewNew from 'components/blog/PrismicPostPreview';
 const LandingPage = (props) => {
   const { data } = props;
 
-  const { latestIncidents, latestIncidentsReportNumbers, sponsors  } = props.pageContext;
+  const { latestIncidents, latestIncidentsReportNumbers, sponsors } = props.pageContext;
 
   let { latestPrismicPost, latestPostOld } = data;
 
@@ -43,7 +43,9 @@ const LandingPage = (props) => {
   const { locale: language } = useLocalization();
 
   const latestIncidentsTranslated = latestIncidents.map((incident) => {
-    const report = incident.reports.find((r) => latestIncidentsReportNumbers.includes(r.report_number));
+    const report = incident.reports.find((r) =>
+      latestIncidentsReportNumbers.includes(r.report_number)
+    );
 
     if (report.language !== language) {
       const translation = data[`latestIncidentsReports_${language}`]?.edges.find(
@@ -59,7 +61,7 @@ const LandingPage = (props) => {
     }
     const updatedIncident = {
       ...incident,
-      reports: [report]
+      reports: [report],
     };
 
     return updatedIncident;
@@ -182,7 +184,11 @@ export function Head({ location }) {
 }
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int, $latestIncidentsReportNumbers: [Int], $locale: String!) {
+  query LandingPageQuery(
+    $latestReportNumber: Int
+    $latestIncidentsReportNumbers: [Int]
+    $locale: String!
+  ) {
     latestReportIncident: allMongodbAiidprodIncidents(
       filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
     ) {
