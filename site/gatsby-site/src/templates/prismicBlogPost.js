@@ -13,12 +13,16 @@ export const Head = (props) => {
   const post = props?.data?.post;
 
   return (
-    <HeadContent
-      metaTitle={post.data.metatitle}
-      metaDescription={post.data.metadescription}
-      path={props.location.pathname}
-      metaImage={post.data.image?.gatsbyImageData?.images?.fallback?.src}
-    />
+    <>
+      {post && (
+        <HeadContent
+          metaTitle={post.data.metatitle}
+          metaDescription={post.data.metadescription}
+          path={props.location.pathname}
+          metaImage={post.data.image?.gatsbyImageData?.images?.fallback?.src}
+        />
+      )}
+    </>
   );
 };
 

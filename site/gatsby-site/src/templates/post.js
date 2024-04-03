@@ -82,7 +82,13 @@ export default function Post(props) {
 var Author = ({ name }) => <span>{name}</span>;
 
 export const Head = (props) => {
-  const mdx = props?.data?.mdx;
+  let {
+    data: { mdx, enMdx }, // "mdx" is the translated version of the doc, "enMdx" is the English version
+  } = props;
+
+  if (!mdx) {
+    mdx = enMdx;
+  }
 
   const metaTitle = mdx.frontmatter.metaTitle;
 
