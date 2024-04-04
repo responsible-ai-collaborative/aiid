@@ -67,4 +67,23 @@ describe('Entities page', () => {
     cy.visit(url);
     cy.get('[data-cy="row"]').first().contains('a', 'Facebook').should('be.visible');
   });
+
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment') && Cypress.env('e2eUsername') && Cypress.env('e2ePassword'),
+    'Should display Edit button only for Admin users',
+    () => {
+      cy.visit(url);
+      cy.get('[data-cy="edit-entity-btn"]').should('not.exist');
+
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+      cy.visit(url);
+      cy.get('[data-cy="edit-entity-btn"]')
+        .first()
+        .should('have.attr', 'href', '/entities/edit?entity_id=facebook');
+      cy.get('[data-cy="edit-entity-btn"]').first().click();
+      cy.waitForStableDOM();
+      cy.location('pathname').should('eq', '/entities/edit/');
+      cy.location('search').should('eq', '?entity_id=facebook');
+    }
+  );
 });

@@ -302,5 +302,9 @@
   "AI News Digest": "Résumé de l’Actualité sur l’IA",
   "Remove Duplicate": "Supprimer le doublon",
   "View History": "Voir l'historique",
-  "CSET Annotators Table": "Tableau des annotateurs CSET"
+  "CSET Annotators Table": "Tableau des annotateurs CSET",
+  "Name": "Nom",
+  "Creation Date": "Date de création",
+  "Last modified": "Dernière modification",
+  "Save": "Enregistrer"
 }
