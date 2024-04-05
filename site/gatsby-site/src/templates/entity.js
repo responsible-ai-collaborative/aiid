@@ -8,7 +8,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -211,7 +211,6 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   return (
     <>
-      <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
       <div className="titleWrapper">
         <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
@@ -305,6 +304,19 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       )}
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    pageContext: { name },
+  } = props;
+
+  const metaTitle = 'Entity: ' + name;
+
+  const metaDescription = 'Information about ' + name + ' and its involvement in AI incidents.';
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
 };
 
 function UnsubscribeButton({

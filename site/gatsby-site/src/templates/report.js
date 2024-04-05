@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
@@ -52,17 +52,6 @@ function ReportPage(props) {
 
   return (
     <>
-      <AiidHelmet
-        {...{
-          metaTitle,
-          metaDescription: report.description,
-          path: props.location.pathname,
-          metaImage: report.image_url,
-        }}
-      >
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
         <SocialShareButtons
@@ -89,6 +78,27 @@ function ReportPage(props) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    data: { report },
+  } = props;
+
+  const metaTitle = `Report ${report.report_number}`;
+
+  return (
+    <HeadContent
+      path={pathname}
+      {...{
+        metaTitle,
+        metaDescription: report.description || metaTitle,
+        metaImage: report.image_url,
+      }}
+      metaType="website"
+    />
+  );
+};
 
 export const query = graphql`
   query ReportPageQuery(

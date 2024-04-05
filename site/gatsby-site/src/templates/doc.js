@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
@@ -19,11 +19,6 @@ export default function Doc(props) {
     mdx = enMdx;
   }
 
-  // meta tags
-  const metaTitle = mdx.frontmatter.metaTitle;
-
-  const metaDescription = mdx.frontmatter.metaDescription;
-
   const rightSidebar = (
     <>
       <Outline location={props.location} />
@@ -38,7 +33,6 @@ export default function Doc(props) {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }} />
       <div className={'titleWrapper'}>
         <h1>{mdx.fields.title}</h1>
         {mdx.frontmatter.aiTranslated && (
@@ -56,6 +50,19 @@ export default function Doc(props) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    data: { mdx },
+  } = props;
+
+  const metaTitle = mdx.frontmatter.metaTitle;
+
+  const metaDescription = mdx.frontmatter.metaDescription;
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
+};
 
 export const pageQuery = graphql`
   query DocsTemplateQuery($slug: String!, $locale: String!) {

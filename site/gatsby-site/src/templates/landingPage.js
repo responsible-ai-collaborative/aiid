@@ -1,5 +1,4 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -17,6 +16,7 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import config from '../../config';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
+import HeadContent from 'components/HeadContent';
 
 const LandingPage = (props) => {
   const { data } = props;
@@ -175,10 +175,11 @@ export function Head({ location }) {
   return (
     <>
       <script type="application/ld+json">{stringified}</script>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}>
-        <title>{title}</title>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
+      <HeadContent
+        {...{ metaTitle, metaDescription, path: location.pathname, metaImage }}
+        metaType="website"
+        title={title}
+      />
     </>
   );
 }

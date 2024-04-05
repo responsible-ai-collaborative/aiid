@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 
 import Link from 'components/ui/Link';
 
@@ -9,17 +9,10 @@ import Container from 'elements/Container';
 const IncidentCite = ({ pageContext }) => {
   const { true_incident_number, duplicate_incident_number } = pageContext;
 
-  // meta tags
-
-  const metaTitle = 'Incident ' + true_incident_number;
-
   const metaDescription = 'Citation record for Incident ' + duplicate_incident_number;
-
-  const canonicalUrl = getCanonicalUrl(true_incident_number);
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
         <h1>{metaDescription}</h1>
       </div>
@@ -33,6 +26,22 @@ const IncidentCite = ({ pageContext }) => {
       </div>
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { true_incident_number, duplicate_incident_number } = props.pageContext;
+
+  const metaTitle = 'Incident ' + true_incident_number;
+
+  const metaDescription = 'Citation record for Incident ' + duplicate_incident_number;
+
+  const canonicalUrl = getCanonicalUrl(true_incident_number);
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
 };
 
 export default IncidentCite;
