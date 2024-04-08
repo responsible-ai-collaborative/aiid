@@ -318,5 +318,13 @@
   "Name": "Nombre",
   "Creation Date": "Fecha de Creación",
   "Last modified": "Última modificación",
-  "Save": "Guardar"
+  "Save": "Guardar",
+  "Is this incident related?": "¿Este incidente está relacionado?",
+  "No": "No",
+  "Not sure": "No estoy seguro",
+  "Yes": "Sí",
+  "Use ID": "Usar ID",
+  "Most Semantically Similar Incidents (Experimental)": "Incidentes más semánticamente similares (Experimental)",
+  "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "Los informes deben tener al menos {{minLength}} caracteres que no sean espacios para calcular la similitud semántica.",
+  "No related reports found." : "No se encontraron informes relacionados."
 }

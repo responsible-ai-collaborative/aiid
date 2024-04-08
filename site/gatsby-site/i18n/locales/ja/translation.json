@@ -291,5 +291,13 @@
   "Name": "名前",
   "Creation Date": "作成日",
   "Last modified": "最終更新",
-  "Save": "保存"
+  "Save": "保存",
+  "Is this incident related?": "このインシデントは関連していますか？",
+  "No": "いいえ",
+  "Not sure": "わからない",
+  "Yes": "はい",
+  "Use ID": "IDを使用",
+  "Most Semantically Similar Incidents (Experimental)": "最も意味的に類似したインシデント（実験的）",
+  "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "レポートは意味的類似度を計算するために少なくとも{{minLength}}文字以上の非空白文字を持っている必要があります",
+  "No related reports found." : "関連するレポートが見つかりません"
 }
