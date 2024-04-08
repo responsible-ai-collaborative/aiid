@@ -291,5 +291,10 @@
   "Name": "名前",
   "Creation Date": "作成日",
   "Last modified": "最終更新",
-  "Save": "保存"
+  "Save": "保存",
+  "results found": "件の結果が見つかりました",
+  "More filters": "さらにフィルタ",
+  "Fewer filters": "フィルタを減らす",
+  "Tags": "タグ",
+  "Language": "言語"
 }

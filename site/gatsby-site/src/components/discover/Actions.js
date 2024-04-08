@@ -203,7 +203,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
             titleId="report-hashtag"
             icon={faHashtag}
             className="fa-hashtag"
-            title="Incident ID"
+            title={t('Incident ID')}
           />
           {item.incident_id}
         </CustomButton>
