@@ -155,6 +155,10 @@ const FormDetails = ({
 }) => {
   const { t } = useTranslation(['submit']);
 
+  const { t: tVariants } = useTranslation(['variants']);
+
+  const { t: tTranslations } = useTranslation();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [submitCount, setSubmitCount] = useState(0);
@@ -212,9 +216,9 @@ const FormDetails = ({
               <FieldContainer>
                 <TextInputGroup
                   name="incident_title"
-                  label={t('Incident Title')}
+                  label={tVariants('Incident Title')}
                   icon={faTenge}
-                  placeholder={t('Incident title')}
+                  placeholder={tVariants('Incident Title')}
                   schema={schema}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
@@ -247,8 +251,8 @@ const FormDetails = ({
               <FieldContainer>
                 <UsersInputGroup
                   name="incident_editors"
-                  label={t('Editors')}
-                  placeholder={t('Editors')}
+                  label={tTranslations('Editors')}
+                  placeholder={tTranslations('Editors')}
                   icon={faPenNib}
                   schema={schema}
                   errors={errors}
