@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
@@ -41,8 +41,6 @@ function CitePage(props) {
 
   const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
 
-  const metaDescription = incident.description;
-
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
     translations: {
@@ -57,14 +55,6 @@ function CitePage(props) {
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
 
   const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
-
-  const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
-
-  const image = new CloudinaryImage(publicID, {
-    cloudName: config.cloudinary.cloudName,
-  });
-
-  const metaImage = image.createCloudinaryURL();
 
   const timeline = sortedReports.map(
     ({ date_published, title, mongodb_id, report_number, tags }) => ({
@@ -93,10 +83,6 @@ function CitePage(props) {
 
   return (
     <div {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       {isLiveData ? (
         <CiteDynamicTemplate
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
@@ -131,6 +117,49 @@ function CitePage(props) {
     </div>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname: path },
+    data: {
+      allMongodbAiidprodReports,
+      allMongodbTranslationsReportsEs,
+      allMongodbTranslationsReportsEn,
+      allMongodbTranslationsReportsFr,
+      incident,
+    },
+  } = props;
+
+  const { locale } = useLocalization();
+
+  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+
+  const metaDescription = incident.description;
+
+  const incidentReports = getTranslatedReports({
+    allMongodbAiidprodReports,
+    translations: {
+      en: allMongodbTranslationsReportsEn,
+      es: allMongodbTranslationsReportsEs,
+      fr: allMongodbTranslationsReportsFr,
+    },
+    locale,
+  });
+
+  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
+
+  const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
+
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
+
+  const metaImage = image.createCloudinaryURL();
+
+  return <HeadContent {...{ metaTitle, metaDescription, path, metaImage }} metaType="website" />;
+};
 
 export const query = graphql`
   query CitationPageQuery(

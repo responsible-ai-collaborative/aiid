@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import CsetTaxonomyPage from 'components/taxa/CsetTaxonomyPage';
 import FacetTaxonomyPage from 'components/taxa/FacetTaxonomyPage';
+import HeadContent from 'components/HeadContent';
 
 const Taxonomy = (props) => {
   if (!props || !props.pageContext || !props.data) {
@@ -13,6 +14,21 @@ const Taxonomy = (props) => {
 };
 
 export default Taxonomy;
+
+export const Head = (props) => {
+  const { namespace } = props.pageContext.taxonomy;
+
+  const metaTitle = `${namespace} Charts`;
+
+  return (
+    <HeadContent
+      metaTitle={metaTitle}
+      metaDescription={metaTitle}
+      path={props.location.pathname}
+      metaType="website"
+    />
+  );
+};
 
 export const pageQuery = graphql`
   query ($namespace: String!) {

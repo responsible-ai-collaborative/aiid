@@ -3,7 +3,7 @@ import IncidentsTable from '../../components/incidents/IncidentsTable';
 import { FIND_INCIDENTS_TABLE } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import AiidHelmet from '../../components/AiidHelmet';
+import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
@@ -101,13 +101,8 @@ const IncidentsPage = ({ data, ...props }) => {
     }));
   }
 
-  const { t } = useTranslation();
-
   return (
     <div className="w-full" {...props}>
-      <AiidHelmet path={props.location.pathname}>
-        <title>{t('Incidents')}</title>
-      </AiidHelmet>
       <div>
         <Button.Group className="mb-4">
           <Button
@@ -204,6 +199,20 @@ const IncidentsPage = ({ data, ...props }) => {
       </div>
     </div>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const metaTitle = t('Incidents');
+
+  const metaDescription = t('AIID incidents list');
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export const query = graphql`
