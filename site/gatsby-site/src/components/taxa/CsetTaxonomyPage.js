@@ -183,10 +183,10 @@ export default function CsetTaxonomyPage(props) {
           subtitle={
             <>
               <div>
-                <Trans>
+                <Trans i18nKey={'csetAutonomy'}>
                   Autonomy is an AI&apos;s capability to operate independently. Levels of autonomy
                   differ based on whether or not the AI makes independent decisions and the degree
-                  of human oversight. The level of autonomy does not depend on the type of input the
+                  of human oversight. The level of autonomy does no depend on the type of input the
                   AI receives, whether it is human- or machine-generated.
                 </Trans>
                 <div>

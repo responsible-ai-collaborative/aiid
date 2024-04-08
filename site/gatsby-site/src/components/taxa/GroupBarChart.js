@@ -2,6 +2,7 @@ import React from 'react';
 import { getClassificationValue } from 'utils/classifications';
 import BillboardJS from '@billboard.js/react';
 import bb, { bar } from 'billboard.js';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function GroupBarChart({
   groups,
@@ -64,6 +65,13 @@ export default function GroupBarChart({
 
   const stepSize = Math.round(largestGroupSize / stepCount / stepMultiple) * stepMultiple;
 
+  const { t } = useTranslation();
+
+  const names = allValues.reduce((obj, key) => {
+    obj[key] = t(key);
+    return obj;
+  }, {});
+
   const options = {
     size: { height: 320 + 20 * allValues.length },
     data: {
@@ -86,6 +94,7 @@ export default function GroupBarChart({
         if (d.id === 'maybe') return '#1f77b4';
         return color;
       },
+      names,
     },
     axis: {
       y: { tick: { stepSize } },
@@ -125,8 +134,8 @@ export default function GroupBarChart({
       <h2 className="text-center">{titleDescription}</h2>
       {subtitle && <>{subtitle}</>}
       <div className="text-center">
-        <h2 className="text-lg mb-0 mt-4">{title}</h2>
-        (by Incident Count)
+        <h2 className="text-lg mb-0 mt-4">{t(title)}</h2>
+        <Trans>(by Incident Count)</Trans>
       </div>
       <BillboardJS bb={bb} options={{ ...options }} />
       <div className="flex gap-2 flex-wrap justify-around">
