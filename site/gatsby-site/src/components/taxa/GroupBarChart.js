@@ -67,6 +67,8 @@ export default function GroupBarChart({
 
   const { t } = useTranslation();
 
+  const translatedGroupNames = groupNames.map((groupName) => t(groupName));
+
   const names = allValues.reduce((obj, key) => {
     obj[key] = t(key);
     return obj;
@@ -78,7 +80,7 @@ export default function GroupBarChart({
       order: attributeShortName == 'Autonomy Level' ? autonomySort : undefined,
       x: 'x',
       columns: [
-        ['x', ...groupNames],
+        ['x', ...translatedGroupNames],
         ...allValues
           .sort()
           .map((value) => [
@@ -146,16 +148,20 @@ export default function GroupBarChart({
 
             return (
               <div key={groupName}>
-                <h3 className="text-lg text-center">{groupName}</h3>
+                <h3 className="text-lg text-center">{t(groupName)}</h3>
                 <table>
                   <tbody>
                     <tr>
-                      <th className="p2 text-left">Category</th>
-                      <th className="p2">Count</th>
+                      <th className="p2 text-left">
+                        <Trans>Category</Trans>
+                      </th>
+                      <th className="p2">
+                        <Trans>Count</Trans>
+                      </th>
                     </tr>
                     {allValues.sort(byGroupOccurences).map((value) => (
                       <tr key={value}>
-                        <td className="p2">{value}</td>
+                        <td className="p2">{t(value)}</td>
                         <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
                       </tr>
                     ))}
