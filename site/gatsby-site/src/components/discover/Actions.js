@@ -110,7 +110,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
           titleId="report-source"
           icon={faNewspaper}
           className="fa-newspaper"
-          title="Read the Source"
+          title={t('Read the Source')}
         />
       </WebArchiveLink>
 
