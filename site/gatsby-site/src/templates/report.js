@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
@@ -24,8 +24,8 @@ function ReportPage(props) {
   const { loading, isRole } = useUserContext();
 
   if (report.language !== locale && data[locale]) {
-    report.title = data[locale]?.title;
-    report.text = data[locale]?.text;
+    report.title = data[locale].title;
+    report.text = data[locale].text;
   }
 
   const defaultTitle = t('Report {{report_number}}', { ...report });
@@ -52,17 +52,6 @@ function ReportPage(props) {
 
   return (
     <>
-      <AiidHelmet
-        {...{
-          metaTitle,
-          metaDescription: report.description,
-          path: props.location.pathname,
-          metaImage: report.image_url,
-        }}
-      >
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
         <SocialShareButtons
@@ -90,11 +79,33 @@ function ReportPage(props) {
   );
 }
 
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    data: { report },
+  } = props;
+
+  const metaTitle = `Report ${report.report_number}`;
+
+  return (
+    <HeadContent
+      path={pathname}
+      {...{
+        metaTitle,
+        metaDescription: report.description || metaTitle,
+        metaImage: report.image_url,
+      }}
+      metaType="website"
+    />
+  );
+};
+
 export const query = graphql`
   query ReportPageQuery(
     $report_number: Int
     $translate_es: Boolean!
     $translate_fr: Boolean!
+    $translate_ja: Boolean!
     $translate_en: Boolean!
   ) {
     report: mongodbAiidprodReports(report_number: { eq: $report_number }) {
@@ -121,6 +132,12 @@ export const query = graphql`
     }
     fr: mongodbTranslationsReportsFr(report_number: { eq: $report_number })
       @include(if: $translate_fr) {
+      title
+      text
+      report_number
+    }
+    ja: mongodbTranslationsReportsJa(report_number: { eq: $report_number })
+      @include(if: $translate_ja) {
       title
       text
       report_number

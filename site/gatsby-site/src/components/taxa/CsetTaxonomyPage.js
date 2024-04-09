@@ -3,7 +3,6 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { getClassificationValue } from 'utils/classifications';
 
-import AiidHelmet from 'components/AiidHelmet';
 import { isAiHarm } from 'utils/cset';
 import GroupBarChart from 'components/taxa/GroupBarChart';
 
@@ -33,10 +32,6 @@ export default function CsetTaxonomyPage(props) {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1>{metaTitle}</h1>
       </div>

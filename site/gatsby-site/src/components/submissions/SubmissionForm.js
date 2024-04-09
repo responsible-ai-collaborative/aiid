@@ -34,7 +34,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-import { Select } from 'flowbite-react';
+import { Checkbox, Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { graphql, useStaticQuery } from 'gatsby';
 
@@ -347,6 +347,20 @@ const SubmissionForm = ({ onChange = null }) => {
           setFieldValue={setFieldValue}
           columns={['byIncidentId']}
         />
+
+        <div className="mt-3">
+          <div className="flex items-center">
+            <Label popover="quiet" label={t('Quiet')} />
+          </div>
+          <div className="mt-1">
+            <Checkbox
+              checked={values.quiet}
+              onChange={(e) => {
+                setFieldValue('quiet', e.target.checked);
+              }}
+            />
+          </div>
+        </div>
 
         {(!values.incident_ids || values.incident_ids.length === 0) && (
           <div data-cy="incident-data-section">

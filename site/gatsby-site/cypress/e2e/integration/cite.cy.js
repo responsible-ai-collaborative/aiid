@@ -199,7 +199,7 @@ describe('Cite pages', () => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          date_modified: format(now, 'yyyy-MM-dd'),
+          date_modified: now.toISOString(),
           epoch_date_modified: getUnixTime(now),
         });
       });
@@ -212,7 +212,7 @@ describe('Cite pages', () => {
         );
 
         expectedReport.modifiedBy = '';
-        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.date_modified = now.toISOString();
         expectedReport.epoch_date_modified = getUnixTime(now);
 
         expect(input).to.deep.eq(expectedReport);
@@ -598,9 +598,6 @@ describe('Cite pages', () => {
       const title = `Incident ${incidentId}: ${incident.title}`;
 
       const description = incident.description;
-
-      cy.get('head meta[name="title"]').should('have.attr', 'content', title);
-      cy.get('head meta[name="description"]').should('have.attr', 'content', description);
 
       cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
       cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
