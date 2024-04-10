@@ -168,7 +168,7 @@ export default function NewsSearchPage() {
         </h1>
       </div>
       <p>
-        <Trans>
+        <Trans i18nKey={'newsDigestDescription'}>
           This digest shows news stories from around the web matching a set of AI-related{' '}
           <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
             <FontAwesomeIcon icon={faTag} className="pointer fa mr-1" fixedWidth />
