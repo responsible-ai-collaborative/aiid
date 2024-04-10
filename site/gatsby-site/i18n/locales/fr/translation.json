@@ -444,7 +444,6 @@
   "An AI Technical Failure which probably contributes to the AI system failure referenced in the incident.": "Une défaillance technique de l'IA qui contribue probablement à la défaillance du système d'IA mentionnée dans l'incident.",
   "One or more snippets that justify the classification.": "Un ou plusieurs extraits qui justifient la classification.",
   "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.": "Texte libre avec des commentaires justifiant la classification choisie (par exemple, basée sur des informations sur les extraits sélectionnés et l'analyse technique), si nécessaire.",
-  "Incidents": "Incidents",
   "Show more stats": "Afficher plus de statistiques",
   "Show fewer stats": "Afficher moins de statistiques",
   "Misuse": "Mauvais usage",

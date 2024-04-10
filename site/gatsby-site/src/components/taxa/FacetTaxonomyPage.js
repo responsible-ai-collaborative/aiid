@@ -37,7 +37,7 @@ export default function FacetTaxonomyPage(props) {
 
   const { t } = useTranslation();
 
-  const markdownDescription = t('gmfMarkdown', { description });
+  const markdownDescription = t('gmfMarkdown', description);
 
   return (
     <>
