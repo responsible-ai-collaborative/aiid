@@ -17,3 +17,22 @@ export const FIND_ENTITIES = gql`
     }
   }
 `;
+
+export const FIND_ENTITY = gql`
+  query FindEntity($query: EntityQueryInput) {
+    entity(query: $query) {
+      entity_id
+      name
+      created_at
+      date_modified
+    }
+  }
+`;
+
+export const UPDATE_ENTITY = gql`
+  mutation UpdateEntity($query: EntityQueryInput, $set: EntityUpdateInput!) {
+    updateOneEntity(query: $query, set: $set) {
+      entity_id
+    }
+  }
+`;

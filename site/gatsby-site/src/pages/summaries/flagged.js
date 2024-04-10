@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 
 const ReportList = ({ report }) => (
@@ -37,14 +37,11 @@ const IncidentList = ({ incidents }) => {
   );
 };
 
-export default function FlaggedIncidents({ data, ...props }) {
+export default function FlaggedIncidents({ data }) {
   const incidents = data.allMongodbAiidprodIncidents.nodes;
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Incident List</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>Flagged Incident List</h1>
       </div>
@@ -58,6 +55,18 @@ export default function FlaggedIncidents({ data, ...props }) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Incident List';
+
+  const metaDescription = 'Flagged Incident List';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
+};
 
 export const pageQuery = graphql`
   query AllFlaggedIncidents {

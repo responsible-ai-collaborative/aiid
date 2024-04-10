@@ -24,5 +24,9 @@
     "Alleged: <2></2> developed and deployed an AI system, which harmed <5></5>.": "推定: <2></2>が開発し提供したAIシステムで、<5></5>に影響を与えた",
     "Alleged: <1></1> developed an AI system deployed by <4></4>, which harmed <6></6>.": "推定: <1></1>が開発し、<4></4>が提供したAIシステムで、<6></6>に影響を与えた",
     "Entities involved in AI Incidents": "AIインシデントに関係する組織",
-    "{{count}} Incident responses": "{{count}} インシデントレスポンス"
+    "{{count}} Incident responses": "{{count}} インシデントレスポンス",
+    "Editing Entity": "組織の編集",
+    "Back to Entity: {{name}}": "組織に戻る: {{name}}",
+    "Entity updated successfully.": "組織が正常に更新されました。",
+    "Error updating Entity.": "組織の更新中にエラーが発生しました。"
 }

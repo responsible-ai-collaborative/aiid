@@ -1,3 +1,4 @@
+import HeadContent from 'components/HeadContent';
 import React, { useEffect } from 'react';
 
 const ApiSpec = () => {
@@ -16,6 +17,8 @@ const ApiSpec = () => {
 };
 
 export const Head = () => {
+  const metaTitle = 'API Spec';
+
   return (
     <>
       <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />;
@@ -23,6 +26,7 @@ export const Head = () => {
         src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js"
         crossOrigin="anonymous"
       />
+      <HeadContent path="/api-spec" metaTitle={metaTitle} metaDescription={metaTitle} />
     </>
   );
 };

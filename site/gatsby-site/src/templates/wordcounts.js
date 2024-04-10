@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import ReactWordcloud from 'react-d3-cloud';
 
 import Link from 'components/ui/Link';
@@ -27,14 +27,11 @@ const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   );
 };
 
-const WordCounts = ({ pageContext, ...props }) => {
+const WordCounts = ({ pageContext }) => {
   const { wordClouds, wordCountsSorted, wordsPerCloud } = pageContext;
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Word Counts</title>
-      </AiidHelmet>
       <div className="titleWrapper">
         <h1>Word Counts</h1>
       </div>
@@ -73,6 +70,18 @@ const WordCounts = ({ pageContext, ...props }) => {
       </div>
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Word Counts';
+
+  const metaDescription = 'Word Counts from Incident Reports.';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default WordCounts;

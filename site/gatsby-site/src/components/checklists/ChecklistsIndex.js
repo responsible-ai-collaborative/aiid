@@ -40,10 +40,22 @@ const ChecklistsIndex = ({ users }) => {
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
   /************************** Get Checklists **************************/
-  const { data: checklistsData, loading: checklistsLoading } = useQuery(FIND_CHECKLISTS, {
+  const {
+    data: checklistsData,
+    loading: checklistsLoading,
+    error: checklistsErrors,
+  } = useQuery(FIND_CHECKLISTS, {
     variables: { query: { owner_id: user?.id } },
     skip: !user?.id,
   });
+
+  if (checklistsErrors) {
+    addToast({
+      message: t('Could not fetch checklists'),
+      severity: SEVERITY.danger,
+      error: checklistsErrors,
+    });
+  }
 
   // In useState so that on deleting a checklist,
   // we can remove it from display immediately.
@@ -104,7 +116,17 @@ const ChecklistsIndex = ({ users }) => {
       }
     `;
 
-  const { data: risksData } = useQuery(gql(riskQuery), { skip: skipRisksQuery });
+  const { data: risksData, error: risksErrors } = useQuery(gql(riskQuery), {
+    skip: skipRisksQuery,
+  });
+
+  if (risksErrors) {
+    addToast({
+      message: t('Failure searching for risks.'),
+      severity: SEVERITY.danger,
+      error: risksErrors,
+    });
+  }
 
   /************************ Prepare Display ***************************/
   const [sortBy, setSortBy] = useState('alphabetical');
