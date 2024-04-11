@@ -1,0 +1,17 @@
+import { ApolloServer } from '@apollo/server';
+import { mergeSchemas } from '@graphql-tools/schema';
+import { getSchema as getLocalSchema } from './local';
+import { getSchema as getRemoteSchema } from './remote';
+
+export const getSchema = async () => {
+
+    const localSchema = await getLocalSchema();
+
+    const remoteSchema = await getRemoteSchema();
+
+    const gatewaySchema = mergeSchemas({
+        schemas: [remoteSchema, localSchema],
+    });
+
+    return gatewaySchema;
+}

@@ -6,6 +6,7 @@
   "version": "0.2.0",
   "dependencies": {
     "@apollo/client": "^3.7.8",
+    "@apollo/server": "^4.10.2",
     "@aws-sdk/client-s3": "^3.435.0",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
@@ -58,6 +59,8 @@
     "gatsby-transformer-sharp": "^5.7.0",
     "graphql": "^16.8.1",
     "graphql-http": "^1.18.0",
+    "graphql-scalars": "^1.23.0",
+    "graphql-tag": "^2.12.6",
     "i18next": "^20.6.1",
     "is-absolute-url": "^3.0.3",
     "json-diff-ts": "^1.2.6",
@@ -115,11 +118,16 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
     "@cypress/code-coverage": "^3.12.15",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.6",
+    "@graphql-codegen/typescript-mongodb": "^3.0.0",
+    "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@netlify/plugin-gatsby": "^3.7.0",
     "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.7",

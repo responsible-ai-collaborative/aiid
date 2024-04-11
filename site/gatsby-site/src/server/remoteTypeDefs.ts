@@ -1,4 +1,6 @@
-export const typeDefs = `
+import gql from "graphql-tag";
+
+export default gql`
 type History_incidentNlp_similar_incident {
   incident_id: Int
   similarity: Float
