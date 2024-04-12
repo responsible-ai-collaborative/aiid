@@ -1,4 +1,3 @@
-import { ApolloServer } from '@apollo/server';
 import { mergeSchemas } from '@graphql-tools/schema';
 import { getSchema as getLocalSchema } from './local';
 import { getSchema as getRemoteSchema } from './remote';
