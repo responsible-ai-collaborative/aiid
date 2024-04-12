@@ -2,12 +2,13 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils';
 import { GraphQLSchema, defaultFieldResolver } from 'graphql';
-import { QuickAdd, Resolvers } from './generated/graphql';
+import { Resolvers } from './generated/graphql';
 import { LongResolver, ObjectIDResolver } from 'graphql-scalars';
-import { MongoClient } from 'mongodb';
-import { convertToObjectID } from './utils';
-import typeDefs from './typeDefs';
-import config from '../../config';
+
+import localTypeDefs from './localTypeDefs';
+
+import { resolvers as quickAddsResolvers, typeDefs as quickAddsTypeDefs } from './fields/quickadds';
+
 
 function authDirectiveTransformer(schema: GraphQLSchema, directiveName: string) {
 
@@ -56,38 +57,15 @@ export const getSchema = async () => {
         ObjectId: ObjectIDResolver,
         Long: LongResolver,
         Query: {
-            async quickadds(_, { query = {} }: { query?: any } = {}) {
-
-                const client = new MongoClient(config.mongodb.connectionString);
-
-                const db = client.db('aiidprod');
-                const collection = db.collection<QuickAdd>('quickadd');
-
-                const filter = convertToObjectID<QuickAdd>(query);
-
-                const items = await collection.find(filter).toArray();
-
-                return items;
-            },
+            ...quickAddsResolvers.Query,
         },
         Mutation: {
-            deleteManyQuickadds: async (_, { query }: { query?: any }) => {
-                const client = new MongoClient(config.mongodb.connectionString);
-
-                const db = client.db('aiidprod');
-                const collection = db.collection<QuickAdd>('quickadd');
-
-                const filter = convertToObjectID<QuickAdd>(query);
-
-                const result = await collection.deleteMany(filter);
-
-                return { deletedCount: result.deletedCount! };
-            }
+            ...quickAddsResolvers.Mutation,
         }
     };
 
 
-    const schema = makeExecutableSchema({ typeDefs, resolvers });
+    const schema = makeExecutableSchema({ typeDefs: [localTypeDefs, quickAddsTypeDefs], resolvers });
 
     const schemaWithAuth = authDirectiveTransformer(schema, 'auth');
 
