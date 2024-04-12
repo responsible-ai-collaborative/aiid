@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
-import config from "../../config";
+import config from "../config";
 
 function extractToken(header: string) {
 
@@ -51,7 +51,7 @@ async function verifyToken(token: string) {
 
 async function getUser(userId: string) {
 
-    const client = new MongoClient(config.mongodb.connectionString);
+    const client = new MongoClient(config.mongodb.connectionString!);
 
     const db = client.db('customData');
 

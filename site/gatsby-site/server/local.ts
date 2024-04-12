@@ -27,5 +27,3 @@ export const getSchema = async () => {
 
     return schemaWithAuth;
 }
-
-

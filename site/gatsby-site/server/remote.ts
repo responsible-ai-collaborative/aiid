@@ -1,8 +1,8 @@
 import { buildHTTPExecutor } from '@graphql-tools/executor-http'
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { FilterObjectFields, FilterTypes, schemaFromExecutor, wrapSchema } from '@graphql-tools/wrap';
+import { FilterObjectFields, FilterTypes, wrapSchema } from '@graphql-tools/wrap';
 import remoteTypeDefs from './remoteTypeDefs';
-import config from '../../config';
+import config from '../config';
 
 const userExecutor = buildHTTPExecutor({
     endpoint: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,

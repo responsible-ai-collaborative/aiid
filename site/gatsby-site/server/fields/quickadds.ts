@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { MongoClient } from "mongodb";
 import { QuickAdd } from "../generated/graphql";
-import config from "../../../config";
+import config from "../../config";
 import { convertToObjectID } from "../utils";
 
 export const typeDefs = gql`
@@ -29,8 +29,8 @@ export const typeDefs = gql`
 
 export const resolvers = {
     Query: {
-        async quickadds(_, { query = {} }: { query?: any } = {}) {
-            const client = new MongoClient(config.mongodb.connectionString);
+        async quickadds(_: unknown, { query = {} }: { query?: any } = {}) {
+            const client = new MongoClient(config.mongodb.connectionString!);
 
             const db = client.db('aiidprod');
             const collection = db.collection<QuickAdd>('quickadd');
@@ -44,8 +44,8 @@ export const resolvers = {
     },
 
     Mutation: {
-        deleteManyQuickadds: async (_, { query }: { query?: any }) => {
-            const client = new MongoClient(config.mongodb.connectionString);
+        deleteManyQuickadds: async (_: unknown, { query }: { query?: any }) => {
+            const client = new MongoClient(config.mongodb.connectionString!);
 
             const db = client.db('aiidprod');
             const collection = db.collection<QuickAdd>('quickadd');
