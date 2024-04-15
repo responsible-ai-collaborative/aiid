@@ -121,6 +121,7 @@
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
     "test:api": "jest --setupFiles dotenv/config",
+    "test:api:ci": "jest",
     "codegen": "graphql-codegen --config codegen.ts",
     "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts"
   },
