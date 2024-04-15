@@ -21,7 +21,7 @@ on:
 
 jobs:
   test:
-    name: Run Cypress tests
+    name: Run tests
     environment: ${{ inputs.environment }}
     runs-on:
       labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
