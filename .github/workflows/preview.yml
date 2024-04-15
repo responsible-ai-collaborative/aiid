@@ -25,7 +25,16 @@ jobs:
           echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
           echo "Job originally triggered by ${{ github.actor }}"
           exit 1
-
+      
+  call-test-api:
+        if: ${{ !failure() }}
+        uses: ./.github/workflows/test-api.yml
+        needs: permissions-check
+        secrets: inherit
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
+          environment: staging
+              
   call-test-build:
     if: ${{ !failure() }}
     uses: ./.github/workflows/test-build.yml
