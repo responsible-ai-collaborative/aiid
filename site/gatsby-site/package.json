@@ -20,6 +20,7 @@
     "@googlemaps/google-maps-services-js": "^3.3.3",
     "@graphql-tools/executor-http": "^1.0.9",
     "@graphql-tools/schema": "^10.0.3",
+    "@graphql-tools/utils": "^10.1.2",
     "@graphql-tools/wrap": "^10.0.5",
     "@mdx-js/react": "^2.3.0",
     "@postlight/parser": "^2.2.3",
@@ -120,7 +121,8 @@
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
     "test:api": "jest --setupFiles dotenv/config",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",

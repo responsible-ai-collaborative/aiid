@@ -18,12 +18,20 @@ export const typeDefs = gql`
         _id: ObjectId
     }
 
+    input QuickaddInsertInput {
+        date_submitted: String!
+        incident_id: Long
+        source_domain: String
+        url: String!
+    }
+
     extend type Query {
         quickadds(query: QuickaddQueryInput): [QuickAdd]
     }
 
     extend type Mutation {
         deleteManyQuickadds(query: QuickaddQueryInput): DeleteManyPayload @auth(requires: admin)
+        insertOneQuickadd(data: QuickaddInsertInput!): QuickAdd
     }
 `
 
@@ -55,6 +63,18 @@ export const resolvers = {
             const result = await collection.deleteMany(filter);
 
             return { deletedCount: result.deletedCount! };
+        },
+        insertOneQuickadd: async (_: unknown, { data }: { data: QuickAdd }) => {
+            const client = new MongoClient(config.mongodb.connectionString!);
+
+            const db = client.db('aiidprod');
+            const collection = db.collection<QuickAdd>('quickadd');
+
+            const result = await collection.insertOne(data);
+
+            const inserted = await collection.findOne({ _id: result.insertedId });
+
+            return inserted;
         }
     }
 }

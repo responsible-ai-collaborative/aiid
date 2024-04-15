@@ -30,9 +30,12 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
         await collection.drop();
     }
 
-    const result = await collection.insertMany(docs);
+    if (docs.length) {
 
-    return result;
+        const result = await collection.insertMany(docs);
+
+        return result;
+    }
 }
 
 interface AuthResponse {
@@ -42,6 +45,8 @@ interface AuthResponse {
 }
 
 export const login = async (username: string, password: string) => {
+
+    console.log(`Logging in as ${username} ${config.realm.production_db.realm_app_id}`)
 
     const response = await fetch(`https://services.cloud.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/auth/providers/local-userpass/login`, {
         method: 'POST',

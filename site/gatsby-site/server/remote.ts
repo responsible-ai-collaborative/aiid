@@ -25,6 +25,7 @@ const ignoredQueries = [
 
 const ignoredMutations = [
     'deleteManyQuickadds',
+    'insertOneQuickadd',
 ]
 
 export const getSchema = async () => {

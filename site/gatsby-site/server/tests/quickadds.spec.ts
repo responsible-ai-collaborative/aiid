@@ -184,4 +184,46 @@ describe('Quickadds', () => {
         expect(response.body.data.deleteManyQuickadds.deletedCount).toBe(1);
     });
 
+    it(`insertOneQuickadd mutation`, async () => {
+
+        await seedCollection({
+            name: 'quickadd',
+            docs: []
+        });
+
+        const mutationData = {
+            query: `
+            mutation Test($data: QuickaddInsertInput!) {
+                insertOneQuickadd(data: $data) {
+                  _id
+                  date_submitted
+                  incident_id
+                  source_domain
+                  url
+                }
+            }
+            `,
+            variables: {
+                data: {
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 1,
+                    source_domain: "example.com",
+                    url: "http://example.com"
+                }
+            }
+        };
+
+        const response = await request(url)
+            .post('/')
+            .send(mutationData);
+
+        expect(response.statusCode).toBe(200);
+
+        expect(response.body.data.insertOneQuickadd).toMatchObject({
+            date_submitted: '2020-09-14T00:00:00.000Z',
+            incident_id: 1,
+            source_domain: 'example.com',
+            url: 'http://example.com'
+        })
+    });
 });
