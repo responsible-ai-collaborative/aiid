@@ -10,6 +10,10 @@ on:
         description: The SHA of the commit to build
         type: string
         required: true
+      netlify-context:
+        description: The Netlify context use when building
+        type: string
+        required: true
       runner-label:
         description: The label of the runner to use
         type: string
