@@ -4,7 +4,7 @@ import { Resolvers } from './generated/graphql';
 import { LongResolver, ObjectIDResolver } from 'graphql-scalars';
 import localTypeDefs from './localTypeDefs';
 
-import { resolvers as quickAddsResolvers, typeDefs as quickAddsTypeDefs } from './fields/quickadds';
+import quickAddsTypeDefs, { resolvers as quickAddsResolvers } from './fields/quickadds';
 import { transformer as authDirectiveTransformer, typeDefs as authTypeDefs } from './directives/auth';
 
 export const getSchema = async () => {

@@ -1,10 +1,10 @@
 import gql from "graphql-tag";
 import { MongoClient } from "mongodb";
-import { QuickAdd } from "../generated/graphql";
+import { QuickAdd, Resolvers } from "../generated/graphql";
 import config from "../../config";
 import { convertToObjectID } from "../utils";
 
-export const typeDefs = gql`
+export default gql`
 
     type QuickAdd {
         _id: ObjectId
@@ -35,7 +35,7 @@ export const typeDefs = gql`
     }
 `
 
-export const resolvers = {
+export const resolvers: Resolvers = {
     Query: {
         async quickadds(_: unknown, { query = {} }: { query?: any } = {}) {
             const client = new MongoClient(config.mongodb.connectionString!);

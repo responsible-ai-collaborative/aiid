@@ -6,6 +6,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -24,7 +25,9 @@ export type DeleteManyPayload = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  _?: Maybe<Scalars['String']['output']>;
   deleteManyQuickadds?: Maybe<DeleteManyPayload>;
+  insertOneQuickadd?: Maybe<QuickAdd>;
 };
 
 
@@ -32,8 +35,14 @@ export type MutationDeleteManyQuickaddsArgs = {
   query?: InputMaybe<QuickaddQueryInput>;
 };
 
+
+export type MutationInsertOneQuickaddArgs = {
+  data: QuickaddInsertInput;
+};
+
 export type Query = {
   __typename?: 'Query';
+  _?: Maybe<Scalars['String']['output']>;
   quickadds?: Maybe<Array<Maybe<QuickAdd>>>;
 };
 
@@ -51,14 +60,16 @@ export type QuickAdd = {
   url: Scalars['String']['output'];
 };
 
+export type QuickaddInsertInput = {
+  date_submitted: Scalars['String']['input'];
+  incident_id?: InputMaybe<Scalars['Long']['input']>;
+  source_domain?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['String']['input'];
+};
+
 export type QuickaddQueryInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
 };
-
-export enum Role {
-  Admin = 'admin',
-  Subscriber = 'subscriber'
-}
 
 export type AdditionalEntityFields = {
   path?: InputMaybe<Scalars['String']['input']>;
@@ -140,12 +151,12 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Long: ResolverTypeWrapper<Scalars['Long']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']['output']>;
   Query: ResolverTypeWrapper<{}>;
   QuickAdd: ResolverTypeWrapper<QuickAdd>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  QuickaddInsertInput: QuickaddInsertInput;
   QuickaddQueryInput: QuickaddQueryInput;
-  Role: Role;
   AdditionalEntityFields: AdditionalEntityFields;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
 };
@@ -156,20 +167,15 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Long: Scalars['Long']['output'];
   Mutation: {};
+  String: Scalars['String']['output'];
   ObjectId: Scalars['ObjectId']['output'];
   Query: {};
   QuickAdd: QuickAdd;
-  String: Scalars['String']['output'];
+  QuickaddInsertInput: QuickaddInsertInput;
   QuickaddQueryInput: QuickaddQueryInput;
   AdditionalEntityFields: AdditionalEntityFields;
   Boolean: Scalars['Boolean']['output'];
 };
-
-export type AuthDirectiveArgs = {
-  requires?: Maybe<Role>;
-};
-
-export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type UnionDirectiveArgs = {
   discriminatorField?: Maybe<Scalars['String']['input']>;
@@ -228,7 +234,9 @@ export interface LongScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  _?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deleteManyQuickadds?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyQuickaddsArgs>>;
+  insertOneQuickadd?: Resolver<Maybe<ResolversTypes['QuickAdd']>, ParentType, ContextType, RequireFields<MutationInsertOneQuickaddArgs, 'data'>>;
 };
 
 export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ObjectId'], any> {
@@ -236,6 +244,7 @@ export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  _?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   quickadds?: Resolver<Maybe<Array<Maybe<ResolversTypes['QuickAdd']>>>, ParentType, ContextType, Partial<QueryQuickaddsArgs>>;
 };
 
@@ -258,7 +267,6 @@ export type Resolvers<ContextType = any> = {
 };
 
 export type DirectiveResolvers<ContextType = any> = {
-  auth?: AuthDirectiveResolver<any, any, ContextType>;
   union?: UnionDirectiveResolver<any, any, ContextType>;
   abstractEntity?: AbstractEntityDirectiveResolver<any, any, ContextType>;
   entity?: EntityDirectiveResolver<any, any, ContextType>;
