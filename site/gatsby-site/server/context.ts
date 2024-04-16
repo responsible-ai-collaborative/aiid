@@ -88,5 +88,7 @@ export const context = async ({ req }: { req: IncomingMessage }) => {
 
     const user = await getUserFromHeader(req.headers.authorization!);
 
-    return { user, req };
+    const client = new MongoClient(config.mongodb.connectionString!);
+
+    return { user, req, client };
 }

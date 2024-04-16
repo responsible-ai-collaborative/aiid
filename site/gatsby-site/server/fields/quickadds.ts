@@ -1,7 +1,6 @@
 import gql from "graphql-tag";
 import { MongoClient } from "mongodb";
 import { QuickAdd, Resolvers } from "../generated/graphql";
-import config from "../../config";
 import { convertToObjectID } from "../utils";
 
 export default gql`
@@ -37,8 +36,7 @@ export default gql`
 
 export const resolvers: Resolvers = {
     Query: {
-        async quickadds(_: unknown, { query = {} }: { query?: any } = {}) {
-            const client = new MongoClient(config.mongodb.connectionString!);
+        async quickadds(_: unknown, { query = {} }: { query?: any } = {}, { client }: { client: MongoClient }) {
 
             const db = client.db('aiidprod');
             const collection = db.collection<QuickAdd>('quickadd');
@@ -52,8 +50,7 @@ export const resolvers: Resolvers = {
     },
 
     Mutation: {
-        deleteManyQuickadds: async (_: unknown, { query }: { query?: any }) => {
-            const client = new MongoClient(config.mongodb.connectionString!);
+        deleteManyQuickadds: async (_: unknown, { query }: { query?: any }, { client }: { client: MongoClient }) => {
 
             const db = client.db('aiidprod');
             const collection = db.collection<QuickAdd>('quickadd');
@@ -64,8 +61,7 @@ export const resolvers: Resolvers = {
 
             return { deletedCount: result.deletedCount! };
         },
-        insertOneQuickadd: async (_: unknown, { data }: { data: QuickAdd }) => {
-            const client = new MongoClient(config.mongodb.connectionString!);
+        insertOneQuickadd: async (_: unknown, { data }: { data: QuickAdd }, { client }: { client: MongoClient }) => {
 
             const db = client.db('aiidprod');
             const collection = db.collection<QuickAdd>('quickadd');
