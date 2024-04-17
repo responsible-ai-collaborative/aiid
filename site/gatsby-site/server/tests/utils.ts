@@ -3,7 +3,7 @@ import { getSchema } from "../server";
 import { context } from "../context";
 import { MongoClient } from "mongodb";
 import { ApolloServer } from "@apollo/server";
-import config from '../../config';
+import config from '../config';
 
 export const startTestServer = async () => {
 
@@ -46,9 +46,7 @@ interface AuthResponse {
 
 export const login = async (username: string, password: string) => {
 
-    console.log(`Logging in as ${username} ${config.realm.production_db.realm_app_id}`)
-
-    const response = await fetch(`https://services.cloud.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/auth/providers/local-userpass/login`, {
+    const response = await fetch(`https://services.cloud.mongodb.com/api/client/v2.0/app/${config.REALM_APP_ID}/auth/providers/local-userpass/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

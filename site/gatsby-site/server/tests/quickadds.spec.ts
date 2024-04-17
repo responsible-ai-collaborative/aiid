@@ -2,6 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import request from 'supertest';
 import { login, seedCollection, startTestServer } from "./utils";
 import { ObjectId } from "mongodb";
+import config from "../config";
 
 describe('Quickadds', () => {
     let server: ApolloServer, url: string;
@@ -131,7 +132,7 @@ describe('Quickadds', () => {
 
     it(`deleteManyQuickadds mutation`, async () => {
 
-        const authData = await login(process.env.E2E_ADMIN_USERNAME!, process.env.E2E_ADMIN_PASSWORD!);
+        const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
 
         await seedCollection({
             name: 'quickadd',

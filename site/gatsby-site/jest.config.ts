@@ -14,6 +14,7 @@ const config: Config = {
   testEnvironment: "node",
   globalSetup: "./globalSetup.ts",
   globalTeardown: "./globalTeardown.ts",
+  verbose: true,
 };
 
 export default config;

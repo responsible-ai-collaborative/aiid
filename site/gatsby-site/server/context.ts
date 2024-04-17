@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
-import config from "../config";
+import config from "./config";
 
 function extractToken(header: string) {
 
@@ -22,8 +22,8 @@ async function verifyToken(token: string) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username: config.realm.apiPublicKey,
-                apiKey: config.realm.apiPrivateKey,
+                username: config.REALM_API_PUBLIC_KEY,
+                apiKey: config.REALM_API_PRIVATE_KEY,
             }),
         }
     );
@@ -31,7 +31,7 @@ async function verifyToken(token: string) {
     const loginData = await loginResponse.json();
 
     const response = await fetch(
-        `https://realm.mongodb.com/api/admin/v3.0/groups/${config.realm.apiGroupId}/apps/${config.realm.apiAppId}/users/verify_token`,
+        `https://realm.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}/users/verify_token`,
         {
             method: 'POST',
             headers: {
@@ -51,7 +51,7 @@ async function verifyToken(token: string) {
 
 async function getUser(userId: string) {
 
-    const client = new MongoClient(config.mongodb.connectionString!);
+    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
 
     const db = client.db('customData');
 
@@ -88,7 +88,7 @@ export const context = async ({ req }: { req: IncomingMessage }) => {
 
     const user = await getUserFromHeader(req.headers.authorization!);
 
-    const client = new MongoClient(config.mongodb.connectionString!);
+    const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
 
     return { user, req, client };
 }

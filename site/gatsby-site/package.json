@@ -107,7 +107,8 @@
     "tsne-js": "^1.0.3",
     "umzug": "^3.0.0",
     "use-query-params": "^1.2.0",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "zod": "^3.22.4"
   },
   "license": "MIT",
   "main": "n/a",
