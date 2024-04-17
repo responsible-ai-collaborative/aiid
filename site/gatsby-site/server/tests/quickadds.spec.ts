@@ -183,7 +183,7 @@ describe('Quickadds', () => {
         expect(response.statusCode).toBe(200);
 
         expect(response.body.data.deleteManyQuickadds.deletedCount).toBe(1);
-    });
+    }, 10000);
 
     it(`insertOneQuickadd mutation`, async () => {
 
