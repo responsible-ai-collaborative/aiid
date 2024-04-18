@@ -1,8 +1,9 @@
 import Cors from 'cors';
-import { createHandler } from 'graphql-http/lib/use/express';
 import { getSchema } from '../../server/server';
 import { context } from '../../server/context';
 import { Handler } from 'express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
 
 const cors = Cors();
 
@@ -16,7 +17,13 @@ export default async function handler(req: any, res: any) {
 
     const schema = await getSchema();
 
-    graphqlMiddleware = createHandler({ schema, context: (req) => context({ req: req as any }) });
+    const server = new ApolloServer({
+      schema,
+    });
+
+    await server.start();
+
+    graphqlMiddleware = expressMiddleware(server, { context });
   }
 
   // Manually run the cors middleware

@@ -64,6 +64,7 @@ jobs:
           REALM_API_GROUP_ID: ${{ secrets.REALM_API_GROUP_ID }}
           REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
+          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
           MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
           E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}

@@ -7,6 +7,15 @@ import config from './config';
 const userExecutor = buildHTTPExecutor({
     endpoint: `https://realm.mongodb.com/api/client/v2.0/app/${config.REALM_APP_ID}/graphql`,
     headers(executorRequest) {
+
+        if (
+            !executorRequest?.context.req.headers.authorization && executorRequest?.info?.operation.operation == 'query'
+        ) {
+            return {
+                apiKey: config.REALM_GRAPHQL_API_KEY,
+            };
+        }
+
         return {
             authorization: executorRequest?.context.req.headers.authorization!,
         }
