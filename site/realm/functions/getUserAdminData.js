@@ -1,6 +1,6 @@
 exports = async (source) => {
 
-  const userApiResponse = await context.functions.execute('apiRequest', { method: 'GET', path: `/users/${source.userId}` });
+  const { user } = context;
 
   const response = {
     email: null,
@@ -9,13 +9,22 @@ exports = async (source) => {
     disabled: null,
   };
 
-  if (userApiResponse.data) {
+  if (user.id === source.userId || user.custom_data.roles.includes('admin')) {
 
-    response.email = userApiResponse.data.email;
-    response.creationDate = new Date(userApiResponse.creation_date * 1000);
-    response.lastAuthenticationDate = new Date(userApiResponse.last_authentication_date * 1000);
-    response.disabled = userApiResponse.disabled;
+    const userApiResponse = await context.functions.execute('apiRequest', { method: 'GET', path: `/users/${source.userId}` });
+
+    if (userApiResponse.data) {
+
+      response.email = userApiResponse.data.email;
+      response.creationDate = new Date(userApiResponse.creation_date * 1000);
+      response.lastAuthenticationDate = new Date(userApiResponse.last_authentication_date * 1000);
+      response.disabled = userApiResponse.disabled;
+    }
   }
 
   return response;
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}
