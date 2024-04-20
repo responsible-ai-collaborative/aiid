@@ -58,7 +58,7 @@ export const login = async (username: string, password: string) => {
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Error login in! \n\n ${await response.text()}`);
     }
 
     const data: AuthResponse = await response.json();

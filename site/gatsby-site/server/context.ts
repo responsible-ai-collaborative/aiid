@@ -28,6 +28,10 @@ async function verifyToken(token: string) {
         }
     );
 
+    if (!loginResponse.ok) {
+        throw new Error(`Error login into admin api! \n\n ${await loginResponse.text()}`);
+    }
+
     const loginData = await loginResponse.json();
 
     const response = await fetch(
@@ -43,7 +47,7 @@ async function verifyToken(token: string) {
     );
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Error verifying token! \n\n ${await response.text()}`);
     }
 
     return response.json();

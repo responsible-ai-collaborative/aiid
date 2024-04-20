@@ -178,11 +178,14 @@ describe('Quickadds', () => {
         const response = await request(url)
             .post('/')
             .set('Authorization', `Bearer ${authData.access_token}`)
-            .send(mutationData);
+            .send(mutationData)
 
-        expect(response.statusCode).toBe(200);
+        expect(response.body.data).toMatchObject({
+            deleteManyQuickadds: {
+                deletedCount: 1
+            }
+        });
 
-        expect(response.body.data.deleteManyQuickadds.deletedCount).toBe(1);
     }, 10000);
 
     it(`insertOneQuickadd mutation`, async () => {
