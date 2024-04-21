@@ -1,3 +1,7 @@
+global.isFunction = true;
+
+process.env.IS_GATSBY_FUNCTION = 'true';
+
 import Cors from 'cors';
 import { getSchema } from '../../server/server';
 import { context } from '../../server/context';
@@ -6,7 +10,6 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 
 const cors = Cors();
-
 
 // Cache the Graphql middleware to make use of Lambdas's Container reuse
 

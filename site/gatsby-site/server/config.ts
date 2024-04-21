@@ -1,6 +1,14 @@
 import { z } from 'zod';
 import { createEnv } from './utils';
 
+declare global {
+    namespace NodeJS {
+        interface Global {
+            isFunction: boolean;
+        }
+    }
+}
+
 const config = createEnv({
     server: {
         REALM_APP_ID: z.string().min(1),
@@ -23,7 +31,8 @@ const config = createEnv({
         REALM_GRAPHQL_API_KEY: process.env.REALM_GRAPHQL_API_KEY,
         REALM_APP_ID: process.env.REALM_APP_ID,
         MONGODB_CONNECTION_STRING: process.env.MONGODB_CONNECTION_STRING,
-    }
+    },
+    skipValidation: true, // Couldn't find a way to disable validation when running from Cypress
 });
 
 export default config;
