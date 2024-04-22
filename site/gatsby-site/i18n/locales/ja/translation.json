@@ -299,5 +299,11 @@
   "Use ID": "IDを使用",
   "Most Semantically Similar Incidents (Experimental)": "最も意味的に類似したインシデント（実験的）",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "レポートは意味的類似度を計算するために少なくとも{{minLength}}文字以上の非空白文字を持っている必要があります",
-  "No related reports found." : "関連するレポートが見つかりません"
+  "No related reports found." : "関連するレポートが見つかりません",
+  "results found": "件の結果が見つかりました",
+  "More filters": "さらにフィルタ",
+  "Fewer filters": "フィルタを減らす",
+  "Tags": "タグ",
+  "Language": "言語",
+  "Read the Source": "情報源を読む"
 }

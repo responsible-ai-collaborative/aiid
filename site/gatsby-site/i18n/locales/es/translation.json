@@ -326,5 +326,7 @@
   "Use ID": "Usar ID",
   "Most Semantically Similar Incidents (Experimental)": "Incidentes más semánticamente similares (Experimental)",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "Los informes deben tener al menos {{minLength}} caracteres que no sean espacios para calcular la similitud semántica.",
-  "No related reports found." : "No se encontraron informes relacionados."
+  "No related reports found." : "No se encontraron informes relacionados.",
+  "Language": "Idioma",
+  "Read the Source": "Leer la Fuente"
 }

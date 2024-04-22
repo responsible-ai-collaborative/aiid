@@ -159,6 +159,31 @@ describe('Checklists App Form', () => {
     });
   });
 
+  maybeIt('Should trigger UI update on adding and removing tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+      });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('#tags_methods_input').type('Transformer');
+      cy.get('#tags_methods').contains('Transformer').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('details').should('exist');
+
+      cy.get('.rbt-close').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('details').should('not.exist');
+    });
+  });
+
   it('Should change sort order of risk items', () => {
     cy.viewport(1920, 1080);
 

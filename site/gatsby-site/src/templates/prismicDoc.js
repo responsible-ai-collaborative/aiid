@@ -23,7 +23,7 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  const doc = props?.data?.doc;
+  const doc = props?.data?.doc || props?.data?.enDoc;
 
   const metaTitle = doc?.data?.metatitle;
 

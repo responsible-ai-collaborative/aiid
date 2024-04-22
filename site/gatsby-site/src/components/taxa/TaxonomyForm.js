@@ -398,7 +398,7 @@ function FormField({
     if (field?.complete_from?.current) {
       for (const key of field.complete_from.current) {
         if (formikValues[key]) {
-          combinedAttributedValues.push(formikValues[key]);
+          combinedAttributedValues = combinedAttributedValues.concat(formikValues[key]);
         }
       }
     }

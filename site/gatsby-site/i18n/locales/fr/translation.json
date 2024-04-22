@@ -314,5 +314,6 @@
   "Use ID": "Utiliser l'ID",
   "Most Semantically Similar Incidents (Experimental)": "Incidents les plus similaires sémantiquement (expérimental)",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "Les rapports doivent comporter au moins {{minLength}} caractères autres que des espaces pour calculer la similarité sémantique.",
-  "No related reports found." : "Aucun rapport connexe trouvé."
+  "No related reports found." : "Aucun rapport connexe trouvé.",
+  "Read the Source": "Lire la source"
 }

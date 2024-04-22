@@ -116,7 +116,14 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
 
       cy.get('[data-cy=btn-share-facebook]').first().click();
       cy.get('@popup_facebook', { timeout: 8000 }).should('be.called');
-      cy.url().should('contain', `https://www.facebook.com/sharer/sharer.php?u=${canonicalUrl}`);
+      // Take into consideration that the Facebook share button can open a new window with two different URLs depending on the environment
+      cy.url().should(
+        'satisfy',
+        (url) =>
+          (url.includes('https://www.facebook.com/login.php') &&
+            url.includes('next=https%3A%2F%2Fwww.facebook.com%2Fsharer%2Fsharer.php')) ||
+          url.includes(`https://www.facebook.com/sharer/sharer.php?u=${canonicalUrl}`)
+      );
     });
   });
 });
