@@ -536,5 +536,6 @@
   "Inadequate Sequential Memory": "Mémoire Séquentielle Inadéquate",
   "Spectrogram": "Spectrogramme",
   "Overfitting": "Surajustement",
-  "No classifications with this field": "Aucune classification pour ce champ"
+  "No classifications with this field": "Aucune classification pour ce champ",
+  "Read the Source": "Lire la source"
 }

@@ -522,5 +522,11 @@
   "Inadequate Sequential Memory": "不適切な連続メモリ",
   "Spectrogram": "スペクトログラム",
   "Overfitting": "オーバーフィッティング",
-  "No classifications with this field": "このフィールドに分類はありません"
+  "No classifications with this field": "このフィールドに分類はありません",
+  "results found": "件の結果が見つかりました",
+  "More filters": "さらにフィルタ",
+  "Fewer filters": "フィルタを減らす",
+  "Tags": "タグ",
+  "Language": "言語",
+  "Read the Source": "情報源を読む"
 }
