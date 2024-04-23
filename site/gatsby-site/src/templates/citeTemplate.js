@@ -377,8 +377,28 @@ function CiteTemplate({
                 className="xl:hidden"
               />
             )}
-
-            {!readOnly && <NextPreviousButtons {...{ prevIncident, nextIncident }} />}
+            {!readOnly && (
+              <div className="flex justify-between">
+                <Button
+                  color={'gray'}
+                  href={localizePath({ path: `/cite/${prevIncident}` })}
+                  disabled={!prevIncident}
+                  className="hover:no-underline"
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                  <Trans>Previous Incident</Trans>
+                </Button>
+                <Button
+                  color={'gray'}
+                  href={localizePath({ path: `/cite/${nextIncident}` })}
+                  disabled={!nextIncident}
+                  className="hover:no-underline"
+                >
+                  <Trans>Next Incident</Trans>
+                  <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                </Button>
+              </div>
+            )}
           </Container>
         </div>
         {!readOnly && (
@@ -397,32 +417,5 @@ function CiteTemplate({
     </>
   );
 }
-
-const NextPreviousButtons = ({ prevIncident, nextIncident }) => {
-  const localizePath = useLocalizePath();
-
-  return (
-    <div className="flex justify-between">
-      <Button
-        color={'gray'}
-        href={localizePath({ path: `/cite/${prevIncident}` })}
-        disabled={!prevIncident}
-        className="hover:no-underline"
-      >
-        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-        <Trans>Previous Incident</Trans>
-      </Button>
-      <Button
-        color={'gray'}
-        href={localizePath({ path: `/cite/${nextIncident}` })}
-        disabled={!nextIncident}
-        className="hover:no-underline"
-      >
-        <Trans>Next Incident</Trans>
-        <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-      </Button>
-    </div>
-  );
-};
 
 export default CiteTemplate;

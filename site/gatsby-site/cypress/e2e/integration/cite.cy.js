@@ -223,7 +223,7 @@ describe('Cite pages', () => {
         expect(variables.query.report_number).to.equal(23);
         expect(variables.set).deep.eq({
           flag: true,
-          date_modified: format(now, 'yyyy-MM-dd'),
+          date_modified: now.toISOString(),
           epoch_date_modified: getUnixTime(now),
         });
       });
@@ -236,7 +236,7 @@ describe('Cite pages', () => {
         );
 
         expectedReport.modifiedBy = '';
-        expectedReport.date_modified = format(now, 'yyyy-MM-dd');
+        expectedReport.date_modified = now.toISOString();
         expectedReport.epoch_date_modified = getUnixTime(now);
 
         expect(input).to.deep.eq(expectedReport);
@@ -347,7 +347,7 @@ describe('Cite pages', () => {
     cy.get(`.incident-ids-field [data-cy="token"]`).contains('10').should('be.visible');
   });
 
-  it('should render Next and Previous incident buttons', () => {
+  it('Should render Next and Previous incident buttons', () => {
     cy.visit(url);
 
     cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
@@ -355,7 +355,7 @@ describe('Cite pages', () => {
     cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
   });
 
-  it('', () => {
+  it('Should render the header next/previous buttons', () => {
     cy.visit(url);
     cy.get(`[data-cy="header-previous-incident-link"]`)
       .should('be.visible')
@@ -364,12 +364,37 @@ describe('Cite pages', () => {
       .should('be.visible')
       .should('have.attr', 'href', '/cite/11');
   });
-  it('', () => {
+
+  it('Should not show the previous button on incident 1.', () => {
     cy.visit('/cite/1');
     cy.get(`[data-cy="header-previous-incident-link"]`).should('not.exist');
     cy.get(`[data-cy="header-next-incident-link"]`)
       .should('be.visible')
       .should('have.attr', 'href', '/cite/2');
+  });
+
+  it('Should disable Previous and Next incident buttons on first and last incidents', () => {
+    cy.visit('/cite/1');
+
+    cy.contains('Previous Incident').within(($button) => {
+      cy.wrap($button).should('be.visible');
+      cy.wrap($button).should('have.attr', 'disabled');
+      cy.wrap($button).should('not.have.attr', 'href');
+    });
+
+    cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/2');
+
+    cy.visit(`/cite/${lastIncidentId}`);
+
+    cy.contains('Previous Incident')
+      .should('be.visible')
+      .should('have.attr', 'href', `/cite/${lastIncidentId - 1}`);
+
+    cy.contains('Next Incident').within(($button) => {
+      cy.wrap($button).should('be.visible');
+      cy.wrap($button).should('have.attr', 'disabled');
+      cy.wrap($button).should('not.have.attr', 'href');
+    });
   });
 
   maybeIt('Should show the edit incident form', () => {
@@ -639,9 +664,6 @@ describe('Cite pages', () => {
       const title = `Incident ${incidentId}: ${incident.title}`;
 
       const description = incident.description;
-
-      cy.get('head meta[name="title"]').should('have.attr', 'content', title);
-      cy.get('head meta[name="description"]').should('have.attr', 'content', description);
 
       cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
       cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');

@@ -4,7 +4,9 @@ const createLandingPage = async (graphql, createPage) => {
   const result = await graphql(`
     query LandingPage {
       latestIncidents: allMongodbAiidprodIncidents(
-        filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+        filter: {
+          reports: { elemMatch: { is_incident_report: { eq: true }, quiet: { in: [null, false] } } }
+        }
         sort: { reports: { epoch_date_submitted: DESC } }
         limit: 5
       ) {

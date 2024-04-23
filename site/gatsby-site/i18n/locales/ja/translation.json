@@ -287,5 +287,15 @@
   "AI News Digest": "AIニュースダイジェスト",
   "Remove Duplicate": "重複を削除する",
   "View History": "履歴を表示",
-  "CSET Annotators Table": "CSETアノテーターテーブル"
+  "CSET Annotators Table": "CSETアノテーターテーブル",
+  "Name": "名前",
+  "Creation Date": "作成日",
+  "Last modified": "最終更新",
+  "Save": "保存",
+  "results found": "件の結果が見つかりました",
+  "More filters": "さらにフィルタ",
+  "Fewer filters": "フィルタを減らす",
+  "Tags": "タグ",
+  "Language": "言語",
+  "Read the Source": "情報源を読む"
 }

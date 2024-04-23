@@ -1,4 +1,6 @@
 import { maybeIt } from '../../../support/utils';
+import riskSortingRisks from '../../../fixtures/checklists/riskSortingRisks.json';
+import riskSortingChecklist from '../../../fixtures/checklists/riskSortingChecklist.json';
 const { gql } = require('@apollo/client');
 
 describe('Checklists App Form', () => {
@@ -57,6 +59,12 @@ describe('Checklists App Form', () => {
       'upsertChecklist',
       { data: { checklist } }
     );
+  };
+
+  const interceptFindRisks = (risks) => {
+    cy.conditionalIntercept('**/graphql', (req) => req.body.query.includes('GMF'), 'findRisks', {
+      data: { risks },
+    });
   };
 
   it('Should have read-only access for non-logged-in users', () => {
@@ -148,6 +156,60 @@ describe('Checklists App Form', () => {
       });
 
       cy.visit(url);
+    });
+  });
+
+  maybeIt('Should trigger UI update on adding and removing tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+      });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('#tags_methods_input').type('Transformer');
+      cy.get('#tags_methods').contains('Transformer').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('details').should('exist');
+
+      cy.get('.rbt-close').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('details').should('not.exist');
+    });
+  });
+
+  it('Should change sort order of risk items', () => {
+    cy.viewport(1920, 1080);
+
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...riskSortingChecklist.data.checklist,
+        owner_id: user.userId,
+      });
+
+      interceptFindRisks(riskSortingRisks.data.risks);
+
+      cy.visit(url);
+
+      cy.wait(['@findChecklist']);
+
+      cy.wait(['@findRisks']);
+
+      cy.waitForStableDOM();
+
+      cy.contains('Mitigated').click();
+
+      cy.get('details:nth(1)').contains('Distributional Bias').should('exist');
+
+      cy.contains('Minor').click();
+
+      cy.get('details:nth(1)').contains('Dataset Imbalance').should('exist');
     });
   });
 

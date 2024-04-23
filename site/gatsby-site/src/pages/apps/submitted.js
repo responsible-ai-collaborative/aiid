@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AiidHelmet from '../../components/AiidHelmet';
+import HeadContent from '../../components/HeadContent';
 import { ObjectId } from 'bson';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
@@ -12,7 +12,7 @@ import { Badge, Button, ListGroup } from 'flowbite-react';
 import { useQueryParam } from 'use-query-params';
 import SubmissionEdit from 'components/submissions/SubmissionEdit';
 
-const SubmittedIncidentsPage = ({ ...props }) => {
+const SubmittedIncidentsPage = () => {
   const [id] = useQueryParam('editSubmission');
 
   const [pageLoading, setPageLoading] = useState(true);
@@ -90,14 +90,6 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        {id ? (
-          <title>{t('Edit submission')}</title>
-        ) : (
-          <title>{t('Submitted Incident Report List')}</title>
-        )}
-      </AiidHelmet>
-
       {pageLoading ? (
         <ListSkeleton />
       ) : (
@@ -194,6 +186,18 @@ const SubmittedIncidentsPage = ({ ...props }) => {
       )}
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Submissions';
+
+  const metaDescription = 'Submitted incidents and quick adds';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default SubmittedIncidentsPage;

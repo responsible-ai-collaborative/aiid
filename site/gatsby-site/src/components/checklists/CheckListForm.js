@@ -170,7 +170,7 @@ export default function CheckListForm({
 
   const changeSort = (sortFunction) => (event) => {
     event.preventDefault();
-    setFieldValue('risks', values.risks.sort(sortFunction));
+    setFieldValue('risks', [...values.risks].sort(sortFunction));
   };
 
   const updateRisk = (risk, attributeValueMap) => {

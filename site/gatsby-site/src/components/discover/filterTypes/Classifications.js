@@ -29,7 +29,8 @@ function Attribute({ name, refinement, searchResults }) {
         tabIndex={0}
         onClick={() => setCollapsed((c) => !c)}
       >
-        {name} ({refinement.items.length}){' '}
+        {name} (~
+        {refinement.items.reduce((a, c) => Math.max(a, c.count), refinement.items[0].count)}){' '}
         <div className="inline-block">{collapsed ? <>+</> : <>-</>} </div>
       </div>
 

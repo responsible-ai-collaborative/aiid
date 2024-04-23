@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
@@ -50,14 +50,12 @@ const IncidentList = ({ incidents }) => {
   );
 };
 
-export default function Incidents({ data, ...props }) {
+export default function Incidents({ data }) {
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.DESC); // Descending order by default
 
   const [sortedIncidents, setSortedIncidents] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
-
-  const { t } = useTranslation('incidents');
 
   useEffect(() => {
     setIsLoading(true);
@@ -77,9 +75,6 @@ export default function Incidents({ data, ...props }) {
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>{t('Incident List', { ns: 'incidents' })}</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>
           <Trans ns="incidents">Incident List</Trans>
@@ -125,6 +120,22 @@ export default function Incidents({ data, ...props }) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation('incidents');
+
+  const metaTitle = t('Incident List', { ns: 'incidents' });
+
+  const metaDescription = t('Summary of all the incidents present in the database', {
+    ns: 'incidents',
+  });
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
+};
 
 export const pageQuery = graphql`
   query AllIncidentsPart {

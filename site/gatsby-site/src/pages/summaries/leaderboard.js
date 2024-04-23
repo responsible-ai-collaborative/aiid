@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 
 import Link from 'components/ui/Link';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
@@ -9,12 +9,9 @@ import OriginalSubmittersLeaderboard from 'components/leaderboards/OriginalSubmi
 import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 import { Trans } from 'react-i18next';
 
-export default function Authors(props) {
+export default function Authors() {
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Submissions Leaderboard</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>Leaderboard</h1>
       </div>
@@ -37,3 +34,15 @@ export default function Authors(props) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Submissions Leaderboard';
+
+  const metaDescription = 'Leaderboard of top submitters, authors, and domains by count.';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
+};
