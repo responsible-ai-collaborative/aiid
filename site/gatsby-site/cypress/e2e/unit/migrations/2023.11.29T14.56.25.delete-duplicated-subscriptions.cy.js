@@ -1,4 +1,4 @@
-const { ObjectID } = require('bson');
+const { ObjectId } = require('bson');
 
 const {
   up,
@@ -16,8 +16,8 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
             incident_id: 600,
           },
           uniqueIds: [
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a3'),
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a4'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a3'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a4'),
           ],
         },
         {
@@ -27,9 +27,9 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
             incident_id: 600,
           },
           uniqueIds: [
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a0'),
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a1'),
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a2'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a0'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a1'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a2'),
           ],
         },
       ],
@@ -41,8 +41,8 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
             entity_id: 'trans-women',
           },
           uniqueIds: [
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a5'),
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a6'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a5'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a6'),
           ],
         },
       ],
@@ -53,8 +53,8 @@ describe('Migration Script - Remove Duplicated Subscriptions', () => {
             userId: '642188372947d07020c1319d',
           },
           uniqueIds: [
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a7'),
-            new ObjectID('5f9f6b9b5f9c4c0001a3b3a8'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a7'),
+            new ObjectId('5f9f6b9b5f9c4c0001a3b3a8'),
           ],
         },
       ],

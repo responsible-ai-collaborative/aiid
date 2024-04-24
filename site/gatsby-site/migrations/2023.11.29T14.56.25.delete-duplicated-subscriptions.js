@@ -1,4 +1,4 @@
-const { ObjectID } = require('bson');
+const { ObjectId } = require('bson');
 
 const config = require('../config');
 
@@ -88,7 +88,7 @@ exports.up = async ({ context: { client } }) => {
 
 async function removeDuplicates(subscriptions, results) {
   for (const doc of results) {
-    const uniqueIds = doc.uniqueIds.map((id) => new ObjectID(id));
+    const uniqueIds = doc.uniqueIds.map((id) => new ObjectId(id));
 
     if (doc._id.type && doc._id.userId) {
       console.log(
