@@ -320,5 +320,7 @@
   "Last modified": "Última modificación",
   "Save": "Guardar",
   "Leaderboard": "Ranking",
-  "newsDigestDescription": "Este resumen muestra noticias de todo el web que coinciden con un conjunto de palabras clave <2><0></0>relacionadas con la IA</2>. Estas historias se <5>coinciden</5> con informes en la base de datos según la similitud textual identificada por un sistema de <8>PLN</8>. También se muestran las <11><0></0>entidades</11> <13>en la base de datos</13> mencionadas y palabras clave relacionadas con <16><0></0>daños</16>. Algunas de las historias a continuación pueden calificar como informes de incidentes y pueden ser enviadas a la base de datos. Sin embargo, la mayoría son simplemente relacionadas con la IA."
+  "newsDigestDescription": "Este resumen muestra noticias de todo el web que coinciden con un conjunto de palabras clave <2><0></0>relacionadas con la IA</2>. Estas historias se <5>coinciden</5> con informes en la base de datos según la similitud textual identificada por un sistema de <8>PLN</8>. También se muestran las <11><0></0>entidades</11> <13>en la base de datos</13> mencionadas y palabras clave relacionadas con <16><0></0>daños</16>. Algunas de las historias a continuación pueden calificar como informes de incidentes y pueden ser enviadas a la base de datos. Sin embargo, la mayoría son simplemente relacionadas con la IA.",
+  "Language": "Idioma",
+  "Read the Source": "Leer la Fuente"
 }

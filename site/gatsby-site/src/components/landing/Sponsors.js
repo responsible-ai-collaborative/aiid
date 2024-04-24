@@ -103,12 +103,18 @@ export default function Sponsors({ sponsors = [] }) {
                   organization chartered to advance the AI Incident Database. The governance of the
                   Collaborative is architected around the participation in its impact programming.
                   For more details, we invite you to read the{' '}
-                  <a href="https://docsend.com/view/a45p7mgh44nu8x7j">founding report</a> and learn
-                  more on our{' '}
+                  <a href="https://asset.cloudinary.com/pai/cf01cce1af65f5fbb3d71fa092d001db">
+                    founding report
+                  </a>{' '}
+                  and learn more on our{' '}
                   <Link to="/about?lang=en#boardofdirectors">board and contributors</Link>.
                 </Trans>
               </p>
-              <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
+              <a
+                href="https://asset.cloudinary.com/pai/cf01cce1af65f5fbb3d71fa092d001db"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <StyledImageCover src="/images/reportcover.png" className="border-1" />
               </a>
               <p className="italic">
