@@ -1,14 +1,6 @@
 import { z } from 'zod';
 import { createEnv } from './utils';
 
-declare global {
-    namespace NodeJS {
-        interface Global {
-            isFunction: boolean;
-        }
-    }
-}
-
 const config = createEnv({
     server: {
         REALM_APP_ID: z.string().min(1),
