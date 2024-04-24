@@ -63,6 +63,19 @@ describe('News Digest', () => {
         newsArticles
       );
 
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'UpdateCandidate',
+        'UpdateCandidate',
+        {
+          data: {
+            updateOneCandidate: {
+              url: 'https://dummy.com',
+            },
+          },
+        }
+      );
+
       cy.visit(url);
 
       cy.get('[data-cy="results"] [data-cy="candidate-card"] [data-cy="candidate-dropdown"]', {

@@ -12,6 +12,7 @@ import { Card, Badge, Button } from 'flowbite-react';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function FacetTaxonomyPage(props) {
   if (!props || !props.pageContext || !props.data) {
@@ -36,6 +37,10 @@ export default function FacetTaxonomyPage(props) {
 
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
+  const { t } = useTranslation();
+
+  const markdownDescription = t('gmfMarkdown', description);
+
   return (
     <>
       <div className={'titleWrapper'}>
@@ -54,9 +59,11 @@ export default function FacetTaxonomyPage(props) {
           [&_.footnotes_ol]:list-decimal
         "
       >
-        {description}
+        {markdownDescription}
       </Markdown>
-      <h2 className="heading1">Taxonomy Fields</h2>
+      <h2 className="heading1">
+        <Trans>Taxonomy Fields</Trans>
+      </h2>
       <div className="flex gap-9 flex-col">
         {sortedFieldsArray
           .filter((f) => f.short_name !== 'Publish')
@@ -67,10 +74,12 @@ export default function FacetTaxonomyPage(props) {
                   className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative flex items-center"
                   data-cy={`title-${short_name}`}
                 >
-                  {long_name}{' '}
+                  {t(long_name)}{' '}
                   {instant_facet && (
                     <span className="ml-2">
-                      <Badge color="gray">Searchable in Discover App</Badge>
+                      <Badge color="gray">
+                        <Trans>Searchable in Discover App</Trans>
+                      </Badge>
                     </span>
                   )}
                 </h3>
@@ -83,7 +92,7 @@ export default function FacetTaxonomyPage(props) {
                   geocodes={geocodes}
                 />
                 <Markdown className="taxonomy-markdown">
-                  {'**Definition**: ' + long_description}
+                  {`**${t('Definition')}**: ` + t(long_description)}
                 </Markdown>
               </Card>
             </div>
@@ -94,6 +103,8 @@ export default function FacetTaxonomyPage(props) {
 }
 
 const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) => {
+  const { t } = useTranslation();
+
   if (!instant_facet) {
     return '';
   }
@@ -141,9 +152,17 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
       ]);
     }
 
+    const names = data.columns.reduce((obj, key) => {
+      obj[key[0]] = t(key[0]);
+      return obj;
+    }, {});
+
     return (
       <div>
-        <strong>Discover</strong>:
+        <strong>
+          <Trans>Discover</Trans>
+        </strong>
+        :
         <ul className="text-gray-500 dark:text-gray-400 mt-4 ml-4">
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
@@ -168,7 +187,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
             onClick={toggleShowAllStats}
             style={{ padding: '0px', margin: '0px', textDecoration: 'none' }}
           >
-            {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
+            <Trans>{`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}</Trans>
           </Button>
         )}
         <div className="my-3 h-[320px]">
@@ -194,6 +213,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
                       );
                     }
                   },
+                  names,
                 },
               }}
             />
@@ -213,18 +233,22 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
         />
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg">No classifications with this field</span>
+        <span className="text-lg">
+          <Trans>No classifications with this field</Trans>
+        </span>
       </div>
     </div>
   );
 };
 
 const StatItem = ({ text, value }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <span>{text}</span>
+      <span>{t(text)}</span>
       <div className="flex ml-4">
-        <Badge>{`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}</Badge>
+        <Badge>{`${value || 0} ${value === 1 ? t('Incident') : t('Incidents')}`}</Badge>
       </div>
     </>
   );

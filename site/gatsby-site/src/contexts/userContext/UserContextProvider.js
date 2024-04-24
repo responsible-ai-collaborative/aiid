@@ -3,7 +3,6 @@ import * as Realm from 'realm-web';
 import { realmApp } from '../../services/realmApp';
 import { UserContext } from './UserContext';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
-import config from '../../../config';
 import fetch from 'cross-fetch';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
@@ -19,7 +18,7 @@ const getApolloCLient = (getValidAccessToken) =>
     link: ApolloLink.from([
       removeTypenameFromVariables(),
       new HttpLink({
-        uri: `https://services.cloud.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+        uri: '/api/graphql',
         fetch: async (uri, options) => {
           const accessToken = await getValidAccessToken();
 

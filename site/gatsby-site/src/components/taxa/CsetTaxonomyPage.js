@@ -11,7 +11,9 @@ export default function CsetTaxonomyPage(props) {
 
   const { namespace } = props.pageContext.taxonomy;
 
-  const metaTitle = `${namespace} Charts`;
+  const { t } = useTranslation();
+
+  const metaTitle = t(`${namespace} Charts`);
 
   const allVsHarmDefinition = {
     'All AIID Incidents': {
@@ -27,8 +29,6 @@ export default function CsetTaxonomyPage(props) {
   let classifications = allMongodbAiidprodClassifications.nodes;
 
   classifications = classifications.filter((c) => c.publish);
-
-  const { t } = useTranslation();
 
   return (
     <>
@@ -183,10 +183,10 @@ export default function CsetTaxonomyPage(props) {
           subtitle={
             <>
               <div>
-                <Trans>
+                <Trans i18nKey={'csetAutonomy'}>
                   Autonomy is an AI&apos;s capability to operate independently. Levels of autonomy
                   differ based on whether or not the AI makes independent decisions and the degree
-                  of human oversight. The level of autonomy does not depend on the type of input the
+                  of human oversight. The level of autonomy does no depend on the type of input the
                   AI receives, whether it is human- or machine-generated.
                 </Trans>
                 <div>
@@ -220,19 +220,25 @@ export default function CsetTaxonomyPage(props) {
         />
         <ul>
           <li>
-            <b>Autonomy1 (fully autonomous)</b>: Does the system operate independently, without
-            simultaneous human oversight, interaction or intervention?
+            <Trans>
+              <b>Autonomy1 (fully autonomous)</b>: Does the system operate independently, without
+              simultaneous human oversight, interaction or intervention?
+            </Trans>
           </li>
 
           <li>
-            <b>Autonomy2 (human-on-loop)</b>: Does the system operate independently but with human
-            oversight, where the system makes decisions or takes actions but a human actively
-            observes the behavior and can override the system in real time?
+            <Trans>
+              <b>Autonomy2 (human-on-loop)</b>: Does the system operate independently but with human
+              oversight, where the system makes decisions or takes actions but a human actively
+              observes the behavior and can override the system in real time?
+            </Trans>
           </li>
 
           <li>
-            <b>Autonomy3 (human-in-the-loop)</b>: Does the system provide inputs and suggested
-            decisions to a human that
+            <Trans>
+              <b>Autonomy3 (human-in-the-loop)</b>: Does the system provide inputs and suggested
+              decisions to a human that
+            </Trans>
           </li>
         </ul>
         {[
@@ -241,7 +247,7 @@ export default function CsetTaxonomyPage(props) {
             titleDescription: 'Did the incident occur in a domain with physical objects?',
             subtitle: (
               <>
-                <Trans>
+                <Trans i18nKey={'physicalObjectsSubtitle'}>
                   Incidents that involve physical objects are more likely to have damage or injury.
                   However, AI systems that do not operate in a physical domain can still lead to
                   harm.
@@ -253,7 +259,7 @@ export default function CsetTaxonomyPage(props) {
             attributeShortName: 'Entertainment Industry',
             titleDescription: 'Did the incident occur in the entertainment industry?',
             subtitle: (
-              <Trans>
+              <Trans i18nKey={'entertainmentIndustrySubtitle'}>
                 AI systems used for entertainment are less likely to involve physical objects and
                 hence unlikely to be associated with damage, injury, or loss. Additionally, there is
                 a lower expectation for truthful information from entertainment, making detrimental
@@ -266,7 +272,7 @@ export default function CsetTaxonomyPage(props) {
             titleDescription:
               'Was the incident about a report, test, or study of training data instead of the AI itself?',
             subtitle: (
-              <Trans>
+              <Trans i18nKey={'reportTextSubtitle'}>
                 The quality of AI training and deployment data can potentially create harm or risks
                 in AI systems. However, an issue in the data does not necessarily mean the AI will
                 cause harm or increase the risk for harm. It is possible that developers or users
@@ -285,7 +291,7 @@ export default function CsetTaxonomyPage(props) {
             titleDescription:
               'Was this a test or demonstration of an AI system done by developers, producers, or researchers (versus users) in controlled conditions?',
             subtitle: (
-              <Trans>
+              <Trans i18nKey={'controlledConditionsSubtitle'}>
                 AI tests or demonstrations by developers, producers, or researchers in controlled
                 environments are less likely to expose people, organizations, property,
                 institutions, or the natural environment to harm. Controlled environments may
@@ -299,7 +305,7 @@ export default function CsetTaxonomyPage(props) {
             titleDescription:
               'Was this a test or demonstration of an AI system done by developers, producers, or researchers (versus users) in operational conditions?',
             subtitle: (
-              <Trans>
+              <Trans i18nKey={'operationalConditionsSubtitle'}>
                 Some AI systems undergo testing or demonstration in an operational environment.
                 Testing in operational environments still occurs before the system is deployed by
                 end-users. However, relative to controlled environments, operational environments
@@ -312,7 +318,7 @@ export default function CsetTaxonomyPage(props) {
             titleDescription:
               'Was this a test or demonstration of an AI system done by users in controlled conditions?',
             subtitle: (
-              <Trans>
+              <Trans i18nKey={'userControlledConditionsSubtitle'}>
                 Sometimes, prior to deployment, the users will perform a test or demonstration of
                 the AI system. The involvement of a user (versus a developer, producer, or
                 researcher) increases the likelihood that harm can occur even if the AI system is
@@ -326,7 +332,7 @@ export default function CsetTaxonomyPage(props) {
             titleDescription:
               'Was this a test or demonstration of an AI system done by users in operational conditions?',
             subtitle: (
-              <Trans>
+              <Trans i18nKey={'userOperationalConditionsSubtitle'}>
                 The involvement of a user (versus a developer, producer, or researcher) increases
                 the likelihood that harm can occur even if the AI system is being tested. Relative
                 to controlled environments, operational environments try to closely represent
@@ -339,12 +345,12 @@ export default function CsetTaxonomyPage(props) {
         ].map(({ attributeShortName, titleDescription, subtitle }) => (
           <GroupBarChart
             key={attributeShortName}
-            title={`Domain questions – ${attributeShortName}`}
+            title={`${t('Domain questions')} – ${t(attributeShortName)}`}
             groups={allVsHarmDefinition}
             attributeShortName={attributeShortName}
             classifications={classifications}
             namespace={namespace}
-            titleDescription={titleDescription}
+            titleDescription={t(titleDescription)}
             subtitle={subtitle}
             className="mt-8"
           />
