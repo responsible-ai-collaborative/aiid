@@ -6,6 +6,10 @@ on:
       - staging
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   permissions-check:
     runs-on: ubuntu-latest

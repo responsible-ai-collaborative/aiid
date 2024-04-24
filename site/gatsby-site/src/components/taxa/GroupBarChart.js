@@ -2,6 +2,7 @@ import React from 'react';
 import { getClassificationValue } from 'utils/classifications';
 import BillboardJS from '@billboard.js/react';
 import bb, { bar } from 'billboard.js';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function GroupBarChart({
   groups,
@@ -64,13 +65,22 @@ export default function GroupBarChart({
 
   const stepSize = Math.round(largestGroupSize / stepCount / stepMultiple) * stepMultiple;
 
+  const { t } = useTranslation();
+
+  const translatedGroupNames = groupNames.map((groupName) => t(groupName));
+
+  const names = allValues.reduce((obj, key) => {
+    obj[key] = t(key);
+    return obj;
+  }, {});
+
   const options = {
     size: { height: 320 + 20 * allValues.length },
     data: {
       order: attributeShortName == 'Autonomy Level' ? autonomySort : undefined,
       x: 'x',
       columns: [
-        ['x', ...groupNames],
+        ['x', ...translatedGroupNames],
         ...allValues
           .sort()
           .map((value) => [
@@ -86,6 +96,7 @@ export default function GroupBarChart({
         if (d.id === 'maybe') return '#1f77b4';
         return color;
       },
+      names,
     },
     axis: {
       y: { tick: { stepSize } },
@@ -125,8 +136,8 @@ export default function GroupBarChart({
       <h2 className="text-center">{titleDescription}</h2>
       {subtitle && <>{subtitle}</>}
       <div className="text-center">
-        <h2 className="text-lg mb-0 mt-4">{title}</h2>
-        (by Incident Count)
+        <h2 className="text-lg mb-0 mt-4">{t(title)}</h2>
+        <Trans>(by Incident Count)</Trans>
       </div>
       <BillboardJS bb={bb} options={{ ...options }} />
       <div className="flex gap-2 flex-wrap justify-around">
@@ -137,16 +148,20 @@ export default function GroupBarChart({
 
             return (
               <div key={groupName}>
-                <h3 className="text-lg text-center">{groupName}</h3>
+                <h3 className="text-lg text-center">{t(groupName)}</h3>
                 <table>
                   <tbody>
                     <tr>
-                      <th className="p2 text-left">Category</th>
-                      <th className="p2">Count</th>
+                      <th className="p2 text-left">
+                        <Trans>Category</Trans>
+                      </th>
+                      <th className="p2">
+                        <Trans>Count</Trans>
+                      </th>
                     </tr>
                     {allValues.sort(byGroupOccurences).map((value) => (
                       <tr key={value}>
-                        <td className="p2">{value}</td>
+                        <td className="p2">{t(value)}</td>
                         <td className="p2 text-center">{groups[groupName].valuesCount[value]}</td>
                       </tr>
                     ))}

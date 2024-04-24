@@ -7,6 +7,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { getClassificationValue } from 'utils/classifications';
 import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 import { isAiHarm } from 'utils/cset';
+import { useTranslation } from 'react-i18next';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   const taxaData = data.allMongodbAiidprodTaxa;
@@ -99,6 +100,8 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
     }
   }
 
+  const { t } = useTranslation();
+
   return (
     !classificationsLoading && (
       <div className="h-96 dark">
@@ -112,7 +115,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
             axes.map((axis, index) => {
               if (categoryCounts[axis]) {
                 const columns = Object.keys(categoryCounts[axis])
-                  .map((category) => [category, categoryCounts[axis][category]])
+                  .map((category) => [t(category), categoryCounts[axis][category]])
                   .sort((a, b) =>
                     a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
                   );
@@ -139,7 +142,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
 
                 return (
                   <div key={index} className="h-96">
-                    <h3 className="text-base text-center">{axis}</h3>
+                    <h3 className="text-base text-center">{t(axis)}</h3>
                     <LocalizedLink
                       to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
                       className="h-96"

@@ -12,6 +12,14 @@ import config from '../../../config';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 
+function CommitSHA() {
+  return (
+    <div className="text-muted-gray text-xs" data-cy="commit-sha">
+      {process.env.GATSBY_COMMIT_SHA.toString().substring(0, 7)}
+    </div>
+  );
+}
+
 export default function Footer() {
   const data = useStaticQuery(graphql`
     query FooterQuery {
@@ -204,13 +212,13 @@ export default function Footer() {
                 </div>
               )}
 
-              {i == footerContent.length - 1 && process.env.GATSBY_COMMIT_SHA && (
-                <li>
-                  <div className="text-muted-gray text-xs" data-cy="commit-sha">
-                    {process.env.GATSBY_COMMIT_SHA.toString().substring(0, 7)}
-                  </div>
-                </li>
-              )}
+              {i == footerContent.length - 1 &&
+                allPrismicFooter.edges.length > 0 &&
+                process.env.GATSBY_COMMIT_SHA && (
+                  <li>
+                    <CommitSHA />
+                  </li>
+                )}
             </ul>
           </div>
         );
@@ -298,6 +306,7 @@ export default function Footer() {
               />
             </a>
           </div>
+          <CommitSHA />
         </div>
       )}
     </footer>
