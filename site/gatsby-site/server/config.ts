@@ -24,7 +24,6 @@ const config = createEnv({
         REALM_APP_ID: process.env.REALM_APP_ID,
         MONGODB_CONNECTION_STRING: process.env.MONGODB_CONNECTION_STRING,
     },
-    skipValidation: true, // Couldn't find a way to disable validation when running from Cypress
 });
 
 export default config;
