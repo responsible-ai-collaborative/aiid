@@ -56,11 +56,11 @@ These supplemental data may counteract the lack of AI system implementation deta
 
 A visualization of this flow of information for decision making given uncertainty, is illustrated in the proposed GMF annotation process diagram below:
 
-![](/images/structure_simplified.png)
+![](/images/gmf/structure_simplified.png)
 
 Additionally, an indicative application of this annotation process for the real-world [AIID incident #72](https://incidentdatabase.ai/cite/72/) is illustrated below.
 
-![](/images/annotation.png)
+![](/images/gmf/annotation.png)
 
 
 ## How do I explore the taxonomy?

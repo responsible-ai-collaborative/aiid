@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
 
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -39,7 +41,21 @@ export default function FacetTaxonomyPage(props) {
       <div className={'titleWrapper'}>
         <h1>{namespace}</h1>
       </div>
-      <Markdown className="taxonomy-markdown">{description}</Markdown>
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        className="
+          taxonomy-markdown 
+          [&_.footnotes]:mt-6
+          [&_.footnotes]:pt-4
+          [&_.footnotes]:pl-4
+          [&_.footnotes]:text-xs 
+          [&_.footnotes]:border-t-2
+          [&_.footnotes_ol]:list-decimal
+        "
+      >
+        {description}
+      </Markdown>
       <h2 className="heading1">Taxonomy Fields</h2>
       <div className="flex gap-9 flex-col">
         {sortedFieldsArray
