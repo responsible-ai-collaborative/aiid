@@ -20,7 +20,7 @@ on:
         default: ""
         
 env:
-  UV_THREADPOOL_SIZE: 12
+  UV_THREADPOOL_SIZE: 32
 
 jobs:
   test:
