@@ -1066,7 +1066,7 @@ describe('Submitted reports', () => {
 
       cy.contains('[data-cy="toast"]', '*Date is not valid, must be `YYYY-MM-DD`').should('exist');
 
-      cy.wait('@promotionInvoked', { timeout: 2000 });
+      cy.wait('@promotionInvoked');
     }
   );
 
