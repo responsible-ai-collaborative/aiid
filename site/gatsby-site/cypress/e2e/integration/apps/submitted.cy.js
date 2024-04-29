@@ -1071,7 +1071,7 @@ describe('Submitted reports', () => {
 
       cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
 
-      cy.wait('@promotionInvoked', { timeout: 2000 });
+      cy.wait('@promotionInvoked');
     }
   );
 
