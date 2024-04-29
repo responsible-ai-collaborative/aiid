@@ -31,7 +31,7 @@ jobs:
           exit 1
 
   call-test-build:
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-build.yml
     needs: permissions-check
     secrets: inherit
@@ -41,7 +41,7 @@ jobs:
       netlify-context: deploy-preview
 
   call-test:
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test.yml
     needs: call-test-build
     secrets: inherit
@@ -50,7 +50,7 @@ jobs:
       environment: staging
 
   call-deploy:
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/deploy.yml
     needs: permissions-check
     secrets: inherit
