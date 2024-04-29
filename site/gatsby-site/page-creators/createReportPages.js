@@ -6,7 +6,13 @@ const createReportPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
       query ReportPages {
-        reports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: false } }) {
+        issueReports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: false } }) {
+          nodes {
+            report_number
+            language
+          }
+        }
+        reports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
           nodes {
             report_number
             language
@@ -18,11 +24,19 @@ const createReportPages = async (graphql, createPage, { languages }) => {
 
   const {
     reports: { nodes: reports },
+    issueReports: { nodes: issueReports },
   } = result.data;
 
   const pageContexts = [];
 
   for (const report of reports) {
+    pageContexts.push({
+      report_number: report.report_number,
+      language: report.language,
+    });
+  }
+
+  for (const report of issueReports) {
     pageContexts.push({
       report_number: report.report_number,
       language: report.language,
