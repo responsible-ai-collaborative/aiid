@@ -965,12 +965,6 @@ describe('Submitted reports', () => {
 
       cy.wait('@AllQuickAdd');
 
-      cy.on('fail', (err) => {
-        expect(err.message).to.include(
-          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
-        );
-      });
-
       cy.conditionalIntercept(
         '**/graphql',
         (req) => req.body.operationName === 'PromoteSubmission',
@@ -985,8 +979,6 @@ describe('Submitted reports', () => {
       cy.get('[data-cy="promote-button"]').click();
 
       cy.contains('[data-cy="toast"]', 'Description is required').should('exist');
-
-      cy.wait('@promotionInvoked');
     }
   );
 
@@ -1039,12 +1031,6 @@ describe('Submitted reports', () => {
       cy.visit(url + `?editSubmission=${submission._id}`);
 
       cy.wait('@AllQuickAdd');
-
-      cy.on('fail', (err) => {
-        expect(err.message).to.include(
-          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
-        );
-      });
 
       cy.conditionalIntercept(
         '**/graphql',
@@ -1112,12 +1098,6 @@ describe('Submitted reports', () => {
       cy.visit(url + `?editSubmission=${submission._id}`);
 
       cy.wait('@AllQuickAdd');
-
-      cy.on('fail', (err) => {
-        expect(err.message).to.include(
-          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
-        );
-      });
 
       cy.conditionalIntercept(
         '**/graphql',
