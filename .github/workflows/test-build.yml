@@ -63,7 +63,7 @@ jobs:
 
       - name: Create report pages
         run: node createReportPages.js
-        working-directory: site/gatsby-site
+        working-directory: site/gatsby-site/page-creators
         env:
           INSTRUMENT: true
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
