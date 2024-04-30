@@ -961,10 +961,6 @@ describe('Submitted reports', () => {
         }
       );
 
-      cy.visit(url);
-
-      cy.wait('@FindSubmissions');
-
       cy.visit(url + `?editSubmission=${submission._id}`);
 
       cy.wait('@AllQuickAdd');
@@ -1040,12 +1036,6 @@ describe('Submitted reports', () => {
         }
       );
 
-      cy.visit(url);
-
-      cy.waitForStableDOM();
-
-      cy.wait('@FindSubmissions');
-
       cy.visit(url + `?editSubmission=${submission._id}`);
 
       cy.wait('@AllQuickAdd');
@@ -1070,8 +1060,6 @@ describe('Submitted reports', () => {
       cy.get('[data-cy="promote-button"]').click();
 
       cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
-
-      cy.wait('@promotionInvoked');
     }
   );
 
@@ -1121,10 +1109,6 @@ describe('Submitted reports', () => {
         }
       );
 
-      cy.visit(url);
-
-      cy.wait('@FindSubmissions');
-
       cy.visit(url + `?editSubmission=${submission._id}`);
 
       cy.wait('@AllQuickAdd');
@@ -1145,8 +1129,6 @@ describe('Submitted reports', () => {
       cy.get('[data-cy="promote-to-report-button"]').contains('Add to incident 12').click();
 
       cy.contains('[data-cy="toast"]', '*Date is not valid, must be `YYYY-MM-DD`').should('exist');
-
-      cy.wait('@promotionInvoked');
     }
   );
 
@@ -1194,10 +1176,6 @@ describe('Submitted reports', () => {
         },
       }
     );
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
 
     cy.visit(url + `?editSubmission=${submission._id}`);
 
@@ -1288,10 +1266,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
     cy.visit(url + `?editSubmission=${submission._id}`);
 
     cy.wait('@AllQuickAdd');
@@ -1347,10 +1321,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
     cy.visit(url + `?editSubmission=${submission._id}`);
 
     cy.wait('@AllQuickAdd');
@@ -1391,10 +1361,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
     cy.visit(url + `?editSubmission=${submission._id}`);
 
     cy.waitForStableDOM();
@@ -1432,10 +1398,6 @@ describe('Submitted reports', () => {
         },
       }
     );
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
 
     cy.visit(url + `?editSubmission=${submission._id}`);
 
@@ -1540,10 +1502,6 @@ describe('Submitted reports', () => {
           },
         }
       );
-
-      cy.visit(url);
-
-      cy.wait('@FindSubmissions');
 
       cy.visit(url + `?editSubmission=${submittedReports.data.submissions[0]._id}`);
 
