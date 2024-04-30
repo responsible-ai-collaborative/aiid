@@ -39,6 +39,7 @@ jobs:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
       netlify-context: deploy-preview
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-test:
     if: ${{ !failure() && !cancelled() }}
@@ -48,6 +49,7 @@ jobs:
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: ${{ !failure() && !cancelled() }}
@@ -61,3 +63,4 @@ jobs:
       environment: staging
       netlify-context: deploy-preview
       netlify-alias: pr-${{ github.event.pull_request.number }}
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
