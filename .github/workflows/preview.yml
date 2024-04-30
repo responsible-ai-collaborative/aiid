@@ -37,7 +37,7 @@ jobs:
     secrets: inherit
     with:
       sha: ${{ github.event.pull_request.head.sha }}
-      environment: staging
+      environment: feature/report-page
       netlify-context: deploy-preview
 
   call-test:
