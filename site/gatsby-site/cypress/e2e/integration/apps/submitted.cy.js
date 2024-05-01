@@ -255,10 +255,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
     cy.visit(url + `?editSubmission=${submission._id}}`);
 
     cy.wait('@AllQuickAdd');
@@ -363,10 +359,6 @@ describe('Submitted reports', () => {
         },
       }
     );
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
 
     cy.visit(url + `?editSubmission=${submission._id}}`);
 
@@ -505,10 +497,6 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
     cy.visit(url + `?editSubmission=${submission._id}`);
 
     cy.wait('@AllQuickAdd');
@@ -591,10 +579,6 @@ describe('Submitted reports', () => {
         },
       }
     );
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
 
     cy.visit(url + `?editSubmission=${submission._id}`);
 
