@@ -176,15 +176,20 @@ export default function CheckListForm({
   const updateRisk = (risk, attributeValueMap) => {
     const updatedRisks = [...values.risks];
 
-    const updatedRisk = updatedRisks.find((r) => r.id == risk.id);
+    const oldRisk = updatedRisks.find((r) => r.id == risk.id);
 
-    if (updatedRisk) {
+    console.log(`oldRisk`, oldRisk);
+    if (oldRisk) {
+      const updatedRisk = { ...oldRisk };
+
       for (const attribute in attributeValueMap) {
-        if (attribute != 'precedents') {
-          updatedRisk.generated = false;
-        }
         updatedRisk[attribute] = attributeValueMap[attribute];
       }
+      updatedRisks.splice(updatedRisks.indexOf(oldRisk), 1);
+
+      console.log(`updatedRisk`, updatedRisk);
+
+      updatedRisks.push(updatedRisk);
     } else {
       // A generated risk being promoted to a manual one
       updatedRisks.push({ ...risk, ...attributeValueMap, id: generateId() });
