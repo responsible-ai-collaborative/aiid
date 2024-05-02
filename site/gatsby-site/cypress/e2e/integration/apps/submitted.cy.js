@@ -647,7 +647,7 @@ describe('Submitted reports', () => {
     ).should('exist');
   });
 
-  it.only('Promotes a submission to a new issue', () => {
+  maybeIt('Promotes a submission to a new issue', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     if (user.adminData.email == Cypress.env('e2eUsername')) {
