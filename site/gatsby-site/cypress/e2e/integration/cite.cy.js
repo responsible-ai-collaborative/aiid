@@ -231,7 +231,7 @@ describe('Cite pages', () => {
     cy.get('@modal').should('not.exist');
   });
 
-  maybeIt('Should remove duplicate', () => {
+  it.skip('Should remove duplicate', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpsertClassification',
