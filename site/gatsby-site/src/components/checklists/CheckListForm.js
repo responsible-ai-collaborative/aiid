@@ -174,11 +174,10 @@ export default function CheckListForm({
   };
 
   const updateRisk = (risk, attributeValueMap) => {
-    const updatedRisks = [...values.risks];
+    const updatedRisks = JSON.parse(JSON.stringify(values.risks));
 
     const oldRisk = updatedRisks.find((r) => r.id == risk.id);
 
-    console.log(`oldRisk`, oldRisk);
     if (oldRisk) {
       const updatedRisk = { ...oldRisk };
 
@@ -186,8 +185,6 @@ export default function CheckListForm({
         updatedRisk[attribute] = attributeValueMap[attribute];
       }
       updatedRisks.splice(updatedRisks.indexOf(oldRisk), 1);
-
-      console.log(`updatedRisk`, updatedRisk);
 
       updatedRisks.push(updatedRisk);
     } else {
