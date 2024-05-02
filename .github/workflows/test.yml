@@ -18,6 +18,9 @@ on:
         type: string
         required: false
         default: ""
+        
+env:
+  UV_THREADPOOL_SIZE: 12
 
 jobs:
   test:
