@@ -81,7 +81,7 @@ describe('Checklists App Form', () => {
     cy.get('[data-cy="checklist-form"] input:not([disabled]):not([readonly])').should('not.exist');
   });
 
-  maybeIt('Should have read-only access for logged-in non-owners', () => {
+  it.only('Should have read-only access for logged-in non-owners', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     interceptFindChecklist(defaultChecklist);
