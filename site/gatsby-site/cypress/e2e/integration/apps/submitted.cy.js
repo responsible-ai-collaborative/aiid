@@ -850,14 +850,8 @@ describe('Submitted reports', () => {
           incidents: [
             {
               __typename: 'Incident',
-              incident_id: 52,
+              incident_id: 10,
               title: 'Test title 52',
-              date: '2016-03-13',
-            },
-            {
-              __typename: 'Incident',
-              incident_id: 53,
-              title: 'Test title 53',
               date: '2016-03-13',
             },
           ],
