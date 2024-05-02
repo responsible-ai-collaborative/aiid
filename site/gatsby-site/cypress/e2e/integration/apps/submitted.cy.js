@@ -109,17 +109,6 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindSubmission',
       'FindSubmission',
       {
@@ -140,9 +129,80 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url);
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
 
-    cy.wait('@FindSubmissions');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2016-03-13',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: {
+          reports: [
+            {
+              report_number: 1628,
+              title:
+                'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+              url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              incident_id: 195,
+              title:
+                'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+              reports: [
+                {
+                  report_number: 1843,
+                  title: 'The man behind the machine',
+                  url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                  __typename: 'Report',
+                },
+              ],
+            },
+          ],
+        },
+      }
+    );
 
     cy.visit(url + `?editSubmission=${submission._id}`);
 
@@ -224,17 +284,6 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindSubmission',
       'FindSubmission',
       {
@@ -251,6 +300,81 @@ describe('Submitted reports', () => {
       {
         data: {
           quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 10,
+              title: 'Test title',
+              date: '2016-03-13',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: {
+          reports: [
+            {
+              report_number: 1628,
+              title:
+                'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+              url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              incident_id: 195,
+              title:
+                'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+              reports: [
+                {
+                  report_number: 1843,
+                  title: 'The man behind the machine',
+                  url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                  __typename: 'Report',
+                },
+              ],
+            },
+          ],
         },
       }
     );
@@ -329,17 +453,6 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindSubmission',
       'FindSubmission',
       {
@@ -356,6 +469,87 @@ describe('Submitted reports', () => {
       {
         data: {
           quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 52,
+              title: 'Test title 52',
+              date: '2016-03-13',
+            },
+            {
+              __typename: 'Incident',
+              incident_id: 53,
+              title: 'Test title 53',
+              date: '2016-03-13',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: {
+          reports: [
+            {
+              report_number: 1628,
+              title:
+                'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+              url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              incident_id: 195,
+              title:
+                'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+              reports: [
+                {
+                  report_number: 1843,
+                  title: 'The man behind the machine',
+                  url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                  __typename: 'Report',
+                },
+              ],
+            },
+          ],
         },
       }
     );
@@ -453,7 +647,7 @@ describe('Submitted reports', () => {
     ).should('exist');
   });
 
-  maybeIt('Promotes a submission to a new issue', () => {
+  it.only('Promotes a submission to a new issue', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     if (user.adminData.email == Cypress.env('e2eUsername')) {
@@ -462,17 +656,6 @@ describe('Submitted reports', () => {
 
     const submission = submittedReports.data.submissions.find(
       (r) => r._id === '62d561606b4bb5e39605555'
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
-      }
     );
 
     cy.conditionalIntercept(
@@ -493,6 +676,81 @@ describe('Submitted reports', () => {
       {
         data: {
           quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 10,
+              title: 'Test title 52',
+              date: '2016-03-13',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: {
+          reports: [
+            {
+              report_number: 1628,
+              title:
+                'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+              url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              incident_id: 195,
+              title:
+                'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+              reports: [
+                {
+                  report_number: 1843,
+                  title: 'The man behind the machine',
+                  url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                  __typename: 'Report',
+                },
+              ],
+            },
+          ],
         },
       }
     );
@@ -549,17 +807,6 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindSubmission',
       'FindSubmission',
       {
@@ -576,6 +823,87 @@ describe('Submitted reports', () => {
       {
         data: {
           quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 52,
+              title: 'Test title 52',
+              date: '2016-03-13',
+            },
+            {
+              __typename: 'Incident',
+              incident_id: 53,
+              title: 'Test title 53',
+              date: '2016-03-13',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: {
+          reports: [
+            {
+              report_number: 1628,
+              title:
+                'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+              url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              incident_id: 195,
+              title:
+                'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+              reports: [
+                {
+                  report_number: 1843,
+                  title: 'The man behind the machine',
+                  url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                  __typename: 'Report',
+                },
+              ],
+            },
+          ],
         },
       }
     );
