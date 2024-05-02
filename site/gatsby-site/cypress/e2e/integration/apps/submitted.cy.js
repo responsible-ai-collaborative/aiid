@@ -1149,248 +1149,11 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      submittedReports
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindSubmission',
       'FindSubmission',
       {
         data: {
           submission: submittedReports.data.submissions[0],
-        },
-      }
-    );
-
-    cy.intercept('GET', '/api/parseNews**', parseNews).as('parseNews');
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
-    cy.visit(url + `?editSubmission=${submittedReports.data.submissions[0]._id}`);
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindEntities',
-      'FindEntities',
-      {
-        data: {
-          entities: [
-            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
-            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
-            { __typename: 'Entity', entity_id: 'Tesla', name: 'tesla' },
-          ],
-        },
-      }
-    );
-
-    cy.get('input[name="url"]').click();
-
-    cy.clickOutside();
-
-    cy.get('[data-cy="fetch-info"]').click();
-
-    cy.wait('@parseNews');
-
-    cy.get('input[label="Title"]').should(
-      'have.attr',
-      'value',
-      'YouTube to crack down on inappropriate content masked as kids’ cartoons'
-    );
-
-    cy.get('input[name="harmed_parties"]').type('Tes');
-
-    cy.get('#harmed_parties-tags .dropdown-item')
-      .contains(/^Tesla$/)
-      .click();
-
-    cy.get('input[label="Image Address"]').should(
-      'have.attr',
-      'value',
-      'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png'
-    );
-    cy.get('input[label="Date Published"]').should('have.attr', 'value', '2017-11-10');
-    cy.get('input[label="Date Downloaded"]').should('have.attr', 'value', '2022-05-26');
-  });
-
-  maybeIt(
-    'Does not allow promotion of submission to Incident if schema is invalid (missing Description).',
-    () => {
-      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-      if (user.adminData.email == Cypress.env('e2eUsername')) {
-        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
-      }
-
-      const submission = submittedReports.data.submissions.find(
-        (r) => r._id === '62d561606b4bb5e396034444'
-      );
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmissions',
-        'FindSubmissions',
-        {
-          data: {
-            submissions: [submission],
-          },
-        }
-      );
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmission',
-        'FindSubmission',
-        {
-          data: {
-            submission: submission,
-          },
-        }
-      );
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'AllQuickAdd',
-        'AllQuickAdd',
-        {
-          data: {
-            quickadds: [quickAdds],
-          },
-        }
-      );
-
-      cy.visit(url + `?editSubmission=${submission._id}`);
-
-      cy.wait('@AllQuickAdd');
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName === 'PromoteSubmission',
-        'promotionInvoked',
-        {}
-      );
-
-      cy.get('select[data-cy="promote-select"]').as('dropdown');
-
-      cy.get('@dropdown').select('Incident');
-
-      cy.get('[data-cy="promote-button"]').click();
-
-      cy.contains('[data-cy="toast"]', 'Description is required').should('exist');
-    }
-  );
-
-  maybeIt(
-    'Does not allow promotion of submission to Issue if schema is invalid (missing Title).',
-    () => {
-      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-      if (user.adminData.email == Cypress.env('e2eUsername')) {
-        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
-      }
-
-      const submission = submittedReports.data.submissions.find(
-        (r) => r._id === '123461606b4bb5e39601234'
-      );
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmissions',
-        'FindSubmissions',
-        {
-          data: {
-            submissions: [submission],
-          },
-        }
-      );
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmission',
-        'FindSubmission',
-        {
-          data: {
-            submission: submission,
-          },
-        }
-      );
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'AllQuickAdd',
-        'AllQuickAdd',
-        {
-          data: {
-            quickadds: [quickAdds],
-          },
-        }
-      );
-
-      cy.visit(url + `?editSubmission=${submission._id}`);
-
-      cy.wait('@AllQuickAdd');
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName === 'PromoteSubmission',
-        'promotionInvoked',
-        {}
-      );
-
-      cy.get('select[data-cy="promote-select"]').as('dropdown');
-
-      cy.get('@dropdown').select('Issue');
-
-      cy.get('[data-cy="promote-button"]').click();
-
-      cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
-    }
-  );
-
-  it.skip('Does not allow promotion of submission to Report if schema is invalid (missing Date).', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    if (user.adminData.email == Cypress.env('e2eUsername')) {
-      expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
-    }
-
-    const submission = submittedReports.data.submissions.find(
-      (r) => r._id === '333561606b4bb5e39601234'
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      {
-        data: {
-          submissions: [submission],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmission',
-      'FindSubmission',
-      {
-        data: {
-          submission: submission,
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'AllQuickAdd',
-      'AllQuickAdd',
-      {
-        data: {
-          quickadds: [quickAdds],
         },
       }
     );
@@ -1456,21 +1219,400 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.visit(url + `?editSubmission=${submission._id}`);
+    cy.intercept('GET', '/api/parseNews**', parseNews).as('parseNews');
 
-    cy.wait('@AllQuickAdd');
+    cy.visit(url + `?editSubmission=${submittedReports.data.submissions[0]._id}`);
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName === 'PromoteSubmission',
-      'promotionInvoked',
-      {}
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+            { __typename: 'Entity', entity_id: 'Tesla', name: 'tesla' },
+          ],
+        },
+      }
     );
 
-    cy.get('[data-cy="promote-to-report-button"]').contains('Add to incident 12').click();
+    cy.get('input[name="url"]').click();
 
-    cy.contains('[data-cy="toast"]', '*Date is not valid, must be `YYYY-MM-DD`').should('exist');
+    cy.clickOutside();
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[label="Title"]').should(
+      'have.attr',
+      'value',
+      'YouTube to crack down on inappropriate content masked as kids’ cartoons'
+    );
+
+    cy.get('input[name="harmed_parties"]').type('Tes');
+
+    cy.get('#harmed_parties-tags .dropdown-item')
+      .contains(/^Tesla$/)
+      .click();
+
+    cy.get('input[label="Image Address"]').should(
+      'have.attr',
+      'value',
+      'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png'
+    );
+    cy.get('input[label="Date Published"]').should('have.attr', 'value', '2017-11-10');
+    cy.get('input[label="Date Downloaded"]').should('have.attr', 'value', '2022-05-26');
   });
+
+  maybeIt(
+    'Does not allow promotion of submission to Incident if schema is invalid (missing Description).',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      if (user.adminData.email == Cypress.env('e2eUsername')) {
+        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+      }
+
+      const submission = submittedReports.data.submissions.find(
+        (r) => r._id === '62d561606b4bb5e396034444'
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+        'ProbablyRelatedIncidents',
+        {
+          data: {
+            incidents: [
+              {
+                incident_id: 195,
+                title:
+                  'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+                reports: [
+                  {
+                    report_number: 1843,
+                    title: 'The man behind the machine',
+                    url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                    __typename: 'Report',
+                  },
+                ],
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentsTitles',
+        'FindIncidentsTitles',
+        {
+          data: {
+            incidents: [
+              {
+                __typename: 'Incident',
+                incident_id: 1,
+                title: 'Test title',
+                date: '2016-03-13',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedReports',
+        'ProbablyRelatedReports',
+        {
+          data: {
+            reports: [
+              {
+                report_number: 1628,
+                title:
+                  'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+                url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
+      cy.wait('@AllQuickAdd');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+      cy.get('@dropdown').select('Incident');
+
+      cy.get('[data-cy="promote-button"]').click();
+
+      cy.contains('[data-cy="toast"]', 'Description is required').should('exist');
+    }
+  );
+
+  maybeIt(
+    'Does not allow promotion of submission to Issue if schema is invalid (missing Title).',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      if (user.adminData.email == Cypress.env('e2eUsername')) {
+        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+      }
+
+      const submission = submittedReports.data.submissions.find(
+        (r) => r._id === '123461606b4bb5e39601234'
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+        'ProbablyRelatedIncidents',
+        {
+          data: {
+            incidents: [
+              {
+                incident_id: 195,
+                title:
+                  'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+                reports: [
+                  {
+                    report_number: 1843,
+                    title: 'The man behind the machine',
+                    url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                    __typename: 'Report',
+                  },
+                ],
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentsTitles',
+        'FindIncidentsTitles',
+        {
+          data: {
+            incidents: [
+              {
+                __typename: 'Incident',
+                incident_id: 1,
+                title: 'Test title',
+                date: '2016-03-13',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedReports',
+        'ProbablyRelatedReports',
+        {
+          data: {
+            reports: [
+              {
+                report_number: 1628,
+                title:
+                  'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+                url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
+      cy.wait('@AllQuickAdd');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('select[data-cy="promote-select"]').as('dropdown');
+
+      cy.get('@dropdown').select('Issue');
+
+      cy.get('[data-cy="promote-button"]').click();
+
+      cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
+    }
+  );
+
+  maybeIt(
+    'Does not allow promotion of submission to Report if schema is invalid (missing Date).',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      if (user.adminData.email == Cypress.env('e2eUsername')) {
+        expect(user.roles.some((role) => ['admin', 'incident_editor'].includes(role))).to.be.true;
+      }
+
+      const submission = submittedReports.data.submissions.find(
+        (r) => r._id === '333561606b4bb5e39601234'
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission: submission,
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+        'ProbablyRelatedIncidents',
+        {
+          data: {
+            incidents: [
+              {
+                incident_id: 195,
+                title:
+                  'Predictive Policing Program by Florida Sheriff’s Office Allegedly Violated Residents’ Rights and Targeted Children of Vulnerable Groups',
+                reports: [
+                  {
+                    report_number: 1843,
+                    title: 'The man behind the machine',
+                    url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/chris-nocco/',
+                    __typename: 'Report',
+                  },
+                ],
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindIncidentsTitles',
+        'FindIncidentsTitles',
+        {
+          data: {
+            incidents: [
+              {
+                __typename: 'Incident',
+                incident_id: 1,
+                title: 'Test title',
+                date: '2016-03-13',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'ProbablyRelatedReports',
+        'ProbablyRelatedReports',
+        {
+          data: {
+            reports: [
+              {
+                report_number: 1628,
+                title:
+                  'Pasco’s sheriff uses grades and abuse histories to label schoolchildren potential criminals',
+                url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.visit(url + `?editSubmission=${submission._id}`);
+
+      cy.wait('@AllQuickAdd');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('[data-cy="promote-to-report-button"]').contains('Add to incident 12').click();
+
+      cy.contains('[data-cy="toast"]', '*Date is not valid, must be `YYYY-MM-DD`').should('exist');
+    }
+  );
 
   it.skip('Should display an error message if data is missing', () => {
     // With new submission list, we allow to save changes always
