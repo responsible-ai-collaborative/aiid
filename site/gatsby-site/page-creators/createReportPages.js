@@ -12,29 +12,15 @@ const createReportPages = async (graphql, createPage, { languages }) => {
             language
           }
         }
-        reports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
-          nodes {
-            report_number
-            language
-          }
-        }
       }
     `
   );
 
   const {
-    reports: { nodes: reports },
     issueReports: { nodes: issueReports },
   } = result.data;
 
   const pageContexts = [];
-
-  for (const report of reports) {
-    pageContexts.push({
-      report_number: report.report_number,
-      language: report.language,
-    });
-  }
 
   for (const report of issueReports) {
     pageContexts.push({

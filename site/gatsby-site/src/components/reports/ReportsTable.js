@@ -32,8 +32,15 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
       {
         title: t('Report Number'),
         accessor: 'report_number',
-        Cell: ({ row: { values } }) => (
-          <a className="flex" href={`/reports/${values.report_number}`}>
+        Cell: ({ row: { values, original } }) => (
+          <a
+            className="flex"
+            href={
+              original.incident_id
+                ? `/cite/${original.incident_id}#r${values.report_number}`
+                : `/reports/${values.report_number}`
+            }
+          >
             Report {values.report_number}
           </a>
         ),
