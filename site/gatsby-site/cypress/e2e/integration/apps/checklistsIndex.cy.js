@@ -29,6 +29,68 @@ describe('Checklists App Index', () => {
     timeout: 120000, // mongodb admin api is extremely slow
   };
 
+  it('Should sort checklists', () => {
+    cy.query(usersQuery).then(({ data: { users } }) => {
+      const user = users.find((user) => user.adminData.email == Cypress.env('e2eUsername'));
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'findChecklists',
+        'findChecklists',
+        {
+          data: {
+            checklists: [
+              {
+                about: '',
+                id: 'fakeChecklist1',
+                name: 'My Checklist',
+                owner_id: user.userId,
+                risks: [],
+                tags_goals: ['GMF:Known AI Goal:Translation'],
+                tags_methods: [],
+                tags_other: [],
+                date_created: '2024-01-01T00:26:02.959+00:00',
+                date_updated: '2024-01-05T00:26:02.959+00:00',
+              },
+              {
+                about: '',
+                id: 'fakeChecklist2',
+                name: 'Another checklist',
+                owner_id: user.userId,
+                risks: [],
+                tags_goals: [],
+                tags_methods: [],
+                tags_other: [],
+                date_created: '2024-01-03T00:26:02.959+00:00',
+                date_updated: '2024-01-03T00:26:02.959+00:00',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.visit(url);
+
+      cy.get('#sort-by').select('newest-first');
+
+      cy.get('[data-cy="checklist-card"]').first().contains('Another checklist');
+
+      cy.get('#sort-by').select('last-updated');
+
+      cy.get('[data-cy="checklist-card"]').first().contains('My Checklist');
+
+      cy.get('#sort-by').select('alphabetical');
+
+      cy.get('[data-cy="checklist-card"]').first().contains('Another checklist');
+
+      cy.get('#sort-by').select('oldest-first');
+
+      cy.get('[data-cy="checklist-card"]').first().contains('My Checklist');
+    });
+  });
+
   it('Should not display New Checklist button as non-logged-in user', () => {
     cy.visit(url);
 
