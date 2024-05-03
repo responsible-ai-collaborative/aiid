@@ -21,7 +21,7 @@ describe('The Discover app', () => {
 
       cy.waitForStableDOM();
 
-      cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+      cy.location('search').should('contain', 'is_incident_report=true');
 
       cy.get('div[data-cy="hits-container"]').should('not.exist');
 
@@ -37,7 +37,7 @@ describe('The Discover app', () => {
 
       cy.waitForStableDOM();
 
-      cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+      cy.location('search').should('contain', 'is_incident_report=true');
 
       cy.contains('[data-cy="display-options"]', 'Incident Reports')
         .should('exist')
@@ -84,11 +84,9 @@ describe('The Discover app', () => {
 
       cy.waitForStableDOM();
 
-      cy.get('[data-cy="incident_id"] [placeholder="Type Here"]', { timeout: 8000 })
-        .type('34')
-        .type('{enter}');
+      cy.get('[data-cy="incident_id"] [placeholder="Type Here"]').type('34').type('{enter}');
 
-      cy.get('[data-cy="incident_id-item"]:contains("34")', { timeout: 8000 }).first().click();
+      cy.get('[data-cy="incident_id-item"]:contains("34")').first().click();
 
       cy.waitForStableDOM();
 
@@ -111,11 +109,9 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="language"] [placeholder="Type Here"]', { timeout: 8000 })
-      .type('es')
-      .type('{enter}');
+    cy.get('[data-cy="language"] [placeholder="Type Here"]').type('es').type('{enter}');
 
-    cy.get('[data-cy="language-item"]:contains("es")', { timeout: 8000 }).first().click();
+    cy.get('[data-cy="language-item"]:contains("es")').first().click();
 
     cy.url().should('include', 'language=es');
 
@@ -167,11 +163,9 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="tags"] [placeholder="Type Here"]', { timeout: 8000 })
-      .type('response')
-      .type('{enter}');
+    cy.get('[data-cy="tags"] [placeholder="Type Here"]').type('response').type('{enter}');
 
-    cy.get('[data-cy="tags-item"]:contains("response")', { timeout: 8000 }).first().click();
+    cy.get('[data-cy="tags-item"]:contains("response")').first().click();
 
     cy.waitForStableDOM();
 
@@ -202,9 +196,7 @@ describe('The Discover app', () => {
 
       cy.waitForStableDOM();
 
-      cy.contains('button', 'Incident ID', { timeout: 8000 })
-        .find('span.badge', { timeout: 8000 })
-        .should('contain.text', '1');
+      cy.contains('button', 'Incident ID').find('span.badge').should('contain.text', '1');
 
       cy.url().should('include', 'incident_id=10');
 
@@ -328,7 +320,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
+    cy.location('search').should('contain', 'is_incident_report=false');
 
     cy.waitForStableDOM();
 
@@ -444,8 +436,8 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
-    cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
+    cy.location('search').should('contain', 'is_incident_report=true');
+    cy.location('search').should('contain', 'hideDuplicates=1');
   });
 
   it('Should not add a trailing slash when loading the discover app', () => {
@@ -453,7 +445,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
+    cy.location('search').should('equal', '?is_incident_report=true');
   });
 
   conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should export results to a CSV file', () => {
@@ -507,7 +499,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.location('search', { timeout: 8000 }).should('equal', '?is_incident_report=true');
+    cy.location('search').should('equal', '?is_incident_report=true');
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
 
@@ -561,13 +553,11 @@ describe('The Discover app', () => {
 
       cy.waitForStableDOM();
 
-      cy.get('[data-cy="source_domain"] [placeholder="Type Here"]', { timeout: 8000 })
+      cy.get('[data-cy="source_domain"] [placeholder="Type Here"]')
         .type('theguardian.com')
         .type('{enter}');
 
-      cy.get('[data-cy="source_domain-item"]:contains("theguardian.com")', { timeout: 8000 })
-        .first()
-        .click();
+      cy.get('[data-cy="source_domain-item"]:contains("theguardian.com")').first().click();
 
       cy.waitForStableDOM();
 
@@ -589,11 +579,9 @@ describe('The Discover app', () => {
 
     cy.get('form#searchForm').as('form');
 
-    cy.contains('button', 'Submitters', { timeout: 8000 })
-      .find('span.badge', { timeout: 8000 })
-      .should('contain.text', '1');
+    cy.contains('button', 'Submitters').find('span.badge').should('contain.text', '1');
 
-    cy.get('[data-cy="Accident"]', { timeout: 8000 })
+    cy.get('[data-cy="Accident"]')
       .should('exist')
       .find('b')
       .contains('CSETv0')
@@ -615,21 +603,13 @@ describe('The Discover app', () => {
         '?authors=Christopher%20Knaus&incident_id=57&is_incident_report=true&language=en&source_domain=theguardian.com'
     );
 
-    cy.contains('button', 'Authors', { timeout: 8000 })
-      .find('span.badge', { timeout: 8000 })
-      .should('contain.text', '1');
+    cy.contains('button', 'Authors').find('span.badge').should('contain.text', '1');
 
-    cy.contains('button', 'Source', { timeout: 8000 })
-      .find('span.badge', { timeout: 8000 })
-      .should('contain.text', '1');
+    cy.contains('button', 'Source').find('span.badge').should('contain.text', '1');
 
-    cy.contains('button', 'Incident ID', { timeout: 8000 })
-      .find('span.badge', { timeout: 8000 })
-      .should('contain.text', '1');
+    cy.contains('button', 'Incident ID').find('span.badge').should('contain.text', '1');
 
-    cy.contains('button', 'Language', { timeout: 8000 })
-      .find('span.badge', { timeout: 8000 })
-      .should('contain.text', '1');
+    cy.contains('button', 'Language').find('span.badge').should('contain.text', '1');
   });
 
   it('Should update display types', () => {
@@ -643,7 +623,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.location('search', { timeout: 8000 }).should('contain', 'display=compact');
+    cy.location('search').should('contain', 'display=compact');
 
     cy.get('[data-cy="display-mode-compact"]').should('have.class', 'selected');
 
@@ -653,7 +633,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.location('search', { timeout: 8000 }).should('contain', 'display=details');
+    cy.location('search').should('contain', 'display=details');
 
     cy.get('[data-cy="display-mode-details"]').should('have.class', 'selected');
   });
