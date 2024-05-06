@@ -18,9 +18,6 @@ on:
         type: string
         required: false
         default: ""
-        
-env:
-  UV_THREADPOOL_SIZE: 12
 
 jobs:
   test:
@@ -127,7 +124,6 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         env:

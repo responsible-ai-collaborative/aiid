@@ -15,9 +15,15 @@ class LookupIndex {
 
     const reportsCollection = this.client.db('aiidprod').collection('reports');
 
-    const incidents = await incidentsCollection.find({}).toArray();
+    const incidentProjection = { incident_id: 1, title: 1, reports: 1 };
 
-    const reports = await reportsCollection.find({}).toArray();
+    const reportProjection = { report_number: 1, title: 1, url: 1 };
+
+    const incidents = await incidentsCollection
+      .find({}, { projection: incidentProjection })
+      .toArray();
+
+    const reports = await reportsCollection.find({}, { projection: reportProjection }).toArray();
 
     const data = incidents.map((incident) => {
       const reportDocs = reports.filter((report) =>
