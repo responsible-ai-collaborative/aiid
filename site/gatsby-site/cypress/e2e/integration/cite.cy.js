@@ -374,7 +374,7 @@ describe('Cite pages', () => {
   it('Should disable Previous and Next incident buttons in header on first and last incidents', () => {
     cy.visit('/cite/1');
 
-    cy.get(`[data-cy="header-previous-incident-link"]`).should('not.exist');
+    cy.get(`[data-cy="header-previous-incident-link"]`).should('not.have.attr', 'href');
 
     cy.get(`[data-cy="header-next-incident-link"]`)
       .should('be.visible')
@@ -382,7 +382,7 @@ describe('Cite pages', () => {
 
     cy.visit(`/cite/${lastIncidentId}`);
 
-    cy.get(`[data-cy="header-next-incident-link"]`).should('not.exist');
+    cy.get(`[data-cy="header-next-incident-link"]`).should('not.have.attr', 'href');
 
     cy.get(`[data-cy="header-previous-incident-link"]`)
       .should('be.visible')
