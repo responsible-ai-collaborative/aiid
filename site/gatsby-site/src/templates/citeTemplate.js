@@ -385,7 +385,9 @@ function CiteTemplate({
               <div className="flex justify-between">
                 <Button
                   color={'gray'}
-                  href={localizePath({ path: `/cite/${prevIncident}` })}
+                  {...(prevIncident
+                    ? { href: localizePath({ path: `/cite/${prevIncident}` }) }
+                    : {})}
                   disabled={!prevIncident}
                   className="hover:no-underline"
                 >
@@ -394,7 +396,9 @@ function CiteTemplate({
                 </Button>
                 <Button
                   color={'gray'}
-                  href={localizePath({ path: `/cite/${nextIncident}` })}
+                  {...(nextIncident
+                    ? { href: localizePath({ path: `/cite/${nextIncident}` }) }
+                    : {})}
                   disabled={!nextIncident}
                   className="hover:no-underline"
                 >
