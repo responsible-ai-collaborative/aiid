@@ -127,7 +127,7 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
             variant="link"
             onClick={() => setIncindentIdToEdit(values.incident_id)}
           >
-            Edit
+            <Trans>Edit</Trans>
           </Button>
         ),
       });

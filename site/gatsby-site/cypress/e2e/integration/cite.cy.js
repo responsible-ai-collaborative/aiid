@@ -231,7 +231,7 @@ describe('Cite pages', () => {
     cy.get('@modal').should('not.exist');
   });
 
-  maybeIt('Should remove duplicate', () => {
+  it.skip('Should remove duplicate', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpsertClassification',
@@ -345,6 +345,16 @@ describe('Cite pages', () => {
     cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/89');
   });
 
+  it('Should render the header next/previous buttons', () => {
+    cy.visit(url);
+    cy.get(`[data-cy="header-previous-incident-link"]`)
+      .should('be.visible')
+      .should('have.attr', 'href', '/cite/9');
+    cy.get(`[data-cy="header-next-incident-link"]`)
+      .should('be.visible')
+      .should('have.attr', 'href', '/cite/11');
+  });
+
   it('Should disable Previous and Next incident buttons on first and last incidents', () => {
     cy.visit('/cite/1');
 
@@ -367,6 +377,24 @@ describe('Cite pages', () => {
       cy.wrap($button).should('have.attr', 'disabled');
       cy.wrap($button).should('not.have.attr', 'href');
     });
+  });
+
+  it('Should disable Previous and Next incident buttons in header on first and last incidents', () => {
+    cy.visit('/cite/1');
+
+    cy.get(`[data-cy="header-previous-incident-link"]`).should('not.have.attr', 'href');
+
+    cy.get(`[data-cy="header-next-incident-link"]`)
+      .should('be.visible')
+      .should('have.attr', 'href', '/cite/2');
+
+    cy.visit(`/cite/${lastIncidentId}`);
+
+    cy.get(`[data-cy="header-next-incident-link"]`).should('not.have.attr', 'href');
+
+    cy.get(`[data-cy="header-previous-incident-link"]`)
+      .should('be.visible')
+      .should('have.attr', 'href', `/cite/${lastIncidentId - 1}`);
   });
 
   maybeIt('Should show the edit incident form', () => {

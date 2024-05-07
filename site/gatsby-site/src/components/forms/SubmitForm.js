@@ -274,12 +274,12 @@ const SubmitForm = () => {
             {savingInLocalStorage ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
-                <Trans>Saving as draft...</Trans>
+                <Trans ns="submit">Saving as draft...</Trans>
               </>
             ) : (
               <>
                 <FontAwesomeIcon icon={faCheck} className="mr-1" />
-                <Trans>Draft saved</Trans>
+                <Trans ns="submit">Draft saved</Trans>
               </>
             )}
           </span>

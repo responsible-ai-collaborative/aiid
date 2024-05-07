@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Button } from 'flowbite-react';
+import { useTranslation } from 'react-i18next';
 
 const SimilaritySelector = ({
   incident_id,
@@ -10,6 +11,8 @@ const SimilaritySelector = ({
 }) => {
   const { values, setFieldValue } = useFormikContext();
 
+  const { t } = useTranslation();
+
   return (
     <div>
       <Button.Group data-cy="similar-selector" id="similar-selector">
@@ -17,7 +20,7 @@ const SimilaritySelector = ({
           {
             identifier: 'dissimilar',
             variant: 'failure',
-            text: 'No',
+            text: t('No'),
             show:
               values.editor_dissimilar_incidents &&
               values.editor_dissimilar_incidents.includes(incident_id),
@@ -36,7 +39,7 @@ const SimilaritySelector = ({
           {
             identifier: 'unspecified',
             variant: 'warning',
-            text: 'Not sure',
+            text: t('Not sure'),
             show: (notSureList || []).includes(incident_id),
             onClick: () => {
               setFieldValue(
@@ -53,7 +56,7 @@ const SimilaritySelector = ({
           {
             identifier: 'similar',
             variant: 'success',
-            text: 'Yes',
+            text: t('Yes'),
             show:
               values.editor_similar_incidents &&
               values.editor_similar_incidents.includes(incident_id),
