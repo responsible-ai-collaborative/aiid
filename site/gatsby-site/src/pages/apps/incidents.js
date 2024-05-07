@@ -85,7 +85,7 @@ const IncidentsPage = ({ data, ...props }) => {
       case 'reports':
         if (isLiveData && reports && !reportsLoading) {
           setReportsData(transformReports(reports.reports));
-        } else if (data?.reports?.nodes) {
+        } else if (!isLiveData && data?.reports?.nodes) {
           setReportsData(transformReports(data.reports.nodes));
         }
         break;
@@ -101,7 +101,7 @@ const IncidentsPage = ({ data, ...props }) => {
       const incidents = data.reports.nodes;
 
       if (isLiveData) {
-        if (data?.reports?.nodes) {
+        if (incidents) {
           const reportToIncidentMap = [];
 
           incidents.forEach((incident) => {
