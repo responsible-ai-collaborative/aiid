@@ -40,9 +40,13 @@ export default function Taxonomies({ data }) {
           </li>
           <li>
             <p>
-              <LocalizedLink to="/taxonomy/gmf/">Goals, Methods, and Failures (GMF)</LocalizedLink>.
-              This is a taxonomy detailing the technological and process factors producing an
-              incident.
+              <Trans>
+                <LocalizedLink to="/taxonomy/gmf/">
+                  Goals, Methods, and Failures (GMF)
+                </LocalizedLink>
+                . This is a taxonomy detailing the technological and process factors producing an
+                incident.
+              </Trans>
             </p>
             <TaxonomyGraphCarousel
               data={data}
