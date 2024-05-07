@@ -75,7 +75,8 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
       if (textLength < minLength && !displayingCached) {
         fail(
           t(
-            `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+            `Reports must have at least {{minLength}} non-space characters to compute semantic similarity.`,
+            { minLength }
           )
         );
         return;
