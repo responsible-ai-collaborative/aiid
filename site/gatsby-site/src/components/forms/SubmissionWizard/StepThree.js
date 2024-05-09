@@ -212,9 +212,9 @@ const FormDetails = ({
               <FieldContainer>
                 <TextInputGroup
                   name="incident_title"
-                  label={t('Incident Title')}
+                  label={t('Incident Title', { ns: 'variants' })}
                   icon={faTenge}
-                  placeholder={t('Incident title')}
+                  placeholder={t('Incident Title', { ns: 'variants' })}
                   schema={schema}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
@@ -247,8 +247,8 @@ const FormDetails = ({
               <FieldContainer>
                 <UsersInputGroup
                   name="incident_editors"
-                  label={t('Editors')}
-                  placeholder={t('Editors')}
+                  label={t('Editors', { ns: 'translation' })}
+                  placeholder={t('Editors', { ns: 'translation' })}
                   icon={faPenNib}
                   schema={schema}
                   errors={errors}

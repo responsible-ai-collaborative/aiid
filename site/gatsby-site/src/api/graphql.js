@@ -6,6 +6,26 @@ import { buildHTTPExecutor } from '@graphql-tools/executor-http';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { typeDefs } from '../graphql/schema';
 
+// function is crashing locally with `PayloadTooLargeError: request entity too large` error
+
+export const config = {
+  bodyParser: {
+    raw: {
+      type: `-`,
+    },
+    text: {
+      type: `-`,
+    },
+    urlencoded: {
+      type: `-`,
+      extended: true,
+    },
+    json: {
+      type: `*/*`,
+      limit: `10mb`,
+    },
+  },
+};
 const cors = Cors();
 
 const remoteExecutor = buildHTTPExecutor({

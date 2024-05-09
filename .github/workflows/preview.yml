@@ -6,6 +6,10 @@ on:
       - staging
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   permissions-check:
     runs-on: ubuntu-latest
@@ -27,7 +31,7 @@ jobs:
           exit 1
 
   call-test-build:
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-build.yml
     needs: permissions-check
     secrets: inherit
@@ -35,18 +39,20 @@ jobs:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
       netlify-context: deploy-preview
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-test:
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test.yml
     needs: call-test-build
     secrets: inherit
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/deploy.yml
     needs: permissions-check
     secrets: inherit
@@ -57,3 +63,4 @@ jobs:
       environment: staging
       netlify-context: deploy-preview
       netlify-alias: pr-${{ github.event.pull_request.number }}
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
