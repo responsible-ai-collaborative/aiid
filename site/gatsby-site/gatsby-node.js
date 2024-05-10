@@ -241,8 +241,6 @@ exports.createResolvers = ({ createResolvers }) => {
 };
 
 exports.onPreInit = async ({ reporter }) => {
-  process.env.IS_GATSBY_BUILD = true;
-
   reporter.log('Creating lookup index...');
 
   const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
