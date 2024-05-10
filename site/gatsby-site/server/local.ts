@@ -1,29 +1,56 @@
+import {
+    queryFields as quickAddsQueryFields,
+    mutationFields as quickAddsMutationFields,
+    permissions as quickAddsPermissions,
+} from './fields/quickadds';
+import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
+import { shield, deny } from 'graphql-shield';
+import { applyMiddleware } from 'graphql-middleware';
+import { ObjectIdScalar } from './scalars';
 
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { Resolvers } from './generated/graphql';
-import { LongResolver, ObjectIDResolver } from 'graphql-scalars';
-import localTypeDefs from './localTypeDefs';
+export const getSchema = () => {
 
-import quickAddsTypeDefs, { resolvers as quickAddsResolvers } from './fields/quickadds';
-import { transformer as authDirectiveTransformer, typeDefs as authTypeDefs } from './directives/auth';
+    const query = new GraphQLObjectType({
+        name: 'Query',
+        fields: {
+            ObjectId: {
+                type: ObjectIdScalar,
+                description: 'Custom scalar for MongoDB ObjectID',
+            },
+            ...quickAddsQueryFields,
+        }
+    });
 
-export const getSchema = async () => {
+    const mutation = new GraphQLObjectType({
+        name: 'Mutation',
+        fields: {
+            _: {
+                type: GraphQLString,
+                description: 'Placeholder field to avoid empty mutation type',
+            },
+            ...quickAddsMutationFields,
+        }
+    });
 
-    const resolvers: Resolvers = {
-        ObjectId: ObjectIDResolver,
-        Long: LongResolver,
+    const schema = new GraphQLSchema({
+        query,
+        mutation,
+    })
+
+
+    const permissions = shield({
         Query: {
-            ...quickAddsResolvers.Query,
+            "*": deny,
+            ...quickAddsPermissions.Query,
+
         },
         Mutation: {
-            ...quickAddsResolvers.Mutation,
-        }
-    };
+            "*": deny,
+            ...quickAddsPermissions.Mutation,
+        },
+    });
 
-
-    const schema = makeExecutableSchema({ typeDefs: [localTypeDefs, authTypeDefs, quickAddsTypeDefs], resolvers });
-
-    const schemaWithAuth = authDirectiveTransformer(schema, 'auth');
+    const schemaWithAuth = applyMiddleware(schema, permissions)
 
     return schemaWithAuth;
 }

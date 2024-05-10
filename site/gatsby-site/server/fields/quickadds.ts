@@ -1,67 +1,77 @@
-import gql from "graphql-tag";
 import { MongoClient } from "mongodb";
-import { QuickAdd, Resolvers } from "../generated/graphql";
-import { convertToObjectID } from "../utils";
+import { QuickAdd } from "../generated/graphql";
+import { GraphQLFieldConfigMap, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLLong } from "graphql-scalars";
+import { getGraphQLInsertType, getGraphQLQueryArgs, getMongoDbQueryResolver } from "graphql-to-mongodb";
+import { allow } from "graphql-shield";
+import { isAdmin } from "../rules";
+import { ObjectIdScalar } from "../scalars";
+import { DeleteManyPayload } from "../types";
 
-export default gql`
+const QuickAddType = new GraphQLObjectType({
+    name: 'QuickAdd',
+    fields: {
+        _id: {
+            type: ObjectIdScalar,
+        },
+        date_submitted: {
+            type: GraphQLString,
+        },
+        incident_id: {
+            type: GraphQLLong,
+        },
+        source_domain: {
+            type: GraphQLString,
+        },
+        url: {
+            type: GraphQLString,
+        },
+    },
+});
 
-    type QuickAdd {
-        _id: ObjectId
-        date_submitted: String!
-        incident_id: Long
-        source_domain: String
-        url: String!
-    }
+export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
-    input QuickaddQueryInput {
-        _id: ObjectId
-    }
+    quickadds: {
+        type: new GraphQLList(QuickAddType),
+        args: getGraphQLQueryArgs(QuickAddType),
+        resolve: getMongoDbQueryResolver(QuickAddType, async (filter, projection, options, obj, args, context) => {
 
-    input QuickaddInsertInput {
-        date_submitted: String!
-        incident_id: Long
-        source_domain: String
-        url: String!
-    }
-
-    extend type Query {
-        quickadds(query: QuickaddQueryInput): [QuickAdd]
-    }
-
-    extend type Mutation {
-        deleteManyQuickadds(query: QuickaddQueryInput): DeleteManyPayload @auth(requires: admin)
-        insertOneQuickadd(data: QuickaddInsertInput!): QuickAdd
-    }
-`
-
-export const resolvers: Resolvers = {
-    Query: {
-        async quickadds(_: unknown, { query = {} }: { query?: any } = {}, { client }: { client: MongoClient }) {
-
-            const db = client.db('aiidprod');
+            const db = (context.client as MongoClient).db('aiidprod')
             const collection = db.collection<QuickAdd>('quickadd');
 
-            const filter = convertToObjectID<QuickAdd>(query);
-
-            const items = await collection.find(filter).toArray();
+            const items = await collection.find(filter, projection).toArray();
 
             return items;
-        }
+        }),
+    }
+}
+
+export const mutationFields: GraphQLFieldConfigMap<any, any> = {
+
+    deleteManyQuickadds: {
+        type: DeleteManyPayload,
+        args: getGraphQLQueryArgs(QuickAddType),
+        resolve: getMongoDbQueryResolver(
+            QuickAddType,
+            async (filter, projection, options, obj, args, context) => {
+
+                const db = (context.client as MongoClient).db('aiidprod');
+                const collection = db.collection<QuickAdd>('quickadd');
+
+                const result = await collection.deleteMany(filter);
+
+                return { deletedCount: result.deletedCount! };
+            },
+            {
+                differentOutputType: true,
+            }
+        )
     },
 
-    Mutation: {
-        deleteManyQuickadds: async (_: unknown, { query }: { query?: any }, { client }: { client: MongoClient }) => {
-
-            const db = client.db('aiidprod');
-            const collection = db.collection<QuickAdd>('quickadd');
-
-            const filter = convertToObjectID<QuickAdd>(query);
-
-            const result = await collection.deleteMany(filter);
-
-            return { deletedCount: result.deletedCount! };
-        },
-        insertOneQuickadd: async (_: unknown, { data }: { data: QuickAdd }, { client }: { client: MongoClient }) => {
+    insertOneQuickadd: {
+        type: QuickAddType,
+        args: { data: { type: getGraphQLInsertType(QuickAddType) } },
+        resolve: async (_: unknown, { data }: { data: QuickAdd }, { client }: { client: MongoClient }) => {
 
             const db = client.db('aiidprod');
             const collection = db.collection<QuickAdd>('quickadd');
@@ -72,5 +82,15 @@ export const resolvers: Resolvers = {
 
             return inserted;
         }
+    }
+}
+
+export const permissions = {
+    Query: {
+        quickadds: allow,
+    },
+    Mutation: {
+        deleteManyQuickadds: isAdmin,
+        insertOneQuickadd: allow,
     }
 }

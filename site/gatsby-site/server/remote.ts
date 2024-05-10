@@ -39,7 +39,7 @@ const ignoredMutations = [
     'insertOneQuickadd',
 ]
 
-export const getSchema = async () => {
+export const getSchema = () => {
 
     const schema = wrapSchema({
         schema: makeExecutableSchema({ typeDefs: remoteTypeDefs }),

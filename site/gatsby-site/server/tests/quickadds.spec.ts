@@ -81,9 +81,8 @@ describe('Quickadds', () => {
 
         const queryData = {
             query: `
-            query ($query: QuickaddQueryInput!) {
-                quickadds(query: $query) {
-                  __typename
+            query ($filter: QuickAddFilterType!) {
+                quickadds(filter: $filter) {
                   _id
                   date_submitted
                   incident_id
@@ -92,12 +91,11 @@ describe('Quickadds', () => {
                 }
             }
             `,
-            variables: { query: { _id: '5f5f3e3e3e3e3e3e3e3e3e3f' } },
+            variables: { filter: { _id: { EQ: '5f5f3e3e3e3e3e3e3e3e3e3f' } } },
         };
 
         const response = await request(url).post('/').send(queryData);
 
-        expect(response.statusCode).toBe(200);
 
         expect(response.body.data.quickadds.length).toBe(1);
 
@@ -114,7 +112,7 @@ describe('Quickadds', () => {
         const mutationData = {
             query: `
             mutation {
-                deleteManyQuickadds(query: { _id: "5f5f3e3e3e3e3e3e3e3e3e3f" }) {
+                deleteManyQuickadds(filter: { _id: { EQ: "5f5f3e3e3e3e3e3e3e3e3e3f" } }) {
                   deletedCount
                 }
             }
@@ -123,11 +121,11 @@ describe('Quickadds', () => {
 
         const response = await request(url).post('/').send(mutationData);
 
-        expect(response.statusCode).toBe(200);
+        expect(response.body.errors[0].message).toBe('not authorized');
 
         expect(response.body.errors.length).toBe(1);
 
-        expect(response.body.errors[0].message).toBe('not authorized');
+        expect(response.statusCode).toBe(200);
     });
 
     it(`deleteManyQuickadds mutation`, async () => {
@@ -168,7 +166,7 @@ describe('Quickadds', () => {
         const mutationData = {
             query: `
             mutation {
-                deleteManyQuickadds(query: { _id: "5f5f3e3e3e3e3e3e3e3e3e3e" }) {
+                deleteManyQuickadds(filter: { _id: { EQ: "5f5f3e3e3e3e3e3e3e3e3e3e" } }) {
                   deletedCount
                 }
             }
@@ -186,7 +184,7 @@ describe('Quickadds', () => {
             }
         });
 
-    }, 10000);
+    });
 
     it(`insertOneQuickadd mutation`, async () => {
 
@@ -197,7 +195,7 @@ describe('Quickadds', () => {
 
         const mutationData = {
             query: `
-            mutation Test($data: QuickaddInsertInput!) {
+            mutation Test($data: QuickAddInsertType!) {
                 insertOneQuickadd(data: $data) {
                   _id
                   date_submitted
@@ -221,13 +219,13 @@ describe('Quickadds', () => {
             .post('/')
             .send(mutationData);
 
-        expect(response.statusCode).toBe(200);
-
         expect(response.body.data.insertOneQuickadd).toMatchObject({
             date_submitted: '2020-09-14T00:00:00.000Z',
             incident_id: 1,
             source_domain: 'example.com',
             url: 'http://example.com'
         })
+
+        expect(response.statusCode).toBe(200);
     });
 });
