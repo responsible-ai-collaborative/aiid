@@ -337,6 +337,14 @@ describe('Cite pages', () => {
     cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
   });
 
+  it('Should render Next and Previous incident buttons if duplicate incident', () => {
+    cy.visit('/cite/90');
+
+    cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/91');
+
+    cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/89');
+  });
+
   it('Should render the header next/previous buttons', () => {
     cy.visit(url);
     cy.get(`[data-cy="header-previous-incident-link"]`)
