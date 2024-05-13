@@ -1,13 +1,11 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { getSchema } from "../server";
+import { schema } from "../schema";
 import { context } from "../context";
 import { MongoClient } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
 
 export const startTestServer = async () => {
-
-    const schema = await getSchema();
 
     const server = new ApolloServer({
         schema,
