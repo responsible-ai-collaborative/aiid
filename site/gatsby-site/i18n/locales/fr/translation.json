@@ -307,6 +307,8 @@
   "Creation Date": "Date de création",
   "Last modified": "Dernière modification",
   "Save": "Enregistrer",
+  "Leaderboard": "Classement",
+  "newsDigestDescription": "Ce digest présente des histoires d'actualité de tout le web correspondant à un ensemble de mots-clés <2><0></0>liés à l'IA</2>. Ces histoires sont <5>associées</5> aux rapports dans la base de données selon la similarité textuelle identifiée par un système de <8>PLN</8>. Sont également indiquées les <11><0></0>entités</11> <13>dans la base de données</13> mentionnées et les mots-clés relatifs aux <16><0></0>dommages</16>. Certaines des histoires ci-dessous peuvent se qualifier comme rapports d'incidents et peuvent être soumises à la base de données. Cependant, la majorité sont simplement liées à l'IA.",
   "Is this incident related?": "Cet incident est-il lié?",
   "No": "Non",
   "Not sure": "Pas sûr",
