@@ -118,8 +118,8 @@ export default function Sponsors({ sponsors = [] }) {
                 <StyledImageCover src="/images/reportcover.png" className="border-1" />
               </a>
               <p className="italic">
-                <Trans i18nKey="forms" ns="landing">
-                  View the Responsible AI Collaborative’s{' '}
+                <Trans ns="landing">
+                  View the Responsible AI Collaborative&apos;s{' '}
                   <a
                     href="https://res.cloudinary.com/pai/image/upload/v1694177803/Responsible_AI_Collaborative_Inc_Form990-PF_hlpusu.pdf"
                     target="_blank"

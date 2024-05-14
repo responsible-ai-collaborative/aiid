@@ -305,7 +305,7 @@ exports.onPreBootstrap = async ({ reporter }) => {
     ) {
       if (process.env.TRANSLATE_DRY_RUN !== 'false') {
         reporter.warn(
-          'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
+          'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
         );
       }
 

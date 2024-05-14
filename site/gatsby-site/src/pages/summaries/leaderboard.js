@@ -13,7 +13,9 @@ export default function Authors() {
   return (
     <>
       <div className={'titleWrapper'}>
-        <h1>Leaderboard</h1>
+        <h1>
+          <Trans>Leaderboard</Trans>
+        </h1>
       </div>
       <div className="styled-main-wrapper max-w-full">
         <p className="paragraph">

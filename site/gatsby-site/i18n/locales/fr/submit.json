@@ -56,5 +56,7 @@
   "Your changes are saved. You can continue filling out the report or come back later.": "Vos modifications sont en cours d'enregistrement. Vous pouvez continuer à remplir le rapport ou revenir plus tard.",
   "Clear Form": "Effacer le formulaire",
   "Saving changes...": "Enregistrement des modifications...",
-  "Submit a new incident report to the Artificial Intelligence Incident Database.": "Soumettre un nouveau rapport d'incident à la base de données des incidents d'intelligence artificielle."
+  "Submit a new incident report to the Artificial Intelligence Incident Database.": "Soumettre un nouveau rapport d'incident à la base de données des incidents d'intelligence artificielle.",
+  "Draft saved": "Brouillon enregistré",
+  "Saving as draft...": "Enregistrement en tant que brouillon..."
 }
