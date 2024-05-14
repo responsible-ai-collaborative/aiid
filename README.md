@@ -591,6 +591,9 @@ All three workflows share a common set of environment variables, which need to b
 - `REALM_GRAPHQL_API_KEY`
 - `REALM_API_PUBLIC_KEY`
 - `GATSBY_ROLLBAR_TOKEN`
+- `REALM_APP_ID` 
+- `REALM_API_APP_ID`    
+- `REALM_API_GROUP_ID`  
 
 #### Variables
 
