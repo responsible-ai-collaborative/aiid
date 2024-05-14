@@ -1,10 +1,29 @@
 import Cors from 'cors';
-import { getSchema } from '../../server/server';
+import { schema } from '../../server/schema';
 import { context } from '../../server/context';
 import { Handler } from 'express';
 const { createHandler } = require("graphql-http/lib/use/express") // CommonJS
 
 const cors = Cors();
+
+export const config = {
+  bodyParser: {
+    raw: {
+      type: `-`,
+    },
+    text: {
+      type: `-`,
+    },
+    urlencoded: {
+      type: `-`,
+      extended: true,
+    },
+    json: {
+      type: `*/*`,
+      limit: `10mb`,
+    },
+  },
+};
 
 // Cache the Graphql middleware to make use of Lambdas's Container reuse
 
@@ -12,8 +31,6 @@ let graphqlMiddleware: Handler | null = null;
 
 export default async function handler(req: any, res: any) {
   if (!graphqlMiddleware) {
-
-    const schema = await getSchema();
 
     graphqlMiddleware = createHandler({ schema: schema, context: (req: any) => context({ req }) });
   }
