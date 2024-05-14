@@ -592,8 +592,6 @@ All three workflows share a common set of environment variables, which need to b
 - `REALM_API_PUBLIC_KEY`
 - `GATSBY_ROLLBAR_TOKEN`
 - `REALM_APP_ID` 
-- `REALM_API_APP_ID`    
-- `REALM_API_GROUP_ID`  
 
 #### Variables
 
@@ -605,6 +603,8 @@ All three workflows share a common set of environment variables, which need to b
 - `GATSBY_PRISMIC_REPO_NAME`
 - `GATSBY_REALM_APP_ID`
 - `NETLIFY_SITE_ID`
+- `REALM_API_APP_ID`    
+- `REALM_API_GROUP_ID`  
 
 ### Testing
 

@@ -1,4 +1,8 @@
-const config = {
+type ConfigType = {
+    [key: string]: string;
+};
+
+const config: ConfigType = {
     E2E_ADMIN_PASSWORD: process.env.E2E_ADMIN_PASSWORD!,
     E2E_ADMIN_USERNAME: process.env.E2E_ADMIN_USERNAME!,
     REALM_API_APP_ID: process.env.REALM_API_APP_ID!,
@@ -9,5 +13,11 @@ const config = {
     REALM_APP_ID: process.env.REALM_APP_ID!,
     MONGODB_CONNECTION_STRING: process.env.MONGODB_CONNECTION_STRING!,
 }
+
+Object.keys(config).forEach((key) => {
+    if (config[key] === undefined) {
+        throw new Error(`Config property ${key} is undefined`);
+    }
+});
 
 export default config;
