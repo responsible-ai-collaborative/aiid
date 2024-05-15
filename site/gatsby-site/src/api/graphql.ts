@@ -2,7 +2,7 @@ import Cors from 'cors';
 import { schema } from '../../server/schema';
 import { context } from '../../server/context';
 import { Handler } from 'express';
-const { createHandler } = require("graphql-http/lib/use/express") // CommonJS
+import { createHandler } from "graphql-http/lib/use/express";
 
 const cors = Cors();
 
