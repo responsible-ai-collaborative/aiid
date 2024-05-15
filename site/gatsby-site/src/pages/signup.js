@@ -64,7 +64,7 @@ const SignUp = (props) => {
           <Trans ns="landing">Sign Up</Trans>
         </h5>
         <p>
-          <Trans>
+          <Trans ns="landing">
             With an account, you can follow specific{' '}
             <LocalizedLink to="/apps/discover/?display=details&hideDuplicates=1&is_incident_report=true">
               incidents
