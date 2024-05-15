@@ -2,13 +2,15 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import PostsListing from 'components/blog/PostsListing';
 import HeadContent from 'components/HeadContent';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 const BlogPage = (props) => {
   return (
     <>
       <div className={'titleWrapper'}>
-        <h1>Blog</h1>
+        <h1>
+          <Trans>Blog</Trans>
+        </h1>
       </div>
       <div className="page">
         <PostsListing posts={props.data.posts.edges} mdxBlogPosts={props.data.mdxBlogPosts.nodes} />
