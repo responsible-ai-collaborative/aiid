@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { graphql } from 'gatsby';
 import { Trans } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';
@@ -12,7 +12,11 @@ export default function Random({ data }) {
 
   const randomIncidentId = incidents[Math.floor(Math.random() * incidents.length)].incident_id;
 
-  navigate(localizePath({ path: '/cite/' + randomIncidentId }), { replace: true });
+  useEffect(() => {
+    if (window) {
+      navigate(localizePath({ path: '/cite/' + randomIncidentId }), { replace: true });
+    }
+  }, []);
 
   return (
     <p>
