@@ -26,5 +26,9 @@
   "Reports added to Existing Incidents": "Rapports ajoutés aux incidents existants",
   "Total Report Contributions": "Contributions totales au rapport",
   "Organization Founding Sponsor": "Sponsor fondateur de l'association",
-  "forms": "Voir le <2>formulaire 990</2> et la <6>demande d'exonération fiscale</6> de la Responsible AI Collaborative."
+  "View the Responsible AI Collaborative's <2>Form 990</2> and <6>tax-exempt application.</6>": "Voir le <2>formulaire 990</2> et la <6>demande d'exonération fiscale</6> de la Responsible AI Collaborative.",
+  "The AI Incident Briefing": "Le briefing sur les incidents d'IA",
+  "Random Incidents": "Incidents aléatoires",
+  "Sign Up": "S'inscrire",
+  "With an account, you can follow specific <2>incidents</2> and <5>entities</5> of interest to you.": "Avec un compte, vous pouvez suivre des <2>incidents</2> et des <5>entités</5> spécifiques qui vous intéressent."
 }

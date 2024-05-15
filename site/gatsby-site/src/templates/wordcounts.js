@@ -33,7 +33,9 @@ const WordCounts = ({ pageContext }) => {
   return (
     <>
       <div className="titleWrapper">
-        <h1>Word Counts</h1>
+        <h1>
+          <Trans>Word Counts</Trans>
+        </h1>
       </div>
       <div className="styled-main-wrapper">
         <p className="paragraph">
