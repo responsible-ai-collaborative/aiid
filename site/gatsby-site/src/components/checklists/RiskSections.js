@@ -49,9 +49,11 @@ const RiskSections = ({
 
   return (
     <section>
-      <header className="flex mt-6">
-        <h2>Risks</h2>
-        <div className="flex gap-2 ml-auto">
+      <header className="flex flex-wrap mt-6">
+        <h2>
+          <Trans>Risks</Trans>
+        </h2>
+        <div className="flex flex-wrap gap-2 ml-auto">
           <Button
             color="light"
             onClick={() => {
