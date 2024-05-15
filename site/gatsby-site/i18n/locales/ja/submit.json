@@ -58,5 +58,7 @@
   "Progress saved!": "途中経過が保存されました！",
   "Your changes are saved. You can continue filling out the report or come back later.": "変更が保存されました。このままレポートの入力を続けても、あとで再開しても構いません",
   "Clear Form": "フォームをクリアする",
-  "Saving changes...": "変更を保存中..."
+  "Saving changes...": "変更を保存中...",
+  "Draft saved": "下書きが保存されました",
+  "Saving as draft...": "下書きとして保存中..."
 }
