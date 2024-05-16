@@ -147,4 +147,12 @@ describe('The Landing page', () => {
 
     cy.get('[data-cy="commit-sha"]').should('be.visible');
   });
+
+  it('Should load sidebar', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="sidebar-tree"]').should('be.visible');
+
+    cy.get('[data-cy="sidebar-tree"] li').should('have.length.greaterThan', 0);
+  });
 });
