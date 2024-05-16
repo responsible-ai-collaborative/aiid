@@ -111,6 +111,8 @@ jobs:
           REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
           REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
           REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
+          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
+          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
 
       - name: Cache build
         uses: actions/cache/save@v4
