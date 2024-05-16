@@ -47,7 +47,7 @@ async function verifyToken(token: string) {
     );
 
     if (!response.ok) {
-        throw new Error(`Error verifying token! \n\n ${await response.text()}`);
+        throw new Error(`Error verifying user token! \n\n ${await response.text()}`);
     }
 
     return response.json();
