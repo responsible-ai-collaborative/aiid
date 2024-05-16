@@ -5,15 +5,22 @@ export const ObjectIdScalar = new GraphQLScalarType({
     name: "ObjectId",
     description: "Mongo object id scalar type",
     parseValue(value: unknown) {
-        return new ObjectId(value as string); // value from the client input variables
+        return new ObjectId(value as string);
     },
     serialize(value: unknown) {
-        return (value as ObjectId).toHexString(); // value sent to the client
+
+        if (typeof value === 'string') {
+            return value;
+        }
+
+        return (value as ObjectId).toHexString();
     },
     parseLiteral(ast) {
+
         if (ast.kind === Kind.STRING) {
-            return new ObjectId(ast.value); // value from the client query
+            return new ObjectId(ast.value);
         }
+
         return null;
     },
 });
