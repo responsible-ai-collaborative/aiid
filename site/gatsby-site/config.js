@@ -20,10 +20,6 @@ const config = {
       db_collection: 'incidents',
     },
     graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
-    apiAppId: process.env.REALM_API_APP_ID,
-    apiGroupId: process.env.REALM_API_GROUP_ID,
-    apiPublicKey: process.env.REALM_API_PUBLIC_KEY,
-    apiPrivateKey: process.env.REALM_API_PRIVATE_KEY,
   },
   header: {
     logo: '/logos/White_Transparent_AIID_short.png',
