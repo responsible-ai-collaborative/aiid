@@ -20,6 +20,8 @@ import {
   faNoteSticky,
   faRotateLeft,
   faFilter,
+  faCaretRight,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
@@ -71,12 +73,16 @@ export default function RiskSection({
     <RiskDetails open={open} generated={generated}>
       <RiskHeaderSummary generated={generated} onClick={toggleOpen}>
         <HeaderItemsGroup>
+          <FontAwesomeIcon
+            className={`text-xl ${generated ? 'text-gray-700' : 'text-red-700'}`}
+            icon={open ? faCaretDown : faCaretRight}
+          />
           <EditableLabel
             title={risk.title}
             onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
             textClasses={`text-lg font-500 text-${
               generated ? 'gray' : 'red'
-            }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
+            }-700 pl-2 pr-1 whitespace-nowrap truncate max-w-full overflow-hidden inline-block`}
             disabled={generated || !userIsOwner}
             {...{ updateRisk }}
           />
@@ -92,13 +98,14 @@ export default function RiskSection({
               }}
               disabled={!userIsOwner}
             >
-              <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mr-1" />
+              <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mx-1 mb-[4px]" />
             </button>
           )}
         </HeaderItemsGroup>
-        <HeaderItemsGroup className="ml-auto mr-6">
+        <HeaderItemsGroup className="ml-auto mr-6 whitespace-nowrap max-w-full">
           {generated ? (
             <HeaderTextWithIcon
+              className="hidden md:block"
               title={t(
                 'This risk was generated according to ' +
                   'the tags applied to the system above. ' +
@@ -107,11 +114,12 @@ export default function RiskSection({
               )}
             >
               <FontAwesomeIcon icon={faComputer} className="mr-1" />
-              <span className="md:hidden">Auto</span>
-              <span className="hidden md:inline">Auto-generated</span>
+              <span className="xl:hidden">Auto</span>
+              <span className="hidden xl:inline">Auto-generated</span>
             </HeaderTextWithIcon>
           ) : (
             <HeaderTextWithIcon
+              className="whitespace-nowrap hidden md:block"
               title={t(
                 'This risk is edited manually. It will persist through changes to the applied tags.'
               )}
@@ -319,7 +327,7 @@ const RiskBody = (props) => (
   <div
     {...{
       ...props,
-      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className || ''}`,
+      className: `grid grid-cols-1 lg:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className || ''}`,
     }}
   >
     {props.children}
@@ -339,8 +347,6 @@ const RiskDetails = (props) => (
     open:p-3 md:open:p-6 open:rounded
     cursor-pointer
 
-    [&[open]>summary]:before:content-['⏷']
-          [&>summary]:before:content-['⏵']
     [&[open]>summary]:before:w-4
           [&>summary]:before:w-4
     ${props.className || ''}
@@ -357,7 +363,7 @@ const RiskHeaderSummary = (props) => (
       ...props,
       className: `
     absolute -top-4 left-1 md:left-3 
-    w-full px-2 
+    w-full sm:px-2 
     flex items-center
 
     before:w-4 
@@ -378,7 +384,9 @@ const HeaderItemsGroup = (props) => (
   <div
     {...{
       ...props,
-      className: `md:flex px-2 gap-2 bg-white items-center ${props.className || ''}`,
+      className: `md:flex px-2 gap-2 bg-white items-center whitespace-nowrap ${
+        props.className || ''
+      }`,
     }}
   >
     {props.children}
@@ -402,7 +410,7 @@ const HeaderTextWithIcon = (props) => (
 );
 
 const PrecedentsQuery = (props) => (
-  <div {...{ ...props, className: `col-span-2 ${props.className || ''}` }}>{props.children}</div>
+  <div {...{ ...props, className: `lg:col-span-2 ${props.className || ''}` }}>{props.children}</div>
 );
 
 const Precedents = (props) => (

@@ -256,6 +256,7 @@ const DeleteButton = (props) => (
       className: `
     text-sm text-center font-medium
     px-5 py-2.5 rounded-lg border
+    whitespace-nowrap
 
     text-red-700
     border-gray-300
