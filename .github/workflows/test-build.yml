@@ -113,6 +113,7 @@ jobs:
           REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
           REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
 
       - name: Cache build
         uses: actions/cache/save@v4
