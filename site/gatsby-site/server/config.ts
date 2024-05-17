@@ -12,6 +12,7 @@ const config: ConfigType = {
     REALM_GRAPHQL_API_KEY: process.env.REALM_GRAPHQL_API_KEY!,
     REALM_APP_ID: process.env.REALM_APP_ID!,
     MONGODB_CONNECTION_STRING: process.env.MONGODB_CONNECTION_STRING!,
+    ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: process.env.GATSBY_ROLLBAR_TOKEN!,
 }
 
 Object.keys(config).forEach((key) => {

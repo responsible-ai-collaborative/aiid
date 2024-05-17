@@ -3,6 +3,7 @@ import { schema } from '../../server/schema';
 import { context } from '../../server/context';
 import { Handler } from 'express';
 import { createHandler } from "graphql-http/lib/use/express";
+import * as reporter from '../../server/reporter';
 
 const cors = Cors();
 
@@ -30,9 +31,17 @@ export const config = {
 let graphqlMiddleware: Handler | null = null;
 
 export default async function handler(req: any, res: any) {
+
   if (!graphqlMiddleware) {
 
-    graphqlMiddleware = createHandler({ schema: schema, context: (req: any) => context({ req }) });
+    graphqlMiddleware = createHandler({
+      schema: schema,
+      context: (req: any) => context({ req }),
+      formatError: (error) => {
+        reporter.error(error);
+        return error;
+      }
+    });
   }
 
   // Manually run the cors middleware
@@ -47,5 +56,6 @@ export default async function handler(req: any, res: any) {
     });
   });
 
-  return graphqlMiddleware(req, res);
+
+  return graphqlMiddleware!(req, res);
 }

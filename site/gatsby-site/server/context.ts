@@ -1,6 +1,7 @@
 import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
 import config from "./config";
+import * as reporter from "./reporter";
 
 function extractToken(header: string) {
 
@@ -90,9 +91,18 @@ async function getUserFromHeader(header: string) {
 
 export const context = async ({ req }: { req: IncomingMessage }) => {
 
-    const user = await getUserFromHeader(req.headers.authorization!);
+    try {
 
-    const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
+        const user = await getUserFromHeader(req.headers.authorization!);
 
-    return { user, req, client };
+        const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
+
+        return { user, req, client };
+    }
+    catch (e) {
+
+        reporter.error(e as Error);
+
+        throw e;
+    }
 }

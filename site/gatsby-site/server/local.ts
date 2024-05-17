@@ -24,10 +24,6 @@ export const getSchema = () => {
     const mutation = new GraphQLObjectType({
         name: 'Mutation',
         fields: {
-            _: {
-                type: GraphQLString,
-                description: 'Placeholder field to avoid empty mutation type',
-            },
             ...quickAddsMutationFields,
         }
     });
@@ -38,17 +34,22 @@ export const getSchema = () => {
     })
 
 
-    const permissions = shield({
-        Query: {
-            "*": deny,
-            ...quickAddsPermissions.Query,
+    const permissions = shield(
+        {
+            Query: {
+                "*": deny,
+                ...quickAddsPermissions.Query,
 
+            },
+            Mutation: {
+                "*": deny,
+                ...quickAddsPermissions.Mutation,
+            },
         },
-        Mutation: {
-            "*": deny,
-            ...quickAddsPermissions.Mutation,
-        },
-    });
+        {
+            allowExternalErrors: process.env.NODE_ENV !== 'production',
+        }
+    );
 
     const schemaWithAuth = applyMiddleware(schema, permissions)
 
