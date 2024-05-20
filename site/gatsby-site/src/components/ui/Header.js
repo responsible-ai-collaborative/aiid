@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faRssSquare, faSearch } from '@fortawesome/free-solid-svg-icons';
 import {
   faSquareXTwitter,
   faGithubSquare,
@@ -81,7 +81,7 @@ const Header = ({ location = null }) => {
                   icon={faFacebookSquare}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
-                  title="Open RSS Feed"
+                  title="Open Facebook"
                 />
               </a>
               <a
@@ -95,7 +95,7 @@ const Header = ({ location = null }) => {
                   icon={faLinkedin}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
-                  title="Open RSS Feed"
+                  title="Open LinkedIn"
                 />
               </a>
               <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2">
@@ -189,6 +189,8 @@ const Header = ({ location = null }) => {
                 loginClassName="text-white hover:text-primary-blue"
                 location={location}
               />
+
+              <SearchBar />
             </div>
             <div
               id="navbar"
@@ -207,7 +209,43 @@ const Header = ({ location = null }) => {
   );
 };
 
-var Divider = ({ className }) => (
+const SearchBar = () => {
+  return (
+    <form
+      className="
+      flex
+      [&:hover>button]:mr-2
+      [&:hover>input]:block 
+      [&:hover>input]:w-[200px]
+      [&:hover>input]:px-4
+      [&:hover>input]:opacity-100
+    "
+    >
+      <button>
+        <FontAwesomeIcon
+          icon={faSearch}
+          color={'white'}
+          className="pointer fa fa-lg ml-4 mr-0 transition-all"
+          title="Search"
+        />
+      </button>
+      <input
+        type="text"
+        placeholder="Search Incidents"
+        style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+        className="
+          opacity-0 px-0 w-0 
+          transition-all
+          border-0 
+          text-white 
+          placeholder-opacity-30 placeholder-white 
+        "
+      />
+    </form>
+  );
+};
+
+const Divider = ({ className }) => (
   <span className={`divider hidden md:inline-block w-px h-[30px] bg-gray-400 ${className || ''}`} />
 );
 
