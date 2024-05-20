@@ -267,6 +267,7 @@ const plugins = [
         doc: require('./custom_types/doc.json'),
         footer: require('./custom_types/footer.json'),
         sidebar: require('./custom_types/sidebar.json'),
+        sidebar_item: require('./custom_types/sidebar_item.json'),
         sponsor: require('./custom_types/sponsor.json'),
       },
       routes: [

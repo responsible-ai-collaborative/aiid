@@ -1,0 +1,48 @@
+{
+    "Main" : {
+      "title" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Title"
+        }
+      },
+      "label" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Label",
+          "placeholder" : "Used to fetch the corresponding icon. This should be defined in treeNode.js (getIcon function). If left empty no icon will be displayed"
+        }
+      },
+      "url" : {
+        "type" : "Link",
+        "config" : {
+          "allowTargetBlank" : true,
+          "label" : "URL",
+          "placeholder" : "Menu Item URL if the link is external",
+          "select" : null
+        }
+      },
+      "path" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Path"
+        }
+      },
+      "items" : {
+        "type" : "Group",
+        "config" : {
+          "fields" : {
+            "item" : {
+              "type" : "Link",
+              "config" : {
+                "select" : "document",
+                "customtypes" : [ "sidebar" ],
+                "label" : "item"
+              }
+            }
+          },
+          "label" : "items"
+        }
+      }
+    }
+  }

@@ -35,6 +35,25 @@ const RiskSections = ({
   // that match manually-annotated risks by tags.
   const manualRiskIdentifiers = risks.map((risk) => tagsIdentifier(risk));
 
+  const bareUpdateRisk = updateRisk;
+
+  // If we alter the risk query tags,
+  // the id in openSections won't match anymore,
+  // so we have to wrap the update funcion
+  // to update the list of open sections if necessary.
+  updateRisk = (risk, attributeValueMap) => {
+    if (attributeValueMap.tags != risk.tags) {
+      setOpenSections((openSections) => {
+        const result = [...openSections];
+
+        result.splice(result.indexOf(tagsIdentifier(risk)), 1);
+        result.push([...attributeValueMap.tags].sort().join('___'));
+        return result;
+      });
+    }
+    bareUpdateRisk(risk, attributeValueMap);
+  };
+
   const riskSectionProps = {
     setFieldValue,
     submitForm,
