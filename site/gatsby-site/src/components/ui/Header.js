@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StaticQuery, graphql } from 'gatsby';
+import { StaticQuery, graphql, navigate } from 'gatsby';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare, faSearch } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -15,6 +16,7 @@ import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const Header = ({ location = null }) => {
   const [navCollapsed, setNavCollapsed] = useState(true);
@@ -210,37 +212,63 @@ const Header = ({ location = null }) => {
 };
 
 const SearchBar = () => {
+  const localizePath = useLocalizePath();
+
+  const { t } = useTranslation();
+
   return (
     <form
+      method="get"
+      action={localizePath({ path: '/apps/discover' })}
+      onSubmit={(event) => {
+        // Normally we want to use Gatsby's navigation
+        // instead of triggering a page load.
+        // However, in the edge-case where
+        // the user is already on the discover page
+        // but decides to use the global search,
+        // navigate() won't update the search,
+        // so we just trigger the default form action,
+        // reloading the page.
+        if (window.location.pathname != localizePath({ path: '/apps/discover/' })) {
+          event.preventDefault();
+          navigate(
+            localizePath({ path: '/apps/discover/?s=' + encodeURIComponent(event.target.s.value) })
+          );
+        }
+      }}
       className="
-      flex
-      [&:hover>button]:mr-2
-      [&:hover>input]:block 
-      [&:hover>input]:w-[200px]
+      flex flex-row-reverse
+      [&:hover>input]:w-48
       [&:hover>input]:px-4
+      [&:hover>input]:ml-2
       [&:hover>input]:opacity-100
     "
     >
+      <input
+        type="text"
+        name="s"
+        placeholder={t('Type Here')}
+        className="
+          w-0 px-0 opacity-0 
+          transition-all
+          border-0 
+          text-white bg-white/20
+          placeholder-opacity-30 placeholder-white 
+
+          focus:ml-2
+          focus:w-48
+          focus:px-4
+          focus:opacity-100
+        "
+      />
       <button>
         <FontAwesomeIcon
           icon={faSearch}
           color={'white'}
           className="pointer fa fa-lg ml-4 mr-0 transition-all"
-          title="Search"
+          title={t('Search')}
         />
       </button>
-      <input
-        type="text"
-        placeholder="Search Incidents"
-        style={{ background: 'rgba(255, 255, 255, 0.2)' }}
-        className="
-          opacity-0 px-0 w-0 
-          transition-all
-          border-0 
-          text-white 
-          placeholder-opacity-30 placeholder-white 
-        "
-      />
     </form>
   );
 };
