@@ -177,9 +177,9 @@ export default function RiskSection({
               <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <Trans>Precedents Filter</Trans>
             </Label>
-            <div className="bootstrap">
+            <div data-cy="risk_query-container" className="bootstrap">
               <Tags
-                id="risk_status"
+                id="risk_query"
                 value={risk.tags}
                 onChange={(value) => updateRisk(risk, { tags: value })}
                 options={tags}

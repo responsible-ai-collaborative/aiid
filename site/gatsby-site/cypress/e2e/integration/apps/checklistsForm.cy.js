@@ -245,4 +245,31 @@ describe('Checklists App Form', () => {
       cy.contains('Manual Test Risk').should('not.exist');
     });
   });
+
+  it('Should persist open state on editing query', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...riskSortingChecklist.data.checklist,
+        owner_id: user.userId,
+      });
+
+      interceptFindRisks(riskSortingRisks.data.risks);
+
+      cy.visit(url);
+
+      cy.wait(['@findChecklist']);
+
+      cy.wait(['@findRisks']);
+
+      cy.waitForStableDOM();
+
+      cy.contains('Distributional Artifacts').click();
+
+      cy.get('[data-cy="risk_query-container"] .rbt-input-main')
+        .first()
+        .type('CSETv0:Annotator:1{enter}');
+
+      cy.get('[data-cy="risk_query-container"]').parents('details').should('have.attr', 'open');
+    });
+  });
 });
