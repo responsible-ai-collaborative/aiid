@@ -36,8 +36,12 @@ const ignoredQueries = [
 ];
 
 const ignoredMutations = [
+    'deleteOneQuickadds',
     'deleteManyQuickadds',
     'insertOneQuickadd',
+    'insertManyQuickadds',
+    'updateOneQuickadd',
+    'updateManyQuickadds',
 ]
 
 export const getSchema = () => {

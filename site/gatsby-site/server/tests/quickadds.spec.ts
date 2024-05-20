@@ -1,6 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import request from 'supertest';
-import { login, seedCollection, startTestServer } from "./utils";
+import { login, readCollection, seedCollection, startTestServer } from "./utils";
 import { ObjectId } from "mongodb";
 import config from "../config";
 
@@ -128,6 +128,67 @@ describe('Quickadds', () => {
         expect(response.statusCode).toBe(200);
     });
 
+    it(`deleteOneQuickadd mutation`, async () => {
+
+        const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
+
+        await seedCollection({
+            name: 'quickadd',
+            docs: [
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3e'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 1,
+                    source_domain: "example1.com",
+                    url: "http://example1.com"
+                },
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3f'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 2,
+                    source_domain: "example2.com",
+                    url: "http://example2.com"
+                }
+            ]
+        });
+
+        await seedCollection({
+            name: 'users',
+            database: 'customData',
+            docs: [
+                {
+                    userId: authData.user_id,
+                    roles: ['admin']
+                }
+            ]
+        });
+
+        const mutationData = {
+            query: `
+            mutation {
+                deleteOneQuickadd(filter: { _id: { EQ: "5f5f3e3e3e3e3e3e3e3e3e3e" } }) {
+                  _id
+                }
+            }
+            `,
+        };
+
+        const response = await request(url)
+            .post('/')
+            .set('Authorization', `Bearer ${authData.access_token}`)
+            .send(mutationData)
+
+        expect(response.body.data).toMatchObject({
+            deleteOneQuickadd: {
+                _id: "5f5f3e3e3e3e3e3e3e3e3e3e",
+            }
+        });
+
+        const quickadds = await readCollection({ name: 'quickadd' });
+
+        expect(quickadds.length).toBe(1);
+    });
+
     it(`deleteManyQuickadds mutation`, async () => {
 
         const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
@@ -166,7 +227,7 @@ describe('Quickadds', () => {
         const mutationData = {
             query: `
             mutation {
-                deleteManyQuickadds(filter: { _id: { EQ: "5f5f3e3e3e3e3e3e3e3e3e3e" } }) {
+                deleteManyQuickadds(filter: {}) {
                   deletedCount
                 }
             }
@@ -180,9 +241,13 @@ describe('Quickadds', () => {
 
         expect(response.body.data).toMatchObject({
             deleteManyQuickadds: {
-                deletedCount: 1
+                deletedCount: 2
             }
         });
+
+        const quickadds = await readCollection({ name: 'quickadd' });
+
+        expect(quickadds.length).toBe(0);
 
     });
 
@@ -227,5 +292,78 @@ describe('Quickadds', () => {
         })
 
         expect(response.statusCode).toBe(200);
+
+
+        const quickadds = await readCollection({ name: 'quickadd' });
+
+        expect(quickadds.length).toBe(1);
+    });
+
+    it(`insertManyQuickadd mutation`, async () => {
+
+        const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
+
+        await seedCollection({
+            name: 'quickadd',
+            docs: []
+        });
+
+        await seedCollection({
+            name: 'users',
+            database: 'customData',
+            docs: [
+                {
+                    userId: authData.user_id,
+                    roles: ['admin']
+                }
+            ]
+        });
+
+        const mutationData = {
+            query: `
+            mutation Test($data: [QuickaddInsertType!]) {
+                insertManyQuickadds(data: $data) {
+                  insertedIds
+                }
+            }
+            `,
+            variables: {
+                data: [
+                    {
+                        _id: "664bdd9342edb1903a9e4764",
+                        date_submitted: "2020-09-14T00:00:00.000Z",
+                        incident_id: 1,
+                        source_domain: "example.com",
+                        url: "http://example.com"
+                    },
+                    {
+                        _id: "664bdd9342edb1903a9e4765",
+                        date_submitted: "2020-09-14T00:00:00.000Z",
+                        incident_id: 2,
+                        source_domain: "example2.com",
+                        url: "http://example2.com"
+                    },
+                ]
+            }
+        };
+
+        const response = await request(url)
+            .post('/')
+            .set('Authorization', `Bearer ${authData.access_token}`)
+            .send(mutationData);
+
+        expect(response.body.data.insertManyQuickadds).toEqual({
+            insertedIds: [
+                "664bdd9342edb1903a9e4764",
+                "664bdd9342edb1903a9e4765",
+            ],
+        })
+
+        expect(response.statusCode).toBe(200);
+
+
+        const quickadds = await readCollection({ name: 'quickadd' });
+
+        expect(quickadds.length).toBe(2);
     });
 });

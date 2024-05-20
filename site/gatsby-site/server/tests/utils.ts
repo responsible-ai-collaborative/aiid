@@ -36,6 +36,17 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
+export const readCollection = async ({ name, database = 'aiidprod' }: { name: string, database?: string }) => {
+
+    const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
+
+    const db = client.db(database);
+    const collection = db.collection(name);
+
+    return collection.find({}).toArray();
+}
+
+
 interface AuthResponse {
     access_token: string;
     refresh_token: string;
