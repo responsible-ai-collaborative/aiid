@@ -26,11 +26,12 @@ const userExecutor = buildHTTPExecutor({
 
 
 const ignoreTypes = [
-    'QuickAdd',
+    'Quickadd',
     'QuickaddQueryInput',
 ];
 
 const ignoredQueries = [
+    'quickadd',
     'quickadds',
 ];
 

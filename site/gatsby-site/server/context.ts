@@ -2,6 +2,7 @@ import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
 import config from "./config";
 import * as reporter from "./reporter";
+import { Context } from "./interfaces";
 
 function extractToken(header: string) {
 
@@ -89,7 +90,7 @@ async function getUserFromHeader(header: string) {
     return null;
 }
 
-export const context = async ({ req }: { req: IncomingMessage }) => {
+export const context = async ({ req }: { req: IncomingMessage }): Promise<Context> => {
 
     try {
 

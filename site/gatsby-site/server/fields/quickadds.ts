@@ -1,15 +1,16 @@
 import { MongoClient } from "mongodb";
 import { QuickAdd } from "../generated/graphql";
-import { GraphQLFieldConfigMap, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLObjectType, GraphQLString } from "graphql";
 import { GraphQLLong } from "graphql-scalars";
 import { getGraphQLInsertType, getGraphQLQueryArgs, getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { allow } from "graphql-shield";
 import { isAdmin } from "../rules";
 import { ObjectIdScalar } from "../scalars";
 import { DeleteManyPayload } from "../types";
+import { generateQueryFields } from "../utils";
 
 const QuickAddType = new GraphQLObjectType({
-    name: 'QuickAdd',
+    name: 'Quickadd',
     fields: {
         _id: {
             type: ObjectIdScalar,
@@ -31,19 +32,7 @@ const QuickAddType = new GraphQLObjectType({
 
 export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
-    quickadds: {
-        type: new GraphQLList(QuickAddType),
-        args: getGraphQLQueryArgs(QuickAddType),
-        resolve: getMongoDbQueryResolver(QuickAddType, async (filter, projection, options, obj, args, context) => {
-
-            const db = (context.client as MongoClient).db('aiidprod')
-            const collection = db.collection<QuickAdd>('quickadd');
-
-            const items = await collection.find(filter, projection).toArray();
-
-            return items;
-        }),
-    }
+    ...generateQueryFields({ collectionName: 'quickadd', Type: QuickAddType })
 }
 
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {

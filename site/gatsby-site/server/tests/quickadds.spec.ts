@@ -81,7 +81,7 @@ describe('Quickadds', () => {
 
         const queryData = {
             query: `
-            query ($filter: QuickAddFilterType!) {
+            query ($filter: QuickaddFilterType!) {
                 quickadds(filter: $filter) {
                   _id
                   date_submitted
@@ -195,7 +195,7 @@ describe('Quickadds', () => {
 
         const mutationData = {
             query: `
-            mutation Test($data: QuickAddInsertType!) {
+            mutation Test($data: QuickaddInsertType!) {
                 insertOneQuickadd(data: $data) {
                   _id
                   date_submitted
