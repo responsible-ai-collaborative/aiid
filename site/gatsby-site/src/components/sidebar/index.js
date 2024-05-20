@@ -16,24 +16,40 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
 
   const { sidebar } = useStaticQuery(graphql`
     {
-      sidebar: allPrismicSidebar(sort: { data: { order: ASC } }) {
-        edges {
-          node {
-            data {
-              title
-              label
-              url {
-                url
-              }
-              path
-              order
-              items {
-                item_title
-                item_label
-                item_url {
-                  url
+      sidebar: prismicSidebar {
+        id
+        data {
+          items {
+            item {
+              document {
+                ... on PrismicSidebarItem {
+                  id
+                  data {
+                    title
+                    label
+                    url {
+                      url
+                    }
+                    path
+                    items {
+                      item {
+                        document {
+                          ... on PrismicSidebarItem {
+                            id
+                            data {
+                              title
+                              label
+                              url {
+                                url
+                              }
+                              path
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
-                item_path
               }
             }
           }
@@ -44,9 +60,11 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
 
   let sidebarItems = [];
 
-  if (sidebar.edges.length > 0) {
-    sidebarItems = sidebar.edges.map((item) => {
-      const itemItems = item.node.data.items.map((item) => {
+  if (sidebar.data.items.length > 0) {
+    sidebarItems = sidebar.data.items.map((item) => {
+      item = item.item.document.data;
+      const itemItems = item.items.map((item) => {
+        item = item.item.document.data;
         return {
           url: item.item_url.url || item.item_path || '/',
           title: item.item_title,
@@ -56,9 +74,9 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
       });
 
       return {
-        url: item.node.data.url.url || item.node.data.path || '/',
-        title: item.node.data.title,
-        label: item.node.data.label,
+        url: item.url.url || item.path || '/',
+        title: item.title,
+        label: item.label,
         items: itemItems,
       };
     });
