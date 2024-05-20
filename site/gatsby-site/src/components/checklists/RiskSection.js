@@ -20,6 +20,8 @@ import {
   faNoteSticky,
   faRotateLeft,
   faFilter,
+  faCaretRight,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
@@ -71,6 +73,10 @@ export default function RiskSection({
     <RiskDetails open={open} generated={generated}>
       <RiskHeaderSummary generated={generated} onClick={toggleOpen}>
         <HeaderItemsGroup>
+          <FontAwesomeIcon
+            className={`text-xl ${generated ? 'text-gray-700' : 'text-red-700'}`}
+            icon={open ? faCaretDown : faCaretRight}
+          />
           <EditableLabel
             title={risk.title}
             onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
@@ -171,9 +177,9 @@ export default function RiskSection({
               <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <Trans>Precedents Filter</Trans>
             </Label>
-            <div className="bootstrap">
+            <div data-cy="risk_query-container" className="bootstrap">
               <Tags
-                id="risk_status"
+                id="risk_query"
                 value={risk.tags}
                 onChange={(value) => updateRisk(risk, { tags: value })}
                 options={tags}
@@ -341,8 +347,6 @@ const RiskDetails = (props) => (
     open:p-3 md:open:p-6 open:rounded
     cursor-pointer
 
-    [&[open]>summary]:before:content-['⏷']
-          [&>summary]:before:content-['⏵']
     [&[open]>summary]:before:w-4
           [&>summary]:before:w-4
     ${props.className || ''}
