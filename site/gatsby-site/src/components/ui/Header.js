@@ -51,7 +51,7 @@ const Header = ({ location = null }) => {
 
         const finalLogoLink = logo.link !== '' ? logo.link : 'https://incidentdatabase.ai/';
 
-        var SocialMediaIcons = () =>
+        const SocialMediaIcons = () =>
           config.header.social && (
             <div className="hidden md:flex wrap-0 gap-2 items-center">
               <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
@@ -112,7 +112,7 @@ const Header = ({ location = null }) => {
             </div>
           );
 
-        var HeaderLink = ({ className }) => (
+        const HeaderLink = ({ className }) => (
           <Link
             to={finalLogoLink}
             className={`hover:no-underline flex items-center ${className || ''}`}
@@ -133,13 +133,13 @@ const Header = ({ location = null }) => {
             </div>
             <Divider />
             <span
-              className="inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
+              className="hidden lg:inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
               dangerouslySetInnerHTML={{ __html: headerTitle }}
             />
           </Link>
         );
 
-        var SkipToContent = ({ className }) => (
+        const SkipToContent = ({ className }) => (
           <a
             href="#content"
             className={`
@@ -237,7 +237,7 @@ const SearchBar = () => {
         }
       }}
       className="
-      flex flex-row-reverse
+      hidden md:flex flex-row-reverse
       [&:hover>input]:w-48
       [&:hover>input]:px-4
       [&:hover>input]:ml-2
