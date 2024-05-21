@@ -27,6 +27,7 @@ const PrismicDocPost = ({ doc, location }) => {
     setHeaders(extractedHeaders);
   }, [doc.data.content]);
 
+  // Define custom components for Prismic Rich Text
   const components = {
     heading1: ({ children }) => <Heading1>{children}</Heading1>,
     heading2: ({ children }) => <Heading2>{children}</Heading2>,

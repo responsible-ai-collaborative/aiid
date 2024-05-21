@@ -1,5 +1,6 @@
 import slugify from 'slugify';
 
+// Extract headers from a content object
 export const extractHeaders = (content) => {
   const headers = [];
 
@@ -18,6 +19,7 @@ export const extractHeaders = (content) => {
   return headers;
 };
 
+// Extract headers from a rich text object and return an array of headers with id and title
 const extractHeadersFromRichText = (richText) => {
   const headers = [];
 

@@ -28,6 +28,7 @@ const PrismicBlogPost = ({ post, location }) => {
     setHeaders(extractedHeaders);
   }, [post.data.content]);
 
+  // Define custom components for Prismic Rich Text
   const components = {
     heading1: ({ children }) => <Heading1>{children}</Heading1>,
     heading2: ({ children }) => <Heading2>{children}</Heading2>,
@@ -53,7 +54,7 @@ const PrismicBlogPost = ({ post, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, [headers]);
+  }, [rightSidebar, headers]);
 
   return (
     <>
