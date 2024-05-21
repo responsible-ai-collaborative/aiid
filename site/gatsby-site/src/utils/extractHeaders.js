@@ -1,4 +1,4 @@
-import { slugify } from './slugify';
+import slugify from 'slugify';
 
 export const extractHeaders = (content) => {
   const headers = [];
@@ -31,7 +31,7 @@ const extractHeadersFromRichText = (richText) => {
       block.type === 'heading6'
     ) {
       headers.push({
-        id: slugify(block.text),
+        id: slugify(block.text, { lower: true }),
         title: block.text,
       });
     }
