@@ -53,7 +53,7 @@ const Header = ({ location = null }) => {
 
         const SocialMediaIcons = () =>
           config.header.social && (
-            <div className="hidden md:flex wrap-0 gap-2 items-center">
+            <div className="hidden xl:flex wrap-0 gap-2 items-center">
               <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
                 <FontAwesomeIcon
                   titleId="twitter"
@@ -133,7 +133,7 @@ const Header = ({ location = null }) => {
             </div>
             <Divider />
             <span
-              className="hidden lg:inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
+              className="hidden md:inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
               dangerouslySetInnerHTML={{ __html: headerTitle }}
             />
           </Link>
@@ -237,14 +237,33 @@ const SearchBar = () => {
         }
       }}
       className="
+      relative
       hidden md:flex flex-row-reverse
-      [&:hover>input]:w-48
-      [&:hover>input]:px-4
-      [&:hover>input]:ml-2
-      [&:hover>input]:opacity-100
+
+      [&:hover>#header-search-bar]:w-48
+      [&:hover>#header-search-bar]:px-4
+      [&:hover>#header-search-bar]:ml-2
+      [&:hover>#header-search-bar]:opacity-100
+
+      [&:focus-within>#header-search-bar]:w-48
+      [&:focus-within>#header-search-bar]:px-4
+      [&:focus-within>#header-search-bar]:ml-2
+      [&:focus-within>#header-search-bar]:opacity-100
+
+      [&:focus-within>#header-search-focus]:h-0
+      [&:focus-within>#header-search-focus]:w-0
     "
     >
+      <button
+        id="header-search-focus"
+        title={t('Expand Search')}
+        type="button"
+        className="absolute inset-0 w-8 h-full"
+        tabIndex="-1"
+      />
+
       <input
+        id="header-search-bar"
         type="text"
         name="s"
         placeholder={t('Type Here')}
