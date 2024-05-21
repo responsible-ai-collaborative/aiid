@@ -51,7 +51,7 @@ const Label = (props) => (
 // If the tags of a generated risk match those of a manual one,
 // we don't display it. This is used to make it easy
 // to compare the tags of risks and use them as object keys.
-const tagsIdentifier = (risk) => risk.tags.sort().join('___');
+const tagsIdentifier = (risk) => [...risk.tags].sort().join('___');
 
 const joinManualAndGeneratedRisks = (manualRisks, generatedRisks) => {
   const manualRiskTagIds = manualRisks.map((risk) => tagsIdentifier(risk));
@@ -256,6 +256,7 @@ const DeleteButton = (props) => (
       className: `
     text-sm text-center font-medium
     px-5 py-2.5 rounded-lg border
+    whitespace-nowrap
 
     text-red-700
     border-gray-300
