@@ -151,7 +151,7 @@ const IncidentsPage = ({ data, ...props }) => {
   return (
     <div className="w-full" {...props}>
       <div>
-        <Button.Group className="mb-4">
+        <Button.Group className="mb-4" data-cy="table-view">
           <Button
             color={`${selectedView === 'incidents' ? 'dark' : 'gray'}`}
             onClick={() => {

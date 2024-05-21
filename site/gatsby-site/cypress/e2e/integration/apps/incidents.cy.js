@@ -390,6 +390,36 @@ describe('Incidents App', () => {
       });
   });
 
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should switch between views', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="table-view"] button').contains('Issue Reports').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="row"]').should('have.length.at.least', 10);
+
+    cy.get('[data-cy="row"] td a')
+      .first()
+      .should('have.attr', 'href')
+      .and('match', /^\/reports\/\d+$/);
+
+    cy.get('[data-cy="table-view"] button')
+      .contains(/^Reports$/)
+      .click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="row"]').should('have.length.at.least', 10);
+
+    cy.get('[data-cy="row"] td a')
+      .first()
+      .should('have.attr', 'href')
+      .and('match', /^\/cite\/\d+#r\d+$/);
+  });
+
   conditionalIt(
     !Cypress.env('isEmptyEnvironment'),
     'Should navigate to the last page, and the first page',
