@@ -54,7 +54,7 @@ const PrismicBlogPost = ({ post, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, [rightSidebar, headers]);
+  }, [headers]);
 
   return (
     <>

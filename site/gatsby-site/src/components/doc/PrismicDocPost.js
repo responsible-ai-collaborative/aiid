@@ -53,7 +53,7 @@ const PrismicDocPost = ({ doc, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, [rightSidebar, headers]);
+  }, [headers]);
 
   return (
     <>
