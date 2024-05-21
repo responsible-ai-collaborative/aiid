@@ -390,6 +390,26 @@ describe('Incidents App', () => {
       });
   });
 
+  conditionalIt(
+    !Cypress.env('isEmptyEnvironment'),
+    'Should navigate to the last page, and the first page',
+    () => {
+      cy.visit(url);
+
+      cy.get('[data-cy="last-page"]').click();
+
+      cy.get('[data-cy="total-pages"]')
+        .invoke('text')
+        .then((text) => {
+          cy.get('[data-cy="current-page"]').should('have.text', text);
+        });
+
+      cy.get('[data-cy="first-page"]').click();
+
+      cy.get('[data-cy="current-page"]').should('have.text', '1');
+    }
+  );
+
   conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should switch between views', () => {
     cy.visit(url);
 
@@ -419,24 +439,4 @@ describe('Incidents App', () => {
       .should('have.attr', 'href')
       .and('match', /^\/cite\/\d+#r\d+$/);
   });
-
-  conditionalIt(
-    !Cypress.env('isEmptyEnvironment'),
-    'Should navigate to the last page, and the first page',
-    () => {
-      cy.visit(url);
-
-      cy.get('[data-cy="last-page"]').click();
-
-      cy.get('[data-cy="total-pages"]')
-        .invoke('text')
-        .then((text) => {
-          cy.get('[data-cy="current-page"]').should('have.text', text);
-        });
-
-      cy.get('[data-cy="first-page"]').click();
-
-      cy.get('[data-cy="current-page"]').should('have.text', '1');
-    }
-  );
 });
