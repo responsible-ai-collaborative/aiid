@@ -4,13 +4,39 @@ import DateLabel from 'components/ui/DateLabel';
 import { Link } from 'gatsby';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
-import Outline from 'components/Outline';
+import PrismicOutline from 'components/PrismicOutline';
+import { extractHeaders } from 'utils/extractHeaders';
+import {
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  Heading5,
+  Heading6,
+} from 'components/CustomHeaders';
 
 const PrismicBlogPost = ({ post, location }) => {
+  const [headers, setHeaders] = useState([]);
+
+  useEffect(() => {
+    const extractedHeaders = extractHeaders(post.data.content);
+
+    setHeaders(extractedHeaders);
+  }, [post.data.content]);
+
+  const components = {
+    heading1: ({ children }) => <Heading1>{children}</Heading1>,
+    heading2: ({ children }) => <Heading2>{children}</Heading2>,
+    heading3: ({ children }) => <Heading3>{children}</Heading3>,
+    heading4: ({ children }) => <Heading4>{children}</Heading4>,
+    heading5: ({ children }) => <Heading5>{children}</Heading5>,
+    heading6: ({ children }) => <Heading6>{children}</Heading6>,
+  };
+
   const metaTitle = post.data.metatitle;
 
   const canonicalUrl = config.gatsby.siteUrl + location.pathname;
@@ -19,7 +45,7 @@ const PrismicBlogPost = ({ post, location }) => {
 
   const rightSidebar = (
     <>
-      <Outline location={loc} />
+      <PrismicOutline location={loc} tableOfContents={headers} />
     </>
   );
 
@@ -27,7 +53,7 @@ const PrismicBlogPost = ({ post, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, []);
+  }, [headers]);
 
   return (
     <>
@@ -61,7 +87,7 @@ const PrismicBlogPost = ({ post, location }) => {
         </span>
       </div>
       <div className="prose">
-        <PrismicRichText field={post.data.content.richText} />
+        <PrismicRichText field={post.data.content.richText} components={components} />
       </div>
     </>
   );

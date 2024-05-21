@@ -1,19 +1,39 @@
+import React, { useEffect, useState } from 'react';
 import { PrismicRichText } from '@prismicio/react';
-import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Link } from 'gatsby';
-import React, { useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
-import Outline from 'components/Outline';
+import PrismicOutline from 'components/PrismicOutline';
 import Leaderboards from 'components/landing/Leaderboards';
 import Sponsors from 'components/landing/Sponsors';
-import { RichText } from 'prismic-reactjs';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import TranslationBadge from 'components/i18n/TranslationBadge';
+import { extractHeaders } from 'utils/extractHeaders';
+import {
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  Heading5,
+  Heading6,
+} from 'components/CustomHeaders';
 
 const PrismicDocPost = ({ doc, location }) => {
+  const [headers, setHeaders] = useState([]);
+
+  useEffect(() => {
+    const extractedHeaders = extractHeaders(doc.data.content);
+
+    setHeaders(extractedHeaders);
+  }, [doc.data.content]);
+
   const components = {
+    heading1: ({ children }) => <Heading1>{children}</Heading1>,
+    heading2: ({ children }) => <Heading2>{children}</Heading2>,
+    heading3: ({ children }) => <Heading3>{children}</Heading3>,
+    heading4: ({ children }) => <Heading4>{children}</Heading4>,
+    heading5: ({ children }) => <Heading5>{children}</Heading5>,
+    heading6: ({ children }) => <Heading6>{children}</Heading6>,
     Leaderboards: <Leaderboards />,
     Sponsors: <Sponsors />,
   };
@@ -24,7 +44,7 @@ const PrismicDocPost = ({ doc, location }) => {
 
   const rightSidebar = (
     <>
-      <Outline location={loc} />
+      <PrismicOutline location={loc} tableOfContents={headers} />
     </>
   );
 
@@ -32,11 +52,11 @@ const PrismicDocPost = ({ doc, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, []);
+  }, [rightSidebar, headers]);
 
   return (
     <>
-      <div className={'titleWrapper'}>
+      <div className="titleWrapper">
         <h1>{doc.data.title}</h1>
       </div>
       <div className="flex items-center mb-6 -mt-1 flex-wrap">
@@ -49,27 +69,16 @@ const PrismicDocPost = ({ doc, location }) => {
           </>
         )}
       </div>
-      {doc.data.content.map((content, index) => {
-        return (
-          <>
-            {content.markdown && (
-              <div className="prose">
-                {(() => {
-                  const rawMarkdown = RichText.asText(content.markdown.richText);
-
-                  return <ReactMarkdown remarkPlugins={[remarkGfm]}>{rawMarkdown}</ReactMarkdown>;
-                })()}
-              </div>
-            )}
-            {content.text && (
-              <div className="prose">
-                <PrismicRichText key={index} field={content.text.richText} />
-              </div>
-            )}
-            {content.component && <div className=" mt-4">{components[content.component]}</div>}
-          </>
-        );
-      })}
+      {doc.data.content.map((content, index) => (
+        <>
+          {content.text && (
+            <div className="prose">
+              <PrismicRichText key={index} field={content.text.richText} components={components} />
+            </div>
+          )}
+          {content.component && <div className="mt-4">{components[content.component]}</div>}
+        </>
+      ))}
     </>
   );
 };
