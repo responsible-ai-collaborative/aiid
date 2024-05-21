@@ -10,14 +10,7 @@ import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
 import PrismicOutline from 'components/PrismicOutline';
 import { extractHeaders } from 'utils/extractHeaders';
-import {
-  Heading1,
-  Heading2,
-  Heading3,
-  Heading4,
-  Heading5,
-  Heading6,
-} from 'components/CustomHeaders';
+import { Heading1, Heading2 } from 'components/CustomHeaders';
 
 const PrismicBlogPost = ({ post, location }) => {
   const [headers, setHeaders] = useState([]);
@@ -32,10 +25,6 @@ const PrismicBlogPost = ({ post, location }) => {
   const components = {
     heading1: ({ children }) => <Heading1>{children}</Heading1>,
     heading2: ({ children }) => <Heading2>{children}</Heading2>,
-    heading3: ({ children }) => <Heading3>{children}</Heading3>,
-    heading4: ({ children }) => <Heading4>{children}</Heading4>,
-    heading5: ({ children }) => <Heading5>{children}</Heading5>,
-    heading6: ({ children }) => <Heading6>{children}</Heading6>,
   };
 
   const metaTitle = post.data.metatitle;

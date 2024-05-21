@@ -24,14 +24,7 @@ const extractHeadersFromRichText = (richText) => {
   const headers = [];
 
   richText.forEach((block) => {
-    if (
-      block.type === 'heading1' ||
-      block.type === 'heading2' ||
-      block.type === 'heading3' ||
-      block.type === 'heading4' ||
-      block.type === 'heading5' ||
-      block.type === 'heading6'
-    ) {
+    if (block.type === 'heading1' || block.type === 'heading2') {
       headers.push({
         id: slugify(block.text, { lower: true }),
         title: block.text,
