@@ -366,4 +366,158 @@ describe('Quickadds', () => {
 
         expect(quickadds.length).toBe(2);
     });
+
+    it(`updateOneQuickadd mutation`, async () => {
+
+        const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
+
+        await seedCollection({
+            name: 'quickadd',
+            docs: [
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3e'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 1,
+                    source_domain: "example1.com",
+                    url: "http://example1.com"
+                },
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3f'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 2,
+                    source_domain: "example2.com",
+                    url: "http://example2.com"
+                }
+            ]
+        });
+
+        await seedCollection({
+            name: 'users',
+            database: 'customData',
+            docs: [
+                {
+                    userId: authData.user_id,
+                    roles: ['admin']
+                }
+            ]
+        });
+
+        const mutationData = {
+            query: `
+            mutation($filter: QuickaddFilterType!, $update: QuickaddUpdateType!) {
+                updateOneQuickadd(filter: $filter, update: $update) {
+                    url
+                }
+            }
+            `,
+            variables: {
+                "filter": {
+                    "_id": { EQ: '5f5f3e3e3e3e3e3e3e3e3e3f' },
+                },
+                "update": {
+                    "set": {
+                        "url": "https://edited.com"
+                    }
+                }
+            }
+        };
+
+        const response = await request(url)
+            .post('/')
+            .set('Authorization', `Bearer ${authData.access_token}`)
+            .send(mutationData);
+
+        expect(response.body.data.updateOneQuickadd).toMatchObject({
+            url: 'https://edited.com'
+        })
+
+        expect(response.statusCode).toBe(200);
+
+
+        const quickadds = await readCollection({ name: 'quickadd' });
+
+        expect(quickadds.length).toBe(2);
+    });
+
+    it(`updateManyQuickadds mutation`, async () => {
+
+        const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
+
+        await seedCollection({
+            name: 'quickadd',
+            docs: [
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3e'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 1,
+                    source_domain: "example1.com",
+                    url: "http://example1.com"
+                },
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e3f'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 1,
+                    source_domain: "example2.com",
+                    url: "http://example2.com"
+                },
+                {
+                    _id: new ObjectId('5f5f3e3e3e3e3e3e3e3e3e33'),
+                    date_submitted: "2020-09-14T00:00:00.000Z",
+                    incident_id: 2,
+                    source_domain: "example3.com",
+                    url: "http://shouldbeignored.com"
+                },
+            ],
+
+        });
+
+        await seedCollection({
+            name: 'users',
+            database: 'customData',
+            docs: [
+                {
+                    userId: authData.user_id,
+                    roles: ['admin']
+                }
+            ]
+        });
+
+        const mutationData = {
+            query: `
+            mutation($filter: QuickaddFilterType!, $update: QuickaddUpdateType!) {
+                updateManyQuickadds(filter: $filter, update: $update) {
+                    modifiedCount
+                    matchedCount
+                }
+            }
+            `,
+            variables: {
+                "filter": {
+                    "incident_id": { EQ: 1 },
+                },
+                "update": {
+                    "set": {
+                        "url": "https://edited.com"
+                    }
+                }
+            }
+        };
+
+        const response = await request(url)
+            .post('/')
+            .set('Authorization', `Bearer ${authData.access_token}`)
+            .send(mutationData);
+
+        expect(response.body.data.updateManyQuickadds).toMatchObject({
+            modifiedCount: 2,
+            matchedCount: 2
+        })
+
+        expect(response.statusCode).toBe(200);
+
+
+        const quickadds = await readCollection({ name: 'quickadd' });
+
+        expect(quickadds.length).toBe(3);
+    });
 });

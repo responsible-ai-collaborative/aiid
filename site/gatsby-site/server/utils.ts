@@ -114,7 +114,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 await collection.updateOne(filter, update, options);
 
-                const updated = await collection.findOne(filter);
+                const updated = await collection.findOne(filter, { ...options, projection });
 
                 return updated;
             }),
