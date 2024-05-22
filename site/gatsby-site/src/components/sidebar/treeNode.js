@@ -18,6 +18,7 @@ import {
   faUser,
   faSquareCheck,
   faShapes,
+  faDice,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -161,6 +162,7 @@ function getIcon(label, current = false) {
       checklists: (
         <FontAwesomeIcon titleId="entities" icon={faSquareCheck} className={fontAwesomeStyles} />
       ),
+      random: <FontAwesomeIcon titleId="random" icon={faDice} className={fontAwesomeStyles} />,
       spatial: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
