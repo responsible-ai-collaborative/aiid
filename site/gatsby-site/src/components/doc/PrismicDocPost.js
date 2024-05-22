@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { PrismicRichText } from '@prismicio/react';
 import { Link } from 'gatsby';
 import { Trans } from 'react-i18next';
@@ -12,13 +12,11 @@ import { extractHeaders } from 'utils/extractHeaders';
 import { Heading1, Heading2 } from 'components/CustomHeaders';
 
 const PrismicDocPost = ({ doc, location }) => {
-  const [headers, setHeaders] = useState([]);
+  let headers = [];
 
-  useEffect(() => {
-    const extractedHeaders = extractHeaders(doc.data.content);
+  const extractedHeaders = extractHeaders(doc.data.content);
 
-    setHeaders(extractedHeaders);
-  }, [doc.data.content]);
+  headers = extractedHeaders;
 
   // Define custom components for Prismic Rich Text
   const components = {
@@ -42,7 +40,7 @@ const PrismicDocPost = ({ doc, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, [headers]);
+  }, []);
 
   return (
     <>

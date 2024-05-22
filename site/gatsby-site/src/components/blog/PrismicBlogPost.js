@@ -4,7 +4,7 @@ import DateLabel from 'components/ui/DateLabel';
 import { Link } from 'gatsby';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
@@ -13,13 +13,11 @@ import { extractHeaders } from 'utils/extractHeaders';
 import { Heading1, Heading2 } from 'components/CustomHeaders';
 
 const PrismicBlogPost = ({ post, location }) => {
-  const [headers, setHeaders] = useState([]);
+  let headers = [];
 
-  useEffect(() => {
-    const extractedHeaders = extractHeaders(post.data.content);
+  const extractedHeaders = extractHeaders(post.data.content);
 
-    setHeaders(extractedHeaders);
-  }, [post.data.content]);
+  headers = extractedHeaders;
 
   // Define custom components for Prismic Rich Text
   const components = {
@@ -43,7 +41,7 @@ const PrismicBlogPost = ({ post, location }) => {
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
-  }, [headers]);
+  }, []);
 
   return (
     <>
