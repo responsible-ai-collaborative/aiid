@@ -3,9 +3,9 @@ import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, UPDATE_INCIDENT, UPDATE_INCIDENTS } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client/react/hooks';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
@@ -15,7 +15,6 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
 import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
-import { gql } from '@apollo/client';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
@@ -35,6 +34,8 @@ function EditCitePage(props) {
   const loading = loadingIncident || loadingEntities;
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const [updateIncidents] = useMutation(UPDATE_INCIDENTS);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -142,133 +143,26 @@ function EditCitePage(props) {
     }
   };
 
-  const relatedIncidentsQuery = gql`
-    query ProbablyRelatedIncidents($query: IncidentQueryInput) {
-      incident(query: $query) {
-        incident_id
-        title
-        editor_similar_incidents
-        editor_dissimilar_incidents
-      }
-    }
-  `;
-
-  const client = useApolloClient();
-
   const updateSimilarIncidentsReciprocal = async (similarIncidents, dissimilarIncidents) => {
-    similarIncidents.forEach(async (id) => {
-      const response = await client.query({
-        query: relatedIncidentsQuery,
-        variables: {
-          query: {
-            incident_id: id,
+    const updateIncidentSet = async (incidents, setKey) => {
+      if (incidents.length > 0) {
+        const querySet = {
+          [setKey]: [incident.incident_id],
+        };
+
+        await updateIncidents({
+          variables: {
+            query: { incident_id_in: incidents },
+            set: querySet,
           },
-        },
-      });
-
-      if (response?.data?.incident) {
-        const { editor_similar_incidents, editor_dissimilar_incidents } = response.data.incident;
-
-        if (!editor_similar_incidents.includes(incident.incident_id)) {
-          await client.mutate({
-            mutation: gql`
-              mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-                updateOneIncident(query: $query, set: $set) {
-                  incident_id
-                }
-              }
-            `,
-            variables: {
-              query: {
-                incident_id: response?.data?.incident.incident_id,
-              },
-              set: {
-                editor_similar_incidents: [...editor_similar_incidents, incident.incident_id],
-              },
-            },
-          });
-        }
-
-        if (editor_dissimilar_incidents.includes(incident.incident_id)) {
-          await client.mutate({
-            mutation: gql`
-              mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-                updateOneIncident(query: $query, set: $set) {
-                  incident_id
-                }
-              }
-            `,
-            variables: {
-              query: {
-                incident_id: response?.data?.incident.incident_id,
-              },
-              set: {
-                editor_dissimilar_incidents: editor_dissimilar_incidents.filter(
-                  (id) => id != incident.incident_id
-                ),
-              },
-            },
-          });
-        }
+        });
       }
-    });
+    };
 
-    dissimilarIncidents.forEach(async (id) => {
-      const response = await client.query({
-        query: relatedIncidentsQuery,
-        variables: {
-          query: {
-            incident_id: id,
-          },
-        },
-      });
-
-      if (response?.data?.incident) {
-        const { editor_similar_incidents, editor_dissimilar_incidents } = response.data.incident;
-
-        if (!editor_dissimilar_incidents.includes(incident.incident_id)) {
-          await client.mutate({
-            mutation: gql`
-              mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-                updateOneIncident(query: $query, set: $set) {
-                  incident_id
-                }
-              }
-            `,
-            variables: {
-              query: {
-                incident_id: response?.data?.incident.incident_id,
-              },
-              set: {
-                editor_dissimilar_incidents: [...editor_dissimilar_incidents, incident.incident_id],
-              },
-            },
-          });
-        }
-
-        if (editor_similar_incidents.includes(incident.incident_id)) {
-          await client.mutate({
-            mutation: gql`
-              mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-                updateOneIncident(query: $query, set: $set) {
-                  incident_id
-                }
-              }
-            `,
-            variables: {
-              query: {
-                incident_id: response?.data?.incident.incident_id,
-              },
-              set: {
-                editor_similar_incidents: editor_similar_incidents.filter(
-                  (id) => id != incident.incident_id
-                ),
-              },
-            },
-          });
-        }
-      }
-    });
+    await Promise.all([
+      updateIncidentSet(similarIncidents, 'editor_similar_incidents'),
+      updateIncidentSet(dissimilarIncidents, 'editor_dissimilar_incidents'),
+    ]);
   };
 
   return (
