@@ -14,7 +14,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
 import { format, fromUnixTime } from 'date-fns';
-import { Link } from 'gatsby';
 
 const ReportCard = ({
   item,
@@ -44,6 +43,12 @@ const ReportCard = ({
 
     if (card && expanded) {
       card.scrollIntoView();
+    }
+  };
+
+  const toggleReadMoreKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      toggleReadMore();
     }
   };
 
@@ -138,10 +143,14 @@ const ReportCard = ({
         </div>
         <div className="mt-0 cursor-default select-text">
           <div className="flex">
-            <Link to={`/reports/${item.report_number}`} className="hover:no-underline">
-              {reportTitle ? (
-                <>{reportTitle}</>
-              ) : (
+            {reportTitle ? (
+              <>{reportTitle}</>
+            ) : (
+              <button
+                className="w-3/4 text-left"
+                onClick={toggleReadMore}
+                onKeyDown={toggleReadMoreKeyDown}
+              >
                 <h5
                   className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
                     !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
@@ -149,8 +158,8 @@ const ReportCard = ({
                 >
                   <Trans ns="landing">{item.title}</Trans>
                 </h5>
-              )}
-            </Link>
+              </button>
+            )}
           </div>
           <div className="flex justify-between flex-wrap">
             <WebArchiveLink url={item.url} className="text-dark-gray">
