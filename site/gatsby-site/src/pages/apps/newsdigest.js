@@ -13,13 +13,13 @@ import {
   faTag,
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { useUserContext } from 'contexts/userContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
-export default function NewsSearchPage(props) {
+export default function NewsSearchPage() {
   const { t } = useTranslation(['submit']);
 
   const { isRole } = useUserContext();
@@ -162,16 +162,13 @@ export default function NewsSearchPage(props) {
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>{title}</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>
           <Trans>{title}</Trans>
         </h1>
       </div>
       <p>
-        <Trans>
+        <Trans i18nKey={'newsDigestDescription'}>
           This digest shows news stories from around the web matching a set of AI-related{' '}
           <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
             <FontAwesomeIcon icon={faTag} className="pointer fa mr-1" fixedWidth />
@@ -485,4 +482,20 @@ var stats = (list) => {
   const m = mean(list);
 
   return [m, stdDev(list, m)];
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const title = t('Related News Digest');
+
+  const metaDescription = t(
+    'This summary features AI-related news, identified and matched to our database via NLP for textual similarity, including potential incidents and highlighted harm keywords.'
+  );
+
+  return <HeadContent path={pathname} metaTitle={title} metaDescription={metaDescription} />;
 };

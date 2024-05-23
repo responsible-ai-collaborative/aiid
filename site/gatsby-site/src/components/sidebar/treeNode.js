@@ -16,6 +16,9 @@ import {
   faTable,
   faBuilding,
   faUser,
+  faSquareCheck,
+  faShapes,
+  faDice,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -124,68 +127,86 @@ function getIcon(label, current = false) {
     ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
   `;
 
-  return {
-    welcome: <FontAwesomeIcon titleId="welcome" icon={faDoorOpen} className={fontAwesomeStyles} />,
-    discover: <FontAwesomeIcon titleId="discover" icon={faSearch} className={fontAwesomeStyles} />,
-    submit: <FontAwesomeIcon titleId="submit" icon={faPlusCircle} className={fontAwesomeStyles} />,
-    leaderboard: (
-      <FontAwesomeIcon titleId="leaderboard" icon={faMedal} className={fontAwesomeStyles} />
-    ),
-    wordcounts: (
-      <FontAwesomeIcon titleId="wordcounts" icon={faSortAlphaDown} className={fontAwesomeStyles} />
-    ),
-    blog: <FontAwesomeIcon titleId="blog" icon={faNewspaper} className={fontAwesomeStyles} />,
-    taxonomies: (
-      <FontAwesomeIcon titleId="taxonomies" icon={faChartPie} className={fontAwesomeStyles} />
-    ),
-    incidents: <FontAwesomeIcon titleId="incidents" icon={faTable} className={fontAwesomeStyles} />,
-    entities: (
-      <FontAwesomeIcon titleId="entities" icon={faBuilding} className={fontAwesomeStyles} />
-    ),
-    user: <FontAwesomeIcon titleId="user" icon={faUser} className={fontAwesomeStyles} />,
-    spatial: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        viewBox="0 0 8.4666665 8.4666669"
-        fill="currentColor"
-        stroke="none"
-        className={`
+  return (
+    {
+      welcome: (
+        <FontAwesomeIcon titleId="welcome" icon={faDoorOpen} className={fontAwesomeStyles} />
+      ),
+      discover: (
+        <FontAwesomeIcon titleId="discover" icon={faSearch} className={fontAwesomeStyles} />
+      ),
+      submit: (
+        <FontAwesomeIcon titleId="submit" icon={faPlusCircle} className={fontAwesomeStyles} />
+      ),
+      leaderboard: (
+        <FontAwesomeIcon titleId="leaderboard" icon={faMedal} className={fontAwesomeStyles} />
+      ),
+      wordcounts: (
+        <FontAwesomeIcon
+          titleId="wordcounts"
+          icon={faSortAlphaDown}
+          className={fontAwesomeStyles}
+        />
+      ),
+      blog: <FontAwesomeIcon titleId="blog" icon={faNewspaper} className={fontAwesomeStyles} />,
+      taxonomies: (
+        <FontAwesomeIcon titleId="taxonomies" icon={faChartPie} className={fontAwesomeStyles} />
+      ),
+      incidents: (
+        <FontAwesomeIcon titleId="incidents" icon={faTable} className={fontAwesomeStyles} />
+      ),
+      entities: (
+        <FontAwesomeIcon titleId="entities" icon={faBuilding} className={fontAwesomeStyles} />
+      ),
+      user: <FontAwesomeIcon titleId="user" icon={faUser} className={fontAwesomeStyles} />,
+      checklists: (
+        <FontAwesomeIcon titleId="entities" icon={faSquareCheck} className={fontAwesomeStyles} />
+      ),
+      random: <FontAwesomeIcon titleId="random" icon={faDice} className={fontAwesomeStyles} />,
+      spatial: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          viewBox="0 0 8.4666665 8.4666669"
+          fill="currentColor"
+          stroke="none"
+          className={`
           w-6 h-6 shrink-0
           ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
           group-hover:text-white dark:group-hover:text-white
         `}
-      >
-        <circle id="c1" cx="1.4249661" cy="3.3814588" r="1.2797676" />
-        <circle id="c2" cx="2.6276002" cy="6.9394135" r="1.2797676" />
-        <circle id="c3" cx="4.7233200" cy="4.6742487" r="1.2797676" />
-        <circle id="c4" cx="6.6127176" cy="6.8885708" r="1.2797676" />
-        <circle id="c5" cx="6.1704326" cy="1.5272532" r="1.2797676" />
-      </svg>
-    ),
-    newsdigest: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        viewBox="0 0 12 12"
-        fill="currentColor"
-        stroke="none"
-        className={`
+        >
+          <circle id="c1" cx="1.4249661" cy="3.3814588" r="1.2797676" />
+          <circle id="c2" cx="2.6276002" cy="6.9394135" r="1.2797676" />
+          <circle id="c3" cx="4.7233200" cy="4.6742487" r="1.2797676" />
+          <circle id="c4" cx="6.6127176" cy="6.8885708" r="1.2797676" />
+          <circle id="c5" cx="6.1704326" cy="1.5272532" r="1.2797676" />
+        </svg>
+      ),
+      newsdigest: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          viewBox="0 0 12 12"
+          fill="currentColor"
+          stroke="none"
+          className={`
           w-6 h-6 shrink-0
           ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
           group-hover:text-white dark:group-hover:text-white
         `}
-      >
-        <rect x="0" y="2" width="5.5" height="2" rx="1" />
-        <rect x="0" y="5" width="5.5" height="2" rx="1" />
-        <rect x="0" y="8" width="5.5" height="2" rx="1" />
+        >
+          <rect x="0" y="2" width="5.5" height="2" rx="1" />
+          <rect x="0" y="5" width="5.5" height="2" rx="1" />
+          <rect x="0" y="8" width="5.5" height="2" rx="1" />
 
-        <rect x="6.5" y="2" width="5.5" height="2" rx="1" />
-        <rect x="6.5" y="5" width="5.5" height="2" rx="1" />
-        <rect x="6.5" y="8" width="5.5" height="2" rx="1" />
-      </svg>
-    ),
-  }[label];
+          <rect x="6.5" y="2" width="5.5" height="2" rx="1" />
+          <rect x="6.5" y="5" width="5.5" height="2" rx="1" />
+          <rect x="6.5" y="8" width="5.5" height="2" rx="1" />
+        </svg>
+      ),
+    }[label] || <FontAwesomeIcon titleId={label} icon={faShapes} className={fontAwesomeStyles} />
+  );
 }
 
 export default TreeNode;

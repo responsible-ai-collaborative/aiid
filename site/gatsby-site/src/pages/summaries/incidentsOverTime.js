@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import { TextInput, Label } from 'flowbite-react';
 import { format } from 'date-fns';
@@ -24,7 +24,7 @@ const countByDate = (items, series, startDate) =>
     return points.concat([newPoint]);
   }, []);
 
-export default function IncidentsOverTimePage({ data, ...props }) {
+export default function IncidentsOverTimePage({ data }) {
   const metaTitle = 'Incidents Over Time';
 
   const [startDate, setStartDate] = useState(new Date(2020, 10, 7));
@@ -68,10 +68,6 @@ export default function IncidentsOverTimePage({ data, ...props }) {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{metaTitle}</h1>
       </div>
@@ -118,6 +114,25 @@ export default function IncidentsOverTimePage({ data, ...props }) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Incidents Over Time';
+
+  const metaDescription = 'View how the number of incidents and reports has changed over time.';
+
+  return (
+    <HeadContent
+      path={pathname}
+      metaTitle={metaTitle}
+      metaType="website"
+      metaDescription={metaDescription}
+    />
+  );
+};
 
 export const pageQuery = graphql`
   query IncidentsOverTime {

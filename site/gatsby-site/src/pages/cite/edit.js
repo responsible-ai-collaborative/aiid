@@ -57,6 +57,7 @@ const reportFields = [
   'url',
   'embedding',
   'inputs_outputs',
+  'quiet',
 ];
 
 function EditCitePage(props) {
@@ -66,7 +67,7 @@ function EditCitePage(props) {
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
-  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
+  const [incidentId] = useQueryParam('incident_id');
 
   const {
     data: reportData,
@@ -280,11 +281,24 @@ function EditCitePage(props) {
           <h1 className="mb-5">
             <Trans>Editing Incident Report {{ reportNumber }}</Trans>
           </h1>
-          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
-            <Button outline={true} color={'light'}>
-              <Trans>Back to Report {{ reportNumber }}</Trans>
-            </Button>
-          </Link>
+          {incidentId ? (
+            <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
+              <Button outline={true} color={'light'}>
+                <Trans>Back to Report {{ reportNumber }}</Trans>
+              </Button>
+            </Link>
+          ) : (
+            <Link
+              to={`/apps/incidents/?view=${
+                reportData?.report?.is_incident_report ? 'reports' : 'issueReports'
+              }`}
+              className="hover:no-underline mb-5"
+            >
+              <Button outline={true} color={'light'}>
+                <Trans>Back to Report List</Trans>
+              </Button>
+            </Link>
+          )}
         </div>
       )}
 

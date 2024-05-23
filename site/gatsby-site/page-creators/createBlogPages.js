@@ -73,7 +73,7 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
 
     createPage({
       path: `/blog/${post.data.slug}`,
-      component: path.resolve('./src/templates/blogPost.js'),
+      component: path.resolve('./src/templates/prismicBlogPost.js'),
       context: {
         slug: post.data.slug,
       },

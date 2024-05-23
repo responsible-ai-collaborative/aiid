@@ -17,7 +17,7 @@ import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import { useLogReportHistory } from '../../hooks/useLogReportHistory';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function FlagModalContent({ reportNumber }) {
@@ -36,7 +36,7 @@ function FlagModalContent({ reportNumber }) {
 
     const updated = {
       flag: true,
-      date_modified: format(now, 'yyyy-MM-dd'),
+      date_modified: now,
       epoch_date_modified: getUnixTime(now),
     };
 
@@ -110,7 +110,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
           titleId="report-source"
           icon={faNewspaper}
           className="fa-newspaper"
-          title="Read the Source"
+          title={t('Read the Source')}
         />
       </WebArchiveLink>
 
@@ -203,7 +203,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
             titleId="report-hashtag"
             icon={faHashtag}
             className="fa-hashtag"
-            title="Incident ID"
+            title={t('Incident ID')}
           />
           {item.incident_id}
         </CustomButton>

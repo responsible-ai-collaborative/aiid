@@ -14,6 +14,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import NewsletterSignup from 'components/landing/NewsletterSignup';
 import Card from 'elements/Card';
+import HeadContent from 'components/HeadContent';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -63,7 +64,7 @@ const SignUp = (props) => {
           <Trans ns="landing">Sign Up</Trans>
         </h5>
         <p>
-          <Trans>
+          <Trans ns="landing">
             With an account, you can follow specific{' '}
             <LocalizedLink to="/apps/discover/?display=details&hideDuplicates=1&is_incident_report=true">
               incidents
@@ -235,6 +236,18 @@ const SignUp = (props) => {
         <NewsletterSignup />
       </div>
     </div>
+  );
+};
+
+export const Head = (props) => {
+  const { t } = useTranslation();
+
+  return (
+    <HeadContent
+      metaTitle={t('AIID - Sign Up')}
+      path={props.location.pathname}
+      metaDescription={t('Sign up for an account')}
+    />
   );
 };
 

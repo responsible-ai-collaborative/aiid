@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Select, TextInput, Textarea, Card } from 'flowbite-react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 
 import Tags from 'components/forms/Tags';
-import { Label, risksEqual, statusIcon, statusColor } from 'utils/checklists';
+import { Label, statusIcon, statusColor, tagsIdentifier } from 'utils/checklists';
 import EditableLabel from 'components/checklists/EditableLabel';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,6 +20,8 @@ import {
   faNoteSticky,
   faRotateLeft,
   faFilter,
+  faCaretRight,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function RiskSection({
@@ -31,18 +33,19 @@ export default function RiskSection({
   updateRisk,
   changeSort,
   userIsOwner,
+  open,
+  setOpenSections,
+  generated,
 }) {
   const { t } = useTranslation();
 
-  const [showPrecedentFilters, setShowPrecedentFilters] = useState(!risk.generated);
+  const [showPrecedentFilters, setShowPrecedentFilters] = useState(!generated);
 
-  const [precedents, setPrecedents] = useState([]);
+  const precedents = allPrecedents.filter((precedent) =>
+    precedent.tags.some((tag) => risk.tags.includes(tag))
+  );
 
   const debouncedUpdateRisk = useRef(debounce(updateRisk, 2000)).current;
-
-  useEffect(() => {
-    updatePrecedents({ risk, setPrecedents, allPrecedents });
-  }, [JSON.stringify(risk.tags), JSON.stringify(searchTags)]);
 
   const progress =
     ['risk_notes', 'severity', 'likelihood'].reduce(
@@ -50,35 +53,59 @@ export default function RiskSection({
       0
     ) / 3;
 
+  const toggleOpen = (event) => {
+    event.preventDefault();
+
+    const clickedBackground = event.target.tagName == 'SUMMARY';
+
+    const clickedTitle = event.target.getAttribute('data-cy') == 'risk-title-no-edit';
+
+    if (clickedBackground || clickedTitle) {
+      const thisId = tagsIdentifier(risk);
+
+      setOpenSections((openSections) =>
+        open ? openSections.filter((id) => id != thisId) : openSections.concat(thisId)
+      );
+    }
+  };
+
   return (
-    <RiskDetails open={risk.startClosed ? undefined : true} generated={risk.generated}>
-      <RiskHeaderSummary generated={risk.generated}>
+    <RiskDetails open={open} generated={generated}>
+      <RiskHeaderSummary generated={generated} onClick={toggleOpen}>
         <HeaderItemsGroup>
+          <FontAwesomeIcon
+            className={`text-xl ${generated ? 'text-gray-700' : 'text-red-700'}`}
+            icon={open ? faCaretDown : faCaretRight}
+          />
           <EditableLabel
             title={risk.title}
             onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
             textClasses={`text-lg font-500 text-${
-              risk.generated ? 'gray' : 'red'
-            }-700 px-2 whitespace-nowrap text-ellipsis overflow-hidden inline-block`}
-            disabled={!userIsOwner}
+              generated ? 'gray' : 'red'
+            }-700 pl-2 pr-1 whitespace-nowrap truncate max-w-full overflow-hidden inline-block`}
+            disabled={generated || !userIsOwner}
             {...{ updateRisk }}
           />
-          {!risk.generated && userIsOwner && (
+          {!generated && userIsOwner && (
             <button
-              onClick={() =>
-                window.confirm(t('Delete risk "{{riskTitle}}" ?', { riskTitle: risk.title })) &&
-                removeRisk((r) => risksEqual(risk, r))
-              }
+              onClick={() => {
+                if (window.confirm(t('Delete risk "{{riskTitle}}" ?', { riskTitle: risk.title }))) {
+                  removeRisk((r) => risk.id == r.id);
+                  setOpenSections((openSections) =>
+                    openSections.filter((id) => id != tagsIdentifier(risk))
+                  );
+                }
+              }}
               disabled={!userIsOwner}
             >
-              <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mr-1" />
+              <FontAwesomeIcon title="Delete Risk" icon={faTrash} className="mx-1 mb-[4px]" />
             </button>
           )}
         </HeaderItemsGroup>
-        <HeaderItemsGroup className="ml-auto mr-6">
-          {risk.generated ? (
+        <HeaderItemsGroup className="ml-auto mr-6 whitespace-nowrap max-w-full">
+          {generated ? (
             <HeaderTextWithIcon
-              onClick={changeSort(byProperty('generated'))}
+              className="hidden md:block"
               title={t(
                 'This risk was generated according to ' +
                   'the tags applied to the system above. ' +
@@ -87,12 +114,12 @@ export default function RiskSection({
               )}
             >
               <FontAwesomeIcon icon={faComputer} className="mr-1" />
-              <span className="md:hidden">Auto</span>
-              <span className="hidden md:inline">Auto-generated</span>
+              <span className="xl:hidden">Auto</span>
+              <span className="hidden xl:inline">Auto-generated</span>
             </HeaderTextWithIcon>
           ) : (
             <HeaderTextWithIcon
-              onClick={changeSort(byProperty('generated'))}
+              className="whitespace-nowrap hidden md:block"
               title={t(
                 'This risk is edited manually. It will persist through changes to the applied tags.'
               )}
@@ -150,9 +177,9 @@ export default function RiskSection({
               <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <Trans>Precedents Filter</Trans>
             </Label>
-            <div className="bootstrap">
+            <div data-cy="risk_query-container" className="bootstrap">
               <Tags
-                id="risk_status"
+                id="risk_query"
                 value={risk.tags}
                 onChange={(value) => updateRisk(risk, { tags: value })}
                 options={tags}
@@ -300,7 +327,7 @@ const RiskBody = (props) => (
   <div
     {...{
       ...props,
-      className: `grid grid-cols-1 md:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className || ''}`,
+      className: `grid grid-cols-1 lg:grid-cols-2 gap-4 md:min-h-[24rem] ${props.className || ''}`,
     }}
   >
     {props.children}
@@ -320,8 +347,6 @@ const RiskDetails = (props) => (
     open:p-3 md:open:p-6 open:rounded
     cursor-pointer
 
-    [&[open]>summary]:before:content-['⏷']
-          [&>summary]:before:content-['⏵']
     [&[open]>summary]:before:w-4
           [&>summary]:before:w-4
     ${props.className || ''}
@@ -338,7 +363,7 @@ const RiskHeaderSummary = (props) => (
       ...props,
       className: `
     absolute -top-4 left-1 md:left-3 
-    w-full px-2 
+    w-full sm:px-2 
     flex items-center
 
     before:w-4 
@@ -359,7 +384,9 @@ const HeaderItemsGroup = (props) => (
   <div
     {...{
       ...props,
-      className: `md:flex px-2 gap-2 bg-white items-center ${props.className || ''}`,
+      className: `md:flex px-2 gap-2 bg-white items-center whitespace-nowrap ${
+        props.className || ''
+      }`,
     }}
   >
     {props.children}
@@ -383,7 +410,7 @@ const HeaderTextWithIcon = (props) => (
 );
 
 const PrecedentsQuery = (props) => (
-  <div {...{ ...props, className: `col-span-2 ${props.className || ''}` }}>{props.children}</div>
+  <div {...{ ...props, className: `lg:col-span-2 ${props.className || ''}` }}>{props.children}</div>
 );
 
 const Precedents = (props) => (
@@ -417,20 +444,6 @@ const PrecedentsList = (props) => (
     {props.children}
   </div>
 );
-
-const updatePrecedents = async ({ risk, setPrecedents, allPrecedents }) => {
-  const updatedPrecedents = [];
-
-  for (const precedent of allPrecedents) {
-    for (const tag of precedent.tags) {
-      if ((risk.tags || []).includes(tag)) {
-        updatedPrecedents.push(precedent);
-        break;
-      }
-    }
-  }
-  setPrecedents(updatedPrecedents);
-};
 
 function ProgressCircle({ progress, className }) {
   const r = 20;

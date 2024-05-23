@@ -24,7 +24,13 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleArrowLeft,
+  faCircleArrowRight,
+  faArrowLeft,
+  faArrowRight,
+  faDice,
+} from '@fortawesome/free-solid-svg-icons';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
@@ -176,11 +182,50 @@ function CiteTemplate({
               </div>
             )}
             {!readOnly && (
-              <SocialShareButtons
-                metaTitle={metaTitle}
-                path={locationPathName}
-                page="cite"
-              ></SocialShareButtons>
+              <>
+                <SocialShareButtons
+                  metaTitle={metaTitle}
+                  path={locationPathName}
+                  page="cite"
+                ></SocialShareButtons>
+
+                <div className="ml-4 text-lg">
+                  <a
+                    data-cy="header-previous-incident-link"
+                    title={t('Previous Incident')}
+                    className={`${
+                      prevIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                    } h-[50px] leading-[50px]`}
+                    href={
+                      prevIncident ? localizePath({ path: `/cite/${prevIncident}` }) : undefined
+                    }
+                  >
+                    <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
+                  </a>
+                  <a
+                    data-cy="header-random-incident-link"
+                    title={t('Random Incident')}
+                    className={`${
+                      nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                    } h-[50px] leading-[50px]`}
+                    href={localizePath({ path: `/random/` })}
+                  >
+                    <FontAwesomeIcon icon={faDice} className="mr-2" />
+                  </a>
+                  <a
+                    data-cy="header-next-incident-link"
+                    title={t('Next Incident')}
+                    className={`${
+                      nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                    } h-[50px] leading-[50px]`}
+                    href={
+                      nextIncident ? localizePath({ path: `/cite/${nextIncident}` }) : undefined
+                    }
+                  >
+                    <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
+                  </a>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -356,12 +401,13 @@ function CiteTemplate({
                 className="xl:hidden"
               />
             )}
-
             {!readOnly && (
               <div className="flex justify-between">
                 <Button
                   color={'gray'}
-                  href={localizePath({ path: `/cite/${prevIncident}` })}
+                  {...(prevIncident
+                    ? { href: localizePath({ path: `/cite/${prevIncident}` }) }
+                    : {})}
                   disabled={!prevIncident}
                   className="hover:no-underline"
                 >
@@ -370,7 +416,9 @@ function CiteTemplate({
                 </Button>
                 <Button
                   color={'gray'}
-                  href={localizePath({ path: `/cite/${nextIncident}` })}
+                  {...(nextIncident
+                    ? { href: localizePath({ path: `/cite/${nextIncident}` }) }
+                    : {})}
                   disabled={!nextIncident}
                   className="hover:no-underline"
                 >

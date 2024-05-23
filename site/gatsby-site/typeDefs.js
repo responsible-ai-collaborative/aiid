@@ -83,6 +83,7 @@ const typeDefs = `
         report_number: Int
         is_incident_report: Boolean
         flag: Boolean
+        quiet: Boolean
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -190,6 +191,12 @@ const typeDefs = `
     }
 
     type mongodbTranslationsReportsFr implements Node {
+        title: String
+        text: String
+        report_number: Int
+    }
+
+    type mongodbTranslationsReportsJa implements Node {
         title: String
         text: String
         report_number: Int

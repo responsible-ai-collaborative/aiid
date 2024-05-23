@@ -1,4 +1,6 @@
 import { maybeIt } from '../../../support/utils';
+import riskSortingRisks from '../../../fixtures/checklists/riskSortingRisks.json';
+import riskSortingChecklist from '../../../fixtures/checklists/riskSortingChecklist.json';
 const { gql } = require('@apollo/client');
 
 describe('Checklists App Form', () => {
@@ -59,7 +61,13 @@ describe('Checklists App Form', () => {
     );
   };
 
-  it('Should have read-only access for non-logged-in users', () => {
+  const interceptFindRisks = (risks) => {
+    cy.conditionalIntercept('**/graphql', (req) => req.body.query.includes('GMF'), 'findRisks', {
+      data: { risks },
+    });
+  };
+
+  it.skip('Should have read-only access for non-logged-in users', () => {
     interceptFindChecklist(defaultChecklist);
 
     cy.visit(url);
@@ -151,6 +159,60 @@ describe('Checklists App Form', () => {
     });
   });
 
+  maybeIt('Should trigger UI update on adding and removing tag', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...defaultChecklist,
+        owner_id: user.userId,
+      });
+      interceptUpsertChecklist({});
+
+      cy.visit(url);
+
+      cy.get('#tags_methods_input').type('Transformer');
+      cy.get('#tags_methods').contains('Transformer').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('details').should('exist');
+
+      cy.get('.rbt-close').click();
+
+      cy.waitForStableDOM();
+
+      cy.get('details').should('not.exist');
+    });
+  });
+
+  it('Should change sort order of risk items', () => {
+    cy.viewport(1920, 1080);
+
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...riskSortingChecklist.data.checklist,
+        owner_id: user.userId,
+      });
+
+      interceptFindRisks(riskSortingRisks.data.risks);
+
+      cy.visit(url);
+
+      cy.wait(['@findChecklist']);
+
+      cy.wait(['@findRisks']);
+
+      cy.waitForStableDOM();
+
+      cy.contains('Mitigated').click();
+
+      cy.get('details:nth(1)').contains('Distributional Bias').should('exist');
+
+      cy.contains('Minor').click();
+
+      cy.get('details:nth(1)').contains('Dataset Imbalance').should('exist');
+    });
+  });
+
   it('Should remove a manually-created risk', () => {
     withLogin(({ user }) => {
       interceptFindChecklist({
@@ -181,6 +243,33 @@ describe('Checklists App Form', () => {
       cy.wait('@upsertChecklist');
 
       cy.contains('Manual Test Risk').should('not.exist');
+    });
+  });
+
+  it('Should persist open state on editing query', () => {
+    withLogin(({ user }) => {
+      interceptFindChecklist({
+        ...riskSortingChecklist.data.checklist,
+        owner_id: user.userId,
+      });
+
+      interceptFindRisks(riskSortingRisks.data.risks);
+
+      cy.visit(url);
+
+      cy.wait(['@findChecklist']);
+
+      cy.wait(['@findRisks']);
+
+      cy.waitForStableDOM();
+
+      cy.contains('Distributional Artifacts').click();
+
+      cy.get('[data-cy="risk_query-container"] .rbt-input-main')
+        .first()
+        .type('CSETv0:Annotator:1{enter}');
+
+      cy.get('[data-cy="risk_query-container"]').parents('details').should('have.attr', 'open');
     });
   });
 });

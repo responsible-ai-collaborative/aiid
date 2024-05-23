@@ -5,6 +5,9 @@ import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans, useTranslation } from 'react-i18next';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import { Button } from 'flowbite-react';
+import { useUserContext } from 'contexts/userContext';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function IncidentsCell({ cell }) {
   const { row, column } = cell;
@@ -160,6 +163,10 @@ const sortByCount = (rowA, rowB, id) => {
 export default function EntitiesTable({ data, className = '', ...props }) {
   const { t } = useTranslation(['entities']);
 
+  const { loading: loadingUser, isRole } = useUserContext();
+
+  const localizePath = useLocalizePath();
+
   const defaultColumn = React.useMemo(
     () => ({
       className: 'w-[120px]',
@@ -261,8 +268,28 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
     ];
 
+    if (!loadingUser && isRole('admin')) {
+      columns.push({
+        title: t('Actions'),
+        accessor: 'actions',
+        disableFilters: true,
+        disableSortBy: true,
+        className: 'min-w-[120px]',
+        Cell: ({ row: { values } }) => (
+          <Button
+            className="hover:no-underline"
+            color="light"
+            href={localizePath({ path: `/entities/edit?entity_id=${values.id}` })}
+            data-cy="edit-entity-btn"
+          >
+            <Trans>Edit</Trans>
+          </Button>
+        ),
+      });
+    }
+
     return columns;
-  }, []);
+  }, [loadingUser]);
 
   const table = useTable(
     {

@@ -5,7 +5,7 @@ import { Spinner } from 'flowbite-react';
 import VariantsTable from '../../components/variants/VariantsTable';
 import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
-import AiidHelmet from '../../components/AiidHelmet';
+import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { getVariantStatus, isCompleteReport } from '../../utils/variants';
 
@@ -64,17 +64,12 @@ export default function IncidentsPage(props) {
     }
   }, [variantsData]);
 
-  const { t } = useTranslation(['variants']);
-
   const setLoading = (loading) => {
     setIsLoading(loading);
   };
 
   return (
     <div className="w-full" {...props}>
-      <AiidHelmet path={props.location.pathname}>
-        <title>{t('Variants')}</title>
-      </AiidHelmet>
       <div className="relative ml-6">
         {isLoading && (
           <div className="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
@@ -97,3 +92,17 @@ export default function IncidentsPage(props) {
     </div>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation(['variants']);
+
+  const metaTitle = t('Variants');
+
+  const metaDescription = t('View all the variants in the database.');
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
+};
