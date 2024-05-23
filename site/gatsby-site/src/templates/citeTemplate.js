@@ -29,6 +29,7 @@ import {
   faCircleArrowRight,
   faArrowLeft,
   faArrowRight,
+  faDice,
 } from '@fortawesome/free-solid-svg-icons';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
@@ -200,6 +201,16 @@ function CiteTemplate({
                     }
                   >
                     <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
+                  </a>
+                  <a
+                    data-cy="header-random-incident-link"
+                    title={t('Random Incident')}
+                    className={`${
+                      nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                    } h-[50px] leading-[50px]`}
+                    href={localizePath({ path: `/random/` })}
+                  >
+                    <FontAwesomeIcon icon={faDice} className="mr-2" />
                   </a>
                   <a
                     data-cy="header-next-incident-link"

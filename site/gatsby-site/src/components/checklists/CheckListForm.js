@@ -232,7 +232,9 @@ export default function CheckListForm({
           <ExportDropdown checklist={values} generatedRisks={generatedRisks} />
         </HeaderControls>
       </Header>
-      <Info>This feature is in beta. Data entered is not guaranteed to be retained while in development.</Info>
+      <Info>
+        This feature is in beta. Data entered is not guaranteed to be retained while in development.
+      </Info>
       <Info>Checklists are not private data. They will appear in public database snapshots.</Info>
       <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
       <section>
