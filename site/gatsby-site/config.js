@@ -88,8 +88,10 @@ const config = {
       { title: 'Table View', label: 'incidents', url: '/apps/incidents/', items: [] },
       { title: 'Entities', label: 'entities', url: '/entities/', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies/', items: [] },
+      { title: 'Random Incident', label: 'random', url: '/random/', items: [] },
       { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts/', items: [] },
       { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit/', items: [] },
+      { title: 'Risk Checklists', label: 'checklists', url: '/apps/checklists/', items: [] },
       {
         title: 'Submission Leaderboard',
         label: 'leaderboard',
