@@ -96,7 +96,7 @@ export default {
         filter: { incident_id: { EQ: 2 } },
         result: { deletedCount: 3 },
     },
-    permissions: {
+    roles: {
         insertOne: [],
         insertMany: ['admin'],
         updateOne: ['admin'],

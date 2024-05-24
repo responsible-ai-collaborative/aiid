@@ -59,11 +59,19 @@ fixtures.forEach((collection) => {
             };
 
 
-            const response = await makeRequest(url, mutationData, collection.permissions.insertOne);
+            const response = await makeRequest(url, mutationData, collection.roles.insertOne);
 
             expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne.result)
             expect(response.statusCode).toBe(200);
+
+
+            if (collection.roles.insertOne.length) {
+
+                const response = await makeRequest(url, mutationData, ['invalid']);
+                expect(response.body.errors[0].message).toBe('not authorized');
+            }
         });
+
 
         it(`${insertManyFieldName} mutation`, async () => {
 
@@ -75,15 +83,23 @@ fixtures.forEach((collection) => {
                 ${insertManyFieldName}(data: $data) {
                   insertedIds
                 }
+
             }
             `,
                 variables: { data: collection.testInsertMany.insert }
             };
 
-            const response = await makeRequest(url, mutationData, collection.permissions.insertMany);
+            const response = await makeRequest(url, mutationData, collection.roles.insertMany);
 
             expect(response.body.data[insertManyFieldName]).toMatchObject(collection.testInsertMany.result);
             expect(response.statusCode).toBe(200);
+
+
+            if (collection.roles.insertMany.length) {
+
+                const response = await makeRequest(url, mutationData, ['invalid']);
+                expect(response.body.errors[0].message).toBe('not authorized');
+            }
         });
 
         it(`${updateOneFieldName} mutation`, async () => {
@@ -105,10 +121,17 @@ fixtures.forEach((collection) => {
                 },
             }
 
-            const response = await makeRequest(url, mutationData, collection.permissions.updateOne);
+            const response = await makeRequest(url, mutationData, collection.roles.updateOne);
 
             expect(response.body.data[updateOneFieldName]).toMatchObject(collection.testUpdateOne.result)
             expect(response.statusCode).toBe(200);
+            
+
+            if (collection.roles.updateOne.length) {
+
+                const response = await makeRequest(url, mutationData, ['invalid']);
+                expect(response.body.errors[0].message).toBe('not authorized');
+            }
         });
 
         it(`${updateManyFieldName} mutation`, async () => {
@@ -130,10 +153,17 @@ fixtures.forEach((collection) => {
                 }
             };
 
-            const response = await makeRequest(url, mutationData, collection.permissions.updateMany);
+            const response = await makeRequest(url, mutationData, collection.roles.updateMany);
 
             expect(response.body.data[updateManyFieldName]).toMatchObject(collection.testUpdateMany.result);
             expect(response.statusCode).toBe(200);
+
+
+            if (collection.roles.updateMany.length) {
+
+                const response = await makeRequest(url, mutationData, ['invalid']);
+                expect(response.body.errors[0].message).toBe('not authorized');
+            }
         });
 
         it(`${deleteOneFieldName} mutation`, async () => {
@@ -151,9 +181,15 @@ fixtures.forEach((collection) => {
                 variables: { filter: collection.testDeleteOne.filter }
             };
 
-            const response = await makeRequest(url, mutationData, collection.permissions.deleteOne);
+            const response = await makeRequest(url, mutationData, collection.roles.deleteOne);
 
             expect(response.body.data[deleteOneFieldName]).toMatchObject(collection.testDeleteOne.result);
+
+            if (collection.roles.deleteOne.length) {
+
+                const response = await makeRequest(url, mutationData, ['invalid']);
+                expect(response.body.errors[0].message).toBe('not authorized');
+            }
         });
 
         it(`${deleteManyFieldName} mutation`, async () => {
@@ -171,9 +207,16 @@ fixtures.forEach((collection) => {
                 variables: { filter: collection.testDeleteMany.filter }
             };
 
-            const response = await makeRequest(url, mutationData, collection.permissions.deleteMany);
+            const response = await makeRequest(url, mutationData, collection.roles.deleteMany);
 
             expect(response.body.data[deleteManyFieldName]).toMatchObject(collection.testDeleteMany.result);
+
+
+            if (collection.roles.deleteMany.length) {
+
+                const response = await makeRequest(url, mutationData, ['invalid']);
+                expect(response.body.errors[0].message).toBe('not authorized');
+            }
         });
     });
 });

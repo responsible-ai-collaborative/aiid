@@ -84,7 +84,7 @@ export const anonRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
-export const authRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
+export const authRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }, roles: string[]) => {
 
     const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
 
@@ -94,9 +94,9 @@ export const authRequest = async (url: string, data: { variables?: Record<string
         docs: [
             {
                 userId: authData.user_id,
-                roles: ['admin']
+                roles,
             }
-        ]
+        ],
     });
 
     return supertest(url)
@@ -105,10 +105,10 @@ export const authRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
-export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }, permissions?: String[],) => {
+export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }, roles?: string[],) => {
 
-    if (permissions && permissions.length) {
-        return authRequest(url, data);
+    if (roles && roles.length) {
+        return authRequest(url, data, roles);
     }
 
     return anonRequest(url, data);
