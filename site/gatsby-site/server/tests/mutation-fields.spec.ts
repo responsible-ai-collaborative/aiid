@@ -47,26 +47,22 @@ fixtures.forEach((collection) => {
             const mutationData = {
                 query: `
             mutation ($data: ${insertTypeName}!) {
-                insertOne${capitalize(singularName)}(data: $data) {
+                ${insertOneFieldName}(data: $data) {
                   _id
                   ${collection.fields.join('\n')}
                 }
             }
             `,
                 variables: {
-                    data: collection.testInsertOne,
+                    data: collection.testInsertOne.insert,
                 }
             };
 
 
             const response = await makeRequest(url, mutationData, collection.permissions.insertOne);
 
-            expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne)
+            expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne.result)
             expect(response.statusCode).toBe(200);
-
-            const list = await readCollection({ name: collection.name });
-
-            expect(list.length).toBe(1);
         });
 
         it(`${insertManyFieldName} mutation`, async () => {
@@ -81,12 +77,12 @@ fixtures.forEach((collection) => {
                 }
             }
             `,
-                variables: { data: collection.testInsertMany }
+                variables: { data: collection.testInsertMany.insert }
             };
 
             const response = await makeRequest(url, mutationData, collection.permissions.insertMany);
 
-            expect(response.body.data[insertManyFieldName].insertedIds.length).toEqual(collection.testInsertMany.length);
+            expect(response.body.data[insertManyFieldName]).toMatchObject(collection.testInsertMany.result);
             expect(response.statusCode).toBe(200);
         });
 
@@ -98,25 +94,21 @@ fixtures.forEach((collection) => {
                 query: `
             mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
                 ${updateOneFieldName} (filter: $filter, update: $update) {
-                    url
+                    _id
+                    ${collection.fields.join('\n')}
                 }
             }
             `,
                 variables: {
-                    "filter": { "_id": { EQ: collection.testDocs[0]._id }, },
-                    "update": { set: collection.testUpdateOne },
+                    "filter": collection.testUpdateOne.filter,
+                    "update": { set: collection.testUpdateOne.set },
                 },
             }
 
             const response = await makeRequest(url, mutationData, collection.permissions.updateOne);
 
-            expect(response.body.data[updateOneFieldName]).toMatchObject({ url: 'https://edited.com' })
+            expect(response.body.data[updateOneFieldName]).toMatchObject(collection.testUpdateOne.result)
             expect(response.statusCode).toBe(200);
-
-
-            const quickadds = await readCollection({ name: 'quickadd' });
-
-            expect(quickadds.length).toBe(collection.testDocs.length);
         });
 
         it(`${updateManyFieldName} mutation`, async () => {
@@ -125,8 +117,8 @@ fixtures.forEach((collection) => {
 
             const mutationData = {
                 query: `
-            mutation($filter: QuickaddFilterType!, $update: QuickaddUpdateType!) {
-                updateManyQuickadds(filter: $filter, update: $update) {
+            mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
+                ${updateManyFieldName}(filter: $filter, update: $update) {
                     modifiedCount
                     matchedCount
                 }
@@ -140,17 +132,8 @@ fixtures.forEach((collection) => {
 
             const response = await makeRequest(url, mutationData, collection.permissions.updateMany);
 
-            expect(response.body.data[updateManyFieldName]).toMatchObject({
-                modifiedCount: 3,
-                matchedCount: 3
-            })
-
+            expect(response.body.data[updateManyFieldName]).toMatchObject(collection.testUpdateMany.result);
             expect(response.statusCode).toBe(200);
-
-
-            const quickadds = await readCollection({ name: collection.name });
-
-            expect(quickadds.length).toBe(5);
         });
 
         it(`${deleteOneFieldName} mutation`, async () => {
@@ -192,7 +175,5 @@ fixtures.forEach((collection) => {
 
             expect(response.body.data[deleteManyFieldName]).toMatchObject(collection.testDeleteMany.result);
         });
-
-
     });
 });

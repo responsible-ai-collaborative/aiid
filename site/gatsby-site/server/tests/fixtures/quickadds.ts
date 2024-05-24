@@ -45,35 +45,49 @@ export default {
             url: "http://example5.com"
         },
     ],
-    testUpdateOne:
-    {
-        url: 'https://edited.com',
+    testUpdateOne: {
+        filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
+        set: { url: 'https://edited.com' },
+        result: { url: 'https://edited.com' }
     },
     testUpdateMany: {
         filter: { incident_id: { EQ: 2 } },
         set: { url: 'https://edited.com' },
+        result: { modifiedCount: 3, matchedCount: 3 }
     },
-    testInsertOne:
-    {
-        date_submitted: "2020-09-14T00:00:00.000Z",
-        incident_id: 1,
-        source_domain: "example.com",
-        url: "http://example.com"
-    },
-    testInsertMany: [
-        {
+    testInsertOne: {
+        insert: {
             date_submitted: "2020-09-14T00:00:00.000Z",
             incident_id: 1,
             source_domain: "example.com",
             url: "http://example.com"
         },
-        {
+        result: {
+            _id: expect.any(String),
             date_submitted: "2020-09-14T00:00:00.000Z",
-            incident_id: 2,
-            source_domain: "example2.com",
-            url: "http://example2.com"
+            incident_id: 1,
+            source_domain: "example.com",
+            url: "http://example.com"
         }
-    ],
+    },
+    testInsertMany: {
+        insert: [
+            {
+                date_submitted: "2020-09-14T00:00:00.000Z",
+                incident_id: 1,
+                source_domain: "example.com",
+                url: "http://example.com"
+            },
+            {
+                date_submitted: "2020-09-14T00:00:00.000Z",
+                incident_id: 2,
+                source_domain: "example2.com",
+                url: "http://example2.com"
+            }
+        ],
+        result: { insertedIds: [expect.any(String), expect.any(String)] }
+    }
+    ,
     testDeleteOne: {
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
