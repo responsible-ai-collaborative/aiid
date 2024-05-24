@@ -43,6 +43,14 @@ const collections = [{
             url: "http://example2.com"
         }
     ],
+    testDeleteOne: {
+        filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
+        result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
+    },
+    testDeleteMany: {
+        filter: { incident_id: { EQ: 2 } },
+        result: { deletedCount: 3 },
+    },
     testDocs: [
         {
             _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -91,8 +99,10 @@ const collections = [{
 }]
 
 const collection = collections[0];
+
 const singularName = singularize(collection.name);
 const pluralName = pluralize(collection.name);
+
 const filterName = `${capitalize(singularName)}FilterType`;
 const insertName = `${capitalize(singularName)}InsertType`;
 const updateName = `${capitalize(singularName)}UpdateType`;
@@ -102,6 +112,9 @@ const insertManyName = `insertMany${capitalize(pluralName)}`;
 
 const updateOneName = `updateOne${capitalize(singularName)}`;
 const updateManyName = `updateMany${capitalize(pluralName)}`;
+
+const deleteOneName = `deleteOne${capitalize(singularName)}`;
+const deleteManyName = `deleteMany${capitalize(pluralName)}`;
 
 describe('Generated mutation fields', () => {
     let server: ApolloServer, url: string;
@@ -229,4 +242,46 @@ describe('Generated mutation fields', () => {
 
         expect(quickadds.length).toBe(5);
     });
+
+    it(`${deleteOneName} mutation`, async () => {
+
+        await seedCollection({ name: collection.name, docs: collection.testDocs });
+
+        const mutationData = {
+            query: `
+            mutation Test($filter: ${filterName}!) {
+                ${deleteOneName}(filter: $filter) {
+                  _id
+                }
+            }
+            `,
+            variables: { filter: collection.testDeleteOne.filter }
+        };
+
+        const response = await makeRequest(url, mutationData, collection.permissions.deleteOne);
+
+        expect(response.body.data[deleteOneName]).toMatchObject(collection.testDeleteOne.result);
+    });
+
+    it(`${deleteManyName} mutation`, async () => {
+
+        await seedCollection({ name: collection.name, docs: collection.testDocs });
+
+        const mutationData = {
+            query: `
+            mutation Test($filter: ${filterName}!) {
+                ${deleteManyName}(filter: $filter) {
+                  deletedCount
+                }
+            }
+            `,
+            variables: { filter: collection.testDeleteMany.filter }
+        };
+
+        const response = await makeRequest(url, mutationData, collection.permissions.deleteMany);
+
+        expect(response.body.data[deleteManyName]).toMatchObject(collection.testDeleteMany.result);
+    });
+
+
 });

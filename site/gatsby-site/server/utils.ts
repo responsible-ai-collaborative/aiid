@@ -4,10 +4,22 @@ import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 
+
+export function pluralize(s: string) {
+    return s.endsWith('s') ? s : s + 's';
+}
+
+export function singularize(s: string) {
+    return s.endsWith('s') ? s.slice(0, -1) : s;
+}
+
 export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any> }): GraphQLFieldConfigMap<any, any> {
 
+    const singularName = singularize(collectionName);
+    const pluralName = pluralize(collectionName);
+
     return {
-        [`${collectionName}`]: {
+        [`${singularName}`]: {
             type: Type,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context: Context) => {
@@ -15,13 +27,13 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                const items = await collection.find(filter, { ...options, projection }).limit(1).toArray();
+                const item = await collection.findOne(filter, options);
 
-                return items;
+                return item;
             }),
         },
 
-        [`${collectionName}s`]: {
+        [`${pluralName}`]: {
             type: new GraphQLList(Type),
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context: Context) => {
@@ -29,7 +41,7 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                const items = await collection.find(filter, { ...options, projection }).toArray();
+                const items = await collection.find(filter, options).toArray();
 
                 return items;
             }),
@@ -40,7 +52,7 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any> }): GraphQLFieldConfigMap<any, any> {
 
     return {
-        [`deleteOne${capitalize(collectionName)}`]: {
+        [`deleteOne${capitalize(singularize(collectionName))}`]: {
             type: Type,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context: Context) => {
@@ -56,7 +68,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             }),
         },
 
-        [`deleteMany${capitalize(collectionName)}s`]: {
+        [`deleteMany${capitalize(pluralize(collectionName))}`]: {
             type: DeleteManyPayload,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context: Context) => {
@@ -73,7 +85,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         },
 
 
-        [`insertOne${capitalize(collectionName)}`]: {
+        [`insertOne${capitalize(singularize(collectionName))}`]: {
             type: Type,
             args: { data: { type: getGraphQLInsertType(Type) } },
             resolve: async (_: unknown, { data }, context: Context) => {
@@ -90,7 +102,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         },
 
 
-        [`insertMany${capitalize(collectionName)}s`]: {
+        [`insertMany${capitalize(pluralize(collectionName))}`]: {
             type: InsertManyPayload,
             args: { data: { type: new GraphQLList(getGraphQLInsertType(Type)) } },
             resolve: async (_: unknown, { data }, context: Context) => {
@@ -104,7 +116,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             },
         },
 
-        [`updateOne${capitalize(collectionName)}`]: {
+        [`updateOne${capitalize(singularize(collectionName))}`]: {
             type: Type,
             args: getGraphQLUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {
@@ -114,13 +126,13 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 await collection.updateOne(filter, update, options);
 
-                const updated = await collection.findOne(filter, { ...options, projection });
+                const updated = await collection.findOne(filter);
 
                 return updated;
             }),
         },
 
-        [`updateMany${capitalize(collectionName)}s`]: {
+        [`updateMany${capitalize(pluralize(collectionName))}`]: {
             type: UpdateManyPayload,
             args: getGraphQLUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {

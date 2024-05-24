@@ -4,6 +4,8 @@ import { context } from "../context";
 import { MongoClient } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
+import supertest from 'supertest';
+
 
 export const startTestServer = async () => {
 
@@ -73,4 +75,41 @@ export const login = async (username: string, password: string) => {
     const data: AuthResponse = await response.json();
 
     return data;
+}
+
+export const anonRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
+
+    return supertest(url)
+        .post('/')
+        .send(data);
+}
+
+export const authRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
+
+    const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
+
+    await seedCollection({
+        name: 'users',
+        database: 'customData',
+        docs: [
+            {
+                userId: authData.user_id,
+                roles: ['admin']
+            }
+        ]
+    });
+
+    return supertest(url)
+        .post('/')
+        .set('Authorization', `Bearer ${authData.access_token}`)
+        .send(data);
+}
+
+export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }, permissions?: String[],) => {
+
+    if (permissions && permissions.length) {
+        return authRequest(url, data);
+    }
+
+    return anonRequest(url, data);
 }
