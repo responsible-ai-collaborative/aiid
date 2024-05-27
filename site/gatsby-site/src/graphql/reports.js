@@ -209,7 +209,7 @@ export const FIND_REPORTS = gql`
 
 export const FIND_REPORTS_TABLE = gql`
   query FindReports($query: ReportQueryInput!) {
-    reports(query: $query, sort: { report_number: DESC }, limit: 999) {
+    reports(query: $query, sortBy: REPORT_NUMBER_DESC, limit: 9999) {
       _id
       submitters
       date_published
