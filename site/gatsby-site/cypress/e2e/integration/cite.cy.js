@@ -860,7 +860,7 @@ describe('Cite pages', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'UpdateIncidents' &&
-        req.body.variables.set.editor_similar_incidents == 10,
+        req.body.variables.set.editor_similar_incidents == 50,
       'updateSimilarIncidents',
       {
         data: {
@@ -876,7 +876,7 @@ describe('Cite pages', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'UpdateIncidents' &&
-        req.body.variables.set.editor_dissimilar_incidents == 10,
+        req.body.variables.set.editor_dissimilar_incidents == 50,
       'updateDissimilarIncidents',
       {
         data: {
@@ -918,14 +918,14 @@ describe('Cite pages', () => {
     cy.wait('@updateSimilarIncidents', { timeout: 30000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id_in: [123] });
       expect(xhr.request.body.variables.set).to.deep.eq({
-        editor_similar_incidents: [10],
+        editor_similar_incidents: [50],
       });
     });
 
     cy.wait('@updateDissimilarIncidents', { timeout: 30000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id_in: [456] });
       expect(xhr.request.body.variables.set).to.deep.eq({
-        editor_dissimilar_incidents: [10],
+        editor_dissimilar_incidents: [50],
       });
     });
   });
