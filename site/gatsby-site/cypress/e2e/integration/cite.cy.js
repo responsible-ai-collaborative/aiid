@@ -851,6 +851,13 @@ describe('Cite pages', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      updateIncident50
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) =>
         req.body.operationName == 'UpdateIncidents' &&
         req.body.variables.set.editor_similar_incidents == 10,
@@ -881,7 +888,7 @@ describe('Cite pages', () => {
       }
     );
 
-    cy.visit('/incidents/edit/?incident_id=10');
+    cy.visit('/incidents/edit/?incident_id=50');
 
     cy.waitForStableDOM();
 
@@ -905,6 +912,8 @@ describe('Cite pages', () => {
     cy.waitForStableDOM();
 
     cy.get('button[type="submit"]').click();
+
+    cy.wait('@updateIncident', { timeout: 8000 });
 
     cy.wait('@updateSimilarIncidents', { timeout: 30000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id_in: [123] });
