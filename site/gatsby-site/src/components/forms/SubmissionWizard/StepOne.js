@@ -211,7 +211,7 @@ const FormDetails = ({
         </span>
       )}
       <Form
-        className={`relative z-2 ${parsingNews ? 'opacity-50' : ''} ${
+        className={`relative ${parsingNews ? 'opacity-50' : ''} ${
           !isEmpty(errors) ? 'form-has-errors' : ''
         }`}
       >
