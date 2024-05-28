@@ -2,6 +2,7 @@ import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInt, GraphQ
 import { allow } from "graphql-shield";
 import { ObjectIdScalar } from "../scalars";
 import { generateMutationFields, generateQueryFields } from "../utils";
+import { Context } from "../interfaces";
 
 
 const EmbeddingType = new GraphQLObjectType({
@@ -9,6 +10,14 @@ const EmbeddingType = new GraphQLObjectType({
     fields: {
         from_text_hash: { type: GraphQLString },
         vector: { type: new GraphQLList(GraphQLFloat) }
+    }
+});
+
+const ReportTranslationsType = new GraphQLObjectType({
+    name: 'ReportTranslations',
+    fields: {
+        text: { type: GraphQLString },
+        title: { type: GraphQLString }
     }
 });
 
@@ -43,7 +52,26 @@ export const ReportType = new GraphQLObjectType({
         title: { type: new GraphQLNonNull(GraphQLString) },
         url: { type: new GraphQLNonNull(GraphQLString) },
         user: { type: GraphQLString },
-        quiet: { type: GraphQLBoolean }
+        quiet: { type: GraphQLBoolean },
+        translations: {
+            type: ReportTranslationsType,
+            args: {
+                input: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve: async (source, args, context: Context, info) => {
+
+                const translations = context.client.db('translations').collection("reports_" + args.input);
+
+                const translation = await translations.findOne({ report_number: source.report_number });
+
+                if (translation) {
+
+                    return { text: translation.text, title: translation.title };
+                }
+
+                return { text: "", title: "" }
+            }
+        }
     }
 });
 
