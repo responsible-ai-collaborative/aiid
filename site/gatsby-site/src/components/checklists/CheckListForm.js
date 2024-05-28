@@ -174,17 +174,19 @@ export default function CheckListForm({
   };
 
   const updateRisk = (risk, attributeValueMap) => {
-    const updatedRisks = [...values.risks];
+    const updatedRisks = JSON.parse(JSON.stringify(values.risks));
 
-    const updatedRisk = updatedRisks.find((r) => r.id == risk.id);
+    const oldRisk = updatedRisks.find((r) => r.id == risk.id);
 
-    if (updatedRisk) {
+    if (oldRisk) {
+      const updatedRisk = { ...oldRisk };
+
       for (const attribute in attributeValueMap) {
-        if (attribute != 'precedents') {
-          updatedRisk.generated = false;
-        }
         updatedRisk[attribute] = attributeValueMap[attribute];
       }
+      updatedRisks.splice(updatedRisks.indexOf(oldRisk), 1);
+
+      updatedRisks.push(updatedRisk);
     } else {
       // A generated risk being promoted to a manual one
       updatedRisks.push({ ...risk, ...attributeValueMap, id: generateId() });
@@ -230,7 +232,9 @@ export default function CheckListForm({
           <ExportDropdown checklist={values} generatedRisks={generatedRisks} />
         </HeaderControls>
       </Header>
-      <Info>This feature is in development. Data entered will not be retained.</Info>
+      <Info>
+        This feature is in beta. Data entered is not guaranteed to be retained while in development.
+      </Info>
       <Info>Checklists are not private data. They will appear in public database snapshots.</Info>
       <AboutSystem formAbout={values.about} {...{ debouncedSetFieldValue, userIsOwner }} />
       <section>
