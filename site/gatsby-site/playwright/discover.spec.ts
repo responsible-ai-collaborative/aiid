@@ -1,9 +1,7 @@
-import { test, expect, Page } from '@playwright/test';
-import { conditionalIt, conditionalIntercept, waitForStableDom } from './utils';
+import { test, expect } from '@playwright/test';
+import { conditionalIntercept, conditionalIt, mockDate } from './utils';
 import flaggedReport from '../cypress/fixtures/reports/flagged.json';
 import unflaggedReport from '../cypress/fixtures/reports/unflagged.json';
-import config from '../config';
-import path from 'path';
 import { getUnixTime } from 'date-fns';
 import { deleteReportTypenames, transformReportData } from 'utils/reports';
 
@@ -164,5 +162,82 @@ test.describe('The Discover app', () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
             await expect(count).toBeGreaterThanOrEqual(8);
         }).toPass();
+    });
+
+    conditionalIt(!process.env.isEmptyEnvironment, 'Should flag an incident', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName === 'FindReport',
+            unflaggedReport,
+            { ignoreWait: true }
+        );
+
+
+        const now = new Date('June 21 2026 13:00:00');
+
+        await mockDate(page, now);
+
+        await page.goto(
+            url +
+            '?display=details&incident_id=10&s=%E2%80%8BIs%20Starbucks%20shortchanging%20its%20baristas%3F'
+        );
+
+        const _id = '5d34b8c29ced494f010ed470';
+
+
+        await page.click(`[data-cy="${_id}"] [data-cy="flag-button"]`);
+
+        const modal = page.locator('[data-cy="flag-report-23"]');
+        await expect(modal).toBeVisible();
+
+        const [updateReportPromise] = await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName === 'UpdateReport',
+            flaggedReport
+        );
+
+        const [logReportHistoryPromise] = await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName === 'logReportHistory',
+            {
+                data: {
+                    logReportHistory: {
+                        report_number: 10,
+                    },
+                },
+            }
+        );
+
+        await modal.locator('[data-cy="flag-toggle"]').click();
+
+        const updateReportRequest = await updateReportPromise;
+        const updateVariables = updateReportRequest.postDataJSON().variables;
+        expect(updateVariables.query.report_number).toBe(23);
+        expect(updateVariables.set).toEqual({
+            flag: true,
+            date_modified: now.toISOString(),
+            epoch_date_modified: getUnixTime(now),
+        });
+
+        const logReportHistoryRequest = await logReportHistoryPromise;
+        const input = logReportHistoryRequest.postDataJSON().variables.input;
+
+        const expectedReport = deleteReportTypenames(
+            transformReportData(flaggedReport.data.updateOneReport)
+        );
+
+        expectedReport.modifiedBy = '';
+        expectedReport.date_modified = now.toISOString();
+        expectedReport.epoch_date_modified = getUnixTime(now);
+
+        expect(input).toEqual(expectedReport);
+
+        await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
+        await modal.locator('[aria-label="Close"]').click();
+        await expect(modal).not.toBeVisible();
     });
 });

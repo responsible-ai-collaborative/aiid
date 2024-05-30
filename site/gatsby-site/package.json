@@ -62,6 +62,7 @@
     "is-absolute-url": "^3.0.3",
     "json-diff-ts": "^1.2.6",
     "md5": "^2.3.0",
+    "minimatch": "^9.0.4",
     "mongodb": "^4.17.0",
     "object-hash": "^3.0.0",
     "openapi-request-validator": "^12.1.3",
