@@ -59,11 +59,15 @@ jobs:
             site/gatsby-site/.cache/functions
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
 
-      - name: Install Playwright Browsers
+      - name: Install playwright browsers
         run: npx playwright install --with-deps
         working-directory: site/gatsby-site
 
-      - name: Run Playwright tests
+      - name: Start local server
+        run: npm run serve
+        working-directory: site/gatsby-site
+
+      - name: Run playwright tests
         run: npx playwright test
         working-directory: site/gatsby-site
 
