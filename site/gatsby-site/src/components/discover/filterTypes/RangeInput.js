@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRange } from 'react-instantsearch';
 import { Trans } from 'react-i18next';
 import { debounce } from 'debounce';
@@ -13,7 +13,7 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
-export default function RangeInput({ attribute }) {
+export default function RangeInput({ attribute, bins }) {
   const {
     range: { min, max },
     start,
@@ -53,6 +53,18 @@ export default function RangeInput({ attribute }) {
         {({ values, errors, touched, handleBlur }) => (
           <>
             <Form className="px-3">
+              <DoubleRangeSlider
+                globalMin={min}
+                globalMax={max}
+                selectionMax={currentRefinement.max}
+                setSelectionMin={debounce((min) => {
+                  onChange({ min, max: currentRefinement.max });
+                })}
+                setSelectionMax={debounce((max) => {
+                  onChange({ max, min: currentRefinement.min });
+                }, 2000)}
+                {...{ bins }}
+              />
               <FieldContainer>
                 <Label>
                   <Trans>From Date</Trans>:
@@ -134,6 +146,198 @@ export default function RangeInput({ attribute }) {
     </div>
   );
 }
+
+const proportionToPercent = (proportion) => 100 * proportion + '%';
+
+const sliderHeight = '1rem';
+
+const DoubleRangeSlider = ({
+  globalMin,
+  globalMax,
+  selectionMax,
+  setSelectionMin,
+  setSelectionMax,
+  bins,
+}) => {
+  const [lowerBound, bareSetLowerBound] = useState();
+
+  const setLowerBound = (value) => {
+    bareSetLowerBound(value);
+    setSelectionMin(globalMin + (globalMax - globalMin) * value);
+  };
+
+  const [upperBound, bareSetUpperBound] = useState();
+
+  const setUpperBound = (value) => {
+    bareSetUpperBound(value);
+    setSelectionMax(globalMin + (globalMax - globalMin) * value);
+  };
+
+  const binsMax = Math.max(...bins);
+
+  useEffect(() => {
+    setUpperBound((selectionMax - globalMin) / (globalMax - globalMin));
+  }, [selectionMax, globalMax, globalMin]);
+
+  return (
+    <>
+      <div className="h-32 w-full bg-gray-100 relative flex items-end">
+        {bins.map((bin, i) => (
+          <div
+            key={i}
+            className={`border-1 border-white ${
+              (i + 1) / bins.length >= lowerBound && i / bins.length <= upperBound
+                ? 'bg-blue-500'
+                : 'bg-gray-700'
+            }`}
+            style={{
+              width: proportionToPercent(1 / bins.length),
+              height: proportionToPercent(Math.log(bin) / Math.log(binsMax * 0.9)),
+            }}
+          />
+        ))}
+      </div>
+      <div className="relative bg-gray-200" style={{ height: sliderHeight }}>
+        <div
+          className="bg-blue-600 h-full absolute"
+          style={{
+            left: `calc(${proportionToPercent(lowerBound)})`,
+            width: proportionToPercent(upperBound - lowerBound),
+          }}
+        />
+
+        <SliderKnob bound={lowerBound} setBound={setLowerBound} ceiling={upperBound} />
+        <SliderKnob bound={upperBound} setBound={setUpperBound} floor={lowerBound} />
+      </div>
+    </>
+  );
+};
+
+const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0 }) => {
+  const [dragOffset, setDragOffset] = useState(null);
+
+  const [handlePosition, setHandlePosition] = useState({
+    top: '0px',
+    left: proportionToPercent(bound),
+  });
+
+  const knobRef = useRef();
+
+  useEffect(() => {
+    if (dragOffset) {
+      knobRef.current.focus();
+    }
+  });
+
+  useEffect(() => {
+    setHandlePosition({
+      top: '0px',
+      left: proportionToPercent(bound),
+    });
+  }, [bound]);
+
+  const updatePosition = (event) => {
+    if (dragOffset) {
+      const parentClientRect = event.target.parentNode.getBoundingClientRect();
+
+      const handleLeftPx = event.clientX - parentClientRect.x - dragOffset.x;
+
+      setHandlePosition({
+        top: event.clientY - parentClientRect.y - dragOffset.y + 'px',
+        left: handleLeftPx + 'px',
+      });
+
+      const handleLeftPercent = handleLeftPx / parentClientRect.width;
+
+      const newBound = clamp(handleLeftPercent, { floor, ceiling });
+
+      setBound(newBound);
+
+      return newBound;
+    }
+  };
+
+  return (
+    <>
+      <button
+        ref={knobRef}
+        className="rounded-full bg-white absolute focus:border-2 border-blue-500"
+        style={{
+          height: sliderHeight,
+          width: sliderHeight,
+          left: `calc(${proportionToPercent(bound)} - calc(${sliderHeight} / 2))`,
+        }}
+        onKeyDown={(event) => {
+          if (event.key == 'ArrowLeft') {
+            const newBound = clamp(bound - 0.1, { floor, ceiling });
+
+            setBound(newBound);
+            setDragOffset(null);
+            setHandlePosition({
+              top: '0px',
+              left: proportionToPercent(newBound),
+            });
+          }
+          if (event.key == 'ArrowRight') {
+            const newBound = clamp(bound + 0.1, { floor, ceiling });
+
+            setBound(newBound);
+            setDragOffset(null);
+            setHandlePosition({
+              top: '0px',
+              left: proportionToPercent(newBound),
+            });
+          }
+        }}
+      />
+
+      {/* This "handle" element moves with the cursor
+       * so that we track the mouse position
+       * while the knob is being dragged.
+       * Then we move the knob to match the handle in the x-axis.
+       */}
+      <button
+        tabIndex="-1"
+        className="rounded-full absolute x-10"
+        onClick={() => {
+          knobRef.current.focus();
+        }}
+        onMouseDown={(event) => {
+          const clientRect = event.target.getBoundingClientRect();
+
+          const offset = { x: event.clientX - clientRect.x, y: event.clientY - clientRect.y };
+
+          setDragOffset(offset);
+        }}
+        onMouseUp={() => {
+          setDragOffset(null);
+          setHandlePosition({
+            // TODO: It would be more efficient to use translate()
+            // so as to trigger fewer re-layouts.
+            top: '0px',
+            left: proportionToPercent(bound),
+          });
+        }}
+        onMouseMove={(event) => {
+          updatePosition(event);
+        }}
+        style={{
+          height: sliderHeight,
+          width: sliderHeight,
+          ...handlePosition,
+          ...(dragOffset
+            ? // We enlarge the handle during movement
+              // so that moving the cursor real fast doesn't take it outside the div
+              // before an update occurs.
+              { scale: '100', transformOrigin: 'center' }
+            : { left: `calc(${handlePosition.left} - calc(${sliderHeight} / 2))` }),
+        }}
+      />
+    </>
+  );
+};
+
+const clamp = (value, { floor, ceiling }) => Math.max(Math.min(value, ceiling), floor);
 
 export const touchedCount = ({ searchState, attribute }) =>
   searchState?.range?.[attribute]?.split(':')[0] || searchState?.range?.[attribute]?.split(':')[1]

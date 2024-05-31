@@ -54,7 +54,7 @@ function ToggleContent({ label, touched, faIcon, toggled, accordion = false }) {
   );
 }
 
-function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
+function ButtonToggle({ label, faIcon, touched, type, filterProps, bins }) {
   const [toggled, setToggled] = useState(true);
 
   const toggleDropdown = () => {
@@ -105,20 +105,20 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
           toggled ? 'hidden' : 'block '
         } bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700`}
       >
-        <FilterOverlay type={type} filterProps={filterProps} />
+        <FilterOverlay type={type} filterProps={filterProps} {...{ bins }} />
       </div>
     </div>
   );
 }
 
-function FilterContent({ type, filterProps }) {
+function FilterContent({ type, filterProps, bins }) {
   const { default: Component } = componentsMap[type];
 
-  return <Component {...filterProps} />;
+  return <Component {...filterProps} {...{ bins }} />;
 }
 
 const FilterOverlay = React.forwardRef(function Container(
-  { type, filterProps, ...overlayProps },
+  { bins, type, filterProps, ...overlayProps },
   ref
 ) {
   return (
@@ -131,14 +131,14 @@ const FilterOverlay = React.forwardRef(function Container(
     >
       <Card className="shadow-lg card">
         <div>
-          <FilterContent type={type} filterProps={filterProps} />
+          <FilterContent type={type} filterProps={filterProps} {...{ bins }} />
         </div>
       </Card>
     </div>
   );
 });
 
-export default function Filter({ type, ...filterProps }) {
+export default function Filter({ type, bins, ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
@@ -155,6 +155,7 @@ export default function Filter({ type, ...filterProps }) {
         touched={touched}
         type={type}
         filterProps={filterProps}
+        {...{ bins }}
       />
     </>
   );

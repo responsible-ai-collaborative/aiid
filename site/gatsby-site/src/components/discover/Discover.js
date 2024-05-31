@@ -30,7 +30,7 @@ function mapping() {
   };
 }
 
-export default function Discover() {
+export default function Discover({ bins }) {
   const { locale } = useLocalization();
 
   const [indexName] = useState(`instant_search-${locale}-featured`);
@@ -114,7 +114,7 @@ export default function Discover() {
           </Col>
         </Row>
 
-        {width > 767 ? <Controls /> : <OptionsModal />}
+        {width > 767 ? <Controls {...{ bins }} /> : <OptionsModal />}
 
         <Hits />
 
