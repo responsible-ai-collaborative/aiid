@@ -1,5 +1,5 @@
 import { test, expect, Page, Download } from '@playwright/test';
-import { conditionalIntercept, conditionalIt, mockDate } from './utils';
+import { conditionalIntercept, conditionalIt, mockDate, waitForRequest } from './utils';
 import flaggedReport from '../cypress/fixtures/reports/flagged.json';
 import unflaggedReport from '../cypress/fixtures/reports/unflagged.json';
 import { getUnixTime } from 'date-fns';
@@ -173,8 +173,7 @@ test.describe('The Discover app', () => {
             page,
             '**/graphql',
             (req) => req.postDataJSON().operationName === 'FindReport',
-            unflaggedReport,
-            { ignoreWait: true }
+            unflaggedReport
         );
 
 
@@ -195,14 +194,15 @@ test.describe('The Discover app', () => {
         const modal = page.locator('[data-cy="flag-report-23"]');
         await expect(modal).toBeVisible();
 
-        const [updateReportPromise] = await conditionalIntercept(
+        await conditionalIntercept(
             page,
             '**/graphql',
             (req) => req.postDataJSON().operationName === 'UpdateReport',
-            flaggedReport
+            flaggedReport,
+            'updateReport',
         );
 
-        const [logReportHistoryPromise] = await conditionalIntercept(
+        await conditionalIntercept(
             page,
             '**/graphql',
             (req) => req.postDataJSON().operationName === 'logReportHistory',
@@ -212,12 +212,13 @@ test.describe('The Discover app', () => {
                         report_number: 10,
                     },
                 },
-            }
+            },
+            'logReportHistory',
         );
 
         await modal.locator('[data-cy="flag-toggle"]').click();
 
-        const updateReportRequest = await updateReportPromise;
+        const updateReportRequest = await waitForRequest('updateReport');
         const updateVariables = updateReportRequest.postDataJSON().variables;
         expect(updateVariables.query.report_number).toBe(23);
         expect(updateVariables.set).toEqual({
@@ -226,7 +227,7 @@ test.describe('The Discover app', () => {
             epoch_date_modified: getUnixTime(now),
         });
 
-        const logReportHistoryRequest = await logReportHistoryPromise;
+        const logReportHistoryRequest = await waitForRequest('logReportHistory');
         const input = logReportHistoryRequest.postDataJSON().variables.input;
 
         const expectedReport = deleteReportTypenames(
@@ -495,7 +496,7 @@ test.describe('The Discover app', () => {
 
         await expect(page).toHaveURL(/classifications=CSETv0%3ANamed%20Entities%3ABuenos%20Aires/);
         await expect(page.locator('[data-cy="selected-refinements"]')).toContainText('CSETv0 : Named Entities : Buenos Aires');
-        
+
         await expect(async () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
             await expect(count).toBeGreaterThanOrEqual(0);

@@ -13,12 +13,14 @@ export function conditionalIt(condition: boolean, description: string, fn: any) 
     }
 }
 
+const waitForRequestMap = new Map<string, Promise<Request>>();
+
 export async function conditionalIntercept(
     page: Page,
     url: string,
     condition: (request: Request) => boolean,
     response,
-    options = { ignoreWait: false }
+    alias: string = null
 ) {
     await page.route(url, async (route: Route) => {
 
@@ -35,12 +37,19 @@ export async function conditionalIntercept(
         }
     });
 
-    if (!options.ignoreWait) {
+    if (alias) {
 
-        const request = page.waitForRequest((req) => minimatch(req.url(), url) && condition(req));
-
-        return [request];
+        waitForRequestMap.set(alias, page.waitForRequest((req) => minimatch(req.url(), url) && condition(req)));
     }
+}
+
+export async function waitForRequest(alias: string) {
+
+    const promise = waitForRequestMap.get(alias);
+
+    waitForRequestMap.delete(alias);
+
+    return promise;
 }
 
 
