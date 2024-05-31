@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const FIND_QUICKADD = gql`
-  query AllQuickAdd($query: QuickaddQueryInput!) {
-    quickadds(query: $query) {
+  query AllQuickAdd($filter: QuickAddFilterType!) {
+    quickadds(filter: $filter) {
       _id
       date_submitted
       url
@@ -12,16 +12,16 @@ export const FIND_QUICKADD = gql`
 `;
 
 export const DELETE_QUICKADD = gql`
-  mutation DeleteOneQuickAdd($query: QuickaddQueryInput) {
-    deleteManyQuickadds(query: $query) {
+  mutation DeleteOneQuickAdd($filter: QuickAddFilterType) {
+    deleteManyQuickadds(filter: $filter) {
       deletedCount
     }
   }
 `;
 
 export const INSERT_QUICKADD = gql`
-  mutation InsertQuickAdd($quickAdd: QuickaddInsertInput!) {
-    insertOneQuickadd(data: $quickAdd) {
+  mutation InsertQuickAdd($data: QuickAddInsertType!) {
+    insertOneQuickadd(data: $data) {
       _id
     }
   }

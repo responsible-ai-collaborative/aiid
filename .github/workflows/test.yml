@@ -124,6 +124,12 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
+          REALM_APP_ID: ${{ secrets.REALM_APP_ID }}
+          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
+          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
+          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
+          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         env:

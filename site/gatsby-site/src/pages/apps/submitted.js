@@ -27,7 +27,7 @@ const SubmittedIncidentsPage = () => {
 
   const [deleteQuickAdd] = useMutation(DELETE_QUICKADD);
 
-  const { loading, error, data } = useQuery(FIND_QUICKADD, { variables: { query: {} } });
+  const { loading, error, data } = useQuery(FIND_QUICKADD, { variables: { filter: {} } });
 
   const { t, i18n } = useTranslation(['submitted']);
 
@@ -59,8 +59,8 @@ const SubmittedIncidentsPage = () => {
     try {
       await deleteQuickAdd({
         variables: {
-          query: {
-            _id: bsonID,
+          filter: {
+            _id: { EQ: bsonID },
           },
         },
       });
