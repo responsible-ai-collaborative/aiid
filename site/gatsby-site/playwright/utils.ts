@@ -13,6 +13,9 @@ export function conditionalIt(condition: boolean, description: string, fn: any) 
     }
 }
 
+
+// SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
+
 const waitForRequestMap = new Map<string, Promise<Request>>();
 
 export async function conditionalIntercept(
