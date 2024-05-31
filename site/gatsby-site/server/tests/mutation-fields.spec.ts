@@ -1,5 +1,5 @@
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, readCollection, seedCollection, startTestServer } from "./utils";
+import { makeRequest, seedCollection, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 import quickaddsFixture from './fixtures/quickadds';

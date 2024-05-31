@@ -33,6 +33,7 @@ export const getSchema = () => {
         mutation,
     })
 
+    // graphql-shield, allows us to define wildcard fields and mutations. Every field starts private, and its permissions need to be set explicitly.
 
     const permissions = shield(
         {

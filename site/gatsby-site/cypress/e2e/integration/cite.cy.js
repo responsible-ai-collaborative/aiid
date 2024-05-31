@@ -845,4 +845,88 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
   });
+
+  it('Should link similar incidents', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      updateIncident50
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpdateIncidents' &&
+        req.body.variables.set.editor_similar_incidents == 50,
+      'updateSimilarIncidents',
+      {
+        data: {
+          updateManyIncidents: {
+            matchedCount: 1,
+            modifiedCount: 1,
+          },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpdateIncidents' &&
+        req.body.variables.set.editor_dissimilar_incidents == 50,
+      'updateDissimilarIncidents',
+      {
+        data: {
+          updateManyIncidents: {
+            matchedCount: 1,
+            modifiedCount: 1,
+          },
+        },
+      }
+    );
+
+    cy.visit('/incidents/edit/?incident_id=50');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="similar-id-input"]', { timeout: 30000 }).scrollIntoView().type('123{enter}');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="related-byId"] [data-cy="similar-selector"]').first().contains('Yes').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="similar-id-input"]', { timeout: 30000 })
+      .clear()
+      .scrollIntoView()
+      .type('456{enter}');
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="related-byId"] [data-cy="similar-selector"]').first().contains('No').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@updateIncident', { timeout: 8000 });
+
+    cy.wait('@updateSimilarIncidents', { timeout: 30000 }).then((xhr) => {
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id_in: [123] });
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        editor_similar_incidents: [50],
+      });
+    });
+
+    cy.wait('@updateDissimilarIncidents', { timeout: 30000 }).then((xhr) => {
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id_in: [456] });
+      expect(xhr.request.body.variables.set).to.deep.eq({
+        editor_dissimilar_incidents: [50],
+      });
+    });
+  });
 });
