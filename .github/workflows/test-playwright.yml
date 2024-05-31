@@ -66,4 +66,9 @@ jobs:
       - name: Run playwright tests
         run: npx playwright test
         working-directory: site/gatsby-site
-
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 1
