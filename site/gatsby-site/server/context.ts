@@ -54,9 +54,7 @@ async function verifyToken(token: string) {
     return response.json();
 }
 
-async function getUser(userId: string) {
-
-    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
+async function getUser(userId: string, client: MongoClient) {
 
     const db = client.db('customData');
 
@@ -70,7 +68,7 @@ async function getUser(userId: string) {
     }
 }
 
-async function getUserFromHeader(header: string) {
+async function getUserFromHeader(header: string, client: MongoClient) {
 
     const token = extractToken(header);
 
@@ -80,7 +78,7 @@ async function getUserFromHeader(header: string) {
 
         if (data.sub) {
 
-            const userData = await getUser(data.sub);
+            const userData = await getUser(data.sub, client);
 
             return userData;
         }
@@ -93,9 +91,9 @@ export const context = async ({ req }: { req: IncomingMessage }) => {
 
     try {
 
-        const user = await getUserFromHeader(req.headers.authorization!);
+        const client = new MongoClient(config.MONGODB_CONNECTION_STRING!, { serverSelectionTimeoutMS: 60000 });
 
-        const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
+        const user = await getUserFromHeader(req.headers.authorization!, client);
 
         return { user, req, client };
     }
