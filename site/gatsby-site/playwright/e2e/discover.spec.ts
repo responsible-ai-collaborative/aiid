@@ -1,12 +1,12 @@
 import { test, expect, Page, Download } from '@playwright/test';
-import { conditionalIntercept, conditionalIt, mockDate, waitForRequest } from './utils';
-import flaggedReport from '../cypress/fixtures/reports/flagged.json';
-import unflaggedReport from '../cypress/fixtures/reports/unflagged.json';
+import { conditionalIntercept, conditionalIt, mockDate, waitForRequest } from '../utils';
+import flaggedReport from '../fixtures/reports/flagged.json';
+import unflaggedReport from '../fixtures/reports/unflagged.json';
 import { getUnixTime } from 'date-fns';
-import { deleteReportTypenames, transformReportData } from 'utils/reports';
+import { deleteReportTypenames, transformReportData } from '../../src/utils/reports';
 import fs from 'fs/promises';
 import path from 'path';
-import config from '../config';
+import config from '../../config';
 
 test.describe('The Discover app', () => {
     const url = '/apps/discover';
