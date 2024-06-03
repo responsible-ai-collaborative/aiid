@@ -53,7 +53,7 @@ const QuickAddForm = ({ className = '' }) => {
           url: url.href,
         };
 
-        await insertQuickAdd({ variables: { quickAdd } });
+        await insertQuickAdd({ variables: { data: quickAdd } });
 
         addToast({
           message: (
