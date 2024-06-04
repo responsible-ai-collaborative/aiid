@@ -16,6 +16,8 @@ const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
+      title
+      description
       reports {
         report_number
         title
@@ -48,6 +50,7 @@ function IncidentForm() {
         incident_id_in: [],
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   const selectedSimilarId = useRef(null);
@@ -66,15 +69,15 @@ function IncidentForm() {
     })
   ).current;
 
-  const similarReportsById =
+  const similarIncidentsById =
     similarReportsByIdQuery.loading ||
     similarReportsByIdQuery.error ||
     similarReportsByIdQuery.data.incidents.length == 0 ||
     selectedSimilarId == null
       ? []
-      : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
+      : similarReportsByIdQuery.data.incidents.map((incident) => ({
           incident_id: selectedSimilarId.current,
-          ...report,
+          ...incident,
         }));
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
@@ -85,19 +88,19 @@ function IncidentForm() {
         ),
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
-  const editorSimilarIncidentReports =
+  const editorSimilarIncidents =
     editorSimilarIncidentReportsQuery.loading ||
     editorSimilarIncidentReportsQuery.error ||
     editorSimilarIncidentReportsQuery.data.incidents.length === 0
       ? []
-      : editorSimilarIncidentReportsQuery.data.incidents.flatMap((incident) =>
-          incident.reports.map((report) => ({
-            ...report,
-            incident_id: incident.incident_id,
-          }))
-        );
+      : editorSimilarIncidentReportsQuery.data.incidents.map((incident) => {
+          return {
+            ...incident,
+          };
+        });
 
   useEffect(() => {
     window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
@@ -226,8 +229,8 @@ function IncidentForm() {
           <RelatedIncidentsArea
             columnKey={'editor_similar_incidents'}
             header={'Manually-selected similar and dissimilar incidents'}
-            reports={editorSimilarIncidentReports}
-            loading={false}
+            incidents={editorSimilarIncidents}
+            loading={editorSimilarIncidentReportsQuery.loading}
             setFieldValue={setFieldValue}
             editId={false}
             error={false}
@@ -255,9 +258,9 @@ function IncidentForm() {
 
           <RelatedIncidentsArea
             columnKey={'byId'}
-            header={'Reports'}
-            reports={similarReportsById}
-            loading={false}
+            header={'Incidents search results'}
+            incidents={similarIncidentsById}
+            loading={similarReportsByIdQuery.loading}
             setFieldValue={setFieldValue}
             editId={false}
             error={false}
