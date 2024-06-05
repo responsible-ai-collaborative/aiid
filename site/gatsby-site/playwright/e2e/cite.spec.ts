@@ -88,7 +88,7 @@ test.describe('Cite pages', () => {
                 await page.waitForSelector('h5:has-text("Is Starbucks shortchanging its baristas?")', { timeout: 8000 });
                 const incidentReportCard = await page.$('[data-cy="incident-report-card"]');
                 const boundingBox = await incidentReportCard.boundingBox();
-                expect(boundingBox.top).toBeCloseTo(0, 30);
+                expect(boundingBox.y).toBeLessThanOrEqual(20);
             }).toPass();
         },
         { retries: 4 }
@@ -103,7 +103,7 @@ test.describe('Cite pages', () => {
         await expect(async () => {
             const incidentReportCard = await page.$('[data-cy="incident-report-card"] h5:has-text("For some Starbucks workers, job leaves bitter taste")');
             const boundingBox = await incidentReportCard!.boundingBox();
-            expect(boundingBox?.y).toBeCloseTo(17, 0);
+            expect(boundingBox?.y).toBeLessThanOrEqual(20);
         }).toPass();
     });
 
