@@ -543,5 +543,7 @@
   "Read the Source": "情報源を読む",
   "Redirecting...": "リダイレクト中...",
   "Random Incident": "おまかせ表示",
-  "Risk Checklists": "Risk Checklists"
+  "Risk Checklists": "Risk Checklists",
+  "Manually-selected similar and dissimilar incidents": "手動で選択された類似および非類似のインシデント",
+  "Search similar/dissimilar Incident Id": "類似/非類似のインシデントIDを検索"
 }

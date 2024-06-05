@@ -563,5 +563,7 @@
   "Read the Source": "Leer la Fuente",
   "Redirecting...": "Redirigiendo",
   "Random Incident": "Incidente aleatorio",
-  "Risk Checklists": "Control de Riesgos"
+  "Risk Checklists": "Control de Riesgos",
+  "Manually-selected similar and dissimilar incidents": "Incidentes similares y disímiles seleccionados manualmente",
+  "Search similar/dissimilar Incident Id": "Buscar incidente similar/disímil por ID"
 }

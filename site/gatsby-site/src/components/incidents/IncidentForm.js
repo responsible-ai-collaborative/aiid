@@ -245,7 +245,10 @@ function IncidentForm() {
 
           <div className="border rounded px-2 pb-4 mt-4">
             <div className="mt-4">
-              <Label label={t(`Search similar Incident Id`)} popover="similarIncidentSearch" />
+              <Label
+                label={t(`Search similar/dissimilar Incident Id`)}
+                popover="similarIncidentSearch"
+              />
               <input
                 type="number"
                 data-cy="similar-id-input"
