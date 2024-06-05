@@ -66,6 +66,10 @@ jobs:
       - name: Run playwright tests
         run: npx playwright test
         working-directory: site/gatsby-site
+        env:
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
