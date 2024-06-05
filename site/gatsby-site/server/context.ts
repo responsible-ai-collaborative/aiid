@@ -3,6 +3,8 @@ import { MongoClient } from "mongodb";
 import config from "./config";
 import * as reporter from "./reporter";
 
+const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
+
 function extractToken(header: string) {
 
     if (header && header!.startsWith('Bearer ')) {
@@ -56,8 +58,6 @@ async function verifyToken(token: string) {
 
 async function getUser(userId: string) {
 
-    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
-
     const db = client.db('customData');
 
     const collection = db.collection('users');
@@ -94,8 +94,6 @@ export const context = async ({ req }: { req: IncomingMessage }) => {
     try {
 
         const user = await getUserFromHeader(req.headers.authorization!);
-
-        const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
 
         return { user, req, client };
     }
