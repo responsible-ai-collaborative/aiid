@@ -23,7 +23,7 @@ function DiscoverApp(props) {
     const position =
       (publishDate - earliestPublishDate) / (latestPublishDate - earliestPublishDate);
 
-    const index = Math.floor(position * (bins.length - 1));
+    const index = Math.round(position * (bins.length - 1));
 
     bins[index] += 1;
   }

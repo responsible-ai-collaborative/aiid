@@ -665,4 +665,16 @@ describe('The Discover app', () => {
       cy.get('div[data-cy="hits-container"]').children().should('have.length.at.least', 1);
     }
   );
+
+  it('Should select date range', () => {
+    cy.visit(url);
+    cy.waitForStableDOM();
+    cy.get('[data-cy="epoch_date_published"]').first().click();
+
+    const rangeKnobSelector = '[data-cy="epoch_date_published"] [data-cy="range-knob"]';
+
+    cy.get(rangeKnobSelector).first().focus().type('{rightArrow}{rightArrow}');
+
+    cy.url().should('include', 'epoch_date_published_min');
+  });
 });

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRange } from 'react-instantsearch';
 import { Trans } from 'react-i18next';
 import { debounce } from 'debounce';
-import { Button } from 'flowbite-react';
+import { Button, Checkbox } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import Label from 'components/forms/Label';
 import TextInputGroup from 'components/forms/TextInputGroup';
@@ -56,13 +56,14 @@ export default function RangeInput({ attribute, bins }) {
               <DoubleRangeSlider
                 globalMin={min}
                 globalMax={max}
+                selectionMin={currentRefinement.min}
                 selectionMax={currentRefinement.max}
                 setSelectionMin={debounce((min) => {
                   onChange({ min, max: currentRefinement.max });
-                })}
+                }, 3000)}
                 setSelectionMax={debounce((max) => {
                   onChange({ max, min: currentRefinement.min });
-                }, 2000)}
+                }, 3000)}
                 {...{ bins }}
               />
               <FieldContainer>
@@ -154,23 +155,26 @@ const sliderHeight = '1rem';
 const DoubleRangeSlider = ({
   globalMin,
   globalMax,
+  selectionMin,
   selectionMax,
   setSelectionMin,
   setSelectionMax,
   bins,
 }) => {
-  const [lowerBound, bareSetLowerBound] = useState();
+  const valueToProportion = (value) => globalMin + (globalMax - globalMin) * value;
+
+  const [lowerBound, bareSetLowerBound] = useState(valueToProportion(selectionMin));
 
   const setLowerBound = (value) => {
     bareSetLowerBound(value);
-    setSelectionMin(globalMin + (globalMax - globalMin) * value);
+    setSelectionMin(valueToProportion(value));
   };
 
-  const [upperBound, bareSetUpperBound] = useState();
+  const [upperBound, bareSetUpperBound] = useState(valueToProportion(selectionMax));
 
   const setUpperBound = (value) => {
     bareSetUpperBound(value);
-    setSelectionMax(globalMin + (globalMax - globalMin) * value);
+    setSelectionMax(valueToProportion(value));
   };
 
   const binsMax = Math.max(...bins);
@@ -179,23 +183,72 @@ const DoubleRangeSlider = ({
     setUpperBound((selectionMax - globalMin) / (globalMax - globalMin));
   }, [selectionMax, globalMax, globalMin]);
 
+  const [logScale, setLogScale] = useState(true);
+
+  const numTicks = 20;
+
   return (
     <>
-      <div className="h-32 w-full bg-gray-100 relative flex items-end">
-        {bins.map((bin, i) => (
-          <div
-            key={i}
-            className={`border-1 border-white ${
-              (i + 1) / bins.length >= lowerBound && i / bins.length <= upperBound
-                ? 'bg-blue-500'
-                : 'bg-gray-700'
-            }`}
-            style={{
-              width: proportionToPercent(1 / bins.length),
-              height: proportionToPercent(Math.log(bin) / Math.log(binsMax * 0.9)),
-            }}
-          />
-        ))}
+      <div className="mb-2">
+        <Checkbox
+          id="log-scale"
+          checked={logScale ? true : undefined}
+          onClick={() => setLogScale((logScale) => !logScale)}
+          className="mr-1"
+        />
+        <label htmlFor="log-scale">Log Scale</label>
+      </div>
+      <div className="h-32 w-full bg-gray-100 relative">
+        <div className="h-full w-full absolute inset-0">
+          {Array(numTicks)
+            .fill()
+            .map((_, i) => {
+              const proportion = logScale
+                ? Math.log((i * binsMax) / numTicks) / Math.log(binsMax)
+                : (i * binsMax) / numTicks / binsMax;
+
+              return (
+                <div
+                  key={i}
+                  className="w-full h-px bg-gray-200 absolute"
+                  style={{ bottom: proportionToPercent(proportion) }}
+                />
+              );
+            })}
+        </div>
+        <div className="flex items-end w-full h-full absolute inset-0">
+          {bins.map((bin, i) => {
+            const rangeWidth = globalMax - globalMin;
+
+            const dateRangeStart = globalMin + (i * rangeWidth) / bins.length;
+
+            const dateRangeEnd = globalMin + ((i + 1) * rangeWidth) / bins.length;
+
+            const baseProportion = bin / binsMax;
+
+            const logProportion = Math.log(bin) / Math.log(binsMax);
+
+            const proportion = logScale ? logProportion : baseProportion;
+
+            return (
+              <div
+                key={i}
+                title={`${bin} reports from ${formatDate(dateRangeStart)} to ${formatDate(
+                  dateRangeEnd
+                )}`}
+                className={`border-1 border-white ${
+                  (i + 1) / bins.length >= lowerBound && i / bins.length <= upperBound
+                    ? 'bg-blue-500'
+                    : 'bg-gray-700'
+                }`}
+                style={{
+                  width: proportionToPercent(1 / bins.length),
+                  height: proportionToPercent(proportion),
+                }}
+              />
+            );
+          })}
+        </div>
       </div>
       <div className="relative bg-gray-200" style={{ height: sliderHeight }}>
         <div
@@ -260,6 +313,7 @@ const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0 }) => {
   return (
     <>
       <button
+        data-cy="range-knob"
         ref={knobRef}
         className="rounded-full bg-white absolute focus:border-2 border-blue-500"
         style={{
@@ -298,6 +352,7 @@ const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0 }) => {
        */}
       <button
         tabIndex="-1"
+        data-cy="range-knob-handle"
         className="rounded-full absolute x-10"
         onClick={() => {
           knobRef.current.focus();
