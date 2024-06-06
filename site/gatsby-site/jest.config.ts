@@ -15,6 +15,9 @@ const config: Config = {
   globalSetup: "./globalSetup.ts",
   globalTeardown: "./globalTeardown.ts",
   verbose: true,
+  testMatch: [
+    "**/server/tests/**/*.spec.ts",
+  ],
 };
 
 export default config;
