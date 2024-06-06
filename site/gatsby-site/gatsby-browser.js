@@ -12,6 +12,32 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   }
 };
 
+const onRouteUpdate = ({ location }) => scrollToAnchor(location);
+
+function scrollToAnchor(location, mainNavHeight = 0) {
+  if (location && location.hash) {
+    const checkAndScroll = () => {
+      if (document.readyState === 'complete') {
+        const item = document.querySelector(location.hash);
+
+        if (item) {
+          const itemTop = item.offsetTop;
+
+          window.scrollTo({
+            top: itemTop - mainNavHeight,
+            behavior: 'smooth',
+          });
+        }
+      } else {
+        requestAnimationFrame(checkAndScroll);
+      }
+    };
+
+    requestAnimationFrame(checkAndScroll);
+  }
+  return true;
+}
+
 import { wrapRootElement, wrapPageElement } from './gatsby-shared';
 
-export { wrapPageElement, wrapRootElement };
+export { wrapPageElement, wrapRootElement, onRouteUpdate };
