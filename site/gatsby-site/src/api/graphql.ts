@@ -39,6 +39,8 @@ export default async function handler(req: any, res: any) {
 
   if (!client) {
     client = new MongoClient(appConfig.MONGODB_CONNECTION_STRING, {});
+
+    await client.connect();
   }
 
   if (!graphqlMiddleware) {
@@ -50,6 +52,7 @@ export default async function handler(req: any, res: any) {
         // gatsby functions do not keep module variables across invocations, and it seems netlify functions don't either (unlike when hosting directly on AWS Lambda)
         // so we have to create and close a new client for each invocation
         await client?.close();
+        client = null;
       },
 
       formatError: (error) => {
