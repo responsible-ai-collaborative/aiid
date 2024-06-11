@@ -141,3 +141,26 @@ export async function login(page: Page, email: string, password: string, options
     }
 }
 
+export async function setEditorText(page: Page, value: string, selector: string = '.CodeMirror') {
+  await page.locator(selector).first().click();
+  await page.evaluate(
+    ({ selector, value }) => {
+      const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
+      if (editor?.CodeMirror) {
+        editor.CodeMirror.setValue(value);
+      }
+    },
+    { selector, value }
+  );
+}
+
+export async function getEditorText(page: Page, selector: string = '.CodeMirror'): Promise<string> {
+  return await page.evaluate(
+    (selector) => {
+      const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
+      return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
+    },
+    selector
+  );
+}
+
