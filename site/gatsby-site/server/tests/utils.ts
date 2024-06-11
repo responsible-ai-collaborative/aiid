@@ -11,7 +11,9 @@ export const startTestServer = async () => {
         schema,
     });
 
-    const { url } = await startStandaloneServer(server, { context, listen: { port: 0 } });
+    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
+
+    const { url } = await startStandaloneServer(server, { context: ({ req }) => context({ req, client }), listen: { port: 0 } });
 
     return { server, url }
 }
