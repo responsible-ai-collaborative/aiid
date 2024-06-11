@@ -5,6 +5,7 @@ import { createHandler } from 'graphql-http/lib/use/express';
 import { buildHTTPExecutor } from '@graphql-tools/executor-http';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { typeDefs } from '../graphql/schema';
+import { MapperKind, mapSchema } from '@graphql-tools/utils';
 
 // function is crashing locally with `PayloadTooLargeError: request entity too large` error
 
@@ -63,7 +64,52 @@ export default async function handler(req, res) {
       executor: remoteExecutor,
     });
 
-    graphqlMiddleware = createHandler({ schema: wrappedRemoteSchema, context: (req) => ({ req }) });
+    const transformedSchema = mapSchema(wrappedRemoteSchema, {
+      // looks like stichSchemas from ./schema is messing up some resolvers
+      // this is a temporary patch until the subscription collection field is replaced with our own implementation
+      // it seems to only be affecting the subscriptions collection
+
+      [MapperKind.OBJECT_FIELD]: (fieldConfig, fieldName, parent) => {
+        if (parent == 'Subscription' && fieldName === 'incident_id') {
+          return {
+            ...fieldConfig,
+            resolve: (source) => {
+              return source.incident_id;
+            },
+          };
+        }
+
+        if (parent == 'Subscription' && fieldName === 'entityId') {
+          return {
+            ...fieldConfig,
+            resolve: (source) => {
+              return source.entityId;
+            },
+          };
+        }
+
+        if (parent == 'Subscription' && fieldName === '_id') {
+          return {
+            ...fieldConfig,
+            resolve: (source) => {
+              return source._id;
+            },
+          };
+        }
+
+        if (parent == 'Subscription' && fieldName === 'type') {
+          return {
+            ...fieldConfig,
+            resolve: (source) => {
+              return source.type;
+            },
+          };
+        }
+        return fieldConfig;
+      },
+    });
+
+    graphqlMiddleware = createHandler({ schema: transformedSchema, context: (req) => ({ req }) });
   }
 
   // Manually run the cors middleware
