@@ -4,6 +4,9 @@ import users from '../fixtures/users/users.json';
 import { conditionalIt, conditionalIntercept, waitForRequest, login, setEditorText } from '../utils';
 import { test, expect } from '@playwright/test';
 import config from '../config';
+import probablyRelatedIncidents from '../fixtures/incidents/probablyRelatedIncidents.json';
+import probablyRelatedReports from '../fixtures/reports/probablyRelatedReports.json';
+
 
 test.describe('The Submit form', () => {
     const url = '/apps/submit';
@@ -810,7 +813,7 @@ test.describe('The Submit form', () => {
                 '**/graphql',
                 (req) =>
                     req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                    req.postDataJSON().variables.query?.authors_in.length,
+                    req.postDataJSON().variables.query?.authors_in?.length,
                 relatedReports.byAuthors,
                 'RelatedReportsByAuthor'
             );
@@ -974,9 +977,969 @@ test.describe('The Submit form', () => {
                 await page.locator(`input[name="${key}"]`).fill(values[key]);
             }
 
-            await expect(page.locator('[data-cy=related-byAuthors] [data-cy=result] a[data-cy=title]', { timeout: 20000 })).not.toContainText(
-                'Thousands scammed by AI voices mimicking loved ones in emergencies'
-            );
+            await expect(page.locator('[data-cy=related-byAuthors] [data-cy=result] a[data-cy=title]:has-text("Thousands scammed by AI voices mimicking loved ones in emergencies")'))
+                .not.toBeVisible();
+        });
+
+    test('Should show fallback preview image on initial load', async ({ page }) => {
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            submitters: 'test submitter',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            incident_id: '1',
+        };
+
+        const params = new URLSearchParams(values);
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await page.goto(url + `?${params.toString()}`);
+
+        await waitForRequest('parseNews');
+
+        await setEditorText(
+            page,
+            `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+        );
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await expect(page.locator('[data-cy="image-preview-figure"] canvas')).toBeVisible();
+    });
+
+    test('Should update preview image when url is typed', async ({ page }) => {
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            submitters: 'test submitter',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            incident_id: '1',
+        };
+
+        const params = new URLSearchParams(values);
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await page.goto(url + `?${params.toString()}`);
+
+        await waitForRequest('parseNews');
+
+
+        const suffix = 'github.com/favicon.ico';
+        const newImageUrl = 'https://' + suffix;
+        const cloudinaryImageUrl = 'https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/' + suffix;
+
+        await setEditorText(
+            page,
+            `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+        );
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('input[name=image_url]').fill(newImageUrl);
+
+        await expect(page.locator('[data-cy=image-preview-figure] img')).toHaveAttribute('src', cloudinaryImageUrl);
+    });
+
+    test('Should show the editor notes field', async ({ page }) => {
+
+        await page.goto(url);
+
+        const valuesStep1 = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            incident_date: '2022-01-01',
+        };
+
+        for (const key in valuesStep1) {
+            await page.locator(`input[name="${key}"]`).fill(valuesStep1[key]);
         }
-    );
+
+        await setEditorText(
+            page,
+            'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+        );
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        const valuesStep2 = {
+            submitters: 'test submitter',
+            image_url: 'https://incidentdatabase.ai/image.jpg',
+        };
+
+        for (const key in valuesStep2) {
+            await page.locator(`input[name="${key}"]`).fill(valuesStep2[key]);
+        }
+
+        await page.mouse.click(0, 0);
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        const valuesStep3 = {
+            editor_notes: 'Here are some notes',
+        };
+
+        for (const key in valuesStep3) {
+            await page.locator(`textarea[name="${key}"]`).fill(valuesStep3[key]);
+        }
+
+        await expect(page.locator('[name="editor_notes"]')).toBeVisible();
+    });
+
+    test('Should show a popover', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+        );
+
+        await page.goto(url);
+
+        await page.locator('[data-cy="label-title"]').hover();
+
+        await expect(page.locator('[data-cy="popover-title"]')).toBeVisible();
+
+        await expect(page.locator('[data-cy="popover-title"] h5')).toHaveText('Headline');
+
+        await expect(page.locator('[data-cy="popover-title"] div')).toContainText('Most works have a title');
+    });
+
+    test('Should show a translated popover', async ({ page }) => {
+        await page.goto(`/es/apps/submit/`);
+
+        await page.locator('[data-cy="label-title"]').hover();
+
+        await expect(page.locator('[data-cy="popover-title"]')).toBeVisible();
+
+        await expect(page.locator('[data-cy="popover-title"] h5')).toHaveText('Título');
+
+        await expect(page.locator('[data-cy="popover-title"] div')).toContainText('La mayoría de los trabajos tienen un');
+    });
+
+    test('Should work with translated page', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(`/es/apps/submit/`);
+
+        await waitForRequest('findSubmissions');
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('[data-cy="fetch-info"]').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('input[name="authors"]').fill('Something');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('input[name="submitters"]').fill('Something');
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
+        await page.locator('button[type="submit"]').click();
+
+        await waitForRequest('insertSubmission');
+
+        await expect(page.locator('.tw-toast:has-text("Informe agregado exitosamente a la cola de revisión.")')).toBeVisible();
+    });
+
+    test('Should submit on step 1', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('[data-cy="fetch-info"]').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('input[name="authors"]').fill('Something');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await page.locator('[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+        const keys = ['url', 'title', 'authors', 'incident_date'];
+
+        for (const key of keys) {
+            await expect(page.locator(`input[name="${key}"]`)).toHaveValue('');
+        }
+    });
+
+    test('Should submit on step 2', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('[data-cy="fetch-info"]').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('input[name="authors"]').fill('Something');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('input[name="submitters"]').fill('Something');
+
+        await page.locator('[data-cy="submit-step-2"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+        const keys = ['url', 'title', 'authors', 'incident_date'];
+
+        for (const key of keys) {
+            await expect(page.locator(`input[name="${key}"]`)).toHaveValue('');
+        }
+    });
+
+    test('Should display an error message if data is missing', async ({ page }) => {
+
+        await page.goto(url);
+
+        await page.locator('button:has-text("Submit")').click();
+
+        await expect(page.locator('text=Please review. Some data is missing.')).toBeVisible();
+    });
+
+    test('Should submit a new report response', async ({ page }) => {
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            submitters: 'test submitter',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            image_url: 'https://incidentdatabase.ai/image.jpg',
+            incident_ids: [1],
+            text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+            tags: 'response',
+            editor_notes: 'Here are some notes',
+        };
+
+        const params = new URLSearchParams(values);
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindIncidentsTitles',
+            {
+                data: {
+                    incidents: [
+                        {
+                            __typename: 'Incident',
+                            incident_id: 1,
+                            title: 'Test title',
+                            date: '2022-01-01',
+                        },
+                    ],
+                },
+            },
+            'FindIncidentsTitles'
+        );
+
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url + `?${params.toString()}`);
+
+        await waitForRequest('findSubmissions');
+
+        await expect(page.locator('[data-cy="submit-form-title"]')).toHaveText('New Incident Response');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await waitForRequest('FindIncidentsTitles');
+
+        await page.locator('button[type="submit"]').click();
+
+        const insertSubmissionRequest = await waitForRequest('insertSubmission');
+        const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
+
+        expect(submissionVariables).toMatchObject({
+            ...values,
+            incident_ids: [1],
+            authors: [values.authors],
+            submitters: [values.submitters],
+            tags: [values.tags],
+            plain_text: 'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+            source_domain: `incidentdatabase.ai`,
+            cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+            editor_notes: 'Here are some notes',
+        });
+    });
+
+    test('Should show related reports based on author', async ({ page }) => {
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'ProbablyRelatedIncidents',
+            probablyRelatedIncidents,
+            'ProbablyRelatedIncidents'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'ProbablyRelatedReports',
+            probablyRelatedReports,
+            'ProbablyRelatedReports'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'BBC News',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+        };
+
+        for (const key in values) {
+            await page.locator(`[name="${key}"]`).fill(values[key]);
+        }
+
+        await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
+
+        await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="unspecified"]').first().click();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(1).locator('[data-cy="dissimilar"]').first().click();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(2).locator('[data-cy="similar"]').first().click();
+
+        await page.locator('button[data-cy="submit-step-1"]').click();
+
+        const insertSubmissionRequest = await waitForRequest('insertSubmission');
+        const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
+
+        expect(submissionVariables).toMatchObject({
+            ...values,
+            authors: [values.authors],
+            plain_text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
+            source_domain: `incidentdatabase.ai`,
+            editor_dissimilar_incidents: [2],
+            editor_similar_incidents: [3],
+        });
+    });
+
+    test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindIncidentsTitles',
+            {
+                data: {
+                    incidents: [
+                        {
+                            __typename: 'Incident',
+                            incident_id: 1,
+                            title: 'Test title',
+                            date: '2016-03-13',
+                        },
+                    ],
+                },
+            },
+            'FindIncidentsTitles'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        const valuesStep1 = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            incident_ids: '1',
+        };
+
+        for (const key in valuesStep1) {
+            if (key == 'incident_ids') {
+                await page.locator(`input[name="${key}"]`).fill(valuesStep1[key]);
+                await page.locator(`[role="option"]`).first().click();
+            } else {
+                await page.locator(`input[name="${key}"]`).fill(valuesStep1[key]);
+            }
+        }
+
+        await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await expect(page.locator('input[name="incident_date"]')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        const valuesStep2 = {
+            submitters: 'test submitter',
+            image_url: 'https://incidentdatabase.ai/image.jpg',
+        };
+
+        for (const key in valuesStep2) {
+            await page.locator(`input[name="${key}"]`).fill(valuesStep2[key]);
+        }
+
+        await page.mouse.click(0, 0);
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        const valuesStep3 = {
+            editor_notes: 'Here are some notes',
+        };
+
+        for (const key in valuesStep3) {
+            await page.locator(`textarea[name="${key}"]`).fill(valuesStep3[key]);
+        }
+
+        await expect(page.locator('input[name="description"]')).not.toBeVisible();
+        await expect(page.locator('input[name="deployers"]')).not.toBeVisible();
+        await expect(page.locator('input[name="developers"]')).not.toBeVisible();
+        await expect(page.locator('input[name="harmed_parties"]')).not.toBeVisible();
+
+        await page.locator('button[type="submit"]').click();
+
+        const insertSubmissionRequest = await waitForRequest('insertSubmission');
+        const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
+
+        expect(submissionVariables).toMatchObject({
+            ...valuesStep1,
+            ...valuesStep2,
+            ...valuesStep3,
+            incident_ids: [1],
+            authors: [valuesStep1.authors],
+            submitters: [valuesStep2.submitters],
+            tags: [],
+            plain_text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
+            source_domain: `incidentdatabase.ai`,
+            cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+            editor_notes: 'Here are some notes',
+        });
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+        await expect(page.locator('.tw-toast a')).toHaveAttribute('href', '/apps/submitted/');
+        await expect(page.locator('text=Please review. Some data is missing.')).not.toBeVisible();
+    });
+
+    test('Should allow two submissions in a row', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+
+
+        async function submitForm() {
+
+            await conditionalIntercept(
+                page,
+                '**/parseNews**',
+                () => true,
+                parseNews,
+                'parseNews',
+            );
+
+            await page.locator('input[name="url"]').fill(
+                `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+            );
+
+            await page.locator('[data-cy="fetch-info"]').click();
+
+            await waitForRequest('parseNews');
+
+            await page.locator('input[name="authors"]').fill('Something');
+
+            await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+            await conditionalIntercept(
+                page,
+                '**/graphql',
+                (req) => req.postDataJSON().operationName == 'InsertSubmission',
+                {
+                    data: {
+                        insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                    },
+                },
+                'insertSubmission'
+            );
+
+            await page.locator('[data-cy="submit-step-1"]').click();
+
+            await waitForRequest('insertSubmission');
+
+            await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        }
+
+        await submitForm();
+        await submitForm();
+    });
+
+    test('Should fetch the news if the url param is in the querystring', async ({ page }) => {
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await page.goto(
+            `${url}?url=https%3A%2F%2Fwww.arstechnica.com%2Fgadgets%2F2017%2F11%2Fyoutube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons%2F`
+        );
+
+        await waitForRequest('parseNews');
+
+        await expect(page.locator('.tw-toast:has-text("Please verify all information programmatically pulled from the report")')).toBeVisible();
+    });
+
+    conditionalIt(!process.env.isEmptyEnvironment, 'Should load from localstorage', async ({ page }) => {
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            authors: ['test author'],
+            title: 'test title',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            image_url: 'https://incidentdatabase.ai/image.jpg',
+            incident_ids: [1],
+            text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+            submitters: ['test submitters'],
+            tags: ['test tags'],
+            source_domain: `incidentdatabase.ai`,
+            cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+            editor_notes: 'Here are some notes',
+        };
+
+        await page.addInitScript(values => {
+            window.localStorage.setItem('formValues', JSON.stringify(values));
+        }, values);
+
+        await page.goto(url);
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'InsertSubmission',
+            {
+                data: {
+                    insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+                },
+            },
+            'insertSubmission'
+        );
+
+        await page.locator('[data-cy="submit-step-1"]').click();
+
+        const insertSubmissionRequest = await waitForRequest('insertSubmission');
+        const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
+
+        expect(submissionVariables).toMatchObject({
+            ...values,
+            incident_ids: [1],
+            authors: values.authors,
+            submitters: values.submitters,
+            tags: values.tags,
+            plain_text: 'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+            source_domain: `incidentdatabase.ai`,
+            cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+            editor_notes: 'Here are some notes',
+        });
+    });
+
+    test('Should save form data in local storage', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        const valuesStep1 = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            incident_date: '2020-01-01',
+        };
+
+        for (const key in valuesStep1) {
+            await page.locator(`[name="${key}"]`).fill(valuesStep1[key]);
+        }
+
+        await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
+
+        await page.mouse.click(0, 0);
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        const valuesStep2 = {
+            submitters: 'test submitter',
+            image_url: 'https://incidentdatabase.ai/image.jpg',
+            language: 'en',
+        };
+
+        for (const key in valuesStep2) {
+            key == 'language'
+                ? await page.locator(`[name="${key}"]`).selectOption({ value: valuesStep2[key] })
+                : await page.locator(`[name="${key}"]`).fill(valuesStep2[key]);
+        }
+
+        await page.mouse.click(0, 0);
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        const valuesStep3 = {
+            developers: 'test developer',
+            deployers: 'test deployer',
+            harmed_parties: 'test harmed_parties',
+            editor_notes: 'Here are some notes',
+        };
+
+        for (const key in valuesStep3) {
+            await page.locator(`[name="${key}"]`).fill(valuesStep3[key]);
+            await page.mouse.click(0, 0);
+        }
+
+        expect(async () => {
+
+            const formValues = await page.evaluate(() => {
+                return JSON.parse(localStorage.getItem('formValues'));
+            });
+
+            expect(formValues).toMatchObject({
+                ...valuesStep1,
+                ...valuesStep2,
+                ...valuesStep3,
+                authors: [valuesStep1.authors],
+                submitters: [valuesStep2.submitters],
+                tags: [],
+                developers: [valuesStep3.developers],
+                deployers: [valuesStep3.deployers],
+                harmed_parties: [valuesStep3.harmed_parties],
+                nlp_similar_incidents: [],
+                cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
+                text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+                incident_ids: [],
+                incident_editors: [],
+            });
+        }).toPass();
+    });
+
+    conditionalIt(!process.env.isEmptyEnvironment, 'Should clear form', async ({ page }) => {
+
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            authors: 'test author',
+            title: 'test title',
+            date_published: '2021-01-02',
+            incident_ids: [1],
+        };
+
+        const params = new URLSearchParams(values);
+
+        await page.goto(url + `?${params.toString()}`);
+
+        await page.locator('[data-cy="clear-form"]').click();
+
+        for (const key in values) {
+            await expect(page.locator(`input[name="${key}"]`)).toHaveValue('');
+        }
+    });
+
+    test('Should display an error message if Date Published is not in the past', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="date_published"]').fill('3000-01-01');
+
+        await page.locator('button:has-text("Submit")').click();
+
+        await expect(page.locator(':has-text("*Date must be in the past")').first()).toBeVisible();
+    });
+
+    test('Should display an error message if Date Downloaded is not in the past', async ({ page }) => {
+        await page.goto(url);
+
+        await page.locator('input[name="date_downloaded"]').fill('3000-01-01');
+
+        await page.locator('button:has-text("Submit")').click();
+
+        await expect(page.locator('form:has-text("*Date must be in the past")')).toBeVisible();
+    });
+
+    test('Should fetch article', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await expect(page.locator('.tw-toast:has-text("Please verify all information programmatically pulled from the report")')).toBeVisible();
+        await expect(page.locator('.tw-toast:has-text("Error fetching news.")')).not.toBeVisible();
+    });
+
+    // I'm getting "*something* was blocked" error
+    test.skip('Should fetch article from site using cookies as fallback', async ({ page }) => {
+        await page.goto(url);
+
+        await page.locator('input[name="url"]').fill(
+            'https://www.washingtonpost.com/technology/2023/02/16/microsoft-bing-ai-chatbot-sydney/'
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await expect(page.locator('.tw-toast:has-text("Please verify all information programmatically pulled from the report")')).toBeVisible();
+        await expect(page.locator('.tw-toast:has-text("Error fetching news.")')).not.toBeVisible();
+    });
 });
