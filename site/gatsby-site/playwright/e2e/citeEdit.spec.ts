@@ -432,7 +432,7 @@ test.describe('Edit report', () => {
 
   maybeIt('Should delete incident report', async ({ page }) => {
     await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-  
+
     await conditionalIntercept(
       page,
       '**/graphql',
@@ -440,7 +440,7 @@ test.describe('Edit report', () => {
       issueWithTranslations,
       'FindReportWithTranslations'
     );
-  
+
     await conditionalIntercept(
       page,
       '**/graphql',
@@ -448,7 +448,7 @@ test.describe('Edit report', () => {
       { data: { incidents: [] } },
       'FindIncidents'
     );
-  
+
     await conditionalIntercept(
       page,
       '**/graphql',
@@ -462,15 +462,15 @@ test.describe('Edit report', () => {
       },
       'FindIncidentsTitles'
     );
-  
+
     await page.goto(url);
-  
+
     await Promise.all([
       waitForRequest('FindIncidents'),
       waitForRequest('FindIncidentsTitles'),
       waitForRequest('FindReportWithTranslations')
     ]);
-  
+
     await conditionalIntercept(
       page,
       '**/graphql',
@@ -478,7 +478,7 @@ test.describe('Edit report', () => {
       { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } },
       'DeleteReport'
     );
-  
+
     await conditionalIntercept(
       page,
       '**/graphql',
@@ -486,25 +486,25 @@ test.describe('Edit report', () => {
       { data: { linkReportsToIncidents: [] } },
       'LinkReportsToIncidents'
     );
-  
+
     // Set up the dialog event listener before triggering the click action
     page.once('dialog', async dialog => {
       await dialog.accept();
-  
+
       const deleteRequest = await waitForRequest('DeleteReport');
       expect(deleteRequest.postDataJSON().variables.query).toEqual({ report_number: 10 });
-    
+
       const linkReportsToIncidentsRequest = await waitForRequest('LinkReportsToIncidents');
       expect(linkReportsToIncidentsRequest.postDataJSON().variables.input).toEqual({
         incident_ids: [],
         report_numbers: [10]
       });
-    
+
       await expect(page.locator('[data-cy="toast"]:has-text("Incident report 10 deleted successfully")')).toBeVisible();
     });
-  
+
     await page.locator('button:has-text("Delete this report")').click();
-  
+
     await page.waitForTimeout(2000); // Needed to wait for the dialog to be accepted
   });
 
@@ -512,181 +512,204 @@ test.describe('Edit report', () => {
     await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindReport',
-        report10,
-        'FindReport'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindReport',
+      report10,
+      'FindReport'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'ProbablyRelatedReports',
-        { data: { reports: [] } },
-        'ProbablyRelatedReports'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'ProbablyRelatedReports',
+      { data: { reports: [] } },
+      'ProbablyRelatedReports'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'ProbablyRelatedIncidents',
-        { data: { incidents: [] } },
-        'ProbablyRelatedIncidents'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'ProbablyRelatedIncidents',
+      { data: { incidents: [] } },
+      'ProbablyRelatedIncidents'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindReportWithTranslations',
-        reportWithTranslations,
-        'FindReportWithTranslations'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindReportWithTranslations',
+      reportWithTranslations,
+      'FindReportWithTranslations'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindIncidents',
-        {
-            data: {
-                incidents: [
-                    {
-                        __typename: 'Incident',
-                        incident_id: 1,
-                        title: 'Incident 1',
-                    },
-                ],
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
             },
+          ],
         },
-        'FindIncidents'
+      },
+      'FindIncidents'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindIncidentsTitles',
-        {
-            data: {
-                incidents: [
-                    {
-                        _typename: 'Incident',
-                        incident_id: 1,
-                        title: 'Incident 1',
-                    },
-                    {
-                        _typename: 'Incident',
-                        incident_id: 2,
-                        title: 'Incident 2',
-                    },
-                ],
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
             },
+            {
+              _typename: 'Incident',
+              incident_id: 2,
+              title: 'Incident 2',
+            },
+          ],
         },
-        'FindIncidentsTitles'
+      },
+      'FindIncidentsTitles'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'logReportHistory',
-        {
-            data: {
-                logReportHistory: {
-                    report_number: 10,
-                },
-            },
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'logReportHistory',
+      {
+        data: {
+          logReportHistory: {
+            report_number: 10,
+          },
         },
-        'logReportHistory'
+      },
+      'logReportHistory'
     );
 
     await page.goto(`/cite/edit?report_number=23`);
 
     await Promise.all([
-        waitForRequest('FindReportWithTranslations'),
-        waitForRequest('FindIncidents'),
-        waitForRequest('FindIncidentsTitles')
+      waitForRequest('FindReportWithTranslations'),
+      waitForRequest('FindIncidents'),
+      waitForRequest('FindIncidentsTitles')
     ]);
 
     await expect(page.locator('form[data-cy="report"]')).toBeVisible();
 
-    await page.locator('div:has-text("Incident 1")');
-    
-    // .locator('xpath=following-sibling::*[1]').click();
+    const incidentDiv = await page.locator('div:has-text("Incident 1")');
+
+    await incidentDiv.locator('xpath=following-sibling::button').click();
 
     await page.locator('[name="incident_ids"]').fill('2');
 
     await page.locator('[id="incident_ids-item-0"]').click();
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'UpdateReportTranslation',
-        updateOneReportTranslation,
-        'updateOneReportTranslation'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'UpdateReportTranslation',
+      updateOneReportTranslation,
+      'updateOneReportTranslationSpanish'
+    );
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'UpdateReportTranslation' && req.postDataJSON().variables.input.language === 'fr',
+      updateOneReportTranslation,
+      'updateOneReportTranslationFrench'
+    );
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'UpdateReportTranslation' && req.postDataJSON().variables.input.language === 'ja',
+      updateOneReportTranslation,
+      'updateOneReportTranslationJapanese'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'UpdateReport',
-        updateOneReport,
-        'UpdateReport'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'UpdateReport',
+      updateOneReport,
+      'UpdateReport'
     );
 
     await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'LinkReportsToIncidents',
-        { data: { linkReportsToIncidents: [] } },
-        'LinkReportsToIncidents'
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'LinkReportsToIncidents',
+      { data: { linkReportsToIncidents: [] } },
+      'LinkReportsToIncidents'
     );
-
-    const now = new Date();
-    await page.context().addInitScript({ content: `Date = function() { return new Date(${now.getTime()}); }` });
 
     await page.locator('button:has-text("Submit")').click();
 
+    let now = new Date();
+    await page.addInitScript(`{
+        Date.now = () => ${now.getTime()};
+    }`);
+
     const expectedReport = {
-        authors: ['Marco Acevedo'],
-        cloudinary_id: 'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
-        date_downloaded: new Date('2019-04-13').toISOString(),
-        date_modified: format(now, 'yyyy-MM-dd'),
-        date_published: new Date('2015-07-11').toISOString(),
-        editor_notes: '',
-        epoch_date_modified: getUnixTime(now),
-        epoch_date_published: 1436572800,
-        flag: null,
-        image_url: 'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
-        language: 'en',
-        plain_text: 'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.\n',
-        report_number: 10,
-        source_domain: 'change.org',
-        submitters: ['Roman Yampolskiy'],
-        tags: ['Test Tag'],
-        text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
-        title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
-        url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+      authors: ['Marco Acevedo'],
+      cloudinary_id: 'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+      date_downloaded: new Date('2019-04-13').toISOString(),
+      date_modified: format(now, 'yyyy-MM-dd'),
+      date_published: new Date('2015-07-11').toISOString(),
+      editor_notes: '',
+      epoch_date_published: 1436572800,
+      flag: null,
+      image_url: 'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+      language: 'en',
+      plain_text: 'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.\n',
+      report_number: 10,
+      source_domain: 'change.org',
+      submitters: ['Roman Yampolskiy'],
+      tags: ['Test Tag'],
+      text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
+      title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+      url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+      epoch_date_modified: null,
     };
 
+    now = new Date();
     const updateReportRequest = await waitForRequest('UpdateReport');
     const variables = updateReportRequest.postDataJSON().variables;
     expect(variables.query.report_number).toBe(23);
-    expect({
-        ...variables.set,
-        date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
-    }).toEqual(expectedReport);
 
+    expect({
+      ...variables.set,
+      date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+    }).toEqual({
+      ...expectedReport,
+      epoch_date_modified: getUnixTime(now),
+    });
+
+    const expectedNow = new Date();
     const logReportHistoryRequest = await waitForRequest('logReportHistory');
     const input = logReportHistoryRequest.postDataJSON().variables.input;
     const expectedResult = {
-        ...report10.data.report,
-        ...expectedReport,
-        modifiedBy: user.userId,
-        user: report10.data.report.user.userId,
-        date_modified: input.date_modified,
+      ...report10.data.report,
+      ...expectedReport,
+      modifiedBy: user.userId,
+      user: report10.data.report.user.userId,
+      date_modified: input.date_modified,
+      epoch_date_modified: getUnixTime(now),
     };
     expect(input).toEqual(expectedResult);
 
-    const updateOneReportTranslationRequest1 = await waitForRequest('updateOneReportTranslation');
+    const updateOneReportTranslationRequest1 = await waitForRequest('updateOneReportTranslationSpanish');
     let translationVariables = updateOneReportTranslationRequest1.postDataJSON().variables;
     expect(translationVariables.input.title).toBe('Este es el Título en español');
     expect(translationVariables.input.text).toBe('Este es un texto de prueba que tiene un largo mayor a ochenta caracteres (en español)');
@@ -694,7 +717,7 @@ test.describe('Edit report', () => {
     expect(translationVariables.input.report_number).toBe(23);
     expect(translationVariables.input.plain_text).toBe('Este es un texto de prueba que tiene un largo mayor a ochenta caracteres (en español)\n');
 
-    const updateOneReportTranslationRequest2 = await waitForRequest('updateOneReportTranslation');
+    const updateOneReportTranslationRequest2 = await waitForRequest('updateOneReportTranslationFrench');
     translationVariables = updateOneReportTranslationRequest2.postDataJSON().variables;
     expect(translationVariables.input.title).toBe(`C'est le Titre en français`);
     expect(translationVariables.input.text).toBe(`Il s'agit d'un texte de test de plus de quatre-vingts caractères - lorem ipsum (en français)`);
@@ -702,7 +725,7 @@ test.describe('Edit report', () => {
     expect(translationVariables.input.report_number).toBe(23);
     expect(translationVariables.input.plain_text).toBe(`Il s'agit d'un texte de test de plus de quatre-vingts caractères - lorem ipsum (en français)\n`);
 
-    const updateOneReportTranslationRequest3 = await waitForRequest('updateOneReportTranslation');
+    const updateOneReportTranslationRequest3 = await waitForRequest('updateOneReportTranslationJapanese');
     translationVariables = updateOneReportTranslationRequest3.postDataJSON().variables;
     expect(translationVariables.input.title).toBe('これは日本語でのタイトルです');
     expect(translationVariables.input.text).toBe('解サオライ協立なーづ民手ぶみドに即記朝ぐ奥置ぱで地更トるあて栄厚ぜづを祭屋ん来派どてゃ読速ヘ誌約カタシネ原39業理る。外ヒヱフ社第むせゆ由更混ソエ夕野しりすよ顔飛リの兆基う公言や置17謝后嘘5供フキヌア星集ヘラ辞勘壇崇さびわ。（日本語で）');
@@ -712,12 +735,195 @@ test.describe('Edit report', () => {
 
     const linkReportsToIncidentsRequest = await waitForRequest('LinkReportsToIncidents');
     expect(linkReportsToIncidentsRequest.postDataJSON().variables.input).toEqual({
-        incident_ids: [2],
-        report_numbers: [23],
+      incident_ids: [2],
+      report_numbers: [23],
     });
 
     await expect(page.locator('[data-cy="toast"]')).toContainText('Incident report 23 updated successfully');
-});
+  });
 
-  
+  maybeIt('Should convert an incident report to an issue', async ({ page }) => {
+    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindReport',
+      report10,
+      'FindReport'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'ProbablyRelatedReports',
+      { data: { reports: [] } },
+      'ProbablyRelatedReports'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'ProbablyRelatedIncidents',
+      { data: { incidents: [] } },
+      'ProbablyRelatedIncidents'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindReportWithTranslations',
+      reportWithTranslations,
+      'FindReportWithTranslations'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+          ],
+        },
+      },
+      'FindIncidents'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            { _typename: 'Incident', incident_id: 1, title: 'Incident 1' },
+            { _typename: 'Incident', incident_id: 2, title: 'Incident 2' },
+          ],
+        },
+      },
+      'FindIncidentsTitles'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'logReportHistory',
+      { data: { logReportHistory: { report_number: 10 } } },
+      'logReportHistory'
+    );
+
+    await page.goto(`/cite/edit?report_number=23`);
+
+    await page.locator('form[data-cy="report"]').waitFor();
+
+    const incidentDiv = await page.locator('div:has-text("Incident 1")');
+
+    await incidentDiv.locator('xpath=following-sibling::button').click();
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'UpdateReport',
+      updateOneReport,
+      'UpdateReport'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'UpdateReportTranslation',
+      updateOneReportTranslation,
+      'UpdateReportTranslation'
+    );
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'LinkReportsToIncidents',
+      { data: { linkReportsToIncidents: [] } },
+      'LinkReportsToIncidents'
+    );
+
+    await page.evaluate(() => window.confirm = () => true);
+
+    const now = new Date();
+
+    await page.addInitScript(`{
+      Date.now = () => ${now.getTime()};
+  }`);
+
+    await page.locator('button:has-text("Submit")').click();
+
+    const expectedReport = {
+      authors: ['Marco Acevedo'],
+      cloudinary_id:
+        'reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+      date_downloaded: new Date('2019-04-13').toISOString(),
+      date_published: new Date('2015-07-11').toISOString(),
+      flag: null,
+      image_url:
+        'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+      report_number: 10,
+      submitters: ['Roman Yampolskiy'],
+      tags: ['Test Tag'],
+      text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
+      plain_text:
+        'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.\n',
+      title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+      url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+      editor_notes: '',
+      language: 'en',
+      source_domain: 'change.org',
+      epoch_date_published: 1436572800,
+      date_modified: format(now, 'yyyy-MM-dd'),
+      epoch_date_modified: getUnixTime(now),
+    };
+
+    const updateReportRequest = await waitForRequest('UpdateReport');
+    const variables = updateReportRequest.postDataJSON().variables;
+    expect(variables.query.report_number).toBe(23);
+    expect({
+      ...variables.set,
+      date_modified: format(new Date(variables.set.date_modified), 'yyyy-MM-dd'),
+    }).toEqual(expectedReport);
+
+    const logReportHistoryRequest = await waitForRequest('logReportHistory');
+    const input = logReportHistoryRequest.postDataJSON().variables.input;
+    const expectedResult = {
+      ...report10.data.report,
+      ...expectedReport,
+      modifiedBy: user.userId,
+      user: report10.data.report.user.userId,
+      date_modified: input.date_modified,
+    };
+
+    expect(input).toEqual(expectedResult);
+
+    await waitForRequest('UpdateReportTranslation');
+    await waitForRequest('UpdateReportTranslation');
+
+    const linkReportsToIncidentsRequest = await waitForRequest('LinkReportsToIncidents');
+    expect(linkReportsToIncidentsRequest.postDataJSON().variables.input).toEqual({
+      incident_ids: [],
+      report_numbers: [23],
+    });
+
+    await page.locator('[data-cy="toast"]:has-text("Issue 23 updated successfully")', { timeout: 8000 }).waitFor();
+  });
+
+  test('Should display the report image', async ({ page }) => {
+    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+
+    await page.goto(url);
+
+    await page.locator('[data-cy="image-preview-figure"] img').waitFor();
+    const imgSrc = await page.locator('[data-cy="image-preview-figure"] img').getAttribute('src');
+    expect(imgSrc).toBe('https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975');
+  });
 });
