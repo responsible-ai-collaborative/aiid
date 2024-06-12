@@ -146,4 +146,5 @@ export async function setEditorText(page: Page, value, selector = '.CodeMirror')
     await page.evaluate(([value, selector]) => {
         document.querySelector(selector).CodeMirror.setValue(value);
     }, [value, selector]);
+    await page.mouse.click(0, 0);
 }
