@@ -141,3 +141,9 @@ export async function login(page: Page, email: string, password: string, options
     }
 }
 
+export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
+    await page.locator(selector).first().click();
+    await page.evaluate(([value, selector]) => {
+        document.querySelector(selector).CodeMirror.setValue(value);
+    }, [value, selector]);
+}
