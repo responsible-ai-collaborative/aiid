@@ -58,11 +58,8 @@ export default function RangeInput({ attribute, bins }) {
                 globalMax={max}
                 selectionMin={currentRefinement.min}
                 selectionMax={currentRefinement.max}
-                setSelectionMin={debounce((min) => {
-                  onChange({ min, max: currentRefinement.max });
-                }, 3000)}
-                setSelectionMax={debounce((max) => {
-                  onChange({ max, min: currentRefinement.min });
+                setSelection={debounce((min, max) => {
+                  onChange({ min, max });
                 }, 3000)}
                 {...{ bins }}
               />
@@ -157,8 +154,7 @@ const DoubleRangeSlider = ({
   globalMax,
   selectionMin,
   selectionMax,
-  setSelectionMin,
-  setSelectionMax,
+  setSelection,
   bins,
 }) => {
   const valueToProportion = (value) => globalMin + (globalMax - globalMin) * value;
@@ -167,14 +163,14 @@ const DoubleRangeSlider = ({
 
   const setLowerBound = (value) => {
     bareSetLowerBound(value);
-    setSelectionMin(valueToProportion(value));
+    setSelection(valueToProportion(value), selectionMax);
   };
 
   const [upperBound, bareSetUpperBound] = useState(valueToProportion(selectionMax));
 
   const setUpperBound = (value) => {
     bareSetUpperBound(value);
-    setSelectionMax(valueToProportion(value));
+    setSelection(selectionMin, valueToProportion(value));
   };
 
   const binsMax = Math.max(...bins);
