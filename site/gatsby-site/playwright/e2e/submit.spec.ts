@@ -690,13 +690,6 @@ test.describe('The Submit form', () => {
         'Should show a list of related reports',
         async ({ page }) => {
 
-            await conditionalIntercept(
-                page,
-                '**/parseNews**',
-                () => true,
-                parseNews,
-            );
-
             const relatedReports = {
                 byURL: {
                     data: {
@@ -754,34 +747,9 @@ test.describe('The Submit form', () => {
 
             await conditionalIntercept(
                 page,
-                '**/graphql',
-                (req) =>
-                    req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                    req.postDataJSON().variables.query?.url_in?.[0] ==
-                    'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-                relatedReports.byURL,
-                'RelatedReportsByURL'
-            );
-
-            await conditionalIntercept(
-                page,
-                '**/graphql',
-                (req) =>
-                    req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                    req.postDataJSON().variables.query?.epoch_date_published_gt == 1608346800 &&
-                    req.postDataJSON().variables.query?.epoch_date_published_lt == 1610766000,
-                relatedReports.byDatePublished,
-                'RelatedReportsByPublishedDate'
-            );
-
-            await conditionalIntercept(
-                page,
-                '**/graphql',
-                (req) =>
-                    req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                    req.postDataJSON().variables.query?.authors_in?.[0] == 'test author',
-                relatedReports.byAuthors,
-                'RelatedReportsByAuthor'
+                '**/parseNews**',
+                () => true,
+                parseNews,
             );
 
             await conditionalIntercept(
@@ -803,9 +771,49 @@ test.describe('The Submit form', () => {
                 'findIncidentsTitles'
             );
 
+            await conditionalIntercept(
+                page,
+                '**/graphql',
+                (req) => req.postDataJSON().operationName == 'FindSubmissions',
+                { data: { submissions: [] } },
+                'findSubmissions'
+            );
+
             await page.goto(url);
 
             await waitForRequest('findIncidentsTitles');
+            await waitForRequest('findSubmissions');
+
+            await conditionalIntercept(
+                page,
+                '**/graphql',
+                (req) =>
+                    req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                    req.postDataJSON().variables.query?.url_in,
+                relatedReports.byURL,
+                'RelatedReportsByURL'
+            );
+
+            await conditionalIntercept(
+                page,
+                '**/graphql',
+                (req) =>
+                    req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                    req.postDataJSON().variables.query?.epoch_date_published_gt &&
+                    req.postDataJSON().variables.query?.epoch_date_published_lt,
+                relatedReports.byDatePublished,
+                'RelatedReportsByPublishedDate'
+            );
+
+            await conditionalIntercept(
+                page,
+                '**/graphql',
+                (req) =>
+                    req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                    req.postDataJSON().variables.query?.authors_in.length,
+                relatedReports.byAuthors,
+                'RelatedReportsByAuthor'
+            );
 
             const values = {
                 url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
@@ -836,7 +844,9 @@ test.describe('The Submit form', () => {
 
                 const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
-                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports.length);
+                await expect(async () => {
+                    await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports.length);
+                }).toPass();
 
                 for (const report of reports) {
                     await expect(parentLocator.locator('[data-cy="result"]', { hasText: report.title })).toBeVisible();
@@ -845,6 +855,128 @@ test.describe('The Submit form', () => {
             }
 
             await expect(page.locator(`[data-cy="related-byAuthors"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+        }
+    );
+
+    test('Should show a preliminary checks message', async ({ page }) => {
+        const relatedReports = {
+            byURL: {
+                data: {
+                    reports: [],
+                },
+            },
+            byDatePublished: {
+                data: {
+                    reports: [],
+                },
+            },
+            byAuthors: {
+                data: { reports: [] },
+            },
+            byIncidentId: {
+                data: {
+                    incidents: [],
+                },
+            },
+        };
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                req.postDataJSON().variables.query?.url_in?.[0] ==
+                'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+            relatedReports.byURL,
+            'RelatedReportsByURL'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                req.postDataJSON().variables.query?.epoch_date_published_gt == 1608346800 &&
+                req.postDataJSON().variables.query?.epoch_date_published_lt == 1610766000,
+            relatedReports.byDatePublished,
+            'RelatedReportsByPublishedDate'
+        );
+
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                req.postDataJSON().variables.query?.authors_in?.[0] == 'test author',
+            relatedReports.byAuthors,
+            'RelatedReportsByAuthor'
+        );
+
+        const values = {
+            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+            authors: 'test author',
+            date_published: '2021-01-02',
+            incident_ids: '1',
+        };
+
+        await page.goto(url);
+
+        for (const key in values) {
+            if (key == 'incident_ids') {
+                await page.locator(`input[name="${key}"]`).fill(values[key]);
+                await page.waitForSelector(`[role="option"]`);
+                await page.locator(`[role="option"]`).first().click();
+            } else {
+                await page.locator(`input[name="${key}"]`).fill(values[key]);
+            }
+        }
+
+
+        await waitForRequest('RelatedReportsByAuthor')
+        await waitForRequest('RelatedReportsByURL')
+        await waitForRequest('RelatedReportsByPublishedDate')
+
+        await expect(page.locator('[data-cy="no-related-reports"]').first()).toBeVisible();
+
+        await expect(page.locator('[data-cy="result"]')).not.toBeVisible();
+    });
+
+    test('Should *not* show semantically related reports when the text is under 256 non-space characters', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+        );
+
+        await page.goto(url);
+
+        await setEditorText(
+            page,
+            `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
+        );
+
+        await expect(page.locator('[data-cy=related-byText]')).toContainText('Reports must have at least');
+    });
+
+    conditionalIt(
+        !process.env.isEmptyEnvironment,
+        'Should *not* show related orphan reports',
+        async ({ page }) => {
+            await page.goto(url);
+
+            const values = {
+                authors: 'Ashley Belanger',
+            };
+
+            for (const key in values) {
+                await page.locator(`input[name="${key}"]`).fill(values[key]);
+            }
+
+            await expect(page.locator('[data-cy=related-byAuthors] [data-cy=result] a[data-cy=title]', { timeout: 20000 })).not.toContainText(
+                'Thousands scammed by AI voices mimicking loved ones in emergencies'
+            );
         }
     );
 });
