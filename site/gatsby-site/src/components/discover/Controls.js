@@ -12,7 +12,7 @@ import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
-const Controls = ({ bins }) => {
+const Controls = ({ histogramBins }) => {
   const { indexUiState } = useInstantSearch();
 
   const [expandFilters, setExpandFilters] = useState(false);
@@ -75,7 +75,7 @@ const Controls = ({ bins }) => {
 
       <div className="basis-full order-3" />
 
-      <Filters {...{ expandFilters, bins }} />
+      <Filters {...{ expandFilters, histogramBins }} />
     </div>
   );
 };

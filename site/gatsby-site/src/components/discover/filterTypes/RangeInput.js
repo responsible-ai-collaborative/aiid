@@ -13,7 +13,7 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
-export default function RangeInput({ attribute, bins }) {
+export default function RangeInput({ attribute, histogramBins }) {
   const {
     range: { min, max },
     start,
@@ -60,8 +60,8 @@ export default function RangeInput({ attribute, bins }) {
                 selectionMax={currentRefinement.max}
                 setSelection={debounce((min, max) => {
                   onChange({ min, max });
-                }, 3000)}
-                {...{ bins }}
+                }, 1000)}
+                {...{ histogramBins }}
               />
               <FieldContainer>
                 <Label>
@@ -155,25 +155,25 @@ const DoubleRangeSlider = ({
   selectionMin,
   selectionMax,
   setSelection,
-  bins,
+  histogramBins,
 }) => {
   const valueToProportion = (value) => globalMin + (globalMax - globalMin) * value;
 
   const [lowerBound, bareSetLowerBound] = useState(valueToProportion(selectionMin));
 
+  const [upperBound, bareSetUpperBound] = useState(valueToProportion(selectionMax));
+
   const setLowerBound = (value) => {
     bareSetLowerBound(value);
-    setSelection(valueToProportion(value), selectionMax);
+    setSelection(valueToProportion(value), valueToProportion(upperBound));
   };
-
-  const [upperBound, bareSetUpperBound] = useState(valueToProportion(selectionMax));
 
   const setUpperBound = (value) => {
     bareSetUpperBound(value);
-    setSelection(selectionMin, valueToProportion(value));
+    setSelection(valueToProportion(lowerBound), valueToProportion(value));
   };
 
-  const binsMax = Math.max(...bins);
+  const binsMax = Math.max(...histogramBins);
 
   useEffect(() => {
     setUpperBound((selectionMax - globalMin) / (globalMax - globalMin));
@@ -213,12 +213,12 @@ const DoubleRangeSlider = ({
             })}
         </div>
         <div className="flex items-end w-full h-full absolute inset-0">
-          {bins.map((bin, i) => {
+          {histogramBins.map((bin, i) => {
             const rangeWidth = globalMax - globalMin;
 
-            const dateRangeStart = globalMin + (i * rangeWidth) / bins.length;
+            const dateRangeStart = globalMin + (i * rangeWidth) / histogramBins.length;
 
-            const dateRangeEnd = globalMin + ((i + 1) * rangeWidth) / bins.length;
+            const dateRangeEnd = globalMin + ((i + 1) * rangeWidth) / histogramBins.length;
 
             const baseProportion = bin / binsMax;
 
@@ -233,12 +233,13 @@ const DoubleRangeSlider = ({
                   dateRangeEnd
                 )}`}
                 className={`border-1 border-white ${
-                  (i + 1) / bins.length >= lowerBound && i / bins.length <= upperBound
+                  (i + 1) / histogramBins.length >= lowerBound &&
+                  i / histogramBins.length <= upperBound
                     ? 'bg-blue-500'
                     : 'bg-gray-700'
                 }`}
                 style={{
-                  width: proportionToPercent(1 / bins.length),
+                  width: proportionToPercent(1 / histogramBins.length),
                   height: proportionToPercent(proportion),
                 }}
               />

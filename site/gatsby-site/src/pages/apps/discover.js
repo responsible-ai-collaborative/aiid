@@ -11,7 +11,7 @@ function DiscoverApp(props) {
 
   const numBins = 16;
 
-  const bins = new Array(numBins).fill().map(() => 0);
+  const histogramBins = new Array(numBins).fill().map(() => 0);
 
   const publishDates = reports.map((report) => new Date(report.date_published));
 
@@ -23,14 +23,14 @@ function DiscoverApp(props) {
     const position =
       (publishDate - earliestPublishDate) / (latestPublishDate - earliestPublishDate);
 
-    const index = Math.round(position * (bins.length - 1));
+    const index = Math.round(position * (histogramBins.length - 1));
 
-    bins[index] += 1;
+    histogramBins[index] += 1;
   }
 
   return (
     <div className="w-full">
-      <Discover {...{ bins }} />
+      <Discover {...{ histogramBins }} />
     </div>
   );
 }

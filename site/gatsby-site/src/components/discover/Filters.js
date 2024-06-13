@@ -3,7 +3,7 @@ import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import Filter from './Filter';
 import { graphql, useStaticQuery } from 'gatsby';
 
-function Filters({ expandFilters, bins }) {
+function Filters({ expandFilters, histogramBins }) {
   const {
     taxa: { nodes: taxa },
   } = useStaticQuery(graphql`
@@ -44,7 +44,7 @@ function Filters({ expandFilters, bins }) {
         }
         return (
           <div key={list.attribute} className={className} data-cy={list.attribute}>
-            <Filter className="w-full" type={list.type} taxa={taxa} {...list} {...{ bins }} />
+            <Filter className="w-full" type={list.type} {...{ histogramBins, taxa, ...list }} />
           </div>
         );
       })}

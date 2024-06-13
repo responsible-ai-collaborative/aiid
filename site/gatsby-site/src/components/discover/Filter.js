@@ -54,7 +54,7 @@ function ToggleContent({ label, touched, faIcon, toggled, accordion = false }) {
   );
 }
 
-function ButtonToggle({ label, faIcon, touched, type, filterProps, bins }) {
+function ButtonToggle({ label, faIcon, touched, type, filterProps, histogramBins }) {
   const [toggled, setToggled] = useState(true);
 
   const toggleDropdown = () => {
@@ -105,20 +105,20 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps, bins }) {
           toggled ? 'hidden' : 'block '
         } bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700`}
       >
-        <FilterOverlay type={type} filterProps={filterProps} {...{ bins }} />
+        <FilterOverlay {...{ type, filterProps, histogramBins }} />
       </div>
     </div>
   );
 }
 
-function FilterContent({ type, filterProps, bins }) {
+function FilterContent({ type, filterProps, histogramBins }) {
   const { default: Component } = componentsMap[type];
 
-  return <Component {...filterProps} {...{ bins }} />;
+  return <Component {...filterProps} {...{ histogramBins }} />;
 }
 
 const FilterOverlay = React.forwardRef(function Container(
-  { bins, type, filterProps, ...overlayProps },
+  { histogramBins, type, filterProps, ...overlayProps },
   ref
 ) {
   return (
@@ -131,14 +131,14 @@ const FilterOverlay = React.forwardRef(function Container(
     >
       <Card className="shadow-lg card">
         <div>
-          <FilterContent type={type} filterProps={filterProps} {...{ bins }} />
+          <FilterContent {...{ type, filterProps, histogramBins }} />
         </div>
       </Card>
     </div>
   );
 });
 
-export default function Filter({ type, bins, ...filterProps }) {
+export default function Filter({ type, histogramBins, ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
@@ -149,14 +149,7 @@ export default function Filter({ type, bins, ...filterProps }) {
 
   return (
     <>
-      <ButtonToggle
-        label={label}
-        faIcon={faIcon}
-        touched={touched}
-        type={type}
-        filterProps={filterProps}
-        {...{ bins }}
-      />
+      <ButtonToggle {...{ label, faIcon, touched, type, filterProps, histogramBins }} />
     </>
   );
 }
