@@ -7,5 +7,5 @@ export = async function globalSetup() {
 
   (global as any).__MONGOINSTANCE = instance;
 
-  process.env.MONGODB_API_CONNECTION_STRING = uri.slice(0, uri.lastIndexOf('/'));
+  process.env.API_MONGODB_CONNECTION_STRING = uri.slice(0, uri.lastIndexOf('/'));
 };

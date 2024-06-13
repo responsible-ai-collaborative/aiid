@@ -38,7 +38,7 @@ let client: MongoClient | null = null;
 export default async function handler(req: any, res: any) {
 
   if (!client) {
-    client = new MongoClient(appConfig.MONGODB_API_CONNECTION_STRING, {});
+    client = new MongoClient(appConfig.API_MONGODB_CONNECTION_STRING, {});
 
     await client.connect();
   }

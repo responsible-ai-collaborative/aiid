@@ -11,7 +11,7 @@ export const startTestServer = async () => {
         schema,
     });
 
-    const client = new MongoClient(config.MONGODB_API_CONNECTION_STRING);
+    const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
     const { url } = await startStandaloneServer(server, { context: ({ req }) => context({ req, client }), listen: { port: 0 } });
 
@@ -20,7 +20,7 @@ export const startTestServer = async () => {
 
 export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: Record<string, unknown>[], drop?: boolean }) => {
 
-    const client = new MongoClient(process.env.MONGODB_API_CONNECTION_STRING!);
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
 
     const db = client.db(database);
     const collection = db.collection(name);
