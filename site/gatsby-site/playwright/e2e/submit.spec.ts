@@ -564,6 +564,8 @@ test.describe('The Submit form', () => {
 
         await waitForRequest('findSubmissions');
 
+        await waitForRequest('findIncidentsTitles');
+
 
         await expect(page.locator('.form-has-errors')).not.toBeVisible();
 
