@@ -118,6 +118,7 @@ jobs:
           REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          MONGODB_API_CONNECTION_STRING: ${{ secrets.MONGODB_API_CONNECTION_STRING }}
 
       - name: Build size
         run: |

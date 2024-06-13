@@ -1,8 +1,17 @@
-type ConfigType = {
-    [key: string]: string;
+interface Config {
+    E2E_ADMIN_PASSWORD: string
+    E2E_ADMIN_USERNAME: string
+    REALM_API_APP_ID: string
+    REALM_API_GROUP_ID: string
+    REALM_API_PRIVATE_KEY: string
+    REALM_API_PUBLIC_KEY: string
+    REALM_GRAPHQL_API_KEY: string
+    REALM_APP_ID: string
+    MONGODB_API_CONNECTION_STRING: string
+    ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: string
 };
 
-const config: ConfigType = {
+const config: Config = {
     E2E_ADMIN_PASSWORD: process.env.E2E_ADMIN_PASSWORD!,
     E2E_ADMIN_USERNAME: process.env.E2E_ADMIN_USERNAME!,
     REALM_API_APP_ID: process.env.REALM_API_APP_ID!,
@@ -11,7 +20,7 @@ const config: ConfigType = {
     REALM_API_PUBLIC_KEY: process.env.REALM_API_PUBLIC_KEY!,
     REALM_GRAPHQL_API_KEY: process.env.REALM_GRAPHQL_API_KEY!,
     REALM_APP_ID: process.env.REALM_APP_ID!,
-    MONGODB_CONNECTION_STRING: process.env.MONGODB_CONNECTION_STRING!,
+    MONGODB_API_CONNECTION_STRING: process.env.MONGODB_API_CONNECTION_STRING!,
     ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: process.env.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN!,
 }
 
