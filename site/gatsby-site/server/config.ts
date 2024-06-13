@@ -9,6 +9,7 @@ interface Config {
     REALM_APP_ID: string
     MONGODB_API_CONNECTION_STRING: string
     ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: string
+    [key: string]: string;
 };
 
 const config: Config = {
