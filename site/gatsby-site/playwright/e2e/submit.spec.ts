@@ -375,6 +375,8 @@ test.describe('The Submit form', () => {
 
             await page.locator('button:has-text("Fetch info")').click();
 
+            await waitForRequest('parseNews');
+
             await setEditorText(
                 page,
                 `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
@@ -917,14 +919,24 @@ test.describe('The Submit form', () => {
             'RelatedReportsByAuthor'
         );
 
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            { data: { submissions: [] } },
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
         const values = {
             url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
             authors: 'test author',
             date_published: '2021-01-02',
             incident_ids: '1',
         };
-
-        await page.goto(url);
 
         for (const key in values) {
             if (key == 'incident_ids') {
