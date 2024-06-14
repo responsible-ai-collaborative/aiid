@@ -635,6 +635,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="timeline-text-response"]')).not.toBeVisible();
     });
 
+    // the incident contains reports missing images so it will never pass
     test.skip('There should not be image errors (400)', async ({ page }) => {
         page.on('console', (msg) => {
             if (msg.type() === 'error') {

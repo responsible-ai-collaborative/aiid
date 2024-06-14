@@ -148,4 +148,3 @@ export async function setEditorText(page: Page, value, selector = '.CodeMirror')
     }, [value, selector]);
     await page.mouse.click(0, 0);
 }
-
