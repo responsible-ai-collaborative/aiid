@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StaticQuery, graphql } from 'gatsby';
+import { StaticQuery, graphql, navigate } from 'gatsby';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faRssSquare, faSearch } from '@fortawesome/free-solid-svg-icons';
 import {
   faSquareXTwitter,
   faGithubSquare,
@@ -15,6 +16,7 @@ import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const Header = ({ location = null }) => {
   const [navCollapsed, setNavCollapsed] = useState(true);
@@ -49,9 +51,9 @@ const Header = ({ location = null }) => {
 
         const finalLogoLink = logo.link !== '' ? logo.link : 'https://incidentdatabase.ai/';
 
-        var SocialMediaIcons = () =>
+        const SocialMediaIcons = () =>
           config.header.social && (
-            <div className="hidden md:flex wrap-0 gap-2 items-center">
+            <div className="hidden xl:flex wrap-0 gap-2 items-center">
               <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
                 <FontAwesomeIcon
                   titleId="twitter"
@@ -81,7 +83,7 @@ const Header = ({ location = null }) => {
                   icon={faFacebookSquare}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
-                  title="Open RSS Feed"
+                  title="Open Facebook"
                 />
               </a>
               <a
@@ -95,7 +97,7 @@ const Header = ({ location = null }) => {
                   icon={faLinkedin}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
-                  title="Open RSS Feed"
+                  title="Open LinkedIn"
                 />
               </a>
               <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2">
@@ -110,7 +112,7 @@ const Header = ({ location = null }) => {
             </div>
           );
 
-        var HeaderLink = ({ className }) => (
+        const HeaderLink = ({ className }) => (
           <Link
             to={finalLogoLink}
             className={`hover:no-underline flex items-center ${className || ''}`}
@@ -131,13 +133,13 @@ const Header = ({ location = null }) => {
             </div>
             <Divider />
             <span
-              className="inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
+              className="hidden md:inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
               dangerouslySetInnerHTML={{ __html: headerTitle }}
             />
           </Link>
         );
 
-        var SkipToContent = ({ className }) => (
+        const SkipToContent = ({ className }) => (
           <a
             href="#content"
             className={`
@@ -189,6 +191,8 @@ const Header = ({ location = null }) => {
                 loginClassName="text-white hover:text-primary-blue"
                 location={location}
               />
+
+              <SearchBar />
             </div>
             <div
               id="navbar"
@@ -207,7 +211,88 @@ const Header = ({ location = null }) => {
   );
 };
 
-var Divider = ({ className }) => (
+const SearchBar = () => {
+  const localizePath = useLocalizePath();
+
+  const { t } = useTranslation();
+
+  return (
+    <form
+      method="get"
+      action={localizePath({ path: '/apps/discover' })}
+      onSubmit={(event) => {
+        // Normally we want to use Gatsby's navigation
+        // instead of triggering a page load.
+        // However, in the edge-case where
+        // the user is already on the discover page
+        // but decides to use the global search,
+        // navigate() won't update the search,
+        // so we just trigger the default form action,
+        // reloading the page.
+        if (window.location.pathname != localizePath({ path: '/apps/discover/' })) {
+          event.preventDefault();
+          navigate(
+            localizePath({ path: '/apps/discover/?s=' + encodeURIComponent(event.target.s.value) })
+          );
+        }
+      }}
+      className="
+      relative
+      hidden md:flex flex-row-reverse
+
+      [&:hover>#header-search-bar]:w-48
+      [&:hover>#header-search-bar]:px-4
+      [&:hover>#header-search-bar]:ml-2
+      [&:hover>#header-search-bar]:opacity-100
+
+      [&:focus-within>#header-search-bar]:w-48
+      [&:focus-within>#header-search-bar]:px-4
+      [&:focus-within>#header-search-bar]:ml-2
+      [&:focus-within>#header-search-bar]:opacity-100
+
+      [&:focus-within>#header-search-focus]:h-0
+      [&:focus-within>#header-search-focus]:w-0
+    "
+    >
+      <button
+        id="header-search-focus"
+        title={t('Expand Search')}
+        type="button"
+        className="absolute inset-0 w-8 h-full"
+        tabIndex="-1"
+      />
+
+      <input
+        id="header-search-bar"
+        type="text"
+        name="s"
+        placeholder={t('Type Here')}
+        className="
+          w-0 px-0 opacity-0 
+          transition-all
+          border-0 
+          text-white bg-white/20
+          placeholder-opacity-30 placeholder-white 
+
+          focus:ml-2
+          focus:w-48
+          focus:px-4
+          focus:opacity-100
+        "
+      />
+      <button>
+        <FontAwesomeIcon
+          icon={faSearch}
+          color={'white'}
+          className="pointer fa fa-lg ml-4 mr-0 transition-all"
+          title={t('Search')}
+        />
+      </button>
+    </form>
+  );
+};
+
+const Divider = ({ className }) => (
   <span className={`divider hidden md:inline-block w-px h-[30px] bg-gray-400 ${className || ''}`} />
 );
 
