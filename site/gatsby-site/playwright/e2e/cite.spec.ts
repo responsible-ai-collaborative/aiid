@@ -704,29 +704,51 @@ test.describe('Cite pages', () => {
             'updateDissimilarIncidents'
         );
 
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName === 'logIncidentHistory',
+            {
+                "data": {
+                    "logIncidentHistory": {
+                        "incident_id": 50,
+                        "__typename": "LogIncidentHistoryPayload"
+                    }
+                }
+            },
+            'logIncidentHistory'
+        );
+
         await page.goto('/incidents/edit/?incident_id=50');
 
         await page.locator('[data-cy="similar-id-input"]').fill('123');
 
-        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1) button:has-text("Yes")').click();
+        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText("Yes").click();
 
         await page.locator('[data-cy="similar-id-input"]').fill('456');
 
-        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1) button:has-text("No")').click();
+        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
         await page.locator('button[type="submit"]').click();
 
-        const updateSimilarIncidentsRequest = await waitForRequest('updateSimilarIncidents');
+        await waitForRequest('updateIncident');
+
+        await waitForRequest('logIncidentHistory');
+
         const updateDissimilarIncidentsRequest = await waitForRequest('updateDissimilarIncidents');
+
+        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.query).toEqual({ incident_id_in: [456] });
+        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.set).toEqual({
+            editor_dissimilar_incidents: [50],
+        });
+
+        const updateSimilarIncidentsRequest = await waitForRequest('updateSimilarIncidents');
 
         expect(updateSimilarIncidentsRequest.postDataJSON().variables.query).toEqual({ incident_id_in: [123] });
         expect(updateSimilarIncidentsRequest.postDataJSON().variables.set).toEqual({
             editor_similar_incidents: [50],
         });
 
-        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.query).toEqual({ incident_id_in: [456] });
-        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.set).toEqual({
-            editor_dissimilar_incidents: [50],
-        });
     });
 });
