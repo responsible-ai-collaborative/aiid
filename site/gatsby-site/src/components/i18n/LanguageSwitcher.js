@@ -34,6 +34,7 @@ export default function LanguageSwitcher({ className = '' }) {
     <div
       className="mr-3 md:mr-0 border border-gray-500 p-2 rounded-md hover:bg-white hover:text-gray-900"
       data-cy="language-switcher"
+      data-testid="language-switcher"
     >
       <Dropdown
         id="dropdown-basic-button"
