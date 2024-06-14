@@ -37,7 +37,7 @@ jobs:
     needs: cache-modifier
     secrets: inherit
     with:
-      sha: ${{ github.event.pull_request.head.sha }}
+      sha: ${{ github.sha }}
       environment: staging
 
   call-test-build:
