@@ -28,7 +28,7 @@ export async function conditionalIntercept(
     url: string,
     condition: (request: Request) => boolean,
     response,
-    alias: string = null
+    alias: string,
 ) {
     await page.route(url, async (route: Route) => {
 
@@ -45,12 +45,11 @@ export async function conditionalIntercept(
         }
     });
 
-    if (alias) {
+    // every test should wait for every alias it defines, so we are sure no interception is missed
 
-        assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
+    assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
 
-        waitForRequestMap.set(alias, page.waitForRequest((req) => minimatch(req.url(), url) && condition(req)));
-    }
+    waitForRequestMap.set(alias, page.waitForRequest((req) => minimatch(req.url(), url) && condition(req)));
 }
 
 export async function waitForRequest(alias: string) {
