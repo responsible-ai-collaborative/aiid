@@ -280,7 +280,7 @@ const SearchBar = () => {
           focus:opacity-100
         "
       />
-      <button>
+      <button id="header-search-submit">
         <FontAwesomeIcon
           icon={faSearch}
           color={'white'}
