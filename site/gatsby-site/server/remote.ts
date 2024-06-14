@@ -41,7 +41,7 @@ const ignoredMutations = [
 
 export const getSchema = () => {
 
-    const schema = wrapSchema({
+    const schema = {
         schema: makeExecutableSchema({ typeDefs: remoteTypeDefs }),
         executor: userExecutor,
         transforms: [
@@ -70,7 +70,7 @@ export const getSchema = () => {
                 return true
             })
         ],
-    });
+    }
 
     return schema;
 }
