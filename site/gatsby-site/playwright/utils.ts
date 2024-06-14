@@ -132,7 +132,7 @@ export async function login(page: Page, email: string, password: string, options
             await loginSteps(page, email, password);
             await page.context().storageState({ path: 'session.json' });
         } else {
-            
+
             // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
             // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
 
@@ -141,3 +141,10 @@ export async function login(page: Page, email: string, password: string, options
     }
 }
 
+export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
+    await page.locator(selector).first().click();
+    await page.evaluate(([value, selector]) => {
+        document.querySelector(selector).CodeMirror.setValue(value);
+    }, [value, selector]);
+    await page.mouse.click(0, 0);
+}
