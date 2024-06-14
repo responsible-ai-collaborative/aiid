@@ -1321,6 +1321,8 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="submit-step-2"]').click();
 
+        await waitForRequest('insertSubmission');
+
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
 
         const keys = ['url', 'title', 'authors', 'incident_date'];
