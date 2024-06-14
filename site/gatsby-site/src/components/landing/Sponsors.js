@@ -121,7 +121,7 @@ export default function Sponsors({ sponsors = [] }) {
                 <Trans ns="landing">
                   View the Responsible AI Collaborative&apos;s{' '}
                   <a
-                    href="https://res.cloudinary.com/pai/image/upload/v1694177803/Responsible_AI_Collaborative_Inc_Form990-PF_hlpusu.pdf"
+                    href="https://asset.cloudinary.com/pai/89921e521c5bed68c04cf15f2c78b65a"
                     target="_blank"
                     rel="noreferrer"
                   >
