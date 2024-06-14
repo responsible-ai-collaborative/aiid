@@ -1,0 +1,80 @@
+name: Run playwright tests
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      sha:
+        description: The commit SHA to run the tests against
+        type: string
+        required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Read node modules from cache
+        id: cache-nodemodules
+        uses: actions/cache/restore@v4
+        env:
+          cache-name: cache-install-folder
+        with:
+          path: |
+            site/gatsby-site/node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        env:
+          cache-name: cache-build-folder
+        with:
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/.cache/functions
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
+
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: site/gatsby-site
+
+      - name: Run playwright tests
+        run: npx playwright test
+        working-directory: site/gatsby-site
+        env:
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: site/gatsby-site/playwright-report/
+          retention-days: 1
+

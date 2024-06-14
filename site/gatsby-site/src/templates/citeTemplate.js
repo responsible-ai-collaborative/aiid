@@ -421,7 +421,10 @@ function CiteTemplate({
           </Container>
         </div>
         {!readOnly && (
-          <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
+          <div
+            className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0"
+            data-cy="similar-incidents-column"
+          >
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}
               editor_similar_incidents={editor_similar_incidents}
