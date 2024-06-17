@@ -754,13 +754,6 @@ test.describe('The Submit form', () => {
 
             await conditionalIntercept(
                 page,
-                '**/parseNews**',
-                () => true,
-                parseNews,
-            );
-
-            await conditionalIntercept(
-                page,
                 '**/graphql',
                 (req) => req.postDataJSON().operationName == 'FindIncidentsTitles',
                 {
@@ -960,13 +953,6 @@ test.describe('The Submit form', () => {
 
     test('Should *not* show semantically related reports when the text is under 256 non-space characters', async ({ page }) => {
 
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            parseNews,
-        );
-
         await page.goto(url);
 
         await setEditorText(
@@ -1129,14 +1115,6 @@ test.describe('The Submit form', () => {
     });
 
     test('Should show a popover', async ({ page }) => {
-
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            parseNews,
-        );
-
         await page.goto(url);
 
         await page.locator('[data-cy="label-title"]').hover();
