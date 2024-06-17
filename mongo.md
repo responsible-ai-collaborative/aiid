@@ -16,6 +16,8 @@ Administering data requires administrative access to the database. This access i
 * `taxa`: Metadata describing the taxonomies of the classifications collection.
 * `classifications`: All the taxonomic classifications of incident records.
 * `entities`: The organizations and individuals related to incidents.
+* `candidates`: News items that appear in the Related News Digest and may eventually become reports.
+* `publications`: Metadata, such as political bias labels, about sources that may publish incident reports and candidates.
 
 
 ## Incidents Collection Details
