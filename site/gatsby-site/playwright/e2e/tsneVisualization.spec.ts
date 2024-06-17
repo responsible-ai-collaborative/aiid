@@ -1,10 +1,5 @@
-import { test, expect, Page, Download } from '@playwright/test';
-import { conditionalIntercept, conditionalIt, mockDate, waitForRequest } from '../utils';
-import { getUnixTime } from 'date-fns';
-import { deleteReportTypenames, transformReportData } from '../../src/utils/reports';
-import fs from 'fs/promises';
-import path from 'path';
-import config from '../../config';
+import { test, expect } from '@playwright/test';
+import { conditionalIt } from '../utils';
 
 test.describe('TSNE visualization page', () => {
 
