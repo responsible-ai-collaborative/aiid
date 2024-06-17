@@ -1,5 +1,5 @@
 import { ApolloClient, HttpLink, InMemoryCache, OperationVariables, QueryOptions } from '@apollo/client';
-import { Page, Route, test, Request } from '@playwright/test';
+import { Page, Route, test as base, Request } from '@playwright/test';
 import { minimatch } from 'minimatch'
 import config from './config';
 import assert from 'node:assert';
@@ -9,6 +9,61 @@ declare module '@playwright/test' {
         body: any;
     }
 }
+
+export type Options = { defaultItem: string };
+
+type TestFixtures = {
+    skipOnEmptyEnvironment: () => Promise<void>,
+    runOnlyOnEmptyEnvironment: () => Promise<void>,
+    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<void>,
+};
+
+
+export const test = base.extend<TestFixtures>({
+    skipOnEmptyEnvironment: async ({ }, use, testInfo) => {
+        if (config.IS_EMPTY_ENVIRONMENT) {
+            testInfo.skip();
+        }
+
+        await use(null);
+    },
+
+    runOnlyOnEmptyEnvironment: async ({ }, use, testInfo) => {
+        if (!config.IS_EMPTY_ENVIRONMENT) {
+            testInfo.skip();
+        }
+
+        await use(null);
+    },
+
+    login: async ({ page }, use, testInfo) => {
+
+        if (!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD) {
+            testInfo.skip();
+        }
+
+        await use(async (email, password, options = { skipSession: false }) => {
+
+            if (options.skipSession) {
+                await loginSteps(page, email, password);
+            } else {
+                const sessionState = await page.context().storageState();
+                if (!sessionState || sessionState.cookies.length === 0) {
+                    await page.context().clearCookies();
+                    await loginSteps(page, email, password);
+                    await page.context().storageState({ path: 'session.json' });
+                } else {
+
+                    // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
+                    // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
+
+                    await page.context().addCookies(sessionState.cookies);
+                }
+            }
+        })
+
+    }
+});
 
 export function conditionalIt(condition: boolean, description: string, fn: any) {
     if (condition) {
