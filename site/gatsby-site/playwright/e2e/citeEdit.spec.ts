@@ -133,10 +133,7 @@ test.describe('Edit report', () => {
       const locator = page.locator(`[name=${key}]`);
       await expect(locator).toHaveValue(reportWithTranslations.data.report[key].toString());
     });
-
-
-
-    // await expect(page.locator('[data-cy="text"] .CodeMirror')).toHaveText(reportWithTranslations.data.report.text);
+    
     let editorText = await getEditorText(page);
     await expect(editorText).toBe(reportWithTranslations.data.report.text);
 
