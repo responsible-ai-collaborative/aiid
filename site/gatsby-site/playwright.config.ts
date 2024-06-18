@@ -13,7 +13,7 @@ export default defineConfig({
   testDir: './playwright',
   globalTimeout: process.env.CI ? 60 * 60 * 1000 : undefined,
   expect: {
-    timeout: process.env.CI ? 30000 : 10000,
+    timeout: process.env.CI ? 30000 : undefined,
   },
   timeout: process.env.CI ? 60000 : undefined,
   /* Run tests in files in parallel */
