@@ -1,14 +1,13 @@
-import { conditionalIntercept, waitForRequest, query, login, maybeIt, setEditorText, getEditorText } from '../utils';
+import { conditionalIntercept, waitForRequest, query, setEditorText, getEditorText, test } from '../utils';
 import { format, getUnixTime } from 'date-fns';
 import { gql } from '@apollo/client';
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import config from '../config';
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 import report10 from '../fixtures/reports/report.json';
 import updateOneReport from '../fixtures/reports/updateOneReport.json';
 import updateOneReportTranslation from '../fixtures/reports/updateOneReportTranslation.json';
 import issueWithTranslations from '../fixtures/reports/issueWithTranslations.json';
-import assert from 'assert';
 
 test.describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
@@ -39,8 +38,8 @@ test.describe('Edit report', () => {
     });
   });
 
-  maybeIt('Should load and update report values', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should load and update report values', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -133,7 +132,7 @@ test.describe('Edit report', () => {
       const locator = page.locator(`[name=${key}]`);
       await expect(locator).toHaveValue(reportWithTranslations.data.report[key].toString());
     });
-    
+
     let editorText = await getEditorText(page);
     await expect(editorText).toBe(reportWithTranslations.data.report.text);
 
@@ -207,7 +206,7 @@ test.describe('Edit report', () => {
       }
     }`);
 
-    await page.locator('button:has-text("Submit")').click();
+    await page.getByRole('button', { name: 'Submit' }).click();
 
     const updateReportRequest = await waitForRequest('updateReport');
     const variables = updateReportRequest.postDataJSON().variables;
@@ -269,11 +268,11 @@ test.describe('Edit report', () => {
     expect(translationVariables.plain_text).toBe('Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!\n');
     expect(translationVariables.title).toBe('Este es un titulo en Espanol!');
 
-    await expect(page.locator('.tw-toast:has-text("Incident report 10 updated successfully.")')).toBeVisible();
+    await expect(page.getByText('Incident report 10 updated successfully.')).toBeVisible();
   });
 
-  test('Should load and update Issue values', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should load and update Issue values', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -382,7 +381,7 @@ test.describe('Edit report', () => {
     const now = new Date();
     await page.context().addInitScript(`Date = class extends Date { constructor() { super("${now.toISOString()}"); } }`);
 
-    await page.locator('button:has-text("Submit")').click();
+    await page.getByRole('button', { name: 'Submit' }).click();
 
     const expectedReport = {
       authors: ['Test Author'],
@@ -424,11 +423,11 @@ test.describe('Edit report', () => {
     expect(translationVariables.plain_text).toBe('Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!\n');
     expect(translationVariables.title).toBe('Este es un titulo en Espanol!');
 
-    await expect(page.locator('[data-cy="toast"]:has-text("Issue 10 updated successfully")')).toBeVisible();
+    await expect(page.getByText('Issue 10 updated successfully')).toBeVisible();
   });
 
-  maybeIt('Should delete incident report', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should delete incident report', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -497,16 +496,17 @@ test.describe('Edit report', () => {
         report_numbers: [10]
       });
 
-      await expect(page.locator('[data-cy="toast"]:has-text("Incident report 10 deleted successfully")')).toBeVisible();
+      await expect(page.getByText('Incident report 10 deleted successfully')).toBeVisible();
+
     });
 
-    await page.locator('button:has-text("Delete this report")').click();
+    await page.getByText('Delete this report').click();
 
     await page.waitForTimeout(2000); // Needed to wait for the dialog to be accepted
   });
 
-  maybeIt('Should link a report to another incident', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should link a report to another incident', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -605,9 +605,9 @@ test.describe('Edit report', () => {
 
     await expect(page.locator('form[data-cy="report"]')).toBeVisible();
 
-    const incidentDiv = await page.locator('div:has-text("Incident 1")');
+    const incidentDiv = page.locator('div:has-text("Incident 1")');
 
-    await incidentDiv.locator('xpath=following-sibling::button').click();
+    await incidentDiv.locator('xpath=following-sibling::button[1]').click();
 
     await page.locator('[name="incident_ids"]').fill('2');
 
@@ -651,7 +651,7 @@ test.describe('Edit report', () => {
       'LinkReportsToIncidents'
     );
 
-    await page.locator('button:has-text("Submit")').click();
+    await page.getByRole('button', { name: 'Submit' }).click();
 
     let now = new Date();
     await page.addInitScript(`{
@@ -739,8 +739,8 @@ test.describe('Edit report', () => {
     await expect(page.locator('[data-cy="toast"]')).toContainText('Incident report 23 updated successfully');
   });
 
-  maybeIt('Should convert an incident report to an issue', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should convert an incident report to an issue', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -819,9 +819,9 @@ test.describe('Edit report', () => {
 
     await page.locator('form[data-cy="report"]').waitFor();
 
-    const incidentDiv = await page.locator('div:has-text("Incident 1")');
+    const incidentDiv = page.locator('div:has-text("Incident 1")');
 
-    await incidentDiv.locator('xpath=following-sibling::button').click();
+    await incidentDiv.locator('xpath=following-sibling::button[1]').click();
 
     await conditionalIntercept(
       page,
@@ -855,7 +855,7 @@ test.describe('Edit report', () => {
       Date.now = () => ${now.getTime()};
   }`);
 
-    await page.locator('button:has-text("Submit")').click();
+    await page.getByRole('button', { name: 'Submit' }).click();
 
     const expectedReport = {
       authors: ['Marco Acevedo'],
@@ -911,11 +911,11 @@ test.describe('Edit report', () => {
       report_numbers: [23],
     });
 
-    await page.locator('[data-cy="toast"]:has-text("Issue 23 updated successfully")', { timeout: 8000 }).waitFor();
+    await page.getByText('Issue 23 updated successfully').waitFor();
   });
 
-  test('Should display the report image', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should display the report image', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await page.goto(url);
 
