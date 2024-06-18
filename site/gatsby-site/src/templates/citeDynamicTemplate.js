@@ -42,7 +42,7 @@ function CiteDynamicTemplate({
   const [metaTitle, setMetaTitle] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id } },
+    variables: { query: { incident_id: parseInt(incident_id) } },
   });
 
   const { data: prevIncident } = useQuery(FIND_INCIDENT, {
