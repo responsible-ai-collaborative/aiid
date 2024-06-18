@@ -1,5 +1,5 @@
-import { conditionalIt, maybeIt, conditionalIntercept, login, waitForRequest } from '../utils';
-import { test, expect } from '@playwright/test';
+import { conditionalIntercept, waitForRequest, test } from '../utils';
+import { expect } from '@playwright/test';
 import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscriptions.json';
 import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
 import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions.js';
@@ -11,12 +11,12 @@ const entity = {
 };
 
 test.describe('Individual Entity page', () => {
-    test.beforeAll(async () => {
-      // Skip all tests if the environment is empty since /entities/{entity_id} page is not available
-      if (config.isEmptyEnvironment) {
-        test.skip();
-      }
-    });
+  test.beforeAll(async () => {
+    // Skip all tests if the environment is empty since /entities/{entity_id} page is not available
+    if (config.isEmptyEnvironment) {
+      test.skip();
+    }
+  });
 
   const url = `/entities/${entity.entity_id}`;
 
@@ -24,8 +24,8 @@ test.describe('Individual Entity page', () => {
     await page.goto(url);
   });
 
-  maybeIt('Should subscribe to new Entity incidents (authenticated user)', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should subscribe to new Entity incidents (authenticated user)', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -63,8 +63,8 @@ test.describe('Individual Entity page', () => {
     await expect(page.locator('[data-cy="toast"]')).toContainText(`You have successfully subscribed to new ${entity.name} incidents`);
   });
 
-  maybeIt('Should unsubscribe to new Entity incidents (authenticated user)', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should unsubscribe to new Entity incidents (authenticated user)', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -115,26 +115,23 @@ test.describe('Individual Entity page', () => {
     await expect(page.locator('[data-cy="edit-entity-btn"]')).not.toBeVisible();
   });
 
-  conditionalIt(
-    !config.isEmptyEnvironment === true && !!config.E2E_ADMIN_USERNAME && !!config.E2E_ADMIN_PASSWORD,
-    'Should display Edit button only for Admin users',
-    async ({ page }) => {
-      await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should display Edit button only for Admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
-      await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindUserSubscriptions',
-        emptySubscriptionsData,
-        'FindUserSubscriptions',
-      );
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName == 'FindUserSubscriptions',
+      emptySubscriptionsData,
+      'FindUserSubscriptions',
+    );
 
-      await page.goto(url);
-      await waitForRequest('FindUserSubscriptions'); 
-      await expect(page.locator('[data-cy="edit-entity-btn"]')).toHaveAttribute('href', `/entities/edit?entity_id=${entity.entity_id}`);
-      await page.locator('[data-cy="edit-entity-btn"]').click();
-      await page.waitForLoadState('domcontentloaded');
-      await expect(page).toHaveURL(`/entities/edit/?entity_id=${entity.entity_id}`);
-    }
+    await page.goto(url);
+    await waitForRequest('FindUserSubscriptions');
+    await expect(page.locator('[data-cy="edit-entity-btn"]')).toHaveAttribute('href', `/entities/edit?entity_id=${entity.entity_id}`);
+    await page.locator('[data-cy="edit-entity-btn"]').click();
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page).toHaveURL(`/entities/edit/?entity_id=${entity.entity_id}`);
+  }
   );
 });
