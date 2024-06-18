@@ -6,6 +6,7 @@
   "version": "0.2.0",
   "dependencies": {
     "@apollo/client": "^3.7.8",
+    "@apollo/server": "^4.10.2",
     "@aws-sdk/client-s3": "^3.435.0",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
@@ -19,6 +20,8 @@
     "@googlemaps/google-maps-services-js": "^3.3.3",
     "@graphql-tools/executor-http": "^1.0.9",
     "@graphql-tools/schema": "^10.0.3",
+    "@graphql-tools/stitch": "^9.2.9",
+    "@graphql-tools/utils": "^10.1.2",
     "@graphql-tools/wrap": "^10.0.5",
     "@mdx-js/react": "^2.3.0",
     "@postlight/parser": "^2.2.3",
@@ -27,7 +30,7 @@
     "async": "^3.2.2",
     "billboard.js": "^3.7.4",
     "bootstrap-daterangepicker": "^3.1.0",
-    "bson": "^4.2.3",
+    "bson": "^6.6.0",
     "cloudinary": "^1.36.4",
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.5",
@@ -57,12 +60,19 @@
     "gatsby-source-prismic": "^5.3.1",
     "gatsby-transformer-sharp": "^5.7.0",
     "graphql": "^16.8.1",
-    "graphql-http": "^1.18.0",
+    "graphql-http": "^1.22.1",
+    "graphql-middleware": "^6.1.35",
+    "graphql-scalars": "^1.23.0",
+    "graphql-shield": "^7.6.5",
+    "graphql-tag": "^2.12.6",
+    "graphql-to-mongodb": "^1.6.5",
     "i18next": "^20.6.1",
     "is-absolute-url": "^3.0.3",
+    "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
     "md5": "^2.3.0",
-    "mongodb": "^4.17.0",
+    "minimatch": "^9.0.4",
+    "mongodb": "^6.4.0",
     "object-hash": "^3.0.0",
     "openapi-request-validator": "^12.1.3",
     "prismic-reactjs": "^1.3.4",
@@ -116,13 +126,25 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
+    "test:api": "jest --setupFiles dotenv/config --forceExit",
+    "test:api:ci": "jest --forceExit",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
     "@cypress/code-coverage": "^3.12.15",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.6",
+    "@graphql-codegen/typescript-mongodb": "^3.0.0",
+    "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@netlify/plugin-gatsby": "^3.7.0",
+    "@playwright/test": "^1.44.1",
     "@tailwindcss/typography": "^0.5.8",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.13",
+    "@types/supertest": "^6.0.2",
     "autoprefixer": "^10.4.7",
     "babel-eslint": "^10.1.0",
     "babel-plugin-istanbul": "^6.1.1",
@@ -138,13 +160,19 @@
     "eslint-plugin-react": "^7.22.0",
     "gatsby-plugin-netlify": "^5.0.1",
     "husky": "^4.3.6",
+    "jest": "^29.7.0",
+    "jest-cli": "^29.7.0",
     "lint-staged": "^10.5.3",
+    "mongodb-memory-server": "^9.1.8",
     "netlify-plugin-cypress": "^2.2.1",
     "postcss": "^8.4.31",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
     "start-server-and-test": "^1.14.0",
-    "tailwindcss": "^3.3.2"
+    "supertest": "^6.3.4",
+    "tailwindcss": "^3.3.2",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2"
   },
   "browser": {
     "crypto": false
@@ -162,7 +190,10 @@
   },
   "overrides": {
     "minimist": "1.2.8",
-    "d3-color": "3.1.0"
+    "d3-color": "3.1.0",
+    "graphql-to-mongodb": {
+      "graphql": "$graphql"
+    }
   },
   "optionalDependencies": {
     "@parcel/watcher-linux-x64-glibc": "^2.4.0"
