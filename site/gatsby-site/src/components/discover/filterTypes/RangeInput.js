@@ -61,7 +61,7 @@ export default function RangeInput({ attribute, histogramBins }) {
                 setSelection={debounce((min, max) => {
                   onChange({ min, max });
                 }, 1000)}
-                {...{ histogramBins }}
+                {...{ histogramBins, attribute }}
               />
               <FieldContainer>
                 <Label>
@@ -156,21 +156,22 @@ const DoubleRangeSlider = ({
   selectionMax,
   setSelection,
   histogramBins,
+  attribute,
 }) => {
-  const valueToProportion = (value) => globalMin + (globalMax - globalMin) * value;
+  const proportionToTimestamp = (value) => globalMin + (globalMax - globalMin) * value;
 
-  const [lowerBound, bareSetLowerBound] = useState(valueToProportion(selectionMin));
+  const [lowerBound, bareSetLowerBound] = useState(proportionToTimestamp(selectionMin));
 
-  const [upperBound, bareSetUpperBound] = useState(valueToProportion(selectionMax));
+  const [upperBound, bareSetUpperBound] = useState(proportionToTimestamp(selectionMax));
 
   const setLowerBound = (value) => {
     bareSetLowerBound(value);
-    setSelection(valueToProportion(value), valueToProportion(upperBound));
+    setSelection(proportionToTimestamp(value), proportionToTimestamp(upperBound));
   };
 
   const setUpperBound = (value) => {
     bareSetUpperBound(value);
-    setSelection(valueToProportion(lowerBound), valueToProportion(value));
+    setSelection(proportionToTimestamp(lowerBound), proportionToTimestamp(value));
   };
 
   const binsMax = Math.max(...histogramBins);
@@ -187,12 +188,12 @@ const DoubleRangeSlider = ({
     <>
       <div className="mb-2">
         <Checkbox
-          id="log-scale"
+          id={`${attribute}-log-scale`}
           checked={logScale ? true : undefined}
           onClick={() => setLogScale((logScale) => !logScale)}
           className="mr-1"
         />
-        <label htmlFor="log-scale">Log Scale</label>
+        <label htmlFor={`${attribute}-log-scale`}>Log Scale</label>
       </div>
       <div className="h-32 w-full bg-gray-100 relative">
         <div className="h-full w-full absolute inset-0">
@@ -256,14 +257,24 @@ const DoubleRangeSlider = ({
           }}
         />
 
-        <SliderKnob bound={lowerBound} setBound={setLowerBound} ceiling={upperBound} />
-        <SliderKnob bound={upperBound} setBound={setUpperBound} floor={lowerBound} />
+        <SliderKnob
+          bound={lowerBound}
+          setBound={setLowerBound}
+          ceiling={upperBound}
+          {...{ proportionToTimestamp }}
+        />
+        <SliderKnob
+          bound={upperBound}
+          setBound={setUpperBound}
+          floor={lowerBound}
+          {...{ proportionToTimestamp }}
+        />
       </div>
     </>
   );
 };
 
-const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0 }) => {
+const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0, proportionToTimestamp }) => {
   const [dragOffset, setDragOffset] = useState(null);
 
   const [handlePosition, setHandlePosition] = useState({
@@ -312,7 +323,7 @@ const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0 }) => {
       <button
         data-cy="range-knob"
         ref={knobRef}
-        className="rounded-full bg-white absolute focus:border-2 border-blue-500"
+        className="rounded-full bg-white absolute focus:border-2 border-blue-500 flex items-center justify-center"
         style={{
           height: sliderHeight,
           width: sliderHeight,
@@ -340,7 +351,11 @@ const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0 }) => {
             });
           }
         }}
-      />
+      >
+        <div className="mt-4 text-center pointer-events-none">
+          {bound && formatDate(proportionToTimestamp(bound)).substr(0, 4)}
+        </div>
+      </button>
 
       {/* This "handle" element moves with the cursor
        * so that we track the mouse position
