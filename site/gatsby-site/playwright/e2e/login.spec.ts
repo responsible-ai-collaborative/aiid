@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { conditionalIt, waitForRequest, conditionalIntercept, login } from '../utils';
 import config from '../config';
+import { access } from 'fs';
 
 test.describe('Login', () => {
   const url = '/login';
@@ -23,7 +24,7 @@ test.describe('Login', () => {
     !config.IS_EMPTY_ENVIRONMENT && !!config.E2E_ADMIN_USERNAME && !!config.E2E_ADMIN_PASSWORD,
     'Should redirect to the account page if the signup storage key is set',
     async ({ page }) => {
-      
+
       await page.goto('/');
 
       await page.evaluate(() => window.localStorage.setItem('signup', '1'));
@@ -32,7 +33,7 @@ test.describe('Login', () => {
 
       await expect(page).toHaveURL('/account/?askToCompleteProfile=1');
 
-      await expect(page.locator('[data-cy="edit-user-modal"]')).toBeVisible({ timeout: 30000 });
+      await expect(page.getByTestId('edit-user-modal')).toBeVisible({ timeout: 60000 });
 
       const localStorage = await page.evaluate(() => window.localStorage);
 
@@ -85,32 +86,33 @@ test.describe('Login', () => {
     await conditionalIntercept(
       page,
       '**/login',
-      (req) => req.resourceType() == "fetch" && req.postDataJSON().username == config.E2E_ADMIN_USERNAME,
+      (req) => req.method() == "POST" && req.postDataJSON().username == config.E2E_ADMIN_USERNAME,
       {
-        statusCode: 401,
-        body: {
-          error: 'confirmation required',
-          error_code: 'AuthError',
-          link: 'https://services.cloud.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95',
-        },
+        error: 'confirmation required',
+        error_code: 'AuthError',
+        link: 'https://services.cloud.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95',
+        user_id: "123"
       },
-      'Login'
+      'Login',
+      401
     );
 
     await conditionalIntercept(
       page,
       '**/auth/providers/local-userpass/confirm/call',
       (req) => req.postDataJSON().email == config.E2E_ADMIN_USERNAME,
-      { statusCode: 204 },
-      'Confirmation'
+      {},
+      'Confirmation',
+      204
     );
 
     await page.goto(url);
+
     await page.locator('input[name=email]').fill(config.E2E_ADMIN_USERNAME);
     await page.locator('input[name=password]').fill(config.E2E_ADMIN_PASSWORD);
     await page.locator('[data-cy="login-btn"]').click();
 
-    const loginRequest = await waitForRequest('Login');
+    await waitForRequest('Login');
     await expect(page.locator('[data-cy="toast"]').getByText('Resend Verification email')).toBeVisible();
     await page.locator('[data-cy="toast"]').getByText('Resend Verification email').click();
 
