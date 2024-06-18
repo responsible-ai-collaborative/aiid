@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { conditionalIt, waitForRequest, conditionalIntercept, login } from '../utils';
 import config from '../config';
-import { access } from 'fs';
 
 test.describe('Login', () => {
   const url = '/login';
@@ -90,8 +89,7 @@ test.describe('Login', () => {
       {
         error: 'confirmation required',
         error_code: 'AuthError',
-        link: 'https://services.cloud.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95',
-        user_id: "123"
+        link: 'https://services.cloud.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95'
       },
       'Login',
       401
