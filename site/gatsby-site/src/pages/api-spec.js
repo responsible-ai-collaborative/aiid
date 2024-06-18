@@ -26,7 +26,7 @@ export const Head = () => {
         src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js"
         crossOrigin="anonymous"
       />
-      <HeadContent path="/api-spec" metaTitle={metaTitle} metaDescription={metaTitle} />
+      <HeadContent path="/api-spec/" metaTitle={metaTitle} metaDescription={metaTitle} />
     </>
   );
 };
