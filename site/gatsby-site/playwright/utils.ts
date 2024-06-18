@@ -65,15 +65,6 @@ export const test = base.extend<TestFixtures>({
     }
 });
 
-export function conditionalIt(condition: boolean, description: string, fn: any) {
-    if (condition) {
-        test(description, fn);
-    }
-}
-
-export const maybeIt = config.E2E_ADMIN_USERNAME && config.E2E_ADMIN_PASSWORD ? test : test.skip;
-
-
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
 
 const waitForRequestMap = new Map<string, Promise<Request>>();
@@ -175,25 +166,6 @@ const loginSteps = async (page: Page, email: string, password: string) => {
 
     await page.waitForURL(url => !url.toString().includes('/login'));
 };
-
-export async function login(page: Page, email: string, password: string, options: { skipSession?: boolean } = { skipSession: false }) {
-    if (options.skipSession) {
-        await loginSteps(page, email, password);
-    } else {
-        const sessionState = await page.context().storageState();
-        if (!sessionState || sessionState.cookies.length === 0) {
-            await page.context().clearCookies();
-            await loginSteps(page, email, password);
-            await page.context().storageState({ path: 'session.json' });
-        } else {
-
-            // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
-            // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
-
-            await page.context().addCookies(sessionState.cookies);
-        }
-    }
-}
 
 export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
     await page.locator(selector).first().click();
