@@ -1,4 +1,4 @@
-import { conditionalIntercept, waitForRequest, query, login, maybeIt, mockDate } from '../utils';
+import { conditionalIntercept, waitForRequest, query, mockDate, test } from '../utils';
 import flaggedReport from '../fixtures/reports/flagged.json';
 import unflaggedReport from '../fixtures/reports/unflagged.json';
 import upsertDuplicateClassification from '../fixtures/classifications/upsertDuplicateClassification.json';
@@ -10,7 +10,7 @@ import incident50 from '../fixtures/incidents/fullIncident50.json';
 import { transformIncidentData, deleteIncidentTypenames } from '../../src/utils/cite';
 import { transformReportData, deleteReportTypenames } from '../../src/utils/reports';
 import { gql } from '@apollo/client';
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import config from '../config';
 
 test.describe('Cite pages', () => {
@@ -53,8 +53,8 @@ test.describe('Cite pages', () => {
         await page.goto(url);
     });
 
-    maybeIt('Should show an edit link to users with the appropriate role', async ({ page }) => {
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should show an edit link to users with the appropriate role', async ({ page, login }) => {
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         const id = 'r3';
 
@@ -327,8 +327,8 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="header-previous-incident-link"]')).toHaveAttribute('href', `/cite/${lastIncidentId - 1}`);
     });
 
-    maybeIt('Should show the edit incident form', async ({ page }) => {
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should show the edit incident form', async ({ page, login }) => {
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await page.goto(url);
 
@@ -405,8 +405,8 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="edit-similar-incidents"]')).not.toBeVisible();
     });
 
-    maybeIt('Should display edit link when logged in as editor', async ({ page }) => {
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should display edit link when logged in as editor', async ({ page, login }) => {
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await page.goto('/cite/9');
 
@@ -476,8 +476,8 @@ test.describe('Cite pages', () => {
         expect(input).toEqual(expectedIncident);
     });
 
-    maybeIt('Should flag an incident as not related (authenticated)', async ({ page }) => {
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should flag an incident as not related (authenticated)', async ({ page, login }) => {
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await conditionalIntercept(
             page,
@@ -583,8 +583,8 @@ test.describe('Cite pages', () => {
         await expect(page.locator('head meta[property="twitter:image"]')).toHaveAttribute('content');
     });
 
-    maybeIt('Should subscribe to incident updates (user authenticated)', async ({ page }) => {
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await page.goto('/cite/51');
 
@@ -599,9 +599,12 @@ test.describe('Cite pages', () => {
                     },
                 },
             },
+            'upsertSubscription'
         );
 
         await page.locator('button:has-text("Notify Me of Updates")').click();
+
+        await waitForRequest('upsertSubscription');
 
         await expect(page.locator('[data-cy="toast"]')).toBeVisible();
 
@@ -659,8 +662,8 @@ test.describe('Cite pages', () => {
         await expect(page).toHaveURL(new RegExp('/cite/10'));
     });
 
-    maybeIt('Should link similar incidents', async ({ page }) => {
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should link similar incidents', async ({ page, login }) => {
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await conditionalIntercept(
             page,
@@ -704,29 +707,51 @@ test.describe('Cite pages', () => {
             'updateDissimilarIncidents'
         );
 
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName === 'logIncidentHistory',
+            {
+                "data": {
+                    "logIncidentHistory": {
+                        "incident_id": 50,
+                        "__typename": "LogIncidentHistoryPayload"
+                    }
+                }
+            },
+            'logIncidentHistory'
+        );
+
         await page.goto('/incidents/edit/?incident_id=50');
 
         await page.locator('[data-cy="similar-id-input"]').fill('123');
 
-        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1) button:has-text("Yes")').click();
+        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText("Yes").click();
 
         await page.locator('[data-cy="similar-id-input"]').fill('456');
 
-        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1) button:has-text("No")').click();
+        await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
         await page.locator('button[type="submit"]').click();
 
-        const updateSimilarIncidentsRequest = await waitForRequest('updateSimilarIncidents');
+        await waitForRequest('updateIncident');
+
+        await waitForRequest('logIncidentHistory');
+
         const updateDissimilarIncidentsRequest = await waitForRequest('updateDissimilarIncidents');
+
+        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.query).toEqual({ incident_id_in: [456] });
+        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.set).toEqual({
+            editor_dissimilar_incidents: [50],
+        });
+
+        const updateSimilarIncidentsRequest = await waitForRequest('updateSimilarIncidents');
 
         expect(updateSimilarIncidentsRequest.postDataJSON().variables.query).toEqual({ incident_id_in: [123] });
         expect(updateSimilarIncidentsRequest.postDataJSON().variables.set).toEqual({
             editor_similar_incidents: [50],
         });
 
-        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.query).toEqual({ incident_id_in: [456] });
-        expect(updateDissimilarIncidentsRequest.postDataJSON().variables.set).toEqual({
-            editor_dissimilar_incidents: [50],
-        });
     });
 });

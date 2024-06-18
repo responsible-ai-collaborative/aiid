@@ -1,4 +1,4 @@
-describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
+describe('Social Share buttons on pages', () => {
   const incidentId = 10;
 
   const incidentUrl = `/cite/${incidentId}/`;
