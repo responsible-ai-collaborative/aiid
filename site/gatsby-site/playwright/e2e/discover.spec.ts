@@ -1,5 +1,5 @@
-import { test, expect, Page, Download } from '@playwright/test';
-import { conditionalIntercept, conditionalIt, mockDate, waitForRequest } from '../utils';
+import { expect, Page, Download } from '@playwright/test';
+import { conditionalIntercept, mockDate, waitForRequest, test } from '../utils';
 import flaggedReport from '../fixtures/reports/flagged.json';
 import unflaggedReport from '../fixtures/reports/unflagged.json';
 import { getUnixTime } from 'date-fns';
@@ -15,7 +15,7 @@ test.describe('The Discover app', () => {
         await page.goto(url);
     });
 
-    conditionalIt(process.env.isEmptyEnvironment === 'true', 'Should display empty state when no incidents are available', async ({ page }) => {
+    test('Should display empty state when no incidents are available', async ({ page, runOnlyOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await expect(async () => {
@@ -27,7 +27,7 @@ test.describe('The Discover app', () => {
         await expect(page.locator('text=Your search returned no results.')).toBeVisible();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Should default to incident reports and show at least 30', async ({ page }) => {
+    test('Should default to incident reports and show at least 30', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await expect(async () => {
@@ -43,7 +43,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Performs a search and filters results', async ({ page }) => {
+    test('Performs a search and filters results', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.fill('[data-cy="search-box"] input[placeholder="Type Here"]', 'starbucks');
@@ -59,7 +59,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Filters by incident Id using top filters', async ({ page }) => {
+    test('Filters by incident Id using top filters', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.click('[data-cy=expand-filters]');
@@ -80,7 +80,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Filters by Language using top filters', async ({ page }) => {
+    test('Filters by Language using top filters', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.click('[data-cy=expand-filters]');
@@ -101,7 +101,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Shows expected filters', async ({ page }) => {
+    test('Shows expected filters', async ({ page, skipOnEmptyEnvironment }) => {
         await page.setViewportSize({ width: 1920, height: 1080 });
         await page.goto(url);
 
@@ -127,7 +127,7 @@ test.describe('The Discover app', () => {
         await expect(page.locator('button:has-text("Submitter")')).toBeVisible();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Filters by Tags using top filters', async ({ page }) => {
+    test('Filters by Tags using top filters', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.click('[data-cy=expand-filters]');
@@ -148,7 +148,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(process.env.isEmptyEnvironment !== 'true', 'Filters by incident Id using card button', async ({ page }) => {
+    test('Filters by incident Id using card button', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.click('[data-cy=expand-filters]');
@@ -167,13 +167,14 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Should flag an incident', async ({ page }) => {
+    test('Should flag an incident', async ({ page, skipOnEmptyEnvironment }) => {
 
         await conditionalIntercept(
             page,
             '**/graphql',
             (req) => req.postDataJSON().operationName === 'FindReport',
-            unflaggedReport
+            unflaggedReport,
+            'findReport',
         );
 
 
@@ -245,7 +246,7 @@ test.describe('The Discover app', () => {
         await expect(modal).not.toBeVisible();
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Opens an archive link', async ({ page }) => {
+    test('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
 
         await page.goto(url);
 
@@ -315,7 +316,7 @@ test.describe('The Discover app', () => {
         await expect(page.locator('button:has-text("Clear Filter")')).toBeDisabled();
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Should sort by incident date', async ({ page }) => {
+    test('Should sort by incident date', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('[data-cy="discover-sort"]').click();
@@ -336,7 +337,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Should sort by published date', async ({ page }) => {
+    test('Should sort by published date', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('[data-cy="discover-sort"]').click();
@@ -373,7 +374,7 @@ test.describe('The Discover app', () => {
         await expect(page).toHaveURL(/\?is_incident_report=true$/);
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Should export results to a CSV file', async ({ page }) => {
+    test('Should export results to a CSV file', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('[data-cy="search-box"] input[placeholder="Type Here"]').type('starbucks');
@@ -419,7 +420,7 @@ test.describe('The Discover app', () => {
         await expect(page.locator('[data-cy="discover-sort"]')).toHaveText('Newest Incident Date');
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Should default to the featured incidents', async ({ page }) => {
+    test('Should default to the featured incidents', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         for (const item of config.header.search.featured) {
@@ -428,7 +429,7 @@ test.describe('The Discover app', () => {
         }
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Performs a search and filters results by source', async ({ page }) => {
+    test('Performs a search and filters results by source', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('[data-cy="search-box"] input[placeholder="Type Here"]').fill('google');
@@ -454,7 +455,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Loads filters based on URL', async ({ page }) => {
+    test('Loads filters based on URL', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url + '?is_incident_report=true&submitters=Anonymous&page=3&classifications=CSETv0%3AIntent%3AAccident');
 
         await expect(page.locator('button:has-text("Submitters") span.badge')).toContainText('1');
@@ -485,7 +486,7 @@ test.describe('The Discover app', () => {
         await expect(page.locator('[data-cy="display-mode-details"]')).toHaveClass(/selected/);
     });
 
-    conditionalIt(!process.env.isEmptyEnvironment, 'Search using the classifications filter', async ({ page }) => {
+    test('Search using the classifications filter', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('[data-cy=expand-filters]').click();
