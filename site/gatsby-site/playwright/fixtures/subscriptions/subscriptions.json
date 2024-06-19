@@ -1,0 +1,57 @@
+{
+  "data": {
+    "subscriptions": [
+      {
+        "_id": "6335e4ce290efe73c71b2e50",
+        "incident_id": null,
+        "entityId": null,
+        "type": "new-incidents"
+      },
+      {
+        "_id": "6335e4ce290efe73c71b2e55",
+        "incident_id": {
+          "incident_id": 11,
+          "title": "Northpointe Risk Models"
+        },
+        "entityId": null,
+        "type": "incident"
+      },
+      {
+        "_id": "6335fcd0290efe73c71b2e60",
+        "incident_id": {
+          "incident_id": 10,
+          "title": "Kronos’s Algorithm Allegedly Created Scheduling and Financial Issues for Starbucks Employees"
+        },
+        "entityId": null,
+        "type": "incident"
+      },
+      {
+        "_id": "63361ade290efe73c71b2e61",
+        "incident_id": {
+          "incident_id": 12,
+          "title": "Common Biases of Vector Embeddings"
+        },
+        "entityId": null,
+        "type": "incident"
+      },
+      {
+        "_id": "63361ade290efe73c71b2e70",
+        "incident_id": null,
+        "entityId": {
+          "entity_id": "google",
+          "name": "Google"
+        },
+        "type": "entity"
+      },
+      {
+        "_id": "63361ade290efe73c71b2e71",
+        "incident_id": null,
+        "entityId": {
+          "entity_id": "uk-home-office",
+          "name": "UK Home Office"
+        },
+        "type": "entity"
+      }
+    ]
+  }
+}
