@@ -28,7 +28,7 @@ test.describe('Login', () => {
 
       await expect(page).toHaveURL('/account/?askToCompleteProfile=1');
 
-      await expect(page.getByTestId('edit-user-modal')).toBeVisible({ timeout: 600000 });
+      await expect(page.getByTestId('edit-user-modal')).toBeVisible({ timeout: 30000 });
 
       const localStorage = await page.evaluate(() => window.localStorage);
 
