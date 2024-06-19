@@ -83,18 +83,65 @@ const IncidentsPage = ({ data, ...props }) => {
         break;
 
       case 'reports':
-        if (isLiveData && reports) {
+        if (isLiveData && reports && !reportsLoading) {
           setReportsData(transformReports(reports.reports));
-        } else if (data?.reports?.nodes) {
+        } else if (!isLiveData && data?.reports?.nodes) {
           setReportsData(transformReports(data.reports.nodes));
         }
         break;
       default:
     }
-  }, [isLiveData, incidents, data, selectedView]);
+  }, [isLiveData, incidents, data, selectedView, reportsLoading]);
 
   function transformReports(reports) {
-    return reports.map((report) => ({
+    let reportsData = reports;
+
+    // Since we don't currently have report pages for reports, we need to add the incident_id to the reports to create the correct link /cite/:incident_id#r:report_number
+    if (selectedView === 'reports') {
+      const incidents = data.reports.nodes;
+
+      if (isLiveData) {
+        if (incidents) {
+          const reportToIncidentMap = [];
+
+          incidents.forEach((incident) => {
+            incident.reports.forEach((report) => {
+              reportToIncidentMap[report.report_number] = incident.incident_id;
+            });
+          });
+          const updatedReports = reports.map((report) => ({
+            ...report,
+            incident_id: reportToIncidentMap[report.report_number],
+          }));
+
+          reportsData = updatedReports;
+        } else {
+          reportsData = reports;
+        }
+      } else {
+        // Adds the incident_id to reports in order to create the correct link /cite/:incident_id#r:report_number
+        const reportsMap = new Map();
+
+        reports.forEach((incident) => {
+          incident.reports.forEach((report) => {
+            if (!reportsMap.has(report.report_number) && report.is_incident_report) {
+              reportsMap.set(report.report_number, {
+                ...report,
+                incident_id: incident.incident_id,
+              });
+            }
+          });
+        });
+
+        const flattenReports = Array.from(reportsMap.values()).sort(
+          (a, b) => b.report_number - a.report_number
+        );
+
+        reportsData = flattenReports;
+      }
+    }
+
+    return reportsData.map((report) => ({
       ...report,
       flag: report.flag ? 'Yes' : 'No',
       is_incident_report: report.is_incident_report ? 'No' : 'Yes',
@@ -104,7 +151,7 @@ const IncidentsPage = ({ data, ...props }) => {
   return (
     <div className="w-full" {...props}>
       <div>
-        <Button.Group className="mb-4">
+        <Button.Group className="mb-4" data-cy="table-view">
           <Button
             color={`${selectedView === 'incidents' ? 'dark' : 'gray'}`}
             onClick={() => {
@@ -239,26 +286,30 @@ export const query = graphql`
         name
       }
     }
-    reports: allMongodbAiidprodReports(
-      filter: { is_incident_report: { eq: true } }
-      sort: { report_number: DESC }
+
+    reports: allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { is_incident_report: { eq: true } } } }
+      sort: { reports: { report_number: DESC } }
     ) {
       nodes {
-        report_number
-        title
-        url
-        authors
-        date_downloaded
-        date_modified
-        date_published
-        date_submitted
-        description
-        flag
-        image_url
-        language
-        source_domain
-        submitters
-        is_incident_report
+        incident_id
+        reports {
+          report_number
+          title
+          url
+          authors
+          date_downloaded
+          date_modified
+          date_published
+          date_submitted
+          description
+          flag
+          image_url
+          language
+          source_domain
+          submitters
+          is_incident_report
+        }
       }
     }
 

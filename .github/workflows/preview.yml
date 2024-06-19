@@ -30,6 +30,15 @@ jobs:
           echo "Job originally triggered by ${{ github.actor }}"
           exit 1
 
+  call-test-api:
+    if: ${{ !failure() && !cancelled()}}
+    uses: ./.github/workflows/test-api.yml
+    needs: permissions-check
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+
   call-test-build:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-build.yml
@@ -44,6 +53,16 @@ jobs:
   call-test:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test.yml
+    needs: call-test-build
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
+
+  call-test-playwright:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright.yml
     needs: call-test-build
     secrets: inherit
     with:

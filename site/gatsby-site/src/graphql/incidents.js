@@ -188,6 +188,15 @@ export const UPDATE_INCIDENT = gql`
   }
 `;
 
+export const UPDATE_INCIDENTS = gql`
+  mutation UpdateIncidents($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
+    updateManyIncidents(query: $query, set: $set) {
+      matchedCount
+      modifiedCount
+    }
+  }
+`;
+
 export const INSERT_INCIDENT = gql`
   mutation InsertIncident($incident: IncidentInsertInput!) {
     insertOneIncident(data: $incident) {

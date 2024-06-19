@@ -48,7 +48,7 @@ describe('Incidents App', () => {
     }
   );
 
-  maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  maybeIt('Successfully filter and edit incident 112', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -409,4 +409,34 @@ describe('Incidents App', () => {
       cy.get('[data-cy="current-page"]').should('have.text', '1');
     }
   );
+
+  conditionalIt(!Cypress.env('isEmptyEnvironment'), 'Should switch between views', () => {
+    cy.visit(url);
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="table-view"] button').contains('Issue Reports').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="row"]').should('have.length.at.least', 10);
+
+    cy.get('[data-cy="row"] td a')
+      .first()
+      .should('have.attr', 'href')
+      .and('match', /^\/reports\/\d+$/);
+
+    cy.get('[data-cy="table-view"] button')
+      .contains(/^Reports$/)
+      .click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="row"]').should('have.length.at.least', 10);
+
+    cy.get('[data-cy="row"] td a')
+      .first()
+      .should('have.attr', 'href')
+      .and('match', /^\/cite\/\d+#r\d+$/);
+  });
 });
