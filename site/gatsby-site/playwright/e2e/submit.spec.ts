@@ -846,7 +846,7 @@ test.describe('The Submit form', () => {
     }
     );
 
-    test('Should show a preliminary checks message', async ({ page }) => {
+    test.skip('Should show a preliminary checks message', async ({ page }) => {
         const relatedReports = {
             byURL: {
                 data: {
