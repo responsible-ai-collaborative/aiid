@@ -38,9 +38,7 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
-        if (!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD) {
-            testInfo.skip();
-        }
+        testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
         await use(async (email, password, options = { skipSession: false }) => {
 
