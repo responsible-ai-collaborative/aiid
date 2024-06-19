@@ -52,7 +52,6 @@ jobs:
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier }}
 
   call-test-playwright:
-    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright.yml
     needs: call-test-build
     secrets: inherit
@@ -72,7 +71,7 @@ jobs:
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
   call-deploy:
-    if: inputs.force-deploy == true || success()
+    if: (inputs.force-deploy == true || success()) && !cancelled()
     uses: ./.github/workflows/deploy.yml
     needs: [cache-modifier, call-test, call-test-playwright, call-test-api]
     secrets: inherit
