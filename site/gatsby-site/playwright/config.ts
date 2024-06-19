@@ -1,4 +1,7 @@
 type ConfigType = {
+    E2E_ADMIN_PASSWORD: string;
+    E2E_ADMIN_USERNAME: string;
+    IS_EMPTY_ENVIRONMENT: string;
     [key: string]: string;
 };
 
