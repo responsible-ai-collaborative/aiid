@@ -20,7 +20,7 @@ test.describe('Navigation', () => {
     const links = await page.locator('.item.active').evaluateAll((nodes: any[]) => nodes.map((node: { getAttribute: (arg0: string) => any; }) => node.getAttribute('href')));
     for (const href of links) {
       await page.goto(href);
-      const activeHref = await page.locator('.active[data-cy="sidebar-link-active"]').first().getAttribute('href');
+      const activeHref = await page.getByTestId('sidebar-link-active').first().getAttribute('href');
       expect(href.endsWith(activeHref)).toBe(true);
     }
   };
@@ -32,7 +32,7 @@ test.describe('Navigation', () => {
     await expect(page.locator('.rightSideTitle')).toHaveText('CONTENTS');
     const sidebarElementsCount = await page.locator('.rightSideBarUL li').count();
     await expect(sidebarElementsCount).toBeGreaterThan(0);
-    await page.locator('[data-cy="sidebar-desktop"] > #sidebar > [data-cy="sidebar-tree"] > [data-cy="sidebar-welcome"] > [data-cy="sidebar-link"]').click();
+    await page.getByTestId('sidebar-desktop').locator('#sidebar > [data-testid="sidebar-tree"] > [data-testid="sidebar-welcome"] > [data-testid="sidebar-link"]').click();
     await expect(page.locator('.rightSideTitle')).not.toBeVisible();
   });
 });
