@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { login, conditionalIntercept, waitForRequest, conditionalIt } from '../utils';
+import { expect } from '@playwright/test';
+import { login, conditionalIntercept, waitForRequest, conditionalIt, test } from '../utils';
 import users from '../fixtures/users/users.json';
 import config from '../config';
 
@@ -11,11 +11,10 @@ test.describe('Admin', () => {
     await expect(page.getByText("Not enough permissions")).toBeVisible({ timeout: 30000 });
   });
 
-  conditionalIt(
-    !config.IS_EMPTY_ENVIRONMENT && !!config.E2E_ADMIN_USERNAME && !!config.E2E_ADMIN_PASSWORD,
+  test(
     'Should display a list of users, their roles and allow edition',
-    async ({ page }) => {
-      await login(page, process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    async ({ page, login, skipOnEmptyEnvironment }) => {
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await conditionalIntercept(
         page,
@@ -151,11 +150,10 @@ test.describe('Admin', () => {
     }
   );
 
-  conditionalIt(
-    !config.IS_EMPTY_ENVIRONMENT && !!config.E2E_ADMIN_USERNAME && !!config.E2E_ADMIN_PASSWORD,
+  test(
     'Should display New Incident button',
-    async ({ page }) => {
-      await login(page, process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    async ({ page, login, skipOnEmptyEnvironment }) => {
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await conditionalIntercept(
         page,
@@ -175,11 +173,10 @@ test.describe('Admin', () => {
     }
   );
 
-  conditionalIt(
-    !config.IS_EMPTY_ENVIRONMENT && !!config.E2E_ADMIN_USERNAME && !!config.E2E_ADMIN_PASSWORD,
+  test(
     'Should filter results',
-    async ({ page }) => {
-      await login(page, process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    async ({ page, login, skipOnEmptyEnvironment }) => {
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await conditionalIntercept(
         page,
