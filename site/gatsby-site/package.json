@@ -44,7 +44,7 @@
     "flowbite": "^1.5.3",
     "flowbite-react": "^0.4.1",
     "formik": "^2.2.6",
-    "gatsby": "^5.7.0",
+    "gatsby": "^5.13.6",
     "gatsby-plugin-catch-links": "^5.0.0",
     "gatsby-plugin-feed": "^5.0.0",
     "gatsby-plugin-google-gtag": "^5.7.0",
