@@ -73,8 +73,9 @@ export async function conditionalIntercept(
     page: Page,
     url: string,
     condition: (request: Request) => boolean,
-    response,
+    responseBody,
     alias: string,
+    statusCode: number = 200
 ) {
     await page.route(url, async (route: Route) => {
 
@@ -83,7 +84,8 @@ export async function conditionalIntercept(
         if (condition(req)) {
             await route.fulfill({
                 contentType: 'application/json',
-                body: JSON.stringify(response),
+                body: JSON.stringify(responseBody),
+                status: statusCode
             });
         }
         else {
