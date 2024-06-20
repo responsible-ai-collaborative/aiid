@@ -1,10 +1,9 @@
-import { conditionalIntercept, waitForRequest, login, maybeIt } from '../utils';
-import { test, expect } from '@playwright/test';
-import config from '../config';
+import { test } from '../utils';
+import { expect } from '@playwright/test';
 
 test.describe('Blog', () => {
 
-  test('Should include outline in blog post', async ({ page }) => {
+  test('Should include outline in blog post', async ({ page, skipOnEmptyEnvironment }) => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/blog/the-first-taxonomy-of-ai-incidents');
 
@@ -24,7 +23,7 @@ test.describe('Blog', () => {
     await expect(page.locator('[data-cy="outline"]:has-text("Credit and Acknowledgements")')).not.toBeVisible();
   });
 
-  test('Should include outline in Spanish blog post', async ({ page }) => {
+  test('Should include outline in Spanish blog post', async ({ page, skipOnEmptyEnvironment }) => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/multilingual-incident-reporting');
 
@@ -42,7 +41,7 @@ test.describe('Blog', () => {
     await expect(page.locator('[data-cy="outline"]:has-text("Anexo: Riesgos y mejores prácticas")')).not.toBeVisible();
   });
 
-  test('Should have OpenGraph meta tags', async ({ page }) => {
+  test('Should have OpenGraph meta tags', async ({ page, skipOnEmptyEnvironment }) => {
     const postSlug = 'incident-report-2022-july-august';
     const title = 'AI Incident Report for July and August 2022';
     const description = 'This compilation of AI incidents published in July and August of 2022 highlights emerging incidents and provides a digest of recent additions to the database.';
