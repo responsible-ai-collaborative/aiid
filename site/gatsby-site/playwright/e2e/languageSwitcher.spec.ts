@@ -4,7 +4,7 @@ import { test } from '../utils';
 test.describe('The Language switcher', () => {
   test('Should be visible', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('[data-cy="language-switcher"]')).toBeVisible();
+    await expect(page.getByTestId('language-switcher')).toBeVisible();
   });
 
   test('Language should default to English', async ({ page }) => {
