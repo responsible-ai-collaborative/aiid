@@ -352,8 +352,10 @@ const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0, proportionToTimes
           }
         }}
       >
-        <div className="mt-4 text-center pointer-events-none">
-          {bound && formatDate(proportionToTimestamp(bound)).substr(0, 4)}
+        <div className="mt-10 text-center pointer-events-none">
+          {![null, NaN, undefined].includes(bound)
+            ? formatDate(proportionToTimestamp(bound)).substr(0, 4)
+            : ''}
         </div>
       </button>
 
