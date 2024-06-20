@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { query, conditionalIt } from '../utils';
+import { expect } from '@playwright/test';
+import { query, test } from '../utils';
 import gql from 'graphql-tag';
 
 const url = '/summaries/incidents';
@@ -9,10 +9,8 @@ test.describe('Incidents Summary', () => {
     await page.goto(url);
   });
 
-  conditionalIt(
-    !process.env.isEmptyEnvironment,
-    'Displays the correct number of incidents',
-    async ({ page }) => {
+  test('Displays the correct number of incidents',
+    async ({ page, skipOnEmptyEnvironment }) => {
       await page.goto(url);
 
       const { data: { incidents } } = await query({
@@ -31,10 +29,8 @@ test.describe('Incidents Summary', () => {
     }
   );
 
-  conditionalIt(
-    !process.env.isEmptyEnvironment,
-    'Should sort by Incident ID (ascending and descending)',
-    async ({ page }) => {
+  test('Should sort by Incident ID (ascending and descending)',
+    async ({ page, skipOnEmptyEnvironment }) => {
       await page.goto(url);
 
       const { data: { incidents } } = await query({
