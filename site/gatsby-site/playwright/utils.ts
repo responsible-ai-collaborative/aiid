@@ -38,9 +38,7 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
-        if (!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD) {
-            testInfo.skip();
-        }
+        testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
         await use(async (email, password, options = { skipSession: false }) => {
 
@@ -73,8 +71,9 @@ export async function conditionalIntercept(
     page: Page,
     url: string,
     condition: (request: Request) => boolean,
-    response,
+    responseBody,
     alias: string,
+    statusCode: number = 200
 ) {
     await page.route(url, async (route: Route) => {
 
@@ -83,7 +82,8 @@ export async function conditionalIntercept(
         if (condition(req)) {
             await route.fulfill({
                 contentType: 'application/json',
-                body: JSON.stringify(response),
+                body: JSON.stringify(responseBody),
+                status: statusCode
             });
         }
         else {
