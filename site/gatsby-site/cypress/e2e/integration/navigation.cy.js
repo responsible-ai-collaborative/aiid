@@ -1,4 +1,4 @@
-describe('Navigation', { retries: { runMode: 4 } }, () => {
+describe('Navigation', () => {
   it('Check menu links work (English)', () => {
     cy.visit('/');
 

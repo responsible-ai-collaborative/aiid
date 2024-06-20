@@ -94,7 +94,7 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
   };
 
   return (
-    <Modal show={true} onClose={onClose} data-cy="edit-user-modal" size="lg">
+    <Modal show={true} onClose={onClose} data-testid="edit-user-modal" size="lg">
       <Modal.Header>
         <Trans>Edit</Trans>
       </Modal.Header>
