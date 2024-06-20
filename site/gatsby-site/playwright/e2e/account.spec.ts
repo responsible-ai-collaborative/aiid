@@ -1,5 +1,5 @@
-import { conditionalIntercept, waitForRequest, login, maybeIt } from '../utils';
-import { test, expect } from '@playwright/test';
+import { conditionalIntercept, waitForRequest, test } from '../utils';
+import { expect } from '@playwright/test';
 import config from '../config';
 
 test.describe('Account', () => {
@@ -30,8 +30,8 @@ test.describe('Account', () => {
     await page.goto(url);
   });
 
-  maybeIt('Should display account information if the user is logged in', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should display account information if the user is logged in', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -55,8 +55,8 @@ test.describe('Account', () => {
     await expect(page.locator('a:has-text("Log out")')).toBeVisible();
   });
 
-  maybeIt('Should allow editing user data', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should allow editing user data', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
@@ -98,8 +98,8 @@ test.describe('Account', () => {
     expect(variables.roles).toContain('banana');
   });
 
-  maybeIt('Should show edit modal if query parameter is set', async ({ page }) => {
-    await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+  test('Should show edit modal if query parameter is set', async ({ page, login }) => {
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
       page,
