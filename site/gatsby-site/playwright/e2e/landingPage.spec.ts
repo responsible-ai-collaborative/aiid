@@ -1,7 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { conditionalIntercept, waitForRequest, conditionalIt, login } from '../utils';
+import { expect } from '@playwright/test';
+import { conditionalIntercept, waitForRequest, test } from '../utils';
 import { format } from 'date-fns';
-import config from '../config';
 
 const now = new Date();
 
@@ -53,11 +52,9 @@ test.describe('The Landing page', () => {
   });
 
 
-  conditionalIt(
-    !config.IS_EMPTY_ENVIRONMENT && !!config.E2E_ADMIN_USERNAME && !!config.E2E_ADMIN_PASSWORD,
-    'Should redirect to the account page when logged in',
-    async ({ page }) => {
-      await login(page, process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+  test('Should redirect to the account page when logged in',
+    async ({ page, skipOnEmptyEnvironment, login }) => {
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await expect(page).toHaveURL('/');
       await page.locator('[data-cy="sidebar-desktop"]').locator('[data-cy="sidebar-user"]').click();
@@ -73,10 +70,8 @@ test.describe('The Landing page', () => {
   });
 
 
-  conditionalIt(
-    !!config.IS_EMPTY_ENVIRONMENT,
-    'Should display empty message on common entities card on empty environment',
-    async ({ page }) => {
+  test('Should display empty message on common entities card on empty environment',
+    async ({ page, runOnlyOnEmptyEnvironment }) => {
       await page.setViewportSize({ width: 1920, height: 1080 }); // Set a larger viewport size
       await page.goto('/');
       await page.locator('[data-cy="common-entities"]').scrollIntoViewIfNeeded();
@@ -91,26 +86,21 @@ test.describe('The Landing page', () => {
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
   });
 
-  conditionalIt(
-    !!config.IS_EMPTY_ENVIRONMENT,
-    'Should not display the Latest Reports section on empty environment',
-    async ({ page }) => {
+  test('Should not display the Latest Reports section on empty environment',
+    async ({ page, runOnlyOnEmptyEnvironment }) => {
       await page.goto('/');
       await expect(page.locator('.latest-reports-carousel')).not.toBeVisible();
     }
   );
 
-  conditionalIt(
-    !!config.IS_EMPTY_ENVIRONMENT,
-    'Should not display the Random Incidents section on empty environment',
-    async ({ page }) => {
+  test('Should not display the Random Incidents section on empty environment',
+    async ({ page, runOnlyOnEmptyEnvironment }) => {
       await page.goto('/');
       await expect(page.locator('[data-cy="random-reports"]')).not.toBeVisible();
     }
   );
 
-  conditionalIt(!config.IS_EMPTY_ENVIRONMENT,
-    'Loads the random incidents carousel', async ({ page }) => {
+  test('Loads the random incidents carousel', async ({ page, skipOnEmptyEnvironment }) => {
       await page.goto('/');
       await page.locator('[data-cy="random-incidents-carousel"]').scrollIntoViewIfNeeded();
       await expect(page.locator('[data-cy="random-incidents-carousel"]')).toBeVisible();
@@ -128,6 +118,6 @@ test.describe('The Landing page', () => {
     const lis = await sidebarTree.locator('ul[data-cy="sidebar-tree"] > li').count();
     await expect(lis).toBeGreaterThan(0);
   });
-  
-  
+
+
 });
