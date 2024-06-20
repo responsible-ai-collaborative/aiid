@@ -33,14 +33,9 @@ export default function NewsSearchPage() {
           title
           url
           similarity
-          classification_similarity {
-            classification
-            similarity
-          }
           matching_keywords
           matching_harm_keywords
           matching_entities
-          text
           date_published
           dismissed
         }

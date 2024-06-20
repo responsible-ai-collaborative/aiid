@@ -85,6 +85,10 @@ export default function TaxonomiesEditor({
 
     const canEdit = canEditTaxonomy(namespace);
 
+    if (canEdit) {
+      taxonomy.initialEditing = true;
+    }
+
     setTaxonomiesList((list) => {
       taxonomiesListSize.current = taxonomiesList.length;
       return [...list, { ...taxonomy, canEdit, ref: createRef() }];

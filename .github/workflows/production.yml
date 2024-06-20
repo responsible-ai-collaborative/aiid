@@ -19,7 +19,6 @@ on:
         default: false
         type: boolean
 jobs:
-
   cache-modifier:
     uses: ./.github/workflows/cache-modifier.yml
     with:
@@ -64,7 +63,6 @@ jobs:
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
   call-test-playwright:
-    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright.yml
     needs: call-test-build
     secrets: inherit
@@ -74,7 +72,7 @@ jobs:
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
 
   call-deploy:
-    if: inputs.force-deploy == true || success()
+    if: (inputs.force-deploy == true || success()) && !cancelled()
     uses: ./.github/workflows/deploy.yml
     needs: [cache-modifier, call-test, call-test-api, call-test-playwright]
     secrets: inherit
