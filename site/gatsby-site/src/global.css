@@ -662,10 +662,6 @@ div .bytemd {
 /* Social Buttons */
 /* ---------------------------------------------------------- */
 
-.social-btn-container.cite {
-  margin-left: 10px;
-}
-
 .social-btn-container.post {
   margin-left: -10px;
 }
