@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import config from '../config';
+import { test } from '../utils';
 
 test.describe('Report pages', () => {
   test.beforeAll(async () => {

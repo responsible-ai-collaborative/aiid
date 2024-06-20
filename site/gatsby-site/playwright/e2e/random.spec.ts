@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '../utils';
 
 test.describe('Random', () => {
   const url = '/random';

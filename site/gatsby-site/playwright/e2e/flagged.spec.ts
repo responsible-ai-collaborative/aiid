@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test } from '../utils';
 
 test.describe('Incidents Summary', () => {
   const url = '/summaries/flagged';

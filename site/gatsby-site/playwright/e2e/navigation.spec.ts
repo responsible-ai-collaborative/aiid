@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+import { test } from '../utils';
 
 test.describe('Navigation', () => {
   test('Check menu links work (English)', async ({ page }) => {
