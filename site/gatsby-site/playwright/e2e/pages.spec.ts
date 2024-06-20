@@ -1,7 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { switchLocalizedPath } from '../../i18n/';
 import config from '../../config';
 import isString from 'lodash/isString';
+import { test } from '../utils';
 
 test.describe('Pages', () => {
   const baseUrl = config.gatsby.siteUrl;
