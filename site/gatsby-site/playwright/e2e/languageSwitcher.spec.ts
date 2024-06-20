@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../utils';
 
 test.describe('The Language switcher', () => {
   test('Should be visible', async ({ page }) => {
