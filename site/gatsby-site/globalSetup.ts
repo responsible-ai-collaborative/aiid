@@ -7,7 +7,7 @@ export = async function globalSetup() {
 
   (global as any).__MONGOINSTANCE = instance;
 
-  console.log('MONGOINSTANCE', uri);
+  console.log(`\n mock API_MONGODB_CONNECTION_STRING ${uri} \n\n`, );
 
-  process.env.MONGODB_CONNECTION_STRING = uri.slice(0, uri.lastIndexOf('/'));
+  process.env.API_MONGODB_CONNECTION_STRING = uri.slice(0, uri.lastIndexOf('/'));
 };
