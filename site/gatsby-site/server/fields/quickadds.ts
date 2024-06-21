@@ -1,5 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLObjectType, GraphQLString } from "graphql";
-import { GraphQLLong } from "graphql-scalars";
+import { GraphQLFieldConfigMap, GraphQLInt, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { isAdmin } from "../rules";
 import { ObjectIdScalar } from "../scalars";
@@ -15,7 +14,7 @@ const QuickAddType = new GraphQLObjectType({
             type: GraphQLString,
         },
         incident_id: {
-            type: GraphQLLong,
+            type: GraphQLInt,
         },
         source_domain: {
             type: GraphQLString,

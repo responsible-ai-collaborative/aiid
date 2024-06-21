@@ -1,6 +1,8 @@
 import { ObjectId } from "bson";
+import { Fixture } from "../utils";
+import { Quickadd } from "../../generated/graphql";
 
-export default {
+const fixture: Fixture<Quickadd> = {
     name: 'quickadd',
     fields: [
         'date_submitted',
@@ -8,13 +10,19 @@ export default {
         'source_domain',
         'url   ',
     ],
+    query: `
+        date_submitted
+        incident_id
+        source_domain
+        url
+    `,
     testDocs: [
         {
             _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
-            "date_submitted": "2020-09-14T00:00:00.000Z",
-            "incident_id": 1,
-            "source_domain": "example.com",
-            "url": "http://example.com"
+            date_submitted: "2020-09-14T00:00:00.000Z",
+            incident_id: 1,
+            source_domain: "example.com",
+            url: "http://example.com"
         },
         {
             _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e5'),
@@ -45,6 +53,16 @@ export default {
             url: "http://example5.com"
         },
     ],
+    testSingular: {
+        filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
+        result: {
+            _id: '60a7c5b7b4f5b8a6d8f9c7e4',
+            date_submitted: "2020-09-14T00:00:00.000Z",
+            incident_id: 1,
+            source_domain: "example.com",
+            url: "http://example.com"
+        }
+    },
     testUpdateOne: {
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         set: { url: 'https://edited.com' },
@@ -97,6 +115,8 @@ export default {
         result: { deletedCount: 3 },
     },
     roles: {
+        singular: [],
+        plural: [],
         insertOne: [],
         insertMany: ['admin'],
         updateOne: ['admin'],
@@ -105,3 +125,5 @@ export default {
         deleteMany: ['admin'],
     },
 }
+
+export default fixture;
