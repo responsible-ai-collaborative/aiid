@@ -3,7 +3,20 @@ import {
     mutationFields as quickAddsMutationFields,
     permissions as quickAddsPermissions,
 } from './fields/quickadds';
-import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
+
+import {
+    queryFields as reportsQueryFields,
+    mutationFields as reportsMutationFields,
+    permissions as reportsPermissions,
+} from './fields/reports';
+
+import {
+    queryFields as incidentsQueryFields,
+    mutationFields as incidentsMutationFields,
+    permissions as incidentsPermissions,
+} from './fields/incidents';
+
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { shield, deny } from 'graphql-shield';
 import { applyMiddleware } from 'graphql-middleware';
 import { ObjectIdScalar } from './scalars';
@@ -18,6 +31,8 @@ export const getSchema = () => {
                 description: 'Custom scalar for MongoDB ObjectID',
             },
             ...quickAddsQueryFields,
+            ...reportsQueryFields,
+            ...incidentsQueryFields,
         }
     });
 
@@ -25,6 +40,8 @@ export const getSchema = () => {
         name: 'Mutation',
         fields: {
             ...quickAddsMutationFields,
+            ...reportsMutationFields,
+            ...incidentsMutationFields,
         }
     });
 
@@ -40,11 +57,14 @@ export const getSchema = () => {
             Query: {
                 "*": deny,
                 ...quickAddsPermissions.Query,
-
+                ...reportsPermissions.Query,
+                ...incidentsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
                 ...quickAddsPermissions.Mutation,
+                ...reportsPermissions.Mutation,
+                ...incidentsPermissions.Mutation,
             },
         },
         {

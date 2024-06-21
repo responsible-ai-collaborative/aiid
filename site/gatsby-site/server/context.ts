@@ -14,7 +14,7 @@ function extractToken(header: string) {
     return null;
 }
 
-async function verifyToken(token: string) {
+export const verifyToken = async (token: string) => {
 
     const loginResponse = await fetch(
         `https://realm.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login`,
@@ -71,7 +71,7 @@ async function getUser(userId: string) {
     }
 }
 
-async function getUserFromHeader(header: string) {
+export const getUserFromHeader = async (header: string) => {
 
     const token = extractToken(header);
 

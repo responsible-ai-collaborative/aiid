@@ -1,8 +1,10 @@
+import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedCollection, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 import quickaddsFixture from './fixtures/quickadds';
+import { makeRequest, seedCollection, seedUsers, startTestServer } from "./utils";
+import * as context from '../context';
 
 const fixtures = [
     quickaddsFixture,
@@ -26,7 +28,7 @@ fixtures.forEach((collection) => {
     const deleteOneFieldName = `deleteOne${capitalize(singularName)}`;
     const deleteManyFieldName = `deleteMany${capitalize(pluralName)}`;
 
-    describe(`${collection.name} - generated mutation fields`, () => {
+    describe(`${collection.name} generated mutation fields`, () => {
         let server: ApolloServer, url: string;
 
         beforeAll(async () => {
@@ -39,19 +41,20 @@ fixtures.forEach((collection) => {
 
         it(`${insertOneFieldName} mutation`, async () => {
 
-            await seedCollection({
-                name: collection.name,
-                docs: []
-            });
+            await seedCollection({ name: collection.name, docs: [] });
+
+            await seedUsers([{ userId: 'user1', roles: collection.roles.insertOne }])
+
+            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
 
             const mutationData = {
                 query: `
-            mutation ($data: ${insertTypeName}!) {
-                ${insertOneFieldName}(data: $data) {
-                  _id
-                  ${collection.fields.join('\n')}
-                }
-            }
+                    mutation ($data: ${insertTypeName}!) {
+                        ${insertOneFieldName}(data: $data) {
+                        _id
+                        ${collection.fields.join('\n')}
+                        }
+                    }
             `,
                 variables: {
                     data: collection.testInsertOne.insert,
@@ -59,7 +62,7 @@ fixtures.forEach((collection) => {
             };
 
 
-            const response = await makeRequest(url, mutationData, collection.roles.insertOne);
+            const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne.result)
             expect(response.statusCode).toBe(200);
@@ -67,7 +70,9 @@ fixtures.forEach((collection) => {
 
             if (collection.roles.insertOne.length) {
 
-                const response = await makeRequest(url, mutationData, ['invalid']);
+                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                const response = await makeRequest(url, mutationData);
                 expect(response.body.errors[0].message).toBe('not authorized');
             }
         });
@@ -76,6 +81,10 @@ fixtures.forEach((collection) => {
         it(`${insertManyFieldName} mutation`, async () => {
 
             await seedCollection({ name: collection.name, docs: [] });
+
+            await seedUsers([{ userId: 'user1', roles: collection.roles.insertMany }])
+
+            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
 
             const mutationData = {
                 query: `
@@ -89,15 +98,16 @@ fixtures.forEach((collection) => {
                 variables: { data: collection.testInsertMany.insert }
             };
 
-            const response = await makeRequest(url, mutationData, collection.roles.insertMany);
+            const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[insertManyFieldName]).toMatchObject(collection.testInsertMany.result);
-            expect(response.statusCode).toBe(200);
 
 
             if (collection.roles.insertMany.length) {
 
-                const response = await makeRequest(url, mutationData, ['invalid']);
+                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                const response = await makeRequest(url, mutationData);
                 expect(response.body.errors[0].message).toBe('not authorized');
             }
         });
@@ -105,6 +115,10 @@ fixtures.forEach((collection) => {
         it(`${updateOneFieldName} mutation`, async () => {
 
             await seedCollection({ name: collection.name, docs: collection.testDocs });
+
+            await seedUsers([{ userId: 'user1', roles: collection.roles.updateOne }])
+
+            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
 
             const mutationData = {
                 query: `
@@ -121,15 +135,17 @@ fixtures.forEach((collection) => {
                 },
             }
 
-            const response = await makeRequest(url, mutationData, collection.roles.updateOne);
+            const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[updateOneFieldName]).toMatchObject(collection.testUpdateOne.result)
             expect(response.statusCode).toBe(200);
-            
+
 
             if (collection.roles.updateOne.length) {
 
-                const response = await makeRequest(url, mutationData, ['invalid']);
+                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                const response = await makeRequest(url, mutationData);
                 expect(response.body.errors[0].message).toBe('not authorized');
             }
         });
@@ -137,6 +153,11 @@ fixtures.forEach((collection) => {
         it(`${updateManyFieldName} mutation`, async () => {
 
             await seedCollection({ name: collection.name, docs: collection.testDocs });
+
+            await seedUsers([{ userId: 'user1', roles: collection.roles.updateMany }])
+
+            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
 
             const mutationData = {
                 query: `
@@ -153,7 +174,7 @@ fixtures.forEach((collection) => {
                 }
             };
 
-            const response = await makeRequest(url, mutationData, collection.roles.updateMany);
+            const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[updateManyFieldName]).toMatchObject(collection.testUpdateMany.result);
             expect(response.statusCode).toBe(200);
@@ -161,7 +182,9 @@ fixtures.forEach((collection) => {
 
             if (collection.roles.updateMany.length) {
 
-                const response = await makeRequest(url, mutationData, ['invalid']);
+                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                const response = await makeRequest(url, mutationData);
                 expect(response.body.errors[0].message).toBe('not authorized');
             }
         });
@@ -169,6 +192,11 @@ fixtures.forEach((collection) => {
         it(`${deleteOneFieldName} mutation`, async () => {
 
             await seedCollection({ name: collection.name, docs: collection.testDocs });
+
+            await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
+
+            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
 
             const mutationData = {
                 query: `
@@ -181,13 +209,15 @@ fixtures.forEach((collection) => {
                 variables: { filter: collection.testDeleteOne.filter }
             };
 
-            const response = await makeRequest(url, mutationData, collection.roles.deleteOne);
+            const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[deleteOneFieldName]).toMatchObject(collection.testDeleteOne.result);
 
             if (collection.roles.deleteOne.length) {
 
-                const response = await makeRequest(url, mutationData, ['invalid']);
+                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                const response = await makeRequest(url, mutationData);
                 expect(response.body.errors[0].message).toBe('not authorized');
             }
         });
@@ -195,6 +225,11 @@ fixtures.forEach((collection) => {
         it(`${deleteManyFieldName} mutation`, async () => {
 
             await seedCollection({ name: collection.name, docs: collection.testDocs });
+
+            await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
+
+            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
 
             const mutationData = {
                 query: `
@@ -207,14 +242,16 @@ fixtures.forEach((collection) => {
                 variables: { filter: collection.testDeleteMany.filter }
             };
 
-            const response = await makeRequest(url, mutationData, collection.roles.deleteMany);
+            const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[deleteManyFieldName]).toMatchObject(collection.testDeleteMany.result);
 
 
             if (collection.roles.deleteMany.length) {
 
-                const response = await makeRequest(url, mutationData, ['invalid']);
+                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                const response = await makeRequest(url, mutationData);
                 expect(response.body.errors[0].message).toBe('not authorized');
             }
         });

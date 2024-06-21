@@ -28,11 +28,16 @@ const userExecutor = buildHTTPExecutor({
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
+    'Incident',
+    'Report',
 ];
 
 const ignoredQueries = [
     'quickadd',
     'quickadds',
+
+    'incident',
+    'incidents',
 ];
 
 const ignoredMutations = [

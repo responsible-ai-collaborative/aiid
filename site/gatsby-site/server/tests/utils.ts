@@ -1,11 +1,10 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { schema } from "../schema";
-import { context } from "../context";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
 import supertest from 'supertest';
-
+import * as context from '../context';
 
 export const startTestServer = async () => {
 
@@ -13,7 +12,7 @@ export const startTestServer = async () => {
         schema,
     });
 
-    const { url } = await startStandaloneServer(server, { context, listen: { port: 0 } });
+    const { url } = await startStandaloneServer(server, { context: context.context, listen: { port: 0 } });
 
     return { server, url }
 }
@@ -66,39 +65,67 @@ export const login = async (username: string, password: string) => {
     return data;
 }
 
-export const anonRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
-
-    return supertest(url)
-        .post('/')
-        .send(data);
-}
-
-export const authRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }, roles: string[]) => {
-
-    const authData = await login(config.E2E_ADMIN_USERNAME!, config.E2E_ADMIN_PASSWORD!);
+export const seedUsers = async (users: { userId: string, roles: string[] }[], { drop } = { drop: true }) => {
 
     await seedCollection({
         name: 'users',
         database: 'customData',
-        docs: [
-            {
-                userId: authData.user_id,
-                roles,
-            }
-        ],
+        docs: users,
+        drop,
     });
+}
+
+export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
 
     return supertest(url)
         .post('/')
-        .set('Authorization', `Bearer ${authData.access_token}`)
+        .set('Authorization', `Bearer dummyToken`)
         .send(data);
 }
 
-export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }, roles?: string[],) => {
-
-    if (roles && roles.length) {
-        return authRequest(url, data, roles);
-    }
-
-    return anonRequest(url, data);
+export interface Fixture<T> {
+    name: string;
+    fields: string[];
+    query: string;
+    testDocs: T[];
+    testSingular: {
+        filter: { _id: { EQ: ObjectId } };
+        result: T;
+    };
+    testUpdateOne: {
+        filter: { _id: { EQ: ObjectId } };
+        set: Partial<T>;
+        result: Partial<T>;
+    };
+    testUpdateMany: {
+        filter: { [key: string]: { EQ: any } };
+        set: Partial<T>;
+        result: { modifiedCount: number; matchedCount: number };
+    };
+    testInsertOne: {
+        insert: Partial<T>;
+        result: Partial<T>;
+    };
+    testInsertMany: {
+        insert: Partial<T>[];
+        result: { insertedIds: string[] };
+    };
+    testDeleteOne: {
+        filter: { _id: { EQ: ObjectId } };
+        result: { _id: string };
+    };
+    testDeleteMany: {
+        filter: { [key: string]: { EQ: any } };
+        result: { deletedCount: number };
+    };
+    roles: {
+        singular: string[];
+        plural: string[];
+        insertOne: string[];
+        insertMany: string[];
+        updateOne: string[];
+        updateMany: string[];
+        deleteOne: string[];
+        deleteMany: string[];
+    };
 }
