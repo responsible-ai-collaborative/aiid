@@ -39,34 +39,6 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-interface AuthResponse {
-    access_token: string;
-    refresh_token: string;
-    user_id: string;
-}
-
-export const login = async (username: string, password: string) => {
-
-    const response = await fetch(`https://services.cloud.mongodb.com/api/client/v2.0/app/${config.REALM_APP_ID}/auth/providers/local-userpass/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            username,
-            password,
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error login in! \n\n ${await response.text()}`);
-    }
-
-    const data: AuthResponse = await response.json();
-
-    return data;
-}
-
 export const seedUsers = async (users: { userId: string, roles: string[] }[], { drop } = { drop: true }) => {
 
     await seedCollection({
