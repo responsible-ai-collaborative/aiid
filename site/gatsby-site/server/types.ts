@@ -15,7 +15,7 @@ export const InsertManyPayload = new GraphQLObjectType({
     name: 'InsertManyPayload',
     fields: {
         insertedIds: {
-            type: new GraphQLList(ObjectIdScalar),
+            type: new GraphQLNonNull(new GraphQLList(ObjectIdScalar)),
         },
     },
 });
