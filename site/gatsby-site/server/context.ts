@@ -2,7 +2,7 @@ import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
 import config from "./config";
 import * as reporter from "./reporter";
-import { Context } from "./interfaces";
+
 
 function extractToken(header: string) {
 
@@ -55,9 +55,7 @@ export const verifyToken = async (token: string) => {
     return response.json();
 }
 
-async function getUser(userId: string) {
-
-    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
+async function getUser(userId: string, client: MongoClient) {
 
     const db = client.db('customData');
 
@@ -71,7 +69,7 @@ async function getUser(userId: string) {
     }
 }
 
-export const getUserFromHeader = async (header: string) => {
+async function getUserFromHeader(header: string, client: MongoClient) {
 
     const token = extractToken(header);
 
@@ -81,7 +79,7 @@ export const getUserFromHeader = async (header: string) => {
 
         if (data.sub) {
 
-            const userData = await getUser(data.sub);
+            const userData = await getUser(data.sub, client);
 
             return userData;
         }
@@ -90,13 +88,11 @@ export const getUserFromHeader = async (header: string) => {
     return null;
 }
 
-export const context = async ({ req }: { req: IncomingMessage }): Promise<Context> => {
+export const context = async ({ req, client }: { req: IncomingMessage, client: MongoClient }) => {
 
     try {
 
-        const user = await getUserFromHeader(req.headers.authorization!);
-
-        const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
+        const user = await getUserFromHeader(req.headers.authorization!, client);
 
         return { user, req, client };
     }

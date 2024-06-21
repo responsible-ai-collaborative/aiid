@@ -12,14 +12,16 @@ export const startTestServer = async () => {
         schema,
     });
 
-    const { url } = await startStandaloneServer(server, { context: context.context, listen: { port: 0 } });
+    const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
+
+    const { url } = await startStandaloneServer(server, { context: ({ req }) => context.context({ req, client }), listen: { port: 0 } });
 
     return { server, url }
 }
 
 export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: Record<string, unknown>[], drop?: boolean }) => {
 
-    const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
 
     const db = client.db(database);
     const collection = db.collection(name);

@@ -1,0 +1,108 @@
+name: Run playwright tests
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      sha:
+        description: The commit SHA to run the tests against
+        type: string
+        required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Read node modules from cache
+        id: cache-nodemodules
+        uses: actions/cache/restore@v4
+        env:
+          cache-name: cache-install-folder
+        with:
+          path: |
+            site/gatsby-site/node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        env:
+          cache-name: cache-build-folder
+        with:
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/.cache/functions
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
+
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: site/gatsby-site
+
+      - name: Run playwright tests
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        working-directory: site/gatsby-site
+        env:
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: site/gatsby-site/blob-report/
+          retention-days: 1
+
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [tests]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 7
