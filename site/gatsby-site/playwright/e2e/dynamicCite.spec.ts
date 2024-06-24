@@ -17,7 +17,7 @@ test.describe('Dynamic Cite pages', () => {
     await expect(page.locator('[data-cy="toogle-live-data"]')).not.toBeVisible();
   });
 
-  test('Should load dynamic Incident data', async ({ page, login }) => {
+  test('Should load dynamic Incident data', async ({ page, login, skipOnEmptyEnvironment }) => {
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
     await page.goto(url);
 
@@ -45,7 +45,7 @@ test.describe('Dynamic Cite pages', () => {
     await expect(page.locator('[data-cy="variant-card"]')).toHaveCount(1);
   });
 
-  test('Should display a new Variant if live mode is turned on', async ({ page, login }) => {
+  test('Should display a new Variant if live mode is turned on', async ({ page, login, skipOnEmptyEnvironment }) => {
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
     await page.goto(url);
 
@@ -106,7 +106,7 @@ test.describe('Dynamic Cite pages', () => {
     await waitForRequest('findIncident');
   });
 
-  test('There should not be image errors (400)', async ({ page, login }) => {
+  test('There should not be image errors (400)', async ({ page, login, skipOnEmptyEnvironment }) => {
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
     await page.goto(url);
     await page.addInitScript(() => {
