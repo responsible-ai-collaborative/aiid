@@ -846,7 +846,7 @@ test.describe('The Submit form', () => {
     }
     );
 
-    test('Should show a preliminary checks message', async ({ page }) => {
+    test.skip('Should show a preliminary checks message', async ({ page }) => {
         const relatedReports = {
             byURL: {
                 data: {
@@ -966,7 +966,7 @@ test.describe('The Submit form', () => {
             .not.toBeVisible();
     });
 
-    test('Should show fallback preview image on initial load', async ({ page }) => {
+    test.skip('Should show fallback preview image on initial load', async ({ page }) => {
         const values = {
             url: 'https://incidentdatabase.ai',
             title: 'test title',

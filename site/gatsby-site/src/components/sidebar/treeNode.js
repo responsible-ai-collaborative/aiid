@@ -39,7 +39,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   return (
     <>
-      <li className={`z-50`} data-cy={'sidebar-' + item.label}>
+      <li className={`z-50`} data-testid={'sidebar-' + item.label}>
         <NodeLink
           item={item}
           isCollapsed={isCollapsed}
@@ -86,7 +86,7 @@ const NodeLink = ({
       className={`${
         isCollapsed ? 'w-10 h-10' : ''
       } hover:no-underline flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
-      data-cy={`sidebar-link${item.current ? '-active' : ''}`}
+      data-testid={`sidebar-link${item.current ? '-active' : ''}`}
     >
       {icon &&
         (isCollapsed ? (
