@@ -51,8 +51,11 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 
 export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any> }): GraphQLFieldConfigMap<any, any> {
 
+    const singularName = capitalize(singularize(collectionName));
+    const pluralName = capitalize(pluralize(collectionName));
+    
     return {
-        [`deleteOne${capitalize(singularize(collectionName))}`]: {
+        [`deleteOne${singularName}`]: {
             type: Type,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context: Context) => {
@@ -68,7 +71,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             }),
         },
 
-        [`deleteMany${capitalize(pluralize(collectionName))}`]: {
+        [`deleteMany${pluralName}`]: {
             type: DeleteManyPayload,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context: Context) => {
@@ -85,7 +88,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         },
 
 
-        [`insertOne${capitalize(singularize(collectionName))}`]: {
+        [`insertOne${singularName}`]: {
             type: Type,
             args: { data: { type: getGraphQLInsertType(Type) } },
             resolve: async (_: unknown, { data }, context: Context) => {
@@ -102,7 +105,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         },
 
 
-        [`insertMany${capitalize(pluralize(collectionName))}`]: {
+        [`insertMany${pluralName}`]: {
             type: InsertManyPayload,
             args: { data: { type: new GraphQLList(getGraphQLInsertType(Type)) } },
             resolve: async (_: unknown, { data }, context: Context) => {
@@ -116,7 +119,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             },
         },
 
-        [`updateOne${capitalize(singularize(collectionName))}`]: {
+        [`updateOne${singularName}`]: {
             type: Type,
             args: getGraphQLUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {
@@ -132,7 +135,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             }),
         },
 
-        [`updateMany${capitalize(pluralize(collectionName))}`]: {
+        [`updateMany${pluralName}`]: {
             type: UpdateManyPayload,
             args: getGraphQLUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {
