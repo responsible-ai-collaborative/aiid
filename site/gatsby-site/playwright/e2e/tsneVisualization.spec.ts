@@ -22,9 +22,11 @@ test.describe('TSNE visualization page', () => {
 
   });
 
-  // TODO: Fix this test
-  test.skip('Should highlight source incident when one exists', async ({ page, skipOnEmptyEnvironment }) => {
-      await page.goto(url + '?incident=1');
+  test('Should highlight source incident when one exists', async ({ page, skipOnEmptyEnvironment }) => {
+    
+      await page.goto('/cite/1/');
+
+      await page.locator('#similar-incidents:above(a)').last().click();
 
       page.locator('[data-cy="tsne-visualization"] #spatial-incident-1').dispatchEvent('mouseover');
 
@@ -33,7 +35,6 @@ test.describe('TSNE visualization page', () => {
           '[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"].current'
         )
       ).toBeVisible();
-
   });
 
   test('Incident card should show title', async ({ page, skipOnEmptyEnvironment }) => {
