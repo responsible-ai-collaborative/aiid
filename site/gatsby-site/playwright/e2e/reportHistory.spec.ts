@@ -118,6 +118,7 @@ test.describe('Report History', () => {
 
   test('Should go back to the Incident Report', async ({ page }) => {
     await page.goto(url);
+    await expect(page.getByText('Back to Report 3206')).toBeVisible({ timeout: 30000 });
     await page.getByText('Back to Report 3206').click();
     await page.waitForURL('/cite/563/#r3206');
   });
@@ -126,6 +127,34 @@ test.describe('Report History', () => {
     await page.goto('/cite/history?report_number=3206&incident_id=null');
     await page.getByText('Back to Report 3206').click();
     await page.waitForURL('/reports/3206/');
+  });
+
+  test('Should refresh Report history if the user go back on the browser', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.goto('/cite/10/');
+
+    await page.locator('button:has-text("Read More")').first().click();
+
+    await conditionalIntercept(
+      page,
+      '**/graphql',
+      (req) => req.postDataJSON().operationName === 'FindReportHistory',
+      reportHistory,
+      'FindReportHistory'
+    );
+
+    await page.locator('[data-cy="report-history-button"]').click();
+
+    await waitForRequest('FindReportHistory');
+
+    await expect(page).toHaveURL('/cite/history/?report_number=16&incident_id=10');
+
+    await page.goBack();
+
+    await expect(page).toHaveURL('/cite/10/');
+
+    await page.goForward();
+
+    await waitForRequest('FindReportHistory');
   });
 
   test('Should not be able to restore a version if the user does not have the right permissions', async ({ page }) => {
