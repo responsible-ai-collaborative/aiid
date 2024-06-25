@@ -201,7 +201,7 @@ function IncidentHistoryPage() {
                 <hr />
               </div>
               {restoringVersion && (
-                <div className="font-semibold mb-2" data-cy="restoring-message">
+                <div className="font-semibold mb-2" data-testid="restoring-message">
                   <div className="flex gap-3 mb-2">
                     <Trans>Restoring version</Trans>
                     <Spinner />
