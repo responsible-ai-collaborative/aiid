@@ -1,5 +1,5 @@
-import { expect } from '@playwright/test';
 import { test } from '../utils';
+import { parse } from 'node-html-parser';
 
 test.describe('RSS', () => {
   test('Should generate a valid RSS feed', async ({ page }) => {
@@ -8,9 +8,7 @@ test.describe('RSS', () => {
     expect(response.headers()['content-type']).toContain('application/xml');
 
     const xml = await response.text();
-
-    const parser = new DOMParser();
-    const parsedXml = parser.parseFromString(xml, 'application/xml');
+    const parsedXml = parse(xml);
 
     const hasChannelTag = parsedXml.querySelectorAll('channel').length > 0;
     expect(hasChannelTag).toBe(true);
@@ -25,9 +23,7 @@ test.describe('RSS', () => {
     expect(response.headers()['content-type']).toContain('application/xml');
 
     const xml = await response.text();
-
-    const parser = new DOMParser();
-    const parsedXml = parser.parseFromString(xml, 'application/xml');
+    const parsedXml = parse(xml);
 
     const hasChannelTag = parsedXml.querySelectorAll('channel').length > 0;
     expect(hasChannelTag).toBe(true);
