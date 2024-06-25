@@ -15,23 +15,24 @@ test.describe('Submitter Selection', () => {
 
     await page.locator('[data-cy="leaderboard-item"] a').first().click();
 
-    expect(page.url()).toContain('submitters=');
+    await page.waitForURL(/.*\/discover\/\?.*submitters=.*/);
+
   });
 
   test('Should have the submitter pre-selected on the dropdown', async ({ page, skipOnEmptyEnvironment }) => {
 
-    url = '/apps/discover?submitters=Anonymous';
+    url = '/apps/discover/?submitters=Anonymous';
 
     await page.goto(url);
 
     await page.locator('text=Submitters').locator('span.badge').first().click();
 
-    await page.locator('.shadow-lg.card .list-group-item.active').waitFor();
-    const activeText = await page.locator('.shadow-lg.card .list-group-item.active').textContent();
+    await page.locator('.shadow-lg.card .list-group-item.active').first().waitFor();
+    const activeText = await page.locator('.shadow-lg.card .list-group-item.active').first().textContent();
     expect(activeText).toContain('Anonymous');
   });
 
-  test('Should display an empty state if there are no submitters', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should display an empty state if there are no submitters', async ({ page, runOnlyOnEmptyEnvironment }) => {
 
     await page.goto(url);
 
