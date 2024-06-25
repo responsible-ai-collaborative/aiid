@@ -165,7 +165,7 @@ function CiteTemplate({
     <>
       <div className={'titleWrapper'}>
         <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1">
-          <h1 className="text-2xl inline lg:w-[60%]">
+          <h1 data-testid="incident-title" className="text-2xl inline lg:w-[60%]">
             {locale == 'en' ? metaTitle : defaultIncidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:w-[40%] lg:justify-end">
