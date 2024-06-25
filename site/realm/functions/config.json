@@ -8,10 +8,6 @@
         "private": true
     },
     {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
         "name": "logRollbar",
         "private": true
     },
