@@ -152,5 +152,20 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             }),
         },
     }
-}
 
+export const incidentEmbedding = (reports: Report[]) => {
+    reports = reports.filter((report) => report.embedding);
+    return reports.length == 0
+        ? null
+        : {
+            vector: reports
+                .map((report) => report.embedding!.vector)
+                .reduce(
+                    (sum, vector) => vector!.map((component, i) => component + sum[i]),
+                    Array(reports[0].embedding!.vector!.length).fill(0)
+                )
+                .map((component) => component / reports.length),
+
+            from_reports: reports.map((report) => report.report_number),
+        };
+};

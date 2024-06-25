@@ -34,6 +34,7 @@ const ignoreTypes = [
 
     'Incident',
     'IncidentQueryInput',
+    'LinkReportsToIncidentsInput',
 ];
 
 const ignoredQueries = [
@@ -61,6 +62,8 @@ const ignoredMutations = [
     'insertManyReports',
     'updateOneReport',
     'updateManyReports',
+
+    'linkReportsToIncidents',
 
     'deleteOneIncident',
     'deleteManyIncidents',
