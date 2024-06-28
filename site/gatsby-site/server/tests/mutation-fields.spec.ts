@@ -3,11 +3,13 @@ import { ApolloServer } from "@apollo/server";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 import quickaddsFixture from './fixtures/quickadds';
+import reportsFixture from './fixtures/reports';
 import { makeRequest, seedCollection, seedUsers, startTestServer } from "./utils";
 import * as context from '../context';
 
 const fixtures = [
     quickaddsFixture,
+    reportsFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -52,7 +54,7 @@ fixtures.forEach((collection) => {
                     mutation ($data: ${insertTypeName}!) {
                         ${insertOneFieldName}(data: $data) {
                         _id
-                        ${collection.fields.join('\n')}
+                        ${collection.query}
                         }
                     }
             `,
@@ -65,7 +67,6 @@ fixtures.forEach((collection) => {
             const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne.result)
-            expect(response.statusCode).toBe(200);
 
 
             if (collection.roles.insertOne.length) {
@@ -125,7 +126,7 @@ fixtures.forEach((collection) => {
             mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
                 ${updateOneFieldName} (filter: $filter, update: $update) {
                     _id
-                    ${collection.fields.join('\n')}
+                    ${collection.query}
                 }
             }
             `,

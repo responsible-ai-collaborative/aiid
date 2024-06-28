@@ -1,6 +1,6 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { schema } from "../schema";
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient, ObjectId, WithId } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
 import supertest from 'supertest';
@@ -57,14 +57,30 @@ export const makeRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
+export function serializeId<T>(obj: WithId<T>) { return ({ ...obj, _id: obj._id.toHexString() }) }
+
+export function removeId<T>(obj: WithId<T>): Omit<T, "_id"> { return ({ ...obj, _id: undefined }) }
+
 export interface Fixture<T> {
     name: string;
-    fields: string[];
     query: string;
     testDocs: T[];
     testSingular: {
         filter: { _id: { EQ: ObjectId } };
         result: T;
+    };
+    testPluralFilter: {
+        filter: { _id: { EQ: ObjectId } };
+        result: T[];
+    };
+    testPluralSort: {
+        sort: unknown;
+        result: T[];
+    };
+    testPluralPagination: {
+        pagination: { limit: number; skip: number };
+        sort: unknown;
+        result: T[];
     };
     testUpdateOne: {
         filter: { _id: { EQ: ObjectId } };

@@ -3,6 +3,7 @@ import { allow } from "graphql-shield";
 import { ObjectIdScalar } from "../scalars";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
+import { isAdmin } from "../rules";
 
 
 const EmbeddingType = new GraphQLObjectType({
@@ -95,5 +96,13 @@ export const permissions = {
         reports: allow,
     },
     Mutation: {
+        deleteOneReport: isAdmin,
+        deleteManyReports: isAdmin,
+        insertOneReport: isAdmin,
+        insertManyReports: isAdmin,
+        updateOneReport: isAdmin,
+        updateManyReports: isAdmin,
+        
+        linkReportsToIncidents: allow,
     }
 }

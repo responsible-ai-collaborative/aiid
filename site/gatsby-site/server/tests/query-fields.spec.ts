@@ -4,10 +4,13 @@ import { makeRequest, seedCollection, seedUsers, startTestServer } from "./utils
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 import quickaddsFixture from './fixtures/quickadds';
+import reportsFixture from './fixtures/reports';
+
 import * as context from '../context';
 
 const fixtures = [
     quickaddsFixture,
+    reportsFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -73,25 +76,21 @@ fixtures.forEach((collection) => {
 
             jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
 
-
-            const selected = collection.testDocs[1];
-
             const queryData = {
                 query: `
                 query ($filter: ${filterTypeName}!) {
                     ${pluralName} (filter: $filter) {
                       _id
-                      ${collection.fields.join('\n')}
+                      ${collection.query}
                     }
                 }
                 `,
-                variables: { filter: { _id: { EQ: selected._id } } },
+                variables: { filter: collection.testPluralFilter.filter },
             };
 
             const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName].length).toBe(1);
-            expect(response.body.data[pluralName][0]).toMatchObject({ ...selected, _id: selected._id.toHexString() });
+            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralFilter.result);
 
 
             if (collection.roles.plural.length) {
@@ -118,20 +117,16 @@ fixtures.forEach((collection) => {
                     query ($sort: ${sortTypeName}!) {
                         ${pluralName} (sort: $sort) {
                             _id
-                            ${collection.fields.join('\n')}
+                            ${collection.query}
                         }
                     }
                     `,
-                variables: { sort: { "date_submitted": "DESC" } },
+                variables: { sort: collection.testPluralSort.sort },
             };
 
             const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName].length).toBe(collection.testDocs.length);
-            expect(response.body.data[pluralName][0]).toMatchObject({
-                ...collection.testDocs[collection.testDocs.length - 1],
-                _id: collection.testDocs[collection.testDocs.length - 1]._id.toHexString()
-            });
+            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralSort.result);
 
 
             if (collection.roles.plural.length) {
@@ -153,24 +148,17 @@ fixtures.forEach((collection) => {
                     query ($pagination: PaginationType, $sort: ${sortTypeName}!) {
                         ${pluralName} (pagination: $pagination, sort: $sort) {
                             _id
-                            ${collection.fields.join('\n')}
+                            ${collection.query}
                         }
                     }
                     `,
-                variables: { pagination: { skip: 2, limit: 2, }, sort: { _id: "ASC" } }
+                variables: { pagination: collection.testPluralPagination.pagination, sort: collection.testPluralPagination.sort }
             };
 
             const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName].length).toBe(2);
-            expect(response.body.data[pluralName][0]).toMatchObject({
-                ...collection.testDocs[2],
-                _id: collection.testDocs[2]._id.toHexString()
-            });
-            expect(response.body.data[pluralName][1]).toMatchObject({
-                ...collection.testDocs[3],
-                _id: collection.testDocs[3]._id.toHexString()
-            });
+            expect(response.body.data[pluralName]).toHaveLength(collection.testPluralPagination.result.length);
+            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralPagination.result);
 
 
             if (collection.roles.plural.length) {
