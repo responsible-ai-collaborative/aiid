@@ -75,12 +75,12 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
-    createBlogPages,
-    createCitationPages,
-    createWordCountsPages,
-    createLandingPage,
-    createBackupsPage,
-    createTaxonomyPages,
+    // createBlogPages,
+    // createCitationPages,
+    // createWordCountsPages,
+    // createLandingPage,
+    // createBackupsPage,
+    // createTaxonomyPages,
     createDownloadIndexPage,
     createDuplicatePages,
     createTsneVisualizationPage,
