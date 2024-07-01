@@ -51,6 +51,7 @@ export default function FacetTaxonomyPage(props) {
         rehypePlugins={[rehypeRaw]}
         className="
           taxonomy-markdown 
+          prose
           [&_.footnotes]:mt-6
           [&_.footnotes]:pt-4
           [&_.footnotes]:pl-4
@@ -64,7 +65,7 @@ export default function FacetTaxonomyPage(props) {
       <h2 className="heading1">
         <Trans>Taxonomy Fields</Trans>
       </h2>
-      <div className="flex gap-9 flex-col">
+      <div className="flex gap-9 flex-col max-w-prose text-[1rem]">
         {sortedFieldsArray
           .filter((f) => f.short_name !== 'Publish')
           .map(({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
@@ -190,7 +191,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
             <Trans>{`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}</Trans>
           </Button>
         )}
-        <div className="my-3 h-[320px]">
+        <div className="my-3 h-[500px] [&>div]:h-full">
           {short_name == 'Location' ? (
             <LocationMap
               data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
