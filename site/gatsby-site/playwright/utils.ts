@@ -3,6 +3,8 @@ import { Page, Route, test as base, Request } from '@playwright/test';
 import { minimatch } from 'minimatch'
 import config from './config';
 import assert from 'node:assert';
+import fs from 'fs';
+import path from 'path';
 
 declare module '@playwright/test' {
     interface Request {
@@ -177,4 +179,24 @@ export async function setEditorText(page: Page, value, selector = '.CodeMirror')
         document.querySelector(selector).CodeMirror.setValue(value);
     }, [value, selector]);
     await page.mouse.click(0, 0);
+}
+
+
+export async function listFiles(directoryPath: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryPath, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        const jsonFiles = files.filter((file) => {
+          return (
+            path.extname(file).toLowerCase() === '.json' &&
+            fs.statSync(path.join(directoryPath, file)).isFile()
+          );
+        });
+
+        resolve(jsonFiles);
+      }
+    });
+  });
 }
