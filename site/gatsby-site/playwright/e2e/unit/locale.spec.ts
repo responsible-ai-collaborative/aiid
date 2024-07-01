@@ -32,6 +32,7 @@ test.describe('Locale', () => {
 
     availableLanguages.forEach((locale) => {
       const hasConfig = configurations.some((config) => config.code === locale);
+      console.log(`Checking for ${locale} configuration`);
       expect(hasConfig).toBe(true);
     });
   });
