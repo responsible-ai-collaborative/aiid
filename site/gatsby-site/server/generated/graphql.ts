@@ -15,9 +15,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
-  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
-  Long: { input: bigint; output: bigint; }
-  /** Mongo object id scalar type */
+  Long: { input: any; output: any; }
   ObjectId: { input: any; output: any; }
 };
 
@@ -740,11 +738,9 @@ export type Classification = {
   __typename?: 'Classification';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   attributes?: Maybe<Array<Maybe<ClassificationAttribute>>>;
-  incidents: Array<Maybe<Incident>>;
   namespace: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   publish?: Maybe<Scalars['Boolean']['output']>;
-  reports: Array<Maybe<Report>>;
 };
 
 export type ClassificationAttribute = {
@@ -1867,28 +1863,6 @@ export type History_ReportUpdateInput = {
   user_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type Incident = {
-  __typename?: 'Incident';
-  AllegedDeployerOfAISystem?: Maybe<Array<Maybe<Entity>>>;
-  AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Entity>>>;
-  AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Entity>>>;
-  _id?: Maybe<Scalars['ObjectId']['output']>;
-  date: Scalars['String']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
-  editor_notes?: Maybe<Scalars['String']['output']>;
-  editor_similar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
-  editors: Array<Maybe<User>>;
-  embedding?: Maybe<IncidentEmbedding>;
-  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
-  flagged_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
-  incident_id: Scalars['Int']['output'];
-  nlp_similar_incidents?: Maybe<Array<Maybe<IncidentNlp_Similar_Incident>>>;
-  reports: Array<Maybe<Report>>;
-  title: Scalars['String']['output'];
-  tsne?: Maybe<IncidentTsne>;
-};
-
 export type IncidentAllegedDeployerOfAiSystemRelationInput = {
   create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
   link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -2223,6 +2197,60 @@ export type InsertManyPayload = {
   insertedIds: Array<Maybe<Scalars['ObjectId']['output']>>;
 };
 
+/** Filter type for Int scalar */
+export type IntFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Int']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Int']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Int']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Int']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Int']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Int']['input']>;
+  /** DEPRECATED: use NE */
+  NEQ?: InputMaybe<Scalars['Int']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** $not */
+  NOT?: InputMaybe<IntNotFilter>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  opr?: InputMaybe<Opr>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  value?: InputMaybe<Scalars['Int']['input']>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  values?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+};
+
+/** Filter type for $not of Int scalar */
+export type IntNotFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Int']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Int']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Int']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Int']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Int']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Int']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+};
+
 export type LinkReportsToIncidentsInput = {
   incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   report_numbers?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
@@ -2238,64 +2266,8 @@ export type LogReportHistoryPayload = {
   report_number?: Maybe<Scalars['Int']['output']>;
 };
 
-/** Filter type for Long scalar */
-export type LongFilter = {
-  /** $all */
-  ALL?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  /** $eq */
-  EQ?: InputMaybe<Scalars['Long']['input']>;
-  /** $gt */
-  GT?: InputMaybe<Scalars['Long']['input']>;
-  /** $gte */
-  GTE?: InputMaybe<Scalars['Long']['input']>;
-  /** $in */
-  IN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  /** $lt */
-  LT?: InputMaybe<Scalars['Long']['input']>;
-  /** $lte */
-  LTE?: InputMaybe<Scalars['Long']['input']>;
-  /** $ne */
-  NE?: InputMaybe<Scalars['Long']['input']>;
-  /** DEPRECATED: use NE */
-  NEQ?: InputMaybe<Scalars['Long']['input']>;
-  /** $nin */
-  NIN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  /** $not */
-  NOT?: InputMaybe<LongNotFilter>;
-  /** DEPRECATED: Switched to the more intuitive operator fields */
-  opr?: InputMaybe<Opr>;
-  /** DEPRECATED: Switched to the more intuitive operator fields */
-  value?: InputMaybe<Scalars['Long']['input']>;
-  /** DEPRECATED: Switched to the more intuitive operator fields */
-  values?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-};
-
-/** Filter type for $not of Long scalar */
-export type LongNotFilter = {
-  /** $all */
-  ALL?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  /** $eq */
-  EQ?: InputMaybe<Scalars['Long']['input']>;
-  /** $gt */
-  GT?: InputMaybe<Scalars['Long']['input']>;
-  /** $gte */
-  GTE?: InputMaybe<Scalars['Long']['input']>;
-  /** $in */
-  IN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  /** $lt */
-  LT?: InputMaybe<Scalars['Long']['input']>;
-  /** $lte */
-  LTE?: InputMaybe<Scalars['Long']['input']>;
-  /** $ne */
-  NE?: InputMaybe<Scalars['Long']['input']>;
-  /** $nin */
-  NIN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Placeholder field to avoid empty mutation type */
-  _?: Maybe<Scalars['String']['output']>;
   createDefaultAdminUser?: Maybe<DefaultAdminUser>;
   createVariant?: Maybe<CreateVariantPayload>;
   deleteManyCandidates?: Maybe<DeleteManyPayload>;
@@ -2320,10 +2292,8 @@ export type Mutation = {
   deleteOneEntity?: Maybe<Entity>;
   deleteOneHistory_incident?: Maybe<History_Incident>;
   deleteOneHistory_report?: Maybe<History_Report>;
-  deleteOneIncident?: Maybe<Incident>;
   deleteOneNotification?: Maybe<Notification>;
   deleteOneQuickadd?: Maybe<Quickadd>;
-  deleteOneReport?: Maybe<Report>;
   deleteOneSubmission?: Maybe<Submission>;
   deleteOneSubscription?: Maybe<Subscription>;
   deleteOneTaxa?: Maybe<Taxa>;
@@ -2351,15 +2321,12 @@ export type Mutation = {
   insertOneEntity?: Maybe<Entity>;
   insertOneHistory_incident?: Maybe<History_Incident>;
   insertOneHistory_report?: Maybe<History_Report>;
-  insertOneIncident?: Maybe<Incident>;
   insertOneNotification?: Maybe<Notification>;
-  insertOneQuickadd?: Maybe<QuickAdd>;
-  insertOneReport?: Maybe<Report>;
+  insertOneQuickadd?: Maybe<Quickadd>;
   insertOneSubmission?: Maybe<Submission>;
   insertOneSubscription?: Maybe<Subscription>;
   insertOneTaxa?: Maybe<Taxa>;
   insertOneUser?: Maybe<User>;
-  linkReportsToIncidents?: Maybe<Array<Maybe<Incident>>>;
   logIncidentHistory?: Maybe<LogIncidentHistoryPayload>;
   logReportHistory?: Maybe<LogReportHistoryPayload>;
   processNotifications?: Maybe<Scalars['Int']['output']>;
@@ -2371,10 +2338,7 @@ export type Mutation = {
   replaceOneEntity?: Maybe<Entity>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
   replaceOneHistory_report?: Maybe<History_Report>;
-  replaceOneIncident?: Maybe<Incident>;
   replaceOneNotification?: Maybe<Notification>;
-  replaceOneQuickadd?: Maybe<Quickadd>;
-  replaceOneReport?: Maybe<Report>;
   replaceOneSubmission?: Maybe<Submission>;
   replaceOneSubscription?: Maybe<Subscription>;
   replaceOneTaxa?: Maybe<Taxa>;
@@ -2401,11 +2365,8 @@ export type Mutation = {
   updateOneEntity?: Maybe<Entity>;
   updateOneHistory_incident?: Maybe<History_Incident>;
   updateOneHistory_report?: Maybe<History_Report>;
-  updateOneIncident?: Maybe<Incident>;
   updateOneNotification?: Maybe<Notification>;
   updateOneQuickadd?: Maybe<Quickadd>;
-  updateOneReport?: Maybe<Report>;
-  updateOneReportTranslation?: Maybe<Report>;
   updateOneSubmission?: Maybe<Submission>;
   updateOneSubscription?: Maybe<Subscription>;
   updateOneTaxa?: Maybe<Taxa>;
@@ -2417,10 +2378,7 @@ export type Mutation = {
   upsertOneEntity?: Maybe<Entity>;
   upsertOneHistory_incident?: Maybe<History_Incident>;
   upsertOneHistory_report?: Maybe<History_Report>;
-  upsertOneIncident?: Maybe<Incident>;
   upsertOneNotification?: Maybe<Notification>;
-  upsertOneQuickadd?: Maybe<Quickadd>;
-  upsertOneReport?: Maybe<Report>;
   upsertOneSubmission?: Maybe<Submission>;
   upsertOneSubscription?: Maybe<Subscription>;
   upsertOneTaxa?: Maybe<Taxa>;
@@ -2484,9 +2442,9 @@ export type MutationDeleteManyNotificationsArgs = {
 
 
 export type MutationDeleteManyQuickaddsArgs = {
-  filter?: InputMaybe<QuickAddFilterType>;
+  filter?: InputMaybe<QuickaddFilterType>;
   pagination?: InputMaybe<PaginationType>;
-  sort?: InputMaybe<QuickAddSortType>;
+  sort?: InputMaybe<QuickaddSortType>;
 };
 
 
@@ -2550,18 +2508,15 @@ export type MutationDeleteOneHistory_ReportArgs = {
 };
 
 
-export type MutationDeleteOneIncidentArgs = {
-  query: IncidentQueryInput;
-};
-
-
 export type MutationDeleteOneNotificationArgs = {
   query: NotificationQueryInput;
 };
 
 
-export type MutationDeleteOneReportArgs = {
-  query: ReportQueryInput;
+export type MutationDeleteOneQuickaddArgs = {
+  filter?: InputMaybe<QuickaddFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<QuickaddSortType>;
 };
 
 
@@ -2636,7 +2591,7 @@ export type MutationInsertManyNotificationsArgs = {
 
 
 export type MutationInsertManyQuickaddsArgs = {
-  data: Array<QuickaddInsertInput>;
+  data?: InputMaybe<Array<InputMaybe<QuickaddInsertType>>>;
 };
 
 
@@ -2700,23 +2655,13 @@ export type MutationInsertOneHistory_ReportArgs = {
 };
 
 
-export type MutationInsertOneIncidentArgs = {
-  data: IncidentInsertInput;
-};
-
-
 export type MutationInsertOneNotificationArgs = {
   data: NotificationInsertInput;
 };
 
 
 export type MutationInsertOneQuickaddArgs = {
-  data?: InputMaybe<QuickAddInsertType>;
-};
-
-
-export type MutationInsertOneReportArgs = {
-  data: ReportInsertInput;
+  data?: InputMaybe<QuickaddInsertType>;
 };
 
 
@@ -2737,11 +2682,6 @@ export type MutationInsertOneTaxaArgs = {
 
 export type MutationInsertOneUserArgs = {
   data: UserInsertInput;
-};
-
-
-export type MutationLinkReportsToIncidentsArgs = {
-  input?: InputMaybe<LinkReportsToIncidentsInput>;
 };
 
 
@@ -2802,26 +2742,9 @@ export type MutationReplaceOneHistory_ReportArgs = {
 };
 
 
-export type MutationReplaceOneIncidentArgs = {
-  data: IncidentInsertInput;
-  query?: InputMaybe<IncidentQueryInput>;
-};
-
-
 export type MutationReplaceOneNotificationArgs = {
   data: NotificationInsertInput;
   query?: InputMaybe<NotificationQueryInput>;
-};
-
-
-export type MutationReplaceOneQuickaddArgs = {
-  data: QuickaddInsertInput;
-};
-
-
-export type MutationReplaceOneReportArgs = {
-  data: ReportInsertInput;
-  query?: InputMaybe<ReportQueryInput>;
 };
 
 
@@ -2904,7 +2827,8 @@ export type MutationUpdateManyNotificationsArgs = {
 
 
 export type MutationUpdateManyQuickaddsArgs = {
-  set: QuickaddUpdateInput;
+  filter: QuickaddFilterType;
+  update: QuickaddUpdateType;
 };
 
 
@@ -2980,12 +2904,6 @@ export type MutationUpdateOneHistory_ReportArgs = {
 };
 
 
-export type MutationUpdateOneIncidentArgs = {
-  query?: InputMaybe<IncidentQueryInput>;
-  set: IncidentUpdateInput;
-};
-
-
 export type MutationUpdateOneNotificationArgs = {
   query?: InputMaybe<NotificationQueryInput>;
   set: NotificationUpdateInput;
@@ -2993,18 +2911,8 @@ export type MutationUpdateOneNotificationArgs = {
 
 
 export type MutationUpdateOneQuickaddArgs = {
-  set: QuickaddUpdateInput;
-};
-
-
-export type MutationUpdateOneReportArgs = {
-  query?: InputMaybe<ReportQueryInput>;
-  set: ReportUpdateInput;
-};
-
-
-export type MutationUpdateOneReportTranslationArgs = {
-  input?: InputMaybe<UpdateOneReportTranslationInput>;
+  filter: QuickaddFilterType;
+  update: QuickaddUpdateType;
 };
 
 
@@ -3074,26 +2982,9 @@ export type MutationUpsertOneHistory_ReportArgs = {
 };
 
 
-export type MutationUpsertOneIncidentArgs = {
-  data: IncidentInsertInput;
-  query?: InputMaybe<IncidentQueryInput>;
-};
-
-
 export type MutationUpsertOneNotificationArgs = {
   data: NotificationInsertInput;
   query?: InputMaybe<NotificationQueryInput>;
-};
-
-
-export type MutationUpsertOneQuickaddArgs = {
-  data: QuickaddInsertInput;
-};
-
-
-export type MutationUpsertOneReportArgs = {
-  data: ReportInsertInput;
-  query?: InputMaybe<ReportQueryInput>;
 };
 
 
@@ -3274,15 +3165,15 @@ export type ObjectIdNotFilter = {
 };
 
 export enum Opr {
-  All = '$all',
-  Eql = '$eq',
-  Gt = '$gt',
-  Gte = '$gte',
-  In = '$in',
-  Lt = '$lt',
-  Lte = '$lte',
-  Ne = '$ne',
-  Nin = '$nin'
+  All = 'ALL',
+  Eql = 'EQL',
+  Gt = 'GT',
+  Gte = 'GTE',
+  In = 'IN',
+  Lt = 'LT',
+  Lte = 'LTE',
+  Ne = 'NE',
+  Nin = 'NIN'
 }
 
 export type PaginationType = {
@@ -3320,14 +3211,10 @@ export type Query = {
   history_incidents: Array<Maybe<History_Incident>>;
   history_report?: Maybe<History_Report>;
   history_reports: Array<Maybe<History_Report>>;
-  incident?: Maybe<Incident>;
-  incidents: Array<Maybe<Incident>>;
   notification?: Maybe<Notification>;
   notifications: Array<Maybe<Notification>>;
   quickadd?: Maybe<Quickadd>;
-  quickadds?: Maybe<Array<Maybe<QuickAdd>>>;
-  report?: Maybe<Report>;
-  reports: Array<Maybe<Report>>;
+  quickadds?: Maybe<Array<Maybe<Quickadd>>>;
   risks?: Maybe<Array<Maybe<RisksPayloadItem>>>;
   submission?: Maybe<Submission>;
   submissions: Array<Maybe<Submission>>;
@@ -3424,18 +3311,6 @@ export type QueryHistory_ReportsArgs = {
 };
 
 
-export type QueryIncidentArgs = {
-  query?: InputMaybe<IncidentQueryInput>;
-};
-
-
-export type QueryIncidentsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<IncidentQueryInput>;
-  sortBy?: InputMaybe<IncidentSortByInput>;
-};
-
-
 export type QueryNotificationArgs = {
   query?: InputMaybe<NotificationQueryInput>;
 };
@@ -3448,22 +3323,17 @@ export type QueryNotificationsArgs = {
 };
 
 
-export type QueryQuickaddsArgs = {
-  filter?: InputMaybe<QuickAddFilterType>;
+export type QueryQuickaddArgs = {
+  filter?: InputMaybe<QuickaddFilterType>;
   pagination?: InputMaybe<PaginationType>;
-  sort?: InputMaybe<QuickAddSortType>;
+  sort?: InputMaybe<QuickaddSortType>;
 };
 
 
-export type QueryReportArgs = {
-  query?: InputMaybe<ReportQueryInput>;
-};
-
-
-export type QueryReportsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<ReportQueryInput>;
-  sortBy?: InputMaybe<ReportSortByInput>;
+export type QueryQuickaddsArgs = {
+  filter?: InputMaybe<QuickaddFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<QuickaddSortType>;
 };
 
 
@@ -3519,49 +3389,28 @@ export type QueryUsersArgs = {
   sortBy?: InputMaybe<UserSortByInput>;
 };
 
-export type QuickAdd = {
-  __typename?: 'QuickAdd';
+export type Quickadd = {
+  __typename?: 'Quickadd';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   date_submitted?: Maybe<Scalars['String']['output']>;
-  incident_id?: Maybe<Scalars['Long']['output']>;
+  incident_id?: Maybe<Scalars['Int']['output']>;
   source_domain?: Maybe<Scalars['String']['output']>;
   url?: Maybe<Scalars['String']['output']>;
 };
 
-export type QuickAddFilterType = {
-  AND?: InputMaybe<Array<InputMaybe<QuickAddFilterType>>>;
-  NOR?: InputMaybe<Array<InputMaybe<QuickAddFilterType>>>;
-  OR?: InputMaybe<Array<InputMaybe<QuickAddFilterType>>>;
+export type QuickaddFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<QuickaddFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<QuickaddFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<QuickaddFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
   date_submitted?: InputMaybe<StringFilter>;
-  incident_id?: InputMaybe<LongFilter>;
+  incident_id?: InputMaybe<IntFilter>;
   source_domain?: InputMaybe<StringFilter>;
   url?: InputMaybe<StringFilter>;
 };
 
-export type QuickAddInsertType = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  date_submitted?: InputMaybe<Scalars['String']['input']>;
-  incident_id?: InputMaybe<Scalars['Long']['input']>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type QuickAddSortType = {
-  _id?: InputMaybe<SortType>;
-  date_submitted?: InputMaybe<SortType>;
-  incident_id?: InputMaybe<SortType>;
-  source_domain?: InputMaybe<SortType>;
-  url?: InputMaybe<SortType>;
-};
-
-export type Quickadd = {
-  __typename?: 'Quickadd';
-  _id?: Maybe<Scalars['ObjectId']['output']>;
-  date_submitted: Scalars['String']['output'];
-  incident_id?: Maybe<Scalars['Long']['output']>;
-  source_domain?: Maybe<Scalars['String']['output']>;
-  url: Scalars['String']['output'];
+export type QuickaddIncType = {
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type QuickaddInsertInput = {
@@ -3570,6 +3419,30 @@ export type QuickaddInsertInput = {
   incident_id?: InputMaybe<Scalars['Long']['input']>;
   source_domain?: InputMaybe<Scalars['String']['input']>;
   url: Scalars['String']['input'];
+};
+
+export type QuickaddInsertType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  date_submitted?: InputMaybe<Scalars['String']['input']>;
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  source_domain?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type QuickaddSetOnInsertType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  date_submitted?: InputMaybe<Scalars['String']['input']>;
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  source_domain?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type QuickaddSetType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  date_submitted?: InputMaybe<Scalars['String']['input']>;
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  source_domain?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum QuickaddSortByInput {
@@ -3585,6 +3458,14 @@ export enum QuickaddSortByInput {
   IdDesc = '_ID_DESC'
 }
 
+export type QuickaddSortType = {
+  _id?: InputMaybe<SortType>;
+  date_submitted?: InputMaybe<SortType>;
+  incident_id?: InputMaybe<SortType>;
+  source_domain?: InputMaybe<SortType>;
+  url?: InputMaybe<SortType>;
+};
+
 export type QuickaddUpdateInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3598,43 +3479,10 @@ export type QuickaddUpdateInput = {
   url_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type Report = {
-  __typename?: 'Report';
-  _id?: Maybe<Scalars['ObjectId']['output']>;
-  authors: Array<Maybe<Scalars['String']['output']>>;
-  cloudinary_id: Scalars['String']['output'];
-  date_downloaded: Scalars['DateTime']['output'];
-  date_modified: Scalars['DateTime']['output'];
-  date_published: Scalars['DateTime']['output'];
-  date_submitted: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  editor_notes?: Maybe<Scalars['String']['output']>;
-  embedding?: Maybe<ReportEmbedding>;
-  epoch_date_downloaded: Scalars['Int']['output'];
-  epoch_date_modified: Scalars['Int']['output'];
-  epoch_date_published: Scalars['Int']['output'];
-  epoch_date_submitted: Scalars['Int']['output'];
-  flag?: Maybe<Scalars['Boolean']['output']>;
-  image_url: Scalars['String']['output'];
-  inputs_outputs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  is_incident_report?: Maybe<Scalars['Boolean']['output']>;
-  language: Scalars['String']['output'];
-  plain_text: Scalars['String']['output'];
-  quiet?: Maybe<Scalars['Boolean']['output']>;
-  report_number: Scalars['Int']['output'];
-  source_domain: Scalars['String']['output'];
-  submitters: Array<Maybe<Scalars['String']['output']>>;
-  tags: Array<Maybe<Scalars['String']['output']>>;
-  text: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-  translations?: Maybe<ReportTranslation>;
-  url: Scalars['String']['output'];
-  user?: Maybe<User>;
-};
-
-
-export type ReportTranslationsArgs = {
-  input?: InputMaybe<Scalars['String']['input']>;
+export type QuickaddUpdateType = {
+  inc?: InputMaybe<QuickaddIncType>;
+  set?: InputMaybe<QuickaddSetType>;
+  setOnInsert?: InputMaybe<QuickaddSetOnInsertType>;
 };
 
 export type ReportEmbedding = {
@@ -4095,8 +3943,8 @@ export type RisksPayloadPrecedentTsne = {
 };
 
 export enum SortType {
-  Asc = 1,
-  Desc = -1
+  Asc = 'ASC',
+  Desc = 'DESC'
 }
 
 /** Filter type for String scalar */
@@ -4682,7 +4530,6 @@ export type Subscription = {
   __typename?: 'Subscription';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   entityId?: Maybe<Entity>;
-  incident_id?: Maybe<Incident>;
   type: Scalars['String']['output'];
   userId: User;
 };
@@ -5623,7 +5470,6 @@ export type ResolversTypes = {
   History_reportQueryInput: History_ReportQueryInput;
   History_reportSortByInput: History_ReportSortByInput;
   History_reportUpdateInput: History_ReportUpdateInput;
-  Incident: ResolverTypeWrapper<Incident>;
   IncidentAllegedDeployerOfAISystemRelationInput: IncidentAllegedDeployerOfAiSystemRelationInput;
   IncidentAllegedDeveloperOfAISystemRelationInput: IncidentAllegedDeveloperOfAiSystemRelationInput;
   IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput: IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput;
@@ -5646,12 +5492,12 @@ export type ResolversTypes = {
   IncidentTsneUpdateInput: IncidentTsneUpdateInput;
   IncidentUpdateInput: IncidentUpdateInput;
   InsertManyPayload: ResolverTypeWrapper<InsertManyPayload>;
+  IntFilter: IntFilter;
+  IntNotFilter: IntNotFilter;
   LinkReportsToIncidentsInput: LinkReportsToIncidentsInput;
   LogIncidentHistoryPayload: ResolverTypeWrapper<LogIncidentHistoryPayload>;
   LogReportHistoryPayload: ResolverTypeWrapper<LogReportHistoryPayload>;
   Long: ResolverTypeWrapper<Scalars['Long']['output']>;
-  LongFilter: LongFilter;
-  LongNotFilter: LongNotFilter;
   Mutation: ResolverTypeWrapper<{}>;
   Notification: ResolverTypeWrapper<Notification>;
   NotificationInsertInput: NotificationInsertInput;
@@ -5667,15 +5513,17 @@ export type ResolversTypes = {
   PromoteSubmissionToReportInput: PromoteSubmissionToReportInput;
   PromoteSubmissionToReportPayload: ResolverTypeWrapper<PromoteSubmissionToReportPayload>;
   Query: ResolverTypeWrapper<{}>;
-  QuickAdd: ResolverTypeWrapper<QuickAdd>;
-  QuickAddFilterType: QuickAddFilterType;
-  QuickAddInsertType: QuickAddInsertType;
-  QuickAddSortType: QuickAddSortType;
   Quickadd: ResolverTypeWrapper<Quickadd>;
+  QuickaddFilterType: QuickaddFilterType;
+  QuickaddIncType: QuickaddIncType;
   QuickaddInsertInput: QuickaddInsertInput;
+  QuickaddInsertType: QuickaddInsertType;
+  QuickaddSetOnInsertType: QuickaddSetOnInsertType;
+  QuickaddSetType: QuickaddSetType;
   QuickaddSortByInput: QuickaddSortByInput;
+  QuickaddSortType: QuickaddSortType;
   QuickaddUpdateInput: QuickaddUpdateInput;
-  Report: ResolverTypeWrapper<Report>;
+  QuickaddUpdateType: QuickaddUpdateType;
   ReportEmbedding: ResolverTypeWrapper<ReportEmbedding>;
   ReportEmbeddingInsertInput: ReportEmbeddingInsertInput;
   ReportEmbeddingQueryInput: ReportEmbeddingQueryInput;
@@ -5838,7 +5686,6 @@ export type ResolversParentTypes = {
   History_reportInsertInput: History_ReportInsertInput;
   History_reportQueryInput: History_ReportQueryInput;
   History_reportUpdateInput: History_ReportUpdateInput;
-  Incident: Incident;
   IncidentAllegedDeployerOfAISystemRelationInput: IncidentAllegedDeployerOfAiSystemRelationInput;
   IncidentAllegedDeveloperOfAISystemRelationInput: IncidentAllegedDeveloperOfAiSystemRelationInput;
   IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput: IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput;
@@ -5860,12 +5707,12 @@ export type ResolversParentTypes = {
   IncidentTsneUpdateInput: IncidentTsneUpdateInput;
   IncidentUpdateInput: IncidentUpdateInput;
   InsertManyPayload: InsertManyPayload;
+  IntFilter: IntFilter;
+  IntNotFilter: IntNotFilter;
   LinkReportsToIncidentsInput: LinkReportsToIncidentsInput;
   LogIncidentHistoryPayload: LogIncidentHistoryPayload;
   LogReportHistoryPayload: LogReportHistoryPayload;
   Long: Scalars['Long']['output'];
-  LongFilter: LongFilter;
-  LongNotFilter: LongNotFilter;
   Mutation: {};
   Notification: Notification;
   NotificationInsertInput: NotificationInsertInput;
@@ -5879,14 +5726,16 @@ export type ResolversParentTypes = {
   PromoteSubmissionToReportInput: PromoteSubmissionToReportInput;
   PromoteSubmissionToReportPayload: PromoteSubmissionToReportPayload;
   Query: {};
-  QuickAdd: QuickAdd;
-  QuickAddFilterType: QuickAddFilterType;
-  QuickAddInsertType: QuickAddInsertType;
-  QuickAddSortType: QuickAddSortType;
   Quickadd: Quickadd;
+  QuickaddFilterType: QuickaddFilterType;
+  QuickaddIncType: QuickaddIncType;
   QuickaddInsertInput: QuickaddInsertInput;
+  QuickaddInsertType: QuickaddInsertType;
+  QuickaddSetOnInsertType: QuickaddSetOnInsertType;
+  QuickaddSetType: QuickaddSetType;
+  QuickaddSortType: QuickaddSortType;
   QuickaddUpdateInput: QuickaddUpdateInput;
-  Report: Report;
+  QuickaddUpdateType: QuickaddUpdateType;
   ReportEmbedding: ReportEmbedding;
   ReportEmbeddingInsertInput: ReportEmbeddingInsertInput;
   ReportEmbeddingQueryInput: ReportEmbeddingQueryInput;
@@ -6092,11 +5941,9 @@ export type ChecklistRiskPrecedentResolvers<ContextType = any, ParentType extend
 export type ClassificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Classification'] = ResolversParentTypes['Classification']> = {
   _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   attributes?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClassificationAttribute']>>>, ParentType, ContextType>;
-  incidents?: Resolver<Array<Maybe<ResolversTypes['Incident']>>, ParentType, ContextType>;
   namespace?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publish?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  reports?: Resolver<Array<Maybe<ResolversTypes['Report']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -6225,28 +6072,6 @@ export type History_ReportEmbeddingResolvers<ContextType = any, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Incident'] = ResolversParentTypes['Incident']> = {
-  AllegedDeployerOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
-  AllegedDeveloperOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
-  AllegedHarmedOrNearlyHarmedParties?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editors?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['IncidentEmbedding']>, ParentType, ContextType>;
-  epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  flagged_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  incident_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  nlp_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['IncidentNlp_similar_incident']>>>, ParentType, ContextType>;
-  reports?: Resolver<Array<Maybe<ResolversTypes['Report']>>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  tsne?: Resolver<Maybe<ResolversTypes['IncidentTsne']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type IncidentEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['IncidentEmbedding'] = ResolversParentTypes['IncidentEmbedding']> = {
   from_reports?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
   vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
@@ -6285,7 +6110,6 @@ export interface LongScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  _?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createDefaultAdminUser?: Resolver<Maybe<ResolversTypes['DefaultAdminUser']>, ParentType, ContextType, Partial<MutationCreateDefaultAdminUserArgs>>;
   createVariant?: Resolver<Maybe<ResolversTypes['CreateVariantPayload']>, ParentType, ContextType, Partial<MutationCreateVariantArgs>>;
   deleteManyCandidates?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyCandidatesArgs>>;
@@ -6310,10 +6134,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationDeleteOneEntityArgs, 'query'>>;
   deleteOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationDeleteOneHistory_IncidentArgs, 'query'>>;
   deleteOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationDeleteOneHistory_ReportArgs, 'query'>>;
-  deleteOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationDeleteOneIncidentArgs, 'query'>>;
   deleteOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationDeleteOneNotificationArgs, 'query'>>;
-  deleteOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType>;
-  deleteOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationDeleteOneReportArgs, 'query'>>;
+  deleteOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<MutationDeleteOneQuickaddArgs>>;
   deleteOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubmissionArgs, 'query'>>;
   deleteOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubscriptionArgs, 'query'>>;
   deleteOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationDeleteOneTaxaArgs, 'query'>>;
@@ -6328,7 +6150,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   insertManyHistory_reports?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyHistory_ReportsArgs, 'data'>>;
   insertManyIncidents?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyIncidentsArgs, 'data'>>;
   insertManyNotifications?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyNotificationsArgs, 'data'>>;
-  insertManyQuickadds?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyQuickaddsArgs, 'data'>>;
+  insertManyQuickadds?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, Partial<MutationInsertManyQuickaddsArgs>>;
   insertManyReports?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyReportsArgs, 'data'>>;
   insertManySubmissions?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManySubmissionsArgs, 'data'>>;
   insertManySubscriptions?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManySubscriptionsArgs, 'data'>>;
@@ -6341,15 +6163,12 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   insertOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationInsertOneEntityArgs, 'data'>>;
   insertOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationInsertOneHistory_IncidentArgs, 'data'>>;
   insertOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationInsertOneHistory_ReportArgs, 'data'>>;
-  insertOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationInsertOneIncidentArgs, 'data'>>;
   insertOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationInsertOneNotificationArgs, 'data'>>;
-  insertOneQuickadd?: Resolver<Maybe<ResolversTypes['QuickAdd']>, ParentType, ContextType, Partial<MutationInsertOneQuickaddArgs>>;
-  insertOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationInsertOneReportArgs, 'data'>>;
+  insertOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<MutationInsertOneQuickaddArgs>>;
   insertOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationInsertOneSubmissionArgs, 'data'>>;
   insertOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationInsertOneSubscriptionArgs, 'data'>>;
   insertOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationInsertOneTaxaArgs, 'data'>>;
   insertOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationInsertOneUserArgs, 'data'>>;
-  linkReportsToIncidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Incident']>>>, ParentType, ContextType, Partial<MutationLinkReportsToIncidentsArgs>>;
   logIncidentHistory?: Resolver<Maybe<ResolversTypes['LogIncidentHistoryPayload']>, ParentType, ContextType, Partial<MutationLogIncidentHistoryArgs>>;
   logReportHistory?: Resolver<Maybe<ResolversTypes['LogReportHistoryPayload']>, ParentType, ContextType, Partial<MutationLogReportHistoryArgs>>;
   processNotifications?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -6361,10 +6180,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   replaceOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationReplaceOneEntityArgs, 'data'>>;
   replaceOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationReplaceOneHistory_IncidentArgs, 'data'>>;
   replaceOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationReplaceOneHistory_ReportArgs, 'data'>>;
-  replaceOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationReplaceOneIncidentArgs, 'data'>>;
   replaceOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationReplaceOneNotificationArgs, 'data'>>;
-  replaceOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationReplaceOneQuickaddArgs, 'data'>>;
-  replaceOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationReplaceOneReportArgs, 'data'>>;
   replaceOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationReplaceOneSubmissionArgs, 'data'>>;
   replaceOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationReplaceOneSubscriptionArgs, 'data'>>;
   replaceOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationReplaceOneTaxaArgs, 'data'>>;
@@ -6378,7 +6194,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateManyHistory_reports?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyHistory_ReportsArgs, 'set'>>;
   updateManyIncidents?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyIncidentsArgs, 'set'>>;
   updateManyNotifications?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyNotificationsArgs, 'set'>>;
-  updateManyQuickadds?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyQuickaddsArgs, 'set'>>;
+  updateManyQuickadds?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyQuickaddsArgs, 'filter' | 'update'>>;
   updateManyReports?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyReportsArgs, 'set'>>;
   updateManySubmissions?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManySubmissionsArgs, 'set'>>;
   updateManySubscriptions?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManySubscriptionsArgs, 'set'>>;
@@ -6391,11 +6207,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationUpdateOneEntityArgs, 'set'>>;
   updateOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationUpdateOneHistory_IncidentArgs, 'set'>>;
   updateOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationUpdateOneHistory_ReportArgs, 'set'>>;
-  updateOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationUpdateOneIncidentArgs, 'set'>>;
   updateOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpdateOneNotificationArgs, 'set'>>;
-  updateOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationUpdateOneQuickaddArgs, 'set'>>;
-  updateOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationUpdateOneReportArgs, 'set'>>;
-  updateOneReportTranslation?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, Partial<MutationUpdateOneReportTranslationArgs>>;
+  updateOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationUpdateOneQuickaddArgs, 'filter' | 'update'>>;
   updateOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubmissionArgs, 'set'>>;
   updateOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubscriptionArgs, 'set'>>;
   updateOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpdateOneTaxaArgs, 'set'>>;
@@ -6407,10 +6220,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationUpsertOneEntityArgs, 'data'>>;
   upsertOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationUpsertOneHistory_IncidentArgs, 'data'>>;
   upsertOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationUpsertOneHistory_ReportArgs, 'data'>>;
-  upsertOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationUpsertOneIncidentArgs, 'data'>>;
   upsertOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpsertOneNotificationArgs, 'data'>>;
-  upsertOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationUpsertOneQuickaddArgs, 'data'>>;
-  upsertOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationUpsertOneReportArgs, 'data'>>;
   upsertOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpsertOneSubmissionArgs, 'data'>>;
   upsertOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpsertOneSubscriptionArgs, 'data'>>;
   upsertOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpsertOneTaxaArgs, 'data'>>;
@@ -6430,8 +6240,6 @@ export type NotificationResolvers<ContextType = any, ParentType extends Resolver
 export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ObjectId'], any> {
   name: 'ObjectId';
 }
-
-export type OprResolvers = { ALL: '$all', EQL: '$eq', GT: '$gt', GTE: '$gte', IN: '$in', LT: '$lt', LTE: '$lte', NE: '$ne', NIN: '$nin' };
 
 export type PromoteSubmissionToReportPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PromoteSubmissionToReportPayload'] = ResolversParentTypes['PromoteSubmissionToReportPayload']> = {
   incident_ids?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
@@ -6455,14 +6263,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   history_incidents?: Resolver<Array<Maybe<ResolversTypes['History_incident']>>, ParentType, ContextType, RequireFields<QueryHistory_IncidentsArgs, 'limit'>>;
   history_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, Partial<QueryHistory_ReportArgs>>;
   history_reports?: Resolver<Array<Maybe<ResolversTypes['History_report']>>, ParentType, ContextType, RequireFields<QueryHistory_ReportsArgs, 'limit'>>;
-  incident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, Partial<QueryIncidentArgs>>;
-  incidents?: Resolver<Array<Maybe<ResolversTypes['Incident']>>, ParentType, ContextType, RequireFields<QueryIncidentsArgs, 'limit'>>;
   notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, Partial<QueryNotificationArgs>>;
   notifications?: Resolver<Array<Maybe<ResolversTypes['Notification']>>, ParentType, ContextType, RequireFields<QueryNotificationsArgs, 'limit'>>;
-  quickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType>;
-  quickadds?: Resolver<Maybe<Array<Maybe<ResolversTypes['QuickAdd']>>>, ParentType, ContextType, Partial<QueryQuickaddsArgs>>;
-  report?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, Partial<QueryReportArgs>>;
-  reports?: Resolver<Array<Maybe<ResolversTypes['Report']>>, ParentType, ContextType, RequireFields<QueryReportsArgs, 'limit'>>;
+  quickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<QueryQuickaddArgs>>;
+  quickadds?: Resolver<Maybe<Array<Maybe<ResolversTypes['Quickadd']>>>, ParentType, ContextType, Partial<QueryQuickaddsArgs>>;
   risks?: Resolver<Maybe<Array<Maybe<ResolversTypes['RisksPayloadItem']>>>, ParentType, ContextType, Partial<QueryRisksArgs>>;
   submission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, Partial<QuerySubmissionArgs>>;
   submissions?: Resolver<Array<Maybe<ResolversTypes['Submission']>>, ParentType, ContextType, RequireFields<QuerySubmissionsArgs, 'limit'>>;
@@ -6474,55 +6278,12 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   users?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryUsersArgs, 'limit'>>;
 };
 
-export type QuickAddResolvers<ContextType = any, ParentType extends ResolversParentTypes['QuickAdd'] = ResolversParentTypes['QuickAdd']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  date_submitted?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  incident_id?: Resolver<Maybe<ResolversTypes['Long']>, ParentType, ContextType>;
-  source_domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type QuickaddResolvers<ContextType = any, ParentType extends ResolversParentTypes['Quickadd'] = ResolversParentTypes['Quickadd']> = {
   _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  date_submitted?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  incident_id?: Resolver<Maybe<ResolversTypes['Long']>, ParentType, ContextType>;
+  date_submitted?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   source_domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ReportResolvers<ContextType = any, ParentType extends ResolversParentTypes['Report'] = ResolversParentTypes['Report']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  authors?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  cloudinary_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date_downloaded?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  date_modified?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  date_published?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  date_submitted?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['ReportEmbedding']>, ParentType, ContextType>;
-  epoch_date_downloaded?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  epoch_date_modified?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  epoch_date_published?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  epoch_date_submitted?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  flag?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  image_url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  inputs_outputs?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  is_incident_report?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  plain_text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  quiet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  report_number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  source_domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  submitters?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  tags?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  translations?: Resolver<Maybe<ResolversTypes['ReportTranslation']>, ParentType, ContextType, Partial<ReportTranslationsArgs>>;
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -6587,8 +6348,6 @@ export type RisksPayloadPrecedentTsneResolvers<ContextType = any, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type SortTypeResolvers = { ASC: 1, DESC: -1 };
-
 export type SubmissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Submission'] = ResolversParentTypes['Submission']> = {
   _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   authors?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
@@ -6641,7 +6400,6 @@ export type SubmissionNlp_Similar_IncidentResolvers<ContextType = any, ParentTyp
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _id?: SubscriptionResolver<Maybe<ResolversTypes['ObjectId']>, "_id", ParentType, ContextType>;
   entityId?: SubscriptionResolver<Maybe<ResolversTypes['Entity']>, "entityId", ParentType, ContextType>;
-  incident_id?: SubscriptionResolver<Maybe<ResolversTypes['Incident']>, "incident_id", ParentType, ContextType>;
   type?: SubscriptionResolver<ResolversTypes['String'], "type", ParentType, ContextType>;
   userId?: SubscriptionResolver<ResolversTypes['User'], "userId", ParentType, ContextType>;
 };
@@ -6762,7 +6520,6 @@ export type Resolvers<ContextType = any> = {
   History_incidentTsne?: History_IncidentTsneResolvers<ContextType>;
   History_report?: History_ReportResolvers<ContextType>;
   History_reportEmbedding?: History_ReportEmbeddingResolvers<ContextType>;
-  Incident?: IncidentResolvers<ContextType>;
   IncidentEmbedding?: IncidentEmbeddingResolvers<ContextType>;
   IncidentNlp_similar_incident?: IncidentNlp_Similar_IncidentResolvers<ContextType>;
   IncidentTsne?: IncidentTsneResolvers<ContextType>;
@@ -6773,12 +6530,9 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Notification?: NotificationResolvers<ContextType>;
   ObjectId?: GraphQLScalarType;
-  Opr?: OprResolvers;
   PromoteSubmissionToReportPayload?: PromoteSubmissionToReportPayloadResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  QuickAdd?: QuickAddResolvers<ContextType>;
   Quickadd?: QuickaddResolvers<ContextType>;
-  Report?: ReportResolvers<ContextType>;
   ReportEmbedding?: ReportEmbeddingResolvers<ContextType>;
   ReportTranslation?: ReportTranslationResolvers<ContextType>;
   RisksPayloadItem?: RisksPayloadItemResolvers<ContextType>;
@@ -6786,7 +6540,6 @@ export type Resolvers<ContextType = any> = {
   RisksPayloadPrecedentEmbedding?: RisksPayloadPrecedentEmbeddingResolvers<ContextType>;
   RisksPayloadPrecedentNlp_similar_incident?: RisksPayloadPrecedentNlp_Similar_IncidentResolvers<ContextType>;
   RisksPayloadPrecedentTsne?: RisksPayloadPrecedentTsneResolvers<ContextType>;
-  SortType?: SortTypeResolvers;
   Submission?: SubmissionResolvers<ContextType>;
   SubmissionEmbedding?: SubmissionEmbeddingResolvers<ContextType>;
   SubmissionNlp_similar_incident?: SubmissionNlp_Similar_IncidentResolvers<ContextType>;

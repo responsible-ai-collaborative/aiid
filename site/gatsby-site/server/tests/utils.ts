@@ -1,9 +1,10 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { schema } from "../schema";
-import { context } from "../context";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
+import supertest from 'supertest';
+import * as context from '../context';
 
 export const startTestServer = async () => {
 
@@ -13,7 +14,7 @@ export const startTestServer = async () => {
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
-    const { url } = await startStandaloneServer(server, { context: ({ req }) => context({ req, client }), listen: { port: 0 } });
+    const { url } = await startStandaloneServer(server, { context: ({ req }) => context.context({ req, client }), listen: { port: 0 } });
 
     return { server, url }
 }
@@ -38,30 +39,93 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-interface AuthResponse {
-    access_token: string;
-    refresh_token: string;
-    user_id: string;
+export const seedUsers = async (users: { userId: string, roles: string[] }[], { drop } = { drop: true }) => {
+
+    await seedCollection({
+        name: 'users',
+        database: 'customData',
+        docs: users,
+        drop,
+    });
 }
 
-export const login = async (username: string, password: string) => {
+export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
 
-    const response = await fetch(`https://services.cloud.mongodb.com/api/client/v2.0/app/${config.REALM_APP_ID}/auth/providers/local-userpass/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            username,
-            password,
-        })
-    });
+    return supertest(url)
+        .post('/')
+        .set('Authorization', `Bearer dummyToken`)
+        .send(data);
+}
 
-    if (!response.ok) {
-        throw new Error(`Error login in! \n\n ${await response.text()}`);
+export function serializeId<T extends { _id?: { toHexString: () => string } }>(obj: T): T { return ({ ...obj, _id: obj._id?.toHexString() }) }
+
+export function removeId<T extends { _id?: { toHexString: () => string } }>(obj: T): T { return ({ ...obj, _id: undefined }) }
+
+
+export interface Fixture<T, Y = T> {
+    name: string;
+    query: string;
+    seeds: Record<string, Record<string, unknown>[]>;
+    testSingular: {
+        filter: { _id: { EQ: ObjectId } };
+        result: Partial<Y>;
+    };
+    testPluralFilter: {
+        filter: { _id: { EQ: ObjectId } };
+        result: Partial<Y>[];
+    };
+    testPluralSort: {
+        sort: unknown;
+        result: Partial<Y>[];
+    };
+    testPluralPagination: {
+        pagination: { limit: number; skip: number };
+        sort: unknown;
+        result: Partial<Y>[];
+    };
+    testUpdateOne: {
+        filter: { _id: { EQ: ObjectId } };
+        set: Partial<Y>;
+        result: Partial<Y>;
+    };
+    testUpdateMany: {
+        filter: { [key: string]: { EQ: any } };
+        set: Partial<Y>;
+        result: { modifiedCount: number; matchedCount: number };
+    };
+    testInsertOne: {
+        insert: Partial<T>;
+        result: Partial<Y>;
+    };
+    testInsertMany: {
+        insert: Partial<T>[];
+        result: { insertedIds: string[] };
+    };
+    testDeleteOne: {
+        filter: { _id: { EQ: ObjectId } };
+        result: { _id: string };
+    };
+    testDeleteMany: {
+        filter: { [key: string]: { EQ: any } };
+        result: { deletedCount: number };
+    };
+    roles: {
+        singular: string[];
+        plural: string[];
+        insertOne: string[];
+        insertMany: string[];
+        updateOne: string[];
+        updateMany: string[];
+        deleteOne: string[];
+        deleteMany: string[];
+    };
+}
+
+
+export const seedFixture = async (seeds: Record<string, Record<string, unknown>[]>) => {
+
+    for (const [collection, docs] of Object.entries(seeds)) {
+
+        await seedCollection({ name: collection, docs });
     }
-
-    const data: AuthResponse = await response.json();
-
-    return data;
 }

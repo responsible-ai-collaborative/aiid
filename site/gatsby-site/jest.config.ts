@@ -18,6 +18,7 @@ const config: Config = {
   globalSetup: "./globalSetup.ts",
   globalTeardown: "./globalTeardown.ts",
   verbose: true,
+  setupFiles: ["dotenv/config"],
   testMatch: [
     "**/server/tests/**/*.spec.ts",
   ],
