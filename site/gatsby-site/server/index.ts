@@ -11,7 +11,7 @@ import { MongoClient } from 'mongodb';
         schema,
     });
 
-    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
+    const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
     const { url } = await startStandaloneServer(server, { context: ({ req }) => context({ req, client }) });
 

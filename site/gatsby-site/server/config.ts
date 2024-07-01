@@ -1,6 +1,4 @@
 interface Config {
-    E2E_ADMIN_PASSWORD: string
-    E2E_ADMIN_USERNAME: string
     REALM_API_APP_ID: string
     REALM_API_GROUP_ID: string
     REALM_API_PRIVATE_KEY: string
@@ -13,8 +11,6 @@ interface Config {
 };
 
 const config: Config = {
-    E2E_ADMIN_PASSWORD: process.env.E2E_ADMIN_PASSWORD!,
-    E2E_ADMIN_USERNAME: process.env.E2E_ADMIN_USERNAME!,
     REALM_API_APP_ID: process.env.REALM_API_APP_ID!,
     REALM_API_GROUP_ID: process.env.REALM_API_GROUP_ID!,
     REALM_API_PRIVATE_KEY: process.env.REALM_API_PRIVATE_KEY!,

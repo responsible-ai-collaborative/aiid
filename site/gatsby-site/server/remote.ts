@@ -26,17 +26,51 @@ const userExecutor = buildHTTPExecutor({
 
 
 const ignoreTypes = [
-    'QuickAdd',
+    'Quickadd',
     'QuickaddQueryInput',
+
+    'Report',
+    'ReportQueryInput',
+
+    'Incident',
+    'IncidentQueryInput',
+    'LinkReportsToIncidentsInput',
 ];
 
 const ignoredQueries = [
+    'quickadd',
     'quickadds',
+
+    'report',
+    'reports',
+
+    'incident',
+    'incidents',
 ];
 
 const ignoredMutations = [
+    'deleteOneQuickadds',
     'deleteManyQuickadds',
     'insertOneQuickadd',
+    'insertManyQuickadds',
+    'updateOneQuickadd',
+    'updateManyQuickadds',
+
+    'deleteOneReport',
+    'deleteManyReports',
+    'insertOneReport',
+    'insertManyReports',
+    'updateOneReport',
+    'updateManyReports',
+
+    'linkReportsToIncidents',
+
+    'deleteOneIncident',
+    'deleteManyIncidents',
+    'insertOneIncident',
+    'insertManyIncidents',
+    'updateOneIncident',
+    'updateManyIncidents',
 ]
 
 export const getSchema = () => {
