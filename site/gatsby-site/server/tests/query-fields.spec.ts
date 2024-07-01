@@ -1,9 +1,10 @@
 import { ApolloServer } from "@apollo/server";
 import request from 'supertest';
-import { makeRequest, seedCollection, seedUsers, startTestServer } from "./utils";
+import { makeRequest, seedFixture, seedUsers, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 import quickaddsFixture from './fixtures/quickadds';
+
 import * as context from '../context';
 
 const fixtures = [
@@ -31,7 +32,7 @@ fixtures.forEach((collection) => {
 
         it(`${singularName} query`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs })
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.singular }])
 
@@ -67,31 +68,27 @@ fixtures.forEach((collection) => {
 
         it(`${pluralName} query with filter`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.plural }])
 
             jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
-
-
-            const selected = collection.testDocs[1];
 
             const queryData = {
                 query: `
                 query ($filter: ${filterTypeName}!) {
                     ${pluralName} (filter: $filter) {
                       _id
-                      ${collection.fields.join('\n')}
+                      ${collection.query}
                     }
                 }
                 `,
-                variables: { filter: { _id: { EQ: selected._id } } },
+                variables: { filter: collection.testPluralFilter.filter },
             };
 
             const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName].length).toBe(1);
-            expect(response.body.data[pluralName][0]).toMatchObject({ ...selected, _id: selected._id.toHexString() });
+            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralFilter.result);
 
 
             if (collection.roles.plural.length) {
@@ -106,7 +103,7 @@ fixtures.forEach((collection) => {
 
         it(`${pluralName} query with sort`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.plural }])
 
@@ -118,20 +115,16 @@ fixtures.forEach((collection) => {
                     query ($sort: ${sortTypeName}!) {
                         ${pluralName} (sort: $sort) {
                             _id
-                            ${collection.fields.join('\n')}
+                            ${collection.query}
                         }
                     }
                     `,
-                variables: { sort: { "date_submitted": "DESC" } },
+                variables: { sort: collection.testPluralSort.sort },
             };
 
             const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName].length).toBe(collection.testDocs.length);
-            expect(response.body.data[pluralName][0]).toMatchObject({
-                ...collection.testDocs[collection.testDocs.length - 1],
-                _id: collection.testDocs[collection.testDocs.length - 1]._id.toHexString()
-            });
+            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralSort.result);
 
 
             if (collection.roles.plural.length) {
@@ -146,31 +139,24 @@ fixtures.forEach((collection) => {
 
         it(`${pluralName} query with pagination`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             const queryData = {
                 query: `
                     query ($pagination: PaginationType, $sort: ${sortTypeName}!) {
                         ${pluralName} (pagination: $pagination, sort: $sort) {
                             _id
-                            ${collection.fields.join('\n')}
+                            ${collection.query}
                         }
                     }
                     `,
-                variables: { pagination: { skip: 2, limit: 2, }, sort: { _id: "ASC" } }
+                variables: { pagination: collection.testPluralPagination.pagination, sort: collection.testPluralPagination.sort }
             };
 
             const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName].length).toBe(2);
-            expect(response.body.data[pluralName][0]).toMatchObject({
-                ...collection.testDocs[2],
-                _id: collection.testDocs[2]._id.toHexString()
-            });
-            expect(response.body.data[pluralName][1]).toMatchObject({
-                ...collection.testDocs[3],
-                _id: collection.testDocs[3]._id.toHexString()
-            });
+            expect(response.body.data[pluralName]).toHaveLength(collection.testPluralPagination.result.length);
+            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralPagination.result);
 
 
             if (collection.roles.plural.length) {

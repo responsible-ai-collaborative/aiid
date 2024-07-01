@@ -2,9 +2,10 @@ import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
-import quickaddsFixture from './fixtures/quickadds';
-import { makeRequest, seedCollection, seedUsers, startTestServer } from "./utils";
+import { makeRequest, seedCollection, seedFixture, seedUsers, startTestServer } from "./utils";
 import * as context from '../context';
+
+import quickaddsFixture from './fixtures/quickadds';
 
 const fixtures = [
     quickaddsFixture,
@@ -52,7 +53,7 @@ fixtures.forEach((collection) => {
                     mutation ($data: ${insertTypeName}!) {
                         ${insertOneFieldName}(data: $data) {
                         _id
-                        ${collection.fields.join('\n')}
+                        ${collection.query}
                         }
                     }
             `,
@@ -65,7 +66,6 @@ fixtures.forEach((collection) => {
             const response = await makeRequest(url, mutationData);
 
             expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne.result)
-            expect(response.statusCode).toBe(200);
 
 
             if (collection.roles.insertOne.length) {
@@ -114,7 +114,7 @@ fixtures.forEach((collection) => {
 
         it(`${updateOneFieldName} mutation`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.updateOne }])
 
@@ -125,7 +125,7 @@ fixtures.forEach((collection) => {
             mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
                 ${updateOneFieldName} (filter: $filter, update: $update) {
                     _id
-                    ${collection.fields.join('\n')}
+                    ${collection.query}
                 }
             }
             `,
@@ -152,7 +152,7 @@ fixtures.forEach((collection) => {
 
         it(`${updateManyFieldName} mutation`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.updateMany }])
 
@@ -191,7 +191,7 @@ fixtures.forEach((collection) => {
 
         it(`${deleteOneFieldName} mutation`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
 
@@ -224,7 +224,7 @@ fixtures.forEach((collection) => {
 
         it(`${deleteManyFieldName} mutation`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
 

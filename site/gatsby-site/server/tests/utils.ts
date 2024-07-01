@@ -57,28 +57,45 @@ export const makeRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
-export interface Fixture<T> {
+export function serializeId<T extends { _id?: { toHexString: () => string } }>(obj: T): T { return ({ ...obj, _id: obj._id?.toHexString() }) }
+
+export function removeId<T extends { _id?: { toHexString: () => string } }>(obj: T): T { return ({ ...obj, _id: undefined }) }
+
+
+export interface Fixture<T, Y = T> {
     name: string;
-    fields: string[];
     query: string;
-    testDocs: T[];
+    seeds: Record<string, Record<string, unknown>[]>;
     testSingular: {
         filter: { _id: { EQ: ObjectId } };
-        result: T;
+        result: Partial<Y>;
+    };
+    testPluralFilter: {
+        filter: { _id: { EQ: ObjectId } };
+        result: Partial<Y>[];
+    };
+    testPluralSort: {
+        sort: unknown;
+        result: Partial<Y>[];
+    };
+    testPluralPagination: {
+        pagination: { limit: number; skip: number };
+        sort: unknown;
+        result: Partial<Y>[];
     };
     testUpdateOne: {
         filter: { _id: { EQ: ObjectId } };
-        set: Partial<T>;
-        result: Partial<T>;
+        set: Partial<Y>;
+        result: Partial<Y>;
     };
     testUpdateMany: {
         filter: { [key: string]: { EQ: any } };
-        set: Partial<T>;
+        set: Partial<Y>;
         result: { modifiedCount: number; matchedCount: number };
     };
     testInsertOne: {
         insert: Partial<T>;
-        result: Partial<T>;
+        result: Partial<Y>;
     };
     testInsertMany: {
         insert: Partial<T>[];
@@ -102,4 +119,13 @@ export interface Fixture<T> {
         deleteOne: string[];
         deleteMany: string[];
     };
+}
+
+
+export const seedFixture = async (seeds: Record<string, Record<string, unknown>[]>) => {
+
+    for (const [collection, docs] of Object.entries(seeds)) {
+
+        await seedCollection({ name: collection, docs });
+    }
 }
