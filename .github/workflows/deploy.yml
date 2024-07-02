@@ -74,7 +74,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@17.26.2 -g
 
       - name: Build using Netlify
         run: netlify build --context ${{ inputs.netlify-context }} --offline
