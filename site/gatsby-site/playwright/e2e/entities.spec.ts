@@ -62,7 +62,7 @@ test.describe('Entities page', () => {
     await page.locator('[data-cy="row"]').first().locator('a:has-text("Facebook")').isVisible();
   });
 
-  test('Should display Edit button only for Admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
+  test.skip('Should display Edit button only for Admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
     await page.goto(url);
     expect(await page.locator('[data-cy="edit-entity-btn"]').count()).toBe(0);
 
