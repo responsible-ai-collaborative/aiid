@@ -84,8 +84,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     // createDownloadIndexPage,
     // createDuplicatePages,
     // createTsneVisualizationPage,
-    createEntitiesPages,
-    createReportPages,
+    // createEntitiesPages,
+    // createReportPages,
     createDocPages,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
