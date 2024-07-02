@@ -294,6 +294,15 @@ function CiteTemplate({
                       incidentId: incident.incident_id,
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
+                      taxonomiesWithClassifications: Array.from(
+                        allMongodbAiidprodClassifications.nodes.reduce(
+                          (namespaces, classification) => {
+                            namespaces.add(classification.namespace);
+                            return namespaces;
+                          },
+                          new Set()
+                        )
+                      ),
                       editors: incident.editors
                         .filter((editor) => editor && editor.first_name && editor.last_name)
                         .map(({ first_name, last_name }) => `${first_name} ${last_name}`)
