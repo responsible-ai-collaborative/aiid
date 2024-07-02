@@ -51,7 +51,6 @@
     "gatsby-plugin-google-gtag": "^5.7.0",
     "gatsby-plugin-image": "^3.11.0",
     "gatsby-plugin-mdx": "^5.0.0",
-    "gatsby-plugin-netlify": "^5.1.1",
     "gatsby-plugin-react-helmet": "^6.0.0",
     "gatsby-plugin-sharp": "^5.0.0",
     "gatsby-plugin-sitemap": "^6.3.0",
