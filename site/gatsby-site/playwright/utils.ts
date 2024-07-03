@@ -95,7 +95,11 @@ export async function conditionalIntercept(
 
     assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
 
-    waitForRequestMap.set(alias, page.waitForRequest((req) => minimatch(req.url(), url) && condition(req)));
+    const promise = page
+        .waitForResponse((res) => minimatch(res.request().url(), url) && condition(res.request()))
+        .then((response) => response.request());
+
+    waitForRequestMap.set(alias, promise);
 }
 
 export async function waitForRequest(alias: string) {

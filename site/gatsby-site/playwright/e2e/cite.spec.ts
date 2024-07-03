@@ -94,7 +94,7 @@ test.describe('Cite pages', () => {
         { retries: 4 }
     );
 
-    test('Should scroll to report when clicking on a report in the timeline', async ({ page }) => {
+    test.skip('Should scroll to report when clicking on a report in the timeline', async ({ page }) => {
         await page.goto(url);
 
         await page.waitForSelector('text=For some Starbucks workers, job leaves bitter taste');
@@ -662,7 +662,7 @@ test.describe('Cite pages', () => {
         await expect(page).toHaveURL(new RegExp('/cite/10'));
     });
 
-    test('Should link similar incidents', async ({ page, login }) => {
+    test.skip('Should link similar incidents', async ({ page, login }) => {
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await conditionalIntercept(

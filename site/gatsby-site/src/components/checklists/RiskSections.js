@@ -47,7 +47,7 @@ const RiskSections = ({
         const result = [...openSections];
 
         result.splice(result.indexOf(tagsIdentifier(risk)), 1);
-        result.push([...attributeValueMap.tags].sort().join('___'));
+        result.push([...(attributeValueMap?.tags || [])].sort().join('___'));
         return result;
       });
     }
