@@ -214,7 +214,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
               {
                 label: 'user',
                 url: isUserLoggedIn ? '/account/' : `/signup/?redirectTo=${redirectTo}`,
-                title: isUserLoggedIn ? t('Account') : t('Subscribe'),
+                title: isUserLoggedIn ? t('Account') : t('Sign Up'),
                 items: [],
               },
             ]}

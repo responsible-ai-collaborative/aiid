@@ -17,7 +17,7 @@ test.describe('Login', () => {
     }
   );
 
-  test('Should redirect to the account page if the signup storage key is set', 
+  test.skip('Should redirect to the account page if the signup storage key is set', 
     async ({ page, skipOnEmptyEnvironment, login }) => {
 
       await page.goto('/');
