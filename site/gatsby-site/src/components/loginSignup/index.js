@@ -41,7 +41,7 @@ const Subscribe = ({ location = null }) => {
         size={'sm'}
         data-cy="subscribe-btn"
       >
-        <Trans ns="login">Subscribe</Trans>
+        <Trans ns="login">Sign Up</Trans>
       </Button>
     </>
   );

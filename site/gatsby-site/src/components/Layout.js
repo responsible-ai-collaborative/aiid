@@ -12,7 +12,10 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
     <>
       <Header location={location} />
       <div className="tw-layout">
-        <div className="hidden md:block z-[1] bg-text-light-gray shadow" data-cy="sidebar-desktop">
+        <div
+          className="hidden md:block z-[1] bg-text-light-gray shadow"
+          data-testid="sidebar-desktop"
+        >
           <Sidebar defaultCollapsed={sidebarCollapsed} location={location} />
         </div>
         {config.sidebar.title && (
@@ -24,7 +27,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
         <div
           id="content"
           className={
-            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative flex-1 overflow-clip' +
+            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 relative flex-1 overflow-clip' +
             (rightSidebar ? ' xl:pr-5' : '')
           }
         >
