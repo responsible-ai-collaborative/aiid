@@ -19,6 +19,25 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
 
   const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
 
+  const topClassifications = [];
+
+  const sortedClassificationsArray = taxonomy.classificationsArray.sort(
+    (a, b) => a.weight - b.weight
+  );
+
+  let topClassificationsTextLength = 0;
+
+  for (const classification of sortedClassificationsArray) {
+    const valueLength = String(classification.value).length;
+
+    if (valueLength + topClassificationsTextLength < 50 || topClassifications.length == 0) {
+      topClassificationsTextLength += valueLength;
+      topClassifications.push(classification);
+    } else {
+      break;
+    }
+  }
+
   return (
     <Card
       id={id}
@@ -28,7 +47,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
     >
       <div
         className={
-          'tw-taxa-card-header tw-card-header bg-gray-50' + (editing && ' sticky top-0 z-50')
+          'tw-taxa-card-header tw-card-header bg-gray-50 mb-2 ' + (editing && ' sticky top-0 z-50')
         }
       >
         <h4 id={`${taxonomy.namespace}-classifications`} className="pr-0.8">
@@ -73,23 +92,16 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
             {taxonomy.classificationsArray.length > 0 ? (
               <>
                 {canEdit && (
-                  <div key={'NOTES'} className="tw-classification-container tw-card-body">
+                  <div key={'NOTES'} className="tw-classification-container">
                     <div className="tw-field">
                       <Tooltip content={'Admin notes'}>
                         <p>{'Notes'}</p>
                       </Tooltip>
                     </div>
-                    <Markdown className="w-4/5">{taxonomy.notes}</Markdown>
+                    <Markdown>{taxonomy.notes}</Markdown>
                   </div>
                 )}
-                {taxonomy.classificationsArray
-                  .filter((field) => {
-                    if (showAllClassifications) return true;
-                    if (!showAllClassifications && field.weight >= 50) {
-                      return true;
-                    }
-                    return false;
-                  })
+                {(showAllClassifications ? taxonomy.classificationsArray : topClassifications)
                   .filter(
                     (field) => !(field.renderAs === 'description_toggle' && field.value == 'No')
                   )
@@ -101,7 +113,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                     return field;
                   })
                   .map((field) => (
-                    <div key={field.name} className="tw-classification-container tw-card-body">
+                    <div key={field.name} className="tw-classification-container">
                       <div className="tw-field">
                         <Tooltip content={field.shortDescription}>
                           <p>{field.name}</p>
@@ -113,7 +125,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                 {taxonomy.classificationsArray.length > heavyClassifications.length && (
                   <button
                     type="button"
-                    className="btn btn-secondary btn-sm w-100"
+                    className="btn btn-secondary btn-sm w-100 mt-2"
                     onClick={() => setShowAllClassifications(!showAllClassifications)}
                   >
                     Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
