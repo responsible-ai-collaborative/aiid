@@ -21,6 +21,8 @@ on:
 
 jobs:
   tests:
+    name: Run Playwright tests
+    environment: ${{ inputs.environment }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:

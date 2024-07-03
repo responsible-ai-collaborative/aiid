@@ -165,7 +165,7 @@ function CiteTemplate({
     <>
       <div className={'titleWrapper'}>
         <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1">
-          <h1 className="text-2xl inline lg:w-[60%]">
+          <h1 data-testid="incident-title" className="text-2xl inline lg:w-[60%]">
             {locale == 'en' ? metaTitle : defaultIncidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:w-[40%] lg:justify-end">
@@ -294,6 +294,15 @@ function CiteTemplate({
                       incidentId: incident.incident_id,
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
+                      taxonomiesWithClassifications: Array.from(
+                        allMongodbAiidprodClassifications.nodes.reduce(
+                          (namespaces, classification) => {
+                            namespaces.add(classification.namespace);
+                            return namespaces;
+                          },
+                          new Set()
+                        )
+                      ),
                       editors: incident.editors
                         .filter((editor) => editor && editor.first_name && editor.last_name)
                         .map(({ first_name, last_name }) => `${first_name} ${last_name}`)

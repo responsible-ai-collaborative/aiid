@@ -125,7 +125,7 @@ const ReportCard = ({
         } p-4 relative ${expanded ? 'expanded' : ''}`}
         id={`r${item.report_number}`}
         ref={ref}
-        data-cy="incident-report-card"
+        data-testid="incident-report-card"
       >
         <div
           className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}

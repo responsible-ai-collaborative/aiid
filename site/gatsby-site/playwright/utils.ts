@@ -38,9 +38,7 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
-        if (!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD) {
-            testInfo.skip();
-        }
+        testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
         await use(async (email, password, options = { skipSession: false }) => {
 
@@ -97,7 +95,11 @@ export async function conditionalIntercept(
 
     assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
 
-    waitForRequestMap.set(alias, page.waitForRequest((req) => minimatch(req.url(), url) && condition(req)));
+    const promise = page
+        .waitForResponse((res) => minimatch(res.request().url(), url) && condition(res.request()))
+        .then((response) => response.request());
+
+    waitForRequestMap.set(alias, promise);
 }
 
 export async function waitForRequest(alias: string) {

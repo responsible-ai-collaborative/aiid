@@ -203,7 +203,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
 
         <ul
           id="sidebar-tree"
-          data-cy="sidebar-tree"
+          data-testid="sidebar-tree"
           className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}
         >
           <Tree
@@ -214,7 +214,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
               {
                 label: 'user',
                 url: isUserLoggedIn ? '/account/' : `/signup/?redirectTo=${redirectTo}`,
-                title: isUserLoggedIn ? t('Account') : t('Subscribe'),
+                title: isUserLoggedIn ? t('Account') : t('Sign Up'),
                 items: [],
               },
             ]}
