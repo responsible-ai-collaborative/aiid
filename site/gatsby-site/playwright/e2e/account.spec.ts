@@ -88,8 +88,7 @@ test.describe('Account', () => {
       },
       'UpdateUserRoles'
     );
-
-    const editUserModal = page.locator('[data-cy="edit-user-modal"]');
+    const editUserModal = page.getByTestId('edit-user-modal');
     await editUserModal.locator('[id="roles"]').fill('banana');
     await editUserModal.locator('button:has-text("Submit")').click();
 
@@ -114,6 +113,6 @@ test.describe('Account', () => {
 
     await waitForRequest('findUser');
 
-    await expect(page.locator('[data-cy="edit-user-modal"]')).toBeVisible();
+    await expect(page.getByTestId('edit-user-modal')).toBeVisible();
   });
 });
