@@ -207,7 +207,15 @@
     }
 
     .tw-classification-container {
-        @apply flex flex-row justify-start w-full flex-auto p-4;
+        @apply flex flex-row justify-start w-full flex-auto px-4 py-2;
+    }
+
+    .tw-classification-container p:first-child {
+      @apply mt-0;
+    }
+
+    .tw-classification-container p:last-child {
+      @apply mb-0;
     }
 
     .tw-field {

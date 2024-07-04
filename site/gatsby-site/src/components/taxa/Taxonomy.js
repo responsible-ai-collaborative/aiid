@@ -90,7 +90,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
               </div>
             )}
             {taxonomy.classificationsArray.length > 0 ? (
-              <>
+              <div className="grid grid-cols-4">
                 {canEdit && (
                   <div key={'NOTES'} className="tw-classification-container">
                     <div className="tw-field">
@@ -113,14 +113,24 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                     return field;
                   })
                   .map((field) => (
-                    <div key={field.name} className="tw-classification-container">
+                    // <div key={field.name} className="tw-classification-container">
+                    <>
                       <div className="tw-field">
                         <Tooltip content={field.shortDescription}>
-                          <p>{field.name}</p>
+                          <p>
+                            {field.name} {field.renderAs}
+                          </p>
                         </Tooltip>
                       </div>
-                      <Markdown className="w-4/5">{field.value}</Markdown>
-                    </div>
+                      <Markdown
+                        className={
+                          field.shortDescription != field.longDescription ? 'col-span-3' : 'borp'
+                        }
+                      >
+                        {field.value}
+                      </Markdown>
+                    </>
+                    // </div>
                   ))}
                 {taxonomy.classificationsArray.length > heavyClassifications.length && (
                   <button
@@ -131,7 +141,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                     Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
                   </button>
                 )}
-              </>
+              </div>
             ) : (
               <div style={{ padding: '0.5em' }}>
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
