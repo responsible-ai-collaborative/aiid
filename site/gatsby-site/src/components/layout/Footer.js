@@ -11,6 +11,7 @@ import React from 'react';
 import config from '../../../config';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
+import ulLogo from 'images/ul-logo-black.svg';
 
 function CommitSHA() {
   return (
@@ -220,6 +221,14 @@ export default function Footer() {
                   </li>
                 )}
             </ul>
+            {i == 3 && (
+              <img
+                src={ulLogo}
+                alt="UL Research Institutes | Digital Safety"
+                width="200"
+                className="mt-8 mb-4 -ml-1 opacity-50"
+              />
+            )}
           </div>
         );
       })}
