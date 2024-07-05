@@ -27,16 +27,21 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
 
   let topClassificationsTextLength = 0;
 
+  let maxLength = 0;
+
   for (const classification of sortedClassificationsArray) {
     const valueLength = String(classification.value).length;
 
     if (valueLength + topClassificationsTextLength < 50 || topClassifications.length == 0) {
       topClassificationsTextLength += valueLength;
       topClassifications.push(classification);
+      maxLength = Math.max(maxLength, valueLength);
     } else {
       break;
     }
   }
+
+  const hasLong = maxLength > 60;
 
   return (
     <Card
@@ -47,7 +52,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
     >
       <div
         className={
-          'tw-taxa-card-header tw-card-header bg-gray-50 mb-2 ' + (editing && ' sticky top-0 z-50')
+          'tw-taxa-card-header tw-card-header bg-gray-50 ' + (editing && ' sticky top-0 z-50')
         }
       >
         <h4 id={`${taxonomy.namespace}-classifications`} className="pr-0.8">
@@ -90,7 +95,16 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
               </div>
             )}
             {taxonomy.classificationsArray.length > 0 ? (
-              <div className="grid grid-cols-4">
+              <div
+                className={`
+                grid
+                ${
+                  hasLong || showAllClassifications
+                    ? 'grid-cols-[1fr_3fr]'
+                    : 'lg:grid-cols-[repeat(4,_auto)]'
+                }
+              `}
+              >
                 {canEdit && (
                   <div key={'NOTES'} className="tw-classification-container">
                     <div className="tw-field">
@@ -115,18 +129,14 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                   .map((field) => (
                     // <div key={field.name} className="tw-classification-container">
                     <>
-                      <div className="tw-field">
+                      <div className="tw-field border-1 border-gray-200 w-full pl-4 pr-2 bg-gray-50">
                         <Tooltip content={field.shortDescription}>
                           <p>
                             {field.name} {field.renderAs}
                           </p>
                         </Tooltip>
                       </div>
-                      <Markdown
-                        className={
-                          field.shortDescription != field.longDescription ? 'col-span-3' : 'borp'
-                        }
-                      >
+                      <Markdown className=" border-1 border-gray-200 pl-4 pr-2">
                         {field.value}
                       </Markdown>
                     </>
@@ -135,7 +145,9 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                 {taxonomy.classificationsArray.length > heavyClassifications.length && (
                   <button
                     type="button"
-                    className="btn btn-secondary btn-sm w-100 mt-2"
+                    className={`btn btn-secondary btn-sm w-100 ${
+                      hasLong || showAllClassifications ? 'col-span-2' : 'col-span-2 lg:col-span-4'
+                    }`}
                     onClick={() => setShowAllClassifications(!showAllClassifications)}
                   >
                     Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
