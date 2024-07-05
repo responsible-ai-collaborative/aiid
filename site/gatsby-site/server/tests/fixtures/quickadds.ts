@@ -51,13 +51,15 @@ const fixture: Fixture<Quickadd> = {
         source_domain
         url
     `,
-    testDocs: [
-        quickadd1,
-        quickadd2,
-        quickadd3,
-        quickadd4,
-        quickadd5
-    ],
+    seeds: {
+        quickadd: [
+            quickadd1,
+            quickadd2,
+            quickadd3,
+            quickadd4,
+            quickadd5
+        ],
+    },
     testSingular: {
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: serializeId(quickadd1)

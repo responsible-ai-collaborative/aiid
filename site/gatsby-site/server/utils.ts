@@ -4,13 +4,15 @@ import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 import { Report } from "./generated/graphql";
+import pluralizeLib from 'pluralize';
 
 export function pluralize(s: string) {
-    return s.endsWith('s') ? s : s + 's';
+    return pluralizeLib.plural(s);
 }
 
 export function singularize(s: string) {
-    return s.endsWith('s') ? s.slice(0, -1) : s;
+    return pluralizeLib.singular(s);
+}
 }
 
 export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any> }): GraphQLFieldConfigMap<any, any> {

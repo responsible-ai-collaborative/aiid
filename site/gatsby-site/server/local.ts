@@ -16,6 +16,13 @@ import {
 } from './fields/reports';
 
 import {
+    queryFields as entitiesQueryFields,
+    mutationFields as entitiesMutationFields,
+    permissions as entitiesPermissions
+} from './fields/entities';
+
+
+import {
     queryFields as incidentsQueryFields,
     mutationFields as incidentsMutationFields,
     permissions as incidentsPermissions
@@ -34,6 +41,8 @@ export const getSchema = () => {
             ...quickAddsQueryFields,
             ...reportsQueryFields,
             ...incidentsQueryFields,
+            ...entitiesQueryFields,
+            ...usersQueryFields,
         }
     });
 
@@ -43,6 +52,7 @@ export const getSchema = () => {
             ...quickAddsMutationFields,
             ...reportsMutationFields,
             ...incidentsMutationFields,
+            ...entitiesMutationFields,
         }
     });
 
@@ -60,12 +70,14 @@ export const getSchema = () => {
                 ...quickAddsPermissions.Query,
                 ...reportsPermissions.Query,
                 ...incidentsPermissions.Query,
+                ...entitiesPermissions.Query,
             },
             Mutation: {
                 "*": deny,
                 ...quickAddsPermissions.Mutation,
                 ...reportsPermissions.Mutation,
                 ...incidentsPermissions.Mutation,
+                ...entitiesPermissions.Mutation,
             },
         },
         {

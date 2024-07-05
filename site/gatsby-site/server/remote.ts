@@ -1,6 +1,6 @@
 import { buildHTTPExecutor, HeadersConfig } from '@graphql-tools/executor-http'
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { FilterObjectFields, FilterTypes, wrapSchema } from '@graphql-tools/wrap';
+import { FilterObjectFields, FilterTypes } from '@graphql-tools/wrap';
 import remoteTypeDefs from './remoteTypeDefs';
 import config from './config';
 import { ExecutionRequest } from '@graphql-tools/utils';
@@ -35,6 +35,9 @@ const ignoreTypes = [
     'Incident',
     'IncidentQueryInput',
     'LinkReportsToIncidentsInput',
+
+    'Entity',
+    'EntityQueryInput',
 ];
 
 const ignoredQueries = [
@@ -46,6 +49,9 @@ const ignoredQueries = [
 
     'incident',
     'incidents',
+
+    'entity',
+    'entities',
 ];
 
 const ignoredMutations = [
@@ -71,6 +77,14 @@ const ignoredMutations = [
     'insertManyIncidents',
     'updateOneIncident',
     'updateManyIncidents',
+
+    'deleteOneEntity',
+    'deleteManyEntities',
+    'insertOneEntity',
+    'insertManyEntities',
+    'updateOneEntity',
+    'updateManyEntities',
+
 ]
 
 export const getSchema = () => {

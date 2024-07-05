@@ -1,16 +1,18 @@
 import { ApolloServer } from "@apollo/server";
 import request from 'supertest';
-import { makeRequest, seedCollection, seedUsers, startTestServer } from "./utils";
+import { makeRequest, seedFixture, seedUsers, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 import quickaddsFixture from './fixtures/quickadds';
 import reportsFixture from './fixtures/reports';
+import entitiesFixture from './fixtures/entities';
 
 import * as context from '../context';
 
 const fixtures = [
     quickaddsFixture,
     reportsFixture,
+    entitiesFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -34,7 +36,7 @@ fixtures.forEach((collection) => {
 
         it(`${singularName} query`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs })
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.singular }])
 
@@ -70,7 +72,7 @@ fixtures.forEach((collection) => {
 
         it(`${pluralName} query with filter`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.plural }])
 
@@ -105,7 +107,7 @@ fixtures.forEach((collection) => {
 
         it(`${pluralName} query with sort`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             await seedUsers([{ userId: 'user1', roles: collection.roles.plural }])
 
@@ -141,7 +143,7 @@ fixtures.forEach((collection) => {
 
         it(`${pluralName} query with pagination`, async () => {
 
-            await seedCollection({ name: collection.name, docs: collection.testDocs });
+            await seedFixture(collection.seeds);
 
             const queryData = {
                 query: `

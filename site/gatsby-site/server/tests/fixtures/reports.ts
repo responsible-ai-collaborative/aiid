@@ -178,12 +178,14 @@ const fixture: Fixture<Report> = {
         user
         quiet
     `,
-    testDocs: [
-        report1,
-        report2,
-        report3,
-        report4,
-    ],
+    seeds: {
+        reports: [
+            report1,
+            report2,
+            report3,
+            report4,
+        ]
+    },
     testSingular: {
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: serializeId(report1)
