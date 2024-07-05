@@ -37,7 +37,7 @@ test.describe('Login', () => {
   );
 
   test('Should redirect to specific page after login if redirectTo is provided', 
-    async ({ page, skipOnEmptyEnvironment }) => {
+    async ({ page, skipOnEmptyEnvironment, login }) => {
       const redirectTo = '/cite/10/';
 
       await page.goto(`${url}?redirectTo=${redirectTo}`);
@@ -75,7 +75,7 @@ test.describe('Login', () => {
     await expect(page).toHaveURL('/forgotpassword/', { timeout: 30000 });
   });
 
-  test('Should give the option to resend Email verification if the user is not confirmed', async ({ page }) => {
+  test('Should give the option to resend Email verification if the user is not confirmed', async ({ page, login }) => {
     await conditionalIntercept(
       page,
       '**/login',
