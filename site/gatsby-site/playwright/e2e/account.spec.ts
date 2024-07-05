@@ -47,12 +47,12 @@ test.describe('Account', () => {
     await waitForRequest('findUser');
 
     const detailsTable = page.locator('[data-cy="details-table"]');
-    await expect(detailsTable.locator(`td:has-text("${config.E2E_ADMIN_USERNAME}")`)).toBeVisible();
-    await expect(detailsTable.locator('td:has-text("Test")')).toBeVisible();
-    await expect(detailsTable.locator('td:has-text("User")')).toBeVisible();
-    await expect(detailsTable.locator('td:has-text("admin")')).toBeVisible();
+    await expect(detailsTable.locator(`td:text-is("${config.E2E_ADMIN_USERNAME}")`)).toBeVisible();
+    await expect(detailsTable.locator('td:text-is("Test")')).toBeVisible();
+    await expect(detailsTable.locator('td:text-is("User")')).toBeVisible();
+    await expect(detailsTable.locator('td:text-is("admin")')).toBeVisible();
 
-    await expect(page.locator('a:has-text("Log out")')).toBeVisible();
+    await expect(page.locator('a:text-is("Log out")')).toBeVisible();
   });
 
   test('Should allow editing user data', async ({ page, login }) => {
