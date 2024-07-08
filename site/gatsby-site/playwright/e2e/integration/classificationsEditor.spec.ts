@@ -117,6 +117,7 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on report page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
+    test.slow();
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
@@ -153,6 +154,7 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on report page and add a new classification', async ({ page, login, skipOnEmptyEnvironment }) => {
+    test.slow();
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
@@ -195,6 +197,7 @@ test.describe('Classifications Editor', () => {
   const namespaces = ['CSETv0', 'GMF', 'CSETv1'];
   for (const namespace of namespaces) {
     test(`Should properly display and store ${namespace} classification values`, async ({ page, login, skipOnEmptyEnvironment }) => {
+      test.slow();
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await conditionalIntercept(
@@ -279,6 +282,7 @@ test.describe('Classifications Editor', () => {
   }
 
   test('Should synchronize duplicate fields', async ({ page, login, skipOnEmptyEnvironment }) => {
+    test.slow();
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
