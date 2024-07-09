@@ -69,7 +69,7 @@ const LandingPage = (props) => {
 
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
-    <div className="max-w-full 2xl:w-[72rem]" {...props}>
+    <div className="2xl:w-[72rem]" {...props}>
       <Container>
         <div>
           <Hero />
@@ -81,8 +81,7 @@ const LandingPage = (props) => {
 
         {latestIncidents.length > 0 && (
           <div className="mb-5 md:mb-10">
-            {/* https://github.com/responsible-ai-collaborative/aiid/issues/2956 */}
-            <div className="hidden md:block">
+            <div>
               <LatestReports latestIncidents={latestIncidentsTranslated} />
             </div>
           </div>
