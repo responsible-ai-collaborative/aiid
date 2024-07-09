@@ -59,28 +59,32 @@ const IncidentStatsCard = ({
           </Fragment>
         ))}
 
-        <div className="pr-4 my-0.5">Applied Taxonomies</div>
-        <div>
-          {taxonomiesWithClassifications.map((t, i) => {
-            const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
+        {taxonomiesWithClassifications.length > 0 && (
+          <>
+            <div className="pr-4 my-0.5">Applied Taxonomies</div>
+            <div>
+              {taxonomiesWithClassifications.map((t, i) => {
+                const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
 
-            return (
-              <>
-                {i > 0 && ', '}
-                <a
-                  href={`#${t}-classifications`}
-                  className={`
-                  inline-block  px-2.5 py-0.5 rounded
-                  font-semibold text-xs
-                  bg-${color}-200 text-${color}-800
-                `}
-                >
-                  {t}
-                </a>
-              </>
-            );
-          })}
-        </div>
+                return (
+                  <>
+                    {i > 0 && ', '}
+                    <a
+                      href={`#${t}-classifications`}
+                      className={`
+                      inline-block  px-2.5 py-0.5 rounded
+                      font-semibold text-xs
+                      bg-${color}-200 text-${color}-800
+                    `}
+                    >
+                      {t}
+                    </a>
+                  </>
+                );
+              })}
+            </div>
+          </>
+        )}
       </Card.Body>
     </Card>
   );
