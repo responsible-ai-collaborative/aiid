@@ -81,7 +81,8 @@ const LandingPage = (props) => {
 
         {latestIncidents.length > 0 && (
           <div className="mb-5 md:mb-10">
-            <div>
+            {/* https://github.com/responsible-ai-collaborative/aiid/issues/2956 */}
+            <div className="hidden md:block">
               <LatestReports latestIncidents={latestIncidentsTranslated} />
             </div>
           </div>
