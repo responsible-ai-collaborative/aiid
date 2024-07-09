@@ -100,6 +100,7 @@ test.describe('Classifications Editor', () => {
     );
 
     await page.goto(incidentURL);
+    await waitForRequest('FindClassifications');
     await expect(page.locator('[data-cy="classifications-editor"]')).toBeVisible();
     await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"]')).toBeVisible();
 
