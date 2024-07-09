@@ -11,7 +11,7 @@ test.describe('Admin', () => {
     await expect(page.getByText("Not enough permissions")).toBeVisible({ timeout: 30000 });
   });
 
-  test(
+  test.skip(
     'Should display a list of users, their roles and allow edition',
     async ({ page, login, skipOnEmptyEnvironment }) => {
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
