@@ -214,14 +214,14 @@ const fixture: Fixture<Report> = {
         }
     },
     testSingular: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: serializeId(report1)
     },
     testPluralFilter: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
@@ -230,8 +230,8 @@ const fixture: Fixture<Report> = {
         ]
     },
     testPluralSort: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         sort: { report_number: "ASC" },
         result: [
             serializeId(report1),
@@ -241,8 +241,8 @@ const fixture: Fixture<Report> = {
         ],
     },
     testPluralPagination: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         pagination: { limit: 2, skip: 2 },
         sort: { report_number: "ASC" },
         result: [
@@ -251,22 +251,22 @@ const fixture: Fixture<Report> = {
         ]
     },
     testUpdateOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         set: { url: 'https://edited.com' },
         result: { url: 'https://edited.com' }
     },
     testUpdateMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { report_number: { EQ: 1 } },
         set: { url: 'https://edited.com' },
         result: { modifiedCount: 1, matchedCount: 1 }
     },
     testInsertOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         insert: {
             ...removeId(report1),
         },
@@ -276,8 +276,8 @@ const fixture: Fixture<Report> = {
         }
     },
     testInsertMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         insert: [
             {
                 ...removeId(report1),
@@ -289,14 +289,14 @@ const fixture: Fixture<Report> = {
         result: { insertedIds: [expect.any(String), expect.any(String)] }
     },
     testDeleteOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { report_number: { EQ: 1 } },
         result: { deletedCount: 1 }
     },

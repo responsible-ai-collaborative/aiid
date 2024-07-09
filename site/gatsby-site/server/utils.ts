@@ -13,15 +13,20 @@ export function pluralize(s: string) {
 export function singularize(s: string) {
     return pluralizeLib.singular(s);
 }
-}
 
-export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any> }): GraphQLFieldConfigMap<any, any> {
+
+const defaultQueryFields = ['plural', 'singular'];
+
+export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: string[] }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = singularize(collectionName);
     const pluralName = pluralize(collectionName);
 
-    const fields: GraphQLFieldConfigMap<any, Context> = {
-        [`${singularName}`]: {
+    const fields: GraphQLFieldConfigMap<any, Context> = {};
+
+    if (generateFields.includes('singular')) {
+
+        fields[`${singularName}`] = {
             type: Type,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
@@ -33,9 +38,12 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 
                 return item;
             }),
-        },
+        }
+    }
 
-        [`${pluralName}`]: {
+    if (generateFields.includes('plural')) {
+
+        fields[`${pluralName}`] = {
             type: new GraphQLList(Type),
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
@@ -47,19 +55,25 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 
                 return items;
             }),
-        },
+        }
     }
 
     return fields;
 }
 
-export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any> }): GraphQLFieldConfigMap<any, any> {
+
+const defaultMutationFields = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany'];
+
+export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultMutationFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: string[] }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = capitalize(singularize(collectionName));
     const pluralName = capitalize(pluralize(collectionName));
 
-    const fields: GraphQLFieldConfigMap<any, any> = {
-        [`deleteOne${singularName}`]: {
+    const fields: GraphQLFieldConfigMap<any, any> = {};
+
+    if (generateFields.includes('deleteOne')) {
+
+        fields[`deleteOne${singularName}`] = {
             type: Type,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
@@ -73,9 +87,12 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 return target;
             }),
-        },
+        };
+    }
 
-        [`deleteMany${pluralName}`]: {
+    if (generateFields.includes('deleteMany')) {
+
+        fields[`deleteMany${pluralName}`] = {
             type: DeleteManyPayload,
             args: getGraphQLQueryArgs(Type),
             resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
@@ -89,12 +106,14 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             }, {
                 differentOutputType: true,
             }),
-        },
+        }
+    }
 
+    if (generateFields.includes('insertOne')) {
 
-        [`insertOne${singularName}`]: {
+        fields[`insertOne${singularName}`] = {
             type: Type,
-            args: { data: { type: getGraphQLInsertType(Type) } },
+            args: { data: { type: getInsertType(Type) } },
             resolve: async (_: unknown, { data }, context) => {
 
                 const db = context.client.db(databaseName);
@@ -106,10 +125,12 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 return inserted;
             },
-        },
+        }
+    }
 
+    if (generateFields.includes('insertMany')) {
 
-        [`insertMany${pluralName}`]: {
+        fields[`insertMany${pluralName}`] = {
             type: InsertManyPayload,
             args: { data: { type: new GraphQLList(getGraphQLInsertType(Type)) } },
             resolve: async (_: unknown, { data }, context) => {
@@ -121,9 +142,12 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 return { insertedIds: Object.values(result.insertedIds) };
             },
-        },
+        }
+    }
 
-        [`updateOne${singularName}`]: {
+    if (generateFields.includes('updateOne')) {
+
+        fields[`updateOne${singularName}`] = {
             type: Type,
             args: getGraphQLUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
@@ -137,9 +161,12 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 return updated;
             }),
-        },
+        }
+    }
 
-        [`updateMany${pluralName}`]: {
+    if (generateFields.includes('updateMany')) {
+
+        fields[`updateMany${pluralName}`] = {
             type: UpdateManyPayload,
             args: getGraphQLUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
@@ -154,7 +181,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                 differentOutputType: true,
                 validateUpdateArgs: true,
             }),
-        },
+        }
     }
 
     return fields;
@@ -176,3 +203,44 @@ export const incidentEmbedding = (reports: Report[]) => {
             from_reports: reports.map((report) => report.report_number),
         };
 };
+
+export const apiRequest = async ({ path, method = "GET" }: { method?: string, path: string }) => {
+
+    const loginResponse = await fetch('https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: config.REALM_API_PUBLIC_KEY,
+            apiKey: config.REALM_API_PRIVATE_KEY,
+        }),
+    });
+
+    const data = await loginResponse.json();
+
+    if (loginResponse.status != 200) {
+        return {
+            status: loginResponse.status,
+            error: data.error
+        }
+    }
+
+    let response = null;
+
+    const url = `https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`;
+    const headers = { "Authorization": `Bearer ${data.access_token}` };
+
+    if (method == 'GET') {
+
+        const result = await fetch(url, { headers });
+
+        response = await result.json();
+    }
+    else {
+
+        throw `Unsupported method ${method}`;
+    }
+
+    return response;
+}

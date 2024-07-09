@@ -82,73 +82,70 @@ export function removeId<T extends { _id?: { toHexString: () => string } }>(obj:
     return removeField(obj, '_id');
 }
 
-type DeniedUsers = User | [User] | null;
-type AllowedUsers = User | [User];
-
 export interface Fixture<T, Y = T> {
     name: string;
     query: string;
     seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
     testSingular: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         filter: unknown;
         result: Partial<Y>;
     } | null;
     testPluralFilter: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         filter: unknown;
         result: Partial<Y>[];
     } | null;
     testPluralSort: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         sort: unknown;
         result: Partial<Y>[];
     } | null;
     testPluralPagination: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         pagination: { limit: number; skip: number };
         sort: unknown;
         result: Partial<Y>[];
     } | null;
     testUpdateOne: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         filter: unknown;
         set: Partial<Y>;
         result: Partial<Y>;
     } | null;
     testUpdateMany: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         filter: { [key: string]: unknown };
         set: Partial<Y>;
         result: { modifiedCount: number; matchedCount: number };
     } | null;
     testInsertOne: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         insert: Partial<Y>;
         result: Partial<Y>;
     } | null;
     testInsertMany: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         insert: Partial<Y>[];
         result: { insertedIds: string[] };
     } | null;
     testDeleteOne: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         filter: { _id: { EQ: ObjectId } };
         result: { _id: string };
     } | null;
     testDeleteMany: {
-        allowed: AllowedUsers;
-        denied: DeniedUsers;
+        allowed: User[];
+        denied: User[];
         filter: { [key: string]: unknown };
         result: { deletedCount: number };
     } | null;

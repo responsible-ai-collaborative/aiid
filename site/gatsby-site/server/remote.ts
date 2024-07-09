@@ -38,6 +38,9 @@ const ignoreTypes = [
 
     'Entity',
     'EntityQueryInput',
+
+    'User',
+    'UserQueryInput',
 ];
 
 const ignoredQueries = [
@@ -52,6 +55,9 @@ const ignoredQueries = [
 
     'entity',
     'entities',
+
+    'user',
+    'users',
 ];
 
 const ignoredMutations = [
@@ -85,6 +91,12 @@ const ignoredMutations = [
     'updateOneEntity',
     'updateManyEntities',
 
+    'deleteOneUser',
+    'deleteManyUsers',
+    'insertOneUser',
+    'insertManyUsers',
+    'updateOneUser',
+    'updateManyUsers',
 ]
 
 export const getSchema = () => {

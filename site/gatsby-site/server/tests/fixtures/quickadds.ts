@@ -93,14 +93,14 @@ const fixture: Fixture<Quickadd> = {
         }
     },
     testSingular: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: serializeId(quickadd1)
     },
     testPluralFilter: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
@@ -109,8 +109,8 @@ const fixture: Fixture<Quickadd> = {
         ],
     },
     testPluralSort: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         sort: { _id: "ASC" },
         result: [
             serializeId(quickadd1),
@@ -121,8 +121,8 @@ const fixture: Fixture<Quickadd> = {
         ],
     },
     testPluralPagination: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         pagination: { limit: 2, skip: 2 },
         sort: { _id: "ASC" },
         result: [
@@ -132,22 +132,22 @@ const fixture: Fixture<Quickadd> = {
     },
 
     testUpdateOne: {
-        allowed: admin,
-        denied: subscriber,
+        allowed: [admin],
+        denied: [subscriber],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         set: { url: 'https://edited.com' },
         result: { url: 'https://edited.com' }
     },
     testUpdateMany: {
-        allowed: admin,
-        denied: subscriber,
+        allowed: [admin],
+        denied: [subscriber],
         filter: { incident_id: { EQ: 2 } },
         set: { url: 'https://edited.com' },
         result: { modifiedCount: 3, matchedCount: 3 }
     },
     testInsertOne: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         insert: {
             date_submitted: "2020-09-14T00:00:00.000Z",
             incident_id: 1,
@@ -163,8 +163,8 @@ const fixture: Fixture<Quickadd> = {
         }
     },
     testInsertMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         insert: [
             {
                 date_submitted: "2020-09-14T00:00:00.000Z",
@@ -182,14 +182,14 @@ const fixture: Fixture<Quickadd> = {
         result: { insertedIds: [expect.any(String), expect.any(String)] }
     },
     testDeleteOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { incident_id: { EQ: 2 } },
         result: { deletedCount: 3 },
     },

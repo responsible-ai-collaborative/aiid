@@ -424,14 +424,14 @@ const fixture: Fixture<DBIncident, Incident> = {
         },
     },
     testSingular: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         filter: { _id: { EQ: incident1._id } },
         result: resultIncident1,
     },
     testPluralFilter: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         filter: {
             _id: { EQ: incident1._id },
         },
@@ -440,8 +440,8 @@ const fixture: Fixture<DBIncident, Incident> = {
         ]
     },
     testPluralSort: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         sort: { incident_id: "ASC" },
         result: [
             resultIncident1,
@@ -450,8 +450,8 @@ const fixture: Fixture<DBIncident, Incident> = {
         ],
     },
     testPluralPagination: {
-        allowed: subscriber,
-        denied: null,
+        allowed: [subscriber],
+        denied: [],
         pagination: { limit: 2, skip: 1 },
         sort: { incident_id: "ASC" },
         result: [
@@ -460,22 +460,22 @@ const fixture: Fixture<DBIncident, Incident> = {
         ]
     },
     testUpdateOne: {
-        allowed: editor1,
-        denied: subscriber,
+        allowed: [editor1],
+        denied: [subscriber],
         filter: { _id: { EQ: incident1._id } },
         set: { title: 'edited title' },
         result: { title: 'edited title' }
     },
     testUpdateMany: {
-        allowed: editor1,
-        denied: subscriber,
+        allowed: [editor1],
+        denied: [subscriber],
         filter: { incident_id: { EQ: 1 } },
         set: { title: 'edited tile' },
         result: { modifiedCount: 1, matchedCount: 1 }
     },
     testInsertOne: {
-        allowed: editor1,
-        denied: subscriber,
+        allowed: [editor1],
+        denied: [subscriber],
         insert: {
             ...resultIncident1
         },
@@ -485,8 +485,8 @@ const fixture: Fixture<DBIncident, Incident> = {
         }
     },
     testInsertMany: {
-        allowed: editor1,
-        denied: subscriber,
+        allowed: [editor1],
+        denied: [subscriber],
         insert: [
             {
                 ...resultIncident1,
@@ -498,14 +498,14 @@ const fixture: Fixture<DBIncident, Incident> = {
         result: { insertedIds: [expect.any(String), expect.any(String)] }
     },
     testDeleteOne: {
-        allowed: editor1,
-        denied: subscriber,
+        allowed: [editor1],
+        denied: [subscriber],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: {
-        allowed: editor1,
-        denied: subscriber,
+        allowed: [editor1],
+        denied: [subscriber],
         filter: { incident_id: { EQ: 1 } },
         result: { deletedCount: 1 }
     },

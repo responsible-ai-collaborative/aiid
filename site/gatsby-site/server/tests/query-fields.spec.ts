@@ -1,6 +1,5 @@
 import { ApolloServer } from "@apollo/server";
-import request from 'supertest';
-import { makeRequest, seedFixture, seedUsers, startTestServer } from "./utils";
+import { makeRequest, seedFixture, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 
@@ -8,6 +7,7 @@ import quickaddsFixture from './fixtures/quickadds';
 import reportsFixture from './fixtures/reports';
 import entitiesFixture from './fixtures/entities';
 import incidentsFixture from './fixtures/incidents';
+import usersFixture from './fixtures/users';
 
 import * as context from '../context';
 
@@ -16,6 +16,7 @@ const fixtures = [
     reportsFixture,
     entitiesFixture,
     incidentsFixture,
+    usersFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -41,32 +42,37 @@ fixtures.forEach((collection) => {
 
             const testData = collection.testSingular!;
 
+            const queryData = {
+                query: `
+                query ($filter: ${filterTypeName}!) {
+                    ${singularName} (filter: $filter) {
+                      _id
+                      ${collection.query}
+                    }
+                }
+                `,
+                variables: { filter: testData.filter },
+            };
+
             it(`${singularName} query`, async () => {
 
-                await seedFixture(collection.seeds);
+                for (const user of testData.allowed) {
 
-                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
+                    await seedFixture(collection.seeds);
 
-                const queryData = {
-                    query: `
-                    query ($filter: ${filterTypeName}!) {
-                        ${singularName} (filter: $filter) {
-                          _id
-                          ${collection.query}
-                        }
-                    }
-                    `,
-                    variables: { filter: testData.filter },
-                };
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData);
 
-                expect(response.body.data[singularName]).toMatchObject(testData.result);
+                    expect(response.body.data[singularName]).toMatchObject(testData.result);
+                }
 
 
-                if (testData.denied) {
+                for (const user of testData.denied) {
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
                     const response = await makeRequest(url, queryData);
 
@@ -81,32 +87,39 @@ fixtures.forEach((collection) => {
 
             it(`${pluralName} query with filter`, async () => {
 
-                await seedFixture(collection.seeds);
-
-                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
-
                 const queryData = {
                     query: `
-                query ($filter: ${filterTypeName}!) {
-                    ${pluralName} (filter: $filter) {
-                      _id
-                      ${collection.query}
+                    query ($filter: ${filterTypeName}!) {
+                        ${pluralName} (filter: $filter) {
+                        _id
+                        ${collection.query}
+                        }
                     }
-                }
                 `,
                     variables: { filter: testData.filter },
                 };
 
-                const response = await request(url).post('/').send(queryData);
+                for (const user of testData.allowed) {
 
-                expect(response.body.data[pluralName]).toMatchObject(testData.result);
+                    await seedFixture(collection.seeds);
 
-
-                if (testData.denied) {
-
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
                     const response = await makeRequest(url, queryData);
+
+
+                    expect(response.body.data[pluralName]).toMatchObject(testData.result);
+                }
+
+
+                for (const user of testData.denied) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, queryData);
+
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -118,10 +131,6 @@ fixtures.forEach((collection) => {
             const testData = collection.testPluralSort!;
 
             it(`${pluralName} query with sort`, async () => {
-
-                await seedFixture(collection.seeds);
-
-                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
 
                 const queryData = {
                     query: `
@@ -135,16 +144,27 @@ fixtures.forEach((collection) => {
                     variables: { sort: testData.sort },
                 };
 
-                const response = await request(url).post('/').send(queryData);
 
-                expect(response.body.data[pluralName]).toMatchObject(testData.result);
+                for (const user of testData.allowed) {
 
+                    await seedFixture(collection.seeds);
 
-                if (testData.denied) {
-
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
                     const response = await makeRequest(url, queryData);
+
+
+                    expect(response.body.data[pluralName]).toMatchObject(testData.result);
+                }
+
+                for (const user of testData.denied) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, queryData);
+
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -156,11 +176,6 @@ fixtures.forEach((collection) => {
             const testData = collection.testPluralPagination!;
 
             it(`${pluralName} query with pagination`, async () => {
-
-                await seedFixture(collection.seeds);
-
-                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
-
 
                 const queryData = {
                     query: `
@@ -174,15 +189,25 @@ fixtures.forEach((collection) => {
                     variables: { pagination: testData.pagination, sort: testData.sort }
                 };
 
-                const response = await request(url).post('/').send(queryData);
 
-                expect(response.body.data[pluralName]).toHaveLength(testData.result.length);
-                expect(response.body.data[pluralName]).toMatchObject(testData.result);
+                for (const user of testData.allowed) {
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, queryData);
 
 
-                if (testData.denied) {
+                    expect(response.body.data[pluralName]).toHaveLength(testData.result.length);
+                    expect(response.body.data[pluralName]).toMatchObject(testData.result);
+                }
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
+
+                for (const user of testData.denied) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
                     const response = await makeRequest(url, queryData);
 

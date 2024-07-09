@@ -81,14 +81,14 @@ const fixture: Fixture<Entity> = {
         }
     },
     testSingular: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: serializeId(entity1)
     },
     testPluralFilter: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
@@ -97,8 +97,8 @@ const fixture: Fixture<Entity> = {
         ],
     },
     testPluralSort: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         sort: { _id: "ASC" },
         result: [
             serializeId(entity1),
@@ -109,8 +109,8 @@ const fixture: Fixture<Entity> = {
         ],
     },
     testPluralPagination: {
-        allowed: anonymous,
-        denied: null,
+        allowed: [anonymous],
+        denied: [],
         pagination: { limit: 2, skip: 2 },
         sort: { _id: "ASC" },
         result: [
@@ -120,22 +120,22 @@ const fixture: Fixture<Entity> = {
     },
 
     testUpdateOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         set: { name: 'Updated Entity One' },
         result: { name: 'Updated Entity One' }
     },
     testUpdateMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { entity_id: { IN: ['entity1', 'entity2'] } },
         set: { name: 'Updated Entity' },
         result: { modifiedCount: 2, matchedCount: 2 }
     },
     testInsertOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         insert: {
             entity_id: 'entity6',
             name: 'Entity Six',
@@ -149,8 +149,8 @@ const fixture: Fixture<Entity> = {
         }
     },
     testInsertMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         insert: [
             {
                 entity_id: 'entity7',
@@ -166,14 +166,14 @@ const fixture: Fixture<Entity> = {
         result: { insertedIds: [expect.any(String), expect.any(String)] }
     },
     testDeleteOne: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: {
-        allowed: admin,
-        denied: anonymous,
+        allowed: [admin],
+        denied: [anonymous],
         filter: { entity_id: { IN: ['entity1', 'entity2'] } },
         result: { deletedCount: 2 },
     },
