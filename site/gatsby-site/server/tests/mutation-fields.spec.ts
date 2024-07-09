@@ -44,220 +44,249 @@ fixtures.forEach((collection) => {
             await server?.stop();
         });
 
-        it(`${insertOneFieldName} mutation`, async () => {
+        if (collection.testInsertOne !== null) {
 
-            await seedFixture(collection.seeds);
+            const testData = collection.testInsertOne!;
 
-            await seedUsers([{ userId: 'user1', roles: collection.roles.insertOne }])
+            it(`${insertOneFieldName} mutation`, async () => {
 
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                await seedFixture(collection.seeds);
 
-            const mutationData = {
-                query: `
+                await seedUsers([{ userId: 'user1', roles: collection.roles.insertOne }])
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
+                const mutationData = {
+                    query: `
                     mutation ($data: ${insertTypeName}!) {
                         ${insertOneFieldName}(data: $data) {
                         _id
                         ${collection.query}
                         }
                     }
-            `,
-                variables: {
-                    data: collection.testInsertOne.insert,
-                }
-            };
+                    `,
+                    variables: {
+                        data: testData.insert,
+                    }
+                };
 
-
-            const response = await makeRequest(url, mutationData);
-
-            expect(response.body.data[insertOneFieldName]).toMatchObject(collection.testInsertOne.result)
-
-
-            if (collection.roles.insertOne.length) {
-
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
 
                 const response = await makeRequest(url, mutationData);
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
+
+                expect(response.body.data[insertOneFieldName]).toMatchObject(testData.result)
 
 
-        it(`${insertManyFieldName} mutation`, async () => {
+                if (collection.roles.insertOne?.length) {
 
-            await seedFixture(collection.seeds);
+                    await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
 
-            await seedUsers([{ userId: 'user1', roles: collection.roles.insertMany }])
-
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
-
-            const mutationData = {
-                query: `
-            mutation ($data: [${insertTypeName}!]) {
-                ${insertManyFieldName}(data: $data) {
-                  insertedIds
+                    const response = await makeRequest(url, mutationData);
+                    expect(response.body.errors[0].message).toBe('not authorized');
                 }
+            });
+        }
 
-            }
-            `,
-                variables: { data: collection.testInsertMany.insert }
-            };
+        if (collection.testInsertMany !== null) {
 
-            const response = await makeRequest(url, mutationData);
+            const testData = collection.testInsertMany!;
 
-            expect(response.body.data[insertManyFieldName]).toMatchObject(collection.testInsertMany.result);
+            it(`${insertManyFieldName} mutation`, async () => {
 
+                await seedFixture(collection.seeds);
 
-            if (collection.roles.insertMany.length) {
+                await seedUsers([{ userId: 'user1', roles: collection.roles.insertMany }])
 
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
+                const mutationData = {
+                    query: `
+                mutation ($data: [${insertTypeName}!]) {
+                    ${insertManyFieldName}(data: $data) {
+                      insertedIds
+                    }
+    
+                }
+                `,
+                    variables: { data: testData.insert }
+                };
 
                 const response = await makeRequest(url, mutationData);
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
 
-        it(`${updateOneFieldName} mutation`, async () => {
+                expect(response.body.data[insertManyFieldName]).toMatchObject(testData.result);
 
-            await seedFixture(collection.seeds);
 
-            await seedUsers([{ userId: 'user1', roles: collection.roles.updateOne }])
+                if (collection.roles.insertMany?.length) {
 
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                    await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
 
-            const mutationData = {
-                query: `
-            mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
-                ${updateOneFieldName} (filter: $filter, update: $update) {
-                    _id
-                    ${collection.query}
+                    const response = await makeRequest(url, mutationData);
+                    expect(response.body.errors[0].message).toBe('not authorized');
                 }
-            }
-            `,
-                variables: {
-                    "filter": collection.testUpdateOne.filter,
-                    "update": { set: collection.testUpdateOne.set },
-                },
-            }
+            });
+        }
 
-            const response = await makeRequest(url, mutationData);
+        if (collection.testUpdateOne !== null) {
 
-            expect(response.body.data[updateOneFieldName]).toMatchObject(collection.testUpdateOne.result)
-            expect(response.statusCode).toBe(200);
+            const testData = collection.testUpdateOne!;
 
+            it(`${updateOneFieldName} mutation`, async () => {
 
-            if (collection.roles.updateOne.length) {
+                await seedFixture(collection.seeds);
 
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                await seedUsers([{ userId: 'user1', roles: collection.roles.updateOne }])
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
+                const mutationData = {
+                    query: `
+                    mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
+                        ${updateOneFieldName} (filter: $filter, update: $update) {
+                            _id
+                            ${collection.query}
+                        }
+                    }
+                `,
+                    variables: {
+                        "filter": testData.filter,
+                        "update": { set: testData.set },
+                    },
+                }
 
                 const response = await makeRequest(url, mutationData);
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
 
-        it(`${updateManyFieldName} mutation`, async () => {
-
-            await seedFixture(collection.seeds);
-
-            await seedUsers([{ userId: 'user1', roles: collection.roles.updateMany }])
-
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                expect(response.body.data[updateOneFieldName]).toMatchObject(testData.result)
+                expect(response.statusCode).toBe(200);
 
 
-            const mutationData = {
-                query: `
-            mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
-                ${updateManyFieldName}(filter: $filter, update: $update) {
-                    modifiedCount
-                    matchedCount
+                if (collection.roles.updateOne?.length && !collection.roles.updateOne.includes('self')) {
+
+                    await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                    const response = await makeRequest(url, mutationData);
+                    expect(response.body.errors[0].message).toBe('not authorized');
                 }
-            }
-            `,
-                variables: {
-                    "filter": collection.testUpdateMany.filter,
-                    "update": { "set": collection.testUpdateMany.set }
+            });
+        }
+
+        if (collection.testUpdateMany !== null) {
+
+            const testData = collection.testUpdateMany!;
+
+            it(`${updateManyFieldName} mutation`, async () => {
+
+                await seedFixture(collection.seeds);
+
+                await seedUsers([{ userId: 'user1', roles: collection.roles.updateMany }])
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
+
+                const mutationData = {
+                    query: `
+                mutation($filter: ${filterTypeName}!, $update: ${updateTypeName}!) {
+                    ${updateManyFieldName}(filter: $filter, update: $update) {
+                        modifiedCount
+                        matchedCount
+                    }
                 }
-            };
-
-            const response = await makeRequest(url, mutationData);
-
-            expect(response.body.data[updateManyFieldName]).toMatchObject(collection.testUpdateMany.result);
-            expect(response.statusCode).toBe(200);
-
-
-            if (collection.roles.updateMany.length) {
-
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                `,
+                    variables: {
+                        "filter": testData.filter,
+                        "update": { "set": testData.set }
+                    }
+                };
 
                 const response = await makeRequest(url, mutationData);
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
 
-        it(`${deleteOneFieldName} mutation`, async () => {
-
-            await seedFixture(collection.seeds);
-
-            await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
-
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                expect(response.body.data[updateManyFieldName]).toMatchObject(testData.result);
+                expect(response.statusCode).toBe(200);
 
 
-            const mutationData = {
-                query: `
-            mutation Test($filter: ${filterTypeName}!) {
-                ${deleteOneFieldName}(filter: $filter) {
-                  _id
+                if (collection.roles.updateMany?.length) {
+
+                    await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                    const response = await makeRequest(url, mutationData);
+                    expect(response.body.errors[0].message).toBe('not authorized');
                 }
-            }
-            `,
-                variables: { filter: collection.testDeleteOne.filter }
-            };
+            });
+        }
 
-            const response = await makeRequest(url, mutationData);
+        if (collection.testDeleteOne !== null) {
 
-            expect(response.body.data[deleteOneFieldName]).toMatchObject(collection.testDeleteOne.result);
+            const testData = collection.testDeleteOne!;
 
-            if (collection.roles.deleteOne.length) {
+            it(`${deleteOneFieldName} mutation`, async () => {
 
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                await seedFixture(collection.seeds);
+
+                await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+
+
+                const mutationData = {
+                    query: `
+                        mutation Test($filter: ${filterTypeName}!) {
+                            ${deleteOneFieldName}(filter: $filter) {
+                              _id
+                            }
+                        }
+                        `,
+                    variables: { filter: testData.filter }
+                };
 
                 const response = await makeRequest(url, mutationData);
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
 
-        it(`${deleteManyFieldName} mutation`, async () => {
+                expect(response.body.data[deleteOneFieldName]).toMatchObject(testData.result);
 
-            await seedFixture(collection.seeds);
+                if (collection.roles.deleteOne?.length) {
 
-            await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
+                    await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
 
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
-
-
-            const mutationData = {
-                query: `
-            mutation Test($filter: ${filterTypeName}!) {
-                ${deleteManyFieldName}(filter: $filter) {
-                  deletedCount
+                    const response = await makeRequest(url, mutationData);
+                    expect(response.body.errors[0].message).toBe('not authorized');
                 }
-            }
-            `,
-                variables: { filter: collection.testDeleteMany.filter }
-            };
+            });
+        }
 
-            const response = await makeRequest(url, mutationData);
+        if (collection.testDeleteMany !== null) {
 
-            expect(response.body.data[deleteManyFieldName]).toMatchObject(collection.testDeleteMany.result);
+            const testData = collection.testDeleteMany!;
+
+            it(`${deleteManyFieldName} mutation`, async () => {
+
+                await seedFixture(collection.seeds);
+
+                await seedUsers([{ userId: 'user1', roles: collection.roles.deleteOne }])
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
 
 
-            if (collection.roles.deleteMany.length) {
-
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                const mutationData = {
+                    query: `
+                    mutation Test($filter: ${filterTypeName}!) {
+                        ${deleteManyFieldName}(filter: $filter) {
+                        deletedCount
+                        }
+                    }
+                    `,
+                    variables: { filter: testData.filter }
+                };
 
                 const response = await makeRequest(url, mutationData);
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
+
+                expect(response.body.data[deleteManyFieldName]).toMatchObject(testData.result);
+
+
+                if (collection.roles.deleteMany?.length) {
+
+                    await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+
+                    const response = await makeRequest(url, mutationData);
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+        }
     });
 });

@@ -6,6 +6,6 @@ export interface Context {
         id: string,
         roles: string[],
     } | null,
-    req: IncomingMessage,
+    req: Request,
     client: MongoClient,
 }

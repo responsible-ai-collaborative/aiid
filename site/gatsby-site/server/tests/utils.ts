@@ -5,6 +5,7 @@ import { ApolloServer } from "@apollo/server";
 import config from '../config';
 import supertest from 'supertest';
 import * as context from '../context';
+import { User } from "../generated/graphql";
 
 export const startTestServer = async () => {
 
@@ -39,7 +40,7 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-export const seedUsers = async (users: { userId: string, roles: string[] }[], { drop } = { drop: true }) => {
+export const seedUsers = async (users: { userId: string, roles: string[] | null }[], { drop } = { drop: true }) => {
 
     await seedCollection({
         name: 'users',
@@ -57,65 +58,119 @@ export const makeRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
-export function serializeId<T>(obj: WithId<T>) { return ({ ...obj, _id: obj._id.toHexString() }) }
+export function serializeId<T extends { _id?: { toHexString: () => string } }>(obj: T) {
+    return ({ ...obj, _id: obj._id?.toHexString() })
+}
 
-export function removeId<T>(obj: WithId<T>): Omit<T, "_id"> { return ({ ...obj, _id: undefined }) }
+export function removeFields<T, K extends keyof T>(obj: T, ...fields: K[]): T {
 
-export interface Fixture<T> {
+    let result = { ...obj };
+
+    fields.forEach(field => {
+        const { [field]: _, ...rest } = result;
+        result = rest as T;
+    });
+
+    return result;
+}
+
+export function removeField<T, K extends keyof T>(obj: T, field: K): T {
+    return removeFields(obj, field);
+}
+
+export function removeId<T extends { _id?: { toHexString: () => string } }>(obj: T) {
+    return removeField(obj, '_id');
+}
+
+type DeniedUsers = User | [User] | null;
+type AllowedUsers = User | [User];
+
+export interface Fixture<T, Y = T> {
     name: string;
     query: string;
-    testDocs: T[];
+    seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
     testSingular: {
-        filter: { _id: { EQ: ObjectId } };
-        result: T;
-    };
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        filter: unknown;
+        result: Partial<Y>;
+    } | null;
     testPluralFilter: {
-        filter: { _id: { EQ: ObjectId } };
-        result: T[];
-    };
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        filter: unknown;
+        result: Partial<Y>[];
+    } | null;
     testPluralSort: {
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
         sort: unknown;
-        result: T[];
-    };
+        result: Partial<Y>[];
+    } | null;
     testPluralPagination: {
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
         pagination: { limit: number; skip: number };
         sort: unknown;
-        result: T[];
-    };
+        result: Partial<Y>[];
+    } | null;
     testUpdateOne: {
-        filter: { _id: { EQ: ObjectId } };
-        set: Partial<T>;
-        result: Partial<T>;
-    };
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        filter: unknown;
+        set: Partial<Y>;
+        result: Partial<Y>;
+    } | null;
     testUpdateMany: {
-        filter: { [key: string]: { EQ: any } };
-        set: Partial<T>;
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        filter: { [key: string]: unknown };
+        set: Partial<Y>;
         result: { modifiedCount: number; matchedCount: number };
-    };
+    } | null;
     testInsertOne: {
-        insert: Partial<T>;
-        result: Partial<T>;
-    };
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        insert: Partial<Y>;
+        result: Partial<Y>;
+    } | null;
     testInsertMany: {
-        insert: Partial<T>[];
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        insert: Partial<Y>[];
         result: { insertedIds: string[] };
-    };
+    } | null;
     testDeleteOne: {
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
         filter: { _id: { EQ: ObjectId } };
         result: { _id: string };
-    };
+    } | null;
     testDeleteMany: {
-        filter: { [key: string]: { EQ: any } };
+        allowed: AllowedUsers;
+        denied: DeniedUsers;
+        filter: { [key: string]: unknown };
         result: { deletedCount: number };
-    };
+    } | null;
     roles: {
-        singular: string[];
-        plural: string[];
-        insertOne: string[];
-        insertMany: string[];
-        updateOne: string[];
-        updateMany: string[];
-        deleteOne: string[];
-        deleteMany: string[];
+        singular: string[] | null;
+        plural: string[] | null;
+        insertOne: string[] | null;
+        insertMany: string[] | null;
+        updateOne: string[] | null;
+        updateMany: string[] | null;
+        deleteOne: string[] | null;
+        deleteMany: string[] | null;
     };
+}
+
+export const seedFixture = async (seeds: Record<string, Record<string, Record<string, unknown>[]>>) => {
+
+    for (const [database, collection] of Object.entries(seeds)) {
+
+        for (const [name, docs] of Object.entries(collection)) {
+
+            await seedCollection({ database, name, docs, });
+        }
+    }
 }

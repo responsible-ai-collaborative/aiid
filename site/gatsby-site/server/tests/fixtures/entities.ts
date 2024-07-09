@@ -37,6 +37,30 @@ const entity5 = {
     created_at: "2024-09-14T00:00:00.000Z",
 };
 
+const subscriber = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),
+    first_name: 'Subscriber',
+    last_name: 'One',
+    roles: ['subscriber'],
+    userId: 'subscriber1',
+}
+
+const admin = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e5'),
+    first_name: 'Super',
+    last_name: 'Man',
+    roles: ['admin'],
+    userId: 'admin',
+}
+
+const anonymous = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e9'),
+    first_name: 'Anon',
+    last_name: 'Anon',
+    roles: [],
+    userId: 'anon',
+}
+
 const fixture: Fixture<Entity> = {
     name: 'entity',
     query: `
@@ -46,19 +70,25 @@ const fixture: Fixture<Entity> = {
         created_at
     `,
     seeds: {
-        entities: [
-            entity1,
-            entity2,
-            entity3,
-            entity4,
-            entity5,
-        ],
+        aiidprod: {
+            entities: [
+                entity1,
+                entity2,
+                entity3,
+                entity4,
+                entity5,
+            ],
+        }
     },
     testSingular: {
+        allowed: anonymous,
+        denied: null,
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: serializeId(entity1)
     },
     testPluralFilter: {
+        allowed: anonymous,
+        denied: null,
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
@@ -67,6 +97,8 @@ const fixture: Fixture<Entity> = {
         ],
     },
     testPluralSort: {
+        allowed: anonymous,
+        denied: null,
         sort: { _id: "ASC" },
         result: [
             serializeId(entity1),
@@ -77,6 +109,8 @@ const fixture: Fixture<Entity> = {
         ],
     },
     testPluralPagination: {
+        allowed: anonymous,
+        denied: null,
         pagination: { limit: 2, skip: 2 },
         sort: { _id: "ASC" },
         result: [
@@ -86,16 +120,22 @@ const fixture: Fixture<Entity> = {
     },
 
     testUpdateOne: {
+        allowed: admin,
+        denied: anonymous,
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         set: { name: 'Updated Entity One' },
         result: { name: 'Updated Entity One' }
     },
     testUpdateMany: {
+        allowed: admin,
+        denied: anonymous,
         filter: { entity_id: { IN: ['entity1', 'entity2'] } },
         set: { name: 'Updated Entity' },
         result: { modifiedCount: 2, matchedCount: 2 }
     },
     testInsertOne: {
+        allowed: admin,
+        denied: anonymous,
         insert: {
             entity_id: 'entity6',
             name: 'Entity Six',
@@ -109,6 +149,8 @@ const fixture: Fixture<Entity> = {
         }
     },
     testInsertMany: {
+        allowed: admin,
+        denied: anonymous,
         insert: [
             {
                 entity_id: 'entity7',
@@ -124,10 +166,14 @@ const fixture: Fixture<Entity> = {
         result: { insertedIds: [expect.any(String), expect.any(String)] }
     },
     testDeleteOne: {
+        allowed: admin,
+        denied: anonymous,
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: {
+        allowed: admin,
+        denied: anonymous,
         filter: { entity_id: { IN: ['entity1', 'entity2'] } },
         result: { deletedCount: 2 },
     },

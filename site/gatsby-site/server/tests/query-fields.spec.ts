@@ -3,9 +3,11 @@ import request from 'supertest';
 import { makeRequest, seedFixture, seedUsers, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
+
 import quickaddsFixture from './fixtures/quickadds';
 import reportsFixture from './fixtures/reports';
 import entitiesFixture from './fixtures/entities';
+import incidentsFixture from './fixtures/incidents';
 
 import * as context from '../context';
 
@@ -13,6 +15,7 @@ const fixtures = [
     quickaddsFixture,
     reportsFixture,
     entitiesFixture,
+    incidentsFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -34,52 +37,56 @@ fixtures.forEach((collection) => {
             await server?.stop();
         });
 
-        it(`${singularName} query`, async () => {
+        if (collection.testSingular) {
 
-            await seedFixture(collection.seeds);
+            const testData = collection.testSingular!;
 
-            await seedUsers([{ userId: 'user1', roles: collection.roles.singular }])
+            it(`${singularName} query`, async () => {
 
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                await seedFixture(collection.seeds);
 
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
 
-            const queryData = {
-                query: `
-                query ($filter: ${filterTypeName}!) {
-                    ${singularName} (filter: $filter) {
-                      _id
-                      ${collection.query}
+                const queryData = {
+                    query: `
+                    query ($filter: ${filterTypeName}!) {
+                        ${singularName} (filter: $filter) {
+                          _id
+                          ${collection.query}
+                        }
                     }
-                }
-                `,
-                variables: { filter: collection.testSingular.filter },
-            };
-
-            const response = await makeRequest(url, queryData);
-
-            expect(response.body.data[singularName]).toMatchObject(collection.testSingular.result);
-
-
-            if (collection.roles.singular.length) {
-
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                    `,
+                    variables: { filter: testData.filter },
+                };
 
                 const response = await makeRequest(url, queryData);
 
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
+                expect(response.body.data[singularName]).toMatchObject(testData.result);
 
-        it(`${pluralName} query with filter`, async () => {
 
-            await seedFixture(collection.seeds);
+                if (testData.denied) {
 
-            await seedUsers([{ userId: 'user1', roles: collection.roles.plural }])
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
 
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                    const response = await makeRequest(url, queryData);
 
-            const queryData = {
-                query: `
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+        }
+
+        if (collection.testPluralFilter) {
+
+            const testData = collection.testPluralFilter!;
+
+            it(`${pluralName} query with filter`, async () => {
+
+                await seedFixture(collection.seeds);
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
+
+                const queryData = {
+                    query: `
                 query ($filter: ${filterTypeName}!) {
                     ${pluralName} (filter: $filter) {
                       _id
@@ -87,35 +94,37 @@ fixtures.forEach((collection) => {
                     }
                 }
                 `,
-                variables: { filter: collection.testPluralFilter.filter },
-            };
+                    variables: { filter: testData.filter },
+                };
 
-            const response = await request(url).post('/').send(queryData);
+                const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralFilter.result);
-
-
-            if (collection.roles.plural.length) {
-
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
-
-                const response = await makeRequest(url, queryData);
-
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
-
-        it(`${pluralName} query with sort`, async () => {
-
-            await seedFixture(collection.seeds);
-
-            await seedUsers([{ userId: 'user1', roles: collection.roles.plural }])
-
-            jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: 'user1' })
+                expect(response.body.data[pluralName]).toMatchObject(testData.result);
 
 
-            const queryData = {
-                query: `
+                if (testData.denied) {
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
+
+                    const response = await makeRequest(url, queryData);
+
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+        }
+
+        if (collection.testPluralSort) {
+
+            const testData = collection.testPluralSort!;
+
+            it(`${pluralName} query with sort`, async () => {
+
+                await seedFixture(collection.seeds);
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
+
+                const queryData = {
+                    query: `
                     query ($sort: ${sortTypeName}!) {
                         ${pluralName} (sort: $sort) {
                             _id
@@ -123,30 +132,38 @@ fixtures.forEach((collection) => {
                         }
                     }
                     `,
-                variables: { sort: collection.testPluralSort.sort },
-            };
+                    variables: { sort: testData.sort },
+                };
 
-            const response = await request(url).post('/').send(queryData);
+                const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralSort.result);
+                expect(response.body.data[pluralName]).toMatchObject(testData.result);
 
 
-            if (collection.roles.plural.length) {
+                if (testData.denied) {
 
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
 
-                const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData);
 
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+        }
 
-        it(`${pluralName} query with pagination`, async () => {
+        if (collection.testPluralPagination) {
 
-            await seedFixture(collection.seeds);
+            const testData = collection.testPluralPagination!;
 
-            const queryData = {
-                query: `
+            it(`${pluralName} query with pagination`, async () => {
+
+                await seedFixture(collection.seeds);
+
+                jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.allowed.userId })
+
+
+                const queryData = {
+                    query: `
                     query ($pagination: PaginationType, $sort: ${sortTypeName}!) {
                         ${pluralName} (pagination: $pagination, sort: $sort) {
                             _id
@@ -154,23 +171,24 @@ fixtures.forEach((collection) => {
                         }
                     }
                     `,
-                variables: { pagination: collection.testPluralPagination.pagination, sort: collection.testPluralPagination.sort }
-            };
+                    variables: { pagination: testData.pagination, sort: testData.sort }
+                };
 
-            const response = await request(url).post('/').send(queryData);
+                const response = await request(url).post('/').send(queryData);
 
-            expect(response.body.data[pluralName]).toHaveLength(collection.testPluralPagination.result.length);
-            expect(response.body.data[pluralName]).toMatchObject(collection.testPluralPagination.result);
+                expect(response.body.data[pluralName]).toHaveLength(testData.result.length);
+                expect(response.body.data[pluralName]).toMatchObject(testData.result);
 
 
-            if (collection.roles.plural.length) {
+                if (testData.denied) {
 
-                await seedUsers([{ userId: 'user1', roles: ['invalid'] }])
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: testData.denied.userId })
 
-                const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData);
 
-                expect(response.body.errors[0].message).toBe('not authorized');
-            }
-        });
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+        }
     });
 })

@@ -8,6 +8,8 @@ import { ObjectId } from "mongodb";
 import { ObjectIdScalar } from "../scalars";
 import { Incident, Report } from "../generated/graphql";
 import { isAdmin } from "../rules";
+import { EntityType } from "./entities";
+import { UserType } from "./users";
 
 const EmbeddingType = new GraphQLObjectType({
     name: 'IncidentEmbedding',
@@ -33,6 +35,22 @@ const NlpSimilarIncidentType = new GraphQLObjectType({
     }
 });
 
+function entitiesFieldResolver(field: string) {
+
+    return getMongoDbQueryResolver(EntityType, async (filter, projection, options, source: any, args, context: Context) => {
+
+        const db = context.client.db('aiidprod');
+
+        const entitiesCollection = db.collection('entities');
+
+        const result = source[field]?.length
+            ? await entitiesCollection.find({ entity_id: { $in: source[field] } }, options).toArray()
+            : []
+
+        return result;
+    })
+}
+
 const IncidentType = new GraphQLObjectType({
     name: 'Incident',
     fields: {
@@ -43,12 +61,33 @@ const IncidentType = new GraphQLObjectType({
         epoch_date_modified: { type: GraphQLInt },
         incident_id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: new GraphQLNonNull(GraphQLString) },
-        alleged_deployer_of_AI_system: { type: new GraphQLList(GraphQLString) },
-        alleged_developer_of_AI_system: { type: new GraphQLList(GraphQLString) },
-        alleged_harmed_or_nearly_harmed_parties: { type: new GraphQLList(GraphQLString) },
+        AllegedDeployerOfAISystem: {
+            type: new GraphQLList(EntityType),
+            resolve: entitiesFieldResolver('Alleged deployer of AI system'),
+        },
+        AllegedDeveloperOfAISystem: {
+            type: new GraphQLList(EntityType),
+            resolve: entitiesFieldResolver('Alleged developer of AI system'),
+        },
+        AllegedHarmedOrNearlyHarmedParties: {
+            type: new GraphQLList(EntityType),
+            resolve: entitiesFieldResolver('Alleged harmed or nearly harmed parties'),
+        },
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
-        editors: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))) },
+        editors: {
+            type: new GraphQLNonNull(new GraphQLList(UserType)),
+            resolve: getMongoDbQueryResolver(UserType, async (filter, projection, options, source: any, args, context: Context) => {
+
+                const db = context.client.db('customData');
+
+                const usersCollection = db.collection('users');
+
+                const result = await usersCollection.find({ userId: { $in: source?.editors } }, options).toArray();
+
+                return result;
+            }),
+        },
         embedding: { type: EmbeddingType },
         flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
@@ -72,9 +111,19 @@ const IncidentType = new GraphQLObjectType({
     },
 });
 
-//@ts-ignore // fix graphql-tools warning
-IncidentType.getFields().reports.dependencies = [];
+// dependencies property gets ignored by newest graphql package so we have to add it manually after the type is created
+// ideally should be fixed in the graphql-to-mongodb package
 
+//@ts-ignore 
+IncidentType.getFields().reports.dependencies = ['reports'];
+//@ts-ignore 
+IncidentType.getFields().AllegedDeployerOfAISystem.dependencies = ['Alleged deployer of AI system'];
+//@ts-ignore 
+IncidentType.getFields().AllegedDeveloperOfAISystem.dependencies = ['Alleged developer of AI system'];
+//@ts-ignore 
+IncidentType.getFields().AllegedHarmedOrNearlyHarmedParties.dependencies = ['Alleged harmed or nearly harmed parties'];
+//@ts-ignore 
+IncidentType.getFields().editors.dependencies = ['editors'];
 
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
