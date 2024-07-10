@@ -1,6 +1,6 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { gql } from '@apollo/client';
-import { query } from '../../utils';
+import { query, test } from '../../utils';
 
 const urls = [
   { namespace: 'CSETv0', url: '/taxonomy/csetv0' },
