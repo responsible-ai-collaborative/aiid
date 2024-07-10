@@ -10,8 +10,7 @@ test.describe('Edit Entity', () => {
   test('Should successfully edit Entity fields',
     async ({ page, login, skipOnEmptyEnvironment }) => {
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-      await page.goto(url);
-
+      
       await conditionalIntercept(
         page,
         '**/graphql',
@@ -19,6 +18,9 @@ test.describe('Edit Entity', () => {
         entity,
         'FindEntity'
       );
+      
+      await page.goto(url);
+      await waitForRequest('FindEntity');
 
       const values = {
         name: 'Google new',
@@ -60,8 +62,7 @@ test.describe('Edit Entity', () => {
   test('Should display an error message when editing Entity fails',
     async ({ page, login, skipOnEmptyEnvironment }) => {
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-      await page.goto(url);
-
+      
       await conditionalIntercept(
         page,
         '**/graphql',
@@ -69,6 +70,9 @@ test.describe('Edit Entity', () => {
         entity,
         'FindEntity'
       );
+
+      await page.goto(url);
+      await waitForRequest('FindEntity');
 
       const values = {
         name: 'Google new',
