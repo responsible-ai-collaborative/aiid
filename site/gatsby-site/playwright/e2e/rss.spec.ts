@@ -40,6 +40,7 @@ test.describe('RSS', () => {
 
       expect(description).not.toBeNull();
       expect(title).not.toBeNull();
+      console.log(pubDate, description)
       expect(pubDate).not.toBeNull();
       expect(guid).not.toBeNull();
     });
