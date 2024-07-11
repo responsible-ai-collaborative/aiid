@@ -50,7 +50,7 @@ test.describe('Account', () => {
     await expect(detailsTable.locator(`td:text-is("${config.E2E_ADMIN_USERNAME}")`)).toBeVisible();
     await expect(detailsTable.locator('td:text-is("Test")')).toBeVisible();
     await expect(detailsTable.locator('td:text-is("User")')).toBeVisible();
-    await expect(detailsTable.locator('td:text-is("admin")')).toBeVisible();
+    await expect(detailsTable.locator('span:text-is("admin")')).toBeVisible();
 
     await expect(page.locator('a:text-is("Log out")')).toBeVisible();
   });
