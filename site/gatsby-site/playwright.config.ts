@@ -75,7 +75,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run serve',
+    command: 'NODE_OPTIONS=--max-old-space-size=5600 npm run serve',
     url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
   },
