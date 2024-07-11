@@ -69,7 +69,7 @@ const LandingPage = (props) => {
 
   return (
     // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
-    <div className="max-w-full 2xl:w-[72rem]" {...props}>
+    <div className="2xl:w-[72rem]" {...props}>
       <Container>
         <div>
           <Hero />
