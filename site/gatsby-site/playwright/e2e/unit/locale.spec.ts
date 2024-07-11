@@ -29,11 +29,9 @@ test.describe('Locale', () => {
     expect(configurations).toBeInstanceOf(Array);
 
     const availableLanguages = config.AVAILABLE_LANGUAGES.split(',');
-    console.log(`Available languages: ${availableLanguages}`);
 
     availableLanguages.forEach((locale) => {
       const hasConfig = configurations.some((config) => config.code === locale);
-      console.log(`Checking for ${locale} configuration`);
       expect(hasConfig).toBe(true);
     });
   });
