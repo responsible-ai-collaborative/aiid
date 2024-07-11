@@ -774,4 +774,14 @@
   .editors-dropdown *[data-testid="flowbite-tooltip-target"] button span {
     @apply w-full justify-between !important;
   }
+
+  .w-content-sidebar, .max-w-content-sidebar {
+    width: calc(100% - 256px);
+    max-width: calc(100% - 256px);
+  }
+
+  .w-content, .max-w-content {
+    width: calc(100% - 56px);
+    max-width: calc(100% - 56px);
+  }
 }
