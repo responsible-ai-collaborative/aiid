@@ -3,7 +3,8 @@ import {
     mutationFields as quickAddsMutationFields,
     permissions as quickAddsPermissions,
 } from './fields/quickadds';
-import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
+
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { shield, deny } from 'graphql-shield';
 import { applyMiddleware } from 'graphql-middleware';
 import { ObjectIdScalar } from './scalars';
@@ -40,7 +41,6 @@ export const getSchema = () => {
             Query: {
                 "*": deny,
                 ...quickAddsPermissions.Query,
-
             },
             Mutation: {
                 "*": deny,
