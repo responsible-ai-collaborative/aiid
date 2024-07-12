@@ -3,7 +3,6 @@ import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLUpdateArgs, getMon
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
-import { Report } from "./generated/graphql";
 import pluralizeLib from 'pluralize';
 import config from "./config";
 
@@ -16,9 +15,11 @@ export function singularize(s: string) {
 }
 
 
-const defaultQueryFields = ['plural', 'singular'];
+type QueryFields = 'plural' | 'singular';
 
-export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: string[] }): GraphQLFieldConfigMap<any, any> {
+const defaultQueryFields: QueryFields[] = ['plural', 'singular'];
+
+export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: QueryFields[] }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = singularize(collectionName);
     const pluralName = pluralize(collectionName);
@@ -62,11 +63,14 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
     return fields;
 }
 
+
 type Data = { [key: string]: any }
 
-const defaultMutationFields = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany', 'upsertOne'];
+type MutationFields = 'deleteOne' | 'deleteMany' | 'insertOne' | 'insertMany' | 'updateOne' | 'updateMany' | 'upsertOne';
 
-export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultMutationFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: string[] }): GraphQLFieldConfigMap<any, any> {
+const defaultMutationFields: MutationFields[] = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany', 'upsertOne'];
+
+export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultMutationFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: MutationFields[] }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = capitalize(singularize(collectionName));
     const pluralName = capitalize(pluralize(collectionName));
@@ -227,23 +231,6 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
     return fields;
 }
-
-export const incidentEmbedding = (reports: Report[]) => {
-    reports = reports.filter((report) => report.embedding);
-    return reports.length == 0
-        ? null
-        : {
-            vector: reports
-                .map((report) => report.embedding!.vector)
-                .reduce(
-                    (sum, vector) => vector!.map((component, i) => component + sum[i]),
-                    Array(reports[0].embedding!.vector!.length).fill(0)
-                )
-                .map((component) => component / reports.length),
-
-            from_reports: reports.map((report) => report.report_number),
-        };
-};
 
 export const apiRequest = async ({ path, method = "GET" }: { method?: string, path: string }) => {
 
