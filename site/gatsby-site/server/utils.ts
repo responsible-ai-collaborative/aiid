@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, ThunkObjMap, isNonNullType } from "graphql";
 import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
@@ -115,7 +115,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`insertOne${singularName}`] = {
             type: Type,
-            args: { data: { type: getInsertType(Type) } },
+            args: { data: { type: new GraphQLNonNull(getInsertType(Type)) } },
             resolve: async (_: unknown, { data }: { data: Data }, context, info) => {
 
                 const insert: any = {};
@@ -154,7 +154,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`insertMany${pluralName}`] = {
             type: InsertManyPayload,
-            args: { data: { type: new GraphQLList(getInsertType(Type)) } },
+            args: { data: { type: new GraphQLNonNull(new GraphQLList(getInsertType(Type))) } },
             resolve: async (_: unknown, { data }, context) => {
 
                 const db = context.client.db(databaseName);
@@ -210,7 +210,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`upsertOne${singularName}`] = {
             type: Type,
-            args: { data: { type: getInsertType(Type) } },
+            args: { data: { type: new GraphQLNonNull(getInsertType(Type)) } },
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {
 
                 const db = context.client.db(databaseName);
@@ -448,9 +448,9 @@ export function getInsertType(Type: GraphQLObjectType<any, any>) {
                     throw 'Not implemented';
                 }
 
-                // non null should depend if the field is non null or not
-
-                const inputType = new GraphQLNonNull(new GraphQLInputObjectType(config));
+                const inputType = isNonNullType(field.type)
+                    ? new GraphQLNonNull(new GraphQLInputObjectType(config))
+                    : new GraphQLInputObjectType(config);
 
                 relationFields[key] = { type: inputType };
             }

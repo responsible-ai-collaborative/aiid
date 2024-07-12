@@ -38,7 +38,7 @@ const IncidentType = new GraphQLObjectType({
     name: 'Incident',
     fields: {
         _id: { type: ObjectIdScalar },
-        date: { type: GraphQLString },
+        date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         editor_notes: { type: GraphQLString },
         epoch_date_modified: { type: GraphQLInt },
