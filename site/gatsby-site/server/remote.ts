@@ -31,9 +31,12 @@ const ignoreTypes = [
 
     'Report',
     'ReportQueryInput',
+    'ReportUserRelationInput',
 
     'Incident',
     'IncidentQueryInput',
+    'IncidentEditorsRelationInput',
+    'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
     'Entity',
@@ -67,6 +70,8 @@ const ignoredMutations = [
     'insertManyQuickadds',
     'updateOneQuickadd',
     'updateManyQuickadds',
+    'upsertOneQuickadd',
+    'upsertManyQuickadds',
 
     'deleteOneReport',
     'deleteManyReports',
@@ -74,6 +79,8 @@ const ignoredMutations = [
     'insertManyReports',
     'updateOneReport',
     'updateManyReports',
+    'upsertOneReport',
+    'upsertManyReports',
 
     'linkReportsToIncidents',
 
@@ -83,6 +90,8 @@ const ignoredMutations = [
     'insertManyIncidents',
     'updateOneIncident',
     'updateManyIncidents',
+    'upsertOneIncident',
+    'upsertManyIncidents',
 
     'deleteOneEntity',
     'deleteManyEntities',
@@ -90,6 +99,8 @@ const ignoredMutations = [
     'insertManyEntities',
     'updateOneEntity',
     'updateManyEntities',
+    'upsertOneEntity',
+    'upsertManyEntities',
 
     'deleteOneUser',
     'deleteManyUsers',
@@ -97,6 +108,8 @@ const ignoredMutations = [
     'insertManyUsers',
     'updateOneUser',
     'updateManyUsers',
+    'upsertOneUser',
+    'upsertManyUsers',
 ]
 
 export const getSchema = () => {

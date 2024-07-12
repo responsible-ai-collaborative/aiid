@@ -1,10 +1,11 @@
-import { GraphQLFieldConfigMap, GraphQLList, GraphQLObjectType } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap } from "graphql";
 import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 import { Report } from "./generated/graphql";
 import pluralizeLib from 'pluralize';
+import config from "./config";
 
 export function pluralize(s: string) {
     return pluralizeLib.plural(s);
@@ -61,8 +62,9 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
     return fields;
 }
 
+type Data = { [key: string]: any }
 
-const defaultMutationFields = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany'];
+const defaultMutationFields = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany', 'upsertOne'];
 
 export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultMutationFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: string[] }): GraphQLFieldConfigMap<any, any> {
 
@@ -114,12 +116,32 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`insertOne${singularName}`] = {
             type: Type,
             args: { data: { type: getInsertType(Type) } },
-            resolve: async (_: unknown, { data }, context) => {
+            resolve: async (_: unknown, { data }: { data: Data }, context, info) => {
+
+                const insert: any = {};
+
+                const fields = Type.toConfig().fields;
+
+                for (const [name, value] of Object.entries(data)) {
+
+                    if (value.link && typeof value.link !== 'function') {
+
+                        const field = fields[name];
+
+                        await (field.extensions!.relationship as any).linkValidation(data, context);
+
+                        insert[name] = value.link;
+                    }
+                    else {
+                        insert[name] = value;
+                    }
+                }
+
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                const result = await collection.insertOne(data);
+                const result = await collection.insertOne(insert);
 
                 const inserted = await collection.findOne({ _id: result.insertedId });
 
@@ -132,7 +154,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`insertMany${pluralName}`] = {
             type: InsertManyPayload,
-            args: { data: { type: new GraphQLList(getGraphQLInsertType(Type)) } },
+            args: { data: { type: new GraphQLList(getInsertType(Type)) } },
             resolve: async (_: unknown, { data }, context) => {
 
                 const db = context.client.db(databaseName);
@@ -180,6 +202,25 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             }, {
                 differentOutputType: true,
                 validateUpdateArgs: true,
+            }),
+        }
+    }
+
+    if (generateFields.includes('upsertOne')) {
+
+        fields[`upsertOne${singularName}`] = {
+            type: Type,
+            args: { data: { type: getInsertType(Type) } },
+            resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {
+
+                const db = context.client.db(databaseName);
+                const collection = db.collection(collectionName);
+
+                await collection.updateOne(filter, update, { ...options, upsert: true });
+
+                const updated = await collection.findOne(filter);
+
+                return updated;
             }),
         }
     }
@@ -243,4 +284,195 @@ export const apiRequest = async ({ path, method = "GET" }: { method?: string, pa
     }
 
     return response;
+}
+
+/**
+ * Generates an extension for managing a list relationship between entities in a GraphQL schema.
+ *
+ * @param {string} sourceField - The field in the source entity that contains the list of linked entity IDs.
+ * @param {string} targetField - The field in the target entity that is used to match the linked entity IDs.
+ * @param {GraphQLNamedType} LinkType - The GraphQL type of the linked entities.
+ * @param {string} databaseName - The name of the database where the entities are stored.
+ * @param {string} collectionName - The name of the collection where the entities are stored.
+ * @returns {object} An object containing the GraphQL list type and a validation function.
+ * 
+ * The returned object has the following structure:
+ * - linkType: A new GraphQLList of the specified LinkType.
+ * - linkValidation: An asynchronous validation function that checks if all linked entity IDs exist in the database.
+ * 
+ * The validation function performs the following steps:
+ * 1. Retrieves the database and collection from the context.
+ * 2. Queries the collection to find documents where the targetField matches any of the linked entity IDs from the sourceField.
+ * 3. Throws an error if the number of found documents does not match the number of linked entity IDs.
+ * 
+ * Example usage:
+ * 
+ * const extension = getListRelationshipExtension(
+ *     'linkedIds',       // The field in the source entity containing the list of linked IDs
+ *     '_id',             // The field in the target entity to match against the linked IDs
+ *     GraphQLString,     // The GraphQL type of the linked entities
+ *     'myDatabase',      // The name of the database
+ *     'myCollection'     // The name of the collection
+ * );
+ * 
+ * const { linkType, linkValidation } = extension;
+ */
+export const getListRelationshipExtension = (
+    sourceField: string,
+    targetField: string,
+    LinkType: GraphQLNamedType,
+    databaseName: string,
+    collectionName: string
+) => {
+
+    return {
+        linkType: new GraphQLNonNull(new GraphQLList(LinkType)),
+        linkValidation: async (source: any, context: Context) => {
+
+            const db = context.client.db(databaseName);
+            const collection = db.collection(collectionName);
+
+            const result = await collection.find({ [targetField]: { $in: source[sourceField].link } }).toArray();
+
+            if (result.length !== source[sourceField].link.length) {
+
+                throw new Error(`Invalid entity ids`);
+            }
+        }
+    }
+}
+
+export const getRelationshipExtension = (
+    sourceField: string,
+    targetField: string,
+    LinkType: GraphQLNamedType,
+    databaseName: string,
+    collectionName: string
+) => {
+
+    return {
+        linkType: LinkType,
+        linkValidation: async (source: any, context: Context) => {
+
+            const db = context.client.db(databaseName);
+            const collection = db.collection(collectionName);
+
+            const result = await collection.findOne({ [targetField]: source[sourceField].link });
+
+            if (!result) {
+
+                throw new Error(`Invalid entity id`);
+            }
+        }
+    }
+}
+
+
+export const getListRelationshipResolver = (
+    sourceField: string,
+    targetField: string,
+    ReferencedType: GraphQLObjectType,
+    databaseName: string,
+    collectionName: string,
+) => {
+
+    return getMongoDbQueryResolver(ReferencedType, async (filter, projection, options, source: any, args, context: Context) => {
+
+        const db = context.client.db(databaseName);
+
+        const collection = db.collection(collectionName);
+
+        const result = source[sourceField]?.length
+            ? await collection.find({ [targetField]: { $in: source[sourceField] } }, options).toArray()
+            : []
+
+        return result;
+    })
+}
+
+export const getRelationshipResolver = (
+    sourceField: string,
+    targetField: string,
+    ReferencedType: GraphQLObjectType,
+    databaseName: string,
+    collectionName: string,
+) => {
+
+    return getMongoDbQueryResolver(ReferencedType, async (filter, projection, options, source: any, args, context: Context) => {
+
+        const db = context.client.db(databaseName);
+
+        const collection = db.collection(collectionName);
+
+        const result = source[sourceField]
+            ? await collection.findOne({ [targetField]: source[sourceField] }, options)
+            : null
+
+        return result;
+    })
+}
+
+
+const extendedTypesCache: { [key: string]: GraphQLNamedType } = {}
+
+export function getInsertType(Type: GraphQLObjectType<any, any>) {
+
+    const inputTypeName = `${Type.name}InsertType`;
+
+    if (extendedTypesCache[inputTypeName]) {
+
+        return extendedTypesCache[inputTypeName] as GraphQLInputObjectType;
+    }
+    else {
+
+        const relationFields: ThunkObjMap<GraphQLInputFieldConfig> = {};
+
+        for (const [key, field] of Object.entries(Type.toConfig().fields)) {
+
+            if (field.extensions?.relationship) {
+
+                const relationship = field.extensions.relationship as { linkType: GraphQLInputType, createType: GraphQLInputType };
+
+                const config: { name: string, fields: Record<string, any> } = {
+                    name: `${Type.name}${capitalize(key)}RelationInput`,
+                    fields: {},
+                }
+
+                if (relationship.linkType) {
+
+                    config.fields.link = { type: relationship.linkType };
+                }
+
+                if (relationship.createType) {
+
+                    throw 'Not implemented';
+                }
+
+                // non null should depend if the field is non null or not
+
+                const inputType = new GraphQLNonNull(new GraphQLInputObjectType(config));
+
+                relationFields[key] = { type: inputType };
+            }
+        }
+
+        const base = getGraphQLInsertType(Type);
+        const config = base.toConfig();
+
+        const extended = new GraphQLInputObjectType({
+            ...config,
+            name: inputTypeName,
+            fields: {
+                ...config.fields,
+                ...relationFields,
+            },
+            extensions: {
+                updated: true,
+            }
+        });
+
+        extendedTypesCache[inputTypeName] = extended;
+
+        return extended;
+    }
 }

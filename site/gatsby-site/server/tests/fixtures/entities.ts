@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { Fixture, serializeId } from "../utils";
-import { Entity } from "../../generated/graphql"; // Assuming this is where the EntityType is defined
+import { Entity } from "../../generated/graphql";
 
 const entity1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),

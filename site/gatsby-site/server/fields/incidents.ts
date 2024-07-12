@@ -1,10 +1,9 @@
 import { GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
-import { generateMutationFields, generateQueryFields, incidentEmbedding } from "../utils";
+import { generateMutationFields, generateQueryFields, getListRelationshipExtension, getListRelationshipResolver, incidentEmbedding } from "../utils";
 import { ReportType } from "./reports";
 import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { Context } from "../interfaces";
-import { ObjectId } from "mongodb";
 import { ObjectIdScalar } from "../scalars";
 import { Incident, Report } from "../generated/graphql";
 import { isAdmin } from "../rules";
@@ -35,22 +34,6 @@ const NlpSimilarIncidentType = new GraphQLObjectType({
     }
 });
 
-function entitiesFieldResolver(field: string) {
-
-    return getMongoDbQueryResolver(EntityType, async (filter, projection, options, source: any, args, context: Context) => {
-
-        const db = context.client.db('aiidprod');
-
-        const entitiesCollection = db.collection('entities');
-
-        const result = source[field]?.length
-            ? await entitiesCollection.find({ entity_id: { $in: source[field] } }, options).toArray()
-            : []
-
-        return result;
-    })
-}
-
 const IncidentType = new GraphQLObjectType({
     name: 'Incident',
     fields: {
@@ -63,49 +46,43 @@ const IncidentType = new GraphQLObjectType({
         title: { type: new GraphQLNonNull(GraphQLString) },
         AllegedDeployerOfAISystem: {
             type: new GraphQLList(EntityType),
-            resolve: entitiesFieldResolver('Alleged deployer of AI system'),
+            resolve: getListRelationshipResolver('AllegedDeployerOfAISystem', 'entity_id', EntityType, 'aiidprod', 'entities'),
+            extensions: {
+                relationship: getListRelationshipExtension('AllegedDeployerOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+            },
         },
         AllegedDeveloperOfAISystem: {
             type: new GraphQLList(EntityType),
-            resolve: entitiesFieldResolver('Alleged developer of AI system'),
+            resolve: getListRelationshipResolver('AllegedDeveloperOfAISystem', 'entity_id', EntityType, 'aiidprod', 'entities'),
+            extensions: {
+                relationship: getListRelationshipExtension('AllegedDeveloperOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+            },
         },
         AllegedHarmedOrNearlyHarmedParties: {
             type: new GraphQLList(EntityType),
-            resolve: entitiesFieldResolver('Alleged harmed or nearly harmed parties'),
+            resolve: getListRelationshipResolver('AllegedHarmedOrNearlyHarmedParties', 'entity_id', EntityType, 'aiidprod', 'entities'),
+            extensions: {
+                relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+            },
         },
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         editors: {
             type: new GraphQLNonNull(new GraphQLList(UserType)),
-            resolve: getMongoDbQueryResolver(UserType, async (filter, projection, options, source: any, args, context: Context) => {
-
-                const db = context.client.db('customData');
-
-                const usersCollection = db.collection('users');
-
-                const result = await usersCollection.find({ userId: { $in: source?.editors } }, options).toArray();
-
-                return result;
-            }),
+            resolve: getListRelationshipResolver('editors', 'userId', UserType, 'customData', 'users'),
+            extensions: {
+                relationship: getListRelationshipExtension('editors', 'userId', GraphQLString, 'customData', 'users')
+            },
         },
         embedding: { type: EmbeddingType },
         flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: {
             type: new GraphQLNonNull(new GraphQLList(ReportType)),
-            resolve: getMongoDbQueryResolver(ReportType, async (filter, projection, options, source: { _id: ObjectId }, args, context: Context) => {
-
-                const db = context.client.db('aiidprod');
-
-                const incidentsCollection = db.collection('incidents');
-                const reportsCollection = db.collection('reports');
-
-                const incident = await incidentsCollection.findOne({ _id: source._id }, { projection: { reports: 1 } });
-
-                const result = await reportsCollection.find({ report_number: { $in: incident?.reports } }, options).toArray();
-
-                return result;
-            }),
+            resolve: getListRelationshipResolver('reports', 'report_number', ReportType, 'aiidprod', 'reports'),
+            extensions: {
+                relationship: getListRelationshipExtension('reports', 'report_number', GraphQLInt, 'aiidprod', 'reports')
+            },
         },
         tsne: { type: TsneType }
     },

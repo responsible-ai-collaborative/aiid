@@ -1,9 +1,10 @@
 import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { ObjectIdScalar } from "../scalars";
-import { generateMutationFields, generateQueryFields } from "../utils";
+import { generateMutationFields, generateQueryFields, getRelationshipExtension, getRelationshipResolver } from "../utils";
 import { Context } from "../interfaces";
 import { isAdmin } from "../rules";
+import { UserType } from "./users";
 
 
 const EmbeddingType = new GraphQLObjectType({
@@ -52,7 +53,13 @@ export const ReportType = new GraphQLObjectType({
         text: { type: new GraphQLNonNull(GraphQLString) },
         title: { type: new GraphQLNonNull(GraphQLString) },
         url: { type: new GraphQLNonNull(GraphQLString) },
-        user: { type: GraphQLString },
+        user: {
+            type: UserType,
+            resolve: getRelationshipResolver('user', 'userId', UserType, 'customData', 'users'),
+            extensions: {
+                relationship: getRelationshipExtension('user', 'userId', GraphQLString, 'customData', 'users')
+            },
+        },
         quiet: { type: GraphQLBoolean },
         translations: {
             type: ReportTranslationsType,
@@ -78,7 +85,8 @@ export const ReportType = new GraphQLObjectType({
 
 //@ts-ignore
 ReportType.getFields().translations.dependencies = [];
-
+//@ts-ignore
+ReportType.getFields().user.dependencies = ['user'];
 
 export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
@@ -102,7 +110,7 @@ export const permissions = {
         insertManyReports: isAdmin,
         updateOneReport: isAdmin,
         updateManyReports: isAdmin,
-        
+
         linkReportsToIncidents: allow,
     }
 }
