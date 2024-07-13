@@ -9,11 +9,13 @@ import quickaddsFixture from './fixtures/quickadds';
 import reportsFixture from './fixtures/reports';
 import entitiesFixture from './fixtures/entities';
 import usersFixture from './fixtures/users';
+import incidentsFixture from './fixtures/incidents';
 
 const fixtures = [
     quickaddsFixture,
     reportsFixture,
     entitiesFixture,
+    incidentsFixture,
     usersFixture,
 ]
 
@@ -101,7 +103,7 @@ fixtures.forEach((collection) => {
 
                 const mutationData = {
                     query: `
-                mutation ($data: [${insertTypeName}!]) {
+                mutation ($data: [${insertTypeName}]!) {
                     ${insertManyFieldName}(data: $data) {
                       insertedIds
                     }
@@ -153,7 +155,7 @@ fixtures.forEach((collection) => {
                 `,
                     variables: {
                         "filter": testData.filter,
-                        "update": { set: testData.set },
+                        "update": testData.update,
                     },
                 }
 
@@ -200,7 +202,7 @@ fixtures.forEach((collection) => {
                 `,
                     variables: {
                         "filter": testData.filter,
-                        "update": { "set": testData.set }
+                        "update": testData.update,
                     }
                 };
 
@@ -208,11 +210,11 @@ fixtures.forEach((collection) => {
                 for (const user of testData.allowed) {
 
                     await seedFixture(collection.seeds);
-        
+
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
                     const response = await makeRequest(url, mutationData);
-    
+
 
                     expect(response.body.data[updateManyFieldName]).toMatchObject(testData.result);
                 }
@@ -249,7 +251,7 @@ fixtures.forEach((collection) => {
                 };
 
 
-                for(const user of testData.allowed) {
+                for (const user of testData.allowed) {
 
                     await seedFixture(collection.seeds);
 
@@ -260,7 +262,7 @@ fixtures.forEach((collection) => {
                     expect(response.body.data[deleteOneFieldName]).toMatchObject(testData.result);
                 }
 
-                for(const user of testData.denied) {
+                for (const user of testData.denied) {
 
                     await seedFixture(collection.seeds);
 
@@ -269,7 +271,7 @@ fixtures.forEach((collection) => {
                     const response = await makeRequest(url, mutationData);
 
                     expect(response.body.errors[0].message).toBe('not authorized');
-                } 
+                }
             });
         }
 
@@ -291,7 +293,7 @@ fixtures.forEach((collection) => {
                 };
 
 
-                for(const user of testData.allowed) {
+                for (const user of testData.allowed) {
 
                     await seedFixture(collection.seeds);
 
@@ -304,7 +306,7 @@ fixtures.forEach((collection) => {
                 }
 
 
-                for(const user of testData.denied) {
+                for (const user of testData.denied) {
 
                     await seedFixture(collection.seeds);
 

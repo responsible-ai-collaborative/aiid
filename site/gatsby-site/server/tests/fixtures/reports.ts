@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { Fixture, removeId, serializeId } from "../utils";
-import { Report } from "../../generated/graphql";
+import { Report, ReportInsertType, ReportUpdateType } from "../../generated/graphql";
 
 const report1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -33,7 +33,7 @@ const report1 = {
     text: "Sample text",
     title: "Sample title",
     url: "http://example.com",
-    user: "user1",
+    user: "admin",
     quiet: false,
 }
 
@@ -68,7 +68,7 @@ const report2 = {
     text: "Another sample text",
     title: "Another sample title",
     url: "http://example3.com",
-    user: "user3",
+    user: "admin",
     quiet: true,
 }
 
@@ -103,7 +103,7 @@ const report3 = {
     text: "Third sample text",
     title: "Third sample title",
     url: "http://example2.com",
-    user: "user2",
+    user: "admin",
     quiet: false,
 }
 
@@ -138,7 +138,7 @@ const report4 = {
     text: "Fourth sample text",
     title: "Fourth sample title",
     url: "http://example4.com",
-    user: "user4",
+    user: "admin",
     quiet: true,
 }
 
@@ -167,7 +167,7 @@ const anonymous = {
 }
 
 
-const fixture: Fixture<Report> = {
+const fixture: Fixture<Report, ReportUpdateType, ReportInsertType> = {
     name: 'reports',
     query: `
         _id
@@ -200,10 +200,19 @@ const fixture: Fixture<Report> = {
         text
         title
         url
-        user
+        user {
+            userId
+        }
         quiet
     `,
     seeds: {
+        customData: {
+            users: [
+                subscriber,
+                admin,
+                anonymous,
+            ],
+        },
         aiidprod: {
             reports: [
                 report1,
@@ -217,7 +226,9 @@ const fixture: Fixture<Report> = {
         allowed: [anonymous],
         denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        result: serializeId(report1)
+        result: {
+            report_number: 1,
+        }
     },
     testPluralFilter: {
         allowed: [anonymous],
@@ -226,7 +237,7 @@ const fixture: Fixture<Report> = {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
         result: [
-            serializeId(report1),
+            { report_number: 1 },
         ]
     },
     testPluralSort: {
@@ -234,10 +245,10 @@ const fixture: Fixture<Report> = {
         denied: [],
         sort: { report_number: "ASC" },
         result: [
-            serializeId(report1),
-            serializeId(report2),
-            serializeId(report3),
-            serializeId(report4),
+            { report_number: 1 },
+            { report_number: 2 },
+            { report_number: 3 },
+            { report_number: 4 },
         ],
     },
     testPluralPagination: {
@@ -246,70 +257,75 @@ const fixture: Fixture<Report> = {
         pagination: { limit: 2, skip: 2 },
         sort: { report_number: "ASC" },
         result: [
-            serializeId(report3),
-            serializeId(report4),
+            { report_number: 3 },
+            { report_number: 4 },
         ]
     },
     testUpdateOne: {
         allowed: [admin],
         denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        set: { url: 'https://edited.com' },
-        result: { url: 'https://edited.com' }
+        update: { set: { url: 'https://edited.com' } },
+        result: {
+            report_number: 1,
+            url: 'https://edited.com'
+        }
     },
-    testUpdateMany: {
-        allowed: [admin],
-        denied: [anonymous],
-        filter: { report_number: { EQ: 1 } },
-        set: { url: 'https://edited.com' },
-        result: { modifiedCount: 1, matchedCount: 1 }
-    },
+    testUpdateMany: null,
     testInsertOne: {
         allowed: [admin],
         denied: [anonymous],
         insert: {
-            ...removeId(report1),
+            cloudinary_id: 'sample_cloudinary_id_5',
+            date_downloaded: '2021-09-14T00:00:00.000Z',
+            date_modified: '2021-09-14T00:00:00.000Z',
+            date_published: '2021-09-14T00:00:00.000Z',
+            date_submitted: '2021-09-14T00:00:00.000Z',
+            description: 'Sample description 5',
+            authors: ['Author 5', 'Author 6'],
+            epoch_date_downloaded: 1631577600,
+            epoch_date_modified: 1631577600,
+            epoch_date_published: 1631577600,
+            epoch_date_submitted: 1631577600,
+            image_url: 'http://example.com/image.png',
+            language: 'en',
+            plain_text: 'Sample plain text 5',
+            report_number: 5,
+            source_domain: 'example.com',
+            submitters: ['Submitter 5', 'Submitter 6'],
+            tags: ['tag5', 'tag6'],
+            text: 'Sample text 5',
+            title: 'Sample title 5',
+            url: 'http://example.com',
+            user: { link: admin.userId }
         },
         result: {
-            ...removeId(report1),
             _id: expect.any(String),
+            cloudinary_id: 'sample_cloudinary_id_5',
+            user: { userId: admin.userId },
+            report_number: 5,
+            url: 'http://example.com',
+            authors: ['Author 5', 'Author 6'],
+
+            date_downloaded: '2021-09-14T00:00:00.000Z',
+            date_modified: '2021-09-14T00:00:00.000Z',
+            date_published: '2021-09-14T00:00:00.000Z',
+            date_submitted: '2021-09-14T00:00:00.000Z',
+
+            epoch_date_downloaded: 1631577600,
+            epoch_date_modified: 1631577600,
+            epoch_date_published: 1631577600,
+            epoch_date_submitted: 1631577600,
         }
     },
-    testInsertMany: {
-        allowed: [admin],
-        denied: [anonymous],
-        insert: [
-            {
-                ...removeId(report1),
-            },
-            {
-                ...removeId(report2),
-            },
-        ],
-        result: { insertedIds: [expect.any(String), expect.any(String)] }
-    },
+    testInsertMany: null,
     testDeleteOne: {
         allowed: [admin],
         denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
-    testDeleteMany: {
-        allowed: [admin],
-        denied: [anonymous],
-        filter: { report_number: { EQ: 1 } },
-        result: { deletedCount: 1 }
-    },
-    roles: {
-        singular: [],
-        plural: [],
-        insertOne: ['admin'],
-        insertMany: ['admin'],
-        updateOne: ['admin'],
-        updateMany: ['admin'],
-        deleteOne: ['admin'],
-        deleteMany: ['admin'],
-    },
+    testDeleteMany: null,
 }
 
 export default fixture;

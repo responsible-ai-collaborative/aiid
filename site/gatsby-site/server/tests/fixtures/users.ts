@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { Fixture, serializeId } from "../utils";
-import { User } from "../../generated/graphql";
+import { User, UserUpdateType } from "../../generated/graphql";
 
 const admin = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -26,7 +26,7 @@ const anonymous = {
     userId: 'user3',
 };
 
-const fixture: Fixture<User> = {
+const fixture: Fixture<User, UserUpdateType> = {
     name: 'users',
     query: `
         _id
@@ -48,7 +48,12 @@ const fixture: Fixture<User> = {
         allowed: [subscriber],
         denied: [anonymous],
         filter: { userId: { EQ: 'user2' } },
-        result: serializeId(subscriber)
+        result: {
+            first_name: 'Jane',
+            last_name: 'Doe',
+            roles: ['subscriber'],
+            userId: 'user2',
+        }
     },
     testPluralFilter: {
         allowed: [admin],
@@ -57,8 +62,18 @@ const fixture: Fixture<User> = {
             userId: { IN: ['user1', 'user3'] },
         },
         result: [
-            serializeId(admin),
-            serializeId(anonymous),
+            {
+                first_name: 'John',
+                last_name: 'Doe',
+                roles: ['admin'],
+                userId: 'user1',
+            },
+            {
+                first_name: 'Anon',
+                last_name: 'Anon',
+                roles: [],
+                userId: 'user3',
+            },
         ],
     },
     testPluralPagination: {
@@ -67,7 +82,12 @@ const fixture: Fixture<User> = {
         pagination: { limit: 1, skip: 1 },
         sort: { first_name: "ASC" },
         result: [
-            serializeId(subscriber),
+            {
+                first_name: 'Jane',
+                last_name: 'Doe',
+                roles: ['subscriber'],
+                userId: 'user2',
+            },
         ],
     },
     testPluralSort: {
@@ -75,9 +95,24 @@ const fixture: Fixture<User> = {
         denied: [subscriber, anonymous],
         sort: { first_name: "ASC" },
         result: [
-            serializeId(anonymous),
-            serializeId(subscriber),
-            serializeId(admin),
+            {
+                first_name: 'Anon',
+                last_name: 'Anon',
+                roles: [],
+                userId: 'user3',
+            },
+            {
+                first_name: 'Jane',
+                last_name: 'Doe',
+                roles: ['subscriber'],
+                userId: 'user2',
+            },
+            {
+                first_name: 'John',
+                last_name: 'Doe',
+                roles: ['admin'],
+                userId: 'user1',
+            },
         ],
     },
     testInsertOne: null,
@@ -86,22 +121,12 @@ const fixture: Fixture<User> = {
         allowed: [admin, subscriber],
         denied: [anonymous],
         filter: { userId: { EQ: 'user2' } },
-        set: { first_name: 'Updated John' },
+        update: { set: { first_name: 'Updated John' } },
         result: { first_name: 'Updated John' }
     },
     testUpdateMany: null,
     testDeleteOne: null,
     testDeleteMany: null,
-    roles: {
-        singular: ['self'],
-        plural: ['admin'],
-        updateOne: ['self'],
-        updateMany: null,
-        insertOne: null,
-        insertMany: null,
-        deleteOne: null,
-        deleteMany: null,
-    },
 };
 
 export default fixture;

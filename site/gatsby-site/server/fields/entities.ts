@@ -24,7 +24,7 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
 export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateMutationFields({ collectionName: 'entities', Type: EntityType }),
+    ...generateMutationFields({ collectionName: 'entities', Type: EntityType, generateFields: ['updateOne', 'upsertOne'] }),
 }
 
 export const permissions = {
@@ -33,11 +33,7 @@ export const permissions = {
         entities: allow,
     },
     Mutation: {
-        deleteOneEntity: isAdmin,
-        deleteManyEntities: isAdmin,
-        insertOneEntity: isAdmin,
-        insertManyEntities: isAdmin,
         updateOneEntity: isAdmin,
-        updateManyEntities: isAdmin,
+        upsertOneEntity: isAdmin,
     }
 }

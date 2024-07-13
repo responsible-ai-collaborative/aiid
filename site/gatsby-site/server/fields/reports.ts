@@ -95,7 +95,7 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
-    ...generateMutationFields({ collectionName: 'reports', Type: ReportType }),
+    ...generateMutationFields({ collectionName: 'reports', Type: ReportType, generateFields: ['updateOne', 'deleteOne', 'insertOne'] }),
 }
 
 export const permissions = {
@@ -105,11 +105,8 @@ export const permissions = {
     },
     Mutation: {
         deleteOneReport: isAdmin,
-        deleteManyReports: isAdmin,
         insertOneReport: isAdmin,
-        insertManyReports: isAdmin,
         updateOneReport: isAdmin,
-        updateManyReports: isAdmin,
 
         linkReportsToIncidents: allow,
     }

@@ -6,7 +6,7 @@ import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
 import { Incident, Report } from "../generated/graphql";
-import { isAdmin } from "../rules";
+import { isAdmin, isRole } from "../rules";
 import { EntityType } from "./entities";
 import { UserType } from "./users";
 
@@ -139,7 +139,7 @@ const LinkReportsToIncidentsInput = new GraphQLInputObjectType({
 
 export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateMutationFields({ collectionName: 'incidents', Type: IncidentType }),
+    ...generateMutationFields({ collectionName: 'incidents', Type: IncidentType, generateFields: ['insertOne', 'updateOne', 'updateMany'] }),
 
     linkReportsToIncidents: {
         type: new GraphQLList(IncidentType),
@@ -216,12 +216,9 @@ export const permissions = {
         incidents: allow,
     },
     Mutation: {
-        deleteOneIncident: isAdmin,
-        deleteManyIncidents: isAdmin,
-        insertOneIncident: isAdmin,
-        insertManyIncidents: isAdmin,
-        updateOneIncident: isAdmin,
-        updateManyIncidents: isAdmin,
-        linkReportsToIncidents: allow,
+        insertOneIncident: isRole('incident_editor'),
+        updateOneIncident: isRole('incident_editor'),
+        updateManyIncidents: isRole('incident_editor'),
+        linkReportsToIncidents: isRole('incident_editor'),
     }
 }

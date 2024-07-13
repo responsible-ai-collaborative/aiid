@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { Fixture, serializeId } from "../utils";
-import { Quickadd } from "../../generated/graphql";
+import { Quickadd, QuickaddFilterType, QuickaddInsertType, QuickaddUpdateInput, QuickaddUpdateType } from "../../generated/graphql";
 
 const quickadd1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -24,22 +24,6 @@ const quickadd3 = {
     incident_id: 2,
     source_domain: "example3.com",
     url: "http://example3.com"
-}
-
-const quickadd4 = {
-    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e7'),
-    date_submitted: "2021-09-14T00:00:00.000Z",
-    incident_id: 2,
-    source_domain: "example4.com",
-    url: "http://example4.com"
-}
-
-const quickadd5 = {
-    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e8'),
-    date_submitted: "2024-09-14T00:00:00.000Z",
-    incident_id: 3,
-    source_domain: "example5.com",
-    url: "http://example5.com"
 }
 
 const subscriber = {
@@ -66,7 +50,7 @@ const anonymous = {
     userId: 'anon',
 }
 
-const fixture: Fixture<Quickadd> = {
+const fixture: Fixture<Quickadd, QuickaddUpdateType, QuickaddInsertType> = {
     name: 'quickadd',
     query: `
         date_submitted
@@ -87,8 +71,6 @@ const fixture: Fixture<Quickadd> = {
                 quickadd1,
                 quickadd2,
                 quickadd3,
-                quickadd4,
-                quickadd5
             ],
         }
     },
@@ -113,21 +95,18 @@ const fixture: Fixture<Quickadd> = {
         denied: [],
         sort: { _id: "ASC" },
         result: [
-            serializeId(quickadd1),
-            serializeId(quickadd2),
-            serializeId(quickadd3),
-            serializeId(quickadd4),
-            serializeId(quickadd5),
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e4' },
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e5' },
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e6' },
         ],
     },
     testPluralPagination: {
         allowed: [subscriber],
         denied: [],
-        pagination: { limit: 2, skip: 2 },
+        pagination: { skip: 2, limit: 2 },
         sort: { _id: "ASC" },
         result: [
-            serializeId(quickadd3),
-            serializeId(quickadd4),
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e6' }
         ]
     },
 
@@ -135,15 +114,15 @@ const fixture: Fixture<Quickadd> = {
         allowed: [admin],
         denied: [subscriber],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        set: { url: 'https://edited.com' },
+        update: { set: { url: 'https://edited.com' } },
         result: { url: 'https://edited.com' }
     },
     testUpdateMany: {
         allowed: [admin],
         denied: [subscriber],
         filter: { incident_id: { EQ: 2 } },
-        set: { url: 'https://edited.com' },
-        result: { modifiedCount: 3, matchedCount: 3 }
+        update: { set: { url: 'https://edited.com' } },
+        result: { modifiedCount: 2, matchedCount: 2 }
     },
     testInsertOne: {
         allowed: [anonymous],
@@ -191,18 +170,8 @@ const fixture: Fixture<Quickadd> = {
         allowed: [admin],
         denied: [anonymous],
         filter: { incident_id: { EQ: 2 } },
-        result: { deletedCount: 3 },
-    },
-    roles: {
-        singular: [],
-        plural: [],
-        insertOne: [],
-        insertMany: ['admin'],
-        updateOne: ['admin'],
-        updateMany: ['admin'],
-        deleteOne: ['admin'],
-        deleteMany: ['admin'],
-    },
+        result: { deletedCount: 2 },
+    }
 }
 
 export default fixture;

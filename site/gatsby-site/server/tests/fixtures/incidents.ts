@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { Fixture, removeField, removeFields, removeId, serializeId } from "../utils";
-import { Incident } from "../../generated/graphql";
+import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
 
 type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
     & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] }
@@ -23,13 +23,14 @@ const editor1 = {
     userId: 'editor1',
 };
 
-const editor2 = {
+const anonymous = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e5'),
-    first_name: 'Jane',
-    last_name: 'Doe',
-    roles: ['incident_editor'],
-    userId: 'editor2',
+    first_name: 'Anon',
+    last_name: 'Anon',
+    roles: [],
+    userId: 'anon',
 };
+
 
 const entity1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -76,7 +77,7 @@ const report1 = {
     text: "Sample text",
     title: "Sample title",
     url: "http://example.com",
-    user: "user1",
+    user: "editor1",
     quiet: false,
 }
 
@@ -111,7 +112,7 @@ const report2 = {
     text: "Another sample text",
     title: "Another sample title",
     url: "http://example3.com",
-    user: "user3",
+    user: "editor1",
     quiet: true,
 }
 
@@ -146,7 +147,7 @@ const report3 = {
     text: "Third sample text",
     title: "Third sample title",
     url: "http://example2.com",
-    user: "user2",
+    user: "editor1",
     quiet: false,
 }
 
@@ -286,65 +287,25 @@ const incident3: DBIncident = {
     reports: [2, 3],
 };
 
-const resultIncident1: Incident = {
-    ...serializeId(removeFields(incident1, "Alleged deployer of AI system", "Alleged developer of AI system", "Alleged harmed or nearly harmed parties")),
-    AllegedDeployerOfAISystem: [],
-    AllegedDeveloperOfAISystem: [],
-    AllegedHarmedOrNearlyHarmedParties: [],
-    reports: [serializeId(report1), serializeId(report2)],
-    editors: [serializeId(editor1)]
-}
-
-const resultIncident2: Incident = {
-    ...serializeId(removeFields(incident2, "Alleged deployer of AI system", "Alleged developer of AI system", "Alleged harmed or nearly harmed parties")),
-    AllegedDeployerOfAISystem: [serializeId(entity1), serializeId(entity2)],
-    AllegedDeveloperOfAISystem: [serializeId(entity1)],
-    AllegedHarmedOrNearlyHarmedParties: [],
-    reports: [serializeId(report3)],
-    editors: [serializeId(editor1)]
-}
-
-const resultIncident3: Incident = {
-    ...serializeId(removeFields(incident3, "Alleged deployer of AI system", "Alleged developer of AI system", "Alleged harmed or nearly harmed parties")),
-    AllegedDeployerOfAISystem: [],
-    AllegedDeveloperOfAISystem: [],
-    AllegedHarmedOrNearlyHarmedParties: [],
-    reports: [serializeId(report2), serializeId(report3)],
-    editors: []
-}
-
-const fixture: Fixture<DBIncident, Incident> = {
+const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
     name: 'incidents',
     query: `
         _id
         AllegedDeployerOfAISystem {
-            _id
             entity_id
-            name
-            created_at
         }
         AllegedDeveloperOfAISystem {
-            _id
             entity_id
-            name
-            created_at
         }
         AllegedHarmedOrNearlyHarmedParties {
-            _id
             entity_id
-            name
-            created_at
         }
         date
         description
         editor_dissimilar_incidents
         editor_notes
         editors {
-            _id
             userId
-            first_name
-            last_name
-            roles
         }
         editor_similar_incidents
         embedding {
@@ -364,38 +325,10 @@ const fixture: Fixture<DBIncident, Incident> = {
             y
         }
         reports {
-            _id
-            authors
-            cloudinary_id
-            date_downloaded
-            date_modified
-            date_published
-            date_submitted
-            description
-            editor_notes
-            embedding {
-                from_text_hash
-                vector
-            }
-            epoch_date_downloaded
-            epoch_date_modified
-            epoch_date_published
-            epoch_date_submitted
-            flag
-            image_url
-            inputs_outputs
-            is_incident_report
-            language
-            plain_text
             report_number
-            source_domain
-            submitters
-            tags
-            text
-            title
-            url
-            user
-            quiet
+            user {
+                userId
+            }
         }
     `,
     seeds: {
@@ -403,7 +336,7 @@ const fixture: Fixture<DBIncident, Incident> = {
             users: [
                 subscriber,
                 editor1,
-                editor2,
+                anonymous,
             ],
         },
         aiidprod: {
@@ -424,19 +357,27 @@ const fixture: Fixture<DBIncident, Incident> = {
         },
     },
     testSingular: {
-        allowed: [subscriber],
+        allowed: [anonymous, subscriber],
         denied: [],
         filter: { _id: { EQ: incident1._id } },
-        result: resultIncident1,
+        result: {
+            incident_id: 1,
+            title: 'Test Incident 1',
+            date: '2023-01-14T00:00:00.000Z',
+            reports: [
+                { report_number: 1 },
+                { report_number: 2 }
+            ]
+        },
     },
     testPluralFilter: {
-        allowed: [subscriber],
+        allowed: [anonymous, subscriber],
         denied: [],
         filter: {
             _id: { EQ: incident1._id },
         },
         result: [
-            resultIncident1,
+            { incident_id: 1 },
         ]
     },
     testPluralSort: {
@@ -444,9 +385,9 @@ const fixture: Fixture<DBIncident, Incident> = {
         denied: [],
         sort: { incident_id: "ASC" },
         result: [
-            resultIncident1,
-            resultIncident2,
-            resultIncident3,
+            { incident_id: 1 },
+            { incident_id: 2 },
+            { incident_id: 3 },
         ],
     },
     testPluralPagination: {
@@ -455,70 +396,50 @@ const fixture: Fixture<DBIncident, Incident> = {
         pagination: { limit: 2, skip: 1 },
         sort: { incident_id: "ASC" },
         result: [
-            resultIncident2,
-            resultIncident3,
+            { incident_id: 2 },
+            { incident_id: 3 },
         ]
     },
     testUpdateOne: {
         allowed: [editor1],
-        denied: [subscriber],
+        denied: [anonymous, subscriber],
         filter: { _id: { EQ: incident1._id } },
-        set: { title: 'edited title' },
+        update: { set: { title: 'edited title' } },
         result: { title: 'edited title' }
     },
     testUpdateMany: {
         allowed: [editor1],
         denied: [subscriber],
         filter: { incident_id: { EQ: 1 } },
-        set: { title: 'edited tile' },
+        update: { set: { title: 'edited tile' } },
         result: { modifiedCount: 1, matchedCount: 1 }
     },
     testInsertOne: {
         allowed: [editor1],
-        denied: [subscriber],
+        denied: [anonymous, subscriber],
         insert: {
-            ...resultIncident1
+            date: '2023-04-14T00:00:00.000Z',
+            title: 'Test Incident 4',
+            reports: { link: [1, 2] },
+            incident_id: 5,
+            editors: { link: [editor1.userId] },
         },
         result: {
-            ...resultIncident1,
             _id: expect.any(String),
+            date: '2023-04-14T00:00:00.000Z',
+            title: 'Test Incident 4',
+            reports: [
+                { report_number: 1 },
+                { report_number: 2 }
+            ],
+            editors: [
+                { userId: 'editor1' }
+            ]
         }
     },
-    testInsertMany: {
-        allowed: [editor1],
-        denied: [subscriber],
-        insert: [
-            {
-                ...resultIncident1,
-            },
-            {
-                ...resultIncident1,
-            },
-        ],
-        result: { insertedIds: [expect.any(String), expect.any(String)] }
-    },
-    testDeleteOne: {
-        allowed: [editor1],
-        denied: [subscriber],
-        filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
-    },
-    testDeleteMany: {
-        allowed: [editor1],
-        denied: [subscriber],
-        filter: { incident_id: { EQ: 1 } },
-        result: { deletedCount: 1 }
-    },
-    roles: {
-        singular: [],
-        plural: [],
-        insertOne: ['admin'],
-        insertMany: ['admin'],
-        updateOne: ['admin'],
-        updateMany: ['admin'],
-        deleteOne: ['admin'],
-        deleteMany: ['admin'],
-    },
+    testInsertMany: null,
+    testDeleteOne: null,
+    testDeleteMany: null,
 }
 
 export default fixture;

@@ -82,7 +82,9 @@ export function removeId<T extends { _id?: { toHexString: () => string } }>(obj:
     return removeField(obj, '_id');
 }
 
-export interface Fixture<T, Y = T> {
+type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+
+export interface Fixture<T, U, I = any> {
     name: string;
     query: string;
     seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
@@ -90,51 +92,51 @@ export interface Fixture<T, Y = T> {
         allowed: User[];
         denied: User[];
         filter: unknown;
-        result: Partial<Y>;
+        result: DeepPartial<T>;
     } | null;
     testPluralFilter: {
         allowed: User[];
         denied: User[];
         filter: unknown;
-        result: Partial<Y>[];
+        result: DeepPartial<T>[];
     } | null;
     testPluralSort: {
         allowed: User[];
         denied: User[];
         sort: unknown;
-        result: Partial<Y>[];
+        result: DeepPartial<T>[];
     } | null;
     testPluralPagination: {
         allowed: User[];
         denied: User[];
         pagination: { limit: number; skip: number };
         sort: unknown;
-        result: Partial<Y>[];
+        result: DeepPartial<T>[];
     } | null;
     testUpdateOne: {
         allowed: User[];
         denied: User[];
         filter: unknown;
-        set: Partial<Y>;
-        result: Partial<Y>;
+        update: U;
+        result: DeepPartial<T>;
     } | null;
     testUpdateMany: {
         allowed: User[];
         denied: User[];
         filter: { [key: string]: unknown };
-        set: Partial<Y>;
+        update: U;
         result: { modifiedCount: number; matchedCount: number };
     } | null;
     testInsertOne: {
         allowed: User[];
         denied: User[];
-        insert: Partial<Y>;
-        result: Partial<Y>;
+        insert: I;
+        result: DeepPartial<T>;
     } | null;
     testInsertMany: {
         allowed: User[];
         denied: User[];
-        insert: Partial<Y>[];
+        insert: I[];
         result: { insertedIds: string[] };
     } | null;
     testDeleteOne: {
@@ -149,16 +151,6 @@ export interface Fixture<T, Y = T> {
         filter: { [key: string]: unknown };
         result: { deletedCount: number };
     } | null;
-    roles: {
-        singular: string[] | null;
-        plural: string[] | null;
-        insertOne: string[] | null;
-        insertMany: string[] | null;
-        updateOne: string[] | null;
-        updateMany: string[] | null;
-        deleteOne: string[] | null;
-        deleteMany: string[] | null;
-    };
 }
 
 export const seedFixture = async (seeds: Record<string, Record<string, Record<string, unknown>[]>>) => {
