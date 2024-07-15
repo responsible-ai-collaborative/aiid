@@ -5,6 +5,8 @@ import { generateMutationFields, generateQueryFields, getRelationshipExtension, 
 import { Context } from "../interfaces";
 import { isAdmin } from "../rules";
 import { UserType } from "./users";
+import { getMongoDbQueryResolver } from "graphql-to-mongodb";
+import { DateTimeResolver } from "graphql-scalars";
 
 
 const EmbeddingType = new GraphQLObjectType({
@@ -29,10 +31,10 @@ export const ReportType = new GraphQLObjectType({
         _id: { type: ObjectIdScalar },
         authors: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         cloudinary_id: { type: new GraphQLNonNull(GraphQLString) },
-        date_downloaded: { type: new GraphQLNonNull(GraphQLString) },
-        date_modified: { type: new GraphQLNonNull(GraphQLString) },
-        date_published: { type: new GraphQLNonNull(GraphQLString) },
-        date_submitted: { type: new GraphQLNonNull(GraphQLString) },
+        date_downloaded: { type: new GraphQLNonNull(DateTimeResolver) },
+        date_modified: { type: new GraphQLNonNull(DateTimeResolver) },
+        date_published: { type: new GraphQLNonNull(DateTimeResolver) },
+        date_submitted: { type: new GraphQLNonNull(DateTimeResolver) },
         description: { type: GraphQLString },
         editor_notes: { type: GraphQLString },
         embedding: { type: EmbeddingType },
@@ -103,19 +105,27 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
             report_number: { type: new GraphQLNonNull(GraphQLInt) },
             input: { type: new GraphQLNonNull(GraphQLBoolean) }
         },
-        resolve: async (source, args, context: Context) => {
+        resolve: getMongoDbQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
 
             const reports = context.client.db('aiidprod').collection("reports");
 
-            const report = await reports.findOne({ report_number: args.report_number });
+            const report = await reports.findOne({ report_number: args.report_number }, { projection: { report_number: 1 } });
 
             if (report) {
 
-                const result = await reports.updateOne({ report_number: args.report_number }, { $set: { flag: args.input } });
+                const result = await reports.updateOne({ report_number: args.report_number }, {
+                    $set: {
+                        flag: args.input,
+                        date_modified: new Date(),
+                        epoch_date_modified: Math.floor(Date.now() / 1000)
+                    }
+                });
 
                 if (result.matchedCount == 1) {
 
-                    return { ...report, flag: args.input };
+                    const report = await reports.findOne({ report_number: args.report_number }, options);
+
+                    return report;
                 }
                 else {
 
@@ -126,7 +136,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
                 throw new Error("Report not found");
             }
-        }
+        }),
     }
 }
 

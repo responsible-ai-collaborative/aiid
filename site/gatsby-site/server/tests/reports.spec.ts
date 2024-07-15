@@ -14,6 +14,7 @@ describe(`Reports`, () => {
         await server?.stop();
     });
 
+
     it(`Flag report`, async () => {
 
         const mutationData = {
@@ -22,6 +23,8 @@ describe(`Reports`, () => {
                     flagReport(report_number: $reportNumber, input: $input) {
                         report_number
                         flag
+                        date_modified
+                        epoch_date_modified
                     }
                 }
                     `,
@@ -52,6 +55,7 @@ describe(`Reports`, () => {
             }
         });
 
+
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
 
         const response = await makeRequest(url, mutationData);
@@ -59,7 +63,9 @@ describe(`Reports`, () => {
         expect(response.body.data).toMatchObject({
             flagReport: {
                 report_number: 1,
-                flag: true
+                flag: true,
+                date_modified: expect.any(String),
+                epoch_date_modified: expect.any(Number),
             }
         })
     });
