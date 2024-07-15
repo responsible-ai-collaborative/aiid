@@ -96,6 +96,38 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
     ...generateMutationFields({ collectionName: 'reports', Type: ReportType, generateFields: ['updateOne', 'deleteOne', 'insertOne'] }),
+
+    flagReport: {
+        type: ReportType,
+        args: {
+            report_number: { type: new GraphQLNonNull(GraphQLInt) },
+            input: { type: new GraphQLNonNull(GraphQLBoolean) }
+        },
+        resolve: async (source, args, context: Context) => {
+
+            const reports = context.client.db('aiidprod').collection("reports");
+
+            const report = await reports.findOne({ report_number: args.report_number });
+
+            if (report) {
+
+                const result = await reports.updateOne({ report_number: args.report_number }, { $set: { flag: args.input } });
+
+                if (result.matchedCount == 1) {
+
+                    return { ...report, flag: args.input };
+                }
+                else {
+
+                    throw new Error("Failed to update report");
+                }
+
+            } else {
+
+                throw new Error("Report not found");
+            }
+        }
+    }
 }
 
 export const permissions = {
@@ -108,6 +140,6 @@ export const permissions = {
         insertOneReport: isAdmin,
         updateOneReport: isAdmin,
 
-        linkReportsToIncidents: allow,
+        flagReport: allow,
     }
 }
