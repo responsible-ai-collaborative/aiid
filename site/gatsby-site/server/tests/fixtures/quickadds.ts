@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { Fixture, serializeId } from "../utils";
-import { Quickadd, QuickaddFilterType, QuickaddInsertType, QuickaddUpdateInput, QuickaddUpdateType } from "../../generated/graphql";
+import { Quickadd, QuickaddInsertType, QuickaddUpdateType } from "../../generated/graphql";
 
 const quickadd1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -171,7 +171,23 @@ const fixture: Fixture<Quickadd, QuickaddUpdateType, QuickaddInsertType> = {
         denied: [anonymous],
         filter: { incident_id: { EQ: 2 } },
         result: { deletedCount: 2 },
+    },
+    testUpsertOne: {
+        shouldInsert: {
+            allowed: [admin],
+            denied: [anonymous],
+            filter: { incident_id: { EQ: 3 } },
+            update: { incident_id: 3, date_submitted: '2021-09-14T00:00:00.000Z', url: 'http://example4.com' },
+            result: { incident_id: 3, date_submitted: '2021-09-14T00:00:00.000Z', url: 'http://example4.com', _id: expect.any(String) }
+        },
+        shouldUpdate: {
+            allowed: [admin],
+            denied: [anonymous],
+            filter: { incident_id: { EQ: 1 } },
+            update: { incident_id: 1, source_domain: 'updated.com', url: 'http://updated.com', date_submitted: '2021-09-14T00:00:00.000Z', },
+            result: { incident_id: 1, source_domain: 'updated.com', url: 'http://updated.com', _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
+        },
     }
-}
+};
 
 export default fixture;

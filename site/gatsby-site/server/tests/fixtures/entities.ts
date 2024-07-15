@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Fixture, serializeId } from "../utils";
+import { Fixture } from "../utils";
 import { Entity, EntityInsertType, EntityUpdateType } from "../../generated/graphql";
 
 const entity1 = {
@@ -69,7 +69,7 @@ const fixture: Fixture<Entity, EntityUpdateType, EntityInsertType> = {
                 entity2,
                 entity3,
             ],
-        }
+        },
     },
     testSingular: {
         allowed: [anonymous],
@@ -117,11 +117,27 @@ const fixture: Fixture<Entity, EntityUpdateType, EntityInsertType> = {
         ]
     },
     testUpdateOne: {
-        allowed: [admin],
-        denied: [anonymous],
+        allowed: [anonymous],
+        denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         update: { set: { name: 'Updated Entity One' } },
         result: { name: 'Updated Entity One' }
+    },
+    testUpsertOne: {
+        shouldInsert: {
+            allowed: [anonymous],
+            denied: [],
+            filter: { entity_id: { EQ: "new-entity" } },
+            update: { entity_id: 'new-entity', name: 'Updated New Entity' },
+            result: { name: 'Updated New Entity', entity_id: "new-entity", _id: expect.any(String) }
+        },
+        shouldUpdate: {
+            allowed: [anonymous],
+            denied: [],
+            filter: { entity_id: { EQ: "entity1" } },
+            update: { entity_id: 'entity1', name: 'Updated Entity One' },
+            result: { name: 'Updated Entity One', _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
+        },
     },
     testUpdateMany: null,
     testInsertOne: null,

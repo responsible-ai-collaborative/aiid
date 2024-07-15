@@ -47,5 +47,6 @@ export const permissions = {
         insertManyQuickadds: isAdmin,
         updateOneQuickadd: isAdmin,
         updateManyQuickadds: isAdmin,
+        upsertOneQuickadd: isAdmin,
     }
 }

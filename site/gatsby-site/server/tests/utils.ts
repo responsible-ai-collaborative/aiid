@@ -58,30 +58,6 @@ export const makeRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
-export function serializeId<T extends { _id?: { toHexString: () => string } }>(obj: T) {
-    return ({ ...obj, _id: obj._id?.toHexString() })
-}
-
-export function removeFields<T, K extends keyof T>(obj: T, ...fields: K[]): T {
-
-    let result = { ...obj };
-
-    fields.forEach(field => {
-        const { [field]: _, ...rest } = result;
-        result = rest as T;
-    });
-
-    return result;
-}
-
-export function removeField<T, K extends keyof T>(obj: T, field: K): T {
-    return removeFields(obj, field);
-}
-
-export function removeId<T extends { _id?: { toHexString: () => string } }>(obj: T) {
-    return removeField(obj, '_id');
-}
-
 type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
 export interface Fixture<T, U, I = any> {
@@ -150,6 +126,22 @@ export interface Fixture<T, U, I = any> {
         denied: User[];
         filter: { [key: string]: unknown };
         result: { deletedCount: number };
+    } | null;
+    testUpsertOne: {
+        shouldUpdate: {
+            allowed: User[];
+            denied: User[];
+            filter: unknown;
+            update: I;
+            result: DeepPartial<T>;
+        },
+        shouldInsert: {
+            allowed: User[];
+            denied: User[];
+            filter: unknown;
+            update: I;
+            result: DeepPartial<T>;
+        },
     } | null;
 }
 

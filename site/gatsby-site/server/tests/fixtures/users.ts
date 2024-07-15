@@ -127,6 +127,7 @@ const fixture: Fixture<User, UserUpdateType> = {
     testUpdateMany: null,
     testDeleteOne: null,
     testDeleteMany: null,
+    testUpsertOne: null,
 };
 
 export default fixture;

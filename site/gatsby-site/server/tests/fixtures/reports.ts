@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Fixture, removeId, serializeId } from "../utils";
+import { Fixture } from "../utils";
 import { Report, ReportInsertType, ReportUpdateType } from "../../generated/graphql";
 
 const report1 = {
@@ -326,6 +326,7 @@ const fixture: Fixture<Report, ReportUpdateType, ReportInsertType> = {
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: null,
+    testUpsertOne: null,
 }
 
 export default fixture;

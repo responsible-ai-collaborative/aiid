@@ -3,7 +3,6 @@ import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
-import { isAdmin } from "../rules";
 
 export const EntityType = new GraphQLObjectType({
     name: 'Entity',
@@ -33,7 +32,7 @@ export const permissions = {
         entities: allow,
     },
     Mutation: {
-        updateOneEntity: isAdmin,
-        upsertOneEntity: isAdmin,
+        updateOneEntity: allow,
+        upsertOneEntity: allow,
     }
 }

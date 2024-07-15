@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Fixture, removeField, removeFields, removeId, serializeId } from "../utils";
+import { Fixture } from "../utils";
 import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
 
 type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
@@ -440,6 +440,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
     testInsertMany: null,
     testDeleteOne: null,
     testDeleteMany: null,
+    testUpsertOne: null,
 }
 
 export default fixture;

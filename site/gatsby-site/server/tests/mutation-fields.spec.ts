@@ -37,6 +37,8 @@ fixtures.forEach((collection) => {
     const deleteOneFieldName = `deleteOne${capitalize(singularName)}`;
     const deleteManyFieldName = `deleteMany${capitalize(pluralName)}`;
 
+    const upsertOneFieldName = `upsertOne${capitalize(singularName)}`;
+
     describe(`${collection.name} generated mutation fields`, () => {
         let server: ApolloServer, url: string;
 
@@ -58,8 +60,8 @@ fixtures.forEach((collection) => {
                     query: `
                     mutation ($data: ${insertTypeName}!) {
                         ${insertOneFieldName}(data: $data) {
-                        _id
-                        ${collection.query}
+                            _id
+                            ${collection.query}
                         }
                     }
                     `,
@@ -318,5 +320,98 @@ fixtures.forEach((collection) => {
                 }
             });
         }
+
+        if (collection.testUpsertOne !== null) {
+
+            it(`${upsertOneFieldName} (update) - mutation`, async () => {
+
+                const testData = collection.testUpsertOne!.shouldUpdate!;
+
+                const mutationData = {
+                    query: `
+                    mutation($filter: ${filterTypeName}!, $update: ${insertTypeName}!) {
+                        ${upsertOneFieldName} (filter: $filter, update: $update) {
+                            _id
+                            ${collection.query}
+                        }
+                    }
+                `,
+                    variables: {
+                        "filter": testData.filter,
+                        "update": testData.update,
+                    },
+                }
+
+                for (const user of testData.allowed) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, mutationData);
+
+
+                    expect(response.body.data[upsertOneFieldName]).toMatchObject(testData.result)
+                }
+
+
+                for (const user of testData.denied) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, mutationData);
+
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+
+
+            it(`${upsertOneFieldName} (insert) - mutation`, async () => {
+
+                const testData = collection.testUpsertOne!.shouldInsert!;
+
+                const mutationData = {
+                    query: `
+                    mutation($filter: ${filterTypeName}!, $update: ${insertTypeName}!) {
+                        ${upsertOneFieldName} (filter: $filter, update: $update) {
+                            _id
+                            ${collection.query}
+                        }
+                    }
+                `,
+                    variables: {
+                        "filter": testData.filter,
+                        "update": testData.update,
+                    },
+                }
+
+                for (const user of testData.allowed) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, mutationData);
+
+
+                    expect(response.body.data[upsertOneFieldName]).toMatchObject(testData.result)
+                }
+
+
+                for (const user of testData.denied) {
+
+                    await seedFixture(collection.seeds);
+
+                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+
+                    const response = await makeRequest(url, mutationData);
+
+                    expect(response.body.errors[0].message).toBe('not authorized');
+                }
+            });
+        }
+
     });
 });

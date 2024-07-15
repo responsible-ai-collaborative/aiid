@@ -1,5 +1,5 @@
 import { GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, ThunkObjMap, isNonNullType } from "graphql";
-import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver } from "graphql-to-mongodb";
+import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLFilterType, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
@@ -214,13 +214,13 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`upsertOne${singularName}`] = {
             type: Type,
-            args: { data: { type: new GraphQLNonNull(getInsertType(Type)) } },
-            resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context: Context) => {
+            args: { filter: { type: new GraphQLNonNull(getGraphQLFilterType(Type)) }, update: { type: new GraphQLNonNull(getInsertType(Type)) } },
+            resolve: getMongoDbUpdateResolver(Type, async (filter, _, options, projection, obj, { update }, context: Context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                await collection.updateOne(filter, update, { ...options, upsert: true });
+                await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
 
                 const updated = await collection.findOne(filter);
 
