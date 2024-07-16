@@ -63,25 +63,27 @@ const IncidentStatsCard = ({
           <>
             <div className="pr-4 my-0.5">Applied Taxonomies</div>
             <div>
-              {taxonomiesWithClassifications.map((t, i) => {
-                const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
+              {taxonomiesWithClassifications
+                .filter((t) => !t.includes('_Annotator,'))
+                .map((t, i) => {
+                  const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
 
-                return (
-                  <>
-                    {i > 0 && ', '}
-                    <a
-                      href={`#${t}-classifications`}
-                      className={`
+                  return (
+                    <>
+                      {i > 0 && ', '}
+                      <a
+                        href={`#${t}-classifications`}
+                        className={`
                       inline-block  px-2.5 py-0.5 rounded
                       font-semibold text-xs
                       bg-${color}-200 text-${color}-800
                     `}
-                    >
-                      {t}
-                    </a>
-                  </>
-                );
-              })}
+                      >
+                        {t}
+                      </a>
+                    </>
+                  );
+                })}
             </div>
           </>
         )}
