@@ -72,7 +72,8 @@ test.describe('New Incident page', () => {
       waitForRequest('GetLatestIncidentId'),
       waitForRequest('FindEntities'),
       waitForRequest('FindUsers'),
-      waitForRequest('findIncident')
+      waitForRequest('findIncident'),
+      waitForRequest('IncidentWithReports'),
     ]);
 
     const values = {
@@ -196,7 +197,8 @@ test.describe('New Incident page', () => {
       waitForRequest('GetLatestIncidentId'),
       waitForRequest('FindEntities'),
       waitForRequest('FindUsers'),
-      waitForRequest('findIncident')
+      waitForRequest('findIncident'),
+      waitForRequest('IncidentWithReports'),
     ]);
 
     await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'InsertIncident', { data: { insertOneIncident: updateOneIncident.data.updateOneIncident } }, 'InsertIncident');
@@ -239,14 +241,14 @@ test.describe('New Incident page', () => {
       editor_notes: incident.data.incident.editor_notes,
     };
 
+    
+    const insertIncidentRequest = await waitForRequest('InsertIncident');
     const now = new Date();
     await page.context().addInitScript(`Date = class extends Date {
       constructor() {
         super(${now.getTime()});
       }
     };`);
-
-    const insertIncidentRequest = await waitForRequest('InsertIncident');
     expect(insertIncidentRequest.postDataJSON().variables.incident).toEqual(newIncident);
 
     const logIncidentHistoryRequest = await waitForRequest('logIncidentHistory');
