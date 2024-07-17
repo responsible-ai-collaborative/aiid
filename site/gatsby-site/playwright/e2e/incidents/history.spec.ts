@@ -263,7 +263,10 @@ test.describe('Incidents', () => {
         ],
       },
     }, 'FindEntities');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports', versionReports, 'FindReports');
+    const filteredVersionReports = {
+      data: { reports: versionReports.data.reports.filter((report: any) => incidentHistory.data.history_incidents[1].reports.includes(report.report_number)) }
+    };
+    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.query?.report_number_in.length === 1, filteredVersionReports, 'FindReportsV1');
 
     await Promise.all([
       waitForRequest('FindIncidentHistory'),
@@ -275,8 +278,8 @@ test.describe('Incidents', () => {
 
     await rows.nth(1).locator('[data-cy="view-full-version-button"]').click();
 
-    const findReportsRequest1 = await waitForRequest('FindReports');
-    expect(findReportsRequest1.postDataJSON().variables.query).toEqual({
+    const findReportsRequestV1 = await waitForRequest('FindReportsV1');
+    expect(findReportsRequestV1.postDataJSON().variables.query).toEqual({
       report_number_in: incidentHistory.data.history_incidents[1].reports,
     });
 
@@ -294,18 +297,23 @@ test.describe('Incidents', () => {
     }
     await modal.locator('[data-cy="alleged-entities"]').getByText('Alleged: developed an AI system deployed by Youtube, which harmed Google.').waitFor();
     await modal.locator('[data-cy="citation"]').getByText(`${version1.incident_id}`).waitFor();
-    await modal.locator('[data-cy="citation"]').getByText(`${version1.reports.length}`).waitFor();
+    await modal.locator('[data-cy="citation"]').getByText(`${version1.reports.length}`, { exact: true }).waitFor();
     await modal.locator('[data-cy="citation"]').getByText(`${version1.date}`).waitFor();
     await modal.locator('[data-cy="citation"]').getByText('Sean McGregor, Pablo Costa').waitFor();
     await modal.locator('button').getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
 
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports', versionReports, 'FindReports');
+    const filteredVersionReportsV0 = {
+      data: {
+        reports: versionReports.data.reports.filter((report: any) => incidentHistory.data.history_incidents[0].reports.includes(report.report_number))
+      }
+    };
+    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.query?.report_number_in.length === 2, filteredVersionReportsV0, 'FindReportsV0');
 
     await rows.nth(0).locator('[data-cy="view-full-version-button"]').click();
 
-    const findReportsRequest2 = await waitForRequest('FindReports');
-    expect(findReportsRequest2.postDataJSON().variables.query).toEqual({
+    const findReportsRequestV0 = await waitForRequest('FindReportsV0');
+    expect(findReportsRequestV0.postDataJSON().variables.query).toEqual({
       report_number_in: incidentHistory.data.history_incidents[0].reports,
     });
 
