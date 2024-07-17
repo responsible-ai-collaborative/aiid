@@ -124,7 +124,6 @@ test.describe('New Incident page', () => {
       AllegedDeployerOfAISystem: { link: ['test-deployer'] },
       AllegedDeveloperOfAISystem: { link: ['youtube'] },
       AllegedHarmedOrNearlyHarmedParties: { link: ['children'] },
-      // nlp_similar_incidents: [],
       editor_similar_incidents: [],
       editor_dissimilar_incidents: [],
       embedding: {},
