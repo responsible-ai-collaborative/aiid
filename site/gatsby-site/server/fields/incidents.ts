@@ -6,12 +6,14 @@ import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
 import { Incident, Report } from "../generated/graphql";
-import { isAdmin, isRole } from "../rules";
+import { isRole } from "../rules";
 import { EntityType } from "./entities";
 import { UserType } from "./users";
+import { NlpSimilarIncidentType } from "../types";
+import { linkReportsToIncidents } from "./common";
 
 
-export const incidentEmbedding = (reports: Report[]) => {
+export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
     return reports.length == 0
         ? null
@@ -19,10 +21,10 @@ export const incidentEmbedding = (reports: Report[]) => {
             vector: reports
                 .map((report) => report.embedding!.vector)
                 .reduce(
-                    (sum, vector) => vector!.map((component, i) => component + sum[i]),
+                    (sum, vector) => vector!.map((component: number, i: number) => component + sum[i]),
                     Array(reports[0].embedding!.vector!.length).fill(0)
                 )
-                .map((component) => component / reports.length),
+                .map((component: number) => component / reports.length),
 
             from_reports: reports.map((report) => report.report_number),
         };
@@ -42,14 +44,6 @@ const TsneType = new GraphQLObjectType({
     fields: {
         x: { type: GraphQLFloat },
         y: { type: GraphQLFloat }
-    }
-});
-
-const NlpSimilarIncidentType = new GraphQLObjectType({
-    name: 'NlpSimilarIncident',
-    fields: {
-        incident_id: { type: GraphQLInt },
-        similarity: { type: GraphQLFloat }
     }
 });
 
@@ -150,60 +144,9 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
         },
         resolve: getMongoDbQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
 
-            const incidentsCollection = context.client.db('aiidprod').collection<Omit<Incident, 'reports'> & { reports: number[] }>("incidents");
-            const reportsCollection = context.client.db('aiidprod').collection<Report>("reports");
+            await linkReportsToIncidents(context.client, args.input.report_numbers, args.input.incident_ids);
 
-            // unlink
-
-            const exParentIncidents = await incidentsCollection.find({ reports: { $in: args.input.report_numbers } }).toArray();
-
-            for (const incident of exParentIncidents) {
-
-                const reports = await reportsCollection.find({ report_number: { $in: incident.reports.filter(number => !args.input.report_numbers.includes(number)) } }).toArray();
-
-                const embedding = incidentEmbedding(reports);
-
-                const operation = embedding == null ? { $unset: { embedding: "" } } : { $set: { embedding } }
-
-                await incidentsCollection.updateOne({ incident_id: incident.incident_id }, operation);
-            }
-
-            await incidentsCollection.updateMany({ reports: { $in: args.input.report_numbers } }, { $pull: { reports: { $in: args.input.report_numbers } } });
-
-
-            // link
-
-            if (args.input.incident_ids.length > 0) {
-
-                await incidentsCollection.updateMany({ incident_id: { $in: args.input.incident_ids } }, { $addToSet: { reports: { $each: args.input.report_numbers } } });
-
-                const parentIncidents = await incidentsCollection.find({ reports: { $in: args.input.report_numbers } }).toArray();
-
-                for (const incident of parentIncidents) {
-
-                    const reports = await reportsCollection.find({ report_number: { $in: incident.reports } }).toArray();
-
-                    const embedding = incidentEmbedding(reports);
-
-                    const operation = embedding == null ? { $unset: { embedding: "" } } : { $set: { embedding } }
-
-                    await incidentsCollection.updateOne({ incident_id: incident.incident_id }, operation);
-                }
-            }
-
-            //
-
-            await reportsCollection.updateMany(
-                {
-                    report_number: { $in: args.input.report_numbers },
-                    title: { $nin: [""] },
-                    url: { $nin: [""] },
-                    source_domain: { $nin: [""] },
-                },
-                {
-                    $set: { is_incident_report: args.input.incident_ids.length > 0 }
-                }
-            );
+            const incidentsCollection = context.client.db('aiidprod').collection("incidents");
 
             return incidentsCollection.find({ reports: { $in: args.input.report_numbers } }, options).toArray();
         })

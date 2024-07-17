@@ -10,6 +10,7 @@ import reportsFixture from './fixtures/reports';
 import entitiesFixture from './fixtures/entities';
 import usersFixture from './fixtures/users';
 import incidentsFixture from './fixtures/incidents';
+import submissionsFixture from './fixtures/submissions';
 
 const fixtures = [
     quickaddsFixture,
@@ -17,6 +18,7 @@ const fixtures = [
     entitiesFixture,
     incidentsFixture,
     usersFixture,
+    submissionsFixture,
 ]
 
 fixtures.forEach((collection) => {

@@ -1,4 +1,3 @@
-import { IncomingMessage } from 'http';
 import { MongoClient } from 'mongodb';
 
 export interface Context {

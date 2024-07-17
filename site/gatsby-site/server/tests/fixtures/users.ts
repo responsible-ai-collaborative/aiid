@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Fixture, serializeId } from "../utils";
+import { Fixture } from "../utils";
 import { User, UserUpdateType } from "../../generated/graphql";
 
 const admin = {

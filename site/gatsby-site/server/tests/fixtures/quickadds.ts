@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Fixture, serializeId } from "../utils";
+import { Fixture } from "../utils";
 import { Quickadd, QuickaddInsertType, QuickaddUpdateType } from "../../generated/graphql";
 
 const quickadd1 = {
@@ -75,19 +75,19 @@ const fixture: Fixture<Quickadd, QuickaddUpdateType, QuickaddInsertType> = {
         }
     },
     testSingular: {
-        allowed: [subscriber],
+        allowed: [anonymous, subscriber],
         denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        result: serializeId(quickadd1)
+        result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testPluralFilter: {
-        allowed: [subscriber],
+        allowed: [anonymous, subscriber],
         denied: [],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
         result: [
-            serializeId(quickadd1)
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
         ],
     },
     testPluralSort: {

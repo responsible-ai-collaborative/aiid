@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, ThunkObjMap, isNonNullType } from "graphql";
+import { GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, ThunkObjMap, isNonNullType } from "graphql";
 import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLFilterType, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
@@ -35,6 +35,10 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
+
+                const bue = await collection.find({}, options).toArray();
+
+                bue;
 
                 const item = await collection.findOne(filter, options);
 
@@ -329,6 +333,47 @@ export const getListRelationshipExtension = (
     }
 }
 
+export const getListRelationshipResolver = (
+    sourceField: string,
+    targetField: string,
+    ReferencedType: GraphQLObjectType,
+    databaseName: string,
+    collectionName: string,
+) => {
+
+    return getMongoDbQueryResolver(ReferencedType, async (filter, projection, options, source: any, args, context: Context) => {
+
+        const db = context.client.db(databaseName);
+
+        const collection = db.collection(collectionName);
+
+        const result = source[sourceField]?.length
+            ? await collection.find({ [targetField]: { $in: source[sourceField] } }, options).toArray()
+            : []
+
+        return result;
+    })
+}
+
+export const getListRelationshipConfig = (
+    ReferencedType: GraphQLObjectType,
+    ReferencedFieldType: GraphQLNamedType,
+    sourceField: string,
+    targetField: string,
+    targetCollection: string,
+    targetDatabase: string,
+): GraphQLFieldConfig<any, Context> => {
+
+    return {
+        type: new GraphQLList(ReferencedType),
+        resolve: getListRelationshipResolver(sourceField, targetField, ReferencedType, targetDatabase, targetCollection),
+        extensions: {
+            relationship: getListRelationshipExtension(sourceField, targetField, ReferencedFieldType, targetDatabase, targetCollection)
+        },
+    }
+}
+
+
 export const getRelationshipExtension = (
     sourceField: string,
     targetField: string,
@@ -355,28 +400,6 @@ export const getRelationshipExtension = (
 }
 
 
-export const getListRelationshipResolver = (
-    sourceField: string,
-    targetField: string,
-    ReferencedType: GraphQLObjectType,
-    databaseName: string,
-    collectionName: string,
-) => {
-
-    return getMongoDbQueryResolver(ReferencedType, async (filter, projection, options, source: any, args, context: Context) => {
-
-        const db = context.client.db(databaseName);
-
-        const collection = db.collection(collectionName);
-
-        const result = source[sourceField]?.length
-            ? await collection.find({ [targetField]: { $in: source[sourceField] } }, options).toArray()
-            : []
-
-        return result;
-    })
-}
-
 export const getRelationshipResolver = (
     sourceField: string,
     targetField: string,
@@ -398,6 +421,25 @@ export const getRelationshipResolver = (
         return result;
     })
 }
+
+export const getRelationshipConfig = (
+    ReferencedType: GraphQLObjectType,
+    ReferencedFieldType: GraphQLNamedType,
+    sourceField: string,
+    targetField: string,
+    targetCollection: string,
+    targetDatabase: string,
+): GraphQLFieldConfig<any, Context> => {
+
+    return {
+        type: ReferencedType,
+        resolve: getRelationshipResolver(sourceField, targetField, ReferencedType, targetDatabase, targetCollection),
+        extensions: {
+            relationship: getRelationshipExtension(sourceField, targetField, ReferencedFieldType, targetDatabase, targetCollection)
+        },
+    }
+}
+
 
 
 const extendedTypesCache: { [key: string]: GraphQLNamedType } = {}

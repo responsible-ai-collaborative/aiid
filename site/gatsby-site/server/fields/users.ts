@@ -19,7 +19,7 @@ const UserAdminDatumType = new GraphQLObjectType({
 export const UserType = new GraphQLObjectType({
     name: 'User',
     fields: {
-        _id: { type: new GraphQLNonNull(ObjectIdScalar) },
+        _id: { type: ObjectIdScalar },
         adminData: {
             type: UserAdminDatumType,
             resolve: getMongoDbQueryResolver(UserAdminDatumType, async (filter, projection, options, source: any, args, context: Context) => {

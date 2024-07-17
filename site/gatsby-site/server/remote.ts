@@ -44,6 +44,16 @@ const ignoreTypes = [
 
     'User',
     'UserQueryInput',
+
+    'Submission',
+    'SubmissionQueryInput',
+    'SubmissionDeployersRelationInput',
+    'SubmissionDevelopersRelationInput',
+    'SubmissionHarmed_partiesRelationInput',
+    'SubmissionIncident_editorsRelationInput',
+    'SubmissionUserRelationInput',
+    'PromoteSubmissionToReportPayload',
+    'PromoteSubmissionToReportInput',
 ];
 
 const ignoredQueries = [
@@ -61,6 +71,9 @@ const ignoredQueries = [
 
     'user',
     'users',
+
+    'submission',
+    'submissions',
 ];
 
 const ignoredMutations = [
@@ -110,6 +123,16 @@ const ignoredMutations = [
     'updateManyUsers',
     'upsertOneUser',
     'upsertManyUsers',
+
+    'deleteOneSubmission',
+    'deleteManySubmissions',
+    'insertOneSubmission',
+    'insertManySubmissions',
+    'updateOneSubmission',
+    'updateManySubmissions',
+    'upsertOneSubmission',
+    'upsertManySubmissions',
+    'promoteSubmissionToReport',
 ]
 
 export const getSchema = () => {
