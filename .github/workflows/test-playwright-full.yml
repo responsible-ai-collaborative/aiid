@@ -59,7 +59,15 @@ jobs:
       - name: start in memory mongodb
         run: nohup node -r ts-node/register playwright/memory-mongo.ts &
         working-directory: site/gatsby-site
-      
+
+      - name: Wait for memory mongodb to start
+        run: |
+          while ! nc -z localhost 4110; do
+            echo "Waiting for Mongodb memoery server to start on port 4110..."
+            sleep 2
+          done
+          echo "MongoDB has started on port 4110."
+
       - name: Build using Netlify
         run: netlify build --context preview --offline
         working-directory: site/gatsby-site
