@@ -22,29 +22,37 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
   const singleColumn = hasLong || showAllClassifications;
 
   const colorSchemes = {
-    GMF: {
+    blue: {
       textColor: 'text-blue-900',
       borderColor: 'border-blue-200',
       keyBackround: 'bg-blue-100',
       valueBackgroundEven: 'bg-[#f6faff]', // A little bit lighter than blue-50
       valueBackgroundOdd: 'bg-blue-50',
     },
-    CSETv1: {
+    orange: {
       textColor: 'text-orange-800',
       borderColor: 'border-orange-200',
       keyBackround: 'bg-orange-100',
       valueBackgroundEven: 'bg-[#fffcf9]', // A little bit lighter than orange-50
       valueBackgroundOdd: 'bg-orange-50',
     },
+    gray: {
+      textColor: 'text-gray-600',
+      borderColor: 'border-gray-200',
+      keyBackround: 'bg-gray-100',
+      valueBackgroundEven: 'bg-gray-50',
+      valueBackgroundOdd: '',
+    },
   };
 
-  const colorScheme = colorSchemes[taxonomy.namespace] || {
-    textColor: 'text-gray-600',
-    borderColor: 'border-gray-200',
-    keyBackround: 'bg-gray-100',
-    valueBackgroundEven: '',
-    valueBackgroundOdd: 'bg-gray-50',
+  // Keeping them all gray for the time being
+  // so we can merge and then bikeshed about the colors.
+  const colorSchemesByTaxonomy = {
+    GMF: 'gray',
+    CSETv1: 'gray',
   };
+
+  const colorScheme = colorSchemes[colorSchemesByTaxonomy[taxonomy.namespace]] || colorSchemes.gray;
 
   return (
     <Card
