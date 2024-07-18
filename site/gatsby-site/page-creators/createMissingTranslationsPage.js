@@ -47,7 +47,7 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
   }
 
   createPage({
-    path: '/translate',
+    path: '/meta/i18n',
     component: path.resolve('./src/templates/missingTranslations.js'),
     context: { missingTranslations, allLocales },
   });
