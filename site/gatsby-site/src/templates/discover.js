@@ -3,10 +3,12 @@ import HeadContent from 'components/HeadContent';
 import Discover from 'components/discover/Discover';
 import { useTranslation } from 'react-i18next';
 
-function DiscoverApp() {
+function DiscoverApp({ pageContext }) {
+  const { histogramBins } = pageContext;
+
   return (
     <div className="w-full">
-      <Discover />
+      <Discover {...{ histogramBins }} />
     </div>
   );
 }

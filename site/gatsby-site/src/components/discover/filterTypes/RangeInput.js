@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRange } from 'react-instantsearch';
 import { Trans } from 'react-i18next';
 import { debounce } from 'debounce';
-import { Button } from 'flowbite-react';
+import { Button, Checkbox } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import Label from 'components/forms/Label';
 import TextInputGroup from 'components/forms/TextInputGroup';
@@ -13,7 +13,7 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
-export default function RangeInput({ attribute }) {
+export default function RangeInput({ attribute, histogramBins }) {
   const {
     range: { min, max },
     start,
@@ -53,6 +53,16 @@ export default function RangeInput({ attribute }) {
         {({ values, errors, touched, handleBlur }) => (
           <>
             <Form className="px-3">
+              <DoubleRangeSlider
+                globalMin={min}
+                globalMax={max}
+                selectionMin={currentRefinement.min}
+                selectionMax={currentRefinement.max}
+                setSelection={debounce((min, max) => {
+                  onChange({ min, max });
+                }, 1000)}
+                {...{ histogramBins, attribute }}
+              />
               <FieldContainer>
                 <Label>
                   <Trans>From Date</Trans>:
@@ -134,6 +144,269 @@ export default function RangeInput({ attribute }) {
     </div>
   );
 }
+
+const proportionToPercent = (proportion) => 100 * proportion + '%';
+
+const sliderHeight = '1rem';
+
+const DoubleRangeSlider = ({
+  globalMin,
+  globalMax,
+  selectionMin,
+  selectionMax,
+  setSelection,
+  histogramBins,
+  attribute,
+}) => {
+  const proportionToTimestamp = (value) => globalMin + (globalMax - globalMin) * value;
+
+  const [lowerBound, bareSetLowerBound] = useState(proportionToTimestamp(selectionMin));
+
+  const [upperBound, bareSetUpperBound] = useState(proportionToTimestamp(selectionMax));
+
+  const setLowerBound = (value) => {
+    bareSetLowerBound(value);
+    setSelection(proportionToTimestamp(value), proportionToTimestamp(upperBound));
+  };
+
+  const setUpperBound = (value) => {
+    bareSetUpperBound(value);
+    setSelection(proportionToTimestamp(lowerBound), proportionToTimestamp(value));
+  };
+
+  const binsMax = Math.max(...histogramBins);
+
+  useEffect(() => {
+    setUpperBound((selectionMax - globalMin) / (globalMax - globalMin));
+  }, [selectionMax, globalMax, globalMin]);
+
+  const [logScale, setLogScale] = useState(true);
+
+  const numTicks = 20;
+
+  return (
+    <>
+      <div className="mb-2">
+        <Checkbox
+          id={`${attribute}-log-scale`}
+          checked={logScale ? true : undefined}
+          onClick={() => setLogScale((logScale) => !logScale)}
+          className="mr-1"
+        />
+        <label htmlFor={`${attribute}-log-scale`}>Log Scale</label>
+      </div>
+      <div className="h-32 w-full bg-gray-100 relative">
+        <div className="h-full w-full absolute inset-0">
+          {Array(numTicks)
+            .fill()
+            .map((_, i) => {
+              const proportion = logScale
+                ? Math.log((i * binsMax) / numTicks) / Math.log(binsMax)
+                : (i * binsMax) / numTicks / binsMax;
+
+              return (
+                <div
+                  key={i}
+                  className="w-full h-px bg-gray-200 absolute"
+                  style={{ bottom: proportionToPercent(proportion) }}
+                />
+              );
+            })}
+        </div>
+        <div className="flex items-end w-full h-full absolute inset-0">
+          {histogramBins.map((bin, i) => {
+            const rangeWidth = globalMax - globalMin;
+
+            const dateRangeStart = globalMin + (i * rangeWidth) / histogramBins.length;
+
+            const dateRangeEnd = globalMin + ((i + 1) * rangeWidth) / histogramBins.length;
+
+            const baseProportion = bin / binsMax;
+
+            const logProportion = Math.log(bin) / Math.log(binsMax);
+
+            const proportion = logScale ? logProportion : baseProportion;
+
+            return (
+              <div
+                key={i}
+                title={`${bin} reports from ${formatDate(dateRangeStart)} to ${formatDate(
+                  dateRangeEnd
+                )}`}
+                className={`border-1 border-white ${
+                  (i + 1) / histogramBins.length >= lowerBound &&
+                  i / histogramBins.length <= upperBound
+                    ? 'bg-blue-500'
+                    : 'bg-gray-700'
+                }`}
+                style={{
+                  width: proportionToPercent(1 / histogramBins.length),
+                  height: proportionToPercent(proportion),
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+      <div className="relative bg-gray-200" style={{ height: sliderHeight }}>
+        <div
+          className="bg-blue-600 h-full absolute"
+          style={{
+            left: `calc(${proportionToPercent(lowerBound)})`,
+            width: proportionToPercent(upperBound - lowerBound),
+          }}
+        />
+
+        <SliderKnob
+          bound={lowerBound}
+          setBound={setLowerBound}
+          ceiling={upperBound}
+          {...{ proportionToTimestamp }}
+        />
+        <SliderKnob
+          bound={upperBound}
+          setBound={setUpperBound}
+          floor={lowerBound}
+          {...{ proportionToTimestamp }}
+        />
+      </div>
+    </>
+  );
+};
+
+const SliderKnob = ({ bound, setBound, ceiling = 1, floor = 0, proportionToTimestamp }) => {
+  const [dragOffset, setDragOffset] = useState(null);
+
+  const [handlePosition, setHandlePosition] = useState({
+    top: '0px',
+    left: proportionToPercent(bound),
+  });
+
+  const knobRef = useRef();
+
+  useEffect(() => {
+    if (dragOffset) {
+      knobRef.current.focus();
+    }
+  });
+
+  useEffect(() => {
+    setHandlePosition({
+      top: '0px',
+      left: proportionToPercent(bound),
+    });
+  }, [bound]);
+
+  const updatePosition = (event) => {
+    if (dragOffset) {
+      const parentClientRect = event.target.parentNode.getBoundingClientRect();
+
+      const handleLeftPx = event.clientX - parentClientRect.x - dragOffset.x;
+
+      setHandlePosition({
+        top: event.clientY - parentClientRect.y - dragOffset.y + 'px',
+        left: handleLeftPx + 'px',
+      });
+
+      const handleLeftPercent = handleLeftPx / parentClientRect.width;
+
+      const newBound = clamp(handleLeftPercent, { floor, ceiling });
+
+      setBound(newBound);
+
+      return newBound;
+    }
+  };
+
+  return (
+    <>
+      <button
+        data-cy="range-knob"
+        ref={knobRef}
+        className="rounded-full bg-white absolute focus:border-2 border-blue-500 flex items-center justify-center"
+        style={{
+          height: sliderHeight,
+          width: sliderHeight,
+          left: `calc(${proportionToPercent(bound)} - calc(${sliderHeight} / 2))`,
+        }}
+        onKeyDown={(event) => {
+          if (event.key == 'ArrowLeft') {
+            const newBound = clamp(bound - 0.1, { floor, ceiling });
+
+            setBound(newBound);
+            setDragOffset(null);
+            setHandlePosition({
+              top: '0px',
+              left: proportionToPercent(newBound),
+            });
+          }
+          if (event.key == 'ArrowRight') {
+            const newBound = clamp(bound + 0.1, { floor, ceiling });
+
+            setBound(newBound);
+            setDragOffset(null);
+            setHandlePosition({
+              top: '0px',
+              left: proportionToPercent(newBound),
+            });
+          }
+        }}
+      >
+        <div className="mt-10 text-center pointer-events-none">
+          {![null, NaN, undefined].includes(bound)
+            ? formatDate(proportionToTimestamp(bound)).substr(0, 4)
+            : ''}
+        </div>
+      </button>
+
+      {/* This "handle" element moves with the cursor
+       * so that we track the mouse position
+       * while the knob is being dragged.
+       * Then we move the knob to match the handle in the x-axis.
+       */}
+      <button
+        tabIndex="-1"
+        data-cy="range-knob-handle"
+        className="rounded-full absolute x-10"
+        onClick={() => {
+          knobRef.current.focus();
+        }}
+        onMouseDown={(event) => {
+          const clientRect = event.target.getBoundingClientRect();
+
+          const offset = { x: event.clientX - clientRect.x, y: event.clientY - clientRect.y };
+
+          setDragOffset(offset);
+        }}
+        onMouseUp={() => {
+          setDragOffset(null);
+          setHandlePosition({
+            // TODO: It would be more efficient to use translate()
+            // so as to trigger fewer re-layouts.
+            top: '0px',
+            left: proportionToPercent(bound),
+          });
+        }}
+        onMouseMove={(event) => {
+          updatePosition(event);
+        }}
+        style={{
+          height: sliderHeight,
+          width: sliderHeight,
+          ...handlePosition,
+          ...(dragOffset
+            ? // We enlarge the handle during movement
+              // so that moving the cursor real fast doesn't take it outside the div
+              // before an update occurs.
+              { scale: '100', transformOrigin: 'center' }
+            : { left: `calc(${handlePosition.left} - calc(${sliderHeight} / 2))` }),
+        }}
+      />
+    </>
+  );
+};
+
+const clamp = (value, { floor, ceiling }) => Math.max(Math.min(value, ceiling), floor);
 
 export const touchedCount = ({ searchState, attribute }) =>
   searchState?.range?.[attribute]?.split(':')[0] || searchState?.range?.[attribute]?.split(':')[1]

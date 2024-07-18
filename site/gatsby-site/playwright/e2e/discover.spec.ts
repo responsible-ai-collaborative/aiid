@@ -10,7 +10,7 @@ import config from '../../config';
 
 test.describe('The Discover app', () => {
     const url = '/apps/discover';
-
+  
     test('Successfully loads', async ({ page }) => {
         await page.goto(url);
     });
@@ -502,5 +502,21 @@ test.describe('The Discover app', () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
             await expect(count).toBeGreaterThanOrEqual(0);
         }).toPass();
+    });
+
+    test('Should select date range', async ({ page }) => {
+      await page.goto(url);
+
+      await page.locator('[data-cy="epoch_date_published"]').first().click();
+
+      const rangeKnobSelector = '[data-cy="epoch_date_published"] [data-cy="range-knob"]';
+
+      await page.locator(rangeKnobSelector).first().focus();
+
+      await page.locator(rangeKnobSelector).first().press('ArrowRight');
+      
+      await page.locator(rangeKnobSelector).first().press('ArrowRight');
+
+      await expect(page).toHaveURL(/.*epoch_date_published_min.*/g); 
     });
 });
