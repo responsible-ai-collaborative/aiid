@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const UPSERT_ENTITY = gql`
-  mutation UpsertEntity($query: EntityQueryInput, $entity: EntityInsertInput!) {
-    upsertOneEntity(query: $query, data: $entity) {
+  mutation UpsertEntity($filter: EntityFilterType, $update: EntityInsertType!) {
+    upsertOneEntity(filter: $filter, update: $update) {
       entity_id
       name
     }
@@ -11,7 +11,7 @@ export const UPSERT_ENTITY = gql`
 
 export const FIND_ENTITIES = gql`
   query FindEntities {
-    entities(limit: 9999) {
+    entities {
       entity_id
       name
     }
@@ -19,8 +19,8 @@ export const FIND_ENTITIES = gql`
 `;
 
 export const FIND_ENTITY = gql`
-  query FindEntity($query: EntityQueryInput) {
-    entity(query: $query) {
+  query FindEntity($filter: EntityFilterType) {
+    entity(filter: $filter) {
       entity_id
       name
       created_at
@@ -30,8 +30,8 @@ export const FIND_ENTITY = gql`
 `;
 
 export const UPDATE_ENTITY = gql`
-  mutation UpdateEntity($query: EntityQueryInput, $set: EntityUpdateInput!) {
-    updateOneEntity(query: $query, set: $set) {
+  mutation UpdateEntity($filter: EntityFilterType, $update: EntityInsertType!) {
+    updateOneEntity(filter: $filter, update: $update) {
       entity_id
     }
   }

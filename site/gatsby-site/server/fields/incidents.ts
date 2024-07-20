@@ -5,12 +5,12 @@ import { ReportType } from "./reports";
 import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
-import { Incident, Report } from "../generated/graphql";
 import { isRole } from "../rules";
 import { EntityType } from "./entities";
 import { UserType } from "./users";
 import { NlpSimilarIncidentType } from "../types";
 import { linkReportsToIncidents } from "./common";
+import { GraphQLLong } from "graphql-scalars";
 
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
@@ -54,7 +54,7 @@ const IncidentType = new GraphQLObjectType({
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         editor_notes: { type: GraphQLString },
-        epoch_date_modified: { type: GraphQLInt },
+        epoch_date_modified: { type: GraphQLLong },
         incident_id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: new GraphQLNonNull(GraphQLString) },
         AllegedDeployerOfAISystem: {

@@ -1,10 +1,11 @@
 import { GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, ThunkObjMap, isNonNullType } from "graphql";
-import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLFilterType, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver } from "graphql-to-mongodb";
+import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLFilterType, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver, getGraphQLUpdateType } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 import pluralizeLib from 'pluralize';
 import config from "./config";
+import { getGraphQLSetType } from "graphql-to-mongodb/lib/src/graphQLUpdateType";
 
 export function pluralize(s: string) {
     return pluralizeLib.plural(s);
@@ -179,13 +180,34 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`updateOne${singularName}`] = {
             type: Type,
-            args: getGraphQLUpdateArgs(Type),
-            resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
+            args: getUpdateArgs(Type),
+            resolve: getMongoDbUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                await collection.updateOne(filter, update, options);
+
+                const update: any = {};
+
+                const fields = Type.toConfig().fields;
+
+                for (const [key, value] of Object.entries(mongoUpdate.$set as Record<string, any>)) {
+
+                    if (key.endsWith('.link')) {
+
+                        const name = key.slice(0, -5);
+                        const field = fields[name];
+
+                        await (field.extensions!.relationship as any).linkValidation(args.update.set, context);
+
+                        update[name] = value;
+                    }
+                    else {
+                        update[key] = value;
+                    }
+                }
+
+                await collection.updateOne(filter, { $set: update }, options);
 
                 const updated = await collection.findOne(filter);
 
@@ -198,7 +220,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`updateMany${pluralName}`] = {
             type: UpdateManyPayload,
-            args: getGraphQLUpdateArgs(Type),
+            args: getUpdateArgs(Type),
             resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
@@ -444,6 +466,42 @@ export const getRelationshipConfig = (
 
 const extendedTypesCache: { [key: string]: GraphQLNamedType } = {}
 
+
+const getRelationInputType = (Type: GraphQLNamedType, fieldName: string, field: GraphQLFieldConfig<any, any>) => {
+
+    const typeName = `${Type.name}${capitalize(fieldName)}RelationInput`;
+
+    if (extendedTypesCache[typeName]) {
+
+        return extendedTypesCache[typeName] as GraphQLInputObjectType;
+    }
+    else {
+
+        const relationship = field.extensions!.relationship as { linkType: GraphQLInputType, createType: GraphQLInputType };
+
+        const config: { name: string, fields: Record<string, any> } = {
+            name: typeName,
+            fields: {},
+        }
+
+        if (relationship.linkType) {
+
+            config.fields.link = { type: relationship.linkType };
+        }
+
+        if (relationship.createType) {
+
+            throw 'Not implemented';
+        }
+
+        const inputType = new GraphQLInputObjectType(config);
+
+        extendedTypesCache[typeName] = inputType;
+
+        return inputType;
+    }
+}
+
 export function getInsertType(Type: GraphQLObjectType<any, any>) {
 
     const inputTypeName = `${Type.name}InsertType`;
@@ -460,28 +518,9 @@ export function getInsertType(Type: GraphQLObjectType<any, any>) {
 
             if (field.extensions?.relationship) {
 
-                const relationship = field.extensions.relationship as { linkType: GraphQLInputType, createType: GraphQLInputType };
+                const inputType = getRelationInputType(Type, key, field);
 
-                const config: { name: string, fields: Record<string, any> } = {
-                    name: `${Type.name}${capitalize(key)}RelationInput`,
-                    fields: {},
-                }
-
-                if (relationship.linkType) {
-
-                    config.fields.link = { type: relationship.linkType };
-                }
-
-                if (relationship.createType) {
-
-                    throw 'Not implemented';
-                }
-
-                const inputType = isNonNullType(field.type)
-                    ? new GraphQLNonNull(new GraphQLInputObjectType(config))
-                    : new GraphQLInputObjectType(config);
-
-                relationFields[key] = { type: inputType };
+                relationFields[key] = { type: isNonNullType(field.type) ? new GraphQLNonNull(inputType) : inputType };
             }
         }
 
@@ -495,13 +534,69 @@ export function getInsertType(Type: GraphQLObjectType<any, any>) {
                 ...config.fields,
                 ...relationFields,
             },
-            extensions: {
-                updated: true,
-            }
         });
 
         extendedTypesCache[inputTypeName] = extended;
 
         return extended;
     }
+}
+
+export const getUpdateType = (Type: GraphQLObjectType<any, any>) => {
+
+    const updateTypeName = `${Type.name}UpdateType`;
+
+    if (extendedTypesCache[updateTypeName]) {
+
+        return extendedTypesCache[updateTypeName];
+    }
+    else {
+
+        const relationFields: ThunkObjMap<GraphQLInputFieldConfig> = {};
+
+        for (const [key, field] of Object.entries(Type.toConfig().fields)) {
+
+            if (field.extensions?.relationship) {
+
+                const inputType = getRelationInputType(Type, key, field);
+
+                relationFields[key] = { type: inputType };
+            }
+        }
+
+        const base = getGraphQLSetType(Type);
+        const config = base.toConfig();
+
+        const SetType = new GraphQLInputObjectType({
+            name: `${Type.name}SetType`,
+            fields: {
+                ...config.fields,
+                ...relationFields,
+            },
+        })
+
+        const extended = new GraphQLInputObjectType({
+            name: updateTypeName,
+            fields: {
+                set: { type: SetType },
+
+                // TODO: add support for set on insert
+                // setOnInsert: { type: getGraphQLSetOnInsertType(graphQLType, ...excludedFields) },
+
+                // TODO: add support for inc updates
+                // inc: { type: getGraphQLIncType(graphQLType, ...excludedFields) }
+            },
+        });
+
+        extendedTypesCache[updateTypeName] = extended;
+
+        return extended;
+    }
+}
+
+export const getUpdateArgs = (graphQLType: GraphQLObjectType) => {
+    return {
+        filter: { type: new GraphQLNonNull(getGraphQLFilterType(graphQLType)) as GraphQLNonNull<GraphQLInputObjectType> },
+        update: { type: new GraphQLNonNull(getUpdateType(graphQLType)) as GraphQLNonNull<GraphQLInputObjectType> }
+    };
 }

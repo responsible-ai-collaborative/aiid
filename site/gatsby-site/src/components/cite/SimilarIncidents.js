@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { formatISO, format, parse, getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -31,14 +31,14 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const [updateIncidentMutation] = useMutation(UPDATE_INCIDENT);
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: parentIncident.incident_id } },
+    variables: { filter: { incident_id: { EQ: parentIncident.incident_id } } },
   });
 
   const addToast = useToastContext();
 
   const { logIncidentHistory } = useLogIncidentHistory();
 
-  const flagIncident = async () => {
+  const flagIncident = useCallback(async () => {
     const now = new Date();
 
     const flagged_dissimilar_incidents = isFlagged
@@ -56,11 +56,13 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
     await updateIncidentMutation({
       variables: {
-        query: { incident_id: parentIncident.incident_id },
-        set: {
-          flagged_dissimilar_incidents,
-          epoch_date_modified: getUnixTime(now),
-          editors: { link: editors },
+        filter: { incident_id: { EQ: parentIncident.incident_id } },
+        update: {
+          set: {
+            flagged_dissimilar_incidents,
+            epoch_date_modified: getUnixTime(now),
+            editors: { link: editors },
+          },
         },
       },
     });
@@ -84,7 +86,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       severity: SEVERITY.success,
     });
     setFlagged(!isFlagged);
-  };
+  }, [incidentData]);
 
   return (
     <div
@@ -128,7 +130,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         </div>
         <div className="inline-block ml-auto mr-auto" />
 
-        {flaggable && (
+        {flaggable && incidentData && (
           <Button
             variant="link"
             className={`p-0 hover:text-gray-500 ${

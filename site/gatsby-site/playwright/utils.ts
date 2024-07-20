@@ -15,9 +15,22 @@ export type Options = { defaultItem: string };
 type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<void>,
+    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<string>,
 };
 
+const getUserIdFromLocalStorage = async (page: Page) => {
+
+    const storage = await page.context().storageState();
+
+    for (const origin of storage.origins) {
+        for (const storage of origin.localStorage) {
+            if (storage.value == 'local-userpass') {
+                const match = storage.name.match(/user\(([^)]+)\):providerType/);
+                return match?.[1];
+            }
+        }
+    }
+}
 
 export const test = base.extend<TestFixtures>({
     skipOnEmptyEnvironment: async ({ }, use, testInfo) => {
@@ -40,26 +53,19 @@ export const test = base.extend<TestFixtures>({
 
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async (email, password, options = { skipSession: false }) => {
+        await use(async (email, password) => {
 
-            if (options.skipSession) {
-                await loginSteps(page, email, password);
-            } else {
-                const sessionState = await page.context().storageState();
-                if (!sessionState || sessionState.cookies.length === 0) {
-                    await page.context().clearCookies();
-                    await loginSteps(page, email, password);
-                    await page.context().storageState({ path: 'session.json' });
-                } else {
+            await page.context().clearCookies();
 
-                    // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
-                    // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
+            await loginSteps(page, email, password);
 
-                    await page.context().addCookies(sessionState.cookies);
-                }
-            }
+            const userId = await getUserIdFromLocalStorage(page);
+
+            return userId!;
+
+            // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
+            // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
         })
-
     }
 });
 
