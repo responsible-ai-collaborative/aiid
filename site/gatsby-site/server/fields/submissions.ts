@@ -18,6 +18,7 @@ import { UserType } from './users';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
 import { linkReportsToIncidents } from './common';
+import { GraphQLLong } from 'graphql-scalars';
 
 const EmbeddingType = new GraphQLObjectType({
     name: 'Embedding',
@@ -45,7 +46,7 @@ const SubmissionType = new GraphQLObjectType({
         editor_notes: { type: GraphQLString },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         embedding: { type: EmbeddingType },
-        epoch_date_modified: { type: GraphQLInt },
+        epoch_date_modified: { type: GraphQLLong },
         harmed_parties: getListRelationshipConfig(EntityType, GraphQLString, 'harmed_parties', 'entity_id', 'entities', 'aiidprod'),
         image_url: { type: new GraphQLNonNull(GraphQLString) },
         incident_date: { type: GraphQLString },

@@ -359,7 +359,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
     testSingular: {
         allowed: [anonymous, subscriber],
         denied: [],
-        filter: { _id: { EQ: incident1._id } },
+        filter: { reports: { IN: [1] } },
         result: {
             incident_id: 1,
             title: 'Test Incident 1',

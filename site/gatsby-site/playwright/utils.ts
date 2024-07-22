@@ -73,6 +73,20 @@ export const test = base.extend<TestFixtures>({
 
 const waitForRequestMap = new Map<string, Promise<Request>>();
 
+
+export const trackRequest = async (page: Page, url: string, condition: (request: Request) => boolean, alias: string) => {
+
+    // every test should wait for every alias it defines, so we are sure no interception is missed
+
+    assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
+
+    const promise = page
+        .waitForResponse((res) => minimatch(res.request().url(), url) && condition(res.request()))
+        .then((response) => response.request());
+
+    waitForRequestMap.set(alias, promise);
+}
+
 export async function conditionalIntercept(
     page: Page,
     url: string,
@@ -97,15 +111,7 @@ export async function conditionalIntercept(
         }
     });
 
-    // every test should wait for every alias it defines, so we are sure no interception is missed
-
-    assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
-
-    const promise = page
-        .waitForResponse((res) => minimatch(res.request().url(), url) && condition(res.request()))
-        .then((response) => response.request());
-
-    waitForRequestMap.set(alias, promise);
+    trackRequest(page, url, condition, alias);
 }
 
 export async function waitForRequest(alias: string) {

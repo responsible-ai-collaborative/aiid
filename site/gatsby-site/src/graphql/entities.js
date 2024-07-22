@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const UPSERT_ENTITY = gql`
-  mutation UpsertEntity($filter: EntityFilterType, $update: EntityInsertType!) {
+  mutation UpsertEntity($filter: EntityFilterType!, $update: EntityInsertType!) {
     upsertOneEntity(filter: $filter, update: $update) {
       entity_id
       name
@@ -30,7 +30,7 @@ export const FIND_ENTITY = gql`
 `;
 
 export const UPDATE_ENTITY = gql`
-  mutation UpdateEntity($filter: EntityFilterType, $update: EntityInsertType!) {
+  mutation UpdateEntity($filter: EntityFilterType!, $update: EntityInsertType!) {
     updateOneEntity(filter: $filter, update: $update) {
       entity_id
     }

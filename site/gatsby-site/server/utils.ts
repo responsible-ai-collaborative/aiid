@@ -1,11 +1,15 @@
-import { GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, ThunkObjMap, isNonNullType } from "graphql";
-import { getGraphQLInsertType, getGraphQLQueryArgs, getGraphQLFilterType, getGraphQLUpdateArgs, getMongoDbQueryResolver, getMongoDbUpdateResolver, getGraphQLUpdateType } from "graphql-to-mongodb";
+import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
+import { getGraphQLInsertType, getGraphQLFilterType, getGraphQLSortType, GraphQLPaginationType, MongoDbOptions, getMongoDbSort, getMongoDbProjection, getMongoDbQueryResolver, validateUpdateArgs, getMongoDbUpdate, GetMongoDbProjectionOptions } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 import pluralizeLib from 'pluralize';
 import config from "./config";
 import { getGraphQLSetType } from "graphql-to-mongodb/lib/src/graphQLUpdateType";
+import { GraphQLFieldsType } from "graphql-to-mongodb/lib/src/common";
+import { QueryCallback, QueryOptions } from "graphql-to-mongodb/lib/src/queryResolver";
+import { getMongoDbFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
+import { UpdateCallback } from "graphql-to-mongodb/lib/src/updateResolver";
 
 export function pluralize(s: string) {
     return pluralizeLib.plural(s);
@@ -31,8 +35,8 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 
         fields[`${singularName}`] = {
             type: Type,
-            args: getGraphQLQueryArgs(Type),
-            resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
+            args: getQueryArgs(Type) as any,
+            resolve: getQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -52,8 +56,8 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
 
         fields[`${pluralName}`] = {
             type: new GraphQLList(Type),
-            args: getGraphQLQueryArgs(Type),
-            resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
+            args: getQueryArgs(Type) as any,
+            resolve: getQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -86,8 +90,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`deleteOne${singularName}`] = {
             type: Type,
-            args: getGraphQLQueryArgs(Type),
-            resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
+            args: getQueryArgs(Type) as any,
+            resolve: getQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -105,8 +109,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`deleteMany${pluralName}`] = {
             type: DeleteManyPayload,
-            args: getGraphQLQueryArgs(Type),
-            resolve: getMongoDbQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
+            args: getQueryArgs(Type) as any,
+            resolve: getQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -181,7 +185,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`updateOne${singularName}`] = {
             type: Type,
             args: getUpdateArgs(Type),
-            resolve: getMongoDbUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
+            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -221,7 +225,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`updateMany${pluralName}`] = {
             type: UpdateManyPayload,
             args: getUpdateArgs(Type),
-            resolve: getMongoDbUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
+            resolve: getUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -240,8 +244,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
         fields[`upsertOne${singularName}`] = {
             type: Type,
-            args: { filter: { type: new GraphQLNonNull(getGraphQLFilterType(Type)) }, update: { type: new GraphQLNonNull(getInsertType(Type)) } },
-            resolve: getMongoDbUpdateResolver(Type, async (filter, _, options, projection, obj, { update }, context: Context) => {
+            args: { filter: { type: new GraphQLNonNull(getFilterType(Type)) as any }, update: { type: new GraphQLNonNull(getInsertType(Type)) } },
+            resolve: getUpdateResolver(Type, async (filter, _, options, projection, obj, { update }, context: Context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -594,9 +598,145 @@ export const getUpdateType = (Type: GraphQLObjectType<any, any>) => {
     }
 }
 
+export const getSimplifiedType = (Type: GraphQLObjectType<any, any>) => {
+
+    const sourceConfig = Type.toConfig();
+    const updatedConfig: ThunkObjMap<GraphQLFieldConfig<any, any, any>> = {}
+
+    for (const [key, field] of Object.entries(sourceConfig.fields)) {
+
+        if (field.extensions?.relationship) {
+
+            updatedConfig[key] = {
+                type: (field.extensions.relationship as any).linkType,
+            }
+        }
+        else {
+            updatedConfig[key] = field;
+        }
+    }
+
+    const simplifiedType = new GraphQLObjectType({
+        name: `${Type.name}Simple`,
+        fields: updatedConfig,
+    });
+
+    return simplifiedType;
+}
+
+export const getFilterType = (Type: GraphQLObjectType<any, any>) => {
+
+    const filterTypeName = `${Type.name}FilterType`;
+
+    if (extendedTypesCache[filterTypeName]) {
+
+        return extendedTypesCache[filterTypeName]
+    }
+    else {
+
+        const sourceConfig = Type.toConfig();
+
+        for (const [key, field] of Object.entries(sourceConfig.fields)) {
+
+            if (field.extensions?.relationship) {
+
+                sourceConfig.fields[key] = {
+                    ...field,
+                    resolve: undefined,
+                    type: (field.extensions.relationship as any).linkType,
+                }
+            }
+        }
+
+        const updatedType = new GraphQLObjectType(sourceConfig);
+        const filter = getGraphQLFilterType(updatedType);
+
+        extendedTypesCache[filterTypeName] = filter;
+
+        return filter;
+    }
+}
+
+
 export const getUpdateArgs = (graphQLType: GraphQLObjectType) => {
     return {
-        filter: { type: new GraphQLNonNull(getGraphQLFilterType(graphQLType)) as GraphQLNonNull<GraphQLInputObjectType> },
+        filter: { type: new GraphQLNonNull(getFilterType(graphQLType)) as GraphQLNonNull<GraphQLInputObjectType> },
         update: { type: new GraphQLNonNull(getUpdateType(graphQLType)) as GraphQLNonNull<GraphQLInputObjectType> }
+    };
+}
+
+export function getQueryArgs(graphQLType: GraphQLObjectType) {
+    return {
+        filter: { type: getFilterType(graphQLType) },
+        sort: { type: getGraphQLSortType(graphQLType) },
+        pagination: { type: GraphQLPaginationType }
+    };
+}
+
+const defaultQueryOptions: Required<QueryOptions> = {
+    differentOutputType: false,
+    excludedFields: [],
+    isResolvedField: (field: GraphQLField<any, any>) => !!field.resolve
+};
+
+export function getQueryResolver<TSource, TContext>(
+    graphQLType: GraphQLFieldsType,
+    queryCallback: QueryCallback<TSource, TContext>,
+    queryOptions?: QueryOptions): GraphQLFieldResolver<TSource, TContext> {
+    if (!isType(graphQLType)) throw 'getMongoDbQueryResolver must recieve a graphql type';
+    if (typeof queryCallback !== 'function') throw 'getMongoDbQueryResolver must recieve a queryCallback function';
+    const requiredQueryOptions = { ...defaultQueryOptions, ...queryOptions };
+
+    return async (source: TSource, args: { [argName: string]: any }, context: TContext, info: GraphQLResolveInfo): Promise<any> => {
+
+        // we use different types for filtering and updating to support filtering by relationship fields
+        const simpleType = getSimplifiedType(graphQLType as any);
+
+        const filter = getMongoDbFilter(simpleType, args.filter);
+
+        const projection = requiredQueryOptions.differentOutputType ? undefined : getMongoDbProjection(info, graphQLType, requiredQueryOptions);
+        const options: MongoDbOptions = { projection };
+        if (args.sort) options.sort = getMongoDbSort(args.sort);
+        if (args.pagination && args.pagination.limit) options.limit = args.pagination.limit;
+        if (args.pagination && args.pagination.skip) options.skip = args.pagination.skip;
+
+        return await queryCallback(filter, projection!, options, source, args, context, info);
+    }
+}
+
+
+export type UpdateOptions = {
+    differentOutputType?: boolean;
+    validateUpdateArgs?: boolean;
+    overwrite?: boolean;
+} & Partial<GetMongoDbProjectionOptions>;
+
+const defaultUpdateOptions: Required<UpdateOptions> = {
+    differentOutputType: false,
+    validateUpdateArgs: false,
+    overwrite: false,
+    excludedFields: [],
+    isResolvedField: undefined as any // TODO this needs to be updated on the package itself 
+};
+
+export function getUpdateResolver<TSource, TContext>(
+    graphQLType: GraphQLObjectType,
+    updateCallback: UpdateCallback<TSource, TContext>,
+    updateOptions?: UpdateOptions): GraphQLFieldResolver<TSource, TContext> {
+    if (!isType(graphQLType)) throw 'getMongoDbUpdateResolver must recieve a graphql type';
+    if (typeof updateCallback !== 'function') throw 'getMongoDbUpdateResolver must recieve an updateCallback';
+    const requiredUpdateOptions = { ...defaultUpdateOptions, ...updateOptions };
+
+    return async (source: TSource, args: { [argName: string]: any }, context: TContext, info: GraphQLResolveInfo): Promise<any> => {
+
+        // we use different types for filtering and updating to support filtering by relationship fields
+        const simpleType = getSimplifiedType(graphQLType as any);
+
+        const filter = getMongoDbFilter(simpleType, args.filter);
+
+        if (requiredUpdateOptions.validateUpdateArgs) validateUpdateArgs(args.update, graphQLType, requiredUpdateOptions);
+        const mongoUpdate = getMongoDbUpdate(args.update, requiredUpdateOptions.overwrite);
+        const projection = requiredUpdateOptions.differentOutputType ? undefined : getMongoDbProjection(info, graphQLType, requiredUpdateOptions);
+        return await updateCallback(filter, mongoUpdate.update, mongoUpdate.options, projection, source, args, context, info);
     };
 }

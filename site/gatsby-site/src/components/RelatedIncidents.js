@@ -7,8 +7,8 @@ import { Trans } from 'react-i18next';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 
 const relatedIncidentsQuery = gql`
-  query ProbablyRelatedIncidents($query: IncidentQueryInput) {
-    incidents(query: $query) {
+  query ProbablyRelatedIncidents($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       title
       reports {
@@ -21,8 +21,8 @@ const relatedIncidentsQuery = gql`
 `;
 
 const relatedReportsQuery = gql`
-  query ProbablyRelatedReports($query: ReportQueryInput) {
-    reports(query: $query) {
+  query ProbablyRelatedReports($filter: ReportFilterType) {
+    reports(filter: $filter) {
       report_number
       title
       url
@@ -37,10 +37,8 @@ const reportsWithIncidentIds = async (reports, client) => {
   const response = await client.query({
     query: relatedIncidentsQuery,
     variables: {
-      query: {
-        reports_in: reports.map((report) => ({
-          report_number: report.report_number,
-        })),
+      filter: {
+        reports: { IN: reports.map((report) => report.report_number) },
       },
     },
   });

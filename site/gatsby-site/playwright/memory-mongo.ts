@@ -5,6 +5,7 @@ import assert from 'node:assert';
 import incidents from './seeds/aiidprod/incidents';
 import reports from './seeds/aiidprod/reports';
 import submissions from './seeds/aiidprod/submissions';
+import entities from './seeds/aiidprod/entities';
 
 import users from './seeds/customData/users';
 
@@ -12,13 +13,14 @@ import users from './seeds/customData/users';
 let instance: MongoMemoryServer | null = null;
 
 
-export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>) => {
+export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
     await seedFixture({
         aiidprod: {
             incidents,
             reports,
             submissions,
+            entities,
         },
         customData: {
             users,
@@ -27,7 +29,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
 
     if (extra) {
 
-        await seedFixture(extra, false);
+        await seedFixture(extra, drop);
     }
 
     console.log('Data seeded successfully');
