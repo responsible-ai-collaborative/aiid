@@ -3,7 +3,7 @@ name: Deploy Production Branch
 on:
   push:
     branches:
-      - master
+      - main
   schedule:
     - cron: "0 6,18 * * *"
   workflow_dispatch:

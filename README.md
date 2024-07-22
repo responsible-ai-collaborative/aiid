@@ -13,7 +13,7 @@
 
 
 <p align="center">
-  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml/badge.svg?branch=master"></a>
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml/badge.svg?branch=main"></a>
   &nbsp;
   <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml/badge.svg?branch=staging"></a>
   &nbsp;
@@ -116,7 +116,7 @@ More details are available in the `Production System` information below. We reco
 
 The site is hosted by [Netlify](https://www.netlify.com) and is integrated into GitHub to generate previews of all code states. This allows for seamless previewing of the application. However, the preview domains do not match the whitelisted domains known by the MongoDB service, so not all functionality is expected to work in the build previews without whitelisting the domain preview.
 
-**Builds:** Builds are presently run at least every 12 hours automatically by a GitHub action. They are also run on merge requests from forks. The site deploys from the master branch automatically if the build succeeds.
+**Builds:** Builds are presently run at least every 12 hours automatically by a GitHub action. They are also run on merge requests from forks. The site deploys from the main branch automatically if the build succeeds.
 
 ### MongoDB Database
 
@@ -180,7 +180,7 @@ The values you placed into the env file are all associated with a staging enviro
 
 #### Additional Configuration
 
-When building the site, some steps can take a while to run. This can be inconvenient when you are working on a feature unrelated to the steps taking the most time in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/master/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
+When building the site, some steps can take a while to run. This can be inconvenient when you are working on a feature unrelated to the steps taking the most time in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/main/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
 
 ```bash
 SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitiationPages gatsby develop
@@ -459,7 +459,7 @@ const YourComponent = () => {
 Deployment of the site consists of two parts: deployment of the backend related features that runs as a GitHub Action and deployment of the frontend related features that runs on Netlify:
 
 ### Netlify
-The Netlify build process runs every time a push is made to an open PR or `master` or `develop`.
+The Netlify build process runs every time a push is made to an open PR or `main` or `develop`.
 To correctly set up  this process, the following environment variables need to be created using Netlify's build settings UI:
 
 ```
@@ -512,7 +512,7 @@ This guide walks you through the steps to set up a Netlify site for your project
 
 #### 5. Configure Deployment
 
-- Under **Branch to Deploy**, select `master`. This setting doesn't matter for now.
+- Under **Branch to Deploy**, select `main`. This setting doesn't matter for now.
 - Leave all other settings as default.
 - Click on **Deploy Site**.
 
@@ -561,7 +561,7 @@ We have integrated our testing and deployment processes with GitHub Actions. The
 
 #### 3) Production Workflow (WIP)
 
-- **Trigger:** Runs only on pushes to the `master` branch.
+- **Trigger:** Runs only on pushes to the `main` branch.
 - **Process:** Executes both the integration tests and deploys to Netlify.
 - **Deployment Criteria:** If the tests fail, no deployment will be carried out.
 - **Environment:** This workflow uses the `production` GitHub environment.
