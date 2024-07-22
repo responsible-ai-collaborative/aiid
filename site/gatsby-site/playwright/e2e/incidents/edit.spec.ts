@@ -77,6 +77,7 @@ test.describe('Incidents', () => {
     await waitForRequest('FindIncident');
     await waitForRequest('FindEntities');
     await waitForRequest('FindUsers');
+    await waitForRequest('IncidentWithReports');
 
 
     const values = {
