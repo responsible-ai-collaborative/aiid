@@ -36,7 +36,7 @@ test.describe('New Incident page', () => {
 
     const newIncidentId = incidents.data.incidents[0].incident_id + 1;
 
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncident', { data: { incident: null } }, 'findIncident');
+    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncident', { data: { incident: null } }, 'FindIncident');
 
     await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidents', incidents, 'GetLatestIncidentId');
 
@@ -72,7 +72,7 @@ test.describe('New Incident page', () => {
       waitForRequest('GetLatestIncidentId'),
       waitForRequest('FindEntities'),
       waitForRequest('FindUsers'),
-      waitForRequest('findIncident'),
+      waitForRequest('FindIncident'),
       waitForRequest('IncidentWithReports'),
     ]);
 
@@ -162,7 +162,7 @@ test.describe('New Incident page', () => {
 
     const newIncidentId = incidents.data.incidents[0].incident_id + 1;
 
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncident', incident, 'findIncident');
+    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncident', incident, 'FindIncident');
 
     await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidents', incidents, 'GetLatestIncidentId');
 
@@ -196,7 +196,7 @@ test.describe('New Incident page', () => {
       waitForRequest('GetLatestIncidentId'),
       waitForRequest('FindEntities'),
       waitForRequest('FindUsers'),
-      waitForRequest('findIncident'),
+      waitForRequest('FindIncident'),
       waitForRequest('IncidentWithReports'),
     ]);
 
