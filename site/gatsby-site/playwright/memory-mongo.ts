@@ -10,9 +10,6 @@ import entities from './seeds/aiidprod/entities';
 import users from './seeds/customData/users';
 
 
-let instance: MongoMemoryServer | null = null;
-
-
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
     await seedFixture({
@@ -37,6 +34,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
 
 export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: Record<string, unknown>[], drop?: boolean }) => {
 
+    // we require the connection string because the instance variable is not always available
     assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), 'Seeding is only allowed on localhost');
 
     const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
@@ -57,7 +55,6 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-
 export const seedFixture = async (seeds: Record<string, Record<string, Record<string, unknown>[]>>, drop = true) => {
 
     for (const [database, collection] of Object.entries(seeds)) {
@@ -68,6 +65,11 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
         }
     }
 }
+
+
+// command line support
+
+let instance: MongoMemoryServer | null = null;
 
 async function start() {
 
@@ -85,7 +87,6 @@ async function stop() {
         await instance.stop();
     }
 }
-
 
 process.on('SIGINT', async () => {
 

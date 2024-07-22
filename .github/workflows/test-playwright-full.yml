@@ -59,6 +59,8 @@ jobs:
       - name: start in memory mongodb
         run: nohup node -r ts-node/register playwright/memory-mongo.ts &
         working-directory: site/gatsby-site
+        env:
+          MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
 
       - name: Wait for memory mongodb to start
         run: |
