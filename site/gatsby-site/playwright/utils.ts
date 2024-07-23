@@ -173,6 +173,16 @@ const loginSteps = async (page: Page, email: string, password: string) => {
     await page.waitForURL(url => !url.toString().includes('/login'));
 };
 
+export async function getEditorText(page: Page, selector: string = '.CodeMirror'): Promise<string> {
+  return await page.evaluate(
+    (selector) => {
+      const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
+      return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
+    },
+    selector
+  );
+}
+
 export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
     await page.locator(selector).first().click();
     await page.evaluate(([value, selector]) => {
