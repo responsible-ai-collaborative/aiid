@@ -54,6 +54,8 @@ const ignoreTypes = [
     'SubmissionUserRelationInput',
     'PromoteSubmissionToReportPayload',
     'PromoteSubmissionToReportInput',
+
+    'UpdateOneReportTranslationInput',
 ];
 
 const ignoredQueries = [
@@ -133,6 +135,8 @@ const ignoredMutations = [
     'upsertOneSubmission',
     'upsertManySubmissions',
     'promoteSubmissionToReport',
+
+    'updateOneReportTranslation',
 ]
 
 export const getSchema = () => {

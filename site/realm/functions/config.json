@@ -12,10 +12,6 @@
         "private": true
     },
     {
-        "name": "updateOneReportTranslation",
-        "private": false
-    },
-    {
         "name": "getEmailTemplateIncidentUpdate",
         "private": true
     },

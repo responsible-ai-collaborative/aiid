@@ -69,4 +69,66 @@ describe(`Reports`, () => {
             }
         })
     });
+
+    it(`Update reports translations`, async () => {
+
+        const mutationData = {
+            query: `
+               mutation (
+                    $input: UpdateOneReportTranslationInput!
+                    $language: String!
+                ) {
+                updateOneReportTranslation(input: $input) {
+                        translations(input: $language) {
+                        title
+                        text
+                        }
+                    }
+                }`,
+            variables: {
+                input: {
+                    language: "es",
+                    plain_text: "this is plain text",
+                    report_number: 1,
+                    text: "this is the text",
+                    title: "this is the title"
+                },
+                language: "es"
+            }
+        };
+
+
+        await seedFixture({
+            customData: {
+                users: [
+                    {
+                        userId: "123",
+                        roles: ['incident_editor'],
+                    }
+                ],
+            },
+            aiidprod: {
+                reports: [
+                    {
+                        report_number: 1,
+                        flag: false
+                    }
+                ]
+            }
+        });
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+
+        const response = await makeRequest(url, mutationData);
+
+        expect(response.body.data).toMatchObject({
+            updateOneReportTranslation: {
+                translations: {
+                    title: "this is the title",
+                    text: "this is the text"
+                }
+            }
+        })
+    });
 });

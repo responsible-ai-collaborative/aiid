@@ -2140,6 +2140,9 @@ export type IncidentEmbeddingUpdateInput = {
 
 export type IncidentFilterType = {
   AND?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
+  AllegedDeployerOfAISystem?: InputMaybe<StringFilter>;
+  AllegedDeveloperOfAISystem?: InputMaybe<StringFilter>;
+  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<StringFilter>;
   NOR?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
   OR?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
@@ -2148,11 +2151,13 @@ export type IncidentFilterType = {
   editor_dissimilar_incidents?: InputMaybe<IntFilter>;
   editor_notes?: InputMaybe<StringFilter>;
   editor_similar_incidents?: InputMaybe<IntFilter>;
+  editors?: InputMaybe<StringFilter>;
   embedding?: InputMaybe<IncidentEmbeddingObjectFilterType>;
   epoch_date_modified?: InputMaybe<LongFilter>;
   flagged_dissimilar_incidents?: InputMaybe<IntFilter>;
   incident_id?: InputMaybe<IntFilter>;
   nlp_similar_incidents?: InputMaybe<NlpSimilarIncidentObjectFilterType>;
+  reports?: InputMaybe<IntFilter>;
   title?: InputMaybe<StringFilter>;
   tsne?: InputMaybe<TsneObjectFilterType>;
 };
@@ -2534,6 +2539,7 @@ export type Mutation = {
   deleteOneSubmission?: Maybe<Submission>;
   deleteOneSubscription?: Maybe<Subscription>;
   deleteOneTaxa?: Maybe<Taxa>;
+  flagIncidentSimilarity?: Maybe<Incident>;
   flagReport?: Maybe<Report>;
   getUser?: Maybe<AppUser>;
   insertManyCandidates?: Maybe<InsertManyPayload>;
@@ -2595,6 +2601,7 @@ export type Mutation = {
   updateOneNotification?: Maybe<Notification>;
   updateOneQuickadd?: Maybe<Quickadd>;
   updateOneReport?: Maybe<Report>;
+  updateOneReportTranslation?: Maybe<Report>;
   updateOneSubmission?: Maybe<Submission>;
   updateOneSubscription?: Maybe<Subscription>;
   updateOneTaxa?: Maybe<Taxa>;
@@ -2738,6 +2745,12 @@ export type MutationDeleteOneSubscriptionArgs = {
 
 export type MutationDeleteOneTaxaArgs = {
   query: TaxaQueryInput;
+};
+
+
+export type MutationFlagIncidentSimilarityArgs = {
+  dissimilarIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  incidentId: Scalars['Int']['input'];
 };
 
 
@@ -3070,6 +3083,11 @@ export type MutationUpdateOneQuickaddArgs = {
 export type MutationUpdateOneReportArgs = {
   filter: ReportFilterType;
   update: ReportUpdateType;
+};
+
+
+export type MutationUpdateOneReportTranslationArgs = {
+  input: UpdateOneReportTranslationInput;
 };
 
 
@@ -3814,6 +3832,7 @@ export type ReportFilterType = {
   text?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   url?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
 };
 
 export type ReportInsertInput = {
@@ -4280,14 +4299,18 @@ export type SubmissionFilterType = {
   date_modified?: InputMaybe<StringFilter>;
   date_published?: InputMaybe<StringFilter>;
   date_submitted?: InputMaybe<StringFilter>;
+  deployers?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
+  developers?: InputMaybe<StringFilter>;
   editor_dissimilar_incidents?: InputMaybe<IntFilter>;
   editor_notes?: InputMaybe<StringFilter>;
   editor_similar_incidents?: InputMaybe<IntFilter>;
   embedding?: InputMaybe<EmbeddingObjectFilterType>;
   epoch_date_modified?: InputMaybe<LongFilter>;
+  harmed_parties?: InputMaybe<StringFilter>;
   image_url?: InputMaybe<StringFilter>;
   incident_date?: InputMaybe<StringFilter>;
+  incident_editors?: InputMaybe<StringFilter>;
   incident_ids?: InputMaybe<IntFilter>;
   incident_title?: InputMaybe<StringFilter>;
   language?: InputMaybe<StringFilter>;
@@ -4301,6 +4324,7 @@ export type SubmissionFilterType = {
   text?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   url?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
 };
 
 export type SubmissionHarmed_PartiesRelationInput = {
@@ -6348,6 +6372,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, Partial<MutationDeleteOneSubmissionArgs>>;
   deleteOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubscriptionArgs, 'query'>>;
   deleteOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationDeleteOneTaxaArgs, 'query'>>;
+  flagIncidentSimilarity?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationFlagIncidentSimilarityArgs, 'incidentId'>>;
   flagReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationFlagReportArgs, 'input' | 'report_number'>>;
   getUser?: Resolver<Maybe<ResolversTypes['AppUser']>, ParentType, ContextType, Partial<MutationGetUserArgs>>;
   insertManyCandidates?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyCandidatesArgs, 'data'>>;
@@ -6409,6 +6434,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpdateOneNotificationArgs, 'set'>>;
   updateOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationUpdateOneQuickaddArgs, 'filter' | 'update'>>;
   updateOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationUpdateOneReportArgs, 'filter' | 'update'>>;
+  updateOneReportTranslation?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationUpdateOneReportTranslationArgs, 'input'>>;
   updateOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubmissionArgs, 'filter' | 'update'>>;
   updateOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubscriptionArgs, 'set'>>;
   updateOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpdateOneTaxaArgs, 'set'>>;

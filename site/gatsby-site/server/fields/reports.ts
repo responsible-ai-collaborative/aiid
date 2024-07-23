@@ -1,12 +1,13 @@
-import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { ObjectIdScalar } from "../scalars";
 import { generateMutationFields, generateQueryFields, getRelationshipExtension, getRelationshipResolver } from "../utils";
 import { Context } from "../interfaces";
-import { isAdmin } from "../rules";
+import { isRole } from "../rules";
 import { UserType } from "./users";
 import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { DateTimeResolver } from "graphql-scalars";
+import { UpdateOneReportTranslationInput } from "../generated/graphql";
 
 
 const EmbeddingType = new GraphQLObjectType({
@@ -95,6 +96,18 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
     ...generateQueryFields({ collectionName: 'reports', Type: ReportType })
 }
 
+
+const UpdateOneReportTranslationInput = new GraphQLInputObjectType({
+    name: 'UpdateOneReportTranslationInput',
+    fields: {
+        language: { type: new GraphQLNonNull(GraphQLString) },
+        plain_text: { type: new GraphQLNonNull(GraphQLString) },
+        report_number: { type: new GraphQLNonNull(GraphQLInt) },
+        text: { type: new GraphQLNonNull(GraphQLString) },
+        title: { type: new GraphQLNonNull(GraphQLString) },
+    },
+});
+
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
     ...generateMutationFields({ collectionName: 'reports', Type: ReportType, generateFields: ['updateOne', 'deleteOne', 'insertOne'] }),
@@ -137,7 +150,33 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                 throw new Error("Report not found");
             }
         }),
-    }
+    },
+
+    updateOneReportTranslation: {
+        args: {
+            input: { type: new GraphQLNonNull(UpdateOneReportTranslationInput) }
+        },
+        type: ReportType,
+        resolve: getMongoDbQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
+
+            const translations = context.client.db('translations').collection("reports_" + args.input.language);
+
+            const update = {
+                title: args.input.title,
+                text: args.input.text,
+                plain_text: args.input.plain_text
+            };
+
+            await translations.updateOne({ report_number: args.input.report_number }, { $set: { ...update } }, { upsert: true });
+
+
+            const reports = context.client.db('aiidprod').collection("reports");
+
+            const report = await reports.findOne({ report_number: args.input.report_number }, options);
+
+            return report;
+        }),
+    },
 }
 
 export const permissions = {
@@ -146,10 +185,11 @@ export const permissions = {
         reports: allow,
     },
     Mutation: {
-        deleteOneReport: isAdmin,
-        insertOneReport: isAdmin,
-        updateOneReport: isAdmin,
+        deleteOneReport: isRole('incident_editor'),
+        insertOneReport: isRole('incident_editor'),
+        updateOneReport: isRole('incident_editor'),
 
         flagReport: allow,
+        updateOneReportTranslation: isRole('incident_editor'),
     }
 }
