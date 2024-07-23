@@ -60,6 +60,10 @@ export const FIND_SUBMISSIONS = gql`
         userId
       }
       quiet
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `;

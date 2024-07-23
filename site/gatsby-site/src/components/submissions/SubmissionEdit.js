@@ -175,6 +175,10 @@ const SubmissionEdit = ({ id }) => {
                     submission.harmed_parties === null
                       ? []
                       : submission.harmed_parties.map((item) => item.name || item),
+                  implicated_systems:
+                    submission.implicated_systems === null
+                      ? []
+                      : submission.implicated_systems.map((item) => item.name || item),
                 }}
               >
                 <SubmissionEditForm
