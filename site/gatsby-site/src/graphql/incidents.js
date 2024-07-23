@@ -317,3 +317,15 @@ export const FIND_INCIDENT_HISTORY = gql`
     }
   }
 `;
+
+export const FLAG_INCIDENT_SIMILARITY = gql`
+  mutation ($incidentId: Int!, $dissimilarIds: [Int!]) {
+    flagIncidentSimilarity(incidentId: $incidentId, dissimilarIds: $dissimilarIds) {
+      incident_id
+      flagged_dissimilar_incidents
+      editors {
+        userId
+      }
+    }
+  }
+`;

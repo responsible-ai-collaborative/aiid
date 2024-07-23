@@ -150,7 +150,28 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             return incidentsCollection.find({ reports: { $in: args.input.report_numbers } }, options).toArray();
         })
-    }
+    },
+
+    flagIncidentSimilarity: {
+        type: IncidentType,
+        args: {
+            incidentId: { type: new GraphQLNonNull(GraphQLInt) },
+            dissimilarIds: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
+        },
+        resolve: getMongoDbQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
+
+            const incidentsCollection = context.client.db('aiidprod').collection<{ editors: string[] }>("incidents");
+
+            await incidentsCollection.updateOne({ incident_id: args.incidentId }, { $set: { flagged_dissimilar_incidents: args.dissimilarIds } });
+
+            if (context?.user?.id) {
+
+                await incidentsCollection.updateOne({ incident_id: args.incidentId }, { $addToSet: { editors: context.user.id } });
+            }
+
+            return incidentsCollection.findOne({ incident_id: args.incidentId }, options);
+        })
+    },
 }
 
 export const permissions = {
@@ -163,5 +184,6 @@ export const permissions = {
         updateOneIncident: isRole('incident_editor'),
         updateManyIncidents: isRole('incident_editor'),
         linkReportsToIncidents: isRole('incident_editor'),
+        flagIncidentSimilarity: allow,
     }
 }

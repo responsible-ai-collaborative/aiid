@@ -5,7 +5,7 @@ import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-ic
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, FLAG_INCIDENT_SIMILARITY } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -28,7 +28,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
-  const [updateIncidentMutation] = useMutation(UPDATE_INCIDENT);
+  const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
     variables: { filter: { incident_id: { EQ: parentIncident.incident_id } } },
@@ -54,16 +54,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       editors.push(user.id);
     }
 
-    await updateIncidentMutation({
+    await flagSimilarity({
       variables: {
-        filter: { incident_id: { EQ: parentIncident.incident_id } },
-        update: {
-          set: {
-            flagged_dissimilar_incidents,
-            epoch_date_modified: getUnixTime(now),
-            editors: { link: editors },
-          },
-        },
+        incidentId: parentIncident.incident_id,
+        dissimilarIds: flagged_dissimilar_incidents,
       },
     });
 

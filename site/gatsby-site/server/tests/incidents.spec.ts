@@ -97,4 +97,59 @@ describe(`Incidents`, () => {
             ]
         })
     });
+
+    it(`Flag dissimilar`, async () => {
+
+        await seedFixture({
+            customData: {
+                users: [
+                    {
+                        userId: "123",
+                        roles: [],
+                    }
+                ],
+            },
+            aiidprod: {
+                incidents: [
+                    {
+                        incident_id: 1,
+                    },
+                    {
+                        incident_id: 2,
+                    },
+                ],
+            }
+        });
+
+        const mutationData = {
+            query: `
+                mutation ($incidentId: Int!, $similarIds: [Int!], $dissimilarIds: [Int!]) {
+                    flagIncidentSimilarity(
+                        incident_id: $incidentId
+                        similarIds: $similarIds
+                        dissimilarIds: $dissimilarIds
+                    ) {
+                        incident_id
+                        flagged_dissimilar_incidents
+                    }
+                }
+            `,
+            variables: {
+                incidentId: 1,
+                dissimilarIds: [2]
+            }
+        };
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+
+        const response = await makeRequest(url, mutationData);
+
+        expect(response.body.data).toMatchObject({
+            flagIncidentSimilarity: {
+                incident_id: 1,
+                flagged_dissimilar_incidents: [2],
+            }
+        })
+    });
 });
