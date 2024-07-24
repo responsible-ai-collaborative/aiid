@@ -16,6 +16,8 @@ const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
+      title
+      description
       reports {
         report_number
         title
@@ -48,6 +50,7 @@ function IncidentForm() {
         incident_id_in: [],
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   const selectedSimilarId = useRef(null);
@@ -66,15 +69,15 @@ function IncidentForm() {
     })
   ).current;
 
-  const similarReportsById =
+  const similarIncidentsById =
     similarReportsByIdQuery.loading ||
     similarReportsByIdQuery.error ||
     similarReportsByIdQuery.data.incidents.length == 0 ||
     selectedSimilarId == null
       ? []
-      : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
+      : similarReportsByIdQuery.data.incidents.map((incident) => ({
           incident_id: selectedSimilarId.current,
-          ...report,
+          ...incident,
         }));
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
@@ -85,19 +88,19 @@ function IncidentForm() {
         ),
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
-  const editorSimilarIncidentReports =
+  const editorSimilarIncidents =
     editorSimilarIncidentReportsQuery.loading ||
     editorSimilarIncidentReportsQuery.error ||
     editorSimilarIncidentReportsQuery.data.incidents.length === 0
       ? []
-      : editorSimilarIncidentReportsQuery.data.incidents.flatMap((incident) =>
-          incident.reports.map((report) => ({
-            ...report,
-            incident_id: incident.incident_id,
-          }))
-        );
+      : editorSimilarIncidentReportsQuery.data.incidents.map((incident) => {
+          return {
+            ...incident,
+          };
+        });
 
   useEffect(() => {
     window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
@@ -223,14 +226,15 @@ function IncidentForm() {
         </FieldContainer>
 
         <div id="similar-incidents">
+          <Label label={t(`Manually-selected similar and dissimilar incidents`)} />
           <RelatedIncidentsArea
             columnKey={'editor_similar_incidents'}
-            header={'Manually-selected similar and dissimilar incidents'}
-            reports={editorSimilarIncidentReports}
-            loading={false}
+            incidents={editorSimilarIncidents}
+            loading={editorSimilarIncidentReportsQuery.loading}
             setFieldValue={setFieldValue}
             editId={false}
             error={false}
+            notFoundText={'No similar/dissimilar incidents assigned to this incident.'}
           />
 
           <SemanticallyRelatedIncidents
@@ -239,9 +243,12 @@ function IncidentForm() {
             editId={false}
           />
 
-          <div className="mt-4">
-            <FieldContainer>
-              <Label label={t(`Similar Incident Id`)} />
+          <div className="border rounded px-2 pb-4 mt-4">
+            <div className="mt-4">
+              <Label
+                label={t(`Search similar/dissimilar Incident Id`)}
+                popover="similarIncidentSearch"
+              />
               <input
                 type="number"
                 data-cy="similar-id-input"
@@ -250,18 +257,21 @@ function IncidentForm() {
                   'mt-2 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white'
                 }
               />
-            </FieldContainer>
-          </div>
+            </div>
 
-          <RelatedIncidentsArea
-            columnKey={'byId'}
-            header={'Reports'}
-            reports={similarReportsById}
-            loading={false}
-            setFieldValue={setFieldValue}
-            editId={false}
-            error={false}
-          />
+            <RelatedIncidentsArea
+              columnKey={'byId'}
+              header={similarIncidentsById.length > 0 ? 'Incidents search results' : ''}
+              incidents={similarIncidentsById}
+              loading={similarReportsByIdQuery.loading}
+              setFieldValue={setFieldValue}
+              editId={false}
+              error={false}
+              notFoundText={
+                'No similar incidents found. Please enter an incident ID above to perform the search.'
+              }
+            />
+          </div>
         </div>
       </FormikForm>
     </div>
