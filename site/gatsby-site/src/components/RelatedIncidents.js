@@ -114,7 +114,7 @@ const allSearchColumns = {
       result.data.incidents.length ? result.data.incidents[0].reports : [],
     getIncidents: async (result) => result.data.incidents,
     isSet: (incident) => incident.incident_ids && incident.incident_ids.length,
-    getQueryVariables: (incident) => ({ incident_id_in: incident.incident_ids }),
+    getQueryVariables: (incident) => ({ incident_id: { IN: incident.incident_ids } }),
     editSimilar: false,
     editId: false,
     showIncidents: true,

@@ -73,11 +73,11 @@ const items: DBReport[] = [
         submitters: [
             "Catherine Olsson"
         ],
-        text: "SAN DIEGO — In a typical last-minute scramble, Jannette Navarro",
+        text: "SAN DIEGO — In a typical last-minute scramble, Jannette Navarro, a Starbucks barista and single mother",
         title: "Working Anything but 9 to 5",
         url: "https://www.nytimes.com/interactive/2014/08/13/us/starbucks-workers-scheduling-hours.html",
-        tags: [],
-        plain_text: "SAN DIEGO — In a typical last-minute scramble, Jannette Navarro",
+        tags: ['Test Tag'],
+        plain_text: "SAN DIEGO — In a typical last-minute scramble, Jannette Navarro, a Starbucks barista and single mother",
         editor_notes: "",
         cloudinary_id: "reports/static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg",
         embedding: {
@@ -96,7 +96,6 @@ const items: DBReport[] = [
         // created_at: 1559347200000
     },
     {
-        _id: "5d34b8c29ced494f010ed46a",
         authors: [
             "News Writer"
         ],
@@ -138,6 +137,50 @@ const items: DBReport[] = [
         // TODO: ditto
         // created_at: 1559347200000
     },
+
+    {
+        authors: [
+            "News Writer"
+        ],
+        date_downloaded: new Date(1555113600000),
+        date_modified: new Date(1592092800000),
+        date_published: new Date(1440633600000),
+        date_submitted: new Date(1559347200000),
+        description: "Retail and restaurant workers are the focus of a raging national debate over fair hours, pay and the use of shift scheduling software from big vendors such as ADP, SAP and Kronos.",
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1440633600,
+        epoch_date_submitted: 1559347200,
+        image_url: "https://cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
+        language: "en",
+        report_number: 5,
+        source_domain: "searchhrsoftware.techtarget.com",
+        submitters: [
+            "Catherine Olsson"
+        ],
+        text: "Caitlin O'Reilly-Green, a barista at an Atlanta Starbucks",
+        title: "Issue Report 5",
+        url: "https://searchhrsoftware.techtarget.com/news/4500252451/Kronos-shift-scheduling-software-a-grind-for-Starbucks-worker",
+        tags: [],
+        plain_text: "Caitlin O'Reilly-Green, a barista at an Atlanta Starbucks",
+        editor_notes: "",
+        cloudinary_id: "reports/cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
+        embedding: {
+            vector: [
+                -0.09370243549346924,
+                0.10497249662876129
+            ],
+            from_text_hash: "6dfba3c22a24c31e017dfbe8594e312cc127cb38"
+        },
+        is_incident_report: false,
+
+        // TODO: ditto
+        user: 'user1',
+
+        // TODO: ditto
+        // created_at: 1559347200000
+    },
+
 ]
 
 export default items;

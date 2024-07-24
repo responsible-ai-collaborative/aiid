@@ -122,8 +122,8 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         dbResponse = await client.query({
           query: relatedIncidentIdsQuery,
           variables: {
-            query: {
-              incident_id_in: incidentIds,
+            filter: {
+              incident_id: { IN: incidentIds },
             },
           },
         });

@@ -81,7 +81,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
 `;
 
 export const UPDATE_REPORT = gql`
-  mutation UpdateReport($filter: ReportFilterType!, $update: ReportUpdateInput!) {
+  mutation UpdateReport($filter: ReportFilterType!, $update: ReportUpdateType!) {
     updateOneReport(filter: $filter, update: $update) {
       url
       title
@@ -126,7 +126,7 @@ export const INSERT_REPORT = gql`
 // https://feedback.mongodb.com/forums/923521-realm/suggestions/40765336-adding-or-removing-elements-from-array-fields
 
 export const LINK_REPORTS_TO_INCIDENTS = gql`
-  mutation LinkReportsToIncidents($input: LinkReportsToIncidentsInput) {
+  mutation LinkReportsToIncidents($input: LinkReportsToIncidentsInput!) {
     linkReportsToIncidents(input: $input) {
       incident_id
       reports {

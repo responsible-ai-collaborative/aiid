@@ -96,18 +96,6 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
     ...generateQueryFields({ collectionName: 'reports', Type: ReportType })
 }
 
-
-const UpdateOneReportTranslationInput = new GraphQLInputObjectType({
-    name: 'UpdateOneReportTranslationInput',
-    fields: {
-        language: { type: new GraphQLNonNull(GraphQLString) },
-        plain_text: { type: new GraphQLNonNull(GraphQLString) },
-        report_number: { type: new GraphQLNonNull(GraphQLInt) },
-        text: { type: new GraphQLNonNull(GraphQLString) },
-        title: { type: new GraphQLNonNull(GraphQLString) },
-    },
-});
-
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
     ...generateMutationFields({ collectionName: 'reports', Type: ReportType, generateFields: ['updateOne', 'deleteOne', 'insertOne'] }),
@@ -154,7 +142,18 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
     updateOneReportTranslation: {
         args: {
-            input: { type: new GraphQLNonNull(UpdateOneReportTranslationInput) }
+            input: {
+                type: new GraphQLNonNull(new GraphQLInputObjectType({
+                    name: 'UpdateOneReportTranslationInput',
+                    fields: {
+                        language: { type: new GraphQLNonNull(GraphQLString) },
+                        plain_text: { type: new GraphQLNonNull(GraphQLString) },
+                        report_number: { type: new GraphQLNonNull(GraphQLInt) },
+                        text: { type: new GraphQLNonNull(GraphQLString) },
+                        title: { type: new GraphQLNonNull(GraphQLString) },
+                    },
+                }))
+            }
         },
         type: ReportType,
         resolve: getMongoDbQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
