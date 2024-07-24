@@ -166,6 +166,10 @@ export const UPDATE_SUBMISSION = gql`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `;

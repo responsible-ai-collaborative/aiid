@@ -67,6 +67,12 @@ const SubmissionEdit = ({ id }) => {
         createEntityMutation
       );
 
+      update.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       if (update.nlp_similar_incidents) {
         update.nlp_similar_incidents = update.nlp_similar_incidents.map((nlp) => {
           return { ...nlp, __typename: undefined };
@@ -176,7 +182,8 @@ const SubmissionEdit = ({ id }) => {
                       ? []
                       : submission.harmed_parties.map((item) => item.name || item),
                   implicated_systems:
-                    submission.implicated_systems === null
+                    submission.implicated_systems === null ||
+                    submission.implicated_systems === undefined
                       ? []
                       : submission.implicated_systems.map((item) => item.name || item),
                 }}

@@ -2811,6 +2811,7 @@ input SubmissionUpdateInput {
   incident_date_unset: Boolean
   image_url: String
   cloudinary_id: String
+  implicated_systems: SubmissionImplicatedSystemsRelationInput
 }
 
 input RisksInput {
@@ -3662,6 +3663,8 @@ input SubmissionQueryInput {
   epoch_date_modified_in: [Int]
   deployers_exists: Boolean
   title_nin: [String]
+  implicated_systems_nin: [EntityQueryInput]
+  implicated_systems: [EntityQueryInput]
 }
 
 input TaxaField_listInsertInput {
@@ -3866,6 +3869,11 @@ input SubmissionDeployersRelationInput {
   link: [String]
 }
 
+input SubmissionImplicatedSystemsRelationInput {
+  create: [EntityInsertInput]
+  link: [String]
+}
+
 input CandidateClassification_similarityInsertInput {
   classification: String
   similarity: Float
@@ -3932,6 +3940,7 @@ type Submission {
   title: String!
   url: String!
   user: User
+  implicated_systems: [Entity]
 }
 
 input SubmissionIncident_editorsRelationInput {
@@ -4272,6 +4281,7 @@ input SubmissionInsertInput {
   epoch_date_modified: Int
   tags: [String]!
   date_downloaded: String!
+  implicated_systems: SubmissionImplicatedSystemsRelationInput
 }
 
 input ClassificationAttributeUpdateInput {
