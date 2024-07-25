@@ -42,7 +42,8 @@ const incidents: DBIncident[] = [
         date: "2014-08-14",
         reports: [
             3,
-            4
+            4,
+            6,
         ],
         "Alleged deployer of AI system": [
             "starbucks"

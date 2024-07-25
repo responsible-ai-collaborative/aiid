@@ -180,7 +180,33 @@ const items: DBReport[] = [
         // TODO: ditto
         // created_at: 1559347200000
     },
+    {
+        "authors": ["Pablo Costa"],
+        "date_published": new Date(1555113600000),
+        "epoch_date_submitted": 1559347200,
+        "report_number": 6,
+        "tags": ["variant:unreviewed"],
+        "inputs_outputs": ["Input 1", "Output 1"],
 
+        // TODO: variants are missing these fields
+        cloudinary_id: "",
+        date_downloaded: new Date(1555113600000),
+        date_modified: new Date(1592092800000),
+        date_submitted: new Date(1559347200000),
+        epoch_date_downloaded: 0,
+        epoch_date_modified: 0,
+        epoch_date_published: 0,
+        image_url: "",
+        language: "",
+        plain_text: "",
+        text: "",
+        source_domain: "",
+        submitters: [],
+        url: "",
+        title: "",
+        editor_notes: "",
+        user: "",
+    }
 ]
 
 export default items;

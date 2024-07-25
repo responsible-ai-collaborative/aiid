@@ -24,26 +24,27 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
+// TODO: uncomment after classifications and subscription collections are migrated
 
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
 
-    'Report',
-    'ReportQueryInput',
+    // 'Report',
+    // 'ReportQueryInput',
     'ReportUserRelationInput',
 
-    'Incident',
-    'IncidentQueryInput',
+    // 'Incident',
+    // 'IncidentQueryInput',
     'IncidentEditorsRelationInput',
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    'Entity',
-    'EntityQueryInput',
+    // 'Entity',
+    // 'EntityQueryInput',
 
     'User',
-    'UserQueryInput',
+    // 'UserQueryInput',
 
     'Submission',
     'SubmissionQueryInput',

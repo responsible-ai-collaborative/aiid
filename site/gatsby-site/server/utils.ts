@@ -365,6 +365,7 @@ export const getListRelationshipResolver = (
     ReferencedType: GraphQLObjectType,
     databaseName: string,
     collectionName: string,
+    sourceFieldOnDatabase?: string
 ) => {
 
     return getMongoDbQueryResolver(ReferencedType, async (filter, projection, options, source: any, args, context: Context) => {
@@ -373,8 +374,8 @@ export const getListRelationshipResolver = (
 
         const collection = db.collection(collectionName);
 
-        const result = source[sourceField]?.length
-            ? await collection.find({ [targetField]: { $in: source[sourceField] } }, options).toArray()
+        const result = source[sourceFieldOnDatabase ?? sourceField]?.length
+            ? await collection.find({ [targetField]: { $in: source[sourceFieldOnDatabase ?? sourceField] } }, options).toArray()
             : []
 
         return result;

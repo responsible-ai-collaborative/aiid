@@ -20,6 +20,23 @@ const entities: DBEntity[] = [
         name: 'Entity 3',
         created_at: new Date(1609459200000).toString(),
     },
+    {
+        entity_id: 'starbucks',
+        name: 'Starbucks',
+        created_at: new Date(1609459200000).toString(),
+    },
+
+    {
+        entity_id: 'kronos',
+        name: 'Kronos',
+        created_at: new Date(1609459200000).toString(),
+    },
+
+    {
+        entity_id: 'starbucks-employees',
+        name: 'Starbucks Employees',
+        created_at: new Date(1609459200000).toString(),
+    },
 ]
 
 export default entities;
