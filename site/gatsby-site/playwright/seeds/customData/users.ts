@@ -16,8 +16,7 @@ const users: DBUser[] = [
         roles: ["admin"],
         first_name: "Sean",
         last_name: "McGregor"
-    }
-
+    },
 ]
 
 export default users;

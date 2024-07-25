@@ -13,8 +13,8 @@ import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
 
 const relatedIncidentIdsQuery = gql`
-  query IncidentWithReports($query: IncidentQueryInput) {
-    incidents(query: $query) {
+  query IncidentWithReports($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       reports {
         report_number
@@ -44,8 +44,8 @@ function IncidentForm() {
 
   const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
-      query: {
-        incident_id_in: [],
+      filter: {
+        incident_id: { IN: [] },
       },
     },
   });
@@ -59,8 +59,8 @@ function IncidentForm() {
       selectedSimilarId.current = incident_id;
 
       similarReportsByIdQuery.refetch({
-        query: {
-          incident_id_in: [incident_id],
+        filter: {
+          incident_id: { IN: [incident_id] },
         },
       });
     })
@@ -79,10 +79,10 @@ function IncidentForm() {
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
-      query: {
-        incident_id_in: (values?.editor_similar_incidents || []).concat(
-          values.editor_dissimilar_incidents
-        ),
+      filter: {
+        incident_id: {
+          IN: (values?.editor_similar_incidents || []).concat(values.editor_dissimilar_incidents),
+        },
       },
     },
   });

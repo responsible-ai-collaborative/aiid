@@ -41,10 +41,6 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                const bue = await collection.find({}, options).toArray();
-
-                bue;
-
                 const item = await collection.findOne(filter, options);
 
                 return item;
@@ -137,7 +133,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 for (const [name, value] of Object.entries(data)) {
 
-                    if (value.link && typeof value.link !== 'function') {
+                    if (value?.link && typeof value.link !== 'function') {
 
                         const field = fields[name];
 
