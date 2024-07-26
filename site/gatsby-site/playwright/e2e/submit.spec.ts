@@ -166,6 +166,9 @@ test.describe('The Submit form', () => {
 
         await page.locator('input[name="deployers"]').fill('NewDeployer');
         await page.keyboard.press('Enter');
+
+        await page.locator('input[name="implicated_systems"]').fill('New implicated system');
+        await page.keyboard.press('Enter');
         await page.locator('button[type="submit"]').click();
 
         const updateReportRequest = await waitForRequest('insertSubmission');
@@ -184,6 +187,7 @@ test.describe('The Submit form', () => {
             url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
             source_domain: `arstechnica.com`,
             deployers: { link: ['youtube', 'newdeployer'] },
+            implicated_systems: { link: ['new-implicated-system'] },
         });
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
@@ -1493,7 +1497,7 @@ test.describe('The Submit form', () => {
         });
     });
 
-    test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {
+    test('Should hide incident_date, description, deployers, developers, harmed_parties & implicated_systems if incident_ids is set', async ({ page }) => {
         await conditionalIntercept(
             page,
             '**/graphql',
@@ -1588,6 +1592,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator('input[name="deployers"]')).not.toBeVisible();
         await expect(page.locator('input[name="developers"]')).not.toBeVisible();
         await expect(page.locator('input[name="harmed_parties"]')).not.toBeVisible();
+        await expect(page.locator('input[name="implicated_systems"]')).not.toBeVisible();
 
         await page.locator('button[type="submit"]').click();
 
@@ -1800,6 +1805,7 @@ test.describe('The Submit form', () => {
             developers: 'test developer',
             deployers: 'test deployer',
             harmed_parties: 'test harmed_parties',
+            implicated_systems: 'test implicated_systems',
             editor_notes: 'Here are some notes',
         };
 
@@ -1824,6 +1830,7 @@ test.describe('The Submit form', () => {
                 developers: [valuesStep3.developers],
                 deployers: [valuesStep3.deployers],
                 harmed_parties: [valuesStep3.harmed_parties],
+                implicated_systems: [valuesStep3.implicated_systems],
                 nlp_similar_incidents: [],
                 cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
                 text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
