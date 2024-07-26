@@ -3,6 +3,8 @@ import { Page, Route, test as base, Request } from '@playwright/test';
 import { minimatch } from 'minimatch'
 import config from './config';
 import assert from 'node:assert';
+import fs from 'fs';
+import path from 'path';
 
 declare module '@playwright/test' {
     interface Request {
@@ -171,10 +173,40 @@ const loginSteps = async (page: Page, email: string, password: string) => {
     await page.waitForURL(url => !url.toString().includes('/login'));
 };
 
+export async function getEditorText(page: Page, selector: string = '.CodeMirror'): Promise<string> {
+  return await page.evaluate(
+    (selector) => {
+      const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
+      return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
+    },
+    selector
+  );
+}
+
 export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
     await page.locator(selector).first().click();
     await page.evaluate(([value, selector]) => {
         document.querySelector(selector).CodeMirror.setValue(value);
     }, [value, selector]);
     await page.mouse.click(0, 0);
+}
+
+
+export async function listFiles(directoryPath: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryPath, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        const jsonFiles = files.filter((file) => {
+          return (
+            path.extname(file).toLowerCase() === '.json' &&
+            fs.statSync(path.join(directoryPath, file)).isFile()
+          );
+        });
+
+        resolve(jsonFiles);
+      }
+    });
+  });
 }
