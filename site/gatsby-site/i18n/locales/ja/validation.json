@@ -13,5 +13,7 @@
   "Please review report. Some data is missing.": "レポートを確認してください。足りない情報があります",
   "Please review submission. Some data is missing.": "投稿を確認してください。足りない情報があります",
   "Some data is missing.": "足りない情報があります",
-  "Please review. Some data is missing.": "確認してください。足りない情報があります"
+  "Please review. Some data is missing.": "確認してください。足りない情報があります",
+  "Implicated Systems must have at least 3 characters": "関連システムは3文字以上でなければいけません",
+  "Implicated Systems can't be longer than 200 characters": "関連システムは200文字を超えることはできません"
 }

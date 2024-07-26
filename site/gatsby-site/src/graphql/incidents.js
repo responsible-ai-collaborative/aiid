@@ -70,6 +70,10 @@ export const FIND_INCIDENTS_TABLE = gql`
       reports {
         report_number
       }
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `;

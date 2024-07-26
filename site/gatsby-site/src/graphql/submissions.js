@@ -116,6 +116,10 @@ export const FIND_SUBMISSION = gql`
       editor_dissimilar_incidents
       status
       quiet
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `;
