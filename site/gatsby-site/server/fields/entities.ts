@@ -3,6 +3,7 @@ import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
+import { GraphQLDateTime } from "graphql-scalars";
 
 export const EntityType = new GraphQLObjectType({
     name: 'Entity',
@@ -10,7 +11,7 @@ export const EntityType = new GraphQLObjectType({
         _id: { type: ObjectIdScalar },
         entity_id: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: new GraphQLNonNull(GraphQLString) },
-        created_at: { type: GraphQLString }, // Assuming the date is stored as a string
+        created_at: { type: GraphQLDateTime },
     },
 });
 

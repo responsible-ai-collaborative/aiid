@@ -6,21 +6,21 @@ const entity1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
     entity_id: 'entity1',
     name: 'Entity One',
-    created_at: "2020-09-14T00:00:00.000Z",
+    created_at: new Date("2020-09-14T00:00:00.000Z"),
 };
 
 const entity2 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e5'),
     entity_id: 'entity2',
     name: 'Entity Two',
-    created_at: "2020-09-14T00:00:00.000Z",
+    created_at: new Date("2020-09-14T00:00:00.000Z"),
 };
 
 const entity3 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),
     entity_id: 'entity3',
     name: 'Entity Three',
-    created_at: "2021-09-14T00:00:00.000Z",
+    created_at: new Date("2021-09-14T00:00:00.000Z"),
 };
 
 const subscriber = {

@@ -123,16 +123,15 @@ describe(`Incidents`, () => {
 
         const mutationData = {
             query: `
-                mutation ($incidentId: Int!, $similarIds: [Int!], $dissimilarIds: [Int!]) {
-                    flagIncidentSimilarity(
-                        incident_id: $incidentId
-                        similarIds: $similarIds
-                        dissimilarIds: $dissimilarIds
-                    ) {
-                        incident_id
-                        flagged_dissimilar_incidents
-                    }
+            mutation ($incidentId: Int!, $dissimilarIds: [Int!]) {
+                flagIncidentSimilarity(
+                    incidentId: $incidentId
+                    dissimilarIds: $dissimilarIds
+                ) {
+                    incident_id
+                    flagged_dissimilar_incidents
                 }
+            }
             `,
             variables: {
                 incidentId: 1,
