@@ -160,7 +160,9 @@ export const getApolloClient = () => {
                 return fetch(uri, options);
             },
         }),
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+            addTypename: false,
+        }),
     });
 
     return client;
@@ -186,13 +188,13 @@ const loginSteps = async (page: Page, email: string, password: string) => {
 };
 
 export async function getEditorText(page: Page, selector: string = '.CodeMirror'): Promise<string> {
-  return await page.evaluate(
-    (selector) => {
-      const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
-      return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
-    },
-    selector
-  );
+    return await page.evaluate(
+        (selector) => {
+            const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
+            return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
+        },
+        selector
+    );
 }
 
 export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
@@ -205,20 +207,20 @@ export async function setEditorText(page: Page, value, selector = '.CodeMirror')
 
 
 export async function listFiles(directoryPath: string): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    fs.readdir(directoryPath, (err, files) => {
-      if (err) {
-        reject(err);
-      } else {
-        const jsonFiles = files.filter((file) => {
-          return (
-            path.extname(file).toLowerCase() === '.json' &&
-            fs.statSync(path.join(directoryPath, file)).isFile()
-          );
-        });
+    return new Promise((resolve, reject) => {
+        fs.readdir(directoryPath, (err, files) => {
+            if (err) {
+                reject(err);
+            } else {
+                const jsonFiles = files.filter((file) => {
+                    return (
+                        path.extname(file).toLowerCase() === '.json' &&
+                        fs.statSync(path.join(directoryPath, file)).isFile()
+                    );
+                });
 
-        resolve(jsonFiles);
-      }
+                resolve(jsonFiles);
+            }
+        });
     });
-  });
 }

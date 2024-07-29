@@ -59,7 +59,7 @@ test.describe('Edit report', () => {
     let editorText = await getEditorText(page);
     await expect(editorText).toBe(report.text);
 
-    await expect(page.locator('label:has-text("Incident IDs") + * [data-cy="token"]:has-text("Incident 1")')).toBeVisible();
+    await expect(page.locator('label:has-text("Incident IDs") + * [data-cy="token"]:has-text("Kronos Scheduling")')).toBeVisible();
 
 
     await expect(page.locator('.submit-report-tags [option="Test Tag"]')).toHaveCount(1);
@@ -241,6 +241,23 @@ test.describe('Edit report', () => {
     await page.getByText('Delete this report').click();
 
     await expect(page.getByText('Incident report 3 deleted successfully')).toBeVisible();
+
+    const result = await query({
+      query: gql`{
+        reports {
+          report_number
+        }
+        incident(filter: { incident_id: { EQ: 3 } }) {
+          reports {
+            report_number
+          }
+        }
+      }`
+    });
+
+    expect(result.data.reports).toHaveLength(5);
+    expect(result.data.reports).not.toContainEqual({ report_number: 3 });
+    expect(result.data.incident.reports).not.toContainEqual({ report_number: 3 });
   });
 
   test('Should link a report to another incident', async ({ page, login }) => {
@@ -279,6 +296,27 @@ test.describe('Edit report', () => {
     await page.getByRole('button', { name: 'Submit' }).click();
 
     await expect(page.locator('[data-cy="toast"]')).toContainText('Incident report 3 updated successfully', { timeout: 60000 });
+
+    const result = await query({
+      query: gql`{
+        incident_3: incident(filter: { incident_id: { EQ: 3 } }) {
+          reports {
+            report_number
+          }
+        }
+        incident_2: incident(filter: { incident_id: { EQ: 2 } }) {
+          reports {
+            report_number
+          }
+        }
+      }`
+    });
+
+    expect(result.data.incident_3.reports).toMatchObject([{ report_number: 4 }, { report_number: 6 }]);
+    expect(result.data.incident_3.reports).toHaveLength(2);
+
+    expect(result.data.incident_2.reports).toMatchObject([{ report_number: 2 }, { report_number: 3 }]);
+    expect(result.data.incident_3.reports).toHaveLength(2);
   });
 
   test('Should convert an incident report to an issue', async ({ page, login }) => {
@@ -309,6 +347,26 @@ test.describe('Edit report', () => {
     await page.getByRole('button', { name: 'Submit' }).click();
 
     await page.getByText('Issue 3 updated successfully').waitFor();
+
+
+    const result = await query({
+      query: gql`{
+        incident_3: incident(filter: { incident_id: { EQ: 3 } }) {
+          reports {
+            report_number
+          }
+        }
+        report(filter: { report_number: { EQ: 3 } }) {
+          report_number
+          is_incident_report
+        }
+      }`
+    });
+
+    expect(result.data.incident_3.reports).toMatchObject([{ report_number: 4 }, { report_number: 6 }]);
+    expect(result.data.incident_3.reports).toHaveLength(2);
+
+    expect(result.data.report).toMatchObject({ report_number: 3, is_incident_report: false });
   });
 
   test('Should display the report image', async ({ page, login }) => {

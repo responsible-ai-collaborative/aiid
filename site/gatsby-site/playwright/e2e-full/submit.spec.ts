@@ -1,10 +1,9 @@
 import parseNews from '../fixtures/api/parseNews.json';
-import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest } from '../utils';
+import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query } from '../utils';
 import { expect } from '@playwright/test';
 import config from '../config';
-import probablyRelatedIncidents from '../fixtures/incidents/probablyRelatedIncidents.json';
-import probablyRelatedReports from '../fixtures/reports/probablyRelatedReports.json';
 import { init } from '../memory-mongo';
+import gql from 'graphql-tag';
 
 
 test.describe('The Submit form', () => {
@@ -70,7 +69,31 @@ test.describe('The Submit form', () => {
         await page.locator('button[type="submit"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+
+        const { data } = await query({
+            query: gql`
+              query {
+                submission(sort: { _id: DESC }){
+                    _id
+                    title
+                    text
+                    authors
+                    incident_ids
+                    incident_editors {
+                        userId
+                    }
+                }
+              }
+            `,
+        });
+
+        expect(data.submission).toMatchObject({
+            title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
+            text: parseNews.text,
+            authors: ["Valentina Palladino"],
+            incident_ids: [],
+            incident_editors: [],
+        });
     });
 
     test('Should autocomplete entities', async ({ page, skipOnEmptyEnvironment }) => {
@@ -194,10 +217,37 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast a')).toHaveAttribute('href', '/apps/submitted/');
 
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
-    }
-    );
+
+
+        const { data } = await query({
+            query: gql`
+              query {
+                submission(sort: { _id: DESC }){
+                    _id
+                    title
+                    text
+                    authors
+                    incident_ids
+                    incident_editors {
+                        userId
+                    }
+                }
+              }
+            `,
+        });
+
+        expect(data.submission).toMatchObject({
+            title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
+            text: parseNews.text,
+            authors: ["Valentina Palladino"],
+            incident_ids: [],
+            incident_editors: [{ userId }],
+        });
+    });
 
     test('Should submit a new report linked to incident 1 once all fields are filled properly', async ({ page, login, skipOnEmptyEnvironment }) => {
+
+        test.slow();
 
         await init();
 
@@ -264,8 +314,7 @@ test.describe('The Submit form', () => {
         await page.goto('/apps/submitted');
 
         await expect(page.locator('[data-cy="row"]:has-text("YouTube to crack down on inappropriate content masked as kids’ cartoons")')).toBeVisible();
-    }
-    );
+    });
 
     test('Should show a toast on error when failing to reach parsing endpoint', async ({ page }) => {
         await page.goto(url);
@@ -387,7 +436,30 @@ test.describe('The Submit form', () => {
         await page.locator('button[type="submit"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+
+        const { data } = await query({
+            query: gql`
+              query {
+                submission(sort: { _id: DESC }){
+                    _id
+                    title
+                    text
+                    authors
+                    incident_ids
+                    user {
+                        userId
+                    }
+                }
+              }
+            `,
+        });
+
+        expect(data.submission).toMatchObject({
+            user: { userId },
+        });
     });
+
 
     test.skip('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 

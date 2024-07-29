@@ -28,7 +28,7 @@ const items: DBReport[] = [
         user: "user1",
     },
     {
-        title: "Issue Report",
+        title: "Report 2",
         authors: ["author2"],
         report_number: 2,
         is_incident_report: true,
@@ -137,7 +137,6 @@ const items: DBReport[] = [
         // TODO: ditto
         // created_at: 1559347200000
     },
-
     {
         authors: [
             "News Writer"

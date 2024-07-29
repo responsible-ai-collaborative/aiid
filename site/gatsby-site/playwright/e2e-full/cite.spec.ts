@@ -133,9 +133,6 @@ test.describe('Cite pages', () => {
             'logReportHistory'
         );
 
-        const now = new Date('March 14 2042 13:37:11');
-        await mockDate(page, now)
-
         await page.goto(url + '#' + _id);
 
         await page.click(`[id="r${_id}"] [data-cy="expand-report-button"]`);
@@ -147,21 +144,6 @@ test.describe('Cite pages', () => {
         await modal.locator('[data-cy="flag-toggle"]').click();
 
         await waitForRequest('logReportHistory');
-
-        // TODO: remove this once report history is migrated 
-
-        // const logReportHistoryRequest = await waitForRequest('logReportHistory');
-        // const input = logReportHistoryRequest.postDataJSON().variables.input;
-
-        // const expectedReport = deleteReportTypenames(
-        //     transformReportData(flaggedReport.data.updateOneReport)
-        // );
-
-        // expectedReport.modifiedBy = '';
-        // expectedReport.date_modified = now.toISOString();
-        // expectedReport.epoch_date_modified = getUnixTime(now);
-
-        // expect(input).toEqual(expectedReport);
 
         await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
 
@@ -424,19 +406,6 @@ test.describe('Cite pages', () => {
 
         await waitForRequest('logIncidentHistory');
 
-        // TODO: remove this once incident history is migrated
-        // const logIncidentHistoryRequest = await waitForRequest('logIncidentHistory');
-        // const input = logIncidentHistoryRequest.postDataJSON().variables.input;
-        // const expectedIncident = deleteIncidentTypenames(
-        //     transformIncidentData(incident10.data.incident)
-        // );
-
-        // expectedIncident.flagged_dissimilar_incidents = [1];
-        // expectedIncident.epoch_date_modified = getUnixTime(now);
-        // expectedIncident.modifiedBy = '';
-
-        // expect(input).toEqual(expectedIncident);
-
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
                                 flagged_dissimilar_incidents
@@ -478,22 +447,6 @@ test.describe('Cite pages', () => {
         await page.locator('[data-cy="similar-incidents-column"] [data-cy="flag-similar-incident"]').first().click();
 
         await waitForRequest('logIncidentHistory');
-
-        // const logIncidentHistoryRequest = await waitForRequest('logIncidentHistory');
-        // const input = logIncidentHistoryRequest.postDataJSON().variables.input;
-        // const expectedIncident = deleteIncidentTypenames(
-        //     transformIncidentData(incident10.data.incident)
-        // );
-
-        // expectedIncident.flagged_dissimilar_incidents = [];
-        // expectedIncident.epoch_date_modified = getUnixTime(now);
-        // expectedIncident.modifiedBy = user.userId;
-        // expectedIncident.editors = [
-        //     ...incident10.data.incident.editors.map((e) => e.userId),
-        //     user.userId,
-        // ];
-
-        // expect(input).toEqual(expectedIncident);
 
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
@@ -575,7 +528,7 @@ test.describe('Cite pages', () => {
     test('Should show proper entities card text', async ({ page }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
-            'Alleged: kronos developed an AI system deployed by starbucks, which harmed starbucks-employees.'
+            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.'
         );
     });
 
@@ -611,8 +564,18 @@ test.describe('Cite pages', () => {
         await expect(page).toHaveURL(new RegExp('/cite/1'));
     });
 
-    test.skip('Should link similar incidents', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    test('Should link similar incidents', async ({ page, login }) => {
+
+        test.slow();
+
+        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+        await init({
+            customData: {
+                users: [
+                    { userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] },
+                ]
+            }
+        }, { drop: false });
 
         await conditionalIntercept(
             page,
@@ -630,20 +593,51 @@ test.describe('Cite pages', () => {
             'logIncidentHistory'
         );
 
-        await page.goto('/incidents/edit/?incident_id=50');
+        await page.goto('/incidents/edit/?incident_id=3');
 
-        await page.locator('[data-cy="similar-id-input"]').fill('123');
+        await page.locator('[data-cy="similar-id-input"]').fill('1');
+
+        await expect(page.getByText('#1 - Report 1')).toBeVisible();
 
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText("Yes").click();
 
-        await page.locator('[data-cy="similar-id-input"]').fill('456');
+        await page.locator('[data-cy="similar-id-input"]').fill('2');
+
+        await expect(page.getByText('#2 - Report 2')).toBeVisible();
 
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
         await page.locator('button[type="submit"]').click();
 
-        await waitForRequest('updateIncident');
-
         await waitForRequest('logIncidentHistory');
+
+        await expect(page.locator('.tw-toast:has-text("Incident 3 updated successfully.")')).toBeVisible();
+
+
+        const { data } = await query({
+            query: gql`
+              query {
+                incident_1: incident(filter: { incident_id: {EQ: 1 } }) {
+                    incident_id
+                    editor_dissimilar_incidents
+                    editor_similar_incidents
+                }
+                incident_2: incident(filter: { incident_id: {EQ: 2 } }) {
+                    incident_id
+                    editor_dissimilar_incidents
+                    editor_similar_incidents
+                }
+                incident_3: incident(filter: { incident_id: {EQ: 3 } }) {
+                    incident_id
+                    editor_dissimilar_incidents
+                    editor_similar_incidents
+                }
+              }
+            `,
+        });
+
+        expect(data.incident_1).toMatchObject({ editor_dissimilar_incidents: [], editor_similar_incidents: [3] });
+        expect(data.incident_2).toMatchObject({ editor_dissimilar_incidents: [3], editor_similar_incidents: [] });
+        expect(data.incident_3).toMatchObject({ editor_dissimilar_incidents: [2], editor_similar_incidents: [1] });
     });
 });
