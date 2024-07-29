@@ -142,6 +142,7 @@ export const transformIncidentData = (incident, user) => {
     nlp_similar_incidents,
     tsne,
     editors,
+    implicated_systems,
   } = incident;
 
   if (AllegedDeployerOfAISystem) {
@@ -160,6 +161,12 @@ export const transformIncidentData = (incident, user) => {
     result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.link
       ? AllegedHarmedOrNearlyHarmedParties.link
       : AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
+  }
+
+  if (implicated_systems) {
+    result.implicated_systems = implicated_systems.link
+      ? implicated_systems.link
+      : implicated_systems.map((e) => e.entity_id);
   }
 
   result.reports = reports
@@ -213,6 +220,7 @@ const INCIDENT_TO_COMPARE = {
   editors: 'Editors',
   editor_notes: 'Editor Notes',
   reports: 'Reports',
+  implicated_systems: 'Implicated Systems',
 };
 
 export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
@@ -255,6 +263,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
               'AllegedDeployerOfAISystem',
               'AllegedDeveloperOfAISystem',
               'AllegedHarmedOrNearlyHarmedParties',
+              'implicated_systems',
             ].includes(field)
           ) {
             removedLabels = removedClean.map(

@@ -275,6 +275,10 @@ export const FIND_FULL_INCIDENT = gql`
         x
         y
       }
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `;
