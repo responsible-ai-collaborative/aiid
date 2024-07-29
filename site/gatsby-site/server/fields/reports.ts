@@ -1,13 +1,11 @@
 import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { ObjectIdScalar } from "../scalars";
-import { generateMutationFields, generateQueryFields, getRelationshipExtension, getRelationshipResolver } from "../utils";
+import { generateMutationFields, generateQueryFields, getQueryResolver, getRelationshipExtension, getRelationshipResolver } from "../utils";
 import { Context } from "../interfaces";
 import { isRole } from "../rules";
 import { UserType } from "./users";
-import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { DateTimeResolver } from "graphql-scalars";
-import { UpdateOneReportTranslationInput } from "../generated/graphql";
 
 
 const EmbeddingType = new GraphQLObjectType({
@@ -106,7 +104,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
             report_number: { type: new GraphQLNonNull(GraphQLInt) },
             input: { type: new GraphQLNonNull(GraphQLBoolean) }
         },
-        resolve: getMongoDbQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
+        resolve: getQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
 
             const reports = context.client.db('aiidprod').collection("reports");
 
@@ -156,7 +154,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
             }
         },
         type: ReportType,
-        resolve: getMongoDbQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
+        resolve: getQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
 
             const translations = context.client.db('translations').collection("reports_" + args.input.language);
 

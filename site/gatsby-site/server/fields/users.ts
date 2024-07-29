@@ -1,10 +1,9 @@
 import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { apiRequest, generateMutationFields, generateQueryFields } from "../utils";
+import { apiRequest, generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
 import { isAdmin, isRole } from "../rules";
 import { GraphQLDateTime } from 'graphql-scalars';
-import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 
 const UserAdminDatumType = new GraphQLObjectType({
     name: 'UserAdminDatum',
@@ -22,7 +21,7 @@ export const UserType = new GraphQLObjectType({
         _id: { type: ObjectIdScalar },
         adminData: {
             type: UserAdminDatumType,
-            resolve: getMongoDbQueryResolver(UserAdminDatumType, async (filter, projection, options, source: any, args, context: Context) => {
+            resolve: getQueryResolver(UserAdminDatumType, async (filter, projection, options, source: any, args, context: Context) => {
 
                 const { user } = context;
 

@@ -646,6 +646,18 @@ export const getFilterType = (Type: GraphQLObjectType<any, any>) => {
         }
 
         const updatedType = new GraphQLObjectType(sourceConfig);
+
+
+        // TODO: this is a hack to silence graphql-to-mongodb warnings
+        Object.entries(updatedType.getFields()).forEach(([name, field]) => {
+
+            if ((field as any).resolve) {
+
+                (updatedType.getFields()[name] as any).dependencies = [name];
+            }
+        });
+
+
         const filter = getGraphQLFilterType(updatedType);
 
         extendedTypesCache[filterTypeName] = filter;

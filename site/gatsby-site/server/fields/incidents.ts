@@ -1,8 +1,7 @@
 import { GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
-import { generateMutationFields, generateQueryFields, getListRelationshipExtension, getListRelationshipResolver } from "../utils";
+import { generateMutationFields, generateQueryFields, getListRelationshipExtension, getListRelationshipResolver, getQueryResolver } from "../utils";
 import { ReportType } from "./reports";
-import { getMongoDbQueryResolver } from "graphql-to-mongodb";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
 import { isRole } from "../rules";
@@ -142,7 +141,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 type: new GraphQLNonNull(LinkReportsToIncidentsInput)
             }
         },
-        resolve: getMongoDbQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
+        resolve: getQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
 
             await linkReportsToIncidents(context.client, args.input.report_numbers, args.input.incident_ids);
 
@@ -158,7 +157,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
             incidentId: { type: new GraphQLNonNull(GraphQLInt) },
             dissimilarIds: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
         },
-        resolve: getMongoDbQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
+        resolve: getQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
 
             const incidentsCollection = context.client.db('aiidprod').collection<{ editors: string[] }>("incidents");
 

@@ -16,6 +16,9 @@ const gatewaySchema = stitchSchemas({
             'Report.translations': {
                 validationLevel: ValidationLevel.Off, // TODO: delete this once schema is completely migrated
             },
+            'Report.translations.input': {
+                validationLevel: ValidationLevel.Off, // Ensure nullability consistency or suppress warning
+            },
         },
     }
 });
