@@ -34,7 +34,7 @@ export const UpdateManyPayload = new GraphQLObjectType({
 });
 
 export const NlpSimilarIncidentType = new GraphQLObjectType({
-    name: 'NlpSimilarIncident',
+    name: 'IncidentNlp_similar_incident', // this name is to prevent merging warnings when stitching schemas
     fields: () => ({
         incident_id: { type: GraphQLInt },
         similarity: { type: GraphQLFloat }
