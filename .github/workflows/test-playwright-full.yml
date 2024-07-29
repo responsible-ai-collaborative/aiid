@@ -126,8 +126,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: blob-report-${{ matrix.shardIndex }}
-          path: site/gatsby-site/blob-report/
+          name: blob-report-full${{ matrix.shardIndex }}
+          path: site/gatsby-site/blob-report-full/
           retention-days: 1
 
   merge-reports:
@@ -140,16 +140,16 @@ jobs:
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: all-blob-reports
-          pattern: blob-report-*
+          path: all-blob-reports-full
+          pattern: blob-report-full*
           merge-multiple: true
 
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+        run: npx playwright merge-reports --reporter html ./all-blob-reports-full
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         with:
-          name: html-report--attempt-${{ github.run_attempt }}
-          path: playwright-report
+          name: html-report--attempt-full-${{ github.run_attempt }}
+          path: playwright-report-full
           retention-days: 7
