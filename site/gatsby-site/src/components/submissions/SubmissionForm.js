@@ -32,6 +32,7 @@ import {
   faAlignLeft,
   faStickyNote,
   faTenge,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Checkbox, Select } from 'flowbite-react';
@@ -434,7 +435,7 @@ const SubmissionForm = ({ onChange = null }) => {
             <TagsInputGroup
               name="implicated_systems"
               label={t('Implicated AI systems')}
-              icon={faBolt}
+              icon={faGear}
               placeholder={t('Which AI systems were involved?')}
               className="mt-3"
               options={entityNames}
