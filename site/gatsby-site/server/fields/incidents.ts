@@ -1,6 +1,6 @@
 import { GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
-import { generateMutationFields, generateQueryFields, getListRelationshipExtension, getListRelationshipResolver, getQueryResolver } from "../utils";
+import { generateMutationFields, generateQueryFields, getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getQueryResolver } from "../utils";
 import { ReportType } from "./reports";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
@@ -9,7 +9,6 @@ import { EntityType } from "./entities";
 import { UserType } from "./users";
 import { NlpSimilarIncidentType } from "../types";
 import { linkReportsToIncidents } from "./common";
-import { GraphQLLong } from "graphql-scalars";
 
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
@@ -79,23 +78,11 @@ const IncidentType = new GraphQLObjectType({
         },
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
-        editors: {
-            type: new GraphQLNonNull(new GraphQLList(UserType)),
-            resolve: getListRelationshipResolver('editors', 'userId', UserType, 'customData', 'users'),
-            extensions: {
-                relationship: getListRelationshipExtension('editors', 'userId', GraphQLString, 'customData', 'users')
-            },
-        },
+        editors: getListRelationshipConfig(UserType, GraphQLString, 'editors', 'userId', 'users', 'customData'),
         embedding: { type: EmbeddingType },
         flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
-        reports: {
-            type: new GraphQLNonNull(new GraphQLList(ReportType)),
-            resolve: getListRelationshipResolver('reports', 'report_number', ReportType, 'aiidprod', 'reports'),
-            extensions: {
-                relationship: getListRelationshipExtension('reports', 'report_number', GraphQLInt, 'aiidprod', 'reports')
-            },
-        },
+        reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
         tsne: { type: TsneType }
     },
 });

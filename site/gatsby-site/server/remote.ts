@@ -24,27 +24,27 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
-// TODO: uncomment after classifications and subscription collections are migrated
+// TODO: uncomment items marked with * after classifications and subscription collections are migrated
 
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
 
-    // 'Report',
-    // 'ReportQueryInput',
+    // 'Report', *
+    // 'ReportQueryInput', *
     'ReportUserRelationInput',
 
-    // 'Incident',
-    // 'IncidentQueryInput',
+    // 'Incident', *
+    // 'IncidentQueryInput', *
     'IncidentEditorsRelationInput',
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    // 'Entity',
-    // 'EntityQueryInput',
+    // 'Entity', *
+    // 'EntityQueryInput', *
 
     'User',
-    // 'UserQueryInput',
+    // 'UserQueryInput', *
 
     'Submission',
     'SubmissionQueryInput',
@@ -140,6 +140,16 @@ const ignoredMutations = [
     'updateOneReportTranslation',
 ]
 
+/**
+ * Generates a GraphQL schema by filtering out fields from the remote schema provided by Atlas.
+ * This function excludes types and fields that have already been migrated to the local API, ensuring that the schema only includes relevant parts.
+ * 
+ * The schema is created using `makeExecutableSchema` and includes transformations to filter out unwanted types and fields:
+ * - `FilterTypes`: Excludes types listed in `ignoreTypes`.
+ * - `FilterObjectFields`: Excludes fields in `Query` and `Mutation` types listed in `ignoredQueries` and`ignoredMutations`.
+ * 
+ * @returns { Object } - The configured schema object with type definitions and transformations applied.
+ */
 export const getSchema = () => {
 
     const schema = {

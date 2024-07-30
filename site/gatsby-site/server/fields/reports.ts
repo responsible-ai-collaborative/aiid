@@ -1,7 +1,7 @@
 import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { ObjectIdScalar } from "../scalars";
-import { generateMutationFields, generateQueryFields, getQueryResolver, getRelationshipExtension, getRelationshipResolver } from "../utils";
+import { generateMutationFields, generateQueryFields, getQueryResolver, getRelationshipConfig } from "../utils";
 import { Context } from "../interfaces";
 import { isRole } from "../rules";
 import { UserType } from "./users";
@@ -54,13 +54,7 @@ export const ReportType = new GraphQLObjectType({
         text: { type: new GraphQLNonNull(GraphQLString) },
         title: { type: new GraphQLNonNull(GraphQLString) },
         url: { type: new GraphQLNonNull(GraphQLString) },
-        user: {
-            type: UserType,
-            resolve: getRelationshipResolver('user', 'userId', UserType, 'customData', 'users'),
-            extensions: {
-                relationship: getRelationshipExtension('user', 'userId', GraphQLString, 'customData', 'users')
-            },
-        },
+        user: getRelationshipConfig(UserType, GraphQLString, 'user', 'userId', 'users', 'customData'),
         quiet: { type: GraphQLBoolean },
         translations: {
             type: ReportTranslationsType,

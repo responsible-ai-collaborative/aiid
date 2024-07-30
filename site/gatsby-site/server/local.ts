@@ -75,8 +75,21 @@ export const getSchema = () => {
         mutation,
     })
 
-    // graphql-shield, allows us to define wildcard fields and mutations. Every field starts private, and its permissions need to be set explicitly.
-
+    /**
+     * Configures permissions for the GraphQL API using graphql-shield.
+     * This configuration starts with all fields being private (denied access) and requires explicit permission settings for each field.
+     * 
+     * The `shield` function is used to define the permissions for queries and mutations, with default access set to deny (`deny`).
+     * Permissions are then selectively granted using specific permissions configurations (e.g., `quickAddsPermissions`, `reportsPermissions`).
+     * 
+     * @constant
+     * @type {RuleTree}
+     * 
+     * @property {Object} Query - Permissions for Query fields. All fields are denied access by default, with specific permissions set explicitly.
+     * @property {Object} Mutation - Permissions for Mutation fields. All fields are denied access by default, with specific permissions set explicitly.
+     * @property {boolean} allowExternalErrors - Determines whether to allow external errors to be displayed. Set to `true` or based on the environment.
+     *                                           This helps in debugging by providing more detailed error messages during development.
+     */
     const permissions = shield(
         {
             Query: {
@@ -99,7 +112,7 @@ export const getSchema = () => {
             },
         },
         {
-            allowExternalErrors: process.env.NODE_ENV !== 'production',
+            allowExternalErrors: true || process.env.NODE_ENV !== 'production',
         }
     );
 
