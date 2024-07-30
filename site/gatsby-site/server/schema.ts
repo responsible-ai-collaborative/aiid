@@ -19,6 +19,9 @@ const gatewaySchema = stitchSchemas({
             'Report.translations.input': {
                 validationLevel: ValidationLevel.Off, // Ensure nullability consistency or suppress warning
             },
+            ['Incident.reports']: {
+                validationLevel: ValidationLevel.Off,
+            },
         },
     }
 });
