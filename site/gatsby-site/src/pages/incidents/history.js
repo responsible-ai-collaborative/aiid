@@ -199,8 +199,8 @@ function IncidentHistoryPage(props) {
 
         await updateIncident({
           variables: {
-            query: { incident_id: incidentId },
-            set: updatedIncident,
+            filter: { incident_id: { EQ: incidentId } },
+            update: { set: updatedIncident },
           },
         });
 

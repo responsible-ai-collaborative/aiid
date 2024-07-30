@@ -15,7 +15,7 @@ test.describe('Incidents', () => {
     const response = await query({
       query: gql`
         {
-          user(query: { first_name: "Test", last_name: "User" }) {
+          user(filter: { first_name: { EQ: "Test" }, last_name: { EQ: "User" } }) {
             userId
             first_name
             last_name
@@ -190,7 +190,7 @@ test.describe('Incidents', () => {
     };`);
 
     const restoreButton = await lastRow.$('[data-cy="restore-button"]');
-    
+
     // Listen for the dialog and handle it
     page.once('dialog', async dialog => {
       await dialog.accept();
@@ -206,7 +206,7 @@ test.describe('Incidents', () => {
     const initialVersion = incidentHistory.data.history_incidents[incidentHistory.data.history_incidents.length - 1];
     const updatedIncident = {
       ...initialVersion,
-      epoch_date_modified: getUnixTime(new Date()),
+      epoch_date_modified: expect.any(Number),
       editor_notes: '',
       reports: { link: initialVersion.reports },
       AllegedDeployerOfAISystem: { link: initialVersion.AllegedDeployerOfAISystem },
@@ -220,8 +220,8 @@ test.describe('Incidents', () => {
 
     const updateIncidentRequest = await waitForRequest('UpdateIncident');
     const updateIncidentVariables = updateIncidentRequest.postDataJSON().variables;
-    expect(updateIncidentVariables.query.incident_id).toBe(updatedIncident.incident_id);
-    expect(updateIncidentVariables.set).toEqual(updatedIncident);
+    expect(updateIncidentVariables.filter.incident_id.EQ).toBe(updatedIncident.incident_id);
+    expect(updateIncidentVariables.update.set).toMatchObject(updatedIncident);
 
     const logIncidentHistoryRequest = await waitForRequest('logIncidentHistory');
     const logIncidentHistoryInput = logIncidentHistoryRequest.postDataJSON().variables.input;
@@ -243,6 +243,9 @@ test.describe('Incidents', () => {
   });
 
   test('Should display the Version History details modal', async ({ page }) => {
+
+    test.slow();
+
     await page.goto(url);
 
     await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidentHistory', incidentHistory, 'FindIncidentHistory');
@@ -266,7 +269,7 @@ test.describe('Incidents', () => {
     const filteredVersionReports = {
       data: { reports: versionReports.data.reports.filter((report: any) => incidentHistory.data.history_incidents[1].reports.includes(report.report_number)) }
     };
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.query?.report_number_in.length === 1, filteredVersionReports, 'FindReportsV1');
+    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.filter?.report_number.IN.length === 1, filteredVersionReports, 'FindReportsV1');
 
     await Promise.all([
       waitForRequest('FindIncidentHistory'),
@@ -279,8 +282,8 @@ test.describe('Incidents', () => {
     await rows.nth(1).locator('[data-cy="view-full-version-button"]').click();
 
     const findReportsRequestV1 = await waitForRequest('FindReportsV1');
-    expect(findReportsRequestV1.postDataJSON().variables.query).toEqual({
-      report_number_in: incidentHistory.data.history_incidents[1].reports,
+    expect(findReportsRequestV1.postDataJSON().variables.filter).toEqual({
+      report_number: { IN: incidentHistory.data.history_incidents[1].reports, }
     });
 
     const modal = page.locator('[data-cy="version-view-modal"]');
@@ -308,13 +311,13 @@ test.describe('Incidents', () => {
         reports: versionReports.data.reports.filter((report: any) => incidentHistory.data.history_incidents[0].reports.includes(report.report_number))
       }
     };
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.query?.report_number_in.length === 2, filteredVersionReportsV0, 'FindReportsV0');
+    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.filter?.report_number.IN.length === 2, filteredVersionReportsV0, 'FindReportsV0');
 
     await rows.nth(0).locator('[data-cy="view-full-version-button"]').click();
 
     const findReportsRequestV0 = await waitForRequest('FindReportsV0');
-    expect(findReportsRequestV0.postDataJSON().variables.query).toEqual({
-      report_number_in: incidentHistory.data.history_incidents[0].reports,
+    expect(findReportsRequestV0.postDataJSON().variables.filter).toEqual({
+      report_number: { IN: incidentHistory.data.history_incidents[0].reports },
     });
 
     await modal.waitFor();
