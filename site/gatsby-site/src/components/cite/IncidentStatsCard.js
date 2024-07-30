@@ -65,30 +65,36 @@ const IncidentStatsCard = ({
           </Fragment>
         ))}
 
-        <div className={`p-4 bg-gray-100 border-1 border-gray-200  rounded-bl`}>
-          Applied Taxonomies
-        </div>
-        <div className={`p-4 border-1 border-gray-200 border-b-0 rounded-br`}>
-          {taxonomiesWithClassifications.map((t, i) => {
-            const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
+        {taxonomiesWithClassifications.length > 0 && (
+          <>
+            <div className={`p-4 bg-gray-100 border-1 border-gray-200  rounded-bl`}>
+              Applied Taxonomies
+            </div>
+            <div className={`p-4 border-1 border-gray-200 border-b-0 rounded-br`}>
+              {taxonomiesWithClassifications
+                .filter((t) => !t.includes('_Annotator,'))
+                .map((t, i) => {
+                  const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
 
-            return (
-              <>
-                {i > 0 && ', '}
-                <a
-                  href={`#${t}-classifications`}
-                  className={`
-                  inline-block  px-2.5 py-0.5 rounded
-                  font-semibold text-xs
-                  bg-${color}-200 text-${color}-800
-                `}
-                >
-                  {t}
-                </a>
-              </>
-            );
-          })}
-        </div>
+                  return (
+                    <>
+                      {i > 0 && ', '}
+                      <a
+                        href={`#${t}-classifications`}
+                        className={`
+                        inline-block  px-2.5 py-0.5 rounded
+                        font-semibold text-xs
+                        bg-${color}-200 text-${color}-800
+                      `}
+                      >
+                        {t}
+                      </a>
+                    </>
+                  );
+                })}
+            </div>
+          </>
+        )}
       </div>
     </Card>
   );
