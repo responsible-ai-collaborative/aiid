@@ -42,10 +42,10 @@ test.describe('New Incident page', () => {
     await page.locator('[data-cy="alleged-harmed-or-nearly-harmed-parties-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
 
-    expect(async () => {
+    await expect(async () => {
       await page.locator('#input-editors').clear();
       await page.waitForTimeout(1000);
-      await page.locator('#input-editors').fill('John');
+      await page.locator('#input-editors').pressSequentially('Joh', { delay: 500 });
       await page.getByText('John Doe').click({ timeout: 1000 });
     }).toPass();
 
