@@ -73,8 +73,7 @@ const MissingTranslations = ({ pageContext }) => {
                 [&_tr>*]:py-2
                 [&_tr>*]:px-4
                 [&_th]:text-left
-                [&_th]:bg-gray-100
-                [&>tr:nth-child(odd)>td]:bg-gray-50
+                [&_th]:bg-gray-50
               "
                 >
                   <tr>

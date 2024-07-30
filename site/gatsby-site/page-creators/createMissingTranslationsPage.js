@@ -17,6 +17,8 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
 
   allLocales = locales;
 
+  const translationEntries = [];
+
   for (const locale of locales) {
     const files = await readdir('./i18n/locales/' + locale);
 
@@ -33,6 +35,16 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
     }
   }
 
+  const duplicateTranslations = {};
+
+
+  for (const file of Object.keys(translations)) {
+    for (const key of Object.keys(translations[file])) {
+
+    }
+  }
+
+
   const missingTranslations = {};
 
   for (const file of Object.keys(translations)) {
@@ -45,6 +57,8 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
       }
     }
   }
+
+  // TODO: Check if missing translation is in some other file
 
   createPage({
     path: '/meta/i18n',
