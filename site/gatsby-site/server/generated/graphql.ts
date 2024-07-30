@@ -738,9 +738,11 @@ export type Classification = {
   __typename?: 'Classification';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   attributes?: Maybe<Array<Maybe<ClassificationAttribute>>>;
+  incidents: Array<Maybe<Incident>>;
   namespace: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   publish?: Maybe<Scalars['Boolean']['output']>;
+  reports: Array<Maybe<Report>>;
 };
 
 export type ClassificationAttribute = {
@@ -1089,6 +1091,7 @@ export type History_Incident = {
   embedding?: Maybe<History_IncidentEmbedding>;
   epoch_date_modified?: Maybe<Scalars['Int']['output']>;
   flagged_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  implicated_systems?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   incident_id: Scalars['Int']['output'];
   modifiedBy?: Maybe<Scalars['String']['output']>;
   nlp_similar_incidents?: Maybe<Array<Maybe<History_IncidentNlp_Similar_Incident>>>;
@@ -1142,6 +1145,7 @@ export type History_IncidentInsertInput = {
   embedding?: InputMaybe<History_IncidentEmbeddingInsertInput>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   incident_id: Scalars['Int']['input'];
   modifiedBy?: InputMaybe<Scalars['String']['input']>;
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentInsertInput>>>;
@@ -1271,6 +1275,10 @@ export type History_IncidentQueryInput = {
   flagged_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
@@ -1400,6 +1408,8 @@ export type History_IncidentUpdateInput = {
   epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_inc?: InputMaybe<Scalars['Int']['input']>;
   incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1863,6 +1873,29 @@ export type History_ReportUpdateInput = {
   user_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type Incident = {
+  __typename?: 'Incident';
+  AllegedDeployerOfAISystem?: Maybe<Array<Maybe<Entity>>>;
+  AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Entity>>>;
+  AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Entity>>>;
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  date: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  editor_notes?: Maybe<Scalars['String']['output']>;
+  editor_similar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  editors: Array<Maybe<User>>;
+  embedding?: Maybe<IncidentEmbedding>;
+  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
+  flagged_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  implicated_systems?: Maybe<Array<Maybe<Entity>>>;
+  incident_id: Scalars['Int']['output'];
+  nlp_similar_incidents?: Maybe<Array<Maybe<IncidentNlp_Similar_Incident>>>;
+  reports: Array<Maybe<Report>>;
+  title: Scalars['String']['output'];
+  tsne?: Maybe<IncidentTsne>;
+};
+
 export type IncidentAllegedDeployerOfAiSystemRelationInput = {
   create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
   link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -1914,6 +1947,11 @@ export type IncidentEmbeddingUpdateInput = {
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type IncidentImplicated_SystemsRelationInput = {
+  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
+  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
 export type IncidentInsertInput = {
   AllegedDeployerOfAISystem?: InputMaybe<IncidentAllegedDeployerOfAiSystemRelationInput>;
   AllegedDeveloperOfAISystem?: InputMaybe<IncidentAllegedDeveloperOfAiSystemRelationInput>;
@@ -1928,6 +1966,7 @@ export type IncidentInsertInput = {
   embedding?: InputMaybe<IncidentEmbeddingInsertInput>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<IncidentImplicated_SystemsRelationInput>;
   incident_id: Scalars['Int']['input'];
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentInsertInput>>>;
   reports: IncidentReportsRelationInput;
@@ -2056,6 +2095,10 @@ export type IncidentQueryInput = {
   flagged_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  implicated_systems_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  implicated_systems_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
@@ -2179,6 +2222,8 @@ export type IncidentUpdateInput = {
   epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems?: InputMaybe<IncidentImplicated_SystemsRelationInput>;
+  implicated_systems_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_inc?: InputMaybe<Scalars['Int']['input']>;
   incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2292,8 +2337,10 @@ export type Mutation = {
   deleteOneEntity?: Maybe<Entity>;
   deleteOneHistory_incident?: Maybe<History_Incident>;
   deleteOneHistory_report?: Maybe<History_Report>;
+  deleteOneIncident?: Maybe<Incident>;
   deleteOneNotification?: Maybe<Notification>;
   deleteOneQuickadd?: Maybe<Quickadd>;
+  deleteOneReport?: Maybe<Report>;
   deleteOneSubmission?: Maybe<Submission>;
   deleteOneSubscription?: Maybe<Subscription>;
   deleteOneTaxa?: Maybe<Taxa>;
@@ -2321,12 +2368,15 @@ export type Mutation = {
   insertOneEntity?: Maybe<Entity>;
   insertOneHistory_incident?: Maybe<History_Incident>;
   insertOneHistory_report?: Maybe<History_Report>;
+  insertOneIncident?: Maybe<Incident>;
   insertOneNotification?: Maybe<Notification>;
   insertOneQuickadd?: Maybe<Quickadd>;
+  insertOneReport?: Maybe<Report>;
   insertOneSubmission?: Maybe<Submission>;
   insertOneSubscription?: Maybe<Subscription>;
   insertOneTaxa?: Maybe<Taxa>;
   insertOneUser?: Maybe<User>;
+  linkReportsToIncidents?: Maybe<Array<Maybe<Incident>>>;
   logIncidentHistory?: Maybe<LogIncidentHistoryPayload>;
   logReportHistory?: Maybe<LogReportHistoryPayload>;
   processNotifications?: Maybe<Scalars['Int']['output']>;
@@ -2338,7 +2388,9 @@ export type Mutation = {
   replaceOneEntity?: Maybe<Entity>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
   replaceOneHistory_report?: Maybe<History_Report>;
+  replaceOneIncident?: Maybe<Incident>;
   replaceOneNotification?: Maybe<Notification>;
+  replaceOneReport?: Maybe<Report>;
   replaceOneSubmission?: Maybe<Submission>;
   replaceOneSubscription?: Maybe<Subscription>;
   replaceOneTaxa?: Maybe<Taxa>;
@@ -2365,8 +2417,11 @@ export type Mutation = {
   updateOneEntity?: Maybe<Entity>;
   updateOneHistory_incident?: Maybe<History_Incident>;
   updateOneHistory_report?: Maybe<History_Report>;
+  updateOneIncident?: Maybe<Incident>;
   updateOneNotification?: Maybe<Notification>;
   updateOneQuickadd?: Maybe<Quickadd>;
+  updateOneReport?: Maybe<Report>;
+  updateOneReportTranslation?: Maybe<Report>;
   updateOneSubmission?: Maybe<Submission>;
   updateOneSubscription?: Maybe<Subscription>;
   updateOneTaxa?: Maybe<Taxa>;
@@ -2378,7 +2433,9 @@ export type Mutation = {
   upsertOneEntity?: Maybe<Entity>;
   upsertOneHistory_incident?: Maybe<History_Incident>;
   upsertOneHistory_report?: Maybe<History_Report>;
+  upsertOneIncident?: Maybe<Incident>;
   upsertOneNotification?: Maybe<Notification>;
+  upsertOneReport?: Maybe<Report>;
   upsertOneSubmission?: Maybe<Submission>;
   upsertOneSubscription?: Maybe<Subscription>;
   upsertOneTaxa?: Maybe<Taxa>;
@@ -2508,6 +2565,11 @@ export type MutationDeleteOneHistory_ReportArgs = {
 };
 
 
+export type MutationDeleteOneIncidentArgs = {
+  query: IncidentQueryInput;
+};
+
+
 export type MutationDeleteOneNotificationArgs = {
   query: NotificationQueryInput;
 };
@@ -2517,6 +2579,11 @@ export type MutationDeleteOneQuickaddArgs = {
   filter?: InputMaybe<QuickaddFilterType>;
   pagination?: InputMaybe<PaginationType>;
   sort?: InputMaybe<QuickaddSortType>;
+};
+
+
+export type MutationDeleteOneReportArgs = {
+  query: ReportQueryInput;
 };
 
 
@@ -2655,6 +2722,11 @@ export type MutationInsertOneHistory_ReportArgs = {
 };
 
 
+export type MutationInsertOneIncidentArgs = {
+  data: IncidentInsertInput;
+};
+
+
 export type MutationInsertOneNotificationArgs = {
   data: NotificationInsertInput;
 };
@@ -2662,6 +2734,11 @@ export type MutationInsertOneNotificationArgs = {
 
 export type MutationInsertOneQuickaddArgs = {
   data?: InputMaybe<QuickaddInsertType>;
+};
+
+
+export type MutationInsertOneReportArgs = {
+  data: ReportInsertInput;
 };
 
 
@@ -2682,6 +2759,11 @@ export type MutationInsertOneTaxaArgs = {
 
 export type MutationInsertOneUserArgs = {
   data: UserInsertInput;
+};
+
+
+export type MutationLinkReportsToIncidentsArgs = {
+  input?: InputMaybe<LinkReportsToIncidentsInput>;
 };
 
 
@@ -2742,9 +2824,21 @@ export type MutationReplaceOneHistory_ReportArgs = {
 };
 
 
+export type MutationReplaceOneIncidentArgs = {
+  data: IncidentInsertInput;
+  query?: InputMaybe<IncidentQueryInput>;
+};
+
+
 export type MutationReplaceOneNotificationArgs = {
   data: NotificationInsertInput;
   query?: InputMaybe<NotificationQueryInput>;
+};
+
+
+export type MutationReplaceOneReportArgs = {
+  data: ReportInsertInput;
+  query?: InputMaybe<ReportQueryInput>;
 };
 
 
@@ -2904,6 +2998,12 @@ export type MutationUpdateOneHistory_ReportArgs = {
 };
 
 
+export type MutationUpdateOneIncidentArgs = {
+  query?: InputMaybe<IncidentQueryInput>;
+  set: IncidentUpdateInput;
+};
+
+
 export type MutationUpdateOneNotificationArgs = {
   query?: InputMaybe<NotificationQueryInput>;
   set: NotificationUpdateInput;
@@ -2913,6 +3013,17 @@ export type MutationUpdateOneNotificationArgs = {
 export type MutationUpdateOneQuickaddArgs = {
   filter: QuickaddFilterType;
   update: QuickaddUpdateType;
+};
+
+
+export type MutationUpdateOneReportArgs = {
+  query?: InputMaybe<ReportQueryInput>;
+  set: ReportUpdateInput;
+};
+
+
+export type MutationUpdateOneReportTranslationArgs = {
+  input?: InputMaybe<UpdateOneReportTranslationInput>;
 };
 
 
@@ -2982,9 +3093,21 @@ export type MutationUpsertOneHistory_ReportArgs = {
 };
 
 
+export type MutationUpsertOneIncidentArgs = {
+  data: IncidentInsertInput;
+  query?: InputMaybe<IncidentQueryInput>;
+};
+
+
 export type MutationUpsertOneNotificationArgs = {
   data: NotificationInsertInput;
   query?: InputMaybe<NotificationQueryInput>;
+};
+
+
+export type MutationUpsertOneReportArgs = {
+  data: ReportInsertInput;
+  query?: InputMaybe<ReportQueryInput>;
 };
 
 
@@ -3211,10 +3334,14 @@ export type Query = {
   history_incidents: Array<Maybe<History_Incident>>;
   history_report?: Maybe<History_Report>;
   history_reports: Array<Maybe<History_Report>>;
+  incident?: Maybe<Incident>;
+  incidents: Array<Maybe<Incident>>;
   notification?: Maybe<Notification>;
   notifications: Array<Maybe<Notification>>;
   quickadd?: Maybe<Quickadd>;
   quickadds?: Maybe<Array<Maybe<Quickadd>>>;
+  report?: Maybe<Report>;
+  reports: Array<Maybe<Report>>;
   risks?: Maybe<Array<Maybe<RisksPayloadItem>>>;
   submission?: Maybe<Submission>;
   submissions: Array<Maybe<Submission>>;
@@ -3311,6 +3438,18 @@ export type QueryHistory_ReportsArgs = {
 };
 
 
+export type QueryIncidentArgs = {
+  query?: InputMaybe<IncidentQueryInput>;
+};
+
+
+export type QueryIncidentsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<IncidentQueryInput>;
+  sortBy?: InputMaybe<IncidentSortByInput>;
+};
+
+
 export type QueryNotificationArgs = {
   query?: InputMaybe<NotificationQueryInput>;
 };
@@ -3334,6 +3473,18 @@ export type QueryQuickaddsArgs = {
   filter?: InputMaybe<QuickaddFilterType>;
   pagination?: InputMaybe<PaginationType>;
   sort?: InputMaybe<QuickaddSortType>;
+};
+
+
+export type QueryReportArgs = {
+  query?: InputMaybe<ReportQueryInput>;
+};
+
+
+export type QueryReportsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<ReportQueryInput>;
+  sortBy?: InputMaybe<ReportSortByInput>;
 };
 
 
@@ -3483,6 +3634,45 @@ export type QuickaddUpdateType = {
   inc?: InputMaybe<QuickaddIncType>;
   set?: InputMaybe<QuickaddSetType>;
   setOnInsert?: InputMaybe<QuickaddSetOnInsertType>;
+};
+
+export type Report = {
+  __typename?: 'Report';
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  authors: Array<Maybe<Scalars['String']['output']>>;
+  cloudinary_id: Scalars['String']['output'];
+  date_downloaded: Scalars['DateTime']['output'];
+  date_modified: Scalars['DateTime']['output'];
+  date_published: Scalars['DateTime']['output'];
+  date_submitted: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  editor_notes?: Maybe<Scalars['String']['output']>;
+  embedding?: Maybe<ReportEmbedding>;
+  epoch_date_downloaded: Scalars['Int']['output'];
+  epoch_date_modified: Scalars['Int']['output'];
+  epoch_date_published: Scalars['Int']['output'];
+  epoch_date_submitted: Scalars['Int']['output'];
+  flag?: Maybe<Scalars['Boolean']['output']>;
+  image_url: Scalars['String']['output'];
+  inputs_outputs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  is_incident_report?: Maybe<Scalars['Boolean']['output']>;
+  language: Scalars['String']['output'];
+  plain_text: Scalars['String']['output'];
+  quiet?: Maybe<Scalars['Boolean']['output']>;
+  report_number: Scalars['Int']['output'];
+  source_domain: Scalars['String']['output'];
+  submitters: Array<Maybe<Scalars['String']['output']>>;
+  tags: Array<Maybe<Scalars['String']['output']>>;
+  text: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  translations?: Maybe<ReportTranslation>;
+  url: Scalars['String']['output'];
+  user?: Maybe<User>;
+};
+
+
+export type ReportTranslationsArgs = {
+  input?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ReportEmbedding = {
@@ -4028,6 +4218,7 @@ export type Submission = {
   epoch_date_modified?: Maybe<Scalars['Int']['output']>;
   harmed_parties?: Maybe<Array<Maybe<Entity>>>;
   image_url: Scalars['String']['output'];
+  implicated_systems?: Maybe<Array<Maybe<Entity>>>;
   incident_date?: Maybe<Scalars['String']['output']>;
   incident_editors?: Maybe<Array<Maybe<User>>>;
   incident_ids?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
@@ -4097,6 +4288,11 @@ export type SubmissionHarmed_PartiesRelationInput = {
   link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type SubmissionImplicated_SystemsRelationInput = {
+  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
+  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
 export type SubmissionIncident_EditorsRelationInput = {
   create?: InputMaybe<Array<InputMaybe<UserInsertInput>>>;
   link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -4120,6 +4316,7 @@ export type SubmissionInsertInput = {
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   harmed_parties?: InputMaybe<SubmissionHarmed_PartiesRelationInput>;
   image_url: Scalars['String']['input'];
+  implicated_systems?: InputMaybe<SubmissionImplicated_SystemsRelationInput>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
   incident_editors?: InputMaybe<SubmissionIncident_EditorsRelationInput>;
   incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
@@ -4300,6 +4497,10 @@ export type SubmissionQueryInput = {
   image_url_lte?: InputMaybe<Scalars['String']['input']>;
   image_url_ne?: InputMaybe<Scalars['String']['input']>;
   image_url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  implicated_systems_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  implicated_systems_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
   incident_date_exists?: InputMaybe<Scalars['Boolean']['input']>;
   incident_date_gt?: InputMaybe<Scalars['String']['input']>;
@@ -4487,6 +4688,8 @@ export type SubmissionUpdateInput = {
   harmed_parties_unset?: InputMaybe<Scalars['Boolean']['input']>;
   image_url?: InputMaybe<Scalars['String']['input']>;
   image_url_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems?: InputMaybe<SubmissionImplicated_SystemsRelationInput>;
+  implicated_systems_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
   incident_date_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_editors?: InputMaybe<SubmissionIncident_EditorsRelationInput>;
@@ -4530,6 +4733,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   entityId?: Maybe<Entity>;
+  incident_id?: Maybe<Incident>;
   type: Scalars['String']['output'];
   userId: User;
 };
@@ -5470,6 +5674,7 @@ export type ResolversTypes = {
   History_reportQueryInput: History_ReportQueryInput;
   History_reportSortByInput: History_ReportSortByInput;
   History_reportUpdateInput: History_ReportUpdateInput;
+  Incident: ResolverTypeWrapper<Incident>;
   IncidentAllegedDeployerOfAISystemRelationInput: IncidentAllegedDeployerOfAiSystemRelationInput;
   IncidentAllegedDeveloperOfAISystemRelationInput: IncidentAllegedDeveloperOfAiSystemRelationInput;
   IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput: IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput;
@@ -5478,6 +5683,7 @@ export type ResolversTypes = {
   IncidentEmbeddingInsertInput: IncidentEmbeddingInsertInput;
   IncidentEmbeddingQueryInput: IncidentEmbeddingQueryInput;
   IncidentEmbeddingUpdateInput: IncidentEmbeddingUpdateInput;
+  IncidentImplicated_systemsRelationInput: IncidentImplicated_SystemsRelationInput;
   IncidentInsertInput: IncidentInsertInput;
   IncidentNlp_similar_incident: ResolverTypeWrapper<IncidentNlp_Similar_Incident>;
   IncidentNlp_similar_incidentInsertInput: IncidentNlp_Similar_IncidentInsertInput;
@@ -5524,6 +5730,7 @@ export type ResolversTypes = {
   QuickaddSortType: QuickaddSortType;
   QuickaddUpdateInput: QuickaddUpdateInput;
   QuickaddUpdateType: QuickaddUpdateType;
+  Report: ResolverTypeWrapper<Report>;
   ReportEmbedding: ResolverTypeWrapper<ReportEmbedding>;
   ReportEmbeddingInsertInput: ReportEmbeddingInsertInput;
   ReportEmbeddingQueryInput: ReportEmbeddingQueryInput;
@@ -5551,6 +5758,7 @@ export type ResolversTypes = {
   SubmissionEmbeddingQueryInput: SubmissionEmbeddingQueryInput;
   SubmissionEmbeddingUpdateInput: SubmissionEmbeddingUpdateInput;
   SubmissionHarmed_partiesRelationInput: SubmissionHarmed_PartiesRelationInput;
+  SubmissionImplicated_systemsRelationInput: SubmissionImplicated_SystemsRelationInput;
   SubmissionIncident_editorsRelationInput: SubmissionIncident_EditorsRelationInput;
   SubmissionInsertInput: SubmissionInsertInput;
   SubmissionNlp_similar_incident: ResolverTypeWrapper<SubmissionNlp_Similar_Incident>;
@@ -5686,6 +5894,7 @@ export type ResolversParentTypes = {
   History_reportInsertInput: History_ReportInsertInput;
   History_reportQueryInput: History_ReportQueryInput;
   History_reportUpdateInput: History_ReportUpdateInput;
+  Incident: Incident;
   IncidentAllegedDeployerOfAISystemRelationInput: IncidentAllegedDeployerOfAiSystemRelationInput;
   IncidentAllegedDeveloperOfAISystemRelationInput: IncidentAllegedDeveloperOfAiSystemRelationInput;
   IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput: IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput;
@@ -5694,6 +5903,7 @@ export type ResolversParentTypes = {
   IncidentEmbeddingInsertInput: IncidentEmbeddingInsertInput;
   IncidentEmbeddingQueryInput: IncidentEmbeddingQueryInput;
   IncidentEmbeddingUpdateInput: IncidentEmbeddingUpdateInput;
+  IncidentImplicated_systemsRelationInput: IncidentImplicated_SystemsRelationInput;
   IncidentInsertInput: IncidentInsertInput;
   IncidentNlp_similar_incident: IncidentNlp_Similar_Incident;
   IncidentNlp_similar_incidentInsertInput: IncidentNlp_Similar_IncidentInsertInput;
@@ -5736,6 +5946,7 @@ export type ResolversParentTypes = {
   QuickaddSortType: QuickaddSortType;
   QuickaddUpdateInput: QuickaddUpdateInput;
   QuickaddUpdateType: QuickaddUpdateType;
+  Report: Report;
   ReportEmbedding: ReportEmbedding;
   ReportEmbeddingInsertInput: ReportEmbeddingInsertInput;
   ReportEmbeddingQueryInput: ReportEmbeddingQueryInput;
@@ -5761,6 +5972,7 @@ export type ResolversParentTypes = {
   SubmissionEmbeddingQueryInput: SubmissionEmbeddingQueryInput;
   SubmissionEmbeddingUpdateInput: SubmissionEmbeddingUpdateInput;
   SubmissionHarmed_partiesRelationInput: SubmissionHarmed_PartiesRelationInput;
+  SubmissionImplicated_systemsRelationInput: SubmissionImplicated_SystemsRelationInput;
   SubmissionIncident_editorsRelationInput: SubmissionIncident_EditorsRelationInput;
   SubmissionInsertInput: SubmissionInsertInput;
   SubmissionNlp_similar_incident: SubmissionNlp_Similar_Incident;
@@ -5941,9 +6153,11 @@ export type ChecklistRiskPrecedentResolvers<ContextType = any, ParentType extend
 export type ClassificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Classification'] = ResolversParentTypes['Classification']> = {
   _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   attributes?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClassificationAttribute']>>>, ParentType, ContextType>;
+  incidents?: Resolver<Array<Maybe<ResolversTypes['Incident']>>, ParentType, ContextType>;
   namespace?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publish?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  reports?: Resolver<Array<Maybe<ResolversTypes['Report']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -6005,6 +6219,7 @@ export type History_IncidentResolvers<ContextType = any, ParentType extends Reso
   embedding?: Resolver<Maybe<ResolversTypes['History_incidentEmbedding']>, ParentType, ContextType>;
   epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   flagged_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
+  implicated_systems?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   incident_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   modifiedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   nlp_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['History_incidentNlp_similar_incident']>>>, ParentType, ContextType>;
@@ -6072,6 +6287,29 @@ export type History_ReportEmbeddingResolvers<ContextType = any, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Incident'] = ResolversParentTypes['Incident']> = {
+  AllegedDeployerOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
+  AllegedDeveloperOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
+  AllegedHarmedOrNearlyHarmedParties?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
+  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  editor_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
+  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  editor_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
+  editors?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType>;
+  embedding?: Resolver<Maybe<ResolversTypes['IncidentEmbedding']>, ParentType, ContextType>;
+  epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  flagged_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
+  implicated_systems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
+  incident_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  nlp_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['IncidentNlp_similar_incident']>>>, ParentType, ContextType>;
+  reports?: Resolver<Array<Maybe<ResolversTypes['Report']>>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tsne?: Resolver<Maybe<ResolversTypes['IncidentTsne']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type IncidentEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['IncidentEmbedding'] = ResolversParentTypes['IncidentEmbedding']> = {
   from_reports?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
   vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
@@ -6134,8 +6372,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationDeleteOneEntityArgs, 'query'>>;
   deleteOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationDeleteOneHistory_IncidentArgs, 'query'>>;
   deleteOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationDeleteOneHistory_ReportArgs, 'query'>>;
+  deleteOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationDeleteOneIncidentArgs, 'query'>>;
   deleteOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationDeleteOneNotificationArgs, 'query'>>;
   deleteOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<MutationDeleteOneQuickaddArgs>>;
+  deleteOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationDeleteOneReportArgs, 'query'>>;
   deleteOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubmissionArgs, 'query'>>;
   deleteOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubscriptionArgs, 'query'>>;
   deleteOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationDeleteOneTaxaArgs, 'query'>>;
@@ -6163,12 +6403,15 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   insertOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationInsertOneEntityArgs, 'data'>>;
   insertOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationInsertOneHistory_IncidentArgs, 'data'>>;
   insertOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationInsertOneHistory_ReportArgs, 'data'>>;
+  insertOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationInsertOneIncidentArgs, 'data'>>;
   insertOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationInsertOneNotificationArgs, 'data'>>;
   insertOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<MutationInsertOneQuickaddArgs>>;
+  insertOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationInsertOneReportArgs, 'data'>>;
   insertOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationInsertOneSubmissionArgs, 'data'>>;
   insertOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationInsertOneSubscriptionArgs, 'data'>>;
   insertOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationInsertOneTaxaArgs, 'data'>>;
   insertOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationInsertOneUserArgs, 'data'>>;
+  linkReportsToIncidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Incident']>>>, ParentType, ContextType, Partial<MutationLinkReportsToIncidentsArgs>>;
   logIncidentHistory?: Resolver<Maybe<ResolversTypes['LogIncidentHistoryPayload']>, ParentType, ContextType, Partial<MutationLogIncidentHistoryArgs>>;
   logReportHistory?: Resolver<Maybe<ResolversTypes['LogReportHistoryPayload']>, ParentType, ContextType, Partial<MutationLogReportHistoryArgs>>;
   processNotifications?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -6180,7 +6423,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   replaceOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationReplaceOneEntityArgs, 'data'>>;
   replaceOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationReplaceOneHistory_IncidentArgs, 'data'>>;
   replaceOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationReplaceOneHistory_ReportArgs, 'data'>>;
+  replaceOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationReplaceOneIncidentArgs, 'data'>>;
   replaceOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationReplaceOneNotificationArgs, 'data'>>;
+  replaceOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationReplaceOneReportArgs, 'data'>>;
   replaceOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationReplaceOneSubmissionArgs, 'data'>>;
   replaceOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationReplaceOneSubscriptionArgs, 'data'>>;
   replaceOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationReplaceOneTaxaArgs, 'data'>>;
@@ -6207,8 +6452,11 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationUpdateOneEntityArgs, 'set'>>;
   updateOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationUpdateOneHistory_IncidentArgs, 'set'>>;
   updateOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationUpdateOneHistory_ReportArgs, 'set'>>;
+  updateOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationUpdateOneIncidentArgs, 'set'>>;
   updateOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpdateOneNotificationArgs, 'set'>>;
   updateOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationUpdateOneQuickaddArgs, 'filter' | 'update'>>;
+  updateOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationUpdateOneReportArgs, 'set'>>;
+  updateOneReportTranslation?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, Partial<MutationUpdateOneReportTranslationArgs>>;
   updateOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubmissionArgs, 'set'>>;
   updateOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubscriptionArgs, 'set'>>;
   updateOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpdateOneTaxaArgs, 'set'>>;
@@ -6220,7 +6468,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationUpsertOneEntityArgs, 'data'>>;
   upsertOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationUpsertOneHistory_IncidentArgs, 'data'>>;
   upsertOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationUpsertOneHistory_ReportArgs, 'data'>>;
+  upsertOneIncident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, RequireFields<MutationUpsertOneIncidentArgs, 'data'>>;
   upsertOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpsertOneNotificationArgs, 'data'>>;
+  upsertOneReport?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, RequireFields<MutationUpsertOneReportArgs, 'data'>>;
   upsertOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpsertOneSubmissionArgs, 'data'>>;
   upsertOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpsertOneSubscriptionArgs, 'data'>>;
   upsertOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpsertOneTaxaArgs, 'data'>>;
@@ -6263,10 +6513,14 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   history_incidents?: Resolver<Array<Maybe<ResolversTypes['History_incident']>>, ParentType, ContextType, RequireFields<QueryHistory_IncidentsArgs, 'limit'>>;
   history_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, Partial<QueryHistory_ReportArgs>>;
   history_reports?: Resolver<Array<Maybe<ResolversTypes['History_report']>>, ParentType, ContextType, RequireFields<QueryHistory_ReportsArgs, 'limit'>>;
+  incident?: Resolver<Maybe<ResolversTypes['Incident']>, ParentType, ContextType, Partial<QueryIncidentArgs>>;
+  incidents?: Resolver<Array<Maybe<ResolversTypes['Incident']>>, ParentType, ContextType, RequireFields<QueryIncidentsArgs, 'limit'>>;
   notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, Partial<QueryNotificationArgs>>;
   notifications?: Resolver<Array<Maybe<ResolversTypes['Notification']>>, ParentType, ContextType, RequireFields<QueryNotificationsArgs, 'limit'>>;
   quickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<QueryQuickaddArgs>>;
   quickadds?: Resolver<Maybe<Array<Maybe<ResolversTypes['Quickadd']>>>, ParentType, ContextType, Partial<QueryQuickaddsArgs>>;
+  report?: Resolver<Maybe<ResolversTypes['Report']>, ParentType, ContextType, Partial<QueryReportArgs>>;
+  reports?: Resolver<Array<Maybe<ResolversTypes['Report']>>, ParentType, ContextType, RequireFields<QueryReportsArgs, 'limit'>>;
   risks?: Resolver<Maybe<Array<Maybe<ResolversTypes['RisksPayloadItem']>>>, ParentType, ContextType, Partial<QueryRisksArgs>>;
   submission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, Partial<QuerySubmissionArgs>>;
   submissions?: Resolver<Array<Maybe<ResolversTypes['Submission']>>, ParentType, ContextType, RequireFields<QuerySubmissionsArgs, 'limit'>>;
@@ -6284,6 +6538,40 @@ export type QuickaddResolvers<ContextType = any, ParentType extends ResolversPar
   incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   source_domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReportResolvers<ContextType = any, ParentType extends ResolversParentTypes['Report'] = ResolversParentTypes['Report']> = {
+  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  authors?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
+  cloudinary_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  date_downloaded?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  date_modified?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  date_published?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  date_submitted?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  embedding?: Resolver<Maybe<ResolversTypes['ReportEmbedding']>, ParentType, ContextType>;
+  epoch_date_downloaded?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  epoch_date_modified?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  epoch_date_published?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  epoch_date_submitted?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  flag?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  image_url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  inputs_outputs?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  is_incident_report?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  plain_text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  quiet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  report_number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  source_domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  submitters?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
+  tags?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  translations?: Resolver<Maybe<ResolversTypes['ReportTranslation']>, ParentType, ContextType, Partial<ReportTranslationsArgs>>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -6366,6 +6654,7 @@ export type SubmissionResolvers<ContextType = any, ParentType extends ResolversP
   epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   harmed_parties?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
   image_url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  implicated_systems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
   incident_date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   incident_editors?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
   incident_ids?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
@@ -6400,6 +6689,7 @@ export type SubmissionNlp_Similar_IncidentResolvers<ContextType = any, ParentTyp
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _id?: SubscriptionResolver<Maybe<ResolversTypes['ObjectId']>, "_id", ParentType, ContextType>;
   entityId?: SubscriptionResolver<Maybe<ResolversTypes['Entity']>, "entityId", ParentType, ContextType>;
+  incident_id?: SubscriptionResolver<Maybe<ResolversTypes['Incident']>, "incident_id", ParentType, ContextType>;
   type?: SubscriptionResolver<ResolversTypes['String'], "type", ParentType, ContextType>;
   userId?: SubscriptionResolver<ResolversTypes['User'], "userId", ParentType, ContextType>;
 };
@@ -6520,6 +6810,7 @@ export type Resolvers<ContextType = any> = {
   History_incidentTsne?: History_IncidentTsneResolvers<ContextType>;
   History_report?: History_ReportResolvers<ContextType>;
   History_reportEmbedding?: History_ReportEmbeddingResolvers<ContextType>;
+  Incident?: IncidentResolvers<ContextType>;
   IncidentEmbedding?: IncidentEmbeddingResolvers<ContextType>;
   IncidentNlp_similar_incident?: IncidentNlp_Similar_IncidentResolvers<ContextType>;
   IncidentTsne?: IncidentTsneResolvers<ContextType>;
@@ -6533,6 +6824,7 @@ export type Resolvers<ContextType = any> = {
   PromoteSubmissionToReportPayload?: PromoteSubmissionToReportPayloadResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Quickadd?: QuickaddResolvers<ContextType>;
+  Report?: ReportResolvers<ContextType>;
   ReportEmbedding?: ReportEmbeddingResolvers<ContextType>;
   ReportTranslation?: ReportTranslationResolvers<ContextType>;
   RisksPayloadItem?: RisksPayloadItemResolvers<ContextType>;

@@ -34,6 +34,7 @@ export const schema = Yup.object().shape({
   AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
   editors: Yup.array().of(Yup.string()).required(),
   editor_notes: Yup.string().nullable(),
+  implicated_systems: Yup.array().required(),
 });
 
 function IncidentForm() {
@@ -187,6 +188,18 @@ function IncidentForm() {
             name="AllegedHarmedOrNearlyHarmedParties"
             label={t('Alleged Harmed or Nearly Harmed Parties')}
             placeholder={t('Alleged Harmed or Nearly Harmed Parties')}
+            errors={errors}
+            touched={touched}
+            schema={schema}
+            data-cy="alleged-harmed-or-nearly-harmed-parties-input"
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TagsInputGroup
+            name="implicated_systems"
+            label={t('Implicated Systems')}
+            placeholder={t('Implicated Systems')}
             errors={errors}
             touched={touched}
             schema={schema}

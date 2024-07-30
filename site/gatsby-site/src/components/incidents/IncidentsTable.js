@@ -113,6 +113,12 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
           data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
+      {
+        title: t('Implicated Systems'),
+        id: 'implicated_systems',
+        accessor: (data) => data.implicated_systems?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
+        Cell: ListCell,
+      },
     ];
 
     if (isRole('incident_editor')) {
