@@ -24,7 +24,10 @@ const gatewaySchema = stitchSchemas({
             },
             ['CreateVariantInput.incidentId']: {
                 validationLevel: ValidationLevel.Off // ditto
-            }
+            },
+            ['CreateVariantInput.variant']: {
+                validationLevel: ValidationLevel.Off,
+            },
         },
     }
 });

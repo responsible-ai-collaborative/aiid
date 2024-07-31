@@ -255,7 +255,7 @@ test.describe('Edit report', () => {
       }`
     });
 
-    expect(result.data.reports).toHaveLength(5);
+    expect(result.data.reports).toHaveLength(7);
     expect(result.data.reports).not.toContainEqual({ report_number: 3 });
     expect(result.data.incident.reports).not.toContainEqual({ report_number: 3 });
   });
@@ -312,7 +312,7 @@ test.describe('Edit report', () => {
       }`
     });
 
-    expect(result.data.incident_3.reports).toMatchObject([{ report_number: 4 }, { report_number: 6 }]);
+    expect(result.data.incident_3.reports).toMatchObject([{ report_number: 4 }, { report_number: 6 }, { report_number: 7 }, { report_number: 8 }]);
     expect(result.data.incident_3.reports).toHaveLength(2);
 
     expect(result.data.incident_2.reports).toMatchObject([{ report_number: 2 }, { report_number: 3 }]);
@@ -363,7 +363,7 @@ test.describe('Edit report', () => {
       }`
     });
 
-    expect(result.data.incident_3.reports).toMatchObject([{ report_number: 4 }, { report_number: 6 }]);
+    expect(result.data.incident_3.reports).toMatchObject([{ report_number: 4 }, { report_number: 6 }, { report_number: 7 }, { report_number: 8 }]);
     expect(result.data.incident_3.reports).toHaveLength(2);
 
     expect(result.data.report).toMatchObject({ report_number: 3, is_incident_report: false });

@@ -42,7 +42,7 @@ test.describe('Dynamic Cite pages', () => {
     await expect(page.locator('[data-cy="citation"]').getByText("Report Count", { exact: true }).locator('xpath=following-sibling::div[1]')).toHaveText('2');
     await expect(page.locator('[data-cy="citation"]').getByText("Editors", { exact: true }).locator('xpath=following-sibling::div[1]')).toHaveText('Sean McGregor');
     
-    await expect(page.locator('[data-cy="variant-card"]')).toHaveCount(1);
+    await expect(page.locator('[data-cy="variant-card"]')).toHaveCount(3);
   });
 
   test('Should display a new Variant if live mode is turned on', async ({ page, login, skipOnEmptyEnvironment }) => {

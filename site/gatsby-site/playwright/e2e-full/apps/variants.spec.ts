@@ -1,5 +1,4 @@
 import { expect } from '@playwright/test';
-import { format, getUnixTime } from 'date-fns';
 import { getVariantStatusText, VARIANT_STATUS } from '../../../src/utils/variants';
 import { test } from '../../utils'
 import { init } from '../../memory-mongo';
@@ -9,7 +8,7 @@ test.describe('Variants App', () => {
 
     test('Successfully loads', async ({ page }) => {
         await page.goto(url);
-        await expect(page).toHaveURL(url);
+        await expect(page).toHaveURL(`${url}/`);
     });
 
     test('Should display a list of Unreviewed Variants and their values - Unauthenticated user', async ({ page }) => {
@@ -25,7 +24,7 @@ test.describe('Variants App', () => {
         await expect(firstRow.locator(`[data-cy="cell"] >> a[href="/cite/3"]`)).toBeVisible();
         await expect(firstRow.locator('[data-cy="cell"]').nth(1)).toHaveText('Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees');
         await expect(firstRow.locator('[data-cy="cell"]').nth(2)).toHaveText(getVariantStatusText(VARIANT_STATUS.unreviewed));
-        await expect(firstRow.locator('[data-cy="cell"]').nth(3)).toHaveText('This is a test variant.');
+        await expect(firstRow.locator('[data-cy="cell"]').nth(3)).toHaveText('This is a test variant that\'s unreviewed');
         await expect(firstRow.locator('[data-cy="cell"]').nth(4).locator('div').nth(1)).toHaveText('Input 1 longer than 80 characters. This is some extra text to achieve the requirement.');
         await expect(firstRow.locator('[data-cy="cell"]').nth(4).locator('div').nth(2)).toHaveText('Output 1 longer than 80 characters. This is some extra text to achieve the requirement.');
     });
@@ -108,7 +107,7 @@ test.describe('Variants App', () => {
         await expect(page.locator('[data-cy=edit-variant-modal]')).toBeVisible();
 
         // TODO: fix broken selectors
-        
+
         // await page.locator('[data-cy="variant-form-date-published"]').fill(newDatePublished);
         // await page.locator('[data-cy="variant-form-submitters"]').fill(newSubmitter);
         await page.locator('[data-cy="variant-form-text"]').fill(newText);
