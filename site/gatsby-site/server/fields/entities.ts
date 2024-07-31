@@ -1,19 +1,8 @@
-import { GraphQLFieldConfigMap, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLObjectType } from "graphql";
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
-import { ObjectIdScalar } from "../scalars";
-import { GraphQLDateTime } from "graphql-scalars";
-
-export const EntityType = new GraphQLObjectType({
-    name: 'Entity',
-    fields: {
-        _id: { type: ObjectIdScalar },
-        entity_id: { type: new GraphQLNonNull(GraphQLString) },
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        created_at: { type: GraphQLDateTime },
-    },
-});
+import { EntityType } from "../types/entity";
 
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {

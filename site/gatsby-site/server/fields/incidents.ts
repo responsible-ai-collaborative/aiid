@@ -1,14 +1,14 @@
 import { GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getQueryResolver } from "../utils";
-import { ReportType } from "./reports";
 import { Context } from "../interfaces";
 import { ObjectIdScalar } from "../scalars";
 import { isRole } from "../rules";
-import { EntityType } from "./entities";
-import { UserType } from "./users";
 import { NlpSimilarIncidentType } from "../types";
 import { linkReportsToIncidents } from "./common";
+import { UserType } from "../types/user";
+import { ReportType } from "../types/report";
+import { EntityType } from "../types/entity";
 
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {

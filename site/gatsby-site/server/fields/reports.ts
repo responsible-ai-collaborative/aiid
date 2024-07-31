@@ -1,92 +1,86 @@
-import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
-import { ObjectIdScalar } from "../scalars";
-import { generateMutationFields, generateQueryFields, getQueryResolver, getRelationshipConfig } from "../utils";
-import { Context } from "../interfaces";
+import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { isRole } from "../rules";
-import { UserType } from "./users";
-import { DateTimeResolver } from "graphql-scalars";
+import { linkReportsToIncidents } from "./common";
+import { ReportType } from "../types/report";
 
-
-const EmbeddingType = new GraphQLObjectType({
-    name: 'ReportEmbedding',
-    fields: {
-        from_text_hash: { type: GraphQLString },
-        vector: { type: new GraphQLList(GraphQLFloat) }
-    }
-});
-
-const ReportTranslationsType = new GraphQLObjectType({
-    name: 'ReportTranslations',
-    fields: {
-        text: { type: GraphQLString },
-        title: { type: GraphQLString }
-    }
-});
-
-export const ReportType = new GraphQLObjectType({
-    name: 'Report',
-    fields: {
-        _id: { type: ObjectIdScalar },
-        authors: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
-        cloudinary_id: { type: new GraphQLNonNull(GraphQLString) },
-        date_downloaded: { type: new GraphQLNonNull(DateTimeResolver) },
-        date_modified: { type: new GraphQLNonNull(DateTimeResolver) },
-        date_published: { type: new GraphQLNonNull(DateTimeResolver) },
-        date_submitted: { type: new GraphQLNonNull(DateTimeResolver) },
-        description: { type: GraphQLString },
-        editor_notes: { type: GraphQLString },
-        embedding: { type: EmbeddingType },
-        epoch_date_downloaded: { type: new GraphQLNonNull(GraphQLInt) },
-        epoch_date_modified: { type: new GraphQLNonNull(GraphQLInt) },
-        epoch_date_published: { type: new GraphQLNonNull(GraphQLInt) },
-        epoch_date_submitted: { type: new GraphQLNonNull(GraphQLInt) },
-        flag: { type: GraphQLBoolean },
-        image_url: { type: new GraphQLNonNull(GraphQLString) },
-        inputs_outputs: { type: new GraphQLList(GraphQLString) },
-        is_incident_report: { type: GraphQLBoolean },
-        language: { type: new GraphQLNonNull(GraphQLString) },
-        plain_text: { type: new GraphQLNonNull(GraphQLString) },
-        report_number: { type: new GraphQLNonNull(GraphQLInt) },
-        source_domain: { type: new GraphQLNonNull(GraphQLString) },
-        submitters: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
-        tags: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
-        text: { type: new GraphQLNonNull(GraphQLString) },
-        title: { type: new GraphQLNonNull(GraphQLString) },
-        url: { type: new GraphQLNonNull(GraphQLString) },
-        user: getRelationshipConfig(UserType, GraphQLString, 'user', 'userId', 'users', 'customData'),
-        quiet: { type: GraphQLBoolean },
-        translations: {
-            type: ReportTranslationsType,
-            args: {
-                input: { type: new GraphQLNonNull(GraphQLString) }
-            },
-            resolve: async (source, args, context: Context, info) => {
-
-                const translations = context.client.db('translations').collection("reports_" + args.input);
-
-                const translation = await translations.findOne({ report_number: source.report_number });
-
-                if (translation) {
-
-                    return { text: translation.text, title: translation.title };
-                }
-
-                return { text: "", title: "" }
-            },
-        }
-    }
-});
-
-//@ts-ignore
-ReportType.getFields().translations.dependencies = [];
-//@ts-ignore
-ReportType.getFields().user.dependencies = ['user'];
 
 export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
     ...generateQueryFields({ collectionName: 'reports', Type: ReportType })
 }
+
+function getUnixTime(dateString: string) {
+
+    return Math.floor(new Date(dateString).getTime() / 1000);
+}
+
+function formatDate(date: Date) {
+    let month = `${date.getMonth() + 1}`;
+    let day = `${date.getDate()}`;
+    const year = date.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return `${year}-${month}-${day}`;
+}
+
+const CreateVariantPayload = new GraphQLObjectType({
+    name: 'CreateVariantPayload',
+    fields: {
+        incident_id: {
+            type: new GraphQLNonNull(GraphQLInt),
+            description: 'The unique identifier for the incident.'
+        },
+        report_number: {
+            type: new GraphQLNonNull(GraphQLInt),
+            description: 'The unique report number associated with the incident.'
+        }
+    }
+});
+
+const VariantInputType = new GraphQLInputObjectType({
+    name: 'CreateVariantInputVariant',
+    description: 'Input details for the variant, including publication date, inputs/outputs, submitters, and text.',
+    fields: {
+        date_published: {
+            type: GraphQLString,
+            description: 'The date when the variant was published.'
+        },
+        inputs_outputs: {
+            type: new GraphQLList(GraphQLString),
+            description: 'List of inputs and outputs related to the variant.'
+        },
+        submitters: {
+            type: new GraphQLList(GraphQLString),
+            description: 'List of submitters associated with the variant.'
+        },
+        text: {
+            type: GraphQLString,
+            description: 'The textual content of the variant.'
+        }
+    }
+});
+
+const CreateVariantInput = new GraphQLInputObjectType({
+    name: 'CreateVariantInput',
+    description: 'Input type for creating a variant, including incident ID and variant details.',
+    fields: {
+        incidentId: {
+            type: new GraphQLNonNull(GraphQLInt),
+            description: 'The unique identifier for the incident.'
+        },
+        variant: {
+            type: VariantInputType,
+            description: 'Details about the variant.'
+        }
+    }
+});
+
 
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
@@ -168,6 +162,69 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
             return report;
         }),
     },
+
+    createVariant: {
+        type: CreateVariantPayload,
+        args: {
+            input: {
+                type: new GraphQLNonNull(CreateVariantInput),
+            },
+        },
+        resolve: async (source, { input }, context) => {
+
+            const incidents = context.client.db('aiidprod').collection("incidents");
+            const reports = context.client.db('aiidprod').collection("reports");
+
+            const parentIncident = await incidents.findOne({ incident_id: input.incidentId });
+
+            if (!parentIncident) {
+                throw `Incident ${input.incidentId} not found`;
+            }
+
+            const report_number = (await reports.find({}).sort({ report_number: -1 }).limit(1).next()).report_number + 1;
+
+            const now = new Date();
+
+            const todayFormated = formatDate(now);
+
+            const newReport = {
+                report_number,
+                is_incident_report: false,
+                title: '',
+                date_downloaded: now,
+                date_modified: now,
+                date_published: input.variant.date_published ? new Date(input.variant.date_published) : now,
+                date_submitted: now,
+                epoch_date_downloaded: getUnixTime(todayFormated),
+                epoch_date_modified: getUnixTime(now.toString()),
+                epoch_date_published: getUnixTime(input.variant.date_published ? input.variant.date_published : todayFormated),
+                epoch_date_submitted: getUnixTime(todayFormated),
+                image_url: '',
+                cloudinary_id: '',
+                authors: [],
+                submitters: input.variant.submitters,
+                text: input.variant.text,
+                plain_text: '',
+                url: '',
+                source_domain: '',
+                language: 'en',
+                tags: ['variant:unreviewed'],
+                inputs_outputs: input.variant.inputs_outputs,
+            };
+
+            await reports.insertOne({ ...newReport, report_number: newReport.report_number });
+
+            const incident_ids = [input.incidentId];
+            const report_numbers = [newReport.report_number];
+
+            await linkReportsToIncidents(context.client, incident_ids, report_numbers);
+
+            return {
+                incident_id: input.incidentId,
+                report_number,
+            }
+        }
+    },
 }
 
 export const permissions = {
@@ -182,5 +239,6 @@ export const permissions = {
 
         flagReport: allow,
         updateOneReportTranslation: isRole('incident_editor'),
+        createVariant: allow,
     }
 }

@@ -97,6 +97,7 @@ const ignoredMutations = [
     'updateManyReports',
     'upsertOneReport',
     'upsertManyReports',
+    'createVariant',
 
     'linkReportsToIncidents',
 

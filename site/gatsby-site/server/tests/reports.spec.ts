@@ -131,4 +131,67 @@ describe(`Reports`, () => {
             }
         })
     });
+
+    it(`Create a variant`, async () => {
+
+        const mutationData = {
+            query: `
+                mutation ($input: CreateVariantInput!) {
+                    createVariant(input: $input) {
+                        incident_id
+                        report_number
+                    }
+                }
+                    `,
+            variables: {
+                input: {
+                    incidentId: 1,
+                    variant: {
+                        date_published: "2024-01-01",
+                        inputs_outputs: ["input output 1", "input output 2"],
+                        submitters: ["Test"],
+                        text: "Some text larger than 80 characters"
+                    }
+                }
+            }
+        };
+
+
+        await seedFixture({
+            customData: {
+                users: [
+                    {
+                        userId: "123",
+                        roles: [],
+                    }
+                ],
+            },
+            aiidprod: {
+                incidents: [
+                    {
+                        incident_id: 1,
+                        reports: [1]
+                    }
+                ],
+                reports: [
+                    {
+                        report_number: 1,
+                        flag: false
+                    }
+                ]
+            }
+        });
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+
+        const response = await makeRequest(url, mutationData);
+
+        expect(response.body.data).toMatchObject({
+            createVariant: {
+                report_number: 2,
+                incident_id: 1,
+            }
+        })
+    });
 });
