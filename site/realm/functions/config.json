@@ -94,10 +94,6 @@
         "private": true
     },
     {
-        "name": "createVariant",
-        "private": false
-    },
-    {
         "name": "getEmailTemplateNewEntityIncident",
         "private": true
     },
