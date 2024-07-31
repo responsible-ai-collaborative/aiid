@@ -1,4 +1,4 @@
-name: Run playwright tests
+name: Run playwright tests full e2e
 on:
   workflow_call:
     inputs:
@@ -65,7 +65,7 @@ jobs:
       - name: Wait for memory mongodb to start
         run: |
           while ! nc -z localhost 4110; do
-            echo "Waiting for Mongodb memoery server to start on port 4110..."
+            echo "Waiting for Mongodb memory server to start on port 4110..."
             sleep 2
           done
           echo "MongoDB has started on port 4110."
@@ -126,8 +126,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: blob-report-${{ matrix.shardIndex }}
-          path: site/gatsby-site/blob-report-full/
+          name: blob-report-full-${{ matrix.shardIndex }}
+          path: site/gatsby-site/blob-report/
           retention-days: 1
 
   merge-reports:
@@ -140,12 +140,12 @@ jobs:
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: all-blob-reports-full
-          pattern: blob-report-*
+          path: all-blob-reports
+          pattern: blob-report-full-*
           merge-multiple: true
 
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports-full
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
