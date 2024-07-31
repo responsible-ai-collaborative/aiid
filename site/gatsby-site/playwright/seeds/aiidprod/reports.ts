@@ -185,7 +185,12 @@ const items: DBReport[] = [
         "epoch_date_submitted": 1559347200,
         "report_number": 6,
         "tags": ["variant:unreviewed"],
-        "inputs_outputs": ["Input 1", "Output 1"],
+        "inputs_outputs": [
+            "Input 1 longer than 80 characters. This is some extra text to achieve the requirement.",
+            "Output 1 longer than 80 characters. This is some extra text to achieve the requirement."
+        ],
+
+        text: "This is a test variant that's unreviewed",
 
         // TODO: variants are missing these fields
         cloudinary_id: "",
@@ -198,7 +203,68 @@ const items: DBReport[] = [
         image_url: "",
         language: "",
         plain_text: "",
-        text: "",
+        source_domain: "",
+        submitters: [],
+        url: "",
+        title: "",
+        editor_notes: "",
+        user: "",
+    },
+    {
+        "authors": ["Pablo Costa"],
+        "date_published": new Date(1555113600000),
+        "epoch_date_submitted": 1559347200,
+        "report_number": 7,
+        "tags": ["variant:approved"],
+        "inputs_outputs": [
+            "Input 1 longer than 80 characters. This is some extra text to achieve the requirement.",
+            "Output 1 longer than 80 characters. This is some extra text to achieve the requirement."
+        ],
+
+        text: "This is a test variant that has been approved",
+
+        // TODO: variants are missing these fields
+        cloudinary_id: "",
+        date_downloaded: new Date(1555113600000),
+        date_modified: new Date(1592092800000),
+        date_submitted: new Date(1559347200000),
+        epoch_date_downloaded: 0,
+        epoch_date_modified: 0,
+        epoch_date_published: 0,
+        image_url: "",
+        language: "",
+        plain_text: "",
+        source_domain: "",
+        submitters: [],
+        url: "",
+        title: "",
+        editor_notes: "",
+        user: "",
+    },
+    {
+        "authors": ["Pablo Costa"],
+        "date_published": new Date(1555113600000),
+        "epoch_date_submitted": 1559347200,
+        "report_number": 8,
+        "tags": ["variant:rejected"],
+        "inputs_outputs": [
+            "Input 1 longer than 80 characters. This is some extra text to achieve the requirement.",
+            "Output 1 longer than 80 characters. This is some extra text to achieve the requirement."
+        ],
+
+        text: "This is a test variant that has been rejected",
+
+        // TODO: variants are missing these fields
+        cloudinary_id: "",
+        date_downloaded: new Date(1555113600000),
+        date_modified: new Date(1592092800000),
+        date_submitted: new Date(1559347200000),
+        epoch_date_downloaded: 0,
+        epoch_date_modified: 0,
+        epoch_date_published: 0,
+        image_url: "",
+        language: "",
+        plain_text: "",
         source_domain: "",
         submitters: [],
         url: "",

@@ -126,7 +126,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: blob-report-full${{ matrix.shardIndex }}
+          name: blob-report-${{ matrix.shardIndex }}
           path: site/gatsby-site/blob-report-full/
           retention-days: 1
 
@@ -141,7 +141,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: all-blob-reports-full
-          pattern: blob-report-full*
+          pattern: blob-report-*
           merge-multiple: true
 
       - name: Merge into HTML Report
@@ -150,6 +150,6 @@ jobs:
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         with:
-          name: html-report--attempt-full-${{ github.run_attempt }}
+          name: html-report--attempt-${{ github.run_attempt }}
           path: playwright-report-full
           retention-days: 7

@@ -44,6 +44,8 @@ const incidents: DBIncident[] = [
             3,
             4,
             6,
+            7,
+            8,
         ],
         "Alleged deployer of AI system": [
             "starbucks"

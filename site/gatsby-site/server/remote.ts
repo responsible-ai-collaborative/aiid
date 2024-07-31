@@ -57,6 +57,8 @@ const ignoreTypes = [
     'PromoteSubmissionToReportInput',
 
     'UpdateOneReportTranslationInput',
+
+    'CreateVariantInputVariant',
 ];
 
 const ignoredQueries = [
@@ -97,6 +99,7 @@ const ignoredMutations = [
     'updateManyReports',
     'upsertOneReport',
     'upsertManyReports',
+    
     'createVariant',
 
     'linkReportsToIncidents',
