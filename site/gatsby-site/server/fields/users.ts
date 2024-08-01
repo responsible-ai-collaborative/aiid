@@ -18,7 +18,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 export const permissions = {
     Query: {
         user: isRole('self'),
-        users: isAdmin,
+        users: isRole('incident_editor'), //TODO: this needs more work
     },
     Mutation: {
         updateOneUser: isRole('self'),

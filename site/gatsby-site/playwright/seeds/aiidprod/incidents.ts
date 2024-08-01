@@ -9,6 +9,7 @@ const incidents: DBIncident[] = [
     {
         incident_id: 1,
         title: "Incident 1",
+        description: "Incident 1 Description",
         date: "2020-01-01",
         "Alleged deployer of AI system": ["entity1"],
         "Alleged developer of AI system": ["entity2"],

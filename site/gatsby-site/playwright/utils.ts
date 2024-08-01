@@ -1,5 +1,5 @@
 import { ApolloClient, HttpLink, InMemoryCache, OperationVariables, QueryOptions } from '@apollo/client';
-import { Page, Route, test as base, Request } from '@playwright/test';
+import { Page, Route, test as base, Request, expect } from '@playwright/test';
 import { minimatch } from 'minimatch'
 import config from './config';
 import assert from 'node:assert';
@@ -223,4 +223,14 @@ export async function listFiles(directoryPath: string): Promise<string[]> {
             }
         });
     });
+}
+
+export async function fillAutoComplete(page: Page, selector: string, sequence: string, target: string) {
+
+    await expect(async () => {
+        await page.locator(selector).clear();
+        await page.waitForTimeout(1000);
+        await page.locator(selector).pressSequentially(sequence, { delay: 500 });
+        await page.getByText(target).click({ timeout: 1000 });
+    }).toPass();
 }
