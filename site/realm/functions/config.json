@@ -69,11 +69,6 @@
         "disable_arg_logs": true
     },
     {
-        "name": "getUserAdminData",
-        "private": false,
-        "disable_arg_logs": true
-    },
-    {
         "name": "getEmailTemplatePasswordReset",
         "private": true
     },
