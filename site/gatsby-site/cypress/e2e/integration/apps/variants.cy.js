@@ -14,7 +14,11 @@ describe('Variants App', () => {
   it('Should display a list of Unreviewed Variants and their values - Unauthenticated user', () => {
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindVariants',
+      (req) =>
+        req.body.operationName == 'FindVariants' &&
+        req.body.variables.query.OR[0].title == '' &&
+        req.body.variables.query.OR[1].url == '' &&
+        req.body.variables.query.OR[2].source_domain == '',
       'findVariants',
       variants
     );
@@ -68,7 +72,11 @@ describe('Variants App', () => {
   it('Should display a list of all Variants and their values - Unauthenticated user', () => {
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindVariants',
+      (req) =>
+        req.body.operationName == 'FindVariants' &&
+        req.body.variables.query.OR[0].title == '' &&
+        req.body.variables.query.OR[1].url == '' &&
+        req.body.variables.query.OR[2].source_domain == '',
       'findVariants',
       variants
     );
@@ -185,7 +193,11 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) => req.body.operationName == 'FindVariants',
+        (req) =>
+          req.body.operationName == 'FindVariants' &&
+          req.body.variables.query.OR[0].title == '' &&
+          req.body.variables.query.OR[1].url == '' &&
+          req.body.variables.query.OR[2].source_domain == '',
         'findVariants',
         variants
       );
@@ -270,7 +282,11 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) => req.body.operationName == 'FindVariants',
+        (req) =>
+          req.body.operationName == 'FindVariants' &&
+          req.body.variables.query.OR[0].title == '' &&
+          req.body.variables.query.OR[1].url == '' &&
+          req.body.variables.query.OR[2].source_domain == '',
         'findVariants',
         variants
       );
@@ -364,7 +380,11 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) => req.body.operationName == 'FindVariants',
+        (req) =>
+          req.body.operationName == 'FindVariants' &&
+          req.body.variables.query.OR[0].title == '' &&
+          req.body.variables.query.OR[1].url == '' &&
+          req.body.variables.query.OR[2].source_domain == '',
         'findVariants',
         variants
       );
@@ -467,7 +487,11 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) => req.body.operationName == 'FindVariants',
+        (req) =>
+          req.body.operationName == 'FindVariants' &&
+          req.body.variables.query.OR[0].title == '' &&
+          req.body.variables.query.OR[1].url == '' &&
+          req.body.variables.query.OR[2].source_domain == '',
         'findVariants',
         variants
       );
