@@ -24,27 +24,31 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
-// TODO: uncomment items marked with * after classifications and subscription collections are migrated
-
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
 
-    // 'Report', *
-    // 'ReportQueryInput', *
-    'ReportUserRelationInput',
+    'Classification',
+    'ClassificationQueryInput',
+    'ClassificationIncidentsRelationInput',
+    'ClassificationReportsRelationInput',
 
-    // 'Incident', *
-    // 'IncidentQueryInput', *
+    'Report',
+    'ReportQueryInput',
+    'ReportUserRelationInput',
+    'CreateVariantInput',
+
+    'Incident',
+    'IncidentQueryInput',
     'IncidentEditorsRelationInput',
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    // 'Entity', *
-    // 'EntityQueryInput', *
+    'Entity',
+    'EntityQueryInput',
 
     'User',
-    // 'UserQueryInput', *
+    'UserQueryInput',
 
     'Submission',
     'SubmissionQueryInput',
@@ -64,6 +68,9 @@ const ignoreTypes = [
 const ignoredQueries = [
     'quickadd',
     'quickadds',
+
+    'classification',
+    'classifications',
 
     'report',
     'reports',
@@ -91,6 +98,15 @@ const ignoredMutations = [
     'upsertOneQuickadd',
     'upsertManyQuickadds',
 
+    'deleteOneClassification',
+    'deleteManyClassifications',
+    'insertOneClassification',
+    'insertManyClassifications',
+    'updateOneClassification',
+    'updateManyClassifications',
+    'upsertOneClassification',
+    'upsertManyClassifications',
+
     'deleteOneReport',
     'deleteManyReports',
     'insertOneReport',
@@ -99,7 +115,7 @@ const ignoredMutations = [
     'updateManyReports',
     'upsertOneReport',
     'upsertManyReports',
-    
+
     'createVariant',
 
     'linkReportsToIncidents',

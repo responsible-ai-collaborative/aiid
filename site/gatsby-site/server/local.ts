@@ -39,6 +39,12 @@ import {
     permissions as submissionsPermissions
 } from './fields/submissions';
 
+import {
+    queryFields as classificationsQueryFields,
+    mutationFields as classificationsMutationFields,
+    permissions as classificationsPermissions
+} from './fields/classifications';
+
 
 export const getSchema = () => {
 
@@ -55,6 +61,7 @@ export const getSchema = () => {
             ...entitiesQueryFields,
             ...usersQueryFields,
             ...submissionsQueryFields,
+            ...classificationsQueryFields,
         }
     });
 
@@ -67,6 +74,7 @@ export const getSchema = () => {
             ...entitiesMutationFields,
             ...usersMutationFields,
             ...submissionsMutationFields,
+            ...classificationsMutationFields,
         }
     });
 
@@ -100,6 +108,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Query,
                 ...usersPermissions.Query,
                 ...submissionsPermissions.Query,
+                ...classificationsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -109,6 +118,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Mutation,
                 ...usersPermissions.Mutation,
                 ...submissionsPermissions.Mutation,
+                ...classificationsPermissions.Mutation,
             },
         },
         {
