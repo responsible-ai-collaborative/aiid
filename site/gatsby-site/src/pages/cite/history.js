@@ -46,7 +46,7 @@ function IncidentHistoryPage() {
   const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
     fetchPolicy: 'network-only',
     variables: {
-      query: { report_number: reportNumber },
+      filter: { report_number: { EQ: reportNumber } },
     },
   });
 
@@ -137,8 +137,8 @@ function IncidentHistoryPage() {
 
         await updateReport({
           variables: {
-            query: { report_number: reportNumber },
-            set: updatedReport,
+            filter: { report_number: { EQ: reportNumber } },
+            update: { set: updatedReport },
           },
         });
 

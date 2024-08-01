@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export const DELETE_SUBMISSION = gql`
   mutation DeleteSubmission($_id: ObjectId!) {
-    deleteOneSubmission(query: { _id: $_id }) {
+    deleteOneSubmission(filter: { _id: { EQ: $_id } }) {
       _id
     }
   }
@@ -10,7 +10,7 @@ export const DELETE_SUBMISSION = gql`
 
 export const FIND_SUBMISSIONS = gql`
   query FindSubmissions {
-    submissions(limit: 200) {
+    submissions {
       _id
       cloudinary_id
       date_downloaded
@@ -167,8 +167,8 @@ export const UPDATE_SUBMISSION = gql`
 `;
 
 export const INSERT_SUBMISSION = gql`
-  mutation InsertSubmission($submission: SubmissionInsertInput!) {
-    insertOneSubmission(data: $submission) {
+  mutation InsertSubmission($data: SubmissionInsertType!) {
+    insertOneSubmission(data: $data) {
       _id
     }
   }
