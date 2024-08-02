@@ -24,31 +24,27 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
+// TODO: uncomment items marked with * after classifications and subscription collections are migrated
+
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
 
-    'Classification',
-    'ClassificationQueryInput',
-    'ClassificationIncidentsRelationInput',
-    'ClassificationReportsRelationInput',
-
-    'Report',
-    'ReportQueryInput',
+    // 'Report', *
+    // 'ReportQueryInput', *
     'ReportUserRelationInput',
-    'CreateVariantInput',
 
-    'Incident',
-    'IncidentQueryInput',
+    // 'Incident', *
+    // 'IncidentQueryInput', *
     'IncidentEditorsRelationInput',
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    'Entity',
-    'EntityQueryInput',
+    // 'Entity', *
+    // 'EntityQueryInput', *
 
     'User',
-    'UserQueryInput',
+    // 'UserQueryInput', *
 
     'Submission',
     'SubmissionQueryInput',
@@ -63,17 +59,11 @@ const ignoreTypes = [
     'UpdateOneReportTranslationInput',
 
     'CreateVariantInputVariant',
-
-    'Taxa',
-    'TaxaQueryInput',
 ];
 
 const ignoredQueries = [
     'quickadd',
     'quickadds',
-
-    'classification',
-    'classifications',
 
     'report',
     'reports',
@@ -89,9 +79,6 @@ const ignoredQueries = [
 
     'submission',
     'submissions',
-
-    'taxa',
-    'taxas',
 ];
 
 const ignoredMutations = [
@@ -104,15 +91,6 @@ const ignoredMutations = [
     'upsertOneQuickadd',
     'upsertManyQuickadds',
 
-    'deleteOneClassification',
-    'deleteManyClassifications',
-    'insertOneClassification',
-    'insertManyClassifications',
-    'updateOneClassification',
-    'updateManyClassifications',
-    'upsertOneClassification',
-    'upsertManyClassifications',
-
     'deleteOneReport',
     'deleteManyReports',
     'insertOneReport',
@@ -121,7 +99,7 @@ const ignoredMutations = [
     'updateManyReports',
     'upsertOneReport',
     'upsertManyReports',
-
+    
     'createVariant',
 
     'linkReportsToIncidents',
@@ -164,15 +142,6 @@ const ignoredMutations = [
     'promoteSubmissionToReport',
 
     'updateOneReportTranslation',
-
-    'deleteOneTaxa',
-    'deleteManyTaxas',
-    'insertOneTaxa',
-    'insertManyTaxas',
-    'updateOneTaxa',
-    'updateManyTaxas',
-    'upsertOneTaxa',
-    'upsertManyTaxas',
 ]
 
 /**

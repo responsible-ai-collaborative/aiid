@@ -7,7 +7,6 @@ import reports from './seeds/aiidprod/reports';
 import submissions from './seeds/aiidprod/submissions';
 import entities from './seeds/aiidprod/entities';
 import reports_es from './seeds/translations/reports_es';
-import classifications from './seeds/aiidprod/classifications';
 
 import users from './seeds/customData/users';
 
@@ -20,7 +19,6 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             reports,
             submissions,
             entities,
-            classifications,
         },
         customData: {
             users,
