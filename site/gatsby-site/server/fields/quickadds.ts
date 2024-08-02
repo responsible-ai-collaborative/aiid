@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLInt, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { isAdmin } from "../rules";
 import { ObjectIdScalar } from "../scalars";
@@ -11,7 +11,7 @@ const QuickAddType = new GraphQLObjectType({
             type: ObjectIdScalar,
         },
         date_submitted: {
-            type: GraphQLString,
+            type: new GraphQLNonNull(GraphQLString),
         },
         incident_id: {
             type: GraphQLInt,
@@ -20,7 +20,7 @@ const QuickAddType = new GraphQLObjectType({
             type: GraphQLString,
         },
         url: {
-            type: GraphQLString,
+            type: new GraphQLNonNull(GraphQLString),
         },
     },
 });
@@ -47,5 +47,6 @@ export const permissions = {
         insertManyQuickadds: isAdmin,
         updateOneQuickadd: isAdmin,
         updateManyQuickadds: isAdmin,
+        upsertOneQuickadd: isAdmin,
     }
 }

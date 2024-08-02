@@ -73,7 +73,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           await client.query({
             query: gql`
               query FindEntities {
-                entities(limit: 9999) {
+                entities {
                   name
                 }
               }

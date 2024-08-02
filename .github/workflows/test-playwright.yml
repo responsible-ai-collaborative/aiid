@@ -71,7 +71,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Run playwright tests
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npx playwright test playwright/e2e/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         working-directory: site/gatsby-site
         env:
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
