@@ -63,6 +63,9 @@ const ignoreTypes = [
     'UpdateOneReportTranslationInput',
 
     'CreateVariantInputVariant',
+
+    'Taxa',
+    'TaxaQueryInput',
 ];
 
 const ignoredQueries = [
@@ -86,6 +89,9 @@ const ignoredQueries = [
 
     'submission',
     'submissions',
+
+    'taxa',
+    'taxas',
 ];
 
 const ignoredMutations = [
@@ -158,6 +164,15 @@ const ignoredMutations = [
     'promoteSubmissionToReport',
 
     'updateOneReportTranslation',
+
+    'deleteOneTaxa',
+    'deleteManyTaxas',
+    'insertOneTaxa',
+    'insertManyTaxas',
+    'updateOneTaxa',
+    'updateManyTaxas',
+    'upsertOneTaxa',
+    'upsertManyTaxas',
 ]
 
 /**

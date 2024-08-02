@@ -45,6 +45,11 @@ import {
     permissions as classificationsPermissions
 } from './fields/classifications';
 
+import {
+    queryFields as taxaQueryFields,
+    permissions as taxaPermissions
+} from './fields/taxa';
+
 
 export const getSchema = () => {
 
@@ -62,6 +67,7 @@ export const getSchema = () => {
             ...usersQueryFields,
             ...submissionsQueryFields,
             ...classificationsQueryFields,
+            ...taxaQueryFields,
         }
     });
 
@@ -109,6 +115,7 @@ export const getSchema = () => {
                 ...usersPermissions.Query,
                 ...submissionsPermissions.Query,
                 ...classificationsPermissions.Query,
+                ...taxaPermissions.Query,
             },
             Mutation: {
                 "*": deny,
