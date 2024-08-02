@@ -1077,16 +1077,23 @@ export type Entity_Relationship = {
   _id?: Maybe<Scalars['ObjectId']['output']>;
   created_at?: Maybe<Scalars['DateTime']['output']>;
   is_symmetric?: Maybe<Scalars['Boolean']['output']>;
-  obj: Array<Maybe<Entity>>;
+  obj: Entity;
   pred: Scalars['String']['output'];
-  sub: Array<Maybe<Entity>>;
+  sub: Entity;
 };
 
 export type Entity_RelationshipInsertInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   created_at?: InputMaybe<Scalars['DateTime']['input']>;
   is_symmetric?: InputMaybe<Scalars['Boolean']['input']>;
+  obj: Entity_RelationshipObjRelationInput;
   pred: Scalars['String']['input'];
+  sub: Entity_RelationshipSubRelationInput;
+};
+
+export type Entity_RelationshipObjRelationInput = {
+  create?: InputMaybe<EntityInsertInput>;
+  link?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Entity_RelationshipQueryInput = {
@@ -1113,10 +1120,8 @@ export type Entity_RelationshipQueryInput = {
   is_symmetric?: InputMaybe<Scalars['Boolean']['input']>;
   is_symmetric_exists?: InputMaybe<Scalars['Boolean']['input']>;
   is_symmetric_ne?: InputMaybe<Scalars['Boolean']['input']>;
-  obj?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  obj?: InputMaybe<EntityQueryInput>;
   obj_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  obj_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  obj_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
   pred?: InputMaybe<Scalars['String']['input']>;
   pred_exists?: InputMaybe<Scalars['Boolean']['input']>;
   pred_gt?: InputMaybe<Scalars['String']['input']>;
@@ -1126,10 +1131,8 @@ export type Entity_RelationshipQueryInput = {
   pred_lte?: InputMaybe<Scalars['String']['input']>;
   pred_ne?: InputMaybe<Scalars['String']['input']>;
   pred_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  sub?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  sub?: InputMaybe<EntityQueryInput>;
   sub_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  sub_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  sub_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
 };
 
 export enum Entity_RelationshipSortByInput {
@@ -1145,6 +1148,11 @@ export enum Entity_RelationshipSortByInput {
   IdDesc = '_ID_DESC'
 }
 
+export type Entity_RelationshipSubRelationInput = {
+  create?: InputMaybe<EntityInsertInput>;
+  link?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Entity_RelationshipUpdateInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1152,8 +1160,12 @@ export type Entity_RelationshipUpdateInput = {
   created_at_unset?: InputMaybe<Scalars['Boolean']['input']>;
   is_symmetric?: InputMaybe<Scalars['Boolean']['input']>;
   is_symmetric_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  obj?: InputMaybe<Entity_RelationshipObjRelationInput>;
+  obj_unset?: InputMaybe<Scalars['Boolean']['input']>;
   pred?: InputMaybe<Scalars['String']['input']>;
   pred_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  sub?: InputMaybe<Entity_RelationshipSubRelationInput>;
+  sub_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type GetUserInput = {
@@ -5765,8 +5777,10 @@ export type ResolversTypes = {
   EntityUpdateInput: EntityUpdateInput;
   Entity_relationship: ResolverTypeWrapper<Entity_Relationship>;
   Entity_relationshipInsertInput: Entity_RelationshipInsertInput;
+  Entity_relationshipObjRelationInput: Entity_RelationshipObjRelationInput;
   Entity_relationshipQueryInput: Entity_RelationshipQueryInput;
   Entity_relationshipSortByInput: Entity_RelationshipSortByInput;
+  Entity_relationshipSubRelationInput: Entity_RelationshipSubRelationInput;
   Entity_relationshipUpdateInput: Entity_RelationshipUpdateInput;
   GetUserInput: GetUserInput;
   History_incident: ResolverTypeWrapper<History_Incident>;
@@ -5990,7 +6004,9 @@ export type ResolversParentTypes = {
   EntityUpdateInput: EntityUpdateInput;
   Entity_relationship: Entity_Relationship;
   Entity_relationshipInsertInput: Entity_RelationshipInsertInput;
+  Entity_relationshipObjRelationInput: Entity_RelationshipObjRelationInput;
   Entity_relationshipQueryInput: Entity_RelationshipQueryInput;
+  Entity_relationshipSubRelationInput: Entity_RelationshipSubRelationInput;
   Entity_relationshipUpdateInput: Entity_RelationshipUpdateInput;
   GetUserInput: GetUserInput;
   History_incident: History_Incident;
@@ -6330,9 +6346,9 @@ export type Entity_RelationshipResolvers<ContextType = any, ParentType extends R
   _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   created_at?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   is_symmetric?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  obj?: Resolver<Array<Maybe<ResolversTypes['Entity']>>, ParentType, ContextType>;
+  obj?: Resolver<ResolversTypes['Entity'], ParentType, ContextType>;
   pred?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sub?: Resolver<Array<Maybe<ResolversTypes['Entity']>>, ParentType, ContextType>;
+  sub?: Resolver<ResolversTypes['Entity'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

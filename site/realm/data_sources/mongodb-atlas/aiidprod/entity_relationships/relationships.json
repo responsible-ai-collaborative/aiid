@@ -2,13 +2,11 @@
   "sub": {
     "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
     "source_key": "sub",
-    "foreign_key": "entity_id",
-    "is_list": true
+    "foreign_key": "entity_id"
   },
   "obj": {
     "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
     "source_key": "obj",
-    "foreign_key": "entity_id",
-    "is_list": true
+    "foreign_key": "entity_id"
   }
 }
