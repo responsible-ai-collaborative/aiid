@@ -1,14 +1,14 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const DELETE_SUBMISSION = gql`
+export const DELETE_SUBMISSION = gql(`
   mutation DeleteSubmission($_id: ObjectId!) {
     deleteOneSubmission(filter: { _id: { EQ: $_id } }) {
       _id
     }
   }
-`;
+`);
 
-export const FIND_SUBMISSIONS = gql`
+export const FIND_SUBMISSIONS = gql(`
   query FindSubmissions {
     submissions {
       _id
@@ -62,9 +62,9 @@ export const FIND_SUBMISSIONS = gql`
       quiet
     }
   }
-`;
+`);
 
-export const FIND_SUBMISSION = gql`
+export const FIND_SUBMISSION = gql(`
   query FindSubmission($filter: SubmissionFilterType!) {
     submission(filter: $filter) {
       _id
@@ -114,9 +114,9 @@ export const FIND_SUBMISSION = gql`
       quiet
     }
   }
-`;
+`);
 
-export const UPDATE_SUBMISSION = gql`
+export const UPDATE_SUBMISSION = gql(`
   mutation UpdateSubmission($filter: SubmissionFilterType!, $update: SubmissionUpdateType!) {
     updateOneSubmission(filter: $filter, update: $update) {
       _id
@@ -164,21 +164,21 @@ export const UPDATE_SUBMISSION = gql`
       editor_dissimilar_incidents
     }
   }
-`;
+`);
 
-export const INSERT_SUBMISSION = gql`
+export const INSERT_SUBMISSION = gql(`
   mutation InsertSubmission($data: SubmissionInsertType!) {
     insertOneSubmission(data: $data) {
       _id
     }
   }
-`;
+`);
 
-export const PROMOTE_SUBMISSION = gql`
+export const PROMOTE_SUBMISSION = gql(`
   mutation PromoteSubmission($input: PromoteSubmissionToReportInput!) {
     promoteSubmissionToReport(input: $input) {
       incident_ids
       report_number
     }
   }
-`;
+`);

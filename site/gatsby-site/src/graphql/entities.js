@@ -1,24 +1,24 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const UPSERT_ENTITY = gql`
+export const UPSERT_ENTITY = gql(`
   mutation UpsertEntity($filter: EntityFilterType!, $update: EntityInsertType!) {
     upsertOneEntity(filter: $filter, update: $update) {
       entity_id
       name
     }
   }
-`;
+`);
 
-export const FIND_ENTITIES = gql`
+export const FIND_ENTITIES = gql(`
   query FindEntities {
     entities {
       entity_id
       name
     }
   }
-`;
+`);
 
-export const FIND_ENTITY = gql`
+export const FIND_ENTITY = gql(`
   query FindEntity($filter: EntityFilterType) {
     entity(filter: $filter) {
       entity_id
@@ -26,14 +26,14 @@ export const FIND_ENTITY = gql`
       created_at
     }
   }
-`;
+`);
 
 // TODO: temporarily remove date_modified
 
-export const UPDATE_ENTITY = gql`
+export const UPDATE_ENTITY = gql(`
   mutation UpdateEntity($filter: EntityFilterType!, $update: EntityUpdateType!) {
     updateOneEntity(filter: $filter, update: $update) {
       entity_id
     }
   }
-`;
+`);
