@@ -28,7 +28,7 @@ function EditEntityPage(props) {
     loading: loadingEntity,
     refetch,
   } = useQuery(FIND_ENTITY, {
-    variables: { query: { entity_id: entityId } },
+    variables: { filter: { entity_id: { EQ: entityId } } },
   });
 
   const loading = loadingEntity;
@@ -49,12 +49,14 @@ function EditEntityPage(props) {
     try {
       await updateEntityMutation({
         variables: {
-          query: {
-            entity_id: entityId,
+          filter: {
+            entity_id: { EQ: entityId },
           },
-          set: {
-            name: values.name,
-            date_modified: new Date(),
+          update: {
+            set: {
+              name: values.name,
+              date_modified: new Date(),
+            },
           },
         },
       });
