@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { formatISO, format, parse, getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, FLAG_INCIDENT_SIMILARITY } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -28,17 +28,17 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
-  const [updateIncidentMutation] = useMutation(UPDATE_INCIDENT);
+  const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: parentIncident.incident_id } },
+    variables: { filter: { incident_id: { EQ: parentIncident.incident_id } } },
   });
 
   const addToast = useToastContext();
 
   const { logIncidentHistory } = useLogIncidentHistory();
 
-  const flagIncident = async () => {
+  const flagIncident = useCallback(async () => {
     const now = new Date();
 
     const flagged_dissimilar_incidents = isFlagged
@@ -54,14 +54,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       editors.push(user.id);
     }
 
-    await updateIncidentMutation({
+    await flagSimilarity({
       variables: {
-        query: { incident_id: parentIncident.incident_id },
-        set: {
-          flagged_dissimilar_incidents,
-          epoch_date_modified: getUnixTime(now),
-          editors: { link: editors },
-        },
+        incidentId: parentIncident.incident_id,
+        dissimilarIds: flagged_dissimilar_incidents,
       },
     });
 
@@ -84,7 +80,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       severity: SEVERITY.success,
     });
     setFlagged(!isFlagged);
-  };
+  }, [incidentData]);
 
   return (
     <div
@@ -128,7 +124,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         </div>
         <div className="inline-block ml-auto mr-auto" />
 
-        {flaggable && (
+        {flaggable && incidentData && (
           <Button
             variant="link"
             className={`p-0 hover:text-gray-500 ${

@@ -215,7 +215,7 @@ const SubmitForm = () => {
         createEntityMutation
       );
 
-      await insertSubmission({ variables: { submission } });
+      await insertSubmission({ variables: { data: submission } });
 
       addToast({
         message: (

@@ -1,10 +1,11 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { schema } from "../schema";
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient, ObjectId, WithId } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
 import supertest from 'supertest';
 import * as context from '../context';
+import { User } from "../generated/graphql";
 
 export const startTestServer = async () => {
 
@@ -39,7 +40,7 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-export const seedUsers = async (users: { userId: string, roles: string[] }[], { drop } = { drop: true }) => {
+export const seedUsers = async (users: { userId: string, roles: string[] | null }[], { drop } = { drop: true }) => {
 
     await seedCollection({
         name: 'users',
@@ -57,180 +58,100 @@ export const makeRequest = async (url: string, data: { variables?: Record<string
         .send(data);
 }
 
-export function serializeId<T extends { _id?: { toHexString: () => string } }>(obj: T): T { return ({ ...obj, _id: obj._id?.toHexString() }) }
+type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
-export function removeId<T extends { _id?: { toHexString: () => string } }>(obj: T): T { return ({ ...obj, _id: undefined }) }
-
-
-/**
- * Interface representing the structure of a fixture for testing api operations.
- * 
- * @template T - The database object type of the main entity being tested. This usually coincides with the graphql object type, but sometimes they may differ like with Incidents.
- * @template Y - The generated graphql object type of the main entity being tested.
- */
-export interface Fixture<T, Y = T> {
-    /** The name of the database collection being tested. */
+export interface Fixture<T, U, I = any> {
     name: string;
-
-    /** The graphql query used to perform graphql operations. */
     query: string;
-
-    /** Seed data for the database, organized by collection name. */
-    seeds: Record<string, Record<string, unknown>[]>;
-
-    /** 
-     * Configuration for testing the singular field i.e. incident
-     */
+    seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
     testSingular: {
-        /** Filter to identify the document by its ObjectId. */
-        filter: { _id: { EQ: ObjectId } };
-
-        /** Expected result for the query. */
-        result: Partial<Y>;
-    };
-
-    /** 
-     * Configuration for testing the plural field i.e. incidents
-     */
+        allowed: User[];
+        denied: User[];
+        filter: unknown;
+        result: DeepPartial<T>;
+    } | null;
     testPluralFilter: {
-        /** Filter to identify the documents by their ObjectId. */
-        filter: { _id: { EQ: ObjectId } };
-
-        /** Expected results for the query. */
-        result: Partial<Y>[];
-    };
-
-    /** 
-     * Configuration for testing the plural field with sorting.
-     */
+        allowed: User[];
+        denied: User[];
+        filter: unknown;
+        result: DeepPartial<T>[];
+    } | null;
     testPluralSort: {
-        /** Sorting criteria for the query. */
+        allowed: User[];
+        denied: User[];
         sort: unknown;
-
-        /** Expected results for the query. */
-        result: Partial<Y>[];
-    };
-
-    /** 
-     * Configuration for testing the plural field with pagination.
-     */
+        result: DeepPartial<T>[];
+    } | null;
     testPluralPagination: {
-        /** Pagination parameters: limit and skip. */
+        allowed: User[];
+        denied: User[];
         pagination: { limit: number; skip: number };
-
-        /** Sorting criteria for the query. */
         sort: unknown;
-
-        /** Expected results for the query. */
-        result: Partial<Y>[];
-    };
-
-    /** 
-     * Configuration for testing the updateOne mutation .
-     */
+        result: DeepPartial<T>[];
+    } | null;
     testUpdateOne: {
-        /** Filter to identify the document by its ObjectId. */
-        filter: { _id: { EQ: ObjectId } };
-
-        /** Partial update to apply to the document. */
-        set: Partial<Y>;
-
-        /** Expected result for the update operation. */
-        result: Partial<Y>;
-    };
-
-    /** 
-     * Configuration for testing the updateMany mutation.
-     */
+        allowed: User[];
+        denied: User[];
+        filter: unknown;
+        update: U;
+        result: DeepPartial<T>;
+    } | null;
     testUpdateMany: {
-        /** Filter to identify the documents by various criteria. */
-        filter: { [key: string]: { EQ: any } };
-
-        /** Partial update to apply to the documents. */
-        set: Partial<Y>;
-
-        /** Expected result for the update operation, including modified and matched counts. */
+        allowed: User[];
+        denied: User[];
+        filter: { [key: string]: unknown };
+        update: U;
         result: { modifiedCount: number; matchedCount: number };
-    };
-
-    /** 
-     * Configuration for testing the insertOne mutation.
-     */
+    } | null;
     testInsertOne: {
-        /** Object to be inserted. */
-        insert: Partial<T>;
-
-        /** Expected result for the insert operation. */
-        result: Partial<Y>;
-    };
-
-    /** 
-     * Configuration for testing the insertMany mutation.
-     */
+        allowed: User[];
+        denied: User[];
+        insert: I;
+        result: DeepPartial<T>;
+    } | null;
     testInsertMany: {
-        /** Objects to be inserted. */
-        insert: Partial<T>[];
-
-        /** Expected result for the insert operation, including inserted IDs. */
+        allowed: User[];
+        denied: User[];
+        insert: I[];
         result: { insertedIds: string[] };
-    };
-
-    /** 
-     * Configuration for testing the deleteOne mutation.
-     */
+    } | null;
     testDeleteOne: {
-        /** Filter to identify the document by its ObjectId. */
+        allowed: User[];
+        denied: User[];
         filter: { _id: { EQ: ObjectId } };
-
-        /** Expected result for the delete operation, including the ID of the deleted document. */
         result: { _id: string };
-    };
-
-    /** 
-     * Configuration for testing the deleteMany mutation.
-     */
+    } | null;
     testDeleteMany: {
-        /** Filter to identify the documents by various criteria. */
-        filter: { [key: string]: { EQ: any } };
-
-        /** Expected result for the delete operation, including the count of deleted documents. */
+        allowed: User[];
+        denied: User[];
+        filter: { [key: string]: unknown };
         result: { deletedCount: number };
-    };
-
-    /** 
-     * Roles configuration for generated fields and mutations.
-     */
-    roles: {
-        /** Roles allowed to query the singular field. */
-        singular: string[];
-
-        /** Roles allowed to query the plural field. */
-        plural: string[];
-
-        /** Roles allowed to call the insertOne mutation. */
-        insertOne: string[];
-
-        /** Roles allowed to call the insertMany mutation. */
-        insertMany: string[];
-
-        /** Roles allowed to call the updateOne mutation. */
-        updateOne: string[];
-
-        /** Roles allowed to call the updateMany mutation. */
-        updateMany: string[];
-
-        /** Roles allowed to call the deleteOne mutation. */
-        deleteOne: string[];
-
-        /** Roles allowed to call the deleteMany mutation. */
-        deleteMany: string[];
-    };
+    } | null;
+    testUpsertOne: {
+        shouldUpdate: {
+            allowed: User[];
+            denied: User[];
+            filter: unknown;
+            update: I;
+            result: DeepPartial<T>;
+        },
+        shouldInsert: {
+            allowed: User[];
+            denied: User[];
+            filter: unknown;
+            update: I;
+            result: DeepPartial<T>;
+        },
+    } | null;
 }
 
-export const seedFixture = async (seeds: Record<string, Record<string, unknown>[]>) => {
+export const seedFixture = async (seeds: Record<string, Record<string, Record<string, unknown>[]>>) => {
 
-    for (const [collection, docs] of Object.entries(seeds)) {
+    for (const [database, collection] of Object.entries(seeds)) {
 
-        await seedCollection({ name: collection, docs });
+        for (const [name, docs] of Object.entries(collection)) {
+
+            await seedCollection({ database, name, docs, });
+        }
     }
 }

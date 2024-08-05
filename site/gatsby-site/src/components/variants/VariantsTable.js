@@ -1,7 +1,7 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useMutation } from '@apollo/client';
@@ -55,9 +55,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
         await deleteVariant({
           variables: {
-            query: {
-              report_number,
-            },
+            filter: { report_number: { EQ: report_number } },
           },
         });
 
@@ -102,17 +100,13 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
       const today = new Date();
 
-      updated.date_modified = format(today, 'yyyy-MM-dd');
+      updated.date_modified = today;
       updated.epoch_date_modified = getUnixTime(today);
 
       await updateVariant({
         variables: {
-          query: {
-            report_number,
-          },
-          set: {
-            ...updated,
-          },
+          filter: { report_number: { EQ: report_number } },
+          update: { set: { ...updated } },
         },
       });
 

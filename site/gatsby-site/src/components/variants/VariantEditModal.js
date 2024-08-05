@@ -37,7 +37,7 @@ export default function VariantEditModal({
   const [newVariantStatus, setNewVariantStatus] = useState(null);
 
   const { data: variantData } = useQuery(FIND_VARIANT, {
-    variables: { query: { report_number: reportNumber } },
+    variables: { filter: { report_number: { EQ: reportNumber } } },
   });
 
   const [updateVariant] = useMutation(UPDATE_VARIANT);
@@ -79,11 +79,13 @@ export default function VariantEditModal({
 
       await updateVariant({
         variables: {
-          query: {
-            report_number: reportNumber,
+          filter: {
+            report_number: { EQ: reportNumber },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
@@ -114,9 +116,7 @@ export default function VariantEditModal({
 
         await deleteVariant({
           variables: {
-            query: {
-              report_number: reportNumber,
-            },
+            filter: { report_number: { EQ: reportNumber } },
           },
         });
 
