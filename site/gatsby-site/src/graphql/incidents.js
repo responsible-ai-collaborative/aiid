@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const FIND_INCIDENT = gql`
-  query FindIncident($query: IncidentQueryInput) {
-    incident(query: $query) {
+  query FindIncident($filter: IncidentFilterType) {
+    incident(filter: $filter) {
       incident_id
       title
       description
@@ -44,8 +44,8 @@ export const FIND_INCIDENT = gql`
 `;
 
 export const FIND_INCIDENTS_TABLE = gql`
-  query FindIncidents($query: IncidentQueryInput) {
-    incidents(query: $query, limit: 999) {
+  query FindIncidents($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       title
       description
@@ -75,8 +75,8 @@ export const FIND_INCIDENTS_TABLE = gql`
 `;
 
 export const FIND_INCIDENT_ENTITIES = gql`
-  query FindIncident($query: IncidentQueryInput) {
-    incident(query: $query) {
+  query FindIncident($filter: IncidentFilterType) {
+    incident(filter: $filter) {
       incident_id
       AllegedDeployerOfAISystem {
         entity_id
@@ -95,8 +95,8 @@ export const FIND_INCIDENT_ENTITIES = gql`
 `;
 
 export const FIND_INCIDENTS = gql`
-  query FindIncidents($query: IncidentQueryInput) {
-    incidents(query: $query, limit: 999) {
+  query FindIncidents($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       title
       description
@@ -137,8 +137,8 @@ export const FIND_INCIDENTS = gql`
 `;
 
 export const FIND_INCIDENTS_TITLE = gql`
-  query FindIncidentsTitles($query: IncidentQueryInput) {
-    incidents(query: $query, limit: 999) {
+  query FindIncidentsTitles($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       title
     }
@@ -146,8 +146,8 @@ export const FIND_INCIDENTS_TITLE = gql`
 `;
 
 export const UPDATE_INCIDENT = gql`
-  mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-    updateOneIncident(query: $query, set: $set) {
+  mutation UpdateIncident($filter: IncidentFilterType!, $update: IncidentUpdateType!) {
+    updateOneIncident(filter: $filter, update: $update) {
       incident_id
       title
       description
@@ -189,8 +189,8 @@ export const UPDATE_INCIDENT = gql`
 `;
 
 export const UPDATE_INCIDENTS = gql`
-  mutation UpdateIncidents($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-    updateManyIncidents(query: $query, set: $set) {
+  mutation UpdateIncidents($filter: IncidentFilterType!, $update: IncidentUpdateType!) {
+    updateManyIncidents(filter: $filter, update: $update) {
       matchedCount
       modifiedCount
     }
@@ -198,8 +198,8 @@ export const UPDATE_INCIDENTS = gql`
 `;
 
 export const INSERT_INCIDENT = gql`
-  mutation InsertIncident($incident: IncidentInsertInput!) {
-    insertOneIncident(data: $incident) {
+  mutation InsertIncident($data: IncidentInsertType!) {
+    insertOneIncident(data: $data) {
       incident_id
     }
   }
@@ -207,15 +207,15 @@ export const INSERT_INCIDENT = gql`
 
 export const GET_LATEST_INCIDENT_ID = gql`
   query FindIncidents {
-    incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
+    incidents(sort: { incident_id: DESC }, pagination: { limit: 1, skip: 0 }) {
       incident_id
     }
   }
 `;
 
 export const FIND_FULL_INCIDENT = gql`
-  query FindIncident($query: IncidentQueryInput) {
-    incident(query: $query) {
+  query FindIncident($filter: IncidentFilterType) {
+    incident(filter: $filter) {
       incident_id
       title
       description
@@ -313,6 +313,18 @@ export const FIND_INCIDENT_HISTORY = gql`
       tsne {
         x
         y
+      }
+    }
+  }
+`;
+
+export const FLAG_INCIDENT_SIMILARITY = gql`
+  mutation ($incidentId: Int!, $dissimilarIds: [Int!]) {
+    flagIncidentSimilarity(incidentId: $incidentId, dissimilarIds: $dissimilarIds) {
+      incident_id
+      flagged_dissimilar_incidents
+      editors {
+        userId
       }
     }
   }
