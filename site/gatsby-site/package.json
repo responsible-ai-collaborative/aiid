@@ -140,6 +140,7 @@
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
     "@cypress/code-coverage": "^3.12.15",
     "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.3.3",
     "@graphql-codegen/typescript": "^4.0.6",
     "@graphql-codegen/typescript-mongodb": "^3.0.0",
     "@graphql-codegen/typescript-resolvers": "^4.0.6",

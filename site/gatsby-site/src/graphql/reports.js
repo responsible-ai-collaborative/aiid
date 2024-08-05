@@ -114,14 +114,6 @@ export const DELETE_REPORT = gql`
   }
 `;
 
-export const INSERT_REPORT = gql`
-  mutation InsertReport($report: ReportInsertInput!) {
-    insertOneReport(data: $report) {
-      report_number
-    }
-  }
-`;
-
 // There is no built-in support for making easy array operations in Realm yet, so this is somewhat inefficient
 // https://feedback.mongodb.com/forums/923521-realm/suggestions/40765336-adding-or-removing-elements-from-array-fields
 
@@ -208,7 +200,7 @@ export const FIND_REPORTS = gql`
 `;
 
 export const FIND_REPORTS_TABLE = gql`
-  query FindReports($filter: ReportFilterType!) {
+  query FindReportsTable($filter: ReportFilterType!) {
     reports(filter: $filter, sort: { report_number: DESC }) {
       _id
       submitters

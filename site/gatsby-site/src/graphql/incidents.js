@@ -44,7 +44,7 @@ export const FIND_INCIDENT = gql`
 `;
 
 export const FIND_INCIDENTS_TABLE = gql`
-  query FindIncidents($filter: IncidentFilterType) {
+  query FindIncidentsTable($filter: IncidentFilterType) {
     incidents(filter: $filter) {
       incident_id
       title
@@ -75,7 +75,7 @@ export const FIND_INCIDENTS_TABLE = gql`
 `;
 
 export const FIND_INCIDENT_ENTITIES = gql`
-  query FindIncident($filter: IncidentFilterType) {
+  query FindIncidentEntities($filter: IncidentFilterType) {
     incident(filter: $filter) {
       incident_id
       AllegedDeployerOfAISystem {
@@ -206,7 +206,7 @@ export const INSERT_INCIDENT = gql`
 `;
 
 export const GET_LATEST_INCIDENT_ID = gql`
-  query FindIncidents {
+  query FindLastIncident {
     incidents(sort: { incident_id: DESC }, pagination: { limit: 1, skip: 0 }) {
       incident_id
     }
@@ -214,7 +214,7 @@ export const GET_LATEST_INCIDENT_ID = gql`
 `;
 
 export const FIND_FULL_INCIDENT = gql`
-  query FindIncident($filter: IncidentFilterType) {
+  query FindIncidentFull($filter: IncidentFilterType) {
     incident(filter: $filter) {
       incident_id
       title

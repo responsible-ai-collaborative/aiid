@@ -30,7 +30,7 @@ export const FIND_SUBSCRIPTIONS = gql`
 `;
 
 export const FIND_FULL_SUBSCRIPTIONS = gql`
-  query FindSubscriptions($query: SubscriptionQueryInput!) {
+  query FindSubscriptionsFull($query: SubscriptionQueryInput!) {
     subscriptions(query: $query) {
       _id
       incident_id {
