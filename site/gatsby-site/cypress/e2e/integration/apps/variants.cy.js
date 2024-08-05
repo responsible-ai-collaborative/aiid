@@ -1,4 +1,4 @@
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { conditionalIt } from '../../../support/utils';
 import { getVariantStatusText, VARIANT_STATUS } from '../../../../src/utils/variants';
 import variantIncidents from '../../../fixtures/variants/variantIncidents.json';
@@ -14,11 +14,7 @@ describe('Variants App', () => {
   it('Should display a list of Unreviewed Variants and their values - Unauthenticated user', () => {
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindVariants' &&
-        req.body.variables.query.OR[0].title == '' &&
-        req.body.variables.query.OR[1].url == '' &&
-        req.body.variables.query.OR[2].source_domain == '',
+      (req) => req.body.operationName == 'FindVariants',
       'findVariants',
       variants
     );
@@ -72,11 +68,7 @@ describe('Variants App', () => {
   it('Should display a list of all Variants and their values - Unauthenticated user', () => {
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindVariants' &&
-        req.body.variables.query.OR[0].title == '' &&
-        req.body.variables.query.OR[1].url == '' &&
-        req.body.variables.query.OR[2].source_domain == '',
+      (req) => req.body.operationName == 'FindVariants',
       'findVariants',
       variants
     );
@@ -193,11 +185,7 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) =>
-          req.body.operationName == 'FindVariants' &&
-          req.body.variables.query.OR[0].title == '' &&
-          req.body.variables.query.OR[1].url == '' &&
-          req.body.variables.query.OR[2].source_domain == '',
+        (req) => req.body.operationName == 'FindVariants',
         'findVariants',
         variants
       );
@@ -226,7 +214,7 @@ describe('Variants App', () => {
         '**/graphql',
         (req) =>
           req.body.operationName == 'DeleteOneVariant' &&
-          req.body.variables.query.report_number === variant.report_number,
+          req.body.variables.filter.report_number.EQ === variant.report_number,
         'deleteOneVariant',
         {
           data: {
@@ -282,11 +270,7 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) =>
-          req.body.operationName == 'FindVariants' &&
-          req.body.variables.query.OR[0].title == '' &&
-          req.body.variables.query.OR[1].url == '' &&
-          req.body.variables.query.OR[2].source_domain == '',
+        (req) => req.body.operationName == 'FindVariants',
         'findVariants',
         variants
       );
@@ -317,10 +301,10 @@ describe('Variants App', () => {
         '**/graphql',
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
-          req.body.variables.query.report_number === 2310 &&
-          req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
-          req.body.variables.set.epoch_date_modified == getUnixTime(now),
+          req.body.variables.filter.report_number.EQ === 2310 &&
+          req.body.variables.update.set.tags.includes(VARIANT_STATUS.approved) &&
+          req.body.variables.update.set.date_modified == now.toISOString() &&
+          req.body.variables.update.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
           data: {
@@ -380,11 +364,7 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) =>
-          req.body.operationName == 'FindVariants' &&
-          req.body.variables.query.OR[0].title == '' &&
-          req.body.variables.query.OR[1].url == '' &&
-          req.body.variables.query.OR[2].source_domain == '',
+        (req) => req.body.operationName == 'FindVariants',
         'findVariants',
         variants
       );
@@ -415,10 +395,10 @@ describe('Variants App', () => {
         '**/graphql',
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
-          req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
-          req.body.variables.set.date_modified == format(now, 'yyyy-MM-dd') &&
-          req.body.variables.set.epoch_date_modified == getUnixTime(now),
+          req.body.variables.filter.report_number.EQ === variant.report_number &&
+          req.body.variables.update.set.tags.includes(VARIANT_STATUS.rejected) &&
+          req.body.variables.update.set.date_modified == now.toISOString() &&
+          req.body.variables.update.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
           data: {
@@ -487,11 +467,7 @@ describe('Variants App', () => {
 
       cy.conditionalIntercept(
         '**/graphql',
-        (req) =>
-          req.body.operationName == 'FindVariants' &&
-          req.body.variables.query.OR[0].title == '' &&
-          req.body.variables.query.OR[1].url == '' &&
-          req.body.variables.query.OR[2].source_domain == '',
+        (req) => req.body.operationName == 'FindVariants',
         'findVariants',
         variants
       );
@@ -522,16 +498,18 @@ describe('Variants App', () => {
         '**/graphql',
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
-          req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.date_published === new Date(new_date_published).toISOString() &&
-          req.body.variables.set.submitters[0] === variant.submitters[0] &&
-          req.body.variables.set.submitters[1] === new_submitter &&
-          req.body.variables.set.text === new_text &&
-          req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
-          req.body.variables.set.inputs_outputs[1] === undefined &&
-          req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-          req.body.variables.set.date_modified == now.toISOString() &&
-          req.body.variables.set.epoch_date_modified == getUnixTime(now),
+          req.body.variables.filter.report_number.EQ === variant.report_number &&
+          req.body.variables.update.set.date_published ===
+            new Date(new_date_published).toISOString() &&
+          req.body.variables.update.set.submitters.length === 2 &&
+          req.body.variables.update.set.submitters[0] === variant.submitters[0] &&
+          req.body.variables.update.set.submitters[1] === new_submitter &&
+          req.body.variables.update.set.text === new_text &&
+          req.body.variables.update.set.inputs_outputs.length == 1 &&
+          req.body.variables.update.set.inputs_outputs[0] === new_inputs_outputs_1 &&
+          req.body.variables.update.set.tags.includes(VARIANT_STATUS.approved) &&
+          req.body.variables.update.set.date_modified == now.toISOString() &&
+          req.body.variables.update.set.epoch_date_modified == getUnixTime(now),
         'updateVariant',
         {
           data: {

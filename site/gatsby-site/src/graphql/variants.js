@@ -1,8 +1,10 @@
 import gql from 'graphql-tag';
 
 export const FIND_VARIANTS = gql`
-  query FindVariants($filter: ReportFilterType) {
-    reports(filter: $filter) {
+  query FindVariants {
+    reports(
+      filter: { OR: [{ title: { EQ: "" } }, { url: { EQ: "" } }, { source_domain: { EQ: "" } }] }
+    ) {
       submitters
       date_published
       report_number

@@ -9,14 +9,8 @@ import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { getVariantStatus } from '../../utils/variants';
 
-export default function IncidentsPage(props) {
-  const { data: variantsData, refetch } = useQuery(FIND_VARIANTS, {
-    variables: {
-      query: {
-        OR: [{ title: '' }, { url: '' }, { source_domain: '' }],
-      },
-    },
-  });
+export default function VariantsPage(props) {
+  const { data: variantsData, refetch } = useQuery(FIND_VARIANTS);
 
   const [data, setData] = useState(null);
 
