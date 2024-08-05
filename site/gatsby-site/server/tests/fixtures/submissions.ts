@@ -37,6 +37,7 @@ const submission1 = {
     title: "Submission 1",
     url: "http://example.com",
     user: "user1",
+    implicated_systems: ["entity4"]
 }
 
 const submission2 = {
@@ -61,6 +62,7 @@ const submission2 = {
     title: "Submission 2",
     url: "http://example.com",
     user: "user1",
+    implicated_systems: ["entity4"]
 }
 
 const submission3 = {
@@ -85,6 +87,7 @@ const submission3 = {
     title: "Submission 3",
     url: "http://example.com",
     user: "user1",
+    implicated_systems: ["entity4"]
 }
 
 
@@ -163,6 +166,9 @@ const fixture: Fixture<Submission, SubmissionUpdateType, SubmissionInsertType> =
         url
         user {
             userId
+        }
+        implicated_systems {
+            entity_id
         }
     `,
     seeds: {
@@ -259,6 +265,7 @@ const fixture: Fixture<Submission, SubmissionUpdateType, SubmissionInsertType> =
             title: "New Submission",
             url: "http://example.com",
             user: { link: "editor1" },
+            implicated_systems: { link: ["entity1"] }
         },
         result: {
             _id: expect.any(String),

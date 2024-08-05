@@ -60,7 +60,14 @@ export const IncidentType = new GraphQLObjectType({
         flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
-        tsne: { type: TsneType }
+        tsne: { type: TsneType },
+        implicated_systems: {
+            type: new GraphQLList(EntityType),
+            resolve: getListRelationshipResolver('implicated_systems', 'entity_id', EntityType, 'aiidprod', 'entities'),
+            extensions: {
+                relationship: getListRelationshipExtension('implicated_systems', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+            },
+        },
     },
 });
 
@@ -77,3 +84,5 @@ IncidentType.getFields().AllegedDeveloperOfAISystem.dependencies = ['Alleged dev
 IncidentType.getFields().AllegedHarmedOrNearlyHarmedParties.dependencies = ['Alleged harmed or nearly harmed parties'];
 //@ts-ignore 
 IncidentType.getFields().editors.dependencies = ['editors'];
+//@ts-ignore
+IncidentType.getFields().implicated_systems.dependencies = ['implicated_systems'];

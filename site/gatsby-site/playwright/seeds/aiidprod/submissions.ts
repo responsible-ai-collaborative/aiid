@@ -6,6 +6,7 @@ type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_partie
     & { harmed_parties: string[] }
     & { user: string }
     & { incident_editors: string[] }
+    & { implicated_systems: string[] }
 
 const submissions: DBSubmission[] = [
     {
@@ -29,6 +30,7 @@ const submissions: DBSubmission[] = [
         title: "Sample title",
         url: "http://example.com",
         user: "user1",
+        implicated_systems: ["entity4"]
     }
 ]
 

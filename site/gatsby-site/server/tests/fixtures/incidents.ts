@@ -238,6 +238,7 @@ const incident2: DBIncident = {
         y: -0.4
     },
     reports: [3],
+    implicated_systems: []
 };
 
 const incident3: DBIncident = {
@@ -285,6 +286,7 @@ const incident3: DBIncident = {
         y: -0.6
     },
     reports: [2, 3],
+    implicated_systems: ['test system 1']
 };
 
 const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
@@ -329,6 +331,9 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             user {
                 userId
             }
+        }
+        implicated_systems {
+            entity_id
         }
     `,
     seeds: {
