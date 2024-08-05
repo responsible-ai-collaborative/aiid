@@ -65,8 +65,8 @@ export const FIND_SUBMISSIONS = gql`
 `;
 
 export const FIND_SUBMISSION = gql`
-  query FindSubmission($query: SubmissionQueryInput!) {
-    submission(query: $query) {
+  query FindSubmission($filter: SubmissionFilterType) {
+    submission(filter: $filter) {
       _id
       cloudinary_id
       date_downloaded
@@ -117,8 +117,8 @@ export const FIND_SUBMISSION = gql`
 `;
 
 export const UPDATE_SUBMISSION = gql`
-  mutation UpdateSubmission($query: SubmissionQueryInput!, $set: SubmissionUpdateInput!) {
-    updateOneSubmission(query: $query, set: $set) {
+  mutation UpdateSubmission($filter: SubmissionFilterType!, $update: SubmissionUpdateType!) {
+    updateOneSubmission(filter: $filter, update: $update) {
       _id
       cloudinary_id
       date_downloaded

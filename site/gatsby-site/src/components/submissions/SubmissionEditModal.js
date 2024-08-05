@@ -27,7 +27,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
 
   useEffect(() => {
     if (show) {
-      findSubmission({ variables: { query: { _id: submissionId } } });
+      findSubmission({ variables: { filter: { _id: { EQ: submissionId } } } });
     }
   }, [show, submissionId]);
 
