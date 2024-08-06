@@ -77,8 +77,8 @@ jobs:
     needs: [cache-modifier]
     secrets: inherit
     with:
-      sha: ${{ github.event.pull_request.head.sha }}
-      environment: staging
+      sha: ${{ github.sha }}
+      environment: production
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
