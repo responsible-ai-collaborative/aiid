@@ -26,7 +26,7 @@ export default function IncidentVersionViewModal({
   const [timeline, setTimeline] = useState(null);
 
   const { data: reportsData } = useQuery(FIND_REPORTS, {
-    variables: { query: { report_number_in: version.reports || [] } },
+    variables: { filter: { report_number: { IN: version.reports || [] } } },
   });
 
   const incidentEntitiesFields = {

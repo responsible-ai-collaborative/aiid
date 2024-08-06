@@ -14,7 +14,7 @@ function extractToken(header: string) {
     return null;
 }
 
-async function verifyToken(token: string) {
+export const verifyToken = async (token: string) => {
 
     const loginResponse = await fetch(
         `https://realm.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login`,
@@ -76,6 +76,11 @@ async function getUserFromHeader(header: string, client: MongoClient) {
     if (token) {
 
         const data = await verifyToken(token);
+
+        if (data == 'token expired') {
+            
+            throw new Error('Token expired');
+        }
 
         if (data.sub) {
 

@@ -1,15 +1,25 @@
 import { rule } from "graphql-shield";
+import { Context } from "./interfaces";
 
-export const isAdmin = rule()(
-    async (parent, args, context) => {
+export const isRole = (role: string) => rule()(
+    async (parent, args, context: Context, info) => {
 
         const { user } = context;
 
-        if (!user || !user.roles || !user.roles.includes('admin')) {
+        const meetsRole = user && user.roles && user.roles.includes(role);
 
-            return new Error('not authorized')
+        const meetsAdmin = user?.roles.includes('admin');
+
+        const meetsSelf = role == 'self' && user?.id === (info.variableValues?.filter as any)?.userId?.EQ;
+
+
+        if (meetsRole || meetsAdmin || meetsSelf) {
+
+            return true;
         }
 
-        return true;
+        return new Error('not authorized')
     },
 )
+
+export const isAdmin = isRole('admin');

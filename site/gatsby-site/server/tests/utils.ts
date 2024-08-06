@@ -1,9 +1,11 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { schema } from "../schema";
-import { context } from "../context";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId, WithId } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
+import supertest from 'supertest';
+import * as context from '../context';
+import { User } from "../generated/graphql";
 
 export const startTestServer = async () => {
 
@@ -13,7 +15,7 @@ export const startTestServer = async () => {
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
-    const { url } = await startStandaloneServer(server, { context: ({ req }) => context({ req, client }), listen: { port: 0 } });
+    const { url } = await startStandaloneServer(server, { context: ({ req }) => context.context({ req, client }), listen: { port: 0 } });
 
     return { server, url }
 }
@@ -38,30 +40,118 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-interface AuthResponse {
-    access_token: string;
-    refresh_token: string;
-    user_id: string;
+export const seedUsers = async (users: { userId: string, roles: string[] | null }[], { drop } = { drop: true }) => {
+
+    await seedCollection({
+        name: 'users',
+        database: 'customData',
+        docs: users,
+        drop,
+    });
 }
 
-export const login = async (username: string, password: string) => {
+export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
 
-    const response = await fetch(`https://services.cloud.mongodb.com/api/client/v2.0/app/${config.REALM_APP_ID}/auth/providers/local-userpass/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    return supertest(url)
+        .post('/')
+        .set('Authorization', `Bearer dummyToken`)
+        .send(data);
+}
+
+type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+
+export interface Fixture<T, U, I = any> {
+    name: string;
+    query: string;
+    seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
+    testSingular: {
+        allowed: User[];
+        denied: User[];
+        filter: unknown;
+        result: DeepPartial<T>;
+    } | null;
+    testPluralFilter: {
+        allowed: User[];
+        denied: User[];
+        filter: unknown;
+        result: DeepPartial<T>[];
+    } | null;
+    testPluralSort: {
+        allowed: User[];
+        denied: User[];
+        sort: unknown;
+        result: DeepPartial<T>[];
+    } | null;
+    testPluralPagination: {
+        allowed: User[];
+        denied: User[];
+        pagination: { limit: number; skip: number };
+        sort: unknown;
+        result: DeepPartial<T>[];
+    } | null;
+    testUpdateOne: {
+        allowed: User[];
+        denied: User[];
+        filter: unknown;
+        update: U;
+        result: DeepPartial<T>;
+    } | null;
+    testUpdateMany: {
+        allowed: User[];
+        denied: User[];
+        filter: { [key: string]: unknown };
+        update: U;
+        result: { modifiedCount: number; matchedCount: number };
+    } | null;
+    testInsertOne: {
+        allowed: User[];
+        denied: User[];
+        insert: I;
+        result: DeepPartial<T>;
+    } | null;
+    testInsertMany: {
+        allowed: User[];
+        denied: User[];
+        insert: I[];
+        result: { insertedIds: string[] };
+    } | null;
+    testDeleteOne: {
+        allowed: User[];
+        denied: User[];
+        filter: { _id: { EQ: ObjectId } };
+        result: { _id: string };
+    } | null;
+    testDeleteMany: {
+        allowed: User[];
+        denied: User[];
+        filter: { [key: string]: unknown };
+        result: { deletedCount: number };
+    } | null;
+    testUpsertOne: {
+        shouldUpdate: {
+            allowed: User[];
+            denied: User[];
+            filter: unknown;
+            update: I;
+            result: DeepPartial<T>;
         },
-        body: JSON.stringify({
-            username,
-            password,
-        })
-    });
+        shouldInsert: {
+            allowed: User[];
+            denied: User[];
+            filter: unknown;
+            update: I;
+            result: DeepPartial<T>;
+        },
+    } | null;
+}
 
-    if (!response.ok) {
-        throw new Error(`Error login in! \n\n ${await response.text()}`);
+export const seedFixture = async (seeds: Record<string, Record<string, Record<string, unknown>[]>>) => {
+
+    for (const [database, collection] of Object.entries(seeds)) {
+
+        for (const [name, docs] of Object.entries(collection)) {
+
+            await seedCollection({ database, name, docs, });
+        }
     }
-
-    const data: AuthResponse = await response.json();
-
-    return data;
 }

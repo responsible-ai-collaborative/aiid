@@ -18,9 +18,12 @@ const config: Config = {
   globalSetup: "./globalSetup.ts",
   globalTeardown: "./globalTeardown.ts",
   verbose: true,
+  setupFiles: ["dotenv/config"],
   testMatch: [
     "**/server/tests/**/*.spec.ts",
   ],
+  // TODO: create a database mock per worker
+  maxWorkers: 1,
 };
 
 export default config;
