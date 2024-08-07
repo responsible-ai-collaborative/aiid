@@ -2,6 +2,7 @@ import { GraphQLFieldConfigMap } from "graphql";
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { ClassificationType } from "../types/classification";
+import { isRole } from "../rules";
 
 
 export const queryFields: GraphQLFieldConfigMap<any, any> = {
@@ -21,6 +22,6 @@ export const permissions = {
         classifications: allow,
     },
     Mutation: {
-        upsertOneClassification: allow,
+        upsertOneClassification: isRole('incident_editor'),
     }
 }

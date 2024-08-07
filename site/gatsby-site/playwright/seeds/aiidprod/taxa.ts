@@ -1436,7 +1436,9 @@ const items: DBTaxa[] = [
                 hide_search: true
             }
         ],
-        created_at: new Date("1722269934190")
+
+        // TODO: created_at is missing from Atlas schema
+        // created_at: new Date("1722269934190")
     }
 ]
 

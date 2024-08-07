@@ -221,7 +221,7 @@ const items: DBClassification[] = [
             },
             {
                 short_name: "Injuries",
-                value_json: "0"
+                value_json: "4"
             },
             {
                 value_json: "false",
@@ -260,7 +260,7 @@ const items: DBClassification[] = [
             3
         ],
         namespace: "CSETv1",
-        notes: "",
+        notes: "holis",
 
         // TODO: not in graphql schema but present on db
         // created_at: new Date( "1722269831340")

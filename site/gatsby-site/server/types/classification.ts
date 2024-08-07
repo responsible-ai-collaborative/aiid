@@ -24,3 +24,13 @@ export const ClassificationType = new GraphQLObjectType({
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod')
     }
 });
+
+
+// dependencies property gets ignored by newest graphql package so we have to add it manually after the type is created
+// ideally should be fixed in the graphql-to-mongodb package
+
+//@ts-ignore 
+ClassificationType.getFields().reports.dependencies = ['reports'];
+
+//@ts-ignore 
+ClassificationType.getFields().incidents.dependencies = ['incidents'];

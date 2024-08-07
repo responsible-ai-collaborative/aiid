@@ -27,31 +27,45 @@ const userExecutor = buildHTTPExecutor({
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
+    'QuickaddUpdateInput',
+    'QuickaddInsertInput',
 
     'Classification',
+    'ClassificationUpdateInput',
+    'ClassificationInsertInput',
     'ClassificationQueryInput',
     'ClassificationIncidentsRelationInput',
     'ClassificationReportsRelationInput',
 
     'Report',
     'ReportQueryInput',
+    'ReportUpdateInput',
+    'ReportInsertInput',
     'ReportUserRelationInput',
     'CreateVariantInput',
 
-    'Incident',
+    // 'Incident',
     'IncidentQueryInput',
+    'IncidentUpdateInput',
+    'IncidentInsertInput',
     'IncidentEditorsRelationInput',
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    'Entity',
+    // 'Entity',
     'EntityQueryInput',
+    'EntityUpdateInput',
+    'EntityInsertInput',
 
-    'User',
+    // 'User',
     'UserQueryInput',
+    'UserUpdateInput',
+    'UserInsertInput',
 
     'Submission',
     'SubmissionQueryInput',
+    'SubmissionUpdateInput',
+    'SubmissionInsertInput',
     'SubmissionDeployersRelationInput',
     'SubmissionDevelopersRelationInput',
     'SubmissionHarmed_partiesRelationInput',
@@ -66,6 +80,8 @@ const ignoreTypes = [
 
     'Taxa',
     'TaxaQueryInput',
+    'TaxaUpdateInput',
+    'TaxaInsertInput',
 ];
 
 const ignoredQueries = [
