@@ -31,19 +31,11 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
         translations[file] ||= {};
         translations[file][key] ||= {};
         translations[file][key][locale] = data[key];
+
+        translationEntries.push({ locale, file, key });
       }
     }
   }
-
-  const duplicateTranslations = {};
-
-
-  for (const file of Object.keys(translations)) {
-    for (const key of Object.keys(translations[file])) {
-
-    }
-  }
-
 
   const missingTranslations = {};
 
@@ -58,12 +50,10 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
     }
   }
 
-  // TODO: Check if missing translation is in some other file
-
   createPage({
     path: '/meta/i18n',
     component: path.resolve('./src/templates/missingTranslations.js'),
-    context: { missingTranslations, allLocales },
+    context: { missingTranslations, allLocales, translationEntries },
   });
 };
 

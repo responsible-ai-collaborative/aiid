@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
 import HeadContent from 'components/HeadContent';
 import { Button } from 'flowbite-react';
-
 import { Trans, useTranslation } from 'react-i18next';
 
 const MissingTranslations = ({ pageContext }) => {
-  const { missingTranslations, allLocales } = pageContext;
+  const { missingTranslations, allLocales, translationEntries } = pageContext;
+
+  const translationEntriesByKey = {};
+
+  for (const entry of translationEntries) {
+    translationEntriesByKey[entry.key] ||= [];
+    translationEntriesByKey[entry.key].push(entry);
+  }
+
+  const entriesWithKeysInMultipleFilesByKey = {};
+
+  for (const key of Object.keys(translationEntriesByKey)) {
+    const entries = translationEntriesByKey[key];
+
+    const filesWithKey = Array.from(new Set(entries.map((entry) => entry.file)));
+
+    if (filesWithKey.length > 1) {
+      entriesWithKeysInMultipleFilesByKey[key] = entries;
+    }
+  }
 
   const missing = [];
 
@@ -22,11 +40,16 @@ const MissingTranslations = ({ pageContext }) => {
       );
 
       if (nonEnglishLocalesMissingTranslations.length > 0) {
+        const altFiles = (entriesWithKeysInMultipleFilesByKey[key] || []).filter(
+          (e) => e.file != file && localesMissingTranslations.includes(e.locale)
+        );
+
         missing.push({
           file: file,
           translationKey: key,
           translations: missingTranslations[file][key],
           missingLocales: nonEnglishLocalesMissingTranslations,
+          altFiles: altFiles,
         });
       }
     }
@@ -107,6 +130,14 @@ const MissingTranslations = ({ pageContext }) => {
                     <th>Missing Locales</th>
                     <td>{e.missingLocales.join(', ')}</td>
                   </tr>
+                  {e.altFiles.length > 0 && (
+                    <tr>
+                      <th>Alt entries</th>
+                      <td>
+                        <code>{JSON.stringify(e.altFiles)}</code>
+                      </td>
+                    </tr>
+                  )}
                   <tr>
                     <th>Existing Translations</th>
                     <td>
