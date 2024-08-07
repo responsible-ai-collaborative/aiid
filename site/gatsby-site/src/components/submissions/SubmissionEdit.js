@@ -34,7 +34,7 @@ const SubmissionEdit = ({ id }) => {
   const addToast = useToastContext();
 
   useEffect(() => {
-    findSubmission({ variables: { query: { _id: id } } });
+    findSubmission({ variables: { filter: { _id: { EQ: id } } } });
   }, [id]);
 
   const [saving, setSaving] = useState(false);
@@ -99,10 +99,10 @@ const SubmissionEdit = ({ id }) => {
 
       await updateSubmission({
         variables: {
-          query: {
-            _id: values._id,
+          filter: {
+            _id: { EQ: values._id },
           },
-          set: updatedSubmission,
+          update: { set: updatedSubmission },
         },
       });
 

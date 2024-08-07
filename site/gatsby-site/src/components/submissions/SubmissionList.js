@@ -461,10 +461,10 @@ const SubmissionList = ({ data }) => {
 
         await updateSubmission({
           variables: {
-            query: {
-              _id: submissionId,
+            filter: {
+              _id: { EQ: submissionId },
             },
-            set: { incident_editors: { link: incidentEditors } },
+            update: { set: { incident_editors: { link: incidentEditors } } },
           },
         });
       }
@@ -497,10 +497,10 @@ const SubmissionList = ({ data }) => {
 
       await updateSubmission({
         variables: {
-          query: {
-            _id: submissionId,
+          filter: {
+            _id: { EQ: submissionId },
           },
-          set: { incident_editors: { link: incidentEditors } },
+          update: { set: { incident_editors: { link: incidentEditors } } },
         },
       });
 
@@ -518,10 +518,10 @@ const SubmissionList = ({ data }) => {
       try {
         await updateSubmission({
           variables: {
-            query: {
-              _id: submission._id,
+            filter: {
+              _id: { EQ: submission._id },
             },
-            set: { status: STATUS.inReview.name },
+            update: { set: { status: STATUS.inReview.name } },
           },
         });
         setReviewing({ submissionId: submission._id, value: false });
