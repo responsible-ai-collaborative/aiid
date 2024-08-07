@@ -198,7 +198,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
         }}
       >
         <span className="md:border-b-1 md:border-b-gray-200">
-          <QuickAccess isCollapsed={isCollapsed} />
+          <QuickAccess isCollapsed={isCollapsed} setNavCollapsed={setNavCollapsed} />
         </span>
 
         <ul

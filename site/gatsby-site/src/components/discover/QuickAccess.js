@@ -4,7 +4,11 @@ import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-export default function DiscoverQuickAccess({ className = '', isCollapsed = false }) {
+export default function DiscoverQuickAccess({
+  className = '',
+  isCollapsed = false,
+  setNavCollapsed = null,
+}) {
   return (
     <div
       className={`${className || ''} ${
@@ -16,6 +20,7 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
         className={`test-[#001934] fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
           isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16 text-black'
         }  bg-white hover:bg-blue-700 hover:text-white`}
+        onClick={() => setNavCollapsed && setNavCollapsed(true)}
       >
         <div className={`${isCollapsed ? '' : 'text-2xl'}`}>
           <FontAwesomeIcon icon={faSearch} />
@@ -33,6 +38,7 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
         className={`ml-3 fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
           isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16 text-black'
         }  bg-white hover:bg-blue-700 hover:text-white`}
+        onClick={() => setNavCollapsed && setNavCollapsed(true)}
       >
         <div className={`${isCollapsed ? '' : 'text-2xl'}`}>
           <FontAwesomeIcon icon={faPlus} />
