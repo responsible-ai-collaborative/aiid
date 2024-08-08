@@ -120,6 +120,14 @@ exports.onCreateBabelConfig = ({ actions }) => {
     name: '@babel/plugin-proposal-export-default-from',
   });
 
+  actions.setBabelPlugin({
+    name: 'graphql-codegen-babel',
+    options: {
+      artifactDirectory: './server/generated/',
+      gqlTagName: 'gql',
+    },
+  });
+
   if (process.env.INSTRUMENT) {
     actions.setBabelPlugin({
       name: 'babel-plugin-istanbul',
