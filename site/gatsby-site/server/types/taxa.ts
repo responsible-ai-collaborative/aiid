@@ -39,8 +39,8 @@ const ItemFieldsType = new GraphQLObjectType({
 const SubfieldCompleteFromType = new GraphQLObjectType({
     name: 'SubfieldCompleteFrom',
     fields: {
-        all: { type: GraphQLBoolean },
-        current: { type: GraphQLBoolean },
+        all: { type: new GraphQLList(GraphQLString) },
+        current: { type: new GraphQLList(GraphQLString) },
         entities: { type: GraphQLBoolean }
     }
 });

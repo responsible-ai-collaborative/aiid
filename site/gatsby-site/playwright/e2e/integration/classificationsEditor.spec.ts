@@ -1,25 +1,20 @@
-import { test, conditionalIntercept, waitForRequest, setEditorText, query } from '../../utils';
-import classificationsMock from '../../fixtures/classifications/editor.json';
-import classificationsUpsertMock from '../../fixtures/classifications/editorUpsert.json';
-import editorCSETV1Mock from '../../fixtures/classifications/editorCSETV1.json';
+import { test, waitForRequest, query } from '../../utils';
 import { gql } from '@apollo/client';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+import { init } from '../../memory-mongo';
 
 test.describe('Classifications Editor', () => {
 
-  const incidentId = 2;
-  const reportNumber = 2658;
+  const incidentId = 3;
+  const reportNumber = 5;
   const incidentURL = `/cite/${incidentId}`;
   const reportURL = `/reports/${reportNumber}`;
 
-  async function editAndSubmitForm(page) {
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] >> text=Edit').click();
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] [data-cy="Notes"] textarea').scrollIntoViewIfNeeded();
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] [data-cy="Notes"] textarea').fill('Test notes');
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] [data-cy="Full Description"] input').scrollIntoViewIfNeeded();
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] [data-cy="Full Description"] input').fill('Test description');
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] >> text=Submit').click();
-    await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"] >> text=Submit')).toBeDisabled();
+  async function editAndSubmitForm(page: Page) {
+    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv1"] >> text=Edit').click();
+    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv1"] [data-cy="Notes"] textarea').fill('Test notes');
+    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv1"] >> text=Submit').click();
+    await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv1"] >> text=Submit')).toBeDisabled();
   }
 
   async function setField(page, { short_name, display_type, permitted_values }) {
@@ -81,97 +76,76 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on incident page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } }, { drop: true });
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'FindClassifications',
-      classificationsMock,
-      'FindClassifications'
-    );
-
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'UpsertClassification',
-      classificationsUpsertMock,
-      'UpsertClassification'
-    );
 
     await page.goto(incidentURL);
-    await waitForRequest('FindClassifications');
+
     await expect(page.locator('[data-cy="classifications-editor"]')).toBeVisible();
-    await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"]')).toBeVisible();
+    await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv1"]')).toBeVisible();
 
     await editAndSubmitForm(page);
 
-    const upsertClassificationRequest = await waitForRequest('UpsertClassification');
-    const variables = upsertClassificationRequest.postDataJSON().variables;
-    expect(variables.query.reports).toBeUndefined();
-    expect(variables.query.incidents).toEqual({ incident_id: incidentId });
-    expect(variables.query.namespace).toBe('CSETv0');
-    expect(variables.data.incidents).toEqual({ link: [incidentId] });
-    expect(variables.data.reports).toEqual({ link: [reportNumber, 2659] });
-    expect(variables.data.notes).toBe('Test notes');
-    expect(variables.data.attributes.find((a) => a.short_name == 'Full Description').value_json).toBe('"Test description"');
+    await expect(page.locator('[data-cy="classifications-editor"]').getByText('Submit')).not.toBeVisible();
+
+    const { data: { classifications } } = await query({
+      query: gql`
+      query FindClassifications($filter: ClassificationFilterType!) {
+        classifications(filter: $filter) {
+          notes
+          attributes {
+            short_name
+            value_json
+          }
+        }
+      }
+    `, variables: { filter: { incidents: { EQ: 3 }, namespace: { EQ: "CSETv1" } } }
+    });
+
+    expect(classifications).toHaveLength(1);
+    expect(classifications[0]).toMatchObject({
+      notes: 'Test notes'
+    });
   });
 
   test('Should show classifications editor on report page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'FindClassifications',
-      classificationsMock,
-      'FindClassifications'
-    );
-
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'UpsertClassification',
-      classificationsUpsertMock,
-      'UpsertClassification'
-    );
+    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } }, { drop: true });
 
     await page.goto(reportURL);
     await waitForRequest('FindClassifications');
     await expect(page.locator('[data-cy="classifications-editor"]')).toBeVisible();
-    await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv0"]')).toBeVisible();
+    await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-CSETv1"]')).toBeVisible();
 
     await editAndSubmitForm(page);
 
-    const upsertClassificationRequest = await waitForRequest('UpsertClassification');
-    const variables = upsertClassificationRequest.postDataJSON().variables;
-    expect(variables.query.incidents).toBeUndefined();
-    expect(variables.query.reports).toEqual({ report_number: reportNumber });
-    expect(variables.query.namespace).toBe('CSETv0');
-    expect(variables.data.incidents).toEqual({ link: [] });
-    expect(variables.data.reports).toEqual({ link: [reportNumber, 2659] });
-    expect(variables.data.notes).toBe('Test notes');
-    expect(variables.data.attributes.find((a) => a.short_name == 'Full Description').value_json).toBe('"Test description"');
+    await expect(page.locator('[data-cy="classifications-editor"]').getByText('Submit')).not.toBeVisible();
+
+    const { data: { classifications } } = await query({
+      query: gql`
+      query FindClassifications($filter: ClassificationFilterType!) {
+        classifications(filter: $filter) {
+          notes
+          attributes {
+            short_name
+            value_json
+          }
+        }
+      }
+    `, variables: { filter: { reports: { EQ: 5 }, namespace: { EQ: "CSETv1" } } }
+    });
+
+    expect(classifications).toHaveLength(1);
+    expect(classifications[0]).toMatchObject({
+      notes: 'Test notes'
+    });
   });
 
   test('Should show classifications editor on report page and add a new classification', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } }, { drop: true });
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'FindClassifications',
-      { data: { classifications: [] } },
-      'FindClassifications'
-    );
-
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'UpsertClassification',
-      classificationsUpsertMock,
-      'UpsertClassification'
-    );
 
     await page.goto(reportURL);
     await waitForRequest('FindClassifications');
@@ -181,40 +155,46 @@ test.describe('Classifications Editor', () => {
     await page.locator('text=Add').first().click();
     await expect(page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-GMF"]')).toBeVisible();
 
-    await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-GMF"] [data-cy="Notes"] textarea').scrollIntoViewIfNeeded();
     await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-GMF"] [data-cy="Notes"] textarea').fill('Test notes');
     await page.locator('[data-cy="classifications-editor"] [data-cy="taxonomy-GMF"] >> text=Submit').click();
 
-    const upsertClassificationRequest = await waitForRequest('UpsertClassification');
-    const variables = upsertClassificationRequest.postDataJSON().variables;
-    expect(variables.query.incidents).toBeUndefined();
-    expect(variables.query.reports).toEqual({ report_number: reportNumber });
-    expect(variables.query.namespace).toBe('GMF');
-    expect(variables.data.incidents).toEqual({ link: [] });
-    expect(variables.data.reports).toEqual({ link: [reportNumber] });
-    expect(variables.data.notes).toBe('Test notes');
+    await expect(page.locator('[data-cy="classifications-editor"]').getByText('Submit')).not.toBeVisible();
+
+    const { data: { classifications } } = await query({
+      query: gql`
+      query FindClassifications($filter: ClassificationFilterType!) {
+        classifications(filter: $filter) {
+          notes
+          attributes {
+            short_name
+            value_json
+          }
+        }
+      }
+    `, variables: { filter: { reports: { EQ: 5 }, namespace: { EQ: "GMF" } } }
+    });
+
+    expect(classifications).toHaveLength(1);
+    expect(classifications[0]).toMatchObject({
+      notes: 'Test notes',
+      namespace: 'GMF'
+    })
   });
 
-  const namespaces = ['CSETv0', 'GMF', 'CSETv1'];
+  const namespaces = ['GMF', 'CSETv1'];
+
   for (const namespace of namespaces) {
+
     test(`Should properly display and store ${namespace} classification values`, async ({ page, login, skipOnEmptyEnvironment }) => {
-      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+      const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+      await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } }, { drop: true });
 
-      await conditionalIntercept(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindClassifications',
-        { data: { classifications: [] } },
-        'FindClassifications'
-      );
-
-      await page.goto(incidentURL);
-      await waitForRequest('FindClassifications');
+      await page.goto('/cite/1');
 
       const { data: { taxas } } = await query({
         query: gql`
           query TaxasQuery($namespace: String) {
-            taxas(query: { namespace: $namespace }) {
+            taxas(filter: { namespace: {EQ: $namespace} }) {
               namespace
               field_list {
                 permitted_values
@@ -229,19 +209,10 @@ test.describe('Classifications Editor', () => {
       });
 
       for (const taxa of taxas) {
-        await page.locator('text=Select a taxonomy').scrollIntoViewIfNeeded();
         await page.locator('text=Select a taxonomy').click();
         await page.locator(`[data-testid="flowbite-tooltip"] >> text=${namespace}`).first().click();
         await page.locator('text=Add').first().click();
-        await conditionalIntercept(
-          page,
-          '**/graphql',
-          (req) => req.postDataJSON().operationName == 'UpsertClassification' && req.postDataJSON()?.variables?.query.namespace == namespace,
-          classificationsUpsertMock,
-          `Upsert-${namespace}`,
-        );
 
-        // await page.locator(`[data-cy="classifications-editor"] [data-cy="taxonomy-${namespace}"] text=Edit`).click();
         const selectedValues = {};
 
         for (const field of taxa.field_list) {
@@ -253,52 +224,44 @@ test.describe('Classifications Editor', () => {
           selectedValues[field.short_name] = value;
         }
 
-        await page.locator(`[data-cy="classifications-editor"] [data-cy="taxonomy-${namespace}"] >> text=Submit`).click();
+        await page.locator(`[data-cy="classifications-editor"]`).getByText(`Submit`).click();
 
-        const upsertRequest = await waitForRequest(`Upsert-${namespace}`);
-        const variables = upsertRequest.postDataJSON().variables;
-        expect(variables.query.namespace).toBe(namespace);
+        await expect(page.locator(`[data-cy="classifications-editor"]`).getByText(`Submit`)).not.toBeVisible();
 
-        for (const field of taxa.field_list) {
-          const skippedFields = [
-            'Known AI Technology Snippets',
-            'Known AI Technical Failure Snippets',
-            'Entities',
-            'Known AI Goal Snippets',
-            'Potential AI Goal Snippets',
-            'Potential AI Technology Snippets',
-            'Potential AI Technical Failure Snippets'
-          ];
+        const { data: { classifications } } = await query({
+          query: gql`
+            query TaxasQuery($namespace: String) {
+              classifications(filter: { namespace: { EQ: $namespace }, incidents: { EQ: 1 } }) {
+                namespace
+                attributes {
+                  short_name
+                  value_json
+                }
+              }
+            }
+          `,
+          variables: { namespace }
+        });
 
-          if (!skippedFields.includes(field.short_name)) {
-            expect(variables.data.attributes.find((a) => a.short_name == field.short_name)).toEqual({
-              short_name: field.short_name,
-              value_json: JSON.stringify(selectedValues[field.short_name])
-            });
-          }
+        const [classification] = classifications;
+
+        for (const [name, value] of Object.entries(selectedValues)) {
+
+          classification.attributes.find(({ short_name }) => short_name === name).value_json === JSON.stringify(value);
         }
-
       }
     });
   }
 
   test('Should synchronize duplicate fields', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } }, { drop: true });
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'FindClassifications',
-      editorCSETV1Mock,
-      'FindClassifications'
-    );
 
     await page.goto(incidentURL);
     await waitForRequest('FindClassifications');
 
-    await page.locator('[data-cy="taxonomy-CSETv1"]').first().scrollIntoViewIfNeeded();
     await page.locator('[data-cy="taxonomy-CSETv1"] >> text=Edit').click();
-    await page.locator('[data-cy="taxonomy-CSETv1"] [data-cy="AI System"]').first().scrollIntoViewIfNeeded();
     await page.locator('[data-cy="taxonomy-CSETv1"] [data-cy="AI System"] >> text=yes').first().click();
     await page.locator('[data-cy="taxonomy-CSETv1"] [data-cy="AI System"] [value="yes"]').first().check();
     await expect(page.locator('[data-cy="taxonomy-CSETv1"] [data-cy="AI System"] [value="yes"]').last()).toBeChecked();

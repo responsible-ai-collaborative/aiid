@@ -34,12 +34,12 @@ export default function TaxonomiesEditor({
     setCanEditTaxonomies(taxa.nodes.some((t) => canEditTaxonomy(t.namespace)));
   }, [user]);
 
-  const incidentsQuery = incidentId ? { incidents: { incident_id: incidentId } } : {};
+  const incidentsQuery = incidentId ? { incidents: { EQ: incidentId } } : {};
 
-  const reportsQuery = reportNumber ? { reports: { report_number: reportNumber } } : {};
+  const reportsQuery = reportNumber ? { reports: { EQ: reportNumber } } : {};
 
   const { data } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { ...incidentsQuery, ...reportsQuery } },
+    variables: { filter: { ...incidentsQuery, ...reportsQuery } },
   });
 
   const [taxonomies, setTaxonomies] = useState([]);

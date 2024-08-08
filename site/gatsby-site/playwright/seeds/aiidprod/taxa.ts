@@ -1439,6 +1439,668 @@ const items: DBTaxa[] = [
 
         // TODO: created_at is missing from Atlas schema
         // created_at: new Date("1722269934190")
+    },
+
+    {
+        _id: new ObjectId("643f1a5558f256c7dbc4dc67"),
+        namespace: "GMF",
+        weight: 70,
+        description: "## What is the GMF Taxonomy?\n\nThe Goals, Methods, and Failures (GMF) taxonomy is a failure \ncause analysis taxonomy for AI systems in the real world, interrelating the goals of the system \ndeployment, the system's methods, and likely technical causal factors for the observed failure events.\nThe taxonomy structure encourages considering what is known or observed versus what is potential or likely, guiding how to apply and interpret expert technical knowledge about AI failures.  Further, the proposed annotation workflow features grounding labels to data and external evidence, enhancing verifiability, collaborative annotation and crowdsourcing. These design decisions render GMF a valuable tool for annotating noisy, low-information documents like public AI incident reports.\n\nDetails on the taxonomy description, proposed annotation process\nand future work are available in our [SafeAI 2023 workshop paper](https://ceur-ws.org/Vol-3381/17.pdf), while\na short description is provided below. \n\n### GMF Motivation and Structure\nThe GMF taxonomy was developed to address the following use cases and questions:\n\n- **Linking harms to system goals**: How can developers and deployers of AI systems discover technical failure causes\nof **harm related to the system task**, that the AI is deployed to perform in the real world?\n\n- **Connecting technical approaches to failure causes**: How can AI developers and auditors discover **technical causal factors of harm**\nthat may be linked to implementation methods, model architectures and techniques\nemployed in their system, such that they may be corrected or avoided?\n\n- **Harness interdisciplinary technical expertise**: How can we **leverage the body of expert technical knowledge** from the Machine\n Learning, AI Safety, Engineering, etc. community, to produce useful, high-quality annotations on **publicly available AI incident reports**, which may lack details and technical information?\n\n- **Data-driven, grounded labelling**: How can we generate annotations **grounded to real-world data** for high-level accuracy,\nverifiability and increased potential for further research and development?\n\n<!-- #### Structure -->\nThe taxonomy is designed to address these questions via a structure of three interrelated\n ontologies, each describing the AI system involved in a publicly available incident report under a different lens.\n These ontologies include system views focused on:\n\n- **AI System Goals**, which characterize high-level goals, objectives and tasks of AI system deployments in the real world (e.g. `Face Recognition`)\n- **AI Methods and Technologies**, which describe AI implementation methodologies (e.g. `Transformer`)\n- **AI failure causes**, containing technical reasons for systemic failure that results in the observed harm (e.g. `Concept Drift`)\n\nGiven that AI incident reports in the news media often lack technical details, GMF annotations are paired with:\n\n- **Confidence modifiers** (`known` and `potential`), corresponding to the degree of certainty of the annotator for applying a given label to an incident\n- **Text samples** from the incident report relevant to the assigned label, which ground each the classification to supporting text data\n- **Free comments**, where the annotator may provide their rationale, evidence, sources and any information deemed relevant for assigning the label\n\n\n## How do I annotate incidents with GMF?\n\nThe structure of GMF, paired with the AIID interfaces for [incident discovery](https://incidentdatabase.ai/apps/discover) and annotation editing [^1]<!-- and risk checklisting [^2] -->, exposes the user to multiple sources of useful data for efficient and informed incident annotation. \n\nFor example, the user can retrieve similar incidents annotated by the community with respect to\nexisting classifications, e.g. regarding the goal of the AI system. Retrieved incidents expose past annotations and auxiliary metadata, such as exemplar text snippets, annotator rationale and related sourced materials of potential relevance. \n\nThese supplemental data may counteract the lack of AI system implementation details in incident\n reports regarding methods, technologies and technical failure causes, allowing the application of\n  fitting labels for the incident at hand.\n\n[^1]: Found in the page for each incident, e.g. [AIID incident #72](https://incidentdatabase.ai/cite/72/)\n\nA visualization of this flow of information for decision making given uncertainty, is illustrated in the proposed GMF annotation process diagram below:\n\n![](/images/gmf/structure_simplified.png)\n\nAdditionally, an indicative application of this annotation process for the real-world [AIID incident #72](https://incidentdatabase.ai/cite/72/) is illustrated below.\n\n![](/images/gmf/annotation.png)\n\n\n## How do I explore the taxonomy?\n\nAll taxonomies can be used to filter incident reports within the \n[Discover Application](https://incidentdatabase.ai/apps/discover). The taxonomy filters work similarly to how \nyou filter products on an e-commerce website. Use the search \nfield at the bottom of the “Classifications” tab to find the \ntaxonomy field you would like to filter with, then click the \ndesired value to apply the filter.\n\n## About the Responsible AI Collaborative\n\nThe AI Incident Database is a collaborative project of many \npeople and organizations. Details on the people and organizations \ncontributing to this particular taxonomy will appear here, while \nyou can learn more about the Collab itself on the incident \ndatabase [home](https://incidentdatabase.ai/) and \n[about](https://incidentdatabase.ai/about/) pages.\n\nThe maintainer(s) of this taxonomy include:\n* [Nikiforos Pittaras](https://www.linkedin.com/in/nikiforos-pittaras/)\n\nContributor(s) to the taxonomy include:\n* [Sean McGregor](https://www.linkedin.com/in/seanbmcgregor/)\n",
+        dummy_fields: [
+            {
+                field_number: "1",
+                short_name: "Goals"
+            },
+            {
+                field_number: "2",
+                short_name: "Methods"
+            },
+            {
+                field_number: "3",
+                short_name: "Failures"
+            }
+        ],
+        field_list: [
+            {
+                field_number: "1.1.1",
+                short_name: "Known AI Goal",
+                long_name: "Known AI Goal",
+                short_description: "An AI Goal which is almost certainly pursued by the AI system referenced in the incident.",
+                long_description: "An AI Goal which is almost certainly pursued by the AI system referenced in the incident.",
+                display_type: "list",
+                mongo_type: "array",
+                complete_from: {
+                    all: [
+                        "Known AI Goal",
+                        "Potential AI Goal"
+                    ]
+                },
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 50,
+                instant_facet: true,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "1.1.2",
+                short_name: "Known AI Goal Snippets",
+                long_name: "Known AI Goal Snippets",
+                short_description: "One or more snippets that justify the classification.",
+                long_description: "One or more snippets that justify the classification.",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true,
+                display_type: "object-list",
+                mongo_type: "array",
+                subfields: [
+                    {
+                        short_name: "Snippet Text",
+                        long_name: "Snippet Text",
+                        short_description: "Snippet Text",
+                        long_description: "Snippet Text",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Related Classifications",
+                        long_name: "Related Classifications",
+                        short_description: "The Known AI Goal Classification classifications from above which this snippet supports",
+                        long_description: "The Known AI Goal Classification classifications from above which this snippet supports",
+                        display_type: "list",
+                        mongo_type: "array",
+                        complete_from: {
+                            current: [
+                                "Known AI Goal"
+                            ]
+                        },
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Snippet Discussion",
+                        long_name: "Snippet Discussion",
+                        short_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        long_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    }
+                ]
+            },
+            {
+                field_number: "1.1.3",
+                short_name: "Known AI Goal Classification Discussion",
+                long_name: "Known AI Goal Classification Discussion",
+                short_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                long_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                display_type: "long_string",
+                mongo_type: "string",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "1.2.1",
+                short_name: "Potential AI Goal",
+                long_name: "Potential AI Goal",
+                short_description: "An AI Goal which is probably pursued by the AI system referenced in the incident.",
+                long_description: "An AI Goal which is probably pursued by the AI system referenced in the incident.",
+                display_type: "list",
+                mongo_type: "array",
+                complete_from: {
+                    all: [
+                        "Known AI Goal",
+                        "Potential AI Goal"
+                    ]
+                },
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 50,
+                instant_facet: true,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "1.2.2",
+                short_name: "Potential AI Goal Snippets",
+                long_name: "Potential AI Goal Snippets",
+                short_description: "One or more snippets that justify the classification.",
+                long_description: "One or more snippets that justify the classification.",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true,
+                display_type: "object-list",
+                mongo_type: "array",
+                subfields: [
+                    {
+                        short_name: "Snippet Text",
+                        long_name: "Snippet Text",
+                        short_description: "Snippet Text",
+                        long_description: "Snippet Text",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Related Classifications",
+                        long_name: "Related Classifications",
+                        short_description: "The Potential AI Goal classifications from above which this snippet supports",
+                        long_description: "The Potential AI Goal classifications from above which this snippet supports",
+                        display_type: "list",
+                        mongo_type: "array",
+                        complete_from: {
+                            current: [
+                                "Potential AI Goal"
+                            ]
+                        },
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Snippet Discussion",
+                        long_name: "Snippet Discussion",
+                        short_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        long_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    }
+                ]
+            },
+            {
+                field_number: "1.2.3",
+                short_name: "Potential AI Goal Classification Discussion",
+                long_name: "Potential AI Goal Classification Discussion",
+                short_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                long_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                display_type: "long_string",
+                mongo_type: "string",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "2.1.1",
+                short_name: "Known AI Technology",
+                long_name: "Known AI Technology",
+                short_description: "An AI Technology which is almost certainly a part of the implementation of the AI system referenced in the incident.",
+                long_description: "An AI Technology which is almost certainly a part of the implementation of the AI system referenced in the incident.",
+                display_type: "list",
+                mongo_type: "array",
+                complete_from: {
+                    all: [
+                        "Known AI Technology",
+                        "Potential AI Technology"
+                    ]
+                },
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 50,
+                instant_facet: true,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "2.1.2",
+                short_name: "Known AI Technology Snippets",
+                long_name: "Known AI Technology Snippets",
+                short_description: "One or more snippets that justify the classification.",
+                long_description: "One or more snippets that justify the classification.",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true,
+                display_type: "object-list",
+                mongo_type: "array",
+                subfields: [
+                    {
+                        short_name: "Snippet Text",
+                        long_name: "Snippet Text",
+                        short_description: "Snippet Text",
+                        long_description: "Snippet Text",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Related Classifications",
+                        long_name: "Related Classifications",
+                        short_description: "The Known AI Technology classifications from above which this snippet supports",
+                        long_description: "The Known AI Technology classifications from above which this snippet supports",
+                        display_type: "list",
+                        mongo_type: "array",
+                        complete_from: {
+                            current: [
+                                "Known AI Technology"
+                            ]
+                        },
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Snippet Discussion",
+                        long_name: "Snippet Discussion",
+                        short_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        long_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    }
+                ]
+            },
+            {
+                field_number: "2.1.3",
+                short_name: "Known AI Technology Classification Discussion",
+                long_name: "Known AI Technology Classification Discussion",
+                short_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                long_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                display_type: "long_string",
+                mongo_type: "string",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "2.2.1",
+                short_name: "Potential AI Technology",
+                long_name: "Potential AI Technology",
+                short_description: "An AI Method / Technology which probably is a part of the implementation of the AI system referenced in the incident.",
+                long_description: "An AI Method / Technology which probably is a part of the implementation of the AI system referenced in the incident.",
+                display_type: "list",
+                mongo_type: "array",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                complete_from: {
+                    all: [
+                        "Known AI Technology",
+                        "Potential AI Technology"
+                    ]
+                },
+                weight: 50,
+                instant_facet: true,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "2.2.2",
+                short_name: "Potential AI Technology Snippets",
+                long_name: "Potential AI Technology Snippets",
+                short_description: "One or more snippets that justify the classification.",
+                long_description: "One or more snippets that justify the classification.",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true,
+                display_type: "object-list",
+                mongo_type: "array",
+                subfields: [
+                    {
+                        short_name: "Snippet Text",
+                        long_name: "Snippet Text",
+                        short_description: "Snippet Text",
+                        long_description: "Snippet Text",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Related Classifications",
+                        long_name: "Related Classifications",
+                        short_description: "The Potential AI Technology classifications from above which this snippet supports",
+                        long_description: "The Potential AI Technology classifications from above which this snippet supports",
+                        display_type: "list",
+                        mongo_type: "array",
+                        complete_from: {
+                            current: [
+                                "Potential AI Technology"
+                            ]
+                        },
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Snippet Discussion",
+                        long_name: "Snippet Discussion",
+                        short_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        long_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    }
+                ]
+            },
+            {
+                field_number: "2.2.3",
+                short_name: "Potential AI Technology Classification Discussion",
+                long_name: "Potential AI Technology Classification Discussion",
+                short_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                long_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                display_type: "long_string",
+                mongo_type: "string",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "3.1.1",
+                short_name: "Known AI Technical Failure",
+                long_name: "Known AI Technical Failure",
+                short_description: "An AI Technical Failure which almost certainly contributes to the AI system failure referenced in the incident.",
+                long_description: "An AI Technical Failure which almost certainly contributes to the AI system failure referenced in the incident.",
+                display_type: "list",
+                mongo_type: "array",
+                complete_from: {
+                    all: [
+                        "Known AI Technical Failure",
+                        "Potential AI Technical Failure"
+                    ]
+                },
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 50,
+                instant_facet: true,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "3.1.2",
+                short_name: "Known AI Technical Failure Snippets",
+                long_name: "Snippets",
+                short_description: "One or more snippets that justify the classification.",
+                long_description: "One or more snippets that justify the classification.",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true,
+                display_type: "object-list",
+                mongo_type: "array",
+                subfields: [
+                    {
+                        short_name: "Snippet Text",
+                        long_name: "Snippet Text",
+                        short_description: "Snippet Text",
+                        long_description: "Snippet Text",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Related Classifications",
+                        long_name: "Related Classifications",
+                        short_description: "The Known AI Technical Failure classifications from above which this snippet supports",
+                        long_description: "The Known AI Technical Failure classifications from above which this snippet supports",
+                        display_type: "list",
+                        mongo_type: "array",
+                        complete_from: {
+                            current: [
+                                "Known AI Technical Failure"
+                            ]
+                        },
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Snippet Discussion",
+                        long_name: "Snippet Discussion",
+                        short_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        long_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    }
+                ]
+            },
+            {
+                field_number: "3.1.3",
+                short_name: "Known AI Technical Failure Classification Discussion",
+                long_name: "Known AI Technical Failure Classification Discussion",
+                short_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                long_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                display_type: "long_string",
+                mongo_type: "string",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "3.2.1",
+                short_name: "Potential AI Technical Failure",
+                long_name: "Potential AI Technical Failure",
+                short_description: "An AI Technical Failure which probably contributes to the AI system failure referenced in the incident.",
+                long_description: "An AI Technical Failure which probably contributes to the AI system failure referenced in the incident.",
+                display_type: "list",
+                mongo_type: "array",
+                complete_from: {
+                    all: [
+                        "Known AI Technical Failure",
+                        "Potential AI Technical Failure"
+                    ]
+                },
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 50,
+                instant_facet: true,
+                required: false,
+                public: true
+            },
+            {
+                field_number: "3.2.2",
+                short_name: "Potential AI Technical Failure Snippets",
+                long_name: "Potential AI Technical Failure Snippets",
+                short_description: "One or more snippets that justify the classification.",
+                long_description: "One or more snippets that justify the classification.",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true,
+                display_type: "object-list",
+                mongo_type: "array",
+                subfields: [
+                    {
+                        short_name: "Snippet Text",
+                        long_name: "Snippet Text",
+                        short_description: "Snippet Text",
+                        long_description: "Snippet Text",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Related Classifications",
+                        long_name: "Related Classifications",
+                        short_description: "The Potential AI Technical Failure classifications from above which this snippet supports",
+                        long_description: "The Potential AI Technical Failure classifications from above which this snippet supports",
+                        display_type: "list",
+                        mongo_type: "array",
+                        complete_from: {
+                            current: [
+                                "Potential AI Technical Failure"
+                            ]
+                        },
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    },
+                    {
+                        short_name: "Snippet Discussion",
+                        long_name: "Snippet Discussion",
+                        short_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        long_description: "Free text discussion on snippet usefulness, elaboration on information / terms included, etc.",
+                        display_type: "long_string",
+                        mongo_type: "string",
+                        default: "",
+                        placeholder: "",
+                        permitted_values: [],
+                        weight: 50,
+                        instant_facet: false,
+                        required: false,
+                        public: true
+                    }
+                ]
+            },
+            {
+                field_number: "3.2.3",
+                short_name: "Potential AI Technical Failure Classification Discussion",
+                long_name: "Potential AI Technical Failure Classification Discussion",
+                short_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                long_description: "Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.",
+                display_type: "long_string",
+                mongo_type: "string",
+                default: "",
+                placeholder: "",
+                permitted_values: [],
+                weight: 40,
+                instant_facet: false,
+                required: false,
+                public: true
+            }
+        ],
+        
+        // TODO: ditto
+        // created_at: "1722269934342",
     }
 ]
 
