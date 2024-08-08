@@ -1,7 +1,7 @@
-import { test, waitForRequest, query } from '../../utils';
+import { test, waitForRequest, query } from '../utils';
 import { gql } from '@apollo/client';
 import { expect, Page } from '@playwright/test';
-import { init } from '../../memory-mongo';
+import { init } from '../memory-mongo';
 
 test.describe('Classifications Editor', () => {
 
