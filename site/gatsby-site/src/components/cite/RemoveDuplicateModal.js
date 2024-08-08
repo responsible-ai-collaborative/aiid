@@ -17,7 +17,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
 
   const [insertDuplicate] = useMutation(INSERT_DUPLICATE);
 
-  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
+  const [upsertClassification] = useMutation(UPSERT_CLASSIFICATION);
 
   const [updateSubscription] = useMutation(UPSERT_SUBSCRIPTION);
 
@@ -103,7 +103,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
 
               try {
                 for (const classification of classificationsData.classifications) {
-                  await updateClassification({
+                  await upsertClassification({
                     variables: {
                       query: { _id: classification._id },
                       data: {
