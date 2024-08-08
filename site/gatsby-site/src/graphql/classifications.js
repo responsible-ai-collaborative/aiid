@@ -1,8 +1,8 @@
 import { gql } from '../../server/generated/gql';
 
 export const FIND_CLASSIFICATION = gql(`
-  query FindClassifications($query: ClassificationQueryInput) {
-    classifications(query: $query) {
+  query FindClassifications($filter: ClassificationFilterType) {
+    classifications(filter: $filter) {
       _id
       incidents {
         incident_id
@@ -23,10 +23,10 @@ export const FIND_CLASSIFICATION = gql(`
 
 export const UPSERT_CLASSIFICATION = gql(`
   mutation UpsertClassification(
-    $query: ClassificationQueryInput
-    $data: ClassificationInsertInput!
+    $filter: ClassificationFilterType!
+    $update: ClassificationInsertType!
   ) {
-    upsertOneClassification(query: $query, data: $data) {
+    upsertOneClassification(filter: $filter, update: $update) {
       _id
       incidents {
         incident_id

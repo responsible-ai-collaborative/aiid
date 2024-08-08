@@ -9,6 +9,7 @@ import entitiesFixture from './fixtures/entities';
 import incidentsFixture from './fixtures/incidents';
 import usersFixture from './fixtures/users';
 import submissionsFixture from './fixtures/submissions';
+import classificationsFixture from './fixtures/classifications';
 
 import * as context from '../context';
 
@@ -19,6 +20,7 @@ const fixtures = [
     incidentsFixture,
     usersFixture,
     submissionsFixture,
+    classificationsFixture,
 ]
 
 fixtures.forEach((collection) => {

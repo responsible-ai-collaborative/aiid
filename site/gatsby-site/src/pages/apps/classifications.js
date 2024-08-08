@@ -188,10 +188,10 @@ export default function ClassificationsDbView(props) {
     setupTaxonomiesSelect();
   }, [isAdmin]);
 
-  const fetchClassificationData = async (query) => {
+  const fetchClassificationData = async (filter) => {
     const classificationsData = await client.query({
       query: FIND_CLASSIFICATION,
-      variables: { query },
+      variables: { filter },
     });
 
     // For now we convert the list of attributes into a classifications object
@@ -439,7 +439,7 @@ export default function ClassificationsDbView(props) {
     ]);
 
     let rowQuery = {
-      namespace: currentTaxonomy,
+      namespace: { EQ: currentTaxonomy },
     };
 
     const classificationData = await fetchClassificationData(rowQuery);

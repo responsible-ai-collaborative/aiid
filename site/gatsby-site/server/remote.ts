@@ -24,30 +24,48 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
-// TODO: uncomment items marked with * after classifications and subscription collections are migrated
-
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
+    'QuickaddUpdateInput',
+    'QuickaddInsertInput',
 
-    // 'Report', *
-    // 'ReportQueryInput', *
+    'Classification',
+    'ClassificationUpdateInput',
+    'ClassificationInsertInput',
+    'ClassificationQueryInput',
+    'ClassificationIncidentsRelationInput',
+    'ClassificationReportsRelationInput',
+
+    'Report',
+    'ReportQueryInput',
+    'ReportUpdateInput',
+    'ReportInsertInput',
     'ReportUserRelationInput',
+    'CreateVariantInput',
 
-    // 'Incident', *
-    // 'IncidentQueryInput', *
+    // 'Incident',
+    'IncidentQueryInput',
+    'IncidentUpdateInput',
+    'IncidentInsertInput',
     'IncidentEditorsRelationInput',
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    // 'Entity', *
-    // 'EntityQueryInput', *
+    // 'Entity',
+    'EntityQueryInput',
+    'EntityUpdateInput',
+    'EntityInsertInput',
 
-    // 'User', *
-    // 'UserQueryInput', *
+    // 'User',
+    'UserQueryInput',
+    'UserUpdateInput',
+    'UserInsertInput',
 
     'Submission',
     'SubmissionQueryInput',
+    'SubmissionUpdateInput',
+    'SubmissionInsertInput',
     'SubmissionDeployersRelationInput',
     'SubmissionDevelopersRelationInput',
     'SubmissionHarmed_partiesRelationInput',
@@ -59,11 +77,19 @@ const ignoreTypes = [
     'UpdateOneReportTranslationInput',
 
     'CreateVariantInputVariant',
+
+    'Taxa',
+    'TaxaQueryInput',
+    'TaxaUpdateInput',
+    'TaxaInsertInput',
 ];
 
 const ignoredQueries = [
     'quickadd',
     'quickadds',
+
+    'classification',
+    'classifications',
 
     'report',
     'reports',
@@ -79,6 +105,9 @@ const ignoredQueries = [
 
     'submission',
     'submissions',
+
+    'taxa',
+    'taxas',
 ];
 
 const ignoredMutations = [
@@ -91,6 +120,15 @@ const ignoredMutations = [
     'upsertOneQuickadd',
     'upsertManyQuickadds',
 
+    'deleteOneClassification',
+    'deleteManyClassifications',
+    'insertOneClassification',
+    'insertManyClassifications',
+    'updateOneClassification',
+    'updateManyClassifications',
+    'upsertOneClassification',
+    'upsertManyClassifications',
+
     'deleteOneReport',
     'deleteManyReports',
     'insertOneReport',
@@ -99,7 +137,7 @@ const ignoredMutations = [
     'updateManyReports',
     'upsertOneReport',
     'upsertManyReports',
-    
+
     'createVariant',
 
     'linkReportsToIncidents',
@@ -142,6 +180,15 @@ const ignoredMutations = [
     'promoteSubmissionToReport',
 
     'updateOneReportTranslation',
+
+    'deleteOneTaxa',
+    'deleteManyTaxas',
+    'insertOneTaxa',
+    'insertManyTaxas',
+    'updateOneTaxa',
+    'updateManyTaxas',
+    'upsertOneTaxa',
+    'upsertManyTaxas',
 ]
 
 /**

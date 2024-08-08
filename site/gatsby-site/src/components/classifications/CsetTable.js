@@ -338,7 +338,7 @@ function TableWrap({ data, setData, className, ...props }) {
 }
 
 export default function CsetTable({ data, taxa, incident_id, ...props }) {
-  const [updateClassification] = useMutation(UPSERT_CLASSIFICATION);
+  const [upsertClassification] = useMutation(UPSERT_CLASSIFICATION);
 
   const addToast = useToastContext();
 
@@ -415,15 +415,13 @@ export default function CsetTable({ data, taxa, incident_id, ...props }) {
         reports: { link: [] },
       };
 
-      await updateClassification({
+      await upsertClassification({
         variables: {
-          query: {
-            incidents: {
-              incident_id: parseInt(incident_id),
-            },
-            namespace: 'CSETv1',
+          filter: {
+            incidents: { EQ: parseInt(incident_id) },
+            namespace: { EQ: 'CSETv1' },
           },
-          data,
+          update: data,
         },
       });
 
