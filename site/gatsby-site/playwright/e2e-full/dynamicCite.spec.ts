@@ -1,6 +1,4 @@
 import { test } from '../utils';
-import incident10 from '../fixtures/incidents/incident10.json';
-import { conditionalIntercept, waitForRequest } from '../utils';
 import config from '../config';
 import { expect } from '@playwright/test';
 import { init, seedCollection } from '../memory-mongo';
@@ -86,16 +84,7 @@ test.describe('Dynamic Cite pages', () => {
       };
     });
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'FindIncident',
-      incident10,
-      'findIncident'
-    );
-
     await page.locator('[data-cy="toogle-live-data"]').click();
-    await waitForRequest('findIncident');
 
     const consoleErrors = await page.evaluate(() => {
       const errors: string[] = [];
