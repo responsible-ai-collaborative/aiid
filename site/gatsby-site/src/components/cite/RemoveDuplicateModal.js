@@ -23,7 +23,7 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
 
   const { data: classificationsData, loading: classificationsLoading } = useQuery(
     FIND_CLASSIFICATION,
-    { variables: { query: { incidents: { incident_id: incident.incident_id } } } }
+    { variables: { filter: { incidents: { incident_id: { EQ: incident.incident_id } } } } }
   );
 
   const { data: subscriptionsData, loading: subscriptionsLoading } = useQuery(
@@ -105,8 +105,8 @@ export default function RemoveDuplicateModal({ incident, show, onClose }) {
                 for (const classification of classificationsData.classifications) {
                   await upsertClassification({
                     variables: {
-                      query: { _id: classification._id },
-                      data: {
+                      filter: { _id: { EQ: classification._id } },
+                      update: {
                         ...classification,
                         incidents: {
                           link: classification.incidents

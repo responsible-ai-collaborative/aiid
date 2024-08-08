@@ -79,7 +79,7 @@ function IncidentHistoryPage(props) {
   const { data: classificationsData, loading: loadingIncidentClassifications } = useQuery(
     FIND_CLASSIFICATION,
     {
-      variables: { query: { incidents: { incident_id: incidentId } } },
+      variables: { filter: { incidents: { EQ: incidentId } } },
     }
   );
 
