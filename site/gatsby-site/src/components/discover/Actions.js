@@ -10,7 +10,7 @@ import {
   faHashtag,
   faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
+import { FIND_REPORT, FLAG_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
@@ -24,32 +24,30 @@ function FlagModalContent({ reportNumber }) {
   const { user } = useUserContext();
 
   const { data } = useQuery(FIND_REPORT, {
-    variables: { query: { report_number: reportNumber } },
+    variables: {
+      filter: { report_number: { EQ: reportNumber } },
+    },
   });
 
-  const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
+  const [flagReportMutation, { loading }] = useMutation(FLAG_REPORT);
 
   const { logReportHistory } = useLogReportHistory();
 
   const flagReport = async () => {
     const now = new Date();
 
+    await flagReportMutation({
+      variables: {
+        report_number: reportNumber,
+        input: true,
+      },
+    });
+
     const updated = {
       flag: true,
       date_modified: now,
       epoch_date_modified: getUnixTime(now),
     };
-
-    await flagReportMutation({
-      variables: {
-        query: {
-          report_number: reportNumber,
-        },
-        set: {
-          ...updated,
-        },
-      },
-    });
 
     await logReportHistory(data.report, updated, user);
   };

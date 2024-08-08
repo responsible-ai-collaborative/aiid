@@ -1,16 +1,16 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const DELETE_SUBMISSION = gql`
+export const DELETE_SUBMISSION = gql(`
   mutation DeleteSubmission($_id: ObjectId!) {
-    deleteOneSubmission(query: { _id: $_id }) {
+    deleteOneSubmission(filter: { _id: { EQ: $_id } }) {
       _id
     }
   }
-`;
+`);
 
-export const FIND_SUBMISSIONS = gql`
+export const FIND_SUBMISSIONS = gql(`
   query FindSubmissions {
-    submissions(limit: 200) {
+    submissions {
       _id
       cloudinary_id
       date_downloaded
@@ -62,11 +62,11 @@ export const FIND_SUBMISSIONS = gql`
       quiet
     }
   }
-`;
+`);
 
-export const FIND_SUBMISSION = gql`
-  query FindSubmission($query: SubmissionQueryInput!) {
-    submission(query: $query) {
+export const FIND_SUBMISSION = gql(`
+  query FindSubmission($filter: SubmissionFilterType!) {
+    submission(filter: $filter) {
       _id
       cloudinary_id
       date_downloaded
@@ -114,11 +114,11 @@ export const FIND_SUBMISSION = gql`
       quiet
     }
   }
-`;
+`);
 
-export const UPDATE_SUBMISSION = gql`
-  mutation UpdateSubmission($query: SubmissionQueryInput!, $set: SubmissionUpdateInput!) {
-    updateOneSubmission(query: $query, set: $set) {
+export const UPDATE_SUBMISSION = gql(`
+  mutation UpdateSubmission($filter: SubmissionFilterType!, $update: SubmissionUpdateType!) {
+    updateOneSubmission(filter: $filter, update: $update) {
       _id
       cloudinary_id
       date_downloaded
@@ -164,21 +164,21 @@ export const UPDATE_SUBMISSION = gql`
       editor_dissimilar_incidents
     }
   }
-`;
+`);
 
-export const INSERT_SUBMISSION = gql`
-  mutation InsertSubmission($submission: SubmissionInsertInput!) {
-    insertOneSubmission(data: $submission) {
+export const INSERT_SUBMISSION = gql(`
+  mutation InsertSubmission($data: SubmissionInsertType!) {
+    insertOneSubmission(data: $data) {
       _id
     }
   }
-`;
+`);
 
-export const PROMOTE_SUBMISSION = gql`
+export const PROMOTE_SUBMISSION = gql(`
   mutation PromoteSubmission($input: PromoteSubmissionToReportInput!) {
     promoteSubmissionToReport(input: $input) {
       incident_ids
       report_number
     }
   }
-`;
+`);

@@ -19,16 +19,16 @@ const IncidentsPage = ({ data, ...props }) => {
 
   const { data: reports, loading: reportsLoading } = useQuery(FIND_REPORTS_TABLE, {
     variables: {
-      query: {
-        is_incident_report: true,
+      filter: {
+        is_incident_report: { EQ: true },
       },
     },
   });
 
   const { data: issueReports, loading: issueReportsLoading } = useQuery(FIND_REPORTS_TABLE, {
     variables: {
-      query: {
-        is_incident_report: false,
+      filter: {
+        is_incident_report: { EQ: false },
       },
     },
   });

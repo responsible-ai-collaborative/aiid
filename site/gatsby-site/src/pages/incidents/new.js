@@ -27,7 +27,7 @@ function NewIncidentPage() {
   const { t, i18n } = useTranslation();
 
   const { data: incidentToCloneData, loading: loadingIncidentToClone } = useQuery(FIND_INCIDENT, {
-    variables: { query: { incident_id: incidentIdToClone } },
+    variables: { filter: { incident_id: { EQ: incidentIdToClone } } },
   });
 
   const [initialValues, setInitialValues] = useState(null);
@@ -104,7 +104,7 @@ function NewIncidentPage() {
       newIncident.editor_similar_incidents = [];
       newIncident.editor_dissimilar_incidents = [];
 
-      await insertIncident({ variables: { incident: newIncident } });
+      await insertIncident({ variables: { data: newIncident } });
 
       // Set the user as the last modifier
       newIncident.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';

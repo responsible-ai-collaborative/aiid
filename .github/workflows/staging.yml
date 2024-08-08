@@ -12,10 +12,10 @@ on:
         default: true
         type: boolean
       force-deploy:
-          description: "Deploy even if tests fail"
-          required: true
-          default: false
-          type: boolean
+        description: "Deploy even if tests fail"
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   cache-modifier:
@@ -59,8 +59,8 @@ jobs:
       sha: ${{ github.sha }}
       environment: staging
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-      
-  call-test: 
+
+  call-test:
     uses: ./.github/workflows/test.yml
     needs: [cache-modifier, call-test-build]
     secrets: inherit
@@ -69,6 +69,16 @@ jobs:
       environment: staging
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+
+  call-test-playwright-full:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-full.yml
+    needs: [cache-modifier]
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()

@@ -1,8 +1,8 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const FIND_REPORT = gql`
-  query FindReport($query: ReportQueryInput!) {
-    report(query: $query) {
+export const FIND_REPORT = gql(`
+  query FindReport($filter: ReportFilterType!) {
+    report(filter: $filter) {
       url
       title
       description
@@ -37,11 +37,11 @@ export const FIND_REPORT = gql`
       quiet
     }
   }
-`;
+`);
 
-export const FIND_REPORT_WITH_TRANSLATIONS = gql`
-  query FindReportWithTranslations($query: ReportQueryInput!) {
-    report(query: $query) {
+export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
+  query FindReportWithTranslations($filter: ReportFilterType!) {
+    report(filter: $filter) {
       url
       title
       authors
@@ -78,11 +78,11 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       }
     }
   }
-`;
+`);
 
-export const UPDATE_REPORT = gql`
-  mutation UpdateReport($query: ReportQueryInput!, $set: ReportUpdateInput!) {
-    updateOneReport(query: $query, set: $set) {
+export const UPDATE_REPORT = gql(`
+  mutation UpdateReport($filter: ReportFilterType!, $update: ReportUpdateType!) {
+    updateOneReport(filter: $filter, update: $update) {
       url
       title
       authors
@@ -104,29 +104,21 @@ export const UPDATE_REPORT = gql`
       quiet
     }
   }
-`;
+`);
 
-export const DELETE_REPORT = gql`
-  mutation DeleteOneReport($query: ReportQueryInput!) {
-    deleteOneReport(query: $query) {
+export const DELETE_REPORT = gql(`
+  mutation DeleteOneReport($filter: ReportFilterType!) {
+    deleteOneReport(filter: $filter) {
       report_number
     }
   }
-`;
-
-export const INSERT_REPORT = gql`
-  mutation InsertReport($report: ReportInsertInput!) {
-    insertOneReport(data: $report) {
-      report_number
-    }
-  }
-`;
+`);
 
 // There is no built-in support for making easy array operations in Realm yet, so this is somewhat inefficient
 // https://feedback.mongodb.com/forums/923521-realm/suggestions/40765336-adding-or-removing-elements-from-array-fields
 
-export const LINK_REPORTS_TO_INCIDENTS = gql`
-  mutation LinkReportsToIncidents($input: LinkReportsToIncidentsInput) {
+export const LINK_REPORTS_TO_INCIDENTS = gql(`
+  mutation LinkReportsToIncidents($input: LinkReportsToIncidentsInput!) {
     linkReportsToIncidents(input: $input) {
       incident_id
       reports {
@@ -134,17 +126,17 @@ export const LINK_REPORTS_TO_INCIDENTS = gql`
       }
     }
   }
-`;
+`);
 
-export const LOG_REPORT_HISTORY = gql`
+export const LOG_REPORT_HISTORY = gql(`
   mutation logReportHistory($input: History_reportInsertInput!) {
     logReportHistory(input: $input) {
       report_number
     }
   }
-`;
+`);
 
-export const FIND_REPORT_HISTORY = gql`
+export const FIND_REPORT_HISTORY = gql(`
   query FindReportHistory($query: History_reportQueryInput) {
     history_reports(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
       _id
@@ -182,11 +174,11 @@ export const FIND_REPORT_HISTORY = gql`
       quiet
     }
   }
-`;
+`);
 
-export const FIND_REPORTS = gql`
-  query FindReports($query: ReportQueryInput!) {
-    reports(query: $query) {
+export const FIND_REPORTS = gql(`
+  query FindReports($filter: ReportFilterType!) {
+    reports(filter: $filter) {
       _id
       submitters
       date_published
@@ -205,11 +197,11 @@ export const FIND_REPORTS = gql`
       inputs_outputs
     }
   }
-`;
+`);
 
-export const FIND_REPORTS_TABLE = gql`
-  query FindReports($query: ReportQueryInput!) {
-    reports(query: $query, sortBy: REPORT_NUMBER_DESC, limit: 9999) {
+export const FIND_REPORTS_TABLE = gql(`
+  query FindReportsTable($filter: ReportFilterType!) {
+    reports(filter: $filter, sort: { report_number: DESC }) {
       _id
       submitters
       date_published
@@ -233,4 +225,15 @@ export const FIND_REPORTS_TABLE = gql`
       is_incident_report
     }
   }
-`;
+`);
+
+export const FLAG_REPORT = gql(`
+  mutation FlagReport($report_number: Int!, $input: Boolean!) {
+    flagReport(report_number: $report_number, input: $input) {
+      report_number
+      flag
+      date_modified
+      epoch_date_modified
+    }
+  }
+`);

@@ -8,16 +8,8 @@
         "private": true
     },
     {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
         "name": "logRollbar",
         "private": true
-    },
-    {
-        "name": "updateOneReportTranslation",
-        "private": false
     },
     {
         "name": "getEmailTemplateIncidentUpdate",
@@ -100,10 +92,6 @@
     {
         "name": "passwordReset",
         "private": true
-    },
-    {
-        "name": "createVariant",
-        "private": false
     },
     {
         "name": "getEmailTemplateNewEntityIncident",

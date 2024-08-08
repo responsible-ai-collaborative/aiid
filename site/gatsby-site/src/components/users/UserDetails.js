@@ -23,7 +23,7 @@ export default function UserDetails({ userId }) {
   }, []);
 
   const { data, loading } = useQuery(FIND_USER, {
-    variables: { query: { userId } },
+    variables: { filter: { userId: { EQ: userId } } },
   });
 
   if (loading) {

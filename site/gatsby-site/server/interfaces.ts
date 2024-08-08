@@ -1,4 +1,3 @@
-import { IncomingMessage } from 'http';
 import { MongoClient } from 'mongodb';
 
 export interface Context {
@@ -6,6 +5,6 @@ export interface Context {
         id: string,
         roles: string[],
     } | null,
-    req: IncomingMessage,
+    req: Request,
     client: MongoClient,
 }

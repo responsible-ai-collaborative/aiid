@@ -48,7 +48,7 @@ export default function UsersTable({ data, className = '', ...props }) {
           const promises = data.map(async (user) => {
             const result = await client.query({
               query: FIND_USER,
-              variables: { query: { userId: user.userId } },
+              variables: { filter: { userId: { EQ: user.userId } } },
             });
 
             if (result.data && result.data.user && result.data.user.adminData) {

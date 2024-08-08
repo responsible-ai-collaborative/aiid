@@ -26,7 +26,7 @@ function EditCitePage(props) {
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { filter: { incident_id: { EQ: incidentId } } },
   });
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
@@ -113,11 +113,13 @@ function EditCitePage(props) {
 
       await updateIncident({
         variables: {
-          query: {
-            incident_id: incidentId,
+          filter: {
+            incident_id: { EQ: incidentId },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
@@ -152,8 +154,8 @@ function EditCitePage(props) {
 
         await updateIncidents({
           variables: {
-            query: { incident_id_in: incidents },
-            set: querySet,
+            filter: { incident_id: { IN: incidents } },
+            update: { set: querySet },
           },
         });
       }

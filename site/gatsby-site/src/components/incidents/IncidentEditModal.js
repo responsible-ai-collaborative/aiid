@@ -21,7 +21,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [incident, setIncident] = useState(null);
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { filter: { incident_id: { EQ: incidentId } } },
   });
 
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -101,11 +101,13 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
       await updateIncident({
         variables: {
-          query: {
-            incident_id: incidentId,
+          filter: {
+            incident_id: { EQ: incidentId },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
