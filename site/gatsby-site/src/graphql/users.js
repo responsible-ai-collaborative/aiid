@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const FIND_USERS = gql`
+export const FIND_USERS = gql(`
   query FindUsers {
     users {
       roles
@@ -9,9 +9,9 @@ export const FIND_USERS = gql`
       last_name
     }
   }
-`;
+`);
 
-export const FIND_USER = gql`
+export const FIND_USER = gql(`
   query FindUser($filter: UserFilterType!) {
     user(filter: $filter) {
       roles
@@ -26,9 +26,9 @@ export const FIND_USER = gql`
       }
     }
   }
-`;
+`);
 
-export const FIND_USERS_BY_ROLE = gql`
+export const FIND_USERS_BY_ROLE = gql(`
   query FindUsersByRole($role: [String!]) {
     users(filter: { roles: { IN: $role } }) {
       roles
@@ -43,18 +43,18 @@ export const FIND_USERS_BY_ROLE = gql`
       }
     }
   }
-`;
+`);
 
-export const UPDATE_USER_ROLES = gql`
+export const UPDATE_USER_ROLES = gql(`
   mutation UpdateUserRoles($roles: [String]!, $userId: String) {
     updateOneUser(filter: { userId: { EQ: $userId } }, update: { set: { roles: $roles } }) {
       roles
       userId
     }
   }
-`;
+`);
 
-export const UPDATE_USER_PROFILE = gql`
+export const UPDATE_USER_PROFILE = gql(`
   mutation UpdateUserProfile($userId: String, $first_name: String, $last_name: String) {
     updateOneUser(
       filter: { userId: { EQ: $userId } }
@@ -65,4 +65,4 @@ export const UPDATE_USER_PROFILE = gql`
       last_name
     }
   }
-`;
+`);
