@@ -27,7 +27,7 @@
           ["plugins", "./plugins"],
           ["@reach/router", "@gatsbyjs/reach-router"]
         ],
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".ts"]
       }
     }
   },
