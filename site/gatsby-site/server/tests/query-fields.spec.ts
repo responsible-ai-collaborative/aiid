@@ -14,12 +14,12 @@ import classificationsFixture from './fixtures/classifications';
 import * as context from '../context';
 
 const fixtures = [
-    // quickaddsFixture,
-    // reportsFixture,
-    // entitiesFixture,
-    // incidentsFixture,
-    // usersFixture,
-    // submissionsFixture,
+    quickaddsFixture,
+    reportsFixture,
+    entitiesFixture,
+    incidentsFixture,
+    usersFixture,
+    submissionsFixture,
     classificationsFixture,
 ]
 
