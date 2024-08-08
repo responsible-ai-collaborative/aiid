@@ -11,6 +11,13 @@ const remoteSchema = getRemoteSchema();
 
 const gatewaySchema = stitchSchemas({
     subschemas: [localSchema, remoteSchema],
+    typeMergingOptions: {
+        validationScopes: {
+            ['Incident.editors']: {
+                validationLevel: ValidationLevel.Off,
+            },
+        }
+    }
 });
 
 const transformedSchema = mapSchema(gatewaySchema, {
