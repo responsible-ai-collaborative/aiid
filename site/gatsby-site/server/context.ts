@@ -1,6 +1,7 @@
 import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
 import config from "./config";
+import * as crypto from 'crypto';
 import * as reporter from "./reporter";
 
 function extractToken(header: string) {
@@ -8,6 +9,10 @@ function extractToken(header: string) {
         return header.substring(7);
     }
     return null;
+}
+
+function hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
 }
 
 export const verifyToken = async (token: string) => {
@@ -61,43 +66,40 @@ async function getUser(userId: string, client: MongoClient) {
     };
 }
 
-async function getTokenCache(token: string, client: MongoClient) {
+async function getTokenCache(tokenHash: string, client: MongoClient) {
     const db = client.db('customData');
     const collection = db.collection('tokenCache');
-
-    return collection.findOne({ token });
+    return await collection.findOne({ tokenHash });
 }
 
-async function deleteTokenCache(token: string, client: MongoClient) {
+async function deleteTokenCache(tokenHash: string, client: MongoClient) {
     const db = client.db('customData');
     const collection = db.collection('tokenCache');
-
-    await collection.deleteMany({ token });
+    await collection.deleteMany({ tokenHash });
 }
 
-async function setTokenCache(token: string, userId: string, client: MongoClient) {
+async function setTokenCache(tokenHash: string, userId: string, client: MongoClient) {
     const db = client.db('customData');
     const collection = db.collection('tokenCache');
 
     await collection.deleteMany({ userId });
 
-    await collection.insertOne({ token, userId });
+    await collection.insertOne({ tokenHash, userId });
 }
 
 async function getUserFromHeader(header: string, client: MongoClient) {
     const token = extractToken(header);
 
-    console.log('checking token', token);
-
     if (token) {
 
-        const cachedToken = await getTokenCache(token, client);
+        const tokenHash = hashToken(token);
+        const cached = await getTokenCache(tokenHash, client);
 
         let userId = null;
 
-        if (cachedToken) {
+        if (cached) {
 
-            userId = cachedToken.userId;
+            userId = cached.userId
         }
         else {
 
@@ -105,7 +107,7 @@ async function getUserFromHeader(header: string, client: MongoClient) {
 
             if (data === 'token expired') {
 
-                await deleteTokenCache(token, client);
+                await deleteTokenCache(tokenHash, client);
 
                 throw new Error('Token expired');
             }
@@ -116,10 +118,10 @@ async function getUserFromHeader(header: string, client: MongoClient) {
         }
 
         if (userId) {
-            
+
             const userData = await getUser(userId, client);
 
-            await setTokenCache(token, userId, client);
+            await setTokenCache(tokenHash, userId, client);
 
             return userData;
         }
