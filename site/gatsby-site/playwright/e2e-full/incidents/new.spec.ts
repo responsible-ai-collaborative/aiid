@@ -13,15 +13,7 @@ test.describe('New Incident page', () => {
 
     test.slow();
 
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-    await init({
-      customData: {
-        users: [
-          { userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] },
-        ]
-      }
-    }, { drop: false });
-
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
 
     await page.goto(url);
 
@@ -69,14 +61,7 @@ test.describe('New Incident page', () => {
 
     test.slow();
 
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-    await init({
-      customData: {
-        users: [
-          { userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] },
-        ]
-      }
-    }, { drop: false });
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
 
     const newIncidentId = 4;
 

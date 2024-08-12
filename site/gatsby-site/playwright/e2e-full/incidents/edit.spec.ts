@@ -7,7 +7,8 @@ test.describe('Incidents', () => {
 
   test('Should successfully edit incident fields', async ({ page, login }) => {
 
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    
     await init({
       customData: {
         users: [

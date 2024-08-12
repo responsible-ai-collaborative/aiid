@@ -568,14 +568,7 @@ test.describe('Cite pages', () => {
 
         test.slow();
 
-        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-        await init({
-            customData: {
-                users: [
-                    { userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] },
-                ]
-            }
-        }, { drop: false });
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
