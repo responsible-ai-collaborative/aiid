@@ -76,9 +76,7 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on incident page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } }, { drop: true });
-
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin', 'pochoclo'] } });
 
     await page.goto(incidentURL);
 
@@ -164,6 +162,7 @@ test.describe('Classifications Editor', () => {
       query: gql`
       query FindClassifications($filter: ClassificationFilterType!) {
         classifications(filter: $filter) {
+          namespace
           notes
           attributes {
             short_name
