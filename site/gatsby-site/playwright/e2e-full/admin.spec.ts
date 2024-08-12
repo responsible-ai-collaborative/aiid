@@ -62,7 +62,7 @@ test.describe('Admin', () => {
     'Should filter results',
     async ({ page, login, skipOnEmptyEnvironment }) => {
 
-      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { users: [{ first_name: 'John', last_name: 'Doe', roles: ['admin'] }] } });
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
       await page.goto(baseUrl);
 

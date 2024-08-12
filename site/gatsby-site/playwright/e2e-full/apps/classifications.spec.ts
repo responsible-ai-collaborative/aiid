@@ -28,9 +28,15 @@ test.describe('Classifications App', () => {
 
         await page.selectOption('select[data-cy="taxonomy"]', 'CSETv1');
 
-        await page.locator('a[href="/cite/3/?edit_taxonomy=CSETv1"]').click();
+        const newTabPromise = page.waitForEvent('popup');
 
-        await expect(page.locator('[data-cy="taxonomy-form"]')).toBeVisible();
+        await page.locator('a[href="/cite/3/?edit_taxonomy=CSETv1"]').click()
+
+        const newTab = await newTabPromise;
+
+        await newTab.waitForLoadState();
+
+        await expect(newTab.locator('[data-cy="taxonomy-form"]')).toBeVisible();
     });
 
     test('Should switch taxonomies', async ({ page }) => {
