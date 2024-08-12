@@ -69,7 +69,17 @@ async function getUser(userId: string, client: MongoClient) {
 async function getTokenCache(tokenHash: string, client: MongoClient) {
     const db = client.db('customData');
     const collection = db.collection('tokenCache');
-    return await collection.findOne({ tokenHash });
+    const cached = await collection.findOne({ tokenHash });
+
+    if (cached && cached.expiration > Date.now()) {
+        return cached;
+
+    } else if (cached) {
+
+        await deleteTokenCache(tokenHash, client);
+    }
+    
+    return null;
 }
 
 async function deleteTokenCache(tokenHash: string, client: MongoClient) {
@@ -84,31 +94,27 @@ async function setTokenCache(tokenHash: string, userId: string, client: MongoCli
 
     await collection.deleteMany({ userId });
 
-    await collection.insertOne({ tokenHash, userId });
+    const expiration = Date.now() + 30 * 60 * 1000;
+
+    await collection.insertOne({ tokenHash, userId, expiration });
 }
 
 async function getUserFromHeader(header: string, client: MongoClient) {
     const token = extractToken(header);
 
     if (token) {
-
         const tokenHash = hashToken(token);
         const cached = await getTokenCache(tokenHash, client);
 
         let userId = null;
 
         if (cached) {
-
-            userId = cached.userId
-        }
-        else {
-
+            userId = cached.userId;
+        } else {
             const data = await verifyToken(token);
 
             if (data === 'token expired') {
-
                 await deleteTokenCache(tokenHash, client);
-
                 throw new Error('Token expired');
             }
 
@@ -118,11 +124,8 @@ async function getUserFromHeader(header: string, client: MongoClient) {
         }
 
         if (userId) {
-
             const userData = await getUser(userId, client);
-
             await setTokenCache(tokenHash, userId, client);
-
             return userData;
         }
     }

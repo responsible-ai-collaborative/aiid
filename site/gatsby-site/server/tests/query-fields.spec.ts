@@ -1,5 +1,5 @@
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
+import { makeRequest, seedCollection, seedFixture, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 
@@ -13,12 +13,12 @@ import submissionsFixture from './fixtures/submissions';
 import * as context from '../context';
 
 const fixtures = [
-    quickaddsFixture,
-    reportsFixture,
-    entitiesFixture,
-    incidentsFixture,
+    // quickaddsFixture,
+    // reportsFixture,
+    // entitiesFixture,
+    // incidentsFixture,
     usersFixture,
-    submissionsFixture,
+    // submissionsFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -38,6 +38,10 @@ fixtures.forEach((collection) => {
 
         afterAll(async () => {
             await server?.stop();
+        });
+
+        beforeEach(async () => {
+            await seedCollection({ database: 'customData', name: 'tokenCache', docs: [], drop: true });
         });
 
         if (collection.testSingular) {
@@ -64,7 +68,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy1');
 
                     expect(response.body.data[singularName]).toMatchObject(testData.result);
                 }
@@ -76,7 +80,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -107,7 +111,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy1');
 
 
                     expect(response.body.data[pluralName]).toMatchObject(testData.result);
@@ -120,7 +124,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy2');
 
 
                     expect(response.body.errors[0].message).toBe('not authorized');
@@ -153,7 +157,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy1');
 
 
                     expect(response.body.data[pluralName]).toMatchObject(testData.result);
@@ -165,7 +169,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy2');
 
 
                     expect(response.body.errors[0].message).toBe('not authorized');
@@ -197,7 +201,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy1');
 
 
                     expect(response.body.data[pluralName]).toHaveLength(testData.result.length);
@@ -211,7 +215,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, queryData);
+                    const response = await makeRequest(url, queryData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }

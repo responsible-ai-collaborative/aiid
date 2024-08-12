@@ -2,7 +2,7 @@ import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
-import { makeRequest, seedFixture, startTestServer } from "./utils";
+import { makeRequest, seedCollection, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
 
 import quickaddsFixture from './fixtures/quickadds';
@@ -52,6 +52,10 @@ fixtures.forEach((collection) => {
             await server?.stop();
         });
 
+        beforeEach(async () => {
+            await seedCollection({ database: 'customData', name: 'tokenCache', docs: [], drop: true });
+        });
+
         if (collection.testInsertOne !== null) {
 
             const testData = collection.testInsertOne!;
@@ -78,7 +82,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
 
                     expect(response.body.data[insertOneFieldName]).toMatchObject(testData.result)
@@ -91,7 +95,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
 
                     expect(response.body.errors[0].message).toBe('not authorized');
@@ -123,7 +127,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
                     expect(response.body.data[insertManyFieldName]).toMatchObject(testData.result);
                 }
@@ -135,7 +139,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -169,7 +173,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
 
                     expect(response.body.data[updateOneFieldName]).toMatchObject(testData.result)
@@ -182,7 +186,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -217,7 +221,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
 
                     expect(response.body.data[updateManyFieldName]).toMatchObject(testData.result);
@@ -230,7 +234,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -261,7 +265,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
                     expect(response.body.data[deleteOneFieldName]).toMatchObject(testData.result);
                 }
@@ -272,7 +276,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -303,7 +307,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
 
                     expect(response.body.data[deleteManyFieldName]).toMatchObject(testData.result);
@@ -316,7 +320,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -350,7 +354,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
 
                     expect(response.body.data[upsertOneFieldName]).toMatchObject(testData.result)
@@ -363,7 +367,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
@@ -395,7 +399,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy1');
 
 
                     expect(response.body.data[upsertOneFieldName]).toMatchObject(testData.result)
@@ -408,7 +412,7 @@ fixtures.forEach((collection) => {
 
                     jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
 
-                    const response = await makeRequest(url, mutationData);
+                    const response = await makeRequest(url, mutationData, 'dummy2');
 
                     expect(response.body.errors[0].message).toBe('not authorized');
                 }
