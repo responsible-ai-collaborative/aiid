@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const FIND_INCIDENT = gql`
+export const FIND_INCIDENT = gql(`
   query FindIncident($filter: IncidentFilterType) {
     incident(filter: $filter) {
       incident_id
@@ -41,10 +41,10 @@ export const FIND_INCIDENT = gql`
       editor_notes
     }
   }
-`;
+`);
 
-export const FIND_INCIDENTS_TABLE = gql`
-  query FindIncidents($filter: IncidentFilterType) {
+export const FIND_INCIDENTS_TABLE = gql(`
+  query FindIncidentsTable($filter: IncidentFilterType) {
     incidents(filter: $filter) {
       incident_id
       title
@@ -72,10 +72,10 @@ export const FIND_INCIDENTS_TABLE = gql`
       }
     }
   }
-`;
+`);
 
-export const FIND_INCIDENT_ENTITIES = gql`
-  query FindIncident($filter: IncidentFilterType) {
+export const FIND_INCIDENT_ENTITIES = gql(`
+  query FindIncidentEntities($filter: IncidentFilterType) {
     incident(filter: $filter) {
       incident_id
       AllegedDeployerOfAISystem {
@@ -92,9 +92,9 @@ export const FIND_INCIDENT_ENTITIES = gql`
       }
     }
   }
-`;
+`);
 
-export const FIND_INCIDENTS = gql`
+export const FIND_INCIDENTS = gql(`
   query FindIncidents($filter: IncidentFilterType) {
     incidents(filter: $filter) {
       incident_id
@@ -134,18 +134,18 @@ export const FIND_INCIDENTS = gql`
       }
     }
   }
-`;
+`);
 
-export const FIND_INCIDENTS_TITLE = gql`
+export const FIND_INCIDENTS_TITLE = gql(`
   query FindIncidentsTitles($filter: IncidentFilterType) {
     incidents(filter: $filter) {
       incident_id
       title
     }
   }
-`;
+`);
 
-export const UPDATE_INCIDENT = gql`
+export const UPDATE_INCIDENT = gql(`
   mutation UpdateIncident($filter: IncidentFilterType!, $update: IncidentUpdateType!) {
     updateOneIncident(filter: $filter, update: $update) {
       incident_id
@@ -186,35 +186,35 @@ export const UPDATE_INCIDENT = gql`
       editor_notes
     }
   }
-`;
+`);
 
-export const UPDATE_INCIDENTS = gql`
+export const UPDATE_INCIDENTS = gql(`
   mutation UpdateIncidents($filter: IncidentFilterType!, $update: IncidentUpdateType!) {
     updateManyIncidents(filter: $filter, update: $update) {
       matchedCount
       modifiedCount
     }
   }
-`;
+`);
 
-export const INSERT_INCIDENT = gql`
+export const INSERT_INCIDENT = gql(`
   mutation InsertIncident($data: IncidentInsertType!) {
     insertOneIncident(data: $data) {
       incident_id
     }
   }
-`;
+`);
 
-export const GET_LATEST_INCIDENT_ID = gql`
-  query FindIncidents {
+export const GET_LATEST_INCIDENT_ID = gql(`
+  query FindLastIncident {
     incidents(sort: { incident_id: DESC }, pagination: { limit: 1, skip: 0 }) {
       incident_id
     }
   }
-`;
+`);
 
-export const FIND_FULL_INCIDENT = gql`
-  query FindIncident($filter: IncidentFilterType) {
+export const FIND_FULL_INCIDENT = gql(`
+  query FindIncidentFull($filter: IncidentFilterType) {
     incident(filter: $filter) {
       incident_id
       title
@@ -273,17 +273,17 @@ export const FIND_FULL_INCIDENT = gql`
       }
     }
   }
-`;
+`);
 
-export const LOG_INCIDENT_HISTORY = gql`
+export const LOG_INCIDENT_HISTORY = gql(`
   mutation logIncidentHistory($input: History_incidentInsertInput!) {
     logIncidentHistory(input: $input) {
       incident_id
     }
   }
-`;
+`);
 
-export const FIND_INCIDENT_HISTORY = gql`
+export const FIND_INCIDENT_HISTORY = gql(`
   query FindIncidentHistory($query: History_incidentQueryInput) {
     history_incidents(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
       incident_id
@@ -316,10 +316,10 @@ export const FIND_INCIDENT_HISTORY = gql`
       }
     }
   }
-`;
+`);
 
-export const FLAG_INCIDENT_SIMILARITY = gql`
-  mutation ($incidentId: Int!, $dissimilarIds: [Int!]) {
+export const FLAG_INCIDENT_SIMILARITY = gql(`
+  mutation FlagIncidentSimilarity($incidentId: Int!, $dissimilarIds: [Int!]) {
     flagIncidentSimilarity(incidentId: $incidentId, dissimilarIds: $dissimilarIds) {
       incident_id
       flagged_dissimilar_incidents
@@ -328,4 +328,4 @@ export const FLAG_INCIDENT_SIMILARITY = gql`
       }
     }
   }
-`;
+`);
