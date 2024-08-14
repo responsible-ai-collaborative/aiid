@@ -127,7 +127,7 @@
     "build": "gatsby build --prefix-paths",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
-    "serve": "netlify dev -c \"gatsby serve\" --target-port 9000 --port 8000",
+    "serve": "netlify dev --target-port 9000 --port 8000 -d public",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
