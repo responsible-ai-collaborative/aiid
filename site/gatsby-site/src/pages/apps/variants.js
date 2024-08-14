@@ -29,10 +29,10 @@ export default function VariantsPage(props) {
           .query({
             query: FIND_INCIDENTS,
             variables: {
-              query: {
-                reports_in: variants.map((report) => ({
-                  report_number: report.report_number,
-                })),
+              filter: {
+                reports: {
+                  IN: variants.map((report) => report.report_number),
+                },
               },
             },
           })
