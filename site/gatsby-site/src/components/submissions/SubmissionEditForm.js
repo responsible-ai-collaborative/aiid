@@ -33,7 +33,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const { values, touched, setFieldValue, setFieldTouched } = useFormikContext();
 
-  const isNewIncident = values.incident_ids.length === 0;
+  const isNewIncident = !values.incident_ids || values.incident_ids.length === 0;
 
   const [promoType, setPromoType] = useState('none');
 
@@ -260,7 +260,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       variables: {
         input: {
           submission_id: values._id,
-          incident_ids: values.incident_ids,
+          incident_ids: values.incident_ids || [],
           is_incident_report: true,
         },
       },
