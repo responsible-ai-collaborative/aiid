@@ -20,8 +20,8 @@ const isValidURL = (string) => {
   }
 };
 
-async function handler(req, res) {
-  normalizeRequest(req);
+async function handler(event) {
+  const req = normalizeRequest(event);
 
   const errors = requestValidator.validateRequest(req);
 
@@ -29,9 +29,10 @@ async function handler(req, res) {
     console.warn(req.query, errors);
     rollbar.warning(req.query, errors);
 
-    res.status(400).json(errors);
-
-    return;
+    return {
+      statusCode: 400,
+      body: JSON.stringify(errors),
+    };
   }
 
   const urls = req.query.urls;
@@ -63,7 +64,6 @@ async function handler(req, res) {
           url: `${siteConfig.gatsby.siteUrl}/cite/${incident.incident_id}`,
         });
       }
-
       return filtered;
     }, []);
 
@@ -88,7 +88,6 @@ async function handler(req, res) {
     }, []);
 
     result.reports = reports;
-
     results.push(result);
   }
 
@@ -96,7 +95,7 @@ async function handler(req, res) {
   // https://www.gatsbyjs.com/docs/reference/functions/middleware-and-helpers/#custom-middleware
 
   await new Promise((resolve, reject) => {
-    cors(req, res, (result) => {
+    cors(req, {}, (result) => {
       if (result instanceof Error) {
         reject(result);
       }
@@ -104,7 +103,10 @@ async function handler(req, res) {
     });
   });
 
-  res.status(200).json({ results });
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ results }),
+  };
 }
 
 const rollbar = new Rollbar({
@@ -116,13 +118,16 @@ const rollbar = new Rollbar({
   },
 });
 
-export default async function (req, res) {
+exports.handler = async function (event) {
   try {
-    await handler(req, res);
+    return await handler(event);
   } catch (error) {
     console.error(error);
     rollbar.error(error);
 
-    res.status(500).send('An error occurred');
+    return {
+      statusCode: 500,
+      body: 'An error occurred',
+    };
   }
-}
+};

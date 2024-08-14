@@ -1,0 +1,13 @@
+/api/graphql /.netlify/functions/graphql 200
+/api/parseNews /.netlify/functions/parseNews 200
+/api/semanticallyRelated /.netlify/functions/semanticallyRelated 200
+/api/semanticallyRelated /.netlify/functions/semanticallyRelated 200
+# @netlify/plugin-gatsby redirects start
+/api/* /.netlify/functions/__api 200
+# @netlify/plugin-gatsby redirects end
+## Created with gatsby-plugin-netlify
+
+# @netlify/plugin-gatsby redirects start
+# gatsby-adapter-netlify start
+
+# gatsby-adapter-netlify end

@@ -7,6 +7,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.8",
     "@apollo/server": "^4.10.2",
+    "@as-integrations/aws-lambda": "^3.1.0",
     "@aws-sdk/client-s3": "^3.435.0",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
@@ -122,11 +123,11 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "start": "gatsby develop",
+    "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000",
     "build": "gatsby build --prefix-paths",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
-    "serve": "gatsby serve -p 8000",
+    "serve": "netlify dev -c \"gatsby serve\" --target-port 9000 --port 8000",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",

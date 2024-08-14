@@ -255,7 +255,7 @@ exports.onPreInit = async ({ reporter }) => {
 
   const lookupIndex = new LookupIndex({
     client: mongoClient,
-    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
+    filePath: path.join(__dirname, 'netlify', 'functions', 'lookupIndex.json'),
   });
 
   await lookupIndex.run();

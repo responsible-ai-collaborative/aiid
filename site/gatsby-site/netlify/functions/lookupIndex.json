@@ -1,0 +1,55 @@
+[
+  {
+    "incident_id": 1,
+    "title": "Incident 1",
+    "reports": [
+      {
+        "report_number": 1,
+        "title": "Report 1",
+        "url": "url1"
+      }
+    ]
+  },
+  {
+    "incident_id": 2,
+    "title": "Incident 2",
+    "reports": [
+      {
+        "report_number": 2,
+        "title": "Report 2",
+        "url": "url1"
+      }
+    ]
+  },
+  {
+    "incident_id": 3,
+    "title": "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
+    "reports": [
+      {
+        "report_number": 3,
+        "title": "Working Anything but 9 to 5",
+        "url": "https://www.nytimes.com/interactive/2014/08/13/us/starbucks-workers-scheduling-hours.html"
+      },
+      {
+        "report_number": 4,
+        "title": "Kronos shift scheduling software a grind for Starbucks worker",
+        "url": "https://searchhrsoftware.techtarget.com/news/4500252451/Kronos-shift-scheduling-software-a-grind-for-Starbucks-worker"
+      },
+      {
+        "report_number": 6,
+        "title": "",
+        "url": ""
+      },
+      {
+        "report_number": 7,
+        "title": "",
+        "url": ""
+      },
+      {
+        "report_number": 8,
+        "title": "",
+        "url": ""
+      }
+    ]
+  }
+]
