@@ -35,23 +35,6 @@ export const FIND_USERS_BY_ROLE = gql(`
       userId
       first_name
       last_name
-      adminData {
-        email
-        disabled
-        creationDate
-        lastAuthenticationDate
-      }
-    }
-  }
-`);
-
-export const FIND_USERS_BY_ROLE_NO_ADMIN_DATA = gql(`
-  query FindUsersByRoleNoAdminData($role: [String!]) {
-    users(filter: { roles: { IN: $role } }) {
-      roles
-      userId
-      first_name
-      last_name
     }
   }
 `);

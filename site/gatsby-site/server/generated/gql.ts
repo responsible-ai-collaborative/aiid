@@ -60,8 +60,7 @@ const documents = {
     "\n  query FindUserSubscriptions($query: SubscriptionQueryInput!) {\n    subscriptions(query: $query) {\n      _id\n      incident_id {\n        incident_id\n        title\n      }\n      entityId {\n        entity_id\n        name\n      }\n      type\n    }\n  }\n": types.FindUserSubscriptionsDocument,
     "\n  query FindUsers {\n    users {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n": types.FindUsersDocument,
     "\n  query FindUser($filter: UserFilterType!) {\n    user(filter: $filter) {\n      roles\n      userId\n      first_name\n      last_name\n      adminData {\n        email\n        disabled\n        creationDate\n        lastAuthenticationDate\n      }\n    }\n  }\n": types.FindUserDocument,
-    "\n  query FindUsersByRole($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n      adminData {\n        email\n        disabled\n        creationDate\n        lastAuthenticationDate\n      }\n    }\n  }\n": types.FindUsersByRoleDocument,
-    "\n  query FindUsersByRoleNoAdminData($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n": types.FindUsersByRoleNoAdminDataDocument,
+    "\n  query FindUsersByRole($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n": types.FindUsersByRoleDocument,
     "\n  mutation UpdateUserRoles($roles: [String]!, $userId: String) {\n    updateOneUser(filter: { userId: { EQ: $userId } }, update: { set: { roles: $roles } }) {\n      roles\n      userId\n    }\n  }\n": types.UpdateUserRolesDocument,
     "\n  mutation UpdateUserProfile($userId: String, $first_name: String, $last_name: String) {\n    updateOneUser(\n      filter: { userId: { EQ: $userId } }\n      update: { set: { first_name: $first_name, last_name: $last_name } }\n    ) {\n      userId\n      first_name\n      last_name\n    }\n  }\n": types.UpdateUserProfileDocument,
     "\n  query FindVariants($filter: ReportFilterType) {\n    reports(filter: $filter) {\n      submitters\n      date_published\n      report_number\n      title\n      description\n      url\n      image_url\n      cloudinary_id\n      source_domain\n      text\n      plain_text\n      authors\n      epoch_date_downloaded\n      epoch_date_modified\n      epoch_date_published\n      epoch_date_submitted\n      language\n      tags\n      inputs_outputs\n    }\n  }\n": types.FindVariantsDocument,
@@ -277,11 +276,7 @@ export function gql(source: "\n  query FindUser($filter: UserFilterType!) {\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query FindUsersByRole($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n      adminData {\n        email\n        disabled\n        creationDate\n        lastAuthenticationDate\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindUsersByRole($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n      adminData {\n        email\n        disabled\n        creationDate\n        lastAuthenticationDate\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query FindUsersByRoleNoAdminData($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n"): (typeof documents)["\n  query FindUsersByRoleNoAdminData($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n"];
+export function gql(source: "\n  query FindUsersByRole($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n"): (typeof documents)["\n  query FindUsersByRole($role: [String!]) {\n    users(filter: { roles: { IN: $role } }) {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

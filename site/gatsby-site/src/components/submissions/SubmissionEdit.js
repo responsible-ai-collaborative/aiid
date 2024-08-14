@@ -15,7 +15,7 @@ import isArray from 'lodash/isArray';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { FIND_USERS_BY_ROLE_NO_ADMIN_DATA } from '../../graphql/users';
+import { FIND_USERS_BY_ROLE } from '../../graphql/users';
 import SubmissionEditForm from './SubmissionEditForm';
 
 const SubmissionEdit = ({ id }) => {
@@ -27,7 +27,7 @@ const SubmissionEdit = ({ id }) => {
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
-  const { data: userData, loading: userLoading } = useQuery(FIND_USERS_BY_ROLE_NO_ADMIN_DATA, {
+  const { data: userData, loading: userLoading } = useQuery(FIND_USERS_BY_ROLE, {
     variables: { role: ['incident_editor', 'admin'] },
   });
 
