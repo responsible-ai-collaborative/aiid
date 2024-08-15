@@ -4,8 +4,9 @@
         "module": "Node16",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "strict": true,
+        "strict": false, /* Can't enable strict mode here because there is a package using a with statement */
         "skipLibCheck": true,
-        "allowJs": true
+        "allowJs": true,
+        "resolveJsonModule": true,
     }
 }
