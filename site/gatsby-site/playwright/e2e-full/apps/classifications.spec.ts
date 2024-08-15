@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
-import { mockAtlasCustomData, test } from '../../utils';
-import { init } from '../../memory-mongo';
+import { test } from '../../utils';
 
 const url = '/apps/classifications/';
 
