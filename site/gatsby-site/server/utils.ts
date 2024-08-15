@@ -1,5 +1,5 @@
 import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
-import { getGraphQLInsertType, getGraphQLFilterType, getGraphQLSortType, GraphQLPaginationType, MongoDbOptions, getMongoDbSort, getMongoDbProjection, getMongoDbQueryResolver, validateUpdateArgs, getMongoDbUpdate, GetMongoDbProjectionOptions } from "graphql-to-mongodb";
+import { getGraphQLInsertType, getGraphQLFilterType, getGraphQLSortType, GraphQLPaginationType, MongoDbOptions, getMongoDbSort, getMongoDbProjection, getMongoDbQueryResolver, validateUpdateArgs, getMongoDbUpdate, GetMongoDbProjectionOptions, UpdateObj } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
 import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
@@ -384,7 +384,8 @@ const defaultUpdateOptions: Required<UpdateOptions> = {
 export function getUpdateResolver<TSource, TContext>(
     graphQLType: GraphQLObjectType,
     updateCallback: UpdateCallback<TSource, TContext>,
-    updateOptions?: UpdateOptions): GraphQLFieldResolver<TSource, TContext> {
+    updateOptions?: UpdateOptions,
+    isUpsert = false): GraphQLFieldResolver<TSource, TContext> {
     if (!isType(graphQLType)) throw 'getMongoDbUpdateResolver must recieve a graphql type';
     if (typeof updateCallback !== 'function') throw 'getMongoDbUpdateResolver must recieve an updateCallback';
     const requiredUpdateOptions = { ...defaultUpdateOptions, ...updateOptions };
@@ -397,12 +398,11 @@ export function getUpdateResolver<TSource, TContext>(
         const filter = getMongoDbFilter(simpleType, args.filter);
 
         if (requiredUpdateOptions.validateUpdateArgs) validateUpdateArgs(args.update, graphQLType, requiredUpdateOptions);
-        const mongoUpdate = getMongoDbUpdate(args.update, requiredUpdateOptions.overwrite);
+        const mongoUpdate = getMongoDbUpdate(isUpsert ? { set: args.update } : args.update, requiredUpdateOptions.overwrite);
         const projection = requiredUpdateOptions.differentOutputType ? undefined : getMongoDbProjection(info, graphQLType, requiredUpdateOptions);
         return await updateCallback(filter, mongoUpdate.update, mongoUpdate.options, projection, source, args, context, info);
     };
 }
-
 
 type QueryFields = 'plural' | 'singular';
 
@@ -464,6 +464,46 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
     return fields;
 }
 
+/**
+ * Validates relationship fields in the update object and returns the parsed MongoDB update object.
+ * 
+ * This function iterates over the fields of the update object, performs validation on relationship fields,
+ * and constructs a new update object with the validated fields.
+ * 
+ * @param {GraphQLObjectType} Type - The GraphQL object type representing the schema of the object being updated.
+ * @param {Record<string, any>} updateArg - The Graphql arguments passed to the mutation.
+ * @param {UpdateObj} updateObj - The mongodb update object.
+ * @param {Context} context - The current Graphql context.
+ * 
+ * @returns {Promise<Record<string, any>>} - A promise that resolves to the parsed MongoDB update object, 
+ * where relationship fields have been validated and processed.
+ * 
+ * @async
+ */
+async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Record<string, any>, updateObj: UpdateObj, context: Context) {
+
+    const parsedUpdate: any = {};
+
+    const fields = Type.toConfig().fields;
+
+    for (const [key, value] of Object.entries(updateObj.$set as Record<string, any>)) {
+
+        if (key.endsWith('.link')) {
+
+            const name = key.slice(0, -5);
+            const field = fields[name];
+
+            await (field.extensions!.relationship as any).linkValidation(updateArg, context);
+
+            parsedUpdate[name] = value;
+        }
+        else {
+            parsedUpdate[key] = value;
+        }
+    }
+
+    return parsedUpdate;
+}
 
 type Data = { [key: string]: any }
 
@@ -534,25 +574,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             args: { data: { type: new GraphQLNonNull(getInsertType(Type)) } },
             resolve: async (_: unknown, { data }: { data: Data }, context, info) => {
 
-                const insert: any = {};
-
-                const fields = Type.toConfig().fields;
-
-                for (const [name, value] of Object.entries(data)) {
-
-                    if (value?.link && typeof value.link !== 'function') {
-
-                        const field = fields[name];
-
-                        await (field.extensions!.relationship as any).linkValidation(data, context);
-
-                        insert[name] = value.link;
-                    }
-                    else {
-                        insert[name] = value;
-                    }
-                }
-
+                const insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
@@ -571,12 +593,16 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`insertMany${pluralName}`] = {
             type: InsertManyPayload,
             args: { data: { type: new GraphQLNonNull(new GraphQLList(getInsertType(Type))) } },
-            resolve: async (_: unknown, { data }, context) => {
+            resolve: async (_: unknown, { data }: { data: Array<any> }, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                const result = await collection.insertMany(data);
+                const insert = await Promise.all(data.map(async (item) => {
+                    return await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
+                }));
+
+                const result = await collection.insertMany(insert);
 
                 return { insertedIds: Object.values(result.insertedIds) };
             },
@@ -593,26 +619,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-
-                const update: any = {};
-
-                const fields = Type.toConfig().fields;
-
-                for (const [key, value] of Object.entries(mongoUpdate.$set as Record<string, any>)) {
-
-                    if (key.endsWith('.link')) {
-
-                        const name = key.slice(0, -5);
-                        const field = fields[name];
-
-                        await (field.extensions!.relationship as any).linkValidation(args.update.set, context);
-
-                        update[name] = value;
-                    }
-                    else {
-                        update[key] = value;
-                    }
-                }
+                const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
 
                 await collection.updateOne(filter, { $set: update }, options);
 
@@ -628,12 +635,14 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`updateMany${pluralName}`] = {
             type: UpdateManyPayload,
             args: getUpdateArgs(Type),
-            resolve: getUpdateResolver(Type, async (filter, update, options, projection, obj, args, context) => {
+            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
 
-                const result = await collection.updateMany(filter, update, options);
+                const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+
+                const result = await collection.updateMany(filter, { $set: update }, options);
 
                 return { modifiedCount: result.modifiedCount!, matchedCount: result.matchedCount };
             }, {
@@ -648,17 +657,19 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`upsertOne${singularName}`] = {
             type: Type,
             args: { filter: { type: new GraphQLNonNull(getFilterType(Type)) as any }, update: { type: new GraphQLNonNull(getInsertType(Type)) } },
-            resolve: getUpdateResolver(Type, async (filter, _, options, projection, obj, { update }, context: Context) => {
+            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context: Context) => {
 
                 const db = context.client.db(databaseName);
                 const collection = db.collection(collectionName);
+
+                const update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
 
                 await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
 
                 const updated = await collection.findOne(filter);
 
                 return updated;
-            }),
+            }, {}, true),
         }
     }
 
