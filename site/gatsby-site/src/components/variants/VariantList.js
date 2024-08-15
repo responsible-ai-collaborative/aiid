@@ -176,7 +176,7 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
   const [findIncidentVariants, { data: incidentData, refetch: refetchVariants }] = useLazyQuery(
     FIND_INCIDENT_VARIANTS,
     {
-      variables: { incident_id: incidentId },
+      variables: { incident_id: { EQ: incidentId } },
     }
   );
 

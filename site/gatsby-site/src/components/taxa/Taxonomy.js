@@ -17,7 +17,42 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
 
   const [editing, setEditing] = useState(initialEditing);
 
-  const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
+  const { hasLong, topClassifications } = getTopClassifications({ taxonomy });
+
+  const singleColumn = hasLong || showAllClassifications;
+
+  const colorSchemes = {
+    blue: {
+      textColor: 'text-blue-900',
+      borderColor: 'border-blue-200',
+      keyBackround: 'bg-blue-100',
+      valueBackgroundEven: 'bg-[#f6faff]', // A little bit lighter than blue-50
+      valueBackgroundOdd: 'bg-blue-50',
+    },
+    orange: {
+      textColor: 'text-orange-800',
+      borderColor: 'border-orange-200',
+      keyBackround: 'bg-orange-100',
+      valueBackgroundEven: 'bg-[#fffcf9]', // A little bit lighter than orange-50
+      valueBackgroundOdd: 'bg-orange-50',
+    },
+    gray: {
+      textColor: 'text-gray-600',
+      borderColor: 'border-gray-200',
+      keyBackround: 'bg-gray-100',
+      valueBackgroundEven: 'bg-gray-50',
+      valueBackgroundOdd: '',
+    },
+  };
+
+  // Keeping them all gray for the time being
+  // so we can merge and then bikeshed about the colors.
+  const colorSchemesByTaxonomy = {
+    GMF: 'gray',
+    CSETv1: 'gray',
+  };
+
+  const colorScheme = colorSchemes[colorSchemesByTaxonomy[taxonomy.namespace]] || colorSchemes.gray;
 
   return (
     <Card
@@ -28,7 +63,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
     >
       <div
         className={
-          'tw-taxa-card-header tw-card-header bg-gray-50' + (editing && ' sticky top-0 z-50')
+          'tw-taxa-card-header tw-card-header bg-gray-50 ' + (editing && ' sticky top-0 z-50')
         }
       >
         <h4 id={`${taxonomy.namespace}-classifications`} className="pr-0.8">
@@ -71,25 +106,23 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
               </div>
             )}
             {taxonomy.classificationsArray.length > 0 ? (
-              <>
+              <div
+                className={`
+                grid
+                ${singleColumn ? 'grid-cols-[1fr_3fr]' : 'lg:grid-cols-[repeat(4,_auto)]'}
+              `}
+              >
                 {canEdit && (
-                  <div key={'NOTES'} className="tw-classification-container tw-card-body">
+                  <div key={'NOTES'} className="tw-classification-container">
                     <div className="tw-field">
                       <Tooltip content={'Admin notes'}>
                         <p>{'Notes'}</p>
                       </Tooltip>
                     </div>
-                    <Markdown className="w-4/5">{taxonomy.notes}</Markdown>
+                    <Markdown>{taxonomy.notes}</Markdown>
                   </div>
                 )}
-                {taxonomy.classificationsArray
-                  .filter((field) => {
-                    if (showAllClassifications) return true;
-                    if (!showAllClassifications && field.weight >= 50) {
-                      return true;
-                    }
-                    return false;
-                  })
+                {(showAllClassifications ? taxonomy.classificationsArray : topClassifications)
                   .filter(
                     (field) => !(field.renderAs === 'description_toggle' && field.value == 'No')
                   )
@@ -100,26 +133,62 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
 
                     return field;
                   })
-                  .map((field) => (
-                    <div key={field.name} className="tw-classification-container tw-card-body">
-                      <div className="tw-field">
-                        <Tooltip content={field.shortDescription}>
-                          <p>{field.name}</p>
-                        </Tooltip>
-                      </div>
-                      <Markdown className="w-4/5">{field.value}</Markdown>
-                    </div>
-                  ))}
-                {taxonomy.classificationsArray.length > heavyClassifications.length && (
+                  .map((field, i) => {
+                    const isFirst = singleColumn ? i == 0 : i < 2;
+
+                    const isLast = singleColumn
+                      ? i == topClassifications.length - 1
+                      : i > topClassifications.length - 3;
+
+                    const isEven = singleColumn ? i % 2 : i % 4 > 1;
+
+                    return (
+                      <>
+                        <div
+                          className={`
+                          w-[20%] mr-4 ${colorScheme.textColor} font-bold
+                          border-1 ${colorScheme.borderColor} w-full pl-4 pr-2 ${
+                            colorScheme.keyBackround
+                          } 
+                          ${isFirst ? 'border-t-0' : ''} 
+                          ${isLast ? 'border-b-0' : ''} 
+                        `}
+                        >
+                          <Tooltip content={field.shortDescription}>
+                            <p>
+                              {field.name} {field.renderAs}
+                            </p>
+                          </Tooltip>
+                        </div>
+                        <Markdown
+                          className={`
+                          border-1 ${colorScheme.borderColor} pl-4 pr-2
+                          ${
+                            isEven
+                              ? colorScheme.valueBackgroundEven
+                              : colorScheme.valueBackgroundOdd
+                          }
+                          ${isFirst ? 'border-t-0' : ''}
+                          ${isLast ? 'border-b-0' : ''}
+                        `}
+                        >
+                          {field.value}
+                        </Markdown>
+                      </>
+                    );
+                  })}
+                {taxonomy.classificationsArray.length > topClassifications.length && (
                   <button
                     type="button"
-                    className="btn btn-secondary btn-sm w-100"
+                    className={`btn btn-secondary btn-sm w-100 rounded-t-none ${
+                      singleColumn ? 'col-span-2' : 'col-span-2 lg:col-span-4'
+                    }`}
                     onClick={() => setShowAllClassifications(!showAllClassifications)}
                   >
                     Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
                   </button>
                 )}
-              </>
+              </div>
             ) : (
               <div style={{ padding: '0.5em' }}>
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
@@ -144,5 +213,38 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
     </Card>
   );
 };
+
+function getTopClassifications({ taxonomy }) {
+  // We want to have a few attributes shown by default.
+  // If they're all short, we show six of them in two columns.
+  // If any of them are especially long,
+  // then it doesn't look good in two columns
+  // so we put in a single column and include at most four,
+  // but possibly less if the total length is too long.
+  const sortedClassificationsArray = taxonomy.classificationsArray.sort(
+    (a, b) => a.weight - b.weight
+  );
+
+  let topClassifications = sortedClassificationsArray.slice(0, 6);
+
+  const topClassificationsLengths = topClassifications.map((c) => String(c.value).length);
+
+  const hasLong = Math.max(...topClassificationsLengths) > 140;
+
+  if (hasLong) {
+    let totalLength = 0;
+
+    let i;
+
+    for (i = 0; i < topClassificationsLengths.length; i++) {
+      if ((totalLength += topClassificationsLengths[i] > 200 && i > 0)) {
+        break;
+      }
+    }
+    topClassifications = topClassifications.slice(0, Math.min(4, i));
+  }
+
+  return { hasLong, topClassifications };
+}
 
 export default Taxonomy;

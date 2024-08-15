@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLList } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLFloat } from 'graphql';
 import { ObjectIdScalar } from './scalars';
 
 
@@ -31,4 +31,12 @@ export const UpdateManyPayload = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLInt),
         },
     },
+});
+
+export const NlpSimilarIncidentType = new GraphQLObjectType({
+    name: 'IncidentNlp_similar_incident', // this name is to prevent merging warnings when stitching schemas
+    fields: () => ({
+        incident_id: { type: GraphQLInt },
+        similarity: { type: GraphQLFloat }
+    })
 });

@@ -171,10 +171,10 @@ module.exports.processEntities = async (allEntities, entitiesNames, createEntity
     if (!allEntities.find((entity) => entity.entity_id === entityId)) {
       await createEntityMutation({
         variables: {
-          query: {
-            entity_id: entityId,
+          filter: {
+            entity_id: { EQ: entityId },
           },
-          entity: {
+          update: {
             entity_id: entityId,
             name: entityName.customOption ? entityName.label : entityName,
           },

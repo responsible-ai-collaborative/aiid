@@ -3,7 +3,7 @@ name: Deploy Production Branch
 on:
   push:
     branches:
-      - master
+      - main
   schedule:
     - cron: "0 6,18 * * *"
   workflow_dispatch:
@@ -70,6 +70,16 @@ jobs:
       sha: ${{ github.sha }}
       environment: production
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
+
+  call-test-playwright-full:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-full.yml
+    needs: [cache-modifier]
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()

@@ -22,6 +22,8 @@ const config: Config = {
   testMatch: [
     "**/server/tests/**/*.spec.ts",
   ],
+  // TODO: create a database mock per worker
+  maxWorkers: 1,
 };
 
 export default config;
