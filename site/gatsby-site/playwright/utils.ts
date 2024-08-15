@@ -5,7 +5,7 @@ import config from './config';
 import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
-import { init } from './memory-mongo';
+import { seedCollection } from './memory-mongo';
 
 declare module '@playwright/test' {
     interface Request {
@@ -67,7 +67,7 @@ export const test = base.extend<TestFixtures>({
 
             if (customData) {
                 await mockAtlasCustomData(page, userId, customData);
-                await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: customData?.roles ?? [] }] } }, { drop: true });
+                await seedCollection({ database: 'customData', name: 'users', docs: [{ userId, first_name: 'John', last_name: 'Doe', roles: customData.roles ?? [] }], drop: false });
             }
 
             return userId!;
