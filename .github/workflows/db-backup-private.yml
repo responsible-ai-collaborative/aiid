@@ -1,0 +1,73 @@
+name: Private backup to the cloud
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 10 * * 1" # At 10:00 on Monday.
+  workflow_dispatch:
+    inputs:
+      home:
+        description: 'This can be triggered from the GH page'
+        required: false
+        default: 'This is not used'
+
+env:
+  AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-and-run-backups:
+    name: Backup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+  
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          tags: aiid-docker-backup:latest
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_S3_BACKUP_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Generate private backup
+        run: |
+          docker run --rm \
+            -e IS_PUBLIC_BACKUP="false" \
+            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_S3_BACKUP_USER_ACCESS_KEY_ID }}" \
+            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}" \
+            -e TARGET_PRIVATE_BUCKET_URL="${{ vars.AWS_S3_PRIVATE_BUCKET }}" \
+            -e TARGET_PUBLIC_BUCKET_URL="${{ vars.AWS_S3_PUBLIC_BUCKET }}" \
+            -e CLOUDFLARE_ACCOUNT_ID="${{ vars.CLOUDFLARE_ACCOUNT_ID }}" \
+            -e CLOUDFLARE_R2_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}" \
+            -e CLOUDFLARE_R2_SECRET_KEY="${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}" \
+            -e CLOUDFLARE_R2_BUCKET="${{ vars.CLOUDFLARE_R2_PRIVATE_BUCKET }}" \
+            -e BACKUPFILE_PREFIX="backup" \
+            -e MONGODB_HOST="mongo" \
+            -e MONGODB_URI="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod" \
+            -e MONGODB_DBNAME="aiidprod" \
+            -e MONGODB_URI_TRANSLATIONS="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/translations" \
+            -e MONGODB_DBNAME_TRANSLATIONS="translations" \
+            -e MONGODB_USERNAME="${{ secrets.MONGO_BACKUP_USER }}" \
+            -e MONGODB_PASSWORD="${{ secrets.MONGO_BACKUP_USER_PASSWORD }}" \
+            -e MONGODB_AUTHDB="admin" \
+            -v ~:/mab \
+            aiid-docker-backup:latest
+
