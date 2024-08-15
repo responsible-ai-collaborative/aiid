@@ -35,12 +35,6 @@ export const FIND_USERS_BY_ROLE = gql(`
       userId
       first_name
       last_name
-      adminData {
-        email
-        disabled
-        creationDate
-        lastAuthenticationDate
-      }
     }
   }
 `);
