@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated/gql';
 
-export const FIND_CLASSIFICATION = gql`
+export const FIND_CLASSIFICATION = gql(`
   query FindClassifications($query: ClassificationQueryInput) {
     classifications(query: $query) {
       _id
@@ -19,9 +19,9 @@ export const FIND_CLASSIFICATION = gql`
       publish
     }
   }
-`;
+`);
 
-export const UPSERT_CLASSIFICATION = gql`
+export const UPSERT_CLASSIFICATION = gql(`
   mutation UpsertClassification(
     $query: ClassificationQueryInput
     $data: ClassificationInsertInput!
@@ -43,4 +43,4 @@ export const UPSERT_CLASSIFICATION = gql`
       publish
     }
   }
-`;
+`);

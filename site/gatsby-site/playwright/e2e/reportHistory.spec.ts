@@ -16,7 +16,7 @@ test.describe('Report History', () => {
     const { data: { user: userData } } = await query({
       query: gql`
         {
-          user(query: { first_name: "Test", last_name: "User" }) {
+          user(filter: { first_name: { EQ: "Test" }, last_name: { EQ: "User" } }) {
             userId
             first_name
             last_name
@@ -130,7 +130,7 @@ test.describe('Report History', () => {
   });
 
   test('Should refresh Report history if the user go back on the browser', async ({ page, skipOnEmptyEnvironment }) => {
-    await page.goto('/cite/10/');
+    await page.goto('/cite/3/');
 
     await page.locator('button:has-text("Read More")').first().click();
 
@@ -146,11 +146,11 @@ test.describe('Report History', () => {
 
     await waitForRequest('FindReportHistory');
 
-    await expect(page).toHaveURL('/cite/history/?report_number=16&incident_id=10');
+    await expect(page).toHaveURL('/cite/history/?report_number=3&incident_id=3');
 
     await page.goBack();
 
-    await expect(page).toHaveURL('/cite/10/');
+    await expect(page).toHaveURL('/cite/3/');
 
     await page.goForward();
 
@@ -263,8 +263,8 @@ test.describe('Report History', () => {
 
     const updateReportRequest = await waitForRequest('UpdateReport');
     const variables = updateReportRequest.postDataJSON().variables;
-    expect(variables.query.report_number).toBe(updatedReport.report_number);
-    expect(variables.set).toEqual(updatedReport);
+    expect(variables.filter.report_number.EQ).toBe(updatedReport.report_number);
+    expect(variables.update.set).toEqual(updatedReport);
 
     const logReportHistoryRequest = await waitForRequest('logReportHistory');
     const input = logReportHistoryRequest.postDataJSON().variables.input;

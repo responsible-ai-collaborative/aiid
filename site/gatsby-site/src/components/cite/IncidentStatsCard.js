@@ -51,37 +51,51 @@ const IncidentStatsCard = ({
           <Trans>Incident Stats</Trans>
         </h4>
       </Card.Header>
-      <Card.Body className="grid max-w-full p-5 grid-cols-2 lg:grid-cols-1fr-3fr">
-        {STATS.map((stat) => (
+      <div className="p-0 m-0 grid max-w-full grid-cols-2 lg:grid-cols-1fr-3fr [&>*:nth-child(4n)]:bg-gray-50">
+        {STATS.map((stat, i) => (
           <Fragment key={stat.key}>
-            <div className="pr-4 my-0.5">{stat.label}</div>
-            <div>{stats[stat.key]}</div>
+            <div
+              className={`p-4 bg-gray-100 border-1 ${i == 0 ? 'border-t-0' : ''} border-gray-200`}
+            >
+              {stat.label}
+            </div>
+            <div className={`p-4 border-1 ${i == 0 ? 'border-t-0' : ''} border-gray-200`}>
+              {stats[stat.key]}
+            </div>
           </Fragment>
         ))}
 
-        <div className="pr-4 my-0.5">Applied Taxonomies</div>
-        <div>
-          {taxonomiesWithClassifications.map((t, i) => {
-            const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
+        {taxonomiesWithClassifications.length > 0 && (
+          <>
+            <div className={`p-4 bg-gray-100 border-1 border-gray-200  rounded-bl`}>
+              Applied Taxonomies
+            </div>
+            <div className={`p-4 border-1 border-gray-200 border-b-0 rounded-br`}>
+              {taxonomiesWithClassifications
+                .filter((t) => !t.includes('_Annotator,'))
+                .map((t, i) => {
+                  const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
 
-            return (
-              <>
-                {i > 0 && ', '}
-                <a
-                  href={`#${t}-classifications`}
-                  className={`
-                  inline-block  px-2.5 py-0.5 rounded
-                  font-semibold text-xs
-                  bg-${color}-200 text-${color}-800
-                `}
-                >
-                  {t}
-                </a>
-              </>
-            );
-          })}
-        </div>
-      </Card.Body>
+                  return (
+                    <>
+                      {i > 0 && ', '}
+                      <a
+                        href={`#${t}-classifications`}
+                        className={`
+                        inline-block  px-2.5 py-0.5 rounded
+                        font-semibold text-xs
+                        bg-${color}-200 text-${color}-800
+                      `}
+                      >
+                        {t}
+                      </a>
+                    </>
+                  );
+                })}
+            </div>
+          </>
+        )}
+      </div>
     </Card>
   );
 };

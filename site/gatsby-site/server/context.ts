@@ -77,6 +77,11 @@ async function getUserFromHeader(header: string, client: MongoClient) {
 
         const data = await verifyToken(token);
 
+        if (data == 'token expired') {
+            
+            throw new Error('Token expired');
+        }
+
         if (data.sub) {
 
             const userData = await getUser(data.sub, client);
