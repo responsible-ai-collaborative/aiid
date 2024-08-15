@@ -1,4 +1,4 @@
-name: Private backup to the cloud
+name: Public backup to the cloud
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker-db-backup/Dockerfile
           load: true
           tags: aiid-docker-backup:latest
 
@@ -47,10 +47,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Generate private backup
+      - name: Generate public backup
         run: |
           docker run --rm \
-            -e IS_PUBLIC_BACKUP="false" \
+            -e IS_PUBLIC_BACKUP="true" \
             -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_S3_BACKUP_USER_ACCESS_KEY_ID }}" \
             -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}" \
             -e TARGET_PRIVATE_BUCKET_URL="${{ vars.AWS_S3_PRIVATE_BUCKET }}" \
@@ -58,7 +58,7 @@ jobs:
             -e CLOUDFLARE_ACCOUNT_ID="${{ vars.CLOUDFLARE_ACCOUNT_ID }}" \
             -e CLOUDFLARE_R2_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}" \
             -e CLOUDFLARE_R2_SECRET_KEY="${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}" \
-            -e CLOUDFLARE_R2_BUCKET="${{ vars.CLOUDFLARE_R2_PRIVATE_BUCKET }}" \
+            -e CLOUDFLARE_R2_BUCKET="${{ vars.CLOUDFLARE_R2_PUBLIC_BUCKET }}" \
             -e BACKUPFILE_PREFIX="backup" \
             -e MONGODB_HOST="mongo" \
             -e MONGODB_URI="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod" \
