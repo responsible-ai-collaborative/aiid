@@ -464,6 +464,13 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
     return fields;
 }
 
+class LinkValidationError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "LinkValidationError";
+    }
+}
+
 /**
  * Validates relationship fields in the update object and returns the parsed MongoDB update object.
  * 
@@ -480,7 +487,7 @@ export function generateQueryFields({ collectionName, databaseName = 'aiidprod',
  * 
  * @async
  */
-async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Record<string, any>, updateObj: UpdateObj, context: Context) {
+async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Record<string, any>, updateObj: UpdateObj, context: Context): Promise<Record<string, unknown> | Error> {
 
     const parsedUpdate: any = {};
 
@@ -492,6 +499,7 @@ async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Recor
 
             const name = key.slice(0, -5);
             const field = fields[name];
+
 
             await (field.extensions!.relationship as any).linkValidation(updateArg, context);
 
@@ -574,16 +582,28 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             args: { data: { type: new GraphQLNonNull(getInsertType(Type)) } },
             resolve: async (_: unknown, { data }: { data: Data }, context, info) => {
 
-                const insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
+                try {
 
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
+                    const insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
 
-                const result = await collection.insertOne(insert);
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
 
-                const inserted = await collection.findOne({ _id: result.insertedId });
+                    const result = await collection.insertOne(insert);
 
-                return inserted;
+                    const inserted = await collection.findOne({ _id: result.insertedId });
+
+                    return inserted;
+                }
+                catch (e) {
+
+                    if (e instanceof LinkValidationError) {
+
+                        return e;
+                    }
+
+                    throw e;
+                }
             },
         }
     }
@@ -595,16 +615,28 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             args: { data: { type: new GraphQLNonNull(new GraphQLList(getInsertType(Type))) } },
             resolve: async (_: unknown, { data }: { data: Array<any> }, context) => {
 
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
+                try {
 
-                const insert = await Promise.all(data.map(async (item) => {
-                    return await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
-                }));
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
 
-                const result = await collection.insertMany(insert);
+                    const insert = await Promise.all(data.map(async (item) => {
+                        return await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
+                    }));
 
-                return { insertedIds: Object.values(result.insertedIds) };
+                    const result = await collection.insertMany(insert);
+
+                    return { insertedIds: Object.values(result.insertedIds) };
+                }
+                catch (e) {
+
+                    if (e instanceof LinkValidationError) {
+
+                        return e;
+                    }
+
+                    throw e;
+                }
             },
         }
     }
@@ -616,16 +648,28 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             args: getUpdateArgs(Type),
             resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
 
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
+                try {
 
-                const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
 
-                await collection.updateOne(filter, { $set: update }, options);
+                    const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
 
-                const updated = await collection.findOne(filter);
+                    await collection.updateOne(filter, { $set: update }, options);
 
-                return updated;
+                    const updated = await collection.findOne(filter);
+
+                    return updated;
+                }
+                catch (e) {
+
+                    if (e instanceof LinkValidationError) {
+
+                        return e;
+                    }
+
+                    throw e;
+                }
             }),
         }
     }
@@ -637,14 +681,24 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             args: getUpdateArgs(Type),
             resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
 
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
+                try {
 
-                const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
 
-                const result = await collection.updateMany(filter, { $set: update }, options);
+                    const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
 
-                return { modifiedCount: result.modifiedCount!, matchedCount: result.matchedCount };
+                    const result = await collection.updateMany(filter, { $set: update }, options);
+
+                    return { modifiedCount: result.modifiedCount!, matchedCount: result.matchedCount };
+                }
+                catch (e) {
+
+                    if (e instanceof LinkValidationError) {
+
+                        return e;
+                    }
+                }
             }, {
                 differentOutputType: true,
                 validateUpdateArgs: true,
@@ -659,16 +713,27 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
             args: { filter: { type: new GraphQLNonNull(getFilterType(Type)) as any }, update: { type: new GraphQLNonNull(getInsertType(Type)) } },
             resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context: Context) => {
 
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
+                try {
 
-                const update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
 
-                await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
+                    const update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
 
-                const updated = await collection.findOne(filter);
+                    await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
 
-                return updated;
+                    const updated = await collection.findOne(filter);
+
+                    return updated;
+                }
+                catch (e) {
+                    if (e instanceof LinkValidationError) {
+
+                        return e;
+                    }
+
+                    throw e;
+                }
             }, {}, true),
         }
     }
@@ -743,7 +808,7 @@ export const apiRequest = async ({ path, method = "GET" }: { method?: string, pa
  *                     - `linkType`: The expected type for the relationship.
  *                     - `linkValidation`: A function that checks if the supplied IDs for the relationship are valid by verifying their existence in the specified collection.
  * 
- * @throws {Error} Throws an error if the linked entity IDs are invalid or do not exist in the specified collection.
+ * @throws {LinkValidationError} Throws an error if the linked IDs are invalid or do not exist in the specified collection.
  */
 export const getListRelationshipExtension = (
     sourceField: string,
@@ -764,7 +829,7 @@ export const getListRelationshipExtension = (
 
             if (result.length !== source[sourceField].link.length) {
 
-                throw new Error(`Invalid entity ids`);
+                throw new LinkValidationError(`Invalid linked ids: ${sourceField} -> [${source[sourceField].link.join(',')}]`);
             }
         }
     }
@@ -868,7 +933,7 @@ export const getRelationshipExtension = (
 
             if (!result) {
 
-                throw new Error(`Invalid entity id`);
+                throw new LinkValidationError(`Invalid linked id: ${sourceField} -> ${source[sourceField].link}`);
             }
         }
     }
