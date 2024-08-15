@@ -91,18 +91,6 @@ async function handler(event) {
     results.push(result);
   }
 
-  // Manually run the cors middleware
-  // https://www.gatsbyjs.com/docs/reference/functions/middleware-and-helpers/#custom-middleware
-
-  await new Promise((resolve, reject) => {
-    cors(req, {}, (result) => {
-      if (result instanceof Error) {
-        reject(result);
-      }
-      resolve(result);
-    });
-  });
-
   return {
     statusCode: 200,
     body: JSON.stringify({ results }),
