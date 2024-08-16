@@ -1,8 +1,8 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const FIND_VARIANTS = gql`
-  query FindVariants($filter: ReportFilterType) {
-    reports(filter: $filter) {
+export const FIND_VARIANTS = gql(`
+  query FindVariants {
+    reports(filter: { OR: [{ title: { EQ: "" } }, { url: { EQ: "" } }, { source_domain: { EQ: "" } }] }) {
       submitters
       date_published
       report_number
@@ -24,9 +24,9 @@ export const FIND_VARIANTS = gql`
       inputs_outputs
     }
   }
-`;
+`);
 
-export const FIND_INCIDENT_VARIANTS = gql`
+export const FIND_INCIDENT_VARIANTS = gql(`
   query FindIncidentVariants($incident_id: Int!) {
     incident(filter: { incident_id: { EQ: $incident_id } }) {
       incident_id
@@ -42,9 +42,9 @@ export const FIND_INCIDENT_VARIANTS = gql`
       }
     }
   }
-`;
+`);
 
-export const FIND_VARIANT = gql`
+export const FIND_VARIANT = gql(`
   query FindVariant($filter: ReportFilterType) {
     report(filter: $filter) {
       report_number
@@ -56,18 +56,18 @@ export const FIND_VARIANT = gql`
       inputs_outputs
     }
   }
-`;
+`);
 
-export const CREATE_VARIANT = gql`
+export const CREATE_VARIANT = gql(`
   mutation CreateVariant($input: CreateVariantInput!) {
     createVariant(input: $input) {
       incident_id
       report_number
     }
   }
-`;
+`);
 
-export const UPDATE_VARIANT = gql`
+export const UPDATE_VARIANT = gql(`
   mutation UpdateVariant($filter: ReportFilterType!, $update: ReportUpdateType!) {
     updateOneReport(filter: $filter, update: $update) {
       url
@@ -90,12 +90,12 @@ export const UPDATE_VARIANT = gql`
       language
     }
   }
-`;
+`);
 
-export const DELETE_VARIANT = gql`
+export const DELETE_VARIANT = gql(`
   mutation DeleteOneVariant($filter: ReportFilterType!) {
     deleteOneReport(filter: $filter) {
       report_number
     }
   }
-`;
+`);

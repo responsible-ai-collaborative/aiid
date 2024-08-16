@@ -206,14 +206,6 @@
         @apply bg-light-gray text-deep-blue border-disable-gray z-2;
     }
 
-    .tw-classification-container {
-        @apply flex flex-row justify-start w-full flex-auto p-4;
-    }
-
-    .tw-field {
-        @apply w-[20%] border-r-2.5 mr-4 border-border-light-gray text-default-gray font-bold;
-    }
-
     .tw-taxa-card-header {
         @apply flex flex-row justify-start items-center     
     }

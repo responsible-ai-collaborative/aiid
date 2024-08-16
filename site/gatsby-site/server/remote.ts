@@ -43,7 +43,7 @@ const ignoreTypes = [
     // 'Entity', *
     // 'EntityQueryInput', *
 
-    'User',
+    // 'User', *
     // 'UserQueryInput', *
 
     'Submission',
