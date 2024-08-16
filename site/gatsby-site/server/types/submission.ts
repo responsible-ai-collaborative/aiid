@@ -66,3 +66,5 @@ SubmissionType.getFields().harmed_parties.dependencies = ['harmed_parties']
 SubmissionType.getFields().incident_editors.dependencies = ['incident_editors']
 //@ts-ignore
 SubmissionType.getFields().user.dependencies = ['user']
+//@ts-ignore
+SubmissionType.getFields().implicated_systems.dependencies = ['implicated_systems']

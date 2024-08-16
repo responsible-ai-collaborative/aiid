@@ -1,6 +1,6 @@
 import { Submission } from '../../../server/generated/graphql'
 
-type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors'>
+type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors' | 'implicated_systems'>
     & { developers: string[] }
     & { deployers: string[] }
     & { harmed_parties: string[] }
