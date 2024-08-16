@@ -49,12 +49,14 @@ function EditEntityPage(props) {
     try {
       await updateEntityMutation({
         variables: {
-          query: {
-            entity_id: entityId,
+          filter: {
+            entity_id: { EQ: entityId },
           },
-          set: {
-            name: values.name,
-            date_modified: new Date(),
+          update: {
+            set: {
+              name: values.name,
+              // date_modified: new Date(), // TODO: temporarily remove date_modified
+            },
           },
         },
       });
