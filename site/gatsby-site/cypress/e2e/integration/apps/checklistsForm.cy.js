@@ -21,7 +21,7 @@ describe('Checklists App Form', () => {
   const usersQuery = {
     query: gql`
       {
-        users(limit: 9999) {
+        users {
           userId
           roles
           adminData {
