@@ -27,7 +27,7 @@ import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
 
 const UPDATE_REPORT_TRANSLATION = gql`
-  mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
+  mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput!) {
     updateOneReportTranslation(input: $input) {
       report_number
     }
@@ -74,13 +74,13 @@ function EditCitePage(props) {
     loading: loadingReport,
     refetch: refetchReport,
   } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
-    variables: { query: { report_number: reportNumber } },
+    variables: { filter: { report_number: { EQ: reportNumber } } },
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const { data: currentReportData } = useQuery(FIND_REPORT, {
-    variables: { query: { report_number: reportNumber } },
+    variables: { filter: { report_number: { EQ: reportNumber } } },
   });
 
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
@@ -95,10 +95,8 @@ function EditCitePage(props) {
     refetch: refetchIncidents,
   } = useQuery(FIND_INCIDENTS, {
     variables: {
-      query: {
-        reports_in: {
-          report_number: reportNumber,
-        },
+      filter: {
+        reports: { IN: [reportNumber] },
       },
     },
   });
@@ -197,12 +195,14 @@ function EditCitePage(props) {
 
       await updateReport({
         variables: {
-          query: {
-            report_number: reportNumber,
+          filter: {
+            report_number: { EQ: reportNumber },
           },
-          set: {
-            ...updated,
-            plain_text: await stripMarkdown(updated.text),
+          update: {
+            set: {
+              ...updated,
+              plain_text: await stripMarkdown(updated.text),
+            },
           },
         },
       });
@@ -253,8 +253,8 @@ function EditCitePage(props) {
     try {
       await deleteReport({
         variables: {
-          query: {
-            report_number: reportNumber,
+          filter: {
+            report_number: { EQ: reportNumber },
           },
         },
       });

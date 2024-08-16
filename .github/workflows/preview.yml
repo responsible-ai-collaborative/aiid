@@ -70,6 +70,16 @@ jobs:
       environment: staging
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
+  call-test-playwright-full:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-full.yml
+    needs: permissions-check
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
+
   call-deploy:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/deploy.yml

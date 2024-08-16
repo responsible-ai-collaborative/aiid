@@ -1,4 +1,5 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+/* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -6,7 +7,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -22,6 +22,60 @@ export type Scalars = {
 export type AppUser = {
   __typename?: 'AppUser';
   email?: Maybe<Scalars['String']['output']>;
+};
+
+/** Filter type for Boolean scalar */
+export type BooleanFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Boolean']['input']>;
+  /** DEPRECATED: use NE */
+  NEQ?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
+  /** $not */
+  NOT?: InputMaybe<BooleanNotFilter>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  opr?: InputMaybe<Opr>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  value?: InputMaybe<Scalars['Boolean']['input']>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  values?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
+};
+
+/** Filter type for $not of Boolean scalar */
+export type BooleanNotFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Boolean']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>;
 };
 
 export type Candidate = {
@@ -738,9 +792,11 @@ export type Classification = {
   __typename?: 'Classification';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   attributes?: Maybe<Array<Maybe<ClassificationAttribute>>>;
+  incidents: Array<Maybe<Incident>>;
   namespace: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   publish?: Maybe<Scalars['Boolean']['output']>;
+  reports: Array<Maybe<Report>>;
 };
 
 export type ClassificationAttribute = {
@@ -884,13 +940,19 @@ export type CreateDefaultAdminUserInput = {
 
 export type CreateVariantInput = {
   incidentId?: InputMaybe<Scalars['Int']['input']>;
+  /** Details about the variant. */
   variant?: InputMaybe<CreateVariantInputVariant>;
 };
 
+/** Input details for the variant, including publication date, inputs/outputs, submitters, and text. */
 export type CreateVariantInputVariant = {
+  /** The date when the variant was published. */
   date_published?: InputMaybe<Scalars['String']['input']>;
+  /** List of inputs and outputs related to the variant. */
   inputs_outputs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** List of submitters associated with the variant. */
   submitters?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** The textual content of the variant. */
   text?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -898,6 +960,60 @@ export type CreateVariantPayload = {
   __typename?: 'CreateVariantPayload';
   incident_id?: Maybe<Scalars['Int']['output']>;
   report_number?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Filter type for DateTime scalar */
+export type DateTimeFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['DateTime']['input']>;
+  /** DEPRECATED: use NE */
+  NEQ?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  /** $not */
+  NOT?: InputMaybe<DateTimeNotFilter>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  opr?: InputMaybe<Opr>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  value?: InputMaybe<Scalars['DateTime']['input']>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  values?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+};
+
+/** Filter type for $not of DateTime scalar */
+export type DateTimeNotFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['DateTime']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
 };
 
 export type DefaultAdminUser = {
@@ -977,6 +1093,34 @@ export type DuplicateUpdateInput = {
   true_incident_number_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type Embedding = {
+  __typename?: 'Embedding';
+  from_text_hash?: Maybe<Scalars['String']['output']>;
+  vector?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
+};
+
+export type EmbeddingInsertType = {
+  from_text_hash?: InputMaybe<Scalars['String']['input']>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type EmbeddingObjectFilterType = {
+  from_text_hash?: InputMaybe<StringFilter>;
+  opr?: InputMaybe<OprExists>;
+  vector?: InputMaybe<FloatFilter>;
+};
+
+export type EmbeddingSetObjectType = {
+  /** If set to true, the object would be overwriten entirely, including fields that are not specified. Non-null validation rules will apply. Once set to true, any child object will overwriten invariably of the value set to this field. */
+  _OVERWRITE?: InputMaybe<Scalars['Boolean']['input']>;
+  from_text_hash?: InputMaybe<Scalars['String']['input']>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type EmbeddingSortType = {
+  from_text_hash?: InputMaybe<SortType>;
+};
+
 export type Entity = {
   __typename?: 'Entity';
   _id?: Maybe<Scalars['ObjectId']['output']>;
@@ -986,10 +1130,27 @@ export type Entity = {
   name: Scalars['String']['output'];
 };
 
+export type EntityFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<EntityFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<EntityFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<EntityFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
+  entity_id?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+};
+
 export type EntityInsertInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date_modified?: InputMaybe<Scalars['DateTime']['input']>;
+  entity_id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type EntityInsertType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
   entity_id: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
@@ -1044,6 +1205,13 @@ export type EntityQueryInput = {
   name_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type EntitySetType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
+  entity_id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export enum EntitySortByInput {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
@@ -1057,6 +1225,13 @@ export enum EntitySortByInput {
   IdDesc = '_ID_DESC'
 }
 
+export type EntitySortType = {
+  _id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
+  entity_id?: InputMaybe<SortType>;
+  name?: InputMaybe<SortType>;
+};
+
 export type EntityUpdateInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1068,6 +1243,64 @@ export type EntityUpdateInput = {
   entity_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_unset?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type EntityUpdateType = {
+  set?: InputMaybe<EntitySetType>;
+};
+
+/** Filter type for Float scalar */
+export type FloatFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Float']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Float']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Float']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Float']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Float']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Float']['input']>;
+  /** DEPRECATED: use NE */
+  NEQ?: InputMaybe<Scalars['Float']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+  /** $not */
+  NOT?: InputMaybe<FloatNotFilter>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  opr?: InputMaybe<Opr>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  value?: InputMaybe<Scalars['Float']['input']>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  values?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+/** Filter type for $not of Float scalar */
+export type FloatNotFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Float']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Float']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Float']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Float']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Float']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Float']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
 };
 
 export type GetUserInput = {
@@ -1863,6 +2096,28 @@ export type History_ReportUpdateInput = {
   user_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type Incident = {
+  __typename?: 'Incident';
+  AllegedDeployerOfAISystem?: Maybe<Array<Maybe<Entity>>>;
+  AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Entity>>>;
+  AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Entity>>>;
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  date: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  editor_notes?: Maybe<Scalars['String']['output']>;
+  editor_similar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  editors: Array<Maybe<User>>;
+  embedding?: Maybe<IncidentEmbedding>;
+  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
+  flagged_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  incident_id: Scalars['Int']['output'];
+  nlp_similar_incidents?: Maybe<Array<Maybe<IncidentNlp_Similar_Incident>>>;
+  reports: Array<Maybe<Report>>;
+  title: Scalars['String']['output'];
+  tsne?: Maybe<IncidentTsne>;
+};
+
 export type IncidentAllegedDeployerOfAiSystemRelationInput = {
   create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
   link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -1878,9 +2133,20 @@ export type IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput = {
   link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type IncidentAllegeddeployerofaisystemRelationInput = {
+  link: Array<InputMaybe<Scalars['String']['input']>>;
+};
+
+export type IncidentAllegeddeveloperofaisystemRelationInput = {
+  link: Array<InputMaybe<Scalars['String']['input']>>;
+};
+
+export type IncidentAllegedharmedornearlyharmedpartiesRelationInput = {
+  link: Array<InputMaybe<Scalars['String']['input']>>;
+};
+
 export type IncidentEditorsRelationInput = {
-  create?: InputMaybe<Array<InputMaybe<UserInsertInput>>>;
-  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  link: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type IncidentEmbedding = {
@@ -1892,6 +2158,17 @@ export type IncidentEmbedding = {
 export type IncidentEmbeddingInsertInput = {
   from_reports?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type IncidentEmbeddingInsertType = {
+  from_reports?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type IncidentEmbeddingObjectFilterType = {
+  from_reports?: InputMaybe<IntFilter>;
+  opr?: InputMaybe<OprExists>;
+  vector?: InputMaybe<FloatFilter>;
 };
 
 export type IncidentEmbeddingQueryInput = {
@@ -1907,11 +2184,47 @@ export type IncidentEmbeddingQueryInput = {
   vector_nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
 };
 
+export type IncidentEmbeddingSetObjectType = {
+  /** If set to true, the object would be overwriten entirely, including fields that are not specified. Non-null validation rules will apply. Once set to true, any child object will overwriten invariably of the value set to this field. */
+  _OVERWRITE?: InputMaybe<Scalars['Boolean']['input']>;
+  from_reports?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type IncidentEmbeddingSortType = {
+  /** IGNORE. Due to limitations of the package, objects with no sortable fields are not ommited. GraphQL input object types must have at least one field */
+  _FICTIVE_SORT?: InputMaybe<SortType>;
+};
+
 export type IncidentEmbeddingUpdateInput = {
   from_reports?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   from_reports_unset?: InputMaybe<Scalars['Boolean']['input']>;
   vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type IncidentFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
+  AllegedDeployerOfAISystem?: InputMaybe<StringFilter>;
+  AllegedDeveloperOfAISystem?: InputMaybe<StringFilter>;
+  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<StringFilter>;
+  NOR?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  date?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  editor_dissimilar_incidents?: InputMaybe<IntFilter>;
+  editor_notes?: InputMaybe<StringFilter>;
+  editor_similar_incidents?: InputMaybe<IntFilter>;
+  editors?: InputMaybe<StringFilter>;
+  embedding?: InputMaybe<IncidentEmbeddingObjectFilterType>;
+  epoch_date_modified?: InputMaybe<IntFilter>;
+  flagged_dissimilar_incidents?: InputMaybe<IntFilter>;
+  incident_id?: InputMaybe<IntFilter>;
+  nlp_similar_incidents?: InputMaybe<IncidentNlp_Similar_IncidentObjectFilterType>;
+  reports?: InputMaybe<IntFilter>;
+  title?: InputMaybe<StringFilter>;
+  tsne?: InputMaybe<IncidentTsneObjectFilterType>;
 };
 
 export type IncidentInsertInput = {
@@ -1924,15 +2237,34 @@ export type IncidentInsertInput = {
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_notes?: InputMaybe<Scalars['String']['input']>;
   editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editors: IncidentEditorsRelationInput;
   embedding?: InputMaybe<IncidentEmbeddingInsertInput>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   incident_id: Scalars['Int']['input'];
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentInsertInput>>>;
-  reports: IncidentReportsRelationInput;
   title: Scalars['String']['input'];
   tsne?: InputMaybe<IncidentTsneInsertInput>;
+};
+
+export type IncidentInsertType = {
+  AllegedDeployerOfAISystem?: InputMaybe<IncidentAllegeddeployerofaisystemRelationInput>;
+  AllegedDeveloperOfAISystem?: InputMaybe<IncidentAllegeddeveloperofaisystemRelationInput>;
+  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<IncidentAllegedharmedornearlyharmedpartiesRelationInput>;
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  date: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editors?: InputMaybe<IncidentEditorsRelationInput>;
+  embedding?: InputMaybe<IncidentEmbeddingInsertType>;
+  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
+  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_id: Scalars['Int']['input'];
+  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentInsertType>>>;
+  reports?: InputMaybe<IncidentReportsRelationInput>;
+  title: Scalars['String']['input'];
+  tsne?: InputMaybe<IncidentTsneInsertType>;
 };
 
 export type IncidentNlp_Similar_Incident = {
@@ -1944,6 +2276,17 @@ export type IncidentNlp_Similar_Incident = {
 export type IncidentNlp_Similar_IncidentInsertInput = {
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   similarity?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type IncidentNlp_Similar_IncidentInsertType = {
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  similarity?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type IncidentNlp_Similar_IncidentObjectFilterType = {
+  incident_id?: InputMaybe<IntFilter>;
+  opr?: InputMaybe<OprExists>;
+  similarity?: InputMaybe<FloatFilter>;
 };
 
 export type IncidentNlp_Similar_IncidentQueryInput = {
@@ -1967,6 +2310,11 @@ export type IncidentNlp_Similar_IncidentQueryInput = {
   similarity_lte?: InputMaybe<Scalars['Float']['input']>;
   similarity_ne?: InputMaybe<Scalars['Float']['input']>;
   similarity_nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type IncidentNlp_Similar_IncidentSetListObjectType = {
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  similarity?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type IncidentNlp_Similar_IncidentUpdateInput = {
@@ -2087,8 +2435,28 @@ export type IncidentQueryInput = {
 };
 
 export type IncidentReportsRelationInput = {
-  create?: InputMaybe<Array<InputMaybe<ReportInsertInput>>>;
-  link?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  link: Array<InputMaybe<Scalars['Int']['input']>>;
+};
+
+export type IncidentSetType = {
+  AllegedDeployerOfAISystem?: InputMaybe<IncidentAllegeddeployerofaisystemRelationInput>;
+  AllegedDeveloperOfAISystem?: InputMaybe<IncidentAllegeddeveloperofaisystemRelationInput>;
+  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<IncidentAllegedharmedornearlyharmedpartiesRelationInput>;
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  date?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editors?: InputMaybe<IncidentEditorsRelationInput>;
+  embedding?: InputMaybe<IncidentEmbeddingSetObjectType>;
+  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
+  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentSetListObjectType>>>;
+  reports?: InputMaybe<IncidentReportsRelationInput>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  tsne?: InputMaybe<IncidentTsneSetObjectType>;
 };
 
 export enum IncidentSortByInput {
@@ -2108,6 +2476,18 @@ export enum IncidentSortByInput {
   IdDesc = '_ID_DESC'
 }
 
+export type IncidentSortType = {
+  _id?: InputMaybe<SortType>;
+  date?: InputMaybe<SortType>;
+  description?: InputMaybe<SortType>;
+  editor_notes?: InputMaybe<SortType>;
+  embedding?: InputMaybe<IncidentEmbeddingSortType>;
+  epoch_date_modified?: InputMaybe<SortType>;
+  incident_id?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  tsne?: InputMaybe<IncidentTsneSortType>;
+};
+
 export type IncidentTsne = {
   __typename?: 'IncidentTsne';
   x?: Maybe<Scalars['Float']['output']>;
@@ -2117,6 +2497,17 @@ export type IncidentTsne = {
 export type IncidentTsneInsertInput = {
   x?: InputMaybe<Scalars['Float']['input']>;
   y?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type IncidentTsneInsertType = {
+  x?: InputMaybe<Scalars['Float']['input']>;
+  y?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type IncidentTsneObjectFilterType = {
+  opr?: InputMaybe<OprExists>;
+  x?: InputMaybe<FloatFilter>;
+  y?: InputMaybe<FloatFilter>;
 };
 
 export type IncidentTsneQueryInput = {
@@ -2140,6 +2531,18 @@ export type IncidentTsneQueryInput = {
   y_lte?: InputMaybe<Scalars['Float']['input']>;
   y_ne?: InputMaybe<Scalars['Float']['input']>;
   y_nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type IncidentTsneSetObjectType = {
+  /** If set to true, the object would be overwriten entirely, including fields that are not specified. Non-null validation rules will apply. Once set to true, any child object will overwriten invariably of the value set to this field. */
+  _OVERWRITE?: InputMaybe<Scalars['Boolean']['input']>;
+  x?: InputMaybe<Scalars['Float']['input']>;
+  y?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type IncidentTsneSortType = {
+  x?: InputMaybe<SortType>;
+  y?: InputMaybe<SortType>;
 };
 
 export type IncidentTsneUpdateInput = {
@@ -2170,7 +2573,6 @@ export type IncidentUpdateInput = {
   editor_notes_unset?: InputMaybe<Scalars['Boolean']['input']>;
   editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_similar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  editors?: InputMaybe<IncidentEditorsRelationInput>;
   editors_unset?: InputMaybe<Scalars['Boolean']['input']>;
   embedding?: InputMaybe<IncidentEmbeddingUpdateInput>;
   embedding_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2184,12 +2586,15 @@ export type IncidentUpdateInput = {
   incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentUpdateInput>>>;
   nlp_similar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  reports?: InputMaybe<IncidentReportsRelationInput>;
   reports_unset?: InputMaybe<Scalars['Boolean']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   title_unset?: InputMaybe<Scalars['Boolean']['input']>;
   tsne?: InputMaybe<IncidentTsneUpdateInput>;
   tsne_unset?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type IncidentUpdateType = {
+  set?: InputMaybe<IncidentSetType>;
 };
 
 export type InsertManyPayload = {
@@ -2252,8 +2657,8 @@ export type IntNotFilter = {
 };
 
 export type LinkReportsToIncidentsInput = {
-  incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  report_numbers?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  report_numbers?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type LogIncidentHistoryPayload = {
@@ -2266,6 +2671,60 @@ export type LogReportHistoryPayload = {
   report_number?: Maybe<Scalars['Int']['output']>;
 };
 
+/** Filter type for Long scalar */
+export type LongFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Long']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Long']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Long']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Long']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Long']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Long']['input']>;
+  /** DEPRECATED: use NE */
+  NEQ?: InputMaybe<Scalars['Long']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  /** $not */
+  NOT?: InputMaybe<LongNotFilter>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  opr?: InputMaybe<Opr>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  value?: InputMaybe<Scalars['Long']['input']>;
+  /** DEPRECATED: Switched to the more intuitive operator fields */
+  values?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+};
+
+/** Filter type for $not of Long scalar */
+export type LongNotFilter = {
+  /** $all */
+  ALL?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  /** $eq */
+  EQ?: InputMaybe<Scalars['Long']['input']>;
+  /** $gt */
+  GT?: InputMaybe<Scalars['Long']['input']>;
+  /** $gte */
+  GTE?: InputMaybe<Scalars['Long']['input']>;
+  /** $in */
+  IN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  /** $lt */
+  LT?: InputMaybe<Scalars['Long']['input']>;
+  /** $lte */
+  LTE?: InputMaybe<Scalars['Long']['input']>;
+  /** $ne */
+  NE?: InputMaybe<Scalars['Long']['input']>;
+  /** $nin */
+  NIN?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createDefaultAdminUser?: Maybe<DefaultAdminUser>;
@@ -2274,63 +2733,55 @@ export type Mutation = {
   deleteManyChecklists?: Maybe<DeleteManyPayload>;
   deleteManyClassifications?: Maybe<DeleteManyPayload>;
   deleteManyDuplicates?: Maybe<DeleteManyPayload>;
-  deleteManyEntities?: Maybe<DeleteManyPayload>;
   deleteManyHistory_incidents?: Maybe<DeleteManyPayload>;
   deleteManyHistory_reports?: Maybe<DeleteManyPayload>;
-  deleteManyIncidents?: Maybe<DeleteManyPayload>;
   deleteManyNotifications?: Maybe<DeleteManyPayload>;
   deleteManyQuickadds?: Maybe<DeleteManyPayload>;
-  deleteManyReports?: Maybe<DeleteManyPayload>;
-  deleteManySubmissions?: Maybe<DeleteManyPayload>;
   deleteManySubscriptions?: Maybe<DeleteManyPayload>;
   deleteManyTaxas?: Maybe<DeleteManyPayload>;
-  deleteManyUsers?: Maybe<DeleteManyPayload>;
   deleteOneCandidate?: Maybe<Candidate>;
   deleteOneChecklist?: Maybe<Checklist>;
   deleteOneClassification?: Maybe<Classification>;
   deleteOneDuplicate?: Maybe<Duplicate>;
-  deleteOneEntity?: Maybe<Entity>;
   deleteOneHistory_incident?: Maybe<History_Incident>;
   deleteOneHistory_report?: Maybe<History_Report>;
   deleteOneNotification?: Maybe<Notification>;
   deleteOneQuickadd?: Maybe<Quickadd>;
+  deleteOneReport?: Maybe<Report>;
   deleteOneSubmission?: Maybe<Submission>;
   deleteOneSubscription?: Maybe<Subscription>;
   deleteOneTaxa?: Maybe<Taxa>;
-  deleteOneUser?: Maybe<User>;
+  flagIncidentSimilarity?: Maybe<Incident>;
+  flagReport?: Maybe<Report>;
   getUser?: Maybe<AppUser>;
   insertManyCandidates?: Maybe<InsertManyPayload>;
   insertManyChecklists?: Maybe<InsertManyPayload>;
   insertManyClassifications?: Maybe<InsertManyPayload>;
   insertManyDuplicates?: Maybe<InsertManyPayload>;
-  insertManyEntities?: Maybe<InsertManyPayload>;
   insertManyHistory_incidents?: Maybe<InsertManyPayload>;
   insertManyHistory_reports?: Maybe<InsertManyPayload>;
-  insertManyIncidents?: Maybe<InsertManyPayload>;
   insertManyNotifications?: Maybe<InsertManyPayload>;
   insertManyQuickadds?: Maybe<InsertManyPayload>;
-  insertManyReports?: Maybe<InsertManyPayload>;
-  insertManySubmissions?: Maybe<InsertManyPayload>;
   insertManySubscriptions?: Maybe<InsertManyPayload>;
   insertManyTaxas?: Maybe<InsertManyPayload>;
-  insertManyUsers?: Maybe<InsertManyPayload>;
   insertOneCandidate?: Maybe<Candidate>;
   insertOneChecklist?: Maybe<Checklist>;
   insertOneClassification?: Maybe<Classification>;
   insertOneDuplicate?: Maybe<Duplicate>;
-  insertOneEntity?: Maybe<Entity>;
   insertOneHistory_incident?: Maybe<History_Incident>;
   insertOneHistory_report?: Maybe<History_Report>;
+  insertOneIncident?: Maybe<Incident>;
   insertOneNotification?: Maybe<Notification>;
   insertOneQuickadd?: Maybe<Quickadd>;
+  insertOneReport?: Maybe<Report>;
   insertOneSubmission?: Maybe<Submission>;
   insertOneSubscription?: Maybe<Subscription>;
   insertOneTaxa?: Maybe<Taxa>;
-  insertOneUser?: Maybe<User>;
+  linkReportsToIncidents?: Maybe<Array<Maybe<Incident>>>;
   logIncidentHistory?: Maybe<LogIncidentHistoryPayload>;
   logReportHistory?: Maybe<LogReportHistoryPayload>;
   processNotifications?: Maybe<Scalars['Int']['output']>;
-  promoteSubmissionToReport?: Maybe<PromoteSubmissionToReportPayload>;
+  promoteSubmissionToReport: PromoteSubmissionToReportPayload;
   replaceOneCandidate?: Maybe<Candidate>;
   replaceOneChecklist?: Maybe<Checklist>;
   replaceOneClassification?: Maybe<Classification>;
@@ -2338,8 +2789,9 @@ export type Mutation = {
   replaceOneEntity?: Maybe<Entity>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
   replaceOneHistory_report?: Maybe<History_Report>;
+  replaceOneIncident?: Maybe<Incident>;
   replaceOneNotification?: Maybe<Notification>;
-  replaceOneSubmission?: Maybe<Submission>;
+  replaceOneReport?: Maybe<Report>;
   replaceOneSubscription?: Maybe<Subscription>;
   replaceOneTaxa?: Maybe<Taxa>;
   replaceOneUser?: Maybe<User>;
@@ -2347,17 +2799,13 @@ export type Mutation = {
   updateManyChecklists?: Maybe<UpdateManyPayload>;
   updateManyClassifications?: Maybe<UpdateManyPayload>;
   updateManyDuplicates?: Maybe<UpdateManyPayload>;
-  updateManyEntities?: Maybe<UpdateManyPayload>;
   updateManyHistory_incidents?: Maybe<UpdateManyPayload>;
   updateManyHistory_reports?: Maybe<UpdateManyPayload>;
   updateManyIncidents?: Maybe<UpdateManyPayload>;
   updateManyNotifications?: Maybe<UpdateManyPayload>;
   updateManyQuickadds?: Maybe<UpdateManyPayload>;
-  updateManyReports?: Maybe<UpdateManyPayload>;
-  updateManySubmissions?: Maybe<UpdateManyPayload>;
   updateManySubscriptions?: Maybe<UpdateManyPayload>;
   updateManyTaxas?: Maybe<UpdateManyPayload>;
-  updateManyUsers?: Maybe<UpdateManyPayload>;
   updateOneCandidate?: Maybe<Candidate>;
   updateOneChecklist?: Maybe<Checklist>;
   updateOneClassification?: Maybe<Classification>;
@@ -2365,8 +2813,11 @@ export type Mutation = {
   updateOneEntity?: Maybe<Entity>;
   updateOneHistory_incident?: Maybe<History_Incident>;
   updateOneHistory_report?: Maybe<History_Report>;
+  updateOneIncident?: Maybe<Incident>;
   updateOneNotification?: Maybe<Notification>;
   updateOneQuickadd?: Maybe<Quickadd>;
+  updateOneReport?: Maybe<Report>;
+  updateOneReportTranslation?: Maybe<Report>;
   updateOneSubmission?: Maybe<Submission>;
   updateOneSubscription?: Maybe<Subscription>;
   updateOneTaxa?: Maybe<Taxa>;
@@ -2379,10 +2830,9 @@ export type Mutation = {
   upsertOneHistory_incident?: Maybe<History_Incident>;
   upsertOneHistory_report?: Maybe<History_Report>;
   upsertOneNotification?: Maybe<Notification>;
-  upsertOneSubmission?: Maybe<Submission>;
+  upsertOneQuickadd?: Maybe<Quickadd>;
   upsertOneSubscription?: Maybe<Subscription>;
   upsertOneTaxa?: Maybe<Taxa>;
-  upsertOneUser?: Maybe<User>;
 };
 
 
@@ -2392,7 +2842,7 @@ export type MutationCreateDefaultAdminUserArgs = {
 
 
 export type MutationCreateVariantArgs = {
-  input?: InputMaybe<CreateVariantInput>;
+  input: CreateVariantInput;
 };
 
 
@@ -2416,11 +2866,6 @@ export type MutationDeleteManyDuplicatesArgs = {
 };
 
 
-export type MutationDeleteManyEntitiesArgs = {
-  query?: InputMaybe<EntityQueryInput>;
-};
-
-
 export type MutationDeleteManyHistory_IncidentsArgs = {
   query?: InputMaybe<History_IncidentQueryInput>;
 };
@@ -2428,11 +2873,6 @@ export type MutationDeleteManyHistory_IncidentsArgs = {
 
 export type MutationDeleteManyHistory_ReportsArgs = {
   query?: InputMaybe<History_ReportQueryInput>;
-};
-
-
-export type MutationDeleteManyIncidentsArgs = {
-  query?: InputMaybe<IncidentQueryInput>;
 };
 
 
@@ -2448,16 +2888,6 @@ export type MutationDeleteManyQuickaddsArgs = {
 };
 
 
-export type MutationDeleteManyReportsArgs = {
-  query?: InputMaybe<ReportQueryInput>;
-};
-
-
-export type MutationDeleteManySubmissionsArgs = {
-  query?: InputMaybe<SubmissionQueryInput>;
-};
-
-
 export type MutationDeleteManySubscriptionsArgs = {
   query?: InputMaybe<SubscriptionQueryInput>;
 };
@@ -2465,11 +2895,6 @@ export type MutationDeleteManySubscriptionsArgs = {
 
 export type MutationDeleteManyTaxasArgs = {
   query?: InputMaybe<TaxaQueryInput>;
-};
-
-
-export type MutationDeleteManyUsersArgs = {
-  query?: InputMaybe<UserQueryInput>;
 };
 
 
@@ -2490,11 +2915,6 @@ export type MutationDeleteOneClassificationArgs = {
 
 export type MutationDeleteOneDuplicateArgs = {
   query: DuplicateQueryInput;
-};
-
-
-export type MutationDeleteOneEntityArgs = {
-  query: EntityQueryInput;
 };
 
 
@@ -2520,8 +2940,17 @@ export type MutationDeleteOneQuickaddArgs = {
 };
 
 
+export type MutationDeleteOneReportArgs = {
+  filter?: InputMaybe<ReportFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ReportSortType>;
+};
+
+
 export type MutationDeleteOneSubmissionArgs = {
-  query: SubmissionQueryInput;
+  filter?: InputMaybe<SubmissionFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<SubmissionSortType>;
 };
 
 
@@ -2535,8 +2964,15 @@ export type MutationDeleteOneTaxaArgs = {
 };
 
 
-export type MutationDeleteOneUserArgs = {
-  query: UserQueryInput;
+export type MutationFlagIncidentSimilarityArgs = {
+  dissimilarIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  incidentId: Scalars['Int']['input'];
+};
+
+
+export type MutationFlagReportArgs = {
+  input: Scalars['Boolean']['input'];
+  report_number: Scalars['Int']['input'];
 };
 
 
@@ -2565,11 +3001,6 @@ export type MutationInsertManyDuplicatesArgs = {
 };
 
 
-export type MutationInsertManyEntitiesArgs = {
-  data: Array<EntityInsertInput>;
-};
-
-
 export type MutationInsertManyHistory_IncidentsArgs = {
   data: Array<History_IncidentInsertInput>;
 };
@@ -2580,28 +3011,13 @@ export type MutationInsertManyHistory_ReportsArgs = {
 };
 
 
-export type MutationInsertManyIncidentsArgs = {
-  data: Array<IncidentInsertInput>;
-};
-
-
 export type MutationInsertManyNotificationsArgs = {
   data: Array<NotificationInsertInput>;
 };
 
 
 export type MutationInsertManyQuickaddsArgs = {
-  data?: InputMaybe<Array<InputMaybe<QuickaddInsertType>>>;
-};
-
-
-export type MutationInsertManyReportsArgs = {
-  data: Array<ReportInsertInput>;
-};
-
-
-export type MutationInsertManySubmissionsArgs = {
-  data: Array<SubmissionInsertInput>;
+  data: Array<InputMaybe<QuickaddInsertType>>;
 };
 
 
@@ -2612,11 +3028,6 @@ export type MutationInsertManySubscriptionsArgs = {
 
 export type MutationInsertManyTaxasArgs = {
   data: Array<TaxaInsertInput>;
-};
-
-
-export type MutationInsertManyUsersArgs = {
-  data: Array<UserInsertInput>;
 };
 
 
@@ -2640,11 +3051,6 @@ export type MutationInsertOneDuplicateArgs = {
 };
 
 
-export type MutationInsertOneEntityArgs = {
-  data: EntityInsertInput;
-};
-
-
 export type MutationInsertOneHistory_IncidentArgs = {
   data: History_IncidentInsertInput;
 };
@@ -2655,18 +3061,28 @@ export type MutationInsertOneHistory_ReportArgs = {
 };
 
 
+export type MutationInsertOneIncidentArgs = {
+  data: IncidentInsertType;
+};
+
+
 export type MutationInsertOneNotificationArgs = {
   data: NotificationInsertInput;
 };
 
 
 export type MutationInsertOneQuickaddArgs = {
-  data?: InputMaybe<QuickaddInsertType>;
+  data: QuickaddInsertType;
+};
+
+
+export type MutationInsertOneReportArgs = {
+  data: ReportInsertType;
 };
 
 
 export type MutationInsertOneSubmissionArgs = {
-  data: SubmissionInsertInput;
+  data: SubmissionInsertType;
 };
 
 
@@ -2680,8 +3096,8 @@ export type MutationInsertOneTaxaArgs = {
 };
 
 
-export type MutationInsertOneUserArgs = {
-  data: UserInsertInput;
+export type MutationLinkReportsToIncidentsArgs = {
+  input: LinkReportsToIncidentsInput;
 };
 
 
@@ -2696,7 +3112,7 @@ export type MutationLogReportHistoryArgs = {
 
 
 export type MutationPromoteSubmissionToReportArgs = {
-  input?: InputMaybe<PromoteSubmissionToReportInput>;
+  input: PromoteSubmissionToReportInput;
 };
 
 
@@ -2742,15 +3158,21 @@ export type MutationReplaceOneHistory_ReportArgs = {
 };
 
 
+export type MutationReplaceOneIncidentArgs = {
+  data: IncidentInsertInput;
+  query?: InputMaybe<IncidentQueryInput>;
+};
+
+
 export type MutationReplaceOneNotificationArgs = {
   data: NotificationInsertInput;
   query?: InputMaybe<NotificationQueryInput>;
 };
 
 
-export type MutationReplaceOneSubmissionArgs = {
-  data: SubmissionInsertInput;
-  query?: InputMaybe<SubmissionQueryInput>;
+export type MutationReplaceOneReportArgs = {
+  data: ReportInsertInput;
+  query?: InputMaybe<ReportQueryInput>;
 };
 
 
@@ -2796,12 +3218,6 @@ export type MutationUpdateManyDuplicatesArgs = {
 };
 
 
-export type MutationUpdateManyEntitiesArgs = {
-  query?: InputMaybe<EntityQueryInput>;
-  set: EntityUpdateInput;
-};
-
-
 export type MutationUpdateManyHistory_IncidentsArgs = {
   query?: InputMaybe<History_IncidentQueryInput>;
   set: History_IncidentUpdateInput;
@@ -2815,8 +3231,8 @@ export type MutationUpdateManyHistory_ReportsArgs = {
 
 
 export type MutationUpdateManyIncidentsArgs = {
-  query?: InputMaybe<IncidentQueryInput>;
-  set: IncidentUpdateInput;
+  filter: IncidentFilterType;
+  update: IncidentUpdateType;
 };
 
 
@@ -2832,18 +3248,6 @@ export type MutationUpdateManyQuickaddsArgs = {
 };
 
 
-export type MutationUpdateManyReportsArgs = {
-  query?: InputMaybe<ReportQueryInput>;
-  set: ReportUpdateInput;
-};
-
-
-export type MutationUpdateManySubmissionsArgs = {
-  query?: InputMaybe<SubmissionQueryInput>;
-  set: SubmissionUpdateInput;
-};
-
-
 export type MutationUpdateManySubscriptionsArgs = {
   query?: InputMaybe<SubscriptionQueryInput>;
   set: SubscriptionUpdateInput;
@@ -2853,12 +3257,6 @@ export type MutationUpdateManySubscriptionsArgs = {
 export type MutationUpdateManyTaxasArgs = {
   query?: InputMaybe<TaxaQueryInput>;
   set: TaxaUpdateInput;
-};
-
-
-export type MutationUpdateManyUsersArgs = {
-  query?: InputMaybe<UserQueryInput>;
-  set: UserUpdateInput;
 };
 
 
@@ -2887,8 +3285,8 @@ export type MutationUpdateOneDuplicateArgs = {
 
 
 export type MutationUpdateOneEntityArgs = {
-  query?: InputMaybe<EntityQueryInput>;
-  set: EntityUpdateInput;
+  filter: EntityFilterType;
+  update: EntityUpdateType;
 };
 
 
@@ -2904,6 +3302,12 @@ export type MutationUpdateOneHistory_ReportArgs = {
 };
 
 
+export type MutationUpdateOneIncidentArgs = {
+  filter: IncidentFilterType;
+  update: IncidentUpdateType;
+};
+
+
 export type MutationUpdateOneNotificationArgs = {
   query?: InputMaybe<NotificationQueryInput>;
   set: NotificationUpdateInput;
@@ -2916,9 +3320,20 @@ export type MutationUpdateOneQuickaddArgs = {
 };
 
 
+export type MutationUpdateOneReportArgs = {
+  filter: ReportFilterType;
+  update: ReportUpdateType;
+};
+
+
+export type MutationUpdateOneReportTranslationArgs = {
+  input: UpdateOneReportTranslationInput;
+};
+
+
 export type MutationUpdateOneSubmissionArgs = {
-  query?: InputMaybe<SubmissionQueryInput>;
-  set: SubmissionUpdateInput;
+  filter: SubmissionFilterType;
+  update: SubmissionUpdateType;
 };
 
 
@@ -2935,8 +3350,8 @@ export type MutationUpdateOneTaxaArgs = {
 
 
 export type MutationUpdateOneUserArgs = {
-  query?: InputMaybe<UserQueryInput>;
-  set: UserUpdateInput;
+  filter: UserFilterType;
+  update: UserUpdateType;
 };
 
 
@@ -2965,8 +3380,8 @@ export type MutationUpsertOneDuplicateArgs = {
 
 
 export type MutationUpsertOneEntityArgs = {
-  data: EntityInsertInput;
-  query?: InputMaybe<EntityQueryInput>;
+  filter: EntityFilterType;
+  update: EntityInsertType;
 };
 
 
@@ -2988,9 +3403,9 @@ export type MutationUpsertOneNotificationArgs = {
 };
 
 
-export type MutationUpsertOneSubmissionArgs = {
-  data: SubmissionInsertInput;
-  query?: InputMaybe<SubmissionQueryInput>;
+export type MutationUpsertOneQuickaddArgs = {
+  filter: QuickaddFilterType;
+  update: QuickaddInsertType;
 };
 
 
@@ -3003,12 +3418,6 @@ export type MutationUpsertOneSubscriptionArgs = {
 export type MutationUpsertOneTaxaArgs = {
   data: TaxaInsertInput;
   query?: InputMaybe<TaxaQueryInput>;
-};
-
-
-export type MutationUpsertOneUserArgs = {
-  data: UserInsertInput;
-  query?: InputMaybe<UserQueryInput>;
 };
 
 export type Notification = {
@@ -3176,15 +3585,20 @@ export enum Opr {
   Nin = 'NIN'
 }
 
+export enum OprExists {
+  Exists = 'EXISTS',
+  NotExists = 'NOT_EXISTS'
+}
+
 export type PaginationType = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type PromoteSubmissionToReportInput = {
-  incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_ids: Array<InputMaybe<Scalars['Int']['input']>>;
   is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
-  submission_id?: InputMaybe<Scalars['ObjectId']['input']>;
+  submission_id: Scalars['ObjectId']['input'];
 };
 
 export type PromoteSubmissionToReportPayload = {
@@ -3205,25 +3619,29 @@ export type Query = {
   classifications: Array<Maybe<Classification>>;
   duplicate?: Maybe<Duplicate>;
   duplicates: Array<Maybe<Duplicate>>;
-  entities: Array<Maybe<Entity>>;
+  entities?: Maybe<Array<Maybe<Entity>>>;
   entity?: Maybe<Entity>;
   history_incident?: Maybe<History_Incident>;
   history_incidents: Array<Maybe<History_Incident>>;
   history_report?: Maybe<History_Report>;
   history_reports: Array<Maybe<History_Report>>;
+  incident?: Maybe<Incident>;
+  incidents?: Maybe<Array<Maybe<Incident>>>;
   notification?: Maybe<Notification>;
   notifications: Array<Maybe<Notification>>;
   quickadd?: Maybe<Quickadd>;
   quickadds?: Maybe<Array<Maybe<Quickadd>>>;
+  report?: Maybe<Report>;
+  reports?: Maybe<Array<Maybe<Report>>>;
   risks?: Maybe<Array<Maybe<RisksPayloadItem>>>;
   submission?: Maybe<Submission>;
-  submissions: Array<Maybe<Submission>>;
+  submissions?: Maybe<Array<Maybe<Submission>>>;
   subscription?: Maybe<Subscription>;
   subscriptions: Array<Maybe<Subscription>>;
   taxa?: Maybe<Taxa>;
   taxas: Array<Maybe<Taxa>>;
   user?: Maybe<User>;
-  users: Array<Maybe<User>>;
+  users?: Maybe<Array<Maybe<User>>>;
 };
 
 
@@ -3276,14 +3694,16 @@ export type QueryDuplicatesArgs = {
 
 
 export type QueryEntitiesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<EntityQueryInput>;
-  sortBy?: InputMaybe<EntitySortByInput>;
+  filter?: InputMaybe<EntityFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<EntitySortType>;
 };
 
 
 export type QueryEntityArgs = {
-  query?: InputMaybe<EntityQueryInput>;
+  filter?: InputMaybe<EntityFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<EntitySortType>;
 };
 
 
@@ -3308,6 +3728,20 @@ export type QueryHistory_ReportsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   query?: InputMaybe<History_ReportQueryInput>;
   sortBy?: InputMaybe<History_ReportSortByInput>;
+};
+
+
+export type QueryIncidentArgs = {
+  filter?: InputMaybe<IncidentFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<IncidentSortType>;
+};
+
+
+export type QueryIncidentsArgs = {
+  filter?: InputMaybe<IncidentFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<IncidentSortType>;
 };
 
 
@@ -3337,20 +3771,36 @@ export type QueryQuickaddsArgs = {
 };
 
 
+export type QueryReportArgs = {
+  filter?: InputMaybe<ReportFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ReportSortType>;
+};
+
+
+export type QueryReportsArgs = {
+  filter?: InputMaybe<ReportFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ReportSortType>;
+};
+
+
 export type QueryRisksArgs = {
   input?: InputMaybe<RisksInput>;
 };
 
 
 export type QuerySubmissionArgs = {
-  query?: InputMaybe<SubmissionQueryInput>;
+  filter?: InputMaybe<SubmissionFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<SubmissionSortType>;
 };
 
 
 export type QuerySubmissionsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<SubmissionQueryInput>;
-  sortBy?: InputMaybe<SubmissionSortByInput>;
+  filter?: InputMaybe<SubmissionFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<SubmissionSortType>;
 };
 
 
@@ -3379,23 +3829,25 @@ export type QueryTaxasArgs = {
 
 
 export type QueryUserArgs = {
-  query?: InputMaybe<UserQueryInput>;
+  filter?: InputMaybe<UserFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<UserSortType>;
 };
 
 
 export type QueryUsersArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<UserQueryInput>;
-  sortBy?: InputMaybe<UserSortByInput>;
+  filter?: InputMaybe<UserFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<UserSortType>;
 };
 
 export type Quickadd = {
   __typename?: 'Quickadd';
   _id?: Maybe<Scalars['ObjectId']['output']>;
-  date_submitted?: Maybe<Scalars['String']['output']>;
+  date_submitted: Scalars['String']['output'];
   incident_id?: Maybe<Scalars['Int']['output']>;
   source_domain?: Maybe<Scalars['String']['output']>;
-  url?: Maybe<Scalars['String']['output']>;
+  url: Scalars['String']['output'];
 };
 
 export type QuickaddFilterType = {
@@ -3409,10 +3861,6 @@ export type QuickaddFilterType = {
   url?: InputMaybe<StringFilter>;
 };
 
-export type QuickaddIncType = {
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
 export type QuickaddInsertInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   date_submitted: Scalars['String']['input'];
@@ -3423,18 +3871,10 @@ export type QuickaddInsertInput = {
 
 export type QuickaddInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  date_submitted?: InputMaybe<Scalars['String']['input']>;
+  date_submitted: Scalars['String']['input'];
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   source_domain?: InputMaybe<Scalars['String']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type QuickaddSetOnInsertType = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  date_submitted?: InputMaybe<Scalars['String']['input']>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['String']['input'];
 };
 
 export type QuickaddSetType = {
@@ -3480,9 +3920,46 @@ export type QuickaddUpdateInput = {
 };
 
 export type QuickaddUpdateType = {
-  inc?: InputMaybe<QuickaddIncType>;
   set?: InputMaybe<QuickaddSetType>;
-  setOnInsert?: InputMaybe<QuickaddSetOnInsertType>;
+};
+
+export type Report = {
+  __typename?: 'Report';
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  authors: Array<Maybe<Scalars['String']['output']>>;
+  cloudinary_id: Scalars['String']['output'];
+  date_downloaded: Scalars['DateTime']['output'];
+  date_modified: Scalars['DateTime']['output'];
+  date_published: Scalars['DateTime']['output'];
+  date_submitted: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  editor_notes?: Maybe<Scalars['String']['output']>;
+  embedding?: Maybe<ReportEmbedding>;
+  epoch_date_downloaded: Scalars['Int']['output'];
+  epoch_date_modified: Scalars['Int']['output'];
+  epoch_date_published: Scalars['Int']['output'];
+  epoch_date_submitted: Scalars['Int']['output'];
+  flag?: Maybe<Scalars['Boolean']['output']>;
+  image_url: Scalars['String']['output'];
+  inputs_outputs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  is_incident_report?: Maybe<Scalars['Boolean']['output']>;
+  language: Scalars['String']['output'];
+  plain_text: Scalars['String']['output'];
+  quiet?: Maybe<Scalars['Boolean']['output']>;
+  report_number: Scalars['Int']['output'];
+  source_domain: Scalars['String']['output'];
+  submitters: Array<Maybe<Scalars['String']['output']>>;
+  tags: Array<Maybe<Scalars['String']['output']>>;
+  text: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  translations?: Maybe<ReportTranslation>;
+  url: Scalars['String']['output'];
+  user?: Maybe<User>;
+};
+
+
+export type ReportTranslationsArgs = {
+  input?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ReportEmbedding = {
@@ -3494,6 +3971,17 @@ export type ReportEmbedding = {
 export type ReportEmbeddingInsertInput = {
   from_text_hash?: InputMaybe<Scalars['String']['input']>;
   vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type ReportEmbeddingInsertType = {
+  from_text_hash?: InputMaybe<Scalars['String']['input']>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type ReportEmbeddingObjectFilterType = {
+  from_text_hash?: InputMaybe<StringFilter>;
+  opr?: InputMaybe<OprExists>;
+  vector?: InputMaybe<FloatFilter>;
 };
 
 export type ReportEmbeddingQueryInput = {
@@ -3514,11 +4002,57 @@ export type ReportEmbeddingQueryInput = {
   vector_nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
 };
 
+export type ReportEmbeddingSetObjectType = {
+  /** If set to true, the object would be overwriten entirely, including fields that are not specified. Non-null validation rules will apply. Once set to true, any child object will overwriten invariably of the value set to this field. */
+  _OVERWRITE?: InputMaybe<Scalars['Boolean']['input']>;
+  from_text_hash?: InputMaybe<Scalars['String']['input']>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type ReportEmbeddingSortType = {
+  from_text_hash?: InputMaybe<SortType>;
+};
+
 export type ReportEmbeddingUpdateInput = {
   from_text_hash?: InputMaybe<Scalars['String']['input']>;
   from_text_hash_unset?: InputMaybe<Scalars['Boolean']['input']>;
   vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type ReportFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<ReportFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<ReportFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<ReportFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  authors?: InputMaybe<StringFilter>;
+  cloudinary_id?: InputMaybe<StringFilter>;
+  date_downloaded?: InputMaybe<DateTimeFilter>;
+  date_modified?: InputMaybe<DateTimeFilter>;
+  date_published?: InputMaybe<DateTimeFilter>;
+  date_submitted?: InputMaybe<DateTimeFilter>;
+  description?: InputMaybe<StringFilter>;
+  editor_notes?: InputMaybe<StringFilter>;
+  embedding?: InputMaybe<ReportEmbeddingObjectFilterType>;
+  epoch_date_downloaded?: InputMaybe<IntFilter>;
+  epoch_date_modified?: InputMaybe<IntFilter>;
+  epoch_date_published?: InputMaybe<IntFilter>;
+  epoch_date_submitted?: InputMaybe<IntFilter>;
+  flag?: InputMaybe<BooleanFilter>;
+  image_url?: InputMaybe<StringFilter>;
+  inputs_outputs?: InputMaybe<StringFilter>;
+  is_incident_report?: InputMaybe<BooleanFilter>;
+  language?: InputMaybe<StringFilter>;
+  plain_text?: InputMaybe<StringFilter>;
+  quiet?: InputMaybe<BooleanFilter>;
+  report_number?: InputMaybe<IntFilter>;
+  source_domain?: InputMaybe<StringFilter>;
+  submitters?: InputMaybe<StringFilter>;
+  tags?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
 };
 
 export type ReportInsertInput = {
@@ -3532,6 +4066,37 @@ export type ReportInsertInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   editor_notes?: InputMaybe<Scalars['String']['input']>;
   embedding?: InputMaybe<ReportEmbeddingInsertInput>;
+  epoch_date_downloaded: Scalars['Int']['input'];
+  epoch_date_modified: Scalars['Int']['input'];
+  epoch_date_published: Scalars['Int']['input'];
+  epoch_date_submitted: Scalars['Int']['input'];
+  flag?: InputMaybe<Scalars['Boolean']['input']>;
+  image_url: Scalars['String']['input'];
+  inputs_outputs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
+  language: Scalars['String']['input'];
+  plain_text: Scalars['String']['input'];
+  quiet?: InputMaybe<Scalars['Boolean']['input']>;
+  report_number: Scalars['Int']['input'];
+  source_domain: Scalars['String']['input'];
+  submitters: Array<InputMaybe<Scalars['String']['input']>>;
+  tags: Array<InputMaybe<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  url: Scalars['String']['input'];
+};
+
+export type ReportInsertType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  authors: Array<InputMaybe<Scalars['String']['input']>>;
+  cloudinary_id: Scalars['String']['input'];
+  date_downloaded: Scalars['DateTime']['input'];
+  date_modified: Scalars['DateTime']['input'];
+  date_published: Scalars['DateTime']['input'];
+  date_submitted: Scalars['DateTime']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  embedding?: InputMaybe<ReportEmbeddingInsertType>;
   epoch_date_downloaded: Scalars['Int']['input'];
   epoch_date_modified: Scalars['Int']['input'];
   epoch_date_published: Scalars['Int']['input'];
@@ -3767,6 +4332,38 @@ export type ReportQueryInput = {
   user_exists?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type ReportSetType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  cloudinary_id?: InputMaybe<Scalars['String']['input']>;
+  date_downloaded?: InputMaybe<Scalars['DateTime']['input']>;
+  date_modified?: InputMaybe<Scalars['DateTime']['input']>;
+  date_published?: InputMaybe<Scalars['DateTime']['input']>;
+  date_submitted?: InputMaybe<Scalars['DateTime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  embedding?: InputMaybe<ReportEmbeddingSetObjectType>;
+  epoch_date_downloaded?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_published?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_submitted?: InputMaybe<Scalars['Int']['input']>;
+  flag?: InputMaybe<Scalars['Boolean']['input']>;
+  image_url?: InputMaybe<Scalars['String']['input']>;
+  inputs_outputs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
+  language?: InputMaybe<Scalars['String']['input']>;
+  plain_text?: InputMaybe<Scalars['String']['input']>;
+  quiet?: InputMaybe<Scalars['Boolean']['input']>;
+  report_number?: InputMaybe<Scalars['Int']['input']>;
+  source_domain?: InputMaybe<Scalars['String']['input']>;
+  submitters?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+  user?: InputMaybe<ReportUserRelationInput>;
+};
+
 export enum ReportSortByInput {
   CloudinaryIdAsc = 'CLOUDINARY_ID_ASC',
   CloudinaryIdDesc = 'CLOUDINARY_ID_DESC',
@@ -3812,8 +4409,41 @@ export enum ReportSortByInput {
   IdDesc = '_ID_DESC'
 }
 
+export type ReportSortType = {
+  _id?: InputMaybe<SortType>;
+  cloudinary_id?: InputMaybe<SortType>;
+  date_downloaded?: InputMaybe<SortType>;
+  date_modified?: InputMaybe<SortType>;
+  date_published?: InputMaybe<SortType>;
+  date_submitted?: InputMaybe<SortType>;
+  description?: InputMaybe<SortType>;
+  editor_notes?: InputMaybe<SortType>;
+  embedding?: InputMaybe<ReportEmbeddingSortType>;
+  epoch_date_downloaded?: InputMaybe<SortType>;
+  epoch_date_modified?: InputMaybe<SortType>;
+  epoch_date_published?: InputMaybe<SortType>;
+  epoch_date_submitted?: InputMaybe<SortType>;
+  flag?: InputMaybe<SortType>;
+  image_url?: InputMaybe<SortType>;
+  is_incident_report?: InputMaybe<SortType>;
+  language?: InputMaybe<SortType>;
+  plain_text?: InputMaybe<SortType>;
+  quiet?: InputMaybe<SortType>;
+  report_number?: InputMaybe<SortType>;
+  source_domain?: InputMaybe<SortType>;
+  text?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  url?: InputMaybe<SortType>;
+};
+
 export type ReportTranslation = {
   __typename?: 'ReportTranslation';
+  text?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReportTranslations = {
+  __typename?: 'ReportTranslations';
   text?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
 };
@@ -3880,12 +4510,14 @@ export type ReportUpdateInput = {
   title_unset?: InputMaybe<Scalars['Boolean']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;
   url_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  user?: InputMaybe<ReportUserRelationInput>;
   user_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type ReportUpdateType = {
+  set?: InputMaybe<ReportSetType>;
+};
+
 export type ReportUserRelationInput = {
-  create?: InputMaybe<UserInsertInput>;
   link?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -4024,8 +4656,8 @@ export type Submission = {
   editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
   editor_notes?: Maybe<Scalars['String']['output']>;
   editor_similar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
-  embedding?: Maybe<SubmissionEmbedding>;
-  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
+  embedding?: Maybe<Embedding>;
+  epoch_date_modified?: Maybe<Scalars['Long']['output']>;
   harmed_parties?: Maybe<Array<Maybe<Entity>>>;
   image_url: Scalars['String']['output'];
   incident_date?: Maybe<Scalars['String']['output']>;
@@ -4033,7 +4665,7 @@ export type Submission = {
   incident_ids?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
   incident_title?: Maybe<Scalars['String']['output']>;
   language: Scalars['String']['output'];
-  nlp_similar_incidents?: Maybe<Array<Maybe<SubmissionNlp_Similar_Incident>>>;
+  nlp_similar_incidents?: Maybe<Array<Maybe<IncidentNlp_Similar_Incident>>>;
   plain_text?: Maybe<Scalars['String']['output']>;
   quiet?: Maybe<Scalars['Boolean']['output']>;
   source_domain: Scalars['String']['output'];
@@ -4047,13 +4679,11 @@ export type Submission = {
 };
 
 export type SubmissionDeployersRelationInput = {
-  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
-  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  link: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type SubmissionDevelopersRelationInput = {
-  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
-  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  link: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type SubmissionEmbedding = {
@@ -4092,17 +4722,85 @@ export type SubmissionEmbeddingUpdateInput = {
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type SubmissionFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<SubmissionFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<SubmissionFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<SubmissionFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  authors?: InputMaybe<StringFilter>;
+  cloudinary_id?: InputMaybe<StringFilter>;
+  date_downloaded?: InputMaybe<StringFilter>;
+  date_modified?: InputMaybe<StringFilter>;
+  date_published?: InputMaybe<StringFilter>;
+  date_submitted?: InputMaybe<StringFilter>;
+  deployers?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  developers?: InputMaybe<StringFilter>;
+  editor_dissimilar_incidents?: InputMaybe<IntFilter>;
+  editor_notes?: InputMaybe<StringFilter>;
+  editor_similar_incidents?: InputMaybe<IntFilter>;
+  embedding?: InputMaybe<EmbeddingObjectFilterType>;
+  epoch_date_modified?: InputMaybe<LongFilter>;
+  harmed_parties?: InputMaybe<StringFilter>;
+  image_url?: InputMaybe<StringFilter>;
+  incident_date?: InputMaybe<StringFilter>;
+  incident_editors?: InputMaybe<StringFilter>;
+  incident_ids?: InputMaybe<IntFilter>;
+  incident_title?: InputMaybe<StringFilter>;
+  language?: InputMaybe<StringFilter>;
+  nlp_similar_incidents?: InputMaybe<IncidentNlp_Similar_IncidentObjectFilterType>;
+  plain_text?: InputMaybe<StringFilter>;
+  quiet?: InputMaybe<BooleanFilter>;
+  source_domain?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
+  submitters?: InputMaybe<StringFilter>;
+  tags?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
+};
+
 export type SubmissionHarmed_PartiesRelationInput = {
-  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
-  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  link: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type SubmissionIncident_EditorsRelationInput = {
-  create?: InputMaybe<Array<InputMaybe<UserInsertInput>>>;
-  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  link: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type SubmissionInsertInput = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  authors: Array<InputMaybe<Scalars['String']['input']>>;
+  cloudinary_id?: InputMaybe<Scalars['String']['input']>;
+  date_downloaded: Scalars['String']['input'];
+  date_modified: Scalars['String']['input'];
+  date_published: Scalars['String']['input'];
+  date_submitted: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  embedding?: InputMaybe<SubmissionEmbeddingInsertInput>;
+  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
+  image_url: Scalars['String']['input'];
+  incident_date?: InputMaybe<Scalars['String']['input']>;
+  incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_title?: InputMaybe<Scalars['String']['input']>;
+  language: Scalars['String']['input'];
+  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<SubmissionNlp_Similar_IncidentInsertInput>>>;
+  plain_text?: InputMaybe<Scalars['String']['input']>;
+  quiet?: InputMaybe<Scalars['Boolean']['input']>;
+  source_domain: Scalars['String']['input'];
+  status?: InputMaybe<Scalars['String']['input']>;
+  submitters: Array<InputMaybe<Scalars['String']['input']>>;
+  tags: Array<InputMaybe<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  url: Scalars['String']['input'];
+};
+
+export type SubmissionInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   authors: Array<InputMaybe<Scalars['String']['input']>>;
   cloudinary_id?: InputMaybe<Scalars['String']['input']>;
@@ -4116,8 +4814,8 @@ export type SubmissionInsertInput = {
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_notes?: InputMaybe<Scalars['String']['input']>;
   editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  embedding?: InputMaybe<SubmissionEmbeddingInsertInput>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
+  embedding?: InputMaybe<EmbeddingInsertType>;
+  epoch_date_modified?: InputMaybe<Scalars['Long']['input']>;
   harmed_parties?: InputMaybe<SubmissionHarmed_PartiesRelationInput>;
   image_url: Scalars['String']['input'];
   incident_date?: InputMaybe<Scalars['String']['input']>;
@@ -4125,7 +4823,7 @@ export type SubmissionInsertInput = {
   incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   incident_title?: InputMaybe<Scalars['String']['input']>;
   language: Scalars['String']['input'];
-  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<SubmissionNlp_Similar_IncidentInsertInput>>>;
+  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentInsertType>>>;
   plain_text?: InputMaybe<Scalars['String']['input']>;
   quiet?: InputMaybe<Scalars['Boolean']['input']>;
   source_domain: Scalars['String']['input'];
@@ -4181,231 +4879,40 @@ export type SubmissionNlp_Similar_IncidentUpdateInput = {
   similarity_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type SubmissionQueryInput = {
-  AND?: InputMaybe<Array<SubmissionQueryInput>>;
-  OR?: InputMaybe<Array<SubmissionQueryInput>>;
+export type SubmissionSetType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
   authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  authors_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   cloudinary_id?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  cloudinary_id_gt?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_gte?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  cloudinary_id_lt?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_lte?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_ne?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   date_downloaded?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_downloaded_gt?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_gte?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_downloaded_lt?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_lte?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_ne?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   date_modified?: InputMaybe<Scalars['String']['input']>;
-  date_modified_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_modified_gt?: InputMaybe<Scalars['String']['input']>;
-  date_modified_gte?: InputMaybe<Scalars['String']['input']>;
-  date_modified_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_modified_lt?: InputMaybe<Scalars['String']['input']>;
-  date_modified_lte?: InputMaybe<Scalars['String']['input']>;
-  date_modified_ne?: InputMaybe<Scalars['String']['input']>;
-  date_modified_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   date_published?: InputMaybe<Scalars['String']['input']>;
-  date_published_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_published_gt?: InputMaybe<Scalars['String']['input']>;
-  date_published_gte?: InputMaybe<Scalars['String']['input']>;
-  date_published_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_published_lt?: InputMaybe<Scalars['String']['input']>;
-  date_published_lte?: InputMaybe<Scalars['String']['input']>;
-  date_published_ne?: InputMaybe<Scalars['String']['input']>;
-  date_published_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   date_submitted?: InputMaybe<Scalars['String']['input']>;
-  date_submitted_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_submitted_gt?: InputMaybe<Scalars['String']['input']>;
-  date_submitted_gte?: InputMaybe<Scalars['String']['input']>;
-  date_submitted_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_submitted_lt?: InputMaybe<Scalars['String']['input']>;
-  date_submitted_lte?: InputMaybe<Scalars['String']['input']>;
-  date_submitted_ne?: InputMaybe<Scalars['String']['input']>;
-  date_submitted_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  deployers?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  deployers_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  deployers_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  deployers_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  deployers?: InputMaybe<SubmissionDeployersRelationInput>;
   description?: InputMaybe<Scalars['String']['input']>;
-  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  description_gt?: InputMaybe<Scalars['String']['input']>;
-  description_gte?: InputMaybe<Scalars['String']['input']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_lt?: InputMaybe<Scalars['String']['input']>;
-  description_lte?: InputMaybe<Scalars['String']['input']>;
-  description_ne?: InputMaybe<Scalars['String']['input']>;
-  description_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  developers?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  developers_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  developers_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  developers_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  developers?: InputMaybe<SubmissionDevelopersRelationInput>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_notes?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_notes_gt?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_gte?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editor_notes_lt?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_lte?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_ne?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_similar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_similar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_similar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  embedding?: InputMaybe<SubmissionEmbeddingQueryInput>;
-  embedding_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_modified_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  harmed_parties?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  harmed_parties_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  harmed_parties_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
-  harmed_parties_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  embedding?: InputMaybe<EmbeddingSetObjectType>;
+  epoch_date_modified?: InputMaybe<Scalars['Long']['input']>;
+  harmed_parties?: InputMaybe<SubmissionHarmed_PartiesRelationInput>;
   image_url?: InputMaybe<Scalars['String']['input']>;
-  image_url_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url_gt?: InputMaybe<Scalars['String']['input']>;
-  image_url_gte?: InputMaybe<Scalars['String']['input']>;
-  image_url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  image_url_lt?: InputMaybe<Scalars['String']['input']>;
-  image_url_lte?: InputMaybe<Scalars['String']['input']>;
-  image_url_ne?: InputMaybe<Scalars['String']['input']>;
-  image_url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
-  incident_date_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_date_gt?: InputMaybe<Scalars['String']['input']>;
-  incident_date_gte?: InputMaybe<Scalars['String']['input']>;
-  incident_date_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  incident_date_lt?: InputMaybe<Scalars['String']['input']>;
-  incident_date_lte?: InputMaybe<Scalars['String']['input']>;
-  incident_date_ne?: InputMaybe<Scalars['String']['input']>;
-  incident_date_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  incident_editors?: InputMaybe<Array<InputMaybe<UserQueryInput>>>;
-  incident_editors_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_editors_in?: InputMaybe<Array<InputMaybe<UserQueryInput>>>;
-  incident_editors_nin?: InputMaybe<Array<InputMaybe<UserQueryInput>>>;
+  incident_editors?: InputMaybe<SubmissionIncident_EditorsRelationInput>;
   incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  incident_ids_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_ids_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  incident_ids_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   incident_title?: InputMaybe<Scalars['String']['input']>;
-  incident_title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_title_gt?: InputMaybe<Scalars['String']['input']>;
-  incident_title_gte?: InputMaybe<Scalars['String']['input']>;
-  incident_title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  incident_title_lt?: InputMaybe<Scalars['String']['input']>;
-  incident_title_lte?: InputMaybe<Scalars['String']['input']>;
-  incident_title_ne?: InputMaybe<Scalars['String']['input']>;
-  incident_title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   language?: InputMaybe<Scalars['String']['input']>;
-  language_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  language_gt?: InputMaybe<Scalars['String']['input']>;
-  language_gte?: InputMaybe<Scalars['String']['input']>;
-  language_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  language_lt?: InputMaybe<Scalars['String']['input']>;
-  language_lte?: InputMaybe<Scalars['String']['input']>;
-  language_ne?: InputMaybe<Scalars['String']['input']>;
-  language_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<SubmissionNlp_Similar_IncidentQueryInput>>>;
-  nlp_similar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  nlp_similar_incidents_in?: InputMaybe<Array<InputMaybe<SubmissionNlp_Similar_IncidentQueryInput>>>;
-  nlp_similar_incidents_nin?: InputMaybe<Array<InputMaybe<SubmissionNlp_Similar_IncidentQueryInput>>>;
+  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentSetListObjectType>>>;
   plain_text?: InputMaybe<Scalars['String']['input']>;
-  plain_text_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  plain_text_gt?: InputMaybe<Scalars['String']['input']>;
-  plain_text_gte?: InputMaybe<Scalars['String']['input']>;
-  plain_text_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  plain_text_lt?: InputMaybe<Scalars['String']['input']>;
-  plain_text_lte?: InputMaybe<Scalars['String']['input']>;
-  plain_text_ne?: InputMaybe<Scalars['String']['input']>;
-  plain_text_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   quiet?: InputMaybe<Scalars['Boolean']['input']>;
-  quiet_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  quiet_ne?: InputMaybe<Scalars['Boolean']['input']>;
   source_domain?: InputMaybe<Scalars['String']['input']>;
-  source_domain_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  source_domain_gt?: InputMaybe<Scalars['String']['input']>;
-  source_domain_gte?: InputMaybe<Scalars['String']['input']>;
-  source_domain_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  source_domain_lt?: InputMaybe<Scalars['String']['input']>;
-  source_domain_lte?: InputMaybe<Scalars['String']['input']>;
-  source_domain_ne?: InputMaybe<Scalars['String']['input']>;
-  source_domain_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   status?: InputMaybe<Scalars['String']['input']>;
-  status_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  status_gt?: InputMaybe<Scalars['String']['input']>;
-  status_gte?: InputMaybe<Scalars['String']['input']>;
-  status_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  status_lt?: InputMaybe<Scalars['String']['input']>;
-  status_lte?: InputMaybe<Scalars['String']['input']>;
-  status_ne?: InputMaybe<Scalars['String']['input']>;
-  status_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   submitters?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  submitters_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  submitters_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  submitters_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   text?: InputMaybe<Scalars['String']['input']>;
-  text_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  text_gt?: InputMaybe<Scalars['String']['input']>;
-  text_gte?: InputMaybe<Scalars['String']['input']>;
-  text_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  text_lt?: InputMaybe<Scalars['String']['input']>;
-  text_lte?: InputMaybe<Scalars['String']['input']>;
-  text_ne?: InputMaybe<Scalars['String']['input']>;
-  text_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   title?: InputMaybe<Scalars['String']['input']>;
-  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  title_gt?: InputMaybe<Scalars['String']['input']>;
-  title_gte?: InputMaybe<Scalars['String']['input']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title_lt?: InputMaybe<Scalars['String']['input']>;
-  title_lte?: InputMaybe<Scalars['String']['input']>;
-  title_ne?: InputMaybe<Scalars['String']['input']>;
-  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   url?: InputMaybe<Scalars['String']['input']>;
-  url_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  url_gt?: InputMaybe<Scalars['String']['input']>;
-  url_gte?: InputMaybe<Scalars['String']['input']>;
-  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  url_lt?: InputMaybe<Scalars['String']['input']>;
-  url_lte?: InputMaybe<Scalars['String']['input']>;
-  url_ne?: InputMaybe<Scalars['String']['input']>;
-  url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  user?: InputMaybe<UserQueryInput>;
-  user_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  user?: InputMaybe<SubmissionUserRelationInput>;
 };
 
 export enum SubmissionSortByInput {
@@ -4451,6 +4958,30 @@ export enum SubmissionSortByInput {
   IdDesc = '_ID_DESC'
 }
 
+export type SubmissionSortType = {
+  _id?: InputMaybe<SortType>;
+  cloudinary_id?: InputMaybe<SortType>;
+  date_downloaded?: InputMaybe<SortType>;
+  date_modified?: InputMaybe<SortType>;
+  date_published?: InputMaybe<SortType>;
+  date_submitted?: InputMaybe<SortType>;
+  description?: InputMaybe<SortType>;
+  editor_notes?: InputMaybe<SortType>;
+  embedding?: InputMaybe<EmbeddingSortType>;
+  epoch_date_modified?: InputMaybe<SortType>;
+  image_url?: InputMaybe<SortType>;
+  incident_date?: InputMaybe<SortType>;
+  incident_title?: InputMaybe<SortType>;
+  language?: InputMaybe<SortType>;
+  plain_text?: InputMaybe<SortType>;
+  quiet?: InputMaybe<SortType>;
+  source_domain?: InputMaybe<SortType>;
+  status?: InputMaybe<SortType>;
+  text?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  url?: InputMaybe<SortType>;
+};
+
 export type SubmissionUpdateInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4466,11 +4997,9 @@ export type SubmissionUpdateInput = {
   date_published_unset?: InputMaybe<Scalars['Boolean']['input']>;
   date_submitted?: InputMaybe<Scalars['String']['input']>;
   date_submitted_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  deployers?: InputMaybe<SubmissionDeployersRelationInput>;
   deployers_unset?: InputMaybe<Scalars['Boolean']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   description_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  developers?: InputMaybe<SubmissionDevelopersRelationInput>;
   developers_unset?: InputMaybe<Scalars['Boolean']['input']>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4483,13 +5012,11 @@ export type SubmissionUpdateInput = {
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   epoch_date_modified_inc?: InputMaybe<Scalars['Int']['input']>;
   epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  harmed_parties?: InputMaybe<SubmissionHarmed_PartiesRelationInput>;
   harmed_parties_unset?: InputMaybe<Scalars['Boolean']['input']>;
   image_url?: InputMaybe<Scalars['String']['input']>;
   image_url_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
   incident_date_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_editors?: InputMaybe<SubmissionIncident_EditorsRelationInput>;
   incident_editors_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   incident_ids_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4517,12 +5044,14 @@ export type SubmissionUpdateInput = {
   title_unset?: InputMaybe<Scalars['Boolean']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;
   url_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  user?: InputMaybe<SubmissionUserRelationInput>;
   user_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type SubmissionUpdateType = {
+  set?: InputMaybe<SubmissionSetType>;
+};
+
 export type SubmissionUserRelationInput = {
-  create?: InputMaybe<UserInsertInput>;
   link?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -4530,6 +5059,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   entityId?: Maybe<Entity>;
+  incident_id?: Maybe<Incident>;
   type: Scalars['String']['output'];
   userId: User;
 };
@@ -5231,6 +5761,17 @@ export type UserAdminDatum = {
   lastAuthenticationDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type UserFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<UserFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<UserFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<UserFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  first_name?: InputMaybe<StringFilter>;
+  last_name?: InputMaybe<StringFilter>;
+  roles?: InputMaybe<StringFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
 export type UserInsertInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   first_name?: InputMaybe<Scalars['String']['input']>;
@@ -5284,6 +5825,14 @@ export type UserQueryInput = {
   userId_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type UserSetType = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  first_name?: InputMaybe<Scalars['String']['input']>;
+  last_name?: InputMaybe<Scalars['String']['input']>;
+  roles?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export enum UserSortByInput {
   FirstNameAsc = 'FIRST_NAME_ASC',
   FirstNameDesc = 'FIRST_NAME_DESC',
@@ -5294,6 +5843,13 @@ export enum UserSortByInput {
   IdAsc = '_ID_ASC',
   IdDesc = '_ID_DESC'
 }
+
+export type UserSortType = {
+  _id?: InputMaybe<SortType>;
+  first_name?: InputMaybe<SortType>;
+  last_name?: InputMaybe<SortType>;
+  userId?: InputMaybe<SortType>;
+};
 
 export type UserUpdateInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
@@ -5308,1262 +5864,461 @@ export type UserUpdateInput = {
   userId_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type AdditionalEntityFields = {
-  path?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
+export type UserUpdateType = {
+  set?: InputMaybe<UserSetType>;
 };
 
+export type FindClassificationsQueryVariables = Exact<{
+  query?: InputMaybe<ClassificationQueryInput>;
+}>;
 
 
-export type ResolverTypeWrapper<T> = Promise<T> | T;
-
-
-export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
-  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
-};
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
-
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Promise<TResult> | TResult;
-
-export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>;
-
-export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
-}
-
-export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<any, TParent, TContext, TArgs>;
-  resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
-}
-
-export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
-  | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
-  | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
-
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
-  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
-  | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
-
-export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
-  parent: TParent,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
-
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
-
-export type NextResolverFn<T> = () => Promise<T>;
-
-export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
-  next: NextResolverFn<TResult>,
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-
-
-/** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
-  AppUser: ResolverTypeWrapper<AppUser>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Candidate: ResolverTypeWrapper<Candidate>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
-  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
-  CandidateClassification_similarity: ResolverTypeWrapper<CandidateClassification_Similarity>;
-  CandidateClassification_similarityInsertInput: CandidateClassification_SimilarityInsertInput;
-  CandidateClassification_similarityQueryInput: CandidateClassification_SimilarityQueryInput;
-  CandidateClassification_similarityUpdateInput: CandidateClassification_SimilarityUpdateInput;
-  CandidateEmbedding: ResolverTypeWrapper<CandidateEmbedding>;
-  CandidateEmbeddingInsertInput: CandidateEmbeddingInsertInput;
-  CandidateEmbeddingQueryInput: CandidateEmbeddingQueryInput;
-  CandidateEmbeddingUpdateInput: CandidateEmbeddingUpdateInput;
-  CandidateInsertInput: CandidateInsertInput;
-  CandidateQueryInput: CandidateQueryInput;
-  CandidateSortByInput: CandidateSortByInput;
-  CandidateUpdateInput: CandidateUpdateInput;
-  Checklist: ResolverTypeWrapper<Checklist>;
-  ChecklistInsertInput: ChecklistInsertInput;
-  ChecklistQueryInput: ChecklistQueryInput;
-  ChecklistRisk: ResolverTypeWrapper<ChecklistRisk>;
-  ChecklistRiskInsertInput: ChecklistRiskInsertInput;
-  ChecklistRiskPrecedent: ResolverTypeWrapper<ChecklistRiskPrecedent>;
-  ChecklistRiskPrecedentInsertInput: ChecklistRiskPrecedentInsertInput;
-  ChecklistRiskPrecedentQueryInput: ChecklistRiskPrecedentQueryInput;
-  ChecklistRiskPrecedentUpdateInput: ChecklistRiskPrecedentUpdateInput;
-  ChecklistRiskQueryInput: ChecklistRiskQueryInput;
-  ChecklistRiskUpdateInput: ChecklistRiskUpdateInput;
-  ChecklistSortByInput: ChecklistSortByInput;
-  ChecklistUpdateInput: ChecklistUpdateInput;
-  Classification: ResolverTypeWrapper<Classification>;
-  ClassificationAttribute: ResolverTypeWrapper<ClassificationAttribute>;
-  ClassificationAttributeInsertInput: ClassificationAttributeInsertInput;
-  ClassificationAttributeQueryInput: ClassificationAttributeQueryInput;
-  ClassificationAttributeUpdateInput: ClassificationAttributeUpdateInput;
-  ClassificationIncidentsRelationInput: ClassificationIncidentsRelationInput;
-  ClassificationInsertInput: ClassificationInsertInput;
-  ClassificationQueryInput: ClassificationQueryInput;
-  ClassificationReportsRelationInput: ClassificationReportsRelationInput;
-  ClassificationSortByInput: ClassificationSortByInput;
-  ClassificationUpdateInput: ClassificationUpdateInput;
-  CreateDefaultAdminUserInput: CreateDefaultAdminUserInput;
-  CreateVariantInput: CreateVariantInput;
-  CreateVariantInputVariant: CreateVariantInputVariant;
-  CreateVariantPayload: ResolverTypeWrapper<CreateVariantPayload>;
-  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  DefaultAdminUser: ResolverTypeWrapper<DefaultAdminUser>;
-  DeleteManyPayload: ResolverTypeWrapper<DeleteManyPayload>;
-  Duplicate: ResolverTypeWrapper<Duplicate>;
-  DuplicateInsertInput: DuplicateInsertInput;
-  DuplicateQueryInput: DuplicateQueryInput;
-  DuplicateSortByInput: DuplicateSortByInput;
-  DuplicateUpdateInput: DuplicateUpdateInput;
-  Entity: ResolverTypeWrapper<Entity>;
-  EntityInsertInput: EntityInsertInput;
-  EntityQueryInput: EntityQueryInput;
-  EntitySortByInput: EntitySortByInput;
-  EntityUpdateInput: EntityUpdateInput;
-  GetUserInput: GetUserInput;
-  History_incident: ResolverTypeWrapper<History_Incident>;
-  History_incidentEmbedding: ResolverTypeWrapper<History_IncidentEmbedding>;
-  History_incidentEmbeddingInsertInput: History_IncidentEmbeddingInsertInput;
-  History_incidentEmbeddingQueryInput: History_IncidentEmbeddingQueryInput;
-  History_incidentEmbeddingUpdateInput: History_IncidentEmbeddingUpdateInput;
-  History_incidentInsertInput: History_IncidentInsertInput;
-  History_incidentNlp_similar_incident: ResolverTypeWrapper<History_IncidentNlp_Similar_Incident>;
-  History_incidentNlp_similar_incidentInsertInput: History_IncidentNlp_Similar_IncidentInsertInput;
-  History_incidentNlp_similar_incidentQueryInput: History_IncidentNlp_Similar_IncidentQueryInput;
-  History_incidentNlp_similar_incidentUpdateInput: History_IncidentNlp_Similar_IncidentUpdateInput;
-  History_incidentQueryInput: History_IncidentQueryInput;
-  History_incidentSortByInput: History_IncidentSortByInput;
-  History_incidentTsne: ResolverTypeWrapper<History_IncidentTsne>;
-  History_incidentTsneInsertInput: History_IncidentTsneInsertInput;
-  History_incidentTsneQueryInput: History_IncidentTsneQueryInput;
-  History_incidentTsneUpdateInput: History_IncidentTsneUpdateInput;
-  History_incidentUpdateInput: History_IncidentUpdateInput;
-  History_report: ResolverTypeWrapper<History_Report>;
-  History_reportEmbedding: ResolverTypeWrapper<History_ReportEmbedding>;
-  History_reportEmbeddingInsertInput: History_ReportEmbeddingInsertInput;
-  History_reportEmbeddingQueryInput: History_ReportEmbeddingQueryInput;
-  History_reportEmbeddingUpdateInput: History_ReportEmbeddingUpdateInput;
-  History_reportInsertInput: History_ReportInsertInput;
-  History_reportQueryInput: History_ReportQueryInput;
-  History_reportSortByInput: History_ReportSortByInput;
-  History_reportUpdateInput: History_ReportUpdateInput;
-  IncidentAllegedDeployerOfAISystemRelationInput: IncidentAllegedDeployerOfAiSystemRelationInput;
-  IncidentAllegedDeveloperOfAISystemRelationInput: IncidentAllegedDeveloperOfAiSystemRelationInput;
-  IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput: IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput;
-  IncidentEditorsRelationInput: IncidentEditorsRelationInput;
-  IncidentEmbedding: ResolverTypeWrapper<IncidentEmbedding>;
-  IncidentEmbeddingInsertInput: IncidentEmbeddingInsertInput;
-  IncidentEmbeddingQueryInput: IncidentEmbeddingQueryInput;
-  IncidentEmbeddingUpdateInput: IncidentEmbeddingUpdateInput;
-  IncidentInsertInput: IncidentInsertInput;
-  IncidentNlp_similar_incident: ResolverTypeWrapper<IncidentNlp_Similar_Incident>;
-  IncidentNlp_similar_incidentInsertInput: IncidentNlp_Similar_IncidentInsertInput;
-  IncidentNlp_similar_incidentQueryInput: IncidentNlp_Similar_IncidentQueryInput;
-  IncidentNlp_similar_incidentUpdateInput: IncidentNlp_Similar_IncidentUpdateInput;
-  IncidentQueryInput: IncidentQueryInput;
-  IncidentReportsRelationInput: IncidentReportsRelationInput;
-  IncidentSortByInput: IncidentSortByInput;
-  IncidentTsne: ResolverTypeWrapper<IncidentTsne>;
-  IncidentTsneInsertInput: IncidentTsneInsertInput;
-  IncidentTsneQueryInput: IncidentTsneQueryInput;
-  IncidentTsneUpdateInput: IncidentTsneUpdateInput;
-  IncidentUpdateInput: IncidentUpdateInput;
-  InsertManyPayload: ResolverTypeWrapper<InsertManyPayload>;
-  IntFilter: IntFilter;
-  IntNotFilter: IntNotFilter;
-  LinkReportsToIncidentsInput: LinkReportsToIncidentsInput;
-  LogIncidentHistoryPayload: ResolverTypeWrapper<LogIncidentHistoryPayload>;
-  LogReportHistoryPayload: ResolverTypeWrapper<LogReportHistoryPayload>;
-  Long: ResolverTypeWrapper<Scalars['Long']['output']>;
-  Mutation: ResolverTypeWrapper<{}>;
-  Notification: ResolverTypeWrapper<Notification>;
-  NotificationInsertInput: NotificationInsertInput;
-  NotificationQueryInput: NotificationQueryInput;
-  NotificationSortByInput: NotificationSortByInput;
-  NotificationUpdateInput: NotificationUpdateInput;
-  NotificationUserIdRelationInput: NotificationUserIdRelationInput;
-  ObjectId: ResolverTypeWrapper<Scalars['ObjectId']['output']>;
-  ObjectIdFilter: ObjectIdFilter;
-  ObjectIdNotFilter: ObjectIdNotFilter;
-  Opr: Opr;
-  PaginationType: PaginationType;
-  PromoteSubmissionToReportInput: PromoteSubmissionToReportInput;
-  PromoteSubmissionToReportPayload: ResolverTypeWrapper<PromoteSubmissionToReportPayload>;
-  Query: ResolverTypeWrapper<{}>;
-  Quickadd: ResolverTypeWrapper<Quickadd>;
-  QuickaddFilterType: QuickaddFilterType;
-  QuickaddIncType: QuickaddIncType;
-  QuickaddInsertInput: QuickaddInsertInput;
-  QuickaddInsertType: QuickaddInsertType;
-  QuickaddSetOnInsertType: QuickaddSetOnInsertType;
-  QuickaddSetType: QuickaddSetType;
-  QuickaddSortByInput: QuickaddSortByInput;
-  QuickaddSortType: QuickaddSortType;
-  QuickaddUpdateInput: QuickaddUpdateInput;
-  QuickaddUpdateType: QuickaddUpdateType;
-  ReportEmbedding: ResolverTypeWrapper<ReportEmbedding>;
-  ReportEmbeddingInsertInput: ReportEmbeddingInsertInput;
-  ReportEmbeddingQueryInput: ReportEmbeddingQueryInput;
-  ReportEmbeddingUpdateInput: ReportEmbeddingUpdateInput;
-  ReportInsertInput: ReportInsertInput;
-  ReportQueryInput: ReportQueryInput;
-  ReportSortByInput: ReportSortByInput;
-  ReportTranslation: ResolverTypeWrapper<ReportTranslation>;
-  ReportUpdateInput: ReportUpdateInput;
-  ReportUserRelationInput: ReportUserRelationInput;
-  RisksInput: RisksInput;
-  RisksPayloadItem: ResolverTypeWrapper<RisksPayloadItem>;
-  RisksPayloadPrecedent: ResolverTypeWrapper<RisksPayloadPrecedent>;
-  RisksPayloadPrecedentEmbedding: ResolverTypeWrapper<RisksPayloadPrecedentEmbedding>;
-  RisksPayloadPrecedentNlp_similar_incident: ResolverTypeWrapper<RisksPayloadPrecedentNlp_Similar_Incident>;
-  RisksPayloadPrecedentTsne: ResolverTypeWrapper<RisksPayloadPrecedentTsne>;
-  SortType: SortType;
-  StringFilter: StringFilter;
-  StringNotFilter: StringNotFilter;
-  Submission: ResolverTypeWrapper<Submission>;
-  SubmissionDeployersRelationInput: SubmissionDeployersRelationInput;
-  SubmissionDevelopersRelationInput: SubmissionDevelopersRelationInput;
-  SubmissionEmbedding: ResolverTypeWrapper<SubmissionEmbedding>;
-  SubmissionEmbeddingInsertInput: SubmissionEmbeddingInsertInput;
-  SubmissionEmbeddingQueryInput: SubmissionEmbeddingQueryInput;
-  SubmissionEmbeddingUpdateInput: SubmissionEmbeddingUpdateInput;
-  SubmissionHarmed_partiesRelationInput: SubmissionHarmed_PartiesRelationInput;
-  SubmissionIncident_editorsRelationInput: SubmissionIncident_EditorsRelationInput;
-  SubmissionInsertInput: SubmissionInsertInput;
-  SubmissionNlp_similar_incident: ResolverTypeWrapper<SubmissionNlp_Similar_Incident>;
-  SubmissionNlp_similar_incidentInsertInput: SubmissionNlp_Similar_IncidentInsertInput;
-  SubmissionNlp_similar_incidentQueryInput: SubmissionNlp_Similar_IncidentQueryInput;
-  SubmissionNlp_similar_incidentUpdateInput: SubmissionNlp_Similar_IncidentUpdateInput;
-  SubmissionQueryInput: SubmissionQueryInput;
-  SubmissionSortByInput: SubmissionSortByInput;
-  SubmissionUpdateInput: SubmissionUpdateInput;
-  SubmissionUserRelationInput: SubmissionUserRelationInput;
-  Subscription: ResolverTypeWrapper<{}>;
-  SubscriptionEntityIdRelationInput: SubscriptionEntityIdRelationInput;
-  SubscriptionIncident_idRelationInput: SubscriptionIncident_IdRelationInput;
-  SubscriptionInsertInput: SubscriptionInsertInput;
-  SubscriptionQueryInput: SubscriptionQueryInput;
-  SubscriptionSortByInput: SubscriptionSortByInput;
-  SubscriptionUpdateInput: SubscriptionUpdateInput;
-  SubscriptionUserIdRelationInput: SubscriptionUserIdRelationInput;
-  Taxa: ResolverTypeWrapper<Taxa>;
-  TaxaDummy_field: ResolverTypeWrapper<TaxaDummy_Field>;
-  TaxaDummy_fieldInsertInput: TaxaDummy_FieldInsertInput;
-  TaxaDummy_fieldQueryInput: TaxaDummy_FieldQueryInput;
-  TaxaDummy_fieldUpdateInput: TaxaDummy_FieldUpdateInput;
-  TaxaField_list: ResolverTypeWrapper<TaxaField_List>;
-  TaxaField_listComplete_from: ResolverTypeWrapper<TaxaField_ListComplete_From>;
-  TaxaField_listComplete_fromInsertInput: TaxaField_ListComplete_FromInsertInput;
-  TaxaField_listComplete_fromQueryInput: TaxaField_ListComplete_FromQueryInput;
-  TaxaField_listComplete_fromUpdateInput: TaxaField_ListComplete_FromUpdateInput;
-  TaxaField_listInsertInput: TaxaField_ListInsertInput;
-  TaxaField_listItem_field: ResolverTypeWrapper<TaxaField_ListItem_Field>;
-  TaxaField_listItem_fieldComplete_from: ResolverTypeWrapper<TaxaField_ListItem_FieldComplete_From>;
-  TaxaField_listItem_fieldComplete_fromInsertInput: TaxaField_ListItem_FieldComplete_FromInsertInput;
-  TaxaField_listItem_fieldComplete_fromQueryInput: TaxaField_ListItem_FieldComplete_FromQueryInput;
-  TaxaField_listItem_fieldComplete_fromUpdateInput: TaxaField_ListItem_FieldComplete_FromUpdateInput;
-  TaxaField_listItem_fieldInsertInput: TaxaField_ListItem_FieldInsertInput;
-  TaxaField_listItem_fieldQueryInput: TaxaField_ListItem_FieldQueryInput;
-  TaxaField_listItem_fieldUpdateInput: TaxaField_ListItem_FieldUpdateInput;
-  TaxaField_listQueryInput: TaxaField_ListQueryInput;
-  TaxaField_listUpdateInput: TaxaField_ListUpdateInput;
-  TaxaInsertInput: TaxaInsertInput;
-  TaxaQueryInput: TaxaQueryInput;
-  TaxaSortByInput: TaxaSortByInput;
-  TaxaUpdateInput: TaxaUpdateInput;
-  UpdateManyPayload: ResolverTypeWrapper<UpdateManyPayload>;
-  UpdateOneReportTranslationInput: UpdateOneReportTranslationInput;
-  User: ResolverTypeWrapper<User>;
-  UserAdminDatum: ResolverTypeWrapper<UserAdminDatum>;
-  UserInsertInput: UserInsertInput;
-  UserQueryInput: UserQueryInput;
-  UserSortByInput: UserSortByInput;
-  UserUpdateInput: UserUpdateInput;
-  AdditionalEntityFields: AdditionalEntityFields;
-};
-
-/** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
-  AppUser: AppUser;
-  String: Scalars['String']['output'];
-  Candidate: Candidate;
-  Boolean: Scalars['Boolean']['output'];
-  Int: Scalars['Int']['output'];
-  Float: Scalars['Float']['output'];
-  CandidateClassification_similarity: CandidateClassification_Similarity;
-  CandidateClassification_similarityInsertInput: CandidateClassification_SimilarityInsertInput;
-  CandidateClassification_similarityQueryInput: CandidateClassification_SimilarityQueryInput;
-  CandidateClassification_similarityUpdateInput: CandidateClassification_SimilarityUpdateInput;
-  CandidateEmbedding: CandidateEmbedding;
-  CandidateEmbeddingInsertInput: CandidateEmbeddingInsertInput;
-  CandidateEmbeddingQueryInput: CandidateEmbeddingQueryInput;
-  CandidateEmbeddingUpdateInput: CandidateEmbeddingUpdateInput;
-  CandidateInsertInput: CandidateInsertInput;
-  CandidateQueryInput: CandidateQueryInput;
-  CandidateUpdateInput: CandidateUpdateInput;
-  Checklist: Checklist;
-  ChecklistInsertInput: ChecklistInsertInput;
-  ChecklistQueryInput: ChecklistQueryInput;
-  ChecklistRisk: ChecklistRisk;
-  ChecklistRiskInsertInput: ChecklistRiskInsertInput;
-  ChecklistRiskPrecedent: ChecklistRiskPrecedent;
-  ChecklistRiskPrecedentInsertInput: ChecklistRiskPrecedentInsertInput;
-  ChecklistRiskPrecedentQueryInput: ChecklistRiskPrecedentQueryInput;
-  ChecklistRiskPrecedentUpdateInput: ChecklistRiskPrecedentUpdateInput;
-  ChecklistRiskQueryInput: ChecklistRiskQueryInput;
-  ChecklistRiskUpdateInput: ChecklistRiskUpdateInput;
-  ChecklistUpdateInput: ChecklistUpdateInput;
-  Classification: Classification;
-  ClassificationAttribute: ClassificationAttribute;
-  ClassificationAttributeInsertInput: ClassificationAttributeInsertInput;
-  ClassificationAttributeQueryInput: ClassificationAttributeQueryInput;
-  ClassificationAttributeUpdateInput: ClassificationAttributeUpdateInput;
-  ClassificationIncidentsRelationInput: ClassificationIncidentsRelationInput;
-  ClassificationInsertInput: ClassificationInsertInput;
-  ClassificationQueryInput: ClassificationQueryInput;
-  ClassificationReportsRelationInput: ClassificationReportsRelationInput;
-  ClassificationUpdateInput: ClassificationUpdateInput;
-  CreateDefaultAdminUserInput: CreateDefaultAdminUserInput;
-  CreateVariantInput: CreateVariantInput;
-  CreateVariantInputVariant: CreateVariantInputVariant;
-  CreateVariantPayload: CreateVariantPayload;
-  DateTime: Scalars['DateTime']['output'];
-  DefaultAdminUser: DefaultAdminUser;
-  DeleteManyPayload: DeleteManyPayload;
-  Duplicate: Duplicate;
-  DuplicateInsertInput: DuplicateInsertInput;
-  DuplicateQueryInput: DuplicateQueryInput;
-  DuplicateUpdateInput: DuplicateUpdateInput;
-  Entity: Entity;
-  EntityInsertInput: EntityInsertInput;
-  EntityQueryInput: EntityQueryInput;
-  EntityUpdateInput: EntityUpdateInput;
-  GetUserInput: GetUserInput;
-  History_incident: History_Incident;
-  History_incidentEmbedding: History_IncidentEmbedding;
-  History_incidentEmbeddingInsertInput: History_IncidentEmbeddingInsertInput;
-  History_incidentEmbeddingQueryInput: History_IncidentEmbeddingQueryInput;
-  History_incidentEmbeddingUpdateInput: History_IncidentEmbeddingUpdateInput;
-  History_incidentInsertInput: History_IncidentInsertInput;
-  History_incidentNlp_similar_incident: History_IncidentNlp_Similar_Incident;
-  History_incidentNlp_similar_incidentInsertInput: History_IncidentNlp_Similar_IncidentInsertInput;
-  History_incidentNlp_similar_incidentQueryInput: History_IncidentNlp_Similar_IncidentQueryInput;
-  History_incidentNlp_similar_incidentUpdateInput: History_IncidentNlp_Similar_IncidentUpdateInput;
-  History_incidentQueryInput: History_IncidentQueryInput;
-  History_incidentTsne: History_IncidentTsne;
-  History_incidentTsneInsertInput: History_IncidentTsneInsertInput;
-  History_incidentTsneQueryInput: History_IncidentTsneQueryInput;
-  History_incidentTsneUpdateInput: History_IncidentTsneUpdateInput;
-  History_incidentUpdateInput: History_IncidentUpdateInput;
-  History_report: History_Report;
-  History_reportEmbedding: History_ReportEmbedding;
-  History_reportEmbeddingInsertInput: History_ReportEmbeddingInsertInput;
-  History_reportEmbeddingQueryInput: History_ReportEmbeddingQueryInput;
-  History_reportEmbeddingUpdateInput: History_ReportEmbeddingUpdateInput;
-  History_reportInsertInput: History_ReportInsertInput;
-  History_reportQueryInput: History_ReportQueryInput;
-  History_reportUpdateInput: History_ReportUpdateInput;
-  IncidentAllegedDeployerOfAISystemRelationInput: IncidentAllegedDeployerOfAiSystemRelationInput;
-  IncidentAllegedDeveloperOfAISystemRelationInput: IncidentAllegedDeveloperOfAiSystemRelationInput;
-  IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput: IncidentAllegedHarmedOrNearlyHarmedPartiesRelationInput;
-  IncidentEditorsRelationInput: IncidentEditorsRelationInput;
-  IncidentEmbedding: IncidentEmbedding;
-  IncidentEmbeddingInsertInput: IncidentEmbeddingInsertInput;
-  IncidentEmbeddingQueryInput: IncidentEmbeddingQueryInput;
-  IncidentEmbeddingUpdateInput: IncidentEmbeddingUpdateInput;
-  IncidentInsertInput: IncidentInsertInput;
-  IncidentNlp_similar_incident: IncidentNlp_Similar_Incident;
-  IncidentNlp_similar_incidentInsertInput: IncidentNlp_Similar_IncidentInsertInput;
-  IncidentNlp_similar_incidentQueryInput: IncidentNlp_Similar_IncidentQueryInput;
-  IncidentNlp_similar_incidentUpdateInput: IncidentNlp_Similar_IncidentUpdateInput;
-  IncidentQueryInput: IncidentQueryInput;
-  IncidentReportsRelationInput: IncidentReportsRelationInput;
-  IncidentTsne: IncidentTsne;
-  IncidentTsneInsertInput: IncidentTsneInsertInput;
-  IncidentTsneQueryInput: IncidentTsneQueryInput;
-  IncidentTsneUpdateInput: IncidentTsneUpdateInput;
-  IncidentUpdateInput: IncidentUpdateInput;
-  InsertManyPayload: InsertManyPayload;
-  IntFilter: IntFilter;
-  IntNotFilter: IntNotFilter;
-  LinkReportsToIncidentsInput: LinkReportsToIncidentsInput;
-  LogIncidentHistoryPayload: LogIncidentHistoryPayload;
-  LogReportHistoryPayload: LogReportHistoryPayload;
-  Long: Scalars['Long']['output'];
-  Mutation: {};
-  Notification: Notification;
-  NotificationInsertInput: NotificationInsertInput;
-  NotificationQueryInput: NotificationQueryInput;
-  NotificationUpdateInput: NotificationUpdateInput;
-  NotificationUserIdRelationInput: NotificationUserIdRelationInput;
-  ObjectId: Scalars['ObjectId']['output'];
-  ObjectIdFilter: ObjectIdFilter;
-  ObjectIdNotFilter: ObjectIdNotFilter;
-  PaginationType: PaginationType;
-  PromoteSubmissionToReportInput: PromoteSubmissionToReportInput;
-  PromoteSubmissionToReportPayload: PromoteSubmissionToReportPayload;
-  Query: {};
-  Quickadd: Quickadd;
-  QuickaddFilterType: QuickaddFilterType;
-  QuickaddIncType: QuickaddIncType;
-  QuickaddInsertInput: QuickaddInsertInput;
-  QuickaddInsertType: QuickaddInsertType;
-  QuickaddSetOnInsertType: QuickaddSetOnInsertType;
-  QuickaddSetType: QuickaddSetType;
-  QuickaddSortType: QuickaddSortType;
-  QuickaddUpdateInput: QuickaddUpdateInput;
-  QuickaddUpdateType: QuickaddUpdateType;
-  ReportEmbedding: ReportEmbedding;
-  ReportEmbeddingInsertInput: ReportEmbeddingInsertInput;
-  ReportEmbeddingQueryInput: ReportEmbeddingQueryInput;
-  ReportEmbeddingUpdateInput: ReportEmbeddingUpdateInput;
-  ReportInsertInput: ReportInsertInput;
-  ReportQueryInput: ReportQueryInput;
-  ReportTranslation: ReportTranslation;
-  ReportUpdateInput: ReportUpdateInput;
-  ReportUserRelationInput: ReportUserRelationInput;
-  RisksInput: RisksInput;
-  RisksPayloadItem: RisksPayloadItem;
-  RisksPayloadPrecedent: RisksPayloadPrecedent;
-  RisksPayloadPrecedentEmbedding: RisksPayloadPrecedentEmbedding;
-  RisksPayloadPrecedentNlp_similar_incident: RisksPayloadPrecedentNlp_Similar_Incident;
-  RisksPayloadPrecedentTsne: RisksPayloadPrecedentTsne;
-  StringFilter: StringFilter;
-  StringNotFilter: StringNotFilter;
-  Submission: Submission;
-  SubmissionDeployersRelationInput: SubmissionDeployersRelationInput;
-  SubmissionDevelopersRelationInput: SubmissionDevelopersRelationInput;
-  SubmissionEmbedding: SubmissionEmbedding;
-  SubmissionEmbeddingInsertInput: SubmissionEmbeddingInsertInput;
-  SubmissionEmbeddingQueryInput: SubmissionEmbeddingQueryInput;
-  SubmissionEmbeddingUpdateInput: SubmissionEmbeddingUpdateInput;
-  SubmissionHarmed_partiesRelationInput: SubmissionHarmed_PartiesRelationInput;
-  SubmissionIncident_editorsRelationInput: SubmissionIncident_EditorsRelationInput;
-  SubmissionInsertInput: SubmissionInsertInput;
-  SubmissionNlp_similar_incident: SubmissionNlp_Similar_Incident;
-  SubmissionNlp_similar_incidentInsertInput: SubmissionNlp_Similar_IncidentInsertInput;
-  SubmissionNlp_similar_incidentQueryInput: SubmissionNlp_Similar_IncidentQueryInput;
-  SubmissionNlp_similar_incidentUpdateInput: SubmissionNlp_Similar_IncidentUpdateInput;
-  SubmissionQueryInput: SubmissionQueryInput;
-  SubmissionUpdateInput: SubmissionUpdateInput;
-  SubmissionUserRelationInput: SubmissionUserRelationInput;
-  Subscription: {};
-  SubscriptionEntityIdRelationInput: SubscriptionEntityIdRelationInput;
-  SubscriptionIncident_idRelationInput: SubscriptionIncident_IdRelationInput;
-  SubscriptionInsertInput: SubscriptionInsertInput;
-  SubscriptionQueryInput: SubscriptionQueryInput;
-  SubscriptionUpdateInput: SubscriptionUpdateInput;
-  SubscriptionUserIdRelationInput: SubscriptionUserIdRelationInput;
-  Taxa: Taxa;
-  TaxaDummy_field: TaxaDummy_Field;
-  TaxaDummy_fieldInsertInput: TaxaDummy_FieldInsertInput;
-  TaxaDummy_fieldQueryInput: TaxaDummy_FieldQueryInput;
-  TaxaDummy_fieldUpdateInput: TaxaDummy_FieldUpdateInput;
-  TaxaField_list: TaxaField_List;
-  TaxaField_listComplete_from: TaxaField_ListComplete_From;
-  TaxaField_listComplete_fromInsertInput: TaxaField_ListComplete_FromInsertInput;
-  TaxaField_listComplete_fromQueryInput: TaxaField_ListComplete_FromQueryInput;
-  TaxaField_listComplete_fromUpdateInput: TaxaField_ListComplete_FromUpdateInput;
-  TaxaField_listInsertInput: TaxaField_ListInsertInput;
-  TaxaField_listItem_field: TaxaField_ListItem_Field;
-  TaxaField_listItem_fieldComplete_from: TaxaField_ListItem_FieldComplete_From;
-  TaxaField_listItem_fieldComplete_fromInsertInput: TaxaField_ListItem_FieldComplete_FromInsertInput;
-  TaxaField_listItem_fieldComplete_fromQueryInput: TaxaField_ListItem_FieldComplete_FromQueryInput;
-  TaxaField_listItem_fieldComplete_fromUpdateInput: TaxaField_ListItem_FieldComplete_FromUpdateInput;
-  TaxaField_listItem_fieldInsertInput: TaxaField_ListItem_FieldInsertInput;
-  TaxaField_listItem_fieldQueryInput: TaxaField_ListItem_FieldQueryInput;
-  TaxaField_listItem_fieldUpdateInput: TaxaField_ListItem_FieldUpdateInput;
-  TaxaField_listQueryInput: TaxaField_ListQueryInput;
-  TaxaField_listUpdateInput: TaxaField_ListUpdateInput;
-  TaxaInsertInput: TaxaInsertInput;
-  TaxaQueryInput: TaxaQueryInput;
-  TaxaUpdateInput: TaxaUpdateInput;
-  UpdateManyPayload: UpdateManyPayload;
-  UpdateOneReportTranslationInput: UpdateOneReportTranslationInput;
-  User: User;
-  UserAdminDatum: UserAdminDatum;
-  UserInsertInput: UserInsertInput;
-  UserQueryInput: UserQueryInput;
-  UserUpdateInput: UserUpdateInput;
-  AdditionalEntityFields: AdditionalEntityFields;
-};
-
-export type UnionDirectiveArgs = {
-  discriminatorField?: Maybe<Scalars['String']['input']>;
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>;
-};
-
-export type UnionDirectiveResolver<Result, Parent, ContextType = any, Args = UnionDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type AbstractEntityDirectiveArgs = {
-  discriminatorField: Scalars['String']['input'];
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>;
-};
-
-export type AbstractEntityDirectiveResolver<Result, Parent, ContextType = any, Args = AbstractEntityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type EntityDirectiveArgs = {
-  embedded?: Maybe<Scalars['Boolean']['input']>;
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>;
-};
-
-export type EntityDirectiveResolver<Result, Parent, ContextType = any, Args = EntityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type ColumnDirectiveArgs = {
-  overrideType?: Maybe<Scalars['String']['input']>;
-};
-
-export type ColumnDirectiveResolver<Result, Parent, ContextType = any, Args = ColumnDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type IdDirectiveArgs = { };
-
-export type IdDirectiveResolver<Result, Parent, ContextType = any, Args = IdDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type LinkDirectiveArgs = {
-  overrideType?: Maybe<Scalars['String']['input']>;
-};
-
-export type LinkDirectiveResolver<Result, Parent, ContextType = any, Args = LinkDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type EmbeddedDirectiveArgs = { };
-
-export type EmbeddedDirectiveResolver<Result, Parent, ContextType = any, Args = EmbeddedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type MapDirectiveArgs = {
-  path: Scalars['String']['input'];
-};
-
-export type MapDirectiveResolver<Result, Parent, ContextType = any, Args = MapDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type AppUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['AppUser'] = ResolversParentTypes['AppUser']> = {
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CandidateResolvers<ContextType = any, ParentType extends ResolversParentTypes['Candidate'] = ResolversParentTypes['Candidate']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  authors?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  classification_similarity?: Resolver<Maybe<Array<Maybe<ResolversTypes['CandidateClassification_similarity']>>>, ParentType, ContextType>;
-  date_downloaded?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  date_published?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  dismissed?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['CandidateEmbedding']>, ParentType, ContextType>;
-  epoch_date_downloaded?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  epoch_date_published?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  image_url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  match?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  matching_entities?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  matching_harm_keywords?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  matching_keywords?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  plain_text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  similarity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  source_domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CandidateClassification_SimilarityResolvers<ContextType = any, ParentType extends ResolversParentTypes['CandidateClassification_similarity'] = ResolversParentTypes['CandidateClassification_similarity']> = {
-  classification?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  similarity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CandidateEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['CandidateEmbedding'] = ResolversParentTypes['CandidateEmbedding']> = {
-  from_text_hash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ChecklistResolvers<ContextType = any, ParentType extends ResolversParentTypes['Checklist'] = ResolversParentTypes['Checklist']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  about?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  date_created?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  date_updated?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  entity_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  owner_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  risks?: Resolver<Maybe<Array<Maybe<ResolversTypes['ChecklistRisk']>>>, ParentType, ContextType>;
-  tags_goals?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  tags_methods?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  tags_other?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ChecklistRiskResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChecklistRisk'] = ResolversParentTypes['ChecklistRisk']> = {
-  generated?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  likelihood?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  precedents?: Resolver<Maybe<Array<Maybe<ResolversTypes['ChecklistRiskPrecedent']>>>, ParentType, ContextType>;
-  risk_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  risk_status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  severity?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  touched?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ChecklistRiskPrecedentResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChecklistRiskPrecedent'] = ResolversParentTypes['ChecklistRiskPrecedent']> = {
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ClassificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Classification'] = ResolversParentTypes['Classification']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  attributes?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClassificationAttribute']>>>, ParentType, ContextType>;
-  namespace?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  publish?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ClassificationAttributeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClassificationAttribute'] = ResolversParentTypes['ClassificationAttribute']> = {
-  short_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  value_json?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CreateVariantPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateVariantPayload'] = ResolversParentTypes['CreateVariantPayload']> = {
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  report_number?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
-  name: 'DateTime';
-}
-
-export type DefaultAdminUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['DefaultAdminUser'] = ResolversParentTypes['DefaultAdminUser']> = {
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  status?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type DeleteManyPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteManyPayload'] = ResolversParentTypes['DeleteManyPayload']> = {
-  deletedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type DuplicateResolvers<ContextType = any, ParentType extends ResolversParentTypes['Duplicate'] = ResolversParentTypes['Duplicate']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  duplicate_incident_number?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  true_incident_number?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type EntityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Entity'] = ResolversParentTypes['Entity']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  created_at?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  date_modified?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  entity_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type History_IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['History_incident'] = ResolversParentTypes['History_incident']> = {
-  AllegedDeployerOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  AllegedDeveloperOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  AllegedHarmedOrNearlyHarmedParties?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editors?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['History_incidentEmbedding']>, ParentType, ContextType>;
-  epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  flagged_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  incident_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  modifiedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  nlp_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['History_incidentNlp_similar_incident']>>>, ParentType, ContextType>;
-  reports?: Resolver<Array<Maybe<ResolversTypes['Int']>>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  tsne?: Resolver<Maybe<ResolversTypes['History_incidentTsne']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type History_IncidentEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['History_incidentEmbedding'] = ResolversParentTypes['History_incidentEmbedding']> = {
-  from_reports?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type History_IncidentNlp_Similar_IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['History_incidentNlp_similar_incident'] = ResolversParentTypes['History_incidentNlp_similar_incident']> = {
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  similarity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type History_IncidentTsneResolvers<ContextType = any, ParentType extends ResolversParentTypes['History_incidentTsne'] = ResolversParentTypes['History_incidentTsne']> = {
-  x?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  y?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type History_ReportResolvers<ContextType = any, ParentType extends ResolversParentTypes['History_report'] = ResolversParentTypes['History_report']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  authors?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  cloudinary_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date_downloaded?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  date_modified?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  date_published?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  date_submitted?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['History_reportEmbedding']>, ParentType, ContextType>;
-  epoch_date_downloaded?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  epoch_date_modified?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  epoch_date_published?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  epoch_date_submitted?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  flag?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  image_url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  inputs_outputs?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  is_incident_report?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  modifiedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  plain_text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  quiet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  report_number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  source_domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  submitters?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  tags?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type History_ReportEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['History_reportEmbedding'] = ResolversParentTypes['History_reportEmbedding']> = {
-  from_text_hash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type IncidentEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['IncidentEmbedding'] = ResolversParentTypes['IncidentEmbedding']> = {
-  from_reports?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type IncidentNlp_Similar_IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['IncidentNlp_similar_incident'] = ResolversParentTypes['IncidentNlp_similar_incident']> = {
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  similarity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type IncidentTsneResolvers<ContextType = any, ParentType extends ResolversParentTypes['IncidentTsne'] = ResolversParentTypes['IncidentTsne']> = {
-  x?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  y?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type InsertManyPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['InsertManyPayload'] = ResolversParentTypes['InsertManyPayload']> = {
-  insertedIds?: Resolver<Array<Maybe<ResolversTypes['ObjectId']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LogIncidentHistoryPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LogIncidentHistoryPayload'] = ResolversParentTypes['LogIncidentHistoryPayload']> = {
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LogReportHistoryPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LogReportHistoryPayload'] = ResolversParentTypes['LogReportHistoryPayload']> = {
-  report_number?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export interface LongScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Long'], any> {
-  name: 'Long';
-}
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createDefaultAdminUser?: Resolver<Maybe<ResolversTypes['DefaultAdminUser']>, ParentType, ContextType, Partial<MutationCreateDefaultAdminUserArgs>>;
-  createVariant?: Resolver<Maybe<ResolversTypes['CreateVariantPayload']>, ParentType, ContextType, Partial<MutationCreateVariantArgs>>;
-  deleteManyCandidates?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyCandidatesArgs>>;
-  deleteManyChecklists?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyChecklistsArgs>>;
-  deleteManyClassifications?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyClassificationsArgs>>;
-  deleteManyDuplicates?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyDuplicatesArgs>>;
-  deleteManyEntities?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyEntitiesArgs>>;
-  deleteManyHistory_incidents?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyHistory_IncidentsArgs>>;
-  deleteManyHistory_reports?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyHistory_ReportsArgs>>;
-  deleteManyIncidents?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyIncidentsArgs>>;
-  deleteManyNotifications?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyNotificationsArgs>>;
-  deleteManyQuickadds?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyQuickaddsArgs>>;
-  deleteManyReports?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyReportsArgs>>;
-  deleteManySubmissions?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManySubmissionsArgs>>;
-  deleteManySubscriptions?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManySubscriptionsArgs>>;
-  deleteManyTaxas?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyTaxasArgs>>;
-  deleteManyUsers?: Resolver<Maybe<ResolversTypes['DeleteManyPayload']>, ParentType, ContextType, Partial<MutationDeleteManyUsersArgs>>;
-  deleteOneCandidate?: Resolver<Maybe<ResolversTypes['Candidate']>, ParentType, ContextType, RequireFields<MutationDeleteOneCandidateArgs, 'query'>>;
-  deleteOneChecklist?: Resolver<Maybe<ResolversTypes['Checklist']>, ParentType, ContextType, RequireFields<MutationDeleteOneChecklistArgs, 'query'>>;
-  deleteOneClassification?: Resolver<Maybe<ResolversTypes['Classification']>, ParentType, ContextType, RequireFields<MutationDeleteOneClassificationArgs, 'query'>>;
-  deleteOneDuplicate?: Resolver<Maybe<ResolversTypes['Duplicate']>, ParentType, ContextType, RequireFields<MutationDeleteOneDuplicateArgs, 'query'>>;
-  deleteOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationDeleteOneEntityArgs, 'query'>>;
-  deleteOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationDeleteOneHistory_IncidentArgs, 'query'>>;
-  deleteOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationDeleteOneHistory_ReportArgs, 'query'>>;
-  deleteOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationDeleteOneNotificationArgs, 'query'>>;
-  deleteOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<MutationDeleteOneQuickaddArgs>>;
-  deleteOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubmissionArgs, 'query'>>;
-  deleteOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationDeleteOneSubscriptionArgs, 'query'>>;
-  deleteOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationDeleteOneTaxaArgs, 'query'>>;
-  deleteOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteOneUserArgs, 'query'>>;
-  getUser?: Resolver<Maybe<ResolversTypes['AppUser']>, ParentType, ContextType, Partial<MutationGetUserArgs>>;
-  insertManyCandidates?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyCandidatesArgs, 'data'>>;
-  insertManyChecklists?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyChecklistsArgs, 'data'>>;
-  insertManyClassifications?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyClassificationsArgs, 'data'>>;
-  insertManyDuplicates?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyDuplicatesArgs, 'data'>>;
-  insertManyEntities?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyEntitiesArgs, 'data'>>;
-  insertManyHistory_incidents?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyHistory_IncidentsArgs, 'data'>>;
-  insertManyHistory_reports?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyHistory_ReportsArgs, 'data'>>;
-  insertManyIncidents?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyIncidentsArgs, 'data'>>;
-  insertManyNotifications?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyNotificationsArgs, 'data'>>;
-  insertManyQuickadds?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, Partial<MutationInsertManyQuickaddsArgs>>;
-  insertManyReports?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyReportsArgs, 'data'>>;
-  insertManySubmissions?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManySubmissionsArgs, 'data'>>;
-  insertManySubscriptions?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManySubscriptionsArgs, 'data'>>;
-  insertManyTaxas?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyTaxasArgs, 'data'>>;
-  insertManyUsers?: Resolver<Maybe<ResolversTypes['InsertManyPayload']>, ParentType, ContextType, RequireFields<MutationInsertManyUsersArgs, 'data'>>;
-  insertOneCandidate?: Resolver<Maybe<ResolversTypes['Candidate']>, ParentType, ContextType, RequireFields<MutationInsertOneCandidateArgs, 'data'>>;
-  insertOneChecklist?: Resolver<Maybe<ResolversTypes['Checklist']>, ParentType, ContextType, RequireFields<MutationInsertOneChecklistArgs, 'data'>>;
-  insertOneClassification?: Resolver<Maybe<ResolversTypes['Classification']>, ParentType, ContextType, RequireFields<MutationInsertOneClassificationArgs, 'data'>>;
-  insertOneDuplicate?: Resolver<Maybe<ResolversTypes['Duplicate']>, ParentType, ContextType, RequireFields<MutationInsertOneDuplicateArgs, 'data'>>;
-  insertOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationInsertOneEntityArgs, 'data'>>;
-  insertOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationInsertOneHistory_IncidentArgs, 'data'>>;
-  insertOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationInsertOneHistory_ReportArgs, 'data'>>;
-  insertOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationInsertOneNotificationArgs, 'data'>>;
-  insertOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<MutationInsertOneQuickaddArgs>>;
-  insertOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationInsertOneSubmissionArgs, 'data'>>;
-  insertOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationInsertOneSubscriptionArgs, 'data'>>;
-  insertOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationInsertOneTaxaArgs, 'data'>>;
-  insertOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationInsertOneUserArgs, 'data'>>;
-  logIncidentHistory?: Resolver<Maybe<ResolversTypes['LogIncidentHistoryPayload']>, ParentType, ContextType, Partial<MutationLogIncidentHistoryArgs>>;
-  logReportHistory?: Resolver<Maybe<ResolversTypes['LogReportHistoryPayload']>, ParentType, ContextType, Partial<MutationLogReportHistoryArgs>>;
-  processNotifications?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  promoteSubmissionToReport?: Resolver<Maybe<ResolversTypes['PromoteSubmissionToReportPayload']>, ParentType, ContextType, Partial<MutationPromoteSubmissionToReportArgs>>;
-  replaceOneCandidate?: Resolver<Maybe<ResolversTypes['Candidate']>, ParentType, ContextType, RequireFields<MutationReplaceOneCandidateArgs, 'data'>>;
-  replaceOneChecklist?: Resolver<Maybe<ResolversTypes['Checklist']>, ParentType, ContextType, RequireFields<MutationReplaceOneChecklistArgs, 'data'>>;
-  replaceOneClassification?: Resolver<Maybe<ResolversTypes['Classification']>, ParentType, ContextType, RequireFields<MutationReplaceOneClassificationArgs, 'data'>>;
-  replaceOneDuplicate?: Resolver<Maybe<ResolversTypes['Duplicate']>, ParentType, ContextType, RequireFields<MutationReplaceOneDuplicateArgs, 'data'>>;
-  replaceOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationReplaceOneEntityArgs, 'data'>>;
-  replaceOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationReplaceOneHistory_IncidentArgs, 'data'>>;
-  replaceOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationReplaceOneHistory_ReportArgs, 'data'>>;
-  replaceOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationReplaceOneNotificationArgs, 'data'>>;
-  replaceOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationReplaceOneSubmissionArgs, 'data'>>;
-  replaceOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationReplaceOneSubscriptionArgs, 'data'>>;
-  replaceOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationReplaceOneTaxaArgs, 'data'>>;
-  replaceOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationReplaceOneUserArgs, 'data'>>;
-  updateManyCandidates?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyCandidatesArgs, 'set'>>;
-  updateManyChecklists?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyChecklistsArgs, 'set'>>;
-  updateManyClassifications?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyClassificationsArgs, 'set'>>;
-  updateManyDuplicates?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyDuplicatesArgs, 'set'>>;
-  updateManyEntities?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyEntitiesArgs, 'set'>>;
-  updateManyHistory_incidents?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyHistory_IncidentsArgs, 'set'>>;
-  updateManyHistory_reports?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyHistory_ReportsArgs, 'set'>>;
-  updateManyIncidents?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyIncidentsArgs, 'set'>>;
-  updateManyNotifications?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyNotificationsArgs, 'set'>>;
-  updateManyQuickadds?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyQuickaddsArgs, 'filter' | 'update'>>;
-  updateManyReports?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyReportsArgs, 'set'>>;
-  updateManySubmissions?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManySubmissionsArgs, 'set'>>;
-  updateManySubscriptions?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManySubscriptionsArgs, 'set'>>;
-  updateManyTaxas?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyTaxasArgs, 'set'>>;
-  updateManyUsers?: Resolver<Maybe<ResolversTypes['UpdateManyPayload']>, ParentType, ContextType, RequireFields<MutationUpdateManyUsersArgs, 'set'>>;
-  updateOneCandidate?: Resolver<Maybe<ResolversTypes['Candidate']>, ParentType, ContextType, RequireFields<MutationUpdateOneCandidateArgs, 'set'>>;
-  updateOneChecklist?: Resolver<Maybe<ResolversTypes['Checklist']>, ParentType, ContextType, RequireFields<MutationUpdateOneChecklistArgs, 'set'>>;
-  updateOneClassification?: Resolver<Maybe<ResolversTypes['Classification']>, ParentType, ContextType, RequireFields<MutationUpdateOneClassificationArgs, 'set'>>;
-  updateOneDuplicate?: Resolver<Maybe<ResolversTypes['Duplicate']>, ParentType, ContextType, RequireFields<MutationUpdateOneDuplicateArgs, 'set'>>;
-  updateOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationUpdateOneEntityArgs, 'set'>>;
-  updateOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationUpdateOneHistory_IncidentArgs, 'set'>>;
-  updateOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationUpdateOneHistory_ReportArgs, 'set'>>;
-  updateOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpdateOneNotificationArgs, 'set'>>;
-  updateOneQuickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, RequireFields<MutationUpdateOneQuickaddArgs, 'filter' | 'update'>>;
-  updateOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubmissionArgs, 'set'>>;
-  updateOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpdateOneSubscriptionArgs, 'set'>>;
-  updateOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpdateOneTaxaArgs, 'set'>>;
-  updateOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateOneUserArgs, 'set'>>;
-  upsertOneCandidate?: Resolver<Maybe<ResolversTypes['Candidate']>, ParentType, ContextType, RequireFields<MutationUpsertOneCandidateArgs, 'data'>>;
-  upsertOneChecklist?: Resolver<Maybe<ResolversTypes['Checklist']>, ParentType, ContextType, RequireFields<MutationUpsertOneChecklistArgs, 'data'>>;
-  upsertOneClassification?: Resolver<Maybe<ResolversTypes['Classification']>, ParentType, ContextType, RequireFields<MutationUpsertOneClassificationArgs, 'data'>>;
-  upsertOneDuplicate?: Resolver<Maybe<ResolversTypes['Duplicate']>, ParentType, ContextType, RequireFields<MutationUpsertOneDuplicateArgs, 'data'>>;
-  upsertOneEntity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, RequireFields<MutationUpsertOneEntityArgs, 'data'>>;
-  upsertOneHistory_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, RequireFields<MutationUpsertOneHistory_IncidentArgs, 'data'>>;
-  upsertOneHistory_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, RequireFields<MutationUpsertOneHistory_ReportArgs, 'data'>>;
-  upsertOneNotification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<MutationUpsertOneNotificationArgs, 'data'>>;
-  upsertOneSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<MutationUpsertOneSubmissionArgs, 'data'>>;
-  upsertOneSubscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, RequireFields<MutationUpsertOneSubscriptionArgs, 'data'>>;
-  upsertOneTaxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, RequireFields<MutationUpsertOneTaxaArgs, 'data'>>;
-  upsertOneUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpsertOneUserArgs, 'data'>>;
-};
-
-export type NotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Notification'] = ResolversParentTypes['Notification']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  processed?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  sentDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ObjectId'], any> {
-  name: 'ObjectId';
-}
-
-export type PromoteSubmissionToReportPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PromoteSubmissionToReportPayload'] = ResolversParentTypes['PromoteSubmissionToReportPayload']> = {
-  incident_ids?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  report_number?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  ObjectId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  candidate?: Resolver<Maybe<ResolversTypes['Candidate']>, ParentType, ContextType, Partial<QueryCandidateArgs>>;
-  candidates?: Resolver<Array<Maybe<ResolversTypes['Candidate']>>, ParentType, ContextType, RequireFields<QueryCandidatesArgs, 'limit'>>;
-  checklist?: Resolver<Maybe<ResolversTypes['Checklist']>, ParentType, ContextType, Partial<QueryChecklistArgs>>;
-  checklists?: Resolver<Array<Maybe<ResolversTypes['Checklist']>>, ParentType, ContextType, RequireFields<QueryChecklistsArgs, 'limit'>>;
-  classification?: Resolver<Maybe<ResolversTypes['Classification']>, ParentType, ContextType, Partial<QueryClassificationArgs>>;
-  classifications?: Resolver<Array<Maybe<ResolversTypes['Classification']>>, ParentType, ContextType, RequireFields<QueryClassificationsArgs, 'limit'>>;
-  duplicate?: Resolver<Maybe<ResolversTypes['Duplicate']>, ParentType, ContextType, Partial<QueryDuplicateArgs>>;
-  duplicates?: Resolver<Array<Maybe<ResolversTypes['Duplicate']>>, ParentType, ContextType, RequireFields<QueryDuplicatesArgs, 'limit'>>;
-  entities?: Resolver<Array<Maybe<ResolversTypes['Entity']>>, ParentType, ContextType, RequireFields<QueryEntitiesArgs, 'limit'>>;
-  entity?: Resolver<Maybe<ResolversTypes['Entity']>, ParentType, ContextType, Partial<QueryEntityArgs>>;
-  history_incident?: Resolver<Maybe<ResolversTypes['History_incident']>, ParentType, ContextType, Partial<QueryHistory_IncidentArgs>>;
-  history_incidents?: Resolver<Array<Maybe<ResolversTypes['History_incident']>>, ParentType, ContextType, RequireFields<QueryHistory_IncidentsArgs, 'limit'>>;
-  history_report?: Resolver<Maybe<ResolversTypes['History_report']>, ParentType, ContextType, Partial<QueryHistory_ReportArgs>>;
-  history_reports?: Resolver<Array<Maybe<ResolversTypes['History_report']>>, ParentType, ContextType, RequireFields<QueryHistory_ReportsArgs, 'limit'>>;
-  notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, Partial<QueryNotificationArgs>>;
-  notifications?: Resolver<Array<Maybe<ResolversTypes['Notification']>>, ParentType, ContextType, RequireFields<QueryNotificationsArgs, 'limit'>>;
-  quickadd?: Resolver<Maybe<ResolversTypes['Quickadd']>, ParentType, ContextType, Partial<QueryQuickaddArgs>>;
-  quickadds?: Resolver<Maybe<Array<Maybe<ResolversTypes['Quickadd']>>>, ParentType, ContextType, Partial<QueryQuickaddsArgs>>;
-  risks?: Resolver<Maybe<Array<Maybe<ResolversTypes['RisksPayloadItem']>>>, ParentType, ContextType, Partial<QueryRisksArgs>>;
-  submission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, Partial<QuerySubmissionArgs>>;
-  submissions?: Resolver<Array<Maybe<ResolversTypes['Submission']>>, ParentType, ContextType, RequireFields<QuerySubmissionsArgs, 'limit'>>;
-  subscription?: Resolver<Maybe<ResolversTypes['Subscription']>, ParentType, ContextType, Partial<QuerySubscriptionArgs>>;
-  subscriptions?: Resolver<Array<Maybe<ResolversTypes['Subscription']>>, ParentType, ContextType, RequireFields<QuerySubscriptionsArgs, 'limit'>>;
-  taxa?: Resolver<Maybe<ResolversTypes['Taxa']>, ParentType, ContextType, Partial<QueryTaxaArgs>>;
-  taxas?: Resolver<Array<Maybe<ResolversTypes['Taxa']>>, ParentType, ContextType, RequireFields<QueryTaxasArgs, 'limit'>>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserArgs>>;
-  users?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryUsersArgs, 'limit'>>;
-};
-
-export type QuickaddResolvers<ContextType = any, ParentType extends ResolversParentTypes['Quickadd'] = ResolversParentTypes['Quickadd']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  date_submitted?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  source_domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ReportEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReportEmbedding'] = ResolversParentTypes['ReportEmbedding']> = {
-  from_text_hash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ReportTranslationResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReportTranslation'] = ResolversParentTypes['ReportTranslation']> = {
-  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RisksPayloadItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['RisksPayloadItem'] = ResolversParentTypes['RisksPayloadItem']> = {
-  precedents?: Resolver<Maybe<Array<Maybe<ResolversTypes['RisksPayloadPrecedent']>>>, ParentType, ContextType>;
-  tag?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RisksPayloadPrecedentResolvers<ContextType = any, ParentType extends ResolversParentTypes['RisksPayloadPrecedent'] = ResolversParentTypes['RisksPayloadPrecedent']> = {
-  AllegedDeployerOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  AllegedDeveloperOfAISystem?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  AllegedHarmedOrNearlyHarmedParties?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editors?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['RisksPayloadPrecedentEmbedding']>, ParentType, ContextType>;
-  epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  flagged_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  nlp_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['RisksPayloadPrecedentNlp_similar_incident']>>>, ParentType, ContextType>;
-  reports?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  tsne?: Resolver<Maybe<ResolversTypes['RisksPayloadPrecedentTsne']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RisksPayloadPrecedentEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['RisksPayloadPrecedentEmbedding'] = ResolversParentTypes['RisksPayloadPrecedentEmbedding']> = {
-  from_reports?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RisksPayloadPrecedentNlp_Similar_IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['RisksPayloadPrecedentNlp_similar_incident'] = ResolversParentTypes['RisksPayloadPrecedentNlp_similar_incident']> = {
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  similarity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RisksPayloadPrecedentTsneResolvers<ContextType = any, ParentType extends ResolversParentTypes['RisksPayloadPrecedentTsne'] = ResolversParentTypes['RisksPayloadPrecedentTsne']> = {
-  x?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  y?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SubmissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Submission'] = ResolversParentTypes['Submission']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  authors?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  cloudinary_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  date_downloaded?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date_modified?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date_published?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date_submitted?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  deployers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  developers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
-  editor_dissimilar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  editor_notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  editor_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  embedding?: Resolver<Maybe<ResolversTypes['SubmissionEmbedding']>, ParentType, ContextType>;
-  epoch_date_modified?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  harmed_parties?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entity']>>>, ParentType, ContextType>;
-  image_url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  incident_date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  incident_editors?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  incident_ids?: Resolver<Maybe<Array<Maybe<ResolversTypes['Int']>>>, ParentType, ContextType>;
-  incident_title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  nlp_similar_incidents?: Resolver<Maybe<Array<Maybe<ResolversTypes['SubmissionNlp_similar_incident']>>>, ParentType, ContextType>;
-  plain_text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  quiet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  source_domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  submitters?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  tags?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SubmissionEmbeddingResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubmissionEmbedding'] = ResolversParentTypes['SubmissionEmbedding']> = {
-  from_text_hash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  vector?: Resolver<Maybe<Array<Maybe<ResolversTypes['Float']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SubmissionNlp_Similar_IncidentResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubmissionNlp_similar_incident'] = ResolversParentTypes['SubmissionNlp_similar_incident']> = {
-  incident_id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  similarity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  _id?: SubscriptionResolver<Maybe<ResolversTypes['ObjectId']>, "_id", ParentType, ContextType>;
-  entityId?: SubscriptionResolver<Maybe<ResolversTypes['Entity']>, "entityId", ParentType, ContextType>;
-  type?: SubscriptionResolver<ResolversTypes['String'], "type", ParentType, ContextType>;
-  userId?: SubscriptionResolver<ResolversTypes['User'], "userId", ParentType, ContextType>;
-};
-
-export type TaxaResolvers<ContextType = any, ParentType extends ResolversParentTypes['Taxa'] = ResolversParentTypes['Taxa']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  complete_entities?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  dummy_fields?: Resolver<Maybe<Array<Maybe<ResolversTypes['TaxaDummy_field']>>>, ParentType, ContextType>;
-  field_list?: Resolver<Maybe<Array<Maybe<ResolversTypes['TaxaField_list']>>>, ParentType, ContextType>;
-  namespace?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  weight?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TaxaDummy_FieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['TaxaDummy_field'] = ResolversParentTypes['TaxaDummy_field']> = {
-  field_number?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  short_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TaxaField_ListResolvers<ContextType = any, ParentType extends ResolversParentTypes['TaxaField_list'] = ResolversParentTypes['TaxaField_list']> = {
-  complete_from?: Resolver<Maybe<ResolversTypes['TaxaField_listComplete_from']>, ParentType, ContextType>;
-  default?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  display_type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  field_number?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  hide_search?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  instant_facet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  item_fields?: Resolver<Maybe<ResolversTypes['TaxaField_listItem_field']>, ParentType, ContextType>;
-  long_description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  long_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  mongo_type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  permitted_values?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  placeholder?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  public?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  required?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  short_description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  short_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  weight?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TaxaField_ListComplete_FromResolvers<ContextType = any, ParentType extends ResolversParentTypes['TaxaField_listComplete_from'] = ResolversParentTypes['TaxaField_listComplete_from']> = {
-  all?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  current?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TaxaField_ListItem_FieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['TaxaField_listItem_field'] = ResolversParentTypes['TaxaField_listItem_field']> = {
-  complete_from?: Resolver<Maybe<ResolversTypes['TaxaField_listItem_fieldComplete_from']>, ParentType, ContextType>;
-  default?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  display_type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  field_number?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  instant_facet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  long_description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  long_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  mongo_type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  permitted_values?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  placeholder?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  public?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  required?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  short_description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  short_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  weight?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TaxaField_ListItem_FieldComplete_FromResolvers<ContextType = any, ParentType extends ResolversParentTypes['TaxaField_listItem_fieldComplete_from'] = ResolversParentTypes['TaxaField_listItem_fieldComplete_from']> = {
-  all?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  current?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  entities?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UpdateManyPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateManyPayload'] = ResolversParentTypes['UpdateManyPayload']> = {
-  matchedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  modifiedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  adminData?: Resolver<Maybe<ResolversTypes['UserAdminDatum']>, ParentType, ContextType>;
-  first_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  last_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  roles?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UserAdminDatumResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserAdminDatum'] = ResolversParentTypes['UserAdminDatum']> = {
-  creationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  disabled?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  lastAuthenticationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type Resolvers<ContextType = any> = {
-  AppUser?: AppUserResolvers<ContextType>;
-  Candidate?: CandidateResolvers<ContextType>;
-  CandidateClassification_similarity?: CandidateClassification_SimilarityResolvers<ContextType>;
-  CandidateEmbedding?: CandidateEmbeddingResolvers<ContextType>;
-  Checklist?: ChecklistResolvers<ContextType>;
-  ChecklistRisk?: ChecklistRiskResolvers<ContextType>;
-  ChecklistRiskPrecedent?: ChecklistRiskPrecedentResolvers<ContextType>;
-  Classification?: ClassificationResolvers<ContextType>;
-  ClassificationAttribute?: ClassificationAttributeResolvers<ContextType>;
-  CreateVariantPayload?: CreateVariantPayloadResolvers<ContextType>;
-  DateTime?: GraphQLScalarType;
-  DefaultAdminUser?: DefaultAdminUserResolvers<ContextType>;
-  DeleteManyPayload?: DeleteManyPayloadResolvers<ContextType>;
-  Duplicate?: DuplicateResolvers<ContextType>;
-  Entity?: EntityResolvers<ContextType>;
-  History_incident?: History_IncidentResolvers<ContextType>;
-  History_incidentEmbedding?: History_IncidentEmbeddingResolvers<ContextType>;
-  History_incidentNlp_similar_incident?: History_IncidentNlp_Similar_IncidentResolvers<ContextType>;
-  History_incidentTsne?: History_IncidentTsneResolvers<ContextType>;
-  History_report?: History_ReportResolvers<ContextType>;
-  History_reportEmbedding?: History_ReportEmbeddingResolvers<ContextType>;
-  IncidentEmbedding?: IncidentEmbeddingResolvers<ContextType>;
-  IncidentNlp_similar_incident?: IncidentNlp_Similar_IncidentResolvers<ContextType>;
-  IncidentTsne?: IncidentTsneResolvers<ContextType>;
-  InsertManyPayload?: InsertManyPayloadResolvers<ContextType>;
-  LogIncidentHistoryPayload?: LogIncidentHistoryPayloadResolvers<ContextType>;
-  LogReportHistoryPayload?: LogReportHistoryPayloadResolvers<ContextType>;
-  Long?: GraphQLScalarType;
-  Mutation?: MutationResolvers<ContextType>;
-  Notification?: NotificationResolvers<ContextType>;
-  ObjectId?: GraphQLScalarType;
-  PromoteSubmissionToReportPayload?: PromoteSubmissionToReportPayloadResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
-  Quickadd?: QuickaddResolvers<ContextType>;
-  ReportEmbedding?: ReportEmbeddingResolvers<ContextType>;
-  ReportTranslation?: ReportTranslationResolvers<ContextType>;
-  RisksPayloadItem?: RisksPayloadItemResolvers<ContextType>;
-  RisksPayloadPrecedent?: RisksPayloadPrecedentResolvers<ContextType>;
-  RisksPayloadPrecedentEmbedding?: RisksPayloadPrecedentEmbeddingResolvers<ContextType>;
-  RisksPayloadPrecedentNlp_similar_incident?: RisksPayloadPrecedentNlp_Similar_IncidentResolvers<ContextType>;
-  RisksPayloadPrecedentTsne?: RisksPayloadPrecedentTsneResolvers<ContextType>;
-  Submission?: SubmissionResolvers<ContextType>;
-  SubmissionEmbedding?: SubmissionEmbeddingResolvers<ContextType>;
-  SubmissionNlp_similar_incident?: SubmissionNlp_Similar_IncidentResolvers<ContextType>;
-  Subscription?: SubscriptionResolvers<ContextType>;
-  Taxa?: TaxaResolvers<ContextType>;
-  TaxaDummy_field?: TaxaDummy_FieldResolvers<ContextType>;
-  TaxaField_list?: TaxaField_ListResolvers<ContextType>;
-  TaxaField_listComplete_from?: TaxaField_ListComplete_FromResolvers<ContextType>;
-  TaxaField_listItem_field?: TaxaField_ListItem_FieldResolvers<ContextType>;
-  TaxaField_listItem_fieldComplete_from?: TaxaField_ListItem_FieldComplete_FromResolvers<ContextType>;
-  UpdateManyPayload?: UpdateManyPayloadResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
-  UserAdminDatum?: UserAdminDatumResolvers<ContextType>;
-};
-
-export type DirectiveResolvers<ContextType = any> = {
-  union?: UnionDirectiveResolver<any, any, ContextType>;
-  abstractEntity?: AbstractEntityDirectiveResolver<any, any, ContextType>;
-  entity?: EntityDirectiveResolver<any, any, ContextType>;
-  column?: ColumnDirectiveResolver<any, any, ContextType>;
-  id?: IdDirectiveResolver<any, any, ContextType>;
-  link?: LinkDirectiveResolver<any, any, ContextType>;
-  embedded?: EmbeddedDirectiveResolver<any, any, ContextType>;
-  map?: MapDirectiveResolver<any, any, ContextType>;
-};
-
-import { ObjectId } from 'mongodb';
+export type FindClassificationsQuery = { __typename?: 'Query', classifications: Array<{ __typename?: 'Classification', _id?: any | null, notes?: string | null, namespace: string, publish?: boolean | null, incidents: Array<{ __typename?: 'Incident', incident_id: number } | null>, reports: Array<{ __typename?: 'Report', report_number: number } | null>, attributes?: Array<{ __typename?: 'ClassificationAttribute', short_name?: string | null, value_json?: string | null } | null> | null } | null> };
+
+export type UpsertClassificationMutationVariables = Exact<{
+  query?: InputMaybe<ClassificationQueryInput>;
+  data: ClassificationInsertInput;
+}>;
+
+
+export type UpsertClassificationMutation = { __typename?: 'Mutation', upsertOneClassification?: { __typename?: 'Classification', _id?: any | null, notes?: string | null, namespace: string, publish?: boolean | null, incidents: Array<{ __typename?: 'Incident', incident_id: number } | null>, reports: Array<{ __typename?: 'Report', report_number: number } | null>, attributes?: Array<{ __typename?: 'ClassificationAttribute', short_name?: string | null, value_json?: string | null } | null> | null } | null };
+
+export type InsertDuplicateMutationVariables = Exact<{
+  duplicate: DuplicateInsertInput;
+}>;
+
+
+export type InsertDuplicateMutation = { __typename?: 'Mutation', insertOneDuplicate?: { __typename?: 'Duplicate', duplicate_incident_number?: number | null, true_incident_number?: number | null } | null };
+
+export type UpsertEntityMutationVariables = Exact<{
+  filter: EntityFilterType;
+  update: EntityInsertType;
+}>;
+
+
+export type UpsertEntityMutation = { __typename?: 'Mutation', upsertOneEntity?: { __typename?: 'Entity', entity_id: string, name: string } | null };
+
+export type FindEntitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindEntitiesQuery = { __typename?: 'Query', entities?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null };
+
+export type FindEntityQueryVariables = Exact<{
+  filter?: InputMaybe<EntityFilterType>;
+}>;
+
+
+export type FindEntityQuery = { __typename?: 'Query', entity?: { __typename?: 'Entity', entity_id: string, name: string, created_at?: any | null } | null };
+
+export type UpdateEntityMutationVariables = Exact<{
+  filter: EntityFilterType;
+  update: EntityUpdateType;
+}>;
+
+
+export type UpdateEntityMutation = { __typename?: 'Mutation', updateOneEntity?: { __typename?: 'Entity', entity_id: string } | null };
+
+export type FindIncidentQueryVariables = Exact<{
+  filter?: InputMaybe<IncidentFilterType>;
+}>;
+
+
+export type FindIncidentQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editors: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null>, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports: Array<{ __typename?: 'Report', report_number: number } | null>, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null } | null };
+
+export type FindIncidentsTableQueryVariables = Exact<{
+  filter?: InputMaybe<IncidentFilterType>;
+}>;
+
+
+export type FindIncidentsTableQuery = { __typename?: 'Query', incidents?: Array<{ __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editors: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null>, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, reports: Array<{ __typename?: 'Report', report_number: number } | null> } | null> | null };
+
+export type FindIncidentEntitiesQueryVariables = Exact<{
+  filter?: InputMaybe<IncidentFilterType>;
+}>;
+
+
+export type FindIncidentEntitiesQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null } | null };
+
+export type FindIncidentsQueryVariables = Exact<{
+  filter?: InputMaybe<IncidentFilterType>;
+}>;
+
+
+export type FindIncidentsQuery = { __typename?: 'Query', incidents?: Array<{ __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents?: Array<number | null> | null, editors: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null>, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports: Array<{ __typename?: 'Report', report_number: number } | null>, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null } | null> | null };
+
+export type FindIncidentsTitlesQueryVariables = Exact<{
+  filter?: InputMaybe<IncidentFilterType>;
+}>;
+
+
+export type FindIncidentsTitlesQuery = { __typename?: 'Query', incidents?: Array<{ __typename?: 'Incident', incident_id: number, title: string } | null> | null };
+
+export type UpdateIncidentMutationVariables = Exact<{
+  filter: IncidentFilterType;
+  update: IncidentUpdateType;
+}>;
+
+
+export type UpdateIncidentMutation = { __typename?: 'Mutation', updateOneIncident?: { __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editors: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null>, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports: Array<{ __typename?: 'Report', report_number: number } | null>, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null } | null };
+
+export type UpdateIncidentsMutationVariables = Exact<{
+  filter: IncidentFilterType;
+  update: IncidentUpdateType;
+}>;
+
+
+export type UpdateIncidentsMutation = { __typename?: 'Mutation', updateManyIncidents?: { __typename?: 'UpdateManyPayload', matchedCount: number, modifiedCount: number } | null };
+
+export type InsertIncidentMutationVariables = Exact<{
+  data: IncidentInsertType;
+}>;
+
+
+export type InsertIncidentMutation = { __typename?: 'Mutation', insertOneIncident?: { __typename?: 'Incident', incident_id: number } | null };
+
+export type FindLastIncidentQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindLastIncidentQuery = { __typename?: 'Query', incidents?: Array<{ __typename?: 'Incident', incident_id: number } | null> | null };
+
+export type FindIncidentFullQueryVariables = Exact<{
+  filter?: InputMaybe<IncidentFilterType>;
+}>;
+
+
+export type FindIncidentFullQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, epoch_date_modified?: number | null, editors: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null>, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, authors: Array<string | null>, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null>, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null } | null };
+
+export type LogIncidentHistoryMutationVariables = Exact<{
+  input: History_IncidentInsertInput;
+}>;
+
+
+export type LogIncidentHistoryMutation = { __typename?: 'Mutation', logIncidentHistory?: { __typename?: 'LogIncidentHistoryPayload', incident_id?: number | null } | null };
+
+export type FindIncidentHistoryQueryVariables = Exact<{
+  query?: InputMaybe<History_IncidentQueryInput>;
+}>;
+
+
+export type FindIncidentHistoryQuery = { __typename?: 'Query', history_incidents: Array<{ __typename?: 'History_incident', incident_id: number, AllegedDeployerOfAISystem?: Array<string | null> | null, AllegedDeveloperOfAISystem?: Array<string | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<string | null> | null, _id?: any | null, date: string, description?: string | null, modifiedBy?: string | null, editor_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editor_similar_incidents?: Array<number | null> | null, editors: Array<string | null>, epoch_date_modified?: number | null, flagged_dissimilar_incidents?: Array<number | null> | null, reports: Array<number | null>, title: string, embedding?: { __typename?: 'History_incidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, nlp_similar_incidents?: Array<{ __typename?: 'History_incidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, tsne?: { __typename?: 'History_incidentTsne', x?: number | null, y?: number | null } | null } | null> };
+
+export type FlagIncidentSimilarityMutationVariables = Exact<{
+  incidentId: Scalars['Int']['input'];
+  dissimilarIds?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
+}>;
+
+
+export type FlagIncidentSimilarityMutation = { __typename?: 'Mutation', flagIncidentSimilarity?: { __typename?: 'Incident', incident_id: number, flagged_dissimilar_incidents?: Array<number | null> | null, editors: Array<{ __typename?: 'User', userId: string } | null> } | null };
+
+export type AllQuickAddQueryVariables = Exact<{
+  filter: QuickaddFilterType;
+}>;
+
+
+export type AllQuickAddQuery = { __typename?: 'Query', quickadds?: Array<{ __typename?: 'Quickadd', _id?: any | null, date_submitted: string, url: string, source_domain?: string | null } | null> | null };
+
+export type DeleteOneQuickAddMutationVariables = Exact<{
+  filter?: InputMaybe<QuickaddFilterType>;
+}>;
+
+
+export type DeleteOneQuickAddMutation = { __typename?: 'Mutation', deleteManyQuickadds?: { __typename?: 'DeleteManyPayload', deletedCount: number } | null };
+
+export type InsertQuickAddMutationVariables = Exact<{
+  data: QuickaddInsertType;
+}>;
+
+
+export type InsertQuickAddMutation = { __typename?: 'Mutation', insertOneQuickadd?: { __typename?: 'Quickadd', _id?: any | null } | null };
+
+export type FindReportQueryVariables = Exact<{
+  filter: ReportFilterType;
+}>;
+
+
+export type FindReportQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, description?: string | null, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, date_submitted: any, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, image_url: string, cloudinary_id: string, text: string, plain_text: string, source_domain: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, quiet?: boolean | null, user?: { __typename?: 'User', userId: string } | null, embedding?: { __typename?: 'ReportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null };
+
+export type FindReportWithTranslationsQueryVariables = Exact<{
+  filter: ReportFilterType;
+}>;
+
+
+export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations_es?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_en?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_fr?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_ja?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null } | null };
+
+export type UpdateReportMutationVariables = Exact<{
+  filter: ReportFilterType;
+  update: ReportUpdateType;
+}>;
+
+
+export type UpdateReportMutation = { __typename?: 'Mutation', updateOneReport?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, epoch_date_published: number, epoch_date_downloaded: number, epoch_date_modified: number, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, quiet?: boolean | null } | null };
+
+export type DeleteOneReportMutationVariables = Exact<{
+  filter: ReportFilterType;
+}>;
+
+
+export type DeleteOneReportMutation = { __typename?: 'Mutation', deleteOneReport?: { __typename?: 'Report', report_number: number } | null };
+
+export type LinkReportsToIncidentsMutationVariables = Exact<{
+  input: LinkReportsToIncidentsInput;
+}>;
+
+
+export type LinkReportsToIncidentsMutation = { __typename?: 'Mutation', linkReportsToIncidents?: Array<{ __typename?: 'Incident', incident_id: number, reports: Array<{ __typename?: 'Report', report_number: number } | null> } | null> | null };
+
+export type LogReportHistoryMutationVariables = Exact<{
+  input: History_ReportInsertInput;
+}>;
+
+
+export type LogReportHistoryMutation = { __typename?: 'Mutation', logReportHistory?: { __typename?: 'LogReportHistoryPayload', report_number?: number | null } | null };
+
+export type FindReportHistoryQueryVariables = Exact<{
+  query?: InputMaybe<History_ReportQueryInput>;
+}>;
+
+
+export type FindReportHistoryQuery = { __typename?: 'Query', history_reports: Array<{ __typename?: 'History_report', _id?: any | null, authors: Array<string | null>, cloudinary_id: string, date_downloaded: any, date_modified: any, date_published: any, date_submitted: any, description?: string | null, editor_notes?: string | null, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, flag?: boolean | null, image_url: string, inputs_outputs?: Array<string | null> | null, is_incident_report?: boolean | null, language: string, modifiedBy?: string | null, plain_text: string, report_number: number, submitters: Array<string | null>, tags: Array<string | null>, text: string, title: string, url: string, source_domain: string, user?: string | null, quiet?: boolean | null, embedding?: { __typename?: 'History_reportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null> };
+
+export type FindReportsQueryVariables = Exact<{
+  filter: ReportFilterType;
+}>;
+
+
+export type FindReportsQuery = { __typename?: 'Query', reports?: Array<{ __typename?: 'Report', _id?: any | null, submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, authors: Array<string | null>, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null };
+
+export type FindReportsTableQueryVariables = Exact<{
+  filter: ReportFilterType;
+}>;
+
+
+export type FindReportsTableQuery = { __typename?: 'Query', reports?: Array<{ __typename?: 'Report', _id?: any | null, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_submitted: any, date_modified: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, authors: Array<string | null>, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null, editor_notes?: string | null, is_incident_report?: boolean | null } | null> | null };
+
+export type FlagReportMutationVariables = Exact<{
+  report_number: Scalars['Int']['input'];
+  input: Scalars['Boolean']['input'];
+}>;
+
+
+export type FlagReportMutation = { __typename?: 'Mutation', flagReport?: { __typename?: 'Report', report_number: number, flag?: boolean | null, date_modified: any, epoch_date_modified: number } | null };
+
+export type DeleteSubmissionMutationVariables = Exact<{
+  _id: Scalars['ObjectId']['input'];
+}>;
+
+
+export type DeleteSubmissionMutation = { __typename?: 'Mutation', deleteOneSubmission?: { __typename?: 'Submission', _id?: any | null } | null };
+
+export type FindSubmissionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindSubmissionsQuery = { __typename?: 'Query', submissions?: Array<{ __typename?: 'Submission', _id?: any | null, cloudinary_id?: string | null, date_downloaded: string, date_modified: string, date_published: string, date_submitted: string, description?: string | null, image_url: string, incident_date?: string | null, incident_ids?: Array<number | null> | null, incident_title?: string | null, language: string, source_domain: string, text: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, url: string, editor_notes?: string | null, tags: Array<string | null>, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, plain_text?: string | null, status?: string | null, quiet?: boolean | null, incident_editors?: Array<{ __typename?: 'User', first_name?: string | null, last_name?: string | null, userId: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', similarity?: number | null, incident_id?: number | null } | null> | null, developers?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, deployers?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, harmed_parties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, user?: { __typename?: 'User', userId: string } | null } | null> | null };
+
+export type FindSubmissionQueryVariables = Exact<{
+  filter: SubmissionFilterType;
+}>;
+
+
+export type FindSubmissionQuery = { __typename?: 'Query', submission?: { __typename?: 'Submission', _id?: any | null, cloudinary_id?: string | null, date_downloaded: string, date_modified: string, date_published: string, date_submitted: string, description?: string | null, image_url: string, incident_date?: string | null, incident_ids?: Array<number | null> | null, incident_title?: string | null, language: string, source_domain: string, text: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, url: string, editor_notes?: string | null, tags: Array<string | null>, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, status?: string | null, quiet?: boolean | null, incident_editors?: Array<{ __typename?: 'User', first_name?: string | null, last_name?: string | null, userId: string } | null> | null, developers?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, deployers?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, harmed_parties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', similarity?: number | null, incident_id?: number | null } | null> | null } | null };
+
+export type UpdateSubmissionMutationVariables = Exact<{
+  filter: SubmissionFilterType;
+  update: SubmissionUpdateType;
+}>;
+
+
+export type UpdateSubmissionMutation = { __typename?: 'Mutation', updateOneSubmission?: { __typename?: 'Submission', _id?: any | null, cloudinary_id?: string | null, date_downloaded: string, date_modified: string, date_published: string, date_submitted: string, description?: string | null, image_url: string, incident_date?: string | null, incident_ids?: Array<number | null> | null, incident_title?: string | null, language: string, source_domain: string, text: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, url: string, editor_notes?: string | null, tags: Array<string | null>, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, incident_editors?: Array<{ __typename?: 'User', first_name?: string | null, last_name?: string | null, userId: string } | null> | null, developers?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, deployers?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, harmed_parties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', similarity?: number | null, incident_id?: number | null } | null> | null } | null };
+
+export type InsertSubmissionMutationVariables = Exact<{
+  data: SubmissionInsertType;
+}>;
+
+
+export type InsertSubmissionMutation = { __typename?: 'Mutation', insertOneSubmission?: { __typename?: 'Submission', _id?: any | null } | null };
+
+export type PromoteSubmissionMutationVariables = Exact<{
+  input: PromoteSubmissionToReportInput;
+}>;
+
+
+export type PromoteSubmissionMutation = { __typename?: 'Mutation', promoteSubmissionToReport: { __typename?: 'PromoteSubmissionToReportPayload', incident_ids?: Array<number | null> | null, report_number?: number | null } };
+
+export type UpsertSubscriptionMutationVariables = Exact<{
+  query?: InputMaybe<SubscriptionQueryInput>;
+  subscription: SubscriptionInsertInput;
+}>;
+
+
+export type UpsertSubscriptionMutation = { __typename?: 'Mutation', upsertOneSubscription?: { __typename?: 'Subscription', _id?: any | null } | null };
+
+export type UpdateSubscriptionMutationVariables = Exact<{
+  query?: InputMaybe<SubscriptionQueryInput>;
+  set: SubscriptionUpdateInput;
+}>;
+
+
+export type UpdateSubscriptionMutation = { __typename?: 'Mutation', updateOneSubscription?: { __typename?: 'Subscription', _id?: any | null } | null };
+
+export type FindSubscriptionsQueryVariables = Exact<{
+  query: SubscriptionQueryInput;
+}>;
+
+
+export type FindSubscriptionsQuery = { __typename?: 'Query', subscriptions: Array<{ __typename?: 'Subscription', userId: { __typename?: 'User', userId: string } } | null> };
+
+export type FindSubscriptionsFullQueryVariables = Exact<{
+  query: SubscriptionQueryInput;
+}>;
+
+
+export type FindSubscriptionsFullQuery = { __typename?: 'Query', subscriptions: Array<{ __typename?: 'Subscription', _id?: any | null, type: string, incident_id?: { __typename?: 'Incident', incident_id: number, title: string } | null, entityId?: { __typename?: 'Entity', entity_id: string, name: string } | null, userId: { __typename?: 'User', userId: string } } | null> };
+
+export type DeleteSubscriptionsMutationVariables = Exact<{
+  query?: InputMaybe<SubscriptionQueryInput>;
+}>;
+
+
+export type DeleteSubscriptionsMutation = { __typename?: 'Mutation', deleteManySubscriptions?: { __typename?: 'DeleteManyPayload', deletedCount: number } | null };
+
+export type FindUserSubscriptionsQueryVariables = Exact<{
+  query: SubscriptionQueryInput;
+}>;
+
+
+export type FindUserSubscriptionsQuery = { __typename?: 'Query', subscriptions: Array<{ __typename?: 'Subscription', _id?: any | null, type: string, incident_id?: { __typename?: 'Incident', incident_id: number, title: string } | null, entityId?: { __typename?: 'Entity', entity_id: string, name: string } | null } | null> };
+
+export type FindUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindUsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null } | null> | null };
+
+export type FindUserQueryVariables = Exact<{
+  filter: UserFilterType;
+}>;
+
+
+export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email?: string | null, disabled?: boolean | null, creationDate?: any | null, lastAuthenticationDate?: any | null } | null } | null };
+
+export type FindUsersByRoleQueryVariables = Exact<{
+  role?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type FindUsersByRoleQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null } | null> | null };
+
+export type UpdateUserRolesMutationVariables = Exact<{
+  roles: Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateOneUser?: { __typename?: 'User', roles: Array<string | null>, userId: string } | null };
+
+export type UpdateUserProfileMutationVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  first_name?: InputMaybe<Scalars['String']['input']>;
+  last_name?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateUserProfileMutation = { __typename?: 'Mutation', updateOneUser?: { __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null };
+
+export type FindVariantsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindVariantsQuery = { __typename?: 'Query', reports?: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, plain_text: string, authors: Array<string | null>, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null };
+
+export type FindIncidentVariantsQueryVariables = Exact<{
+  incident_id: Scalars['Int']['input'];
+}>;
+
+
+export type FindIncidentVariantsQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, reports: Array<{ __typename?: 'Report', report_number: number, title: string, text: string, url: string, source_domain: string, date_published: any, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> } | null };
+
+export type FindVariantQueryVariables = Exact<{
+  filter?: InputMaybe<ReportFilterType>;
+}>;
+
+
+export type FindVariantQuery = { __typename?: 'Query', report?: { __typename?: 'Report', report_number: number, title: string, date_published: any, submitters: Array<string | null>, text: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null };
+
+export type CreateVariantMutationVariables = Exact<{
+  input: CreateVariantInput;
+}>;
+
+
+export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id?: number | null, report_number?: number | null } | null };
+
+export type UpdateVariantMutationVariables = Exact<{
+  filter: ReportFilterType;
+  update: ReportUpdateType;
+}>;
+
+
+export type UpdateVariantMutation = { __typename?: 'Mutation', updateOneReport?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, epoch_date_published: number, epoch_date_downloaded: number, epoch_date_modified: number, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string } | null };
+
+export type DeleteOneVariantMutationVariables = Exact<{
+  filter: ReportFilterType;
+}>;
+
+
+export type DeleteOneVariantMutation = { __typename?: 'Mutation', deleteOneReport?: { __typename?: 'Report', report_number: number } | null };
+
+
+export const FindClassificationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindClassifications"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"classifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"namespace"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short_name"}},{"kind":"Field","name":{"kind":"Name","value":"value_json"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish"}}]}}]}}]} as unknown as DocumentNode<FindClassificationsQuery, FindClassificationsQueryVariables>;
+export const UpsertClassificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertClassification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationQueryInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneClassification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"namespace"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short_name"}},{"kind":"Field","name":{"kind":"Name","value":"value_json"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish"}}]}}]}}]} as unknown as DocumentNode<UpsertClassificationMutation, UpsertClassificationMutationVariables>;
+export const InsertDuplicateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertDuplicate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DuplicateInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneDuplicate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"duplicate_incident_number"}},{"kind":"Field","name":{"kind":"Name","value":"true_incident_number"}}]}}]}}]} as unknown as DocumentNode<InsertDuplicateMutation, InsertDuplicateMutationVariables>;
+export const UpsertEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneEntity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<UpsertEntityMutation, UpsertEntityMutationVariables>;
+export const FindEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<FindEntitiesQuery, FindEntitiesQueryVariables>;
+export const FindEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<FindEntityQuery, FindEntityQueryVariables>;
+export const UpdateEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneEntity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]} as unknown as DocumentNode<UpdateEntityMutation, UpdateEntityMutationVariables>;
+export const FindIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncident"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}}]}}]}}]} as unknown as DocumentNode<FindIncidentQuery, FindIncidentQueryVariables>;
+export const FindIncidentsTableDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentsTable"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentsTableQuery, FindIncidentsTableQueryVariables>;
+export const FindIncidentEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentEntities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentEntitiesQuery, FindIncidentEntitiesQueryVariables>;
+export const FindIncidentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidents"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentsQuery, FindIncidentsQueryVariables>;
+export const FindIncidentsTitlesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentsTitles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<FindIncidentsTitlesQuery, FindIncidentsTitlesQueryVariables>;
+export const UpdateIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateIncident"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneIncident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}}]}}]}}]} as unknown as DocumentNode<UpdateIncidentMutation, UpdateIncidentMutationVariables>;
+export const UpdateIncidentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateIncidents"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateManyIncidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"matchedCount"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedCount"}}]}}]}}]} as unknown as DocumentNode<UpdateIncidentsMutation, UpdateIncidentsMutationVariables>;
+export const InsertIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertIncident"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneIncident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<InsertIncidentMutation, InsertIncidentMutationVariables>;
+export const FindLastIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindLastIncident"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"incident_id"},"value":{"kind":"EnumValue","value":"DESC"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"ObjectField","name":{"kind":"Name","value":"skip"},"value":{"kind":"IntValue","value":"0"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<FindLastIncidentQuery, FindLastIncidentQueryVariables>;
+export const FindIncidentFullDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentFull"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"tsne"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentFullQuery, FindIncidentFullQueryVariables>;
+export const LogIncidentHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logIncidentHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"History_incidentInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logIncidentHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<LogIncidentHistoryMutation, LogIncidentHistoryMutationVariables>;
+export const FindIncidentHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_incidentQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"sortBy"},"value":{"kind":"EnumValue","value":"EPOCH_DATE_MODIFIED_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"}},{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editors"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"tsne"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentHistoryQuery, FindIncidentHistoryQueryVariables>;
+export const FlagIncidentSimilarityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FlagIncidentSimilarity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"incidentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"dissimilarIds"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flagIncidentSimilarity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"incidentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"incidentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"dissimilarIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"dissimilarIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]}}]} as unknown as DocumentNode<FlagIncidentSimilarityMutation, FlagIncidentSimilarityMutationVariables>;
+export const AllQuickAddDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllQuickAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"QuickaddFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"quickadds"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}}]}}]}}]} as unknown as DocumentNode<AllQuickAddQuery, AllQuickAddQueryVariables>;
+export const DeleteOneQuickAddDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneQuickAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"QuickaddFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteManyQuickadds"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedCount"}}]}}]}}]} as unknown as DocumentNode<DeleteOneQuickAddMutation, DeleteOneQuickAddMutationVariables>;
+export const InsertQuickAddDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertQuickAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"QuickaddInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneQuickadd"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<InsertQuickAddMutation, InsertQuickAddMutationVariables>;
+export const FindReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_text_hash"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindReportQuery, FindReportQueryVariables>;
+export const FindReportWithTranslationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportWithTranslations"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}},{"kind":"Field","alias":{"kind":"Name","value":"translations_es"},"name":{"kind":"Name","value":"translations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"StringValue","value":"es","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"translations_en"},"name":{"kind":"Name","value":"translations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"StringValue","value":"en","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"translations_fr"},"name":{"kind":"Name","value":"translations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"StringValue","value":"fr","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"translations_ja"},"name":{"kind":"Name","value":"translations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"StringValue","value":"ja","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}}]}}]}}]} as unknown as DocumentNode<FindReportWithTranslationsQuery, FindReportWithTranslationsQueryVariables>;
+export const UpdateReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<UpdateReportMutation, UpdateReportMutationVariables>;
+export const DeleteOneReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<DeleteOneReportMutation, DeleteOneReportMutationVariables>;
+export const LinkReportsToIncidentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LinkReportsToIncidents"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LinkReportsToIncidentsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"linkReportsToIncidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]}}]} as unknown as DocumentNode<LinkReportsToIncidentsMutation, LinkReportsToIncidentsMutationVariables>;
+export const LogReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logReportHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<LogReportHistoryMutation, LogReportHistoryMutationVariables>;
+export const FindReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"sortBy"},"value":{"kind":"EnumValue","value":"EPOCH_DATE_MODIFIED_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_text_hash"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"user"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindReportHistoryQuery, FindReportHistoryQueryVariables>;
+export const FindReportsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReports"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindReportsQuery, FindReportsQueryVariables>;
+export const FindReportsTableDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportsTable"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"report_number"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}}]}}]}}]} as unknown as DocumentNode<FindReportsTableQuery, FindReportsTableQueryVariables>;
+export const FlagReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FlagReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"report_number"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flagReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"report_number"},"value":{"kind":"Variable","name":{"kind":"Name","value":"report_number"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}}]}}]}}]} as unknown as DocumentNode<FlagReportMutation, FlagReportMutationVariables>;
+export const DeleteSubmissionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSubmission"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ObjectId"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneSubmission"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"_id"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<DeleteSubmissionMutation, DeleteSubmissionMutationVariables>;
+export const FindSubmissionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindSubmissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"incident_date"}},{"kind":"Field","name":{"kind":"Name","value":"incident_ids"}},{"kind":"Field","name":{"kind":"Name","value":"incident_editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"incident_title"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"similarity"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"developers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"deployers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"harmed_parties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindSubmissionsQuery, FindSubmissionsQueryVariables>;
+export const FindSubmissionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindSubmission"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubmissionFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submission"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"incident_date"}},{"kind":"Field","name":{"kind":"Name","value":"incident_ids"}},{"kind":"Field","name":{"kind":"Name","value":"incident_editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"incident_title"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"developers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"deployers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"harmed_parties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"similarity"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindSubmissionQuery, FindSubmissionQueryVariables>;
+export const UpdateSubmissionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateSubmission"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubmissionFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubmissionUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneSubmission"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"incident_date"}},{"kind":"Field","name":{"kind":"Name","value":"incident_ids"}},{"kind":"Field","name":{"kind":"Name","value":"incident_editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"incident_title"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"developers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"deployers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"harmed_parties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"similarity"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}}]}}]}}]} as unknown as DocumentNode<UpdateSubmissionMutation, UpdateSubmissionMutationVariables>;
+export const InsertSubmissionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertSubmission"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubmissionInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneSubmission"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<InsertSubmissionMutation, InsertSubmissionMutationVariables>;
+export const PromoteSubmissionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"PromoteSubmission"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PromoteSubmissionToReportInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"promoteSubmissionToReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_ids"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<PromoteSubmissionMutation, PromoteSubmissionMutationVariables>;
+export const UpsertSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionQueryInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"subscription"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"subscription"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<UpsertSubscriptionMutation, UpsertSubscriptionMutationVariables>;
+export const UpdateSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionQueryInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"set"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionUpdateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"set"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<UpdateSubscriptionMutation, UpdateSubscriptionMutationVariables>;
+export const FindSubscriptionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindSubscriptions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionQueryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]}}]} as unknown as DocumentNode<FindSubscriptionsQuery, FindSubscriptionsQueryVariables>;
+export const FindSubscriptionsFullDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindSubscriptionsFull"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionQueryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"entityId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"userId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]}}]} as unknown as DocumentNode<FindSubscriptionsFullQuery, FindSubscriptionsFullQueryVariables>;
+export const DeleteSubscriptionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSubscriptions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteManySubscriptions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedCount"}}]}}]}}]} as unknown as DocumentNode<DeleteSubscriptionsMutation, DeleteSubscriptionsMutationVariables>;
+export const FindUserSubscriptionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUserSubscriptions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionQueryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"entityId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<FindUserSubscriptionsQuery, FindUserSubscriptionsQueryVariables>;
+export const FindUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}}]}}]} as unknown as DocumentNode<FindUsersQuery, FindUsersQueryVariables>;
+export const FindUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"adminData"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"disabled"}},{"kind":"Field","name":{"kind":"Name","value":"creationDate"}},{"kind":"Field","name":{"kind":"Name","value":"lastAuthenticationDate"}}]}}]}}]}}]} as unknown as DocumentNode<FindUserQuery, FindUserQueryVariables>;
+export const FindUsersByRoleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUsersByRole"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"role"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"roles"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"IN"},"value":{"kind":"Variable","name":{"kind":"Name","value":"role"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}}]}}]} as unknown as DocumentNode<FindUsersByRoleQuery, FindUsersByRoleQueryVariables>;
+export const UpdateUserRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roles"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"userId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"roles"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roles"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<UpdateUserRolesMutation, UpdateUserRolesMutationVariables>;
+export const UpdateUserProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first_name"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last_name"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"userId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"first_name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first_name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"last_name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last_name"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}}]}}]} as unknown as DocumentNode<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>;
+export const FindVariantsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindVariants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"OR"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"title"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"StringValue","value":"","block":false}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"url"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"StringValue","value":"","block":false}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"source_domain"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"StringValue","value":"","block":false}}]}}]}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindVariantsQuery, FindVariantsQueryVariables>;
+export const FindIncidentVariantsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentVariants"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"incident_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"incident_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"incident_id"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentVariantsQuery, FindIncidentVariantsQueryVariables>;
+export const FindVariantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindVariant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindVariantQuery, FindVariantQueryVariables>;
+export const CreateVariantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVariant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateVariantInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVariant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<CreateVariantMutation, CreateVariantMutationVariables>;
+export const UpdateVariantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateVariant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"language"}}]}}]}}]} as unknown as DocumentNode<UpdateVariantMutation, UpdateVariantMutationVariables>;
+export const DeleteOneVariantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneVariant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<DeleteOneVariantMutation, DeleteOneVariantMutationVariables>;
