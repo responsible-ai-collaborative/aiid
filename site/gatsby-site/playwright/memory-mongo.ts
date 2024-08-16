@@ -74,6 +74,24 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
     }
 }
 
+export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
+
+    assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), 'Seeding is only allowed on localhost');
+
+    const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
+
+    await client.connect();
+
+    try {
+
+        await fn(client);
+    }
+    finally {
+
+        await client.close();
+    }
+}
+
 
 // command line support
 
