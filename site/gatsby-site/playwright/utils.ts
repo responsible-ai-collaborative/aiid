@@ -69,7 +69,7 @@ export const test = base.extend<TestFixtures>({
 
                 await page.evaluate(({ customData }) => {
 
-                    localStorage.setItem('__MOCKED_CUSTOM_DATA', JSON.stringify(customData));
+                    localStorage.setItem('__CUSTOM_DATA_MOCK', JSON.stringify(customData));
 
                 }, { customData });
 
