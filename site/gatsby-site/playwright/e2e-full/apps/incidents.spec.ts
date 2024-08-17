@@ -21,7 +21,8 @@ test.describe('Incidents App', () => {
         await expect(page.locator('[data-cy="row"]')).toHaveCount(0);
     });
 
-    test('Successfully filter and edit incident 112', async ({ page, login }) => {
+    // TODO: this test should be moved to a smoke tests suite since it depends on Algolia production data
+    test.skip('Successfully filter and edit incident 112', async ({ page, login }) => {
 
         await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 

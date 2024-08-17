@@ -568,6 +568,8 @@ test.describe('Cite pages', () => {
 
         test.slow();
 
+        await init();
+
         await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
         await conditionalIntercept(
@@ -600,7 +602,7 @@ test.describe('Cite pages', () => {
 
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
-        await page.locator('button[type="submit"]').click();
+        await page.getByText('Save').click();
 
         await waitForRequest('logIncidentHistory');
 

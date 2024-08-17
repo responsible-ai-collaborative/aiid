@@ -5,7 +5,7 @@ import config from './config';
 import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
-import { init } from './memory-mongo';
+import * as memoryMongo from './memory-mongo';
 
 declare module '@playwright/test' {
     interface Request {
@@ -66,8 +66,21 @@ export const test = base.extend<TestFixtures>({
             const userId = await getUserIdFromLocalStorage(page);
 
             if (customData) {
-                await mockAtlasCustomData(page, userId, customData);
-                await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: customData?.roles ?? [] }] } }, { drop: true });
+
+                await page.evaluate(({ customData }) => {
+
+                    localStorage.setItem('__CUSTOM_DATA_MOCK', JSON.stringify(customData));
+
+                }, { customData });
+
+                // upsert user with custom data
+                await memoryMongo.execute(async (client) => {
+
+                    const db = client.db('customData');
+                    const collection = db.collection('users');
+
+                    await collection.updateOne({ userId }, { $set: customData }, { upsert: true });
+                });
             }
 
             return userId!;
@@ -241,49 +254,3 @@ export async function fillAutoComplete(page: Page, selector: string, sequence: s
         await page.getByText(target).click({ timeout: 1000 });
     }).toPass();
 }
-
-export const mockAtlasCustomData = async (page, userId, newUserData) => {
-
-    await page.evaluate(({ userId, newUserData }) => {
-
-        let tokenKey;
-
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.includes(`:user(${userId}):accessToken`)) {
-                tokenKey = key;
-                break;
-            }
-        }
-
-        if (!tokenKey) {
-            throw new Error(`Token for userId ${userId} not found in localStorage`);
-        }
-
-        let token = localStorage.getItem(tokenKey);
-
-        if (!token) {
-            throw new Error(`Token with key ${tokenKey} not found in localStorage`);
-        }
-
-        const parts = token.split(".");
-        if (parts.length !== 3) {
-            throw new Error("Expected an access token with three parts");
-        }
-
-        const header = parts[0];
-        const encodedPayload = parts[1];
-        const signature = parts[2];
-
-        const decodedPayload = JSON.parse(atob(encodedPayload));
-
-        decodedPayload.user_data = newUserData;
-
-        const updatedEncodedPayload = btoa(JSON.stringify(decodedPayload)).replace(/=+$/, '');
-
-        const updatedToken = `${header}.${updatedEncodedPayload}.${signature}`;
-
-        localStorage.setItem(tokenKey, updatedToken);
-
-    }, { userId, newUserData });
-};
