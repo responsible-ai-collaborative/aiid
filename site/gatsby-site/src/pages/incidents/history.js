@@ -59,7 +59,7 @@ function IncidentHistoryPage(props) {
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
     fetchPolicy: 'network-only',
     variables: {
-      query: { incident_id: incidentId },
+      filter: { incident_id: { EQ: incidentId } },
     },
   });
 

@@ -309,8 +309,8 @@ function PlotPoint({
       client
         .query({
           query: gql`
-            query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
-              incident(query: $query) {
+            query ProbablyRelatedIncidentIds($filter: IncidentFilterType) {
+              incident(filter: $filter) {
                 incident_id
                 title
                 reports {
@@ -322,7 +322,7 @@ function PlotPoint({
               }
             }
           `,
-          variables: { query: { incident_id: incident.incident_id } },
+          variables: { filter: { incident_id: { EQ: incident.incident_id } } },
         })
         .then((res) => {
           setIncidentData(res.data.incident);
