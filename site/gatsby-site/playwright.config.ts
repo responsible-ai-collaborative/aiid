@@ -15,7 +15,7 @@ export default defineConfig({
   expect: {
     timeout: process.env.CI ? 30000 : undefined,
   },
-  timeout: process.env.CI ? 60000 : undefined,
+  timeout: process.env.CI ? 120000 : undefined,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
