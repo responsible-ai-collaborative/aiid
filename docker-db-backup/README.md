@@ -24,9 +24,9 @@ docker run --rm \
   -e AWS_SECRET_ACCESS_KEY=<Your IAM Secret Access Key> \
   -e TARGET_PRIVATE_BUCKET_URL=<Target public Bucket URL (s3://...)> \
   -e TARGET_PUBLIC_BUCKET_URL=<Target private Bucket URL (s3://...)> \
-  -e CLOUDFLARE_ACCOUNT_ID=<Cloudflare R2 account ID> \
-  -e CLOUDFLARE_R2_ACCESS_KEY=<Cloudflare R2 Access ID Key> \
-  -e CLOUDFLARE_R2_SECRET_KEY=<Cloudflare R2 Access Secret Key> \
+  -e CLOUDFLARE_R2_ACCOUNT_ID=<Cloudflare R2 account ID> \
+  -e CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID=<Cloudflare R2 Access ID Key with write permission > \
+  -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY=<Cloudflare R2 Access Secret Key with write permission> \
   -e CLOUDFLARE_R2_PUBLIC_BUCKET=<Cloudflare R2 public bucket name (ie: "aiid-public")> \
   -e CLOUDFLARE_R2_BUCKET=<Cloudflare R2 bucket name (ie: "aiid-public")> \
   [ -e BACKUPFILE_PREFIX=<Prefix of Backup Filename (default: "backup") \ ]
@@ -56,9 +56,9 @@ Environment variables
 | AWS_SECRET_ACCESS_KEY | Your IAM Secret Access Key                                                     | -       |
 | TARGET_PRIVATE_BUCKET_URL     | Target private Bucket URL (s3://...). **URL is needed to be end with '/'** | -       |
 | TARGET_PUBLIC_BUCKET_URL     | Target public Bucket URL (s3://...). **URL is needed to be end with '/'** | -       |
-| CLOUDFLARE_ACCOUNT_ID     | Cloudflare R2 account ID | -       |
-| CLOUDFLARE_R2_ACCESS_KEY     | Cloudflare R2 Access Key ID | -       |
-| CLOUDFLARE_R2_SECRET_KEY     | Cloudflare R2 Access Secret ID | -       |
+| CLOUDFLARE_R2_ACCOUNT_ID     | Cloudflare R2 account ID | -       |
+| CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID     | Cloudflare R2 Access Key ID with write permission | -       |
+| CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY     | Cloudflare R2 Access Secret ID with write permission| -       |
 | CLOUDFLARE_R2_PUBLIC_BUCKET     | Cloudflare R2 public bucket name (ie: "aiid-public") | -       |
 | CLOUDFLARE_R2_PRIVATE_BUCKET     | Cloudflare R2 private bucket name (ie: "aiid-private") | -       |
 

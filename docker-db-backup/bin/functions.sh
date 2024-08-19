@@ -22,9 +22,9 @@ s3_exists() {
 	${AWSCLI} ${AWSCLIOPT} ${AWSCLI_LIST_OPT} $1 >/dev/null
 }
 # Check the existence of specified file on Cloudflare R2 bucket.
-# arguments: 1. CLOUDFLARE_ACCOUNT_ID
-#            2. CLOUDFLARE_R2_ACCESS_KEY
-#            3. CLOUDFLARE_R2_SECRET_KEY
+# arguments: 1. CLOUDFLARE_R2_ACCOUNT_ID
+#            2. CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID
+#            3. CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY
 #            4. Cloudflare R2 Bucket name (ie: aiid-public)
 #            5. File path for the bucket item (ie: backup-20231009233543.tar.bz2)
 r2_exists() {
@@ -39,9 +39,9 @@ s3_list_files() {
 	${AWSCLI} ${AWSCLIOPT} ${AWSCLI_LIST_OPT} $1
 }
 # Output the list of the files on specified Cloudflare R2.
-# arguments: 1. CLOUDFLARE_ACCOUNT_ID
-#            2. CLOUDFLARE_R2_ACCESS_KEY
-#            3. CLOUDFLARE_R2_SECRET_KEY
+# arguments: 1. CLOUDFLARE_R2_ACCOUNT_ID
+#            2. CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID
+#            3. CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY
 #            4. Cloudflare R2 Bucket name (ie: aiid-public)
 r2_list_files() {
 	if [ $# -ne 4 ]; then return 255; fi
@@ -56,9 +56,9 @@ s3_delete_file() {
 	${AWSCLI} ${AWSCLIOPT} ${AWSCLI_DEL_OPT} $1
 }
 # Delete the specified file on Cloudflare R2 bucket.
-# arguments: 1. CLOUDFLARE_ACCOUNT_ID
-#            2. CLOUDFLARE_R2_ACCESS_KEY
-#            3. CLOUDFLARE_R2_SECRET_KEY
+# arguments: 1. CLOUDFLARE_R2_ACCOUNT_ID
+#            2. CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID
+#            3. CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY
 #            4. Cloudflare R2 Bucket name (ie: aiid-public)
 #            5. File path for the bucket item (ie: backup-20231009233543.tar.bz2)
 r2_delete_file() {
@@ -82,9 +82,9 @@ s3_copy_file() {
 	${AWSCLI} ${AWSCLI_ENDPOINT_OPT} ${AWSCLIOPT} ${AWSCLI_COPY_OPT} $1 $2
 }
 # Copy the specified file to Cloudflare R2.
-# arguments: 1. CLOUDFLARE_ACCOUNT_ID
-#            2. CLOUDFLARE_R2_ACCESS_KEY
-#			 3. CLOUDFLARE_R2_SECRET_KEY
+# arguments: 1. CLOUDFLARE_R2_ACCOUNT_ID
+#            2. CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID
+#			 3. CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY
 #			 4. Cloudflare R2 Bucket name (ie: aiid-public)
 #			 5. File path to upload (ie: /tmp/backup-20231009233543.tar.bz2)
 #			 6. File key for the bucket item (ie: backup-20231009233543.tar.bz2)
@@ -133,9 +133,9 @@ s3_delete_file_if_delete_backup_day() {
 		fi
 	fi
 }
-# arguments: 1. CLOUDFLARE_ACCOUNT_ID
-#            2. CLOUDFLARE_R2_ACCESS_KEY
-#            3. CLOUDFLARE_R2_SECRET_KEY
+# arguments: 1. CLOUDFLARE_R2_ACCOUNT_ID
+#            2. CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID
+#            3. CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY
 #            4. Cloudflare R2 Bucket name (ie: aiid-public)
 #            5. File path for the bucket item (ie: backup-20231009233543.tar.bz2)
 #            6. how many days ago to be deleted

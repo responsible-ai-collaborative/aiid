@@ -23,9 +23,9 @@ PAST=`create_past_yyyymmdd ${DELETE_TARGET_DAYS_LEFT}`
 # if it exists, delete it
 TARBALL_PAST="${BACKUPFILE_PREFIX}-${PAST}.tar.bz2"
 
-if [ "x${CLOUDFLARE_ACCOUNT_ID}" != "x" ]; then
+if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" != "x" ]; then
   echo "pruning Cloudflare R2 account bucket ${CLOUDFLARE_R2_BUCKET} ..."
-  r2_delete_file_if_delete_backup_day ${CLOUDFLARE_ACCOUNT_ID} ${CLOUDFLARE_R2_ACCESS_KEY} ${CLOUDFLARE_R2_SECRET_KEY} ${CLOUDFLARE_R2_BUCKET} ${TARBALL_PAST} ${DELETE_TARGET_DAYS_LEFT} ${DELETE_DEVIDE}
+  r2_delete_file_if_delete_backup_day ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY} ${CLOUDFLARE_R2_BUCKET} ${TARBALL_PAST} ${DELETE_TARGET_DAYS_LEFT} ${DELETE_DEVIDE}
 fi
 
 if [ `echo $TARGET_BUCKET_URL | cut -f1 -d":"` == "s3" ]; then

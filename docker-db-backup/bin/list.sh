@@ -20,7 +20,7 @@ if [ `echo $TARGET_BUCKET_URL | cut -f1 -d":"` == "s3" ]; then
 fi
 
 # output Cludflare R2 account bucket file list
-if [ "x${CLOUDFLARE_ACCOUNT_ID}" != "x" ]; then
+if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" != "x" ]; then
   echo "There are files below in '${CLOUDFLARE_R2_BUCKET}' R2 bucket:"
-  r2_list_files ${CLOUDFLARE_ACCOUNT_ID} ${CLOUDFLARE_R2_ACCESS_KEY} ${CLOUDFLARE_R2_SECRET_KEY} ${CLOUDFLARE_R2_BUCKET}
+  r2_list_files ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY} ${CLOUDFLARE_R2_BUCKET}
 fi

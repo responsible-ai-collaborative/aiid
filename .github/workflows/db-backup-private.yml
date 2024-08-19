@@ -55,10 +55,10 @@ jobs:
             -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}" \
             -e TARGET_PRIVATE_BUCKET_URL="${{ vars.AWS_S3_PRIVATE_BUCKET }}" \
             -e TARGET_PUBLIC_BUCKET_URL="${{ vars.AWS_S3_PUBLIC_BUCKET }}" \
-            -e CLOUDFLARE_ACCOUNT_ID="${{ vars.CLOUDFLARE_ACCOUNT_ID }}" \
-            -e CLOUDFLARE_R2_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}" \
-            -e CLOUDFLARE_R2_SECRET_KEY="${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}" \
-            -e CLOUDFLARE_R2_BUCKET="${{ vars.CLOUDFLARE_R2_PRIVATE_BUCKET }}" \
+            -e CLOUDFLARE_R2_ACCOUNT_ID="${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}" \
+            -e CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID="${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}" \
+            -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}" \
+            -e CLOUDFLARE_R2_BUCKET_NAME="${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}" \
             -e BACKUPFILE_PREFIX="backup" \
             -e MONGODB_HOST="mongo" \
             -e MONGODB_URI="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod" \
