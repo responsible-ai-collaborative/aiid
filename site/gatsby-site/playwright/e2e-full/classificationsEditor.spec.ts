@@ -76,6 +76,9 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on incident page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
+    
+    await init();
+
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     await page.goto(incidentURL);
@@ -141,7 +144,10 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on report page and add a new classification', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { userId: 1, first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+     
+    await init();
+
+     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
     await page.goto(reportURL);
     await waitForRequest('FindClassifications');
@@ -183,6 +189,9 @@ test.describe('Classifications Editor', () => {
   for (const namespace of namespaces) {
 
     test(`Should properly display and store ${namespace} classification values`, async ({ page, login, skipOnEmptyEnvironment }) => {
+      
+      await init();
+      
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
       await page.goto('/cite/1');

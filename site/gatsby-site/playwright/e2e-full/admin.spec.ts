@@ -5,6 +5,10 @@ import { init } from '../memory-mongo';
 test.describe('Admin', () => {
   const baseUrl = '/admin';
 
+  test.beforeEach(async () => {
+    await init();
+  });
+
   test('Should show not enough permissions message', async ({ page }) => {
     await page.goto(baseUrl);
     await expect(page.getByText("Not enough permissions")).toBeVisible({ timeout: 30000 });
