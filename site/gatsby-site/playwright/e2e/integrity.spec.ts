@@ -21,7 +21,7 @@ test.describe('Integrity', () => {
     const { data: { reports } } = await query({
       query: gql`
         query {
-          reports(limit: 9999) {
+          reports {
             report_number
           }
         }
@@ -48,12 +48,12 @@ test.describe('Integrity', () => {
     let { data: { incidents, reports } } = await query({
       query: gql`
         query {
-          incidents(limit: 9999) {
+          incidents {
             reports {
               report_number
             }
           }
-          reports(limit: 9999) {
+          reports {
             report_number
             is_incident_report
           }

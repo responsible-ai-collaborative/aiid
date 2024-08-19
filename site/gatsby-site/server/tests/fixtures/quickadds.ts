@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
-import { Fixture, serializeId } from "../utils";
-import { Quickadd } from "../../generated/graphql";
+import { Fixture } from "../utils";
+import { Quickadd, QuickaddInsertType, QuickaddUpdateType } from "../../generated/graphql";
 
 const quickadd1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
@@ -26,24 +26,31 @@ const quickadd3 = {
     url: "http://example3.com"
 }
 
-const quickadd4 = {
-    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e7'),
-    date_submitted: "2021-09-14T00:00:00.000Z",
-    incident_id: 2,
-    source_domain: "example4.com",
-    url: "http://example4.com"
+const subscriber = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),
+    first_name: 'Subscriber',
+    last_name: 'One',
+    roles: ['subscriber'],
+    userId: 'subscriber1',
 }
 
-const quickadd5 = {
-    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e8'),
-    date_submitted: "2024-09-14T00:00:00.000Z",
-    incident_id: 3,
-    source_domain: "example5.com",
-    url: "http://example5.com"
+const admin = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e5'),
+    first_name: 'Super',
+    last_name: 'Man',
+    roles: ['admin'],
+    userId: 'admin',
 }
 
+const anonymous = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e9'),
+    first_name: 'Anon',
+    last_name: 'Anon',
+    roles: [],
+    userId: 'anon',
+}
 
-const fixture: Fixture<Quickadd> = {
+const fixture: Fixture<Quickadd, QuickaddUpdateType, QuickaddInsertType> = {
     name: 'quickadd',
     query: `
         date_submitted
@@ -52,56 +59,74 @@ const fixture: Fixture<Quickadd> = {
         url
     `,
     seeds: {
-        quickadd: [
-            quickadd1,
-            quickadd2,
-            quickadd3,
-            quickadd4,
-            quickadd5
-        ],
+        customData: {
+            users: [
+                subscriber,
+                admin,
+                anonymous,
+            ]
+        },
+        aiidprod: {
+            quickadd: [
+                quickadd1,
+                quickadd2,
+                quickadd3,
+            ],
+        }
     },
     testSingular: {
+        allowed: [anonymous, subscriber],
+        denied: [],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        result: serializeId(quickadd1)
+        result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testPluralFilter: {
+        allowed: [anonymous, subscriber],
+        denied: [],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
         result: [
-            serializeId(quickadd1)
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
         ],
     },
     testPluralSort: {
+        allowed: [subscriber],
+        denied: [],
         sort: { _id: "ASC" },
         result: [
-            serializeId(quickadd1),
-            serializeId(quickadd2),
-            serializeId(quickadd3),
-            serializeId(quickadd4),
-            serializeId(quickadd5),
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e4' },
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e5' },
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e6' },
         ],
     },
     testPluralPagination: {
-        pagination: { limit: 2, skip: 2 },
+        allowed: [subscriber],
+        denied: [],
+        pagination: { skip: 2, limit: 2 },
         sort: { _id: "ASC" },
         result: [
-            serializeId(quickadd3),
-            serializeId(quickadd4),
+            { _id: '60a7c5b7b4f5b8a6d8f9c7e6' }
         ]
     },
 
     testUpdateOne: {
+        allowed: [admin],
+        denied: [subscriber],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
-        set: { url: 'https://edited.com' },
+        update: { set: { url: 'https://edited.com' } },
         result: { url: 'https://edited.com' }
     },
     testUpdateMany: {
+        allowed: [admin],
+        denied: [subscriber],
         filter: { incident_id: { EQ: 2 } },
-        set: { url: 'https://edited.com' },
-        result: { modifiedCount: 3, matchedCount: 3 }
+        update: { set: { url: 'https://edited.com' } },
+        result: { modifiedCount: 2, matchedCount: 2 }
     },
     testInsertOne: {
+        allowed: [anonymous],
+        denied: [],
         insert: {
             date_submitted: "2020-09-14T00:00:00.000Z",
             incident_id: 1,
@@ -117,6 +142,8 @@ const fixture: Fixture<Quickadd> = {
         }
     },
     testInsertMany: {
+        allowed: [admin],
+        denied: [anonymous],
         insert: [
             {
                 date_submitted: "2020-09-14T00:00:00.000Z",
@@ -132,26 +159,35 @@ const fixture: Fixture<Quickadd> = {
             }
         ],
         result: { insertedIds: [expect.any(String), expect.any(String)] }
-    }
-    ,
+    },
     testDeleteOne: {
+        allowed: [admin],
+        denied: [anonymous],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: { _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
     },
     testDeleteMany: {
+        allowed: [admin],
+        denied: [anonymous],
         filter: { incident_id: { EQ: 2 } },
-        result: { deletedCount: 3 },
+        result: { deletedCount: 2 },
     },
-    roles: {
-        singular: [],
-        plural: [],
-        insertOne: [],
-        insertMany: ['admin'],
-        updateOne: ['admin'],
-        updateMany: ['admin'],
-        deleteOne: ['admin'],
-        deleteMany: ['admin'],
-    },
-}
+    testUpsertOne: {
+        shouldInsert: {
+            allowed: [admin],
+            denied: [anonymous],
+            filter: { incident_id: { EQ: 3 } },
+            update: { incident_id: 3, date_submitted: '2021-09-14T00:00:00.000Z', url: 'http://example4.com' },
+            result: { incident_id: 3, date_submitted: '2021-09-14T00:00:00.000Z', url: 'http://example4.com', _id: expect.any(String) }
+        },
+        shouldUpdate: {
+            allowed: [admin],
+            denied: [anonymous],
+            filter: { incident_id: { EQ: 1 } },
+            update: { incident_id: 1, source_domain: 'updated.com', url: 'http://updated.com', date_submitted: '2021-09-14T00:00:00.000Z', },
+            result: { incident_id: 1, source_domain: 'updated.com', url: 'http://updated.com', _id: '60a7c5b7b4f5b8a6d8f9c7e4' }
+        },
+    }
+};
 
 export default fixture;

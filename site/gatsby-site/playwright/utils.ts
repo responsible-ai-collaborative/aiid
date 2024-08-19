@@ -1,5 +1,5 @@
 import { ApolloClient, HttpLink, InMemoryCache, OperationVariables, QueryOptions } from '@apollo/client';
-import { Page, Route, test as base, Request } from '@playwright/test';
+import { Page, Route, test as base, Request, expect } from '@playwright/test';
 import { minimatch } from 'minimatch'
 import config from './config';
 import assert from 'node:assert';
@@ -17,9 +17,22 @@ export type Options = { defaultItem: string };
 type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<void>,
+    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<string>,
 };
 
+const getUserIdFromLocalStorage = async (page: Page) => {
+
+    const storage = await page.context().storageState();
+
+    for (const origin of storage.origins) {
+        for (const storage of origin.localStorage) {
+            if (storage.value == 'local-userpass') {
+                const match = storage.name.match(/user\(([^)]+)\):providerType/);
+                return match?.[1];
+            }
+        }
+    }
+}
 
 export const test = base.extend<TestFixtures>({
     skipOnEmptyEnvironment: async ({ }, use, testInfo) => {
@@ -42,32 +55,39 @@ export const test = base.extend<TestFixtures>({
 
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async (email, password, options = { skipSession: false }) => {
+        await use(async (email, password) => {
 
-            if (options.skipSession) {
-                await loginSteps(page, email, password);
-            } else {
-                const sessionState = await page.context().storageState();
-                if (!sessionState || sessionState.cookies.length === 0) {
-                    await page.context().clearCookies();
-                    await loginSteps(page, email, password);
-                    await page.context().storageState({ path: 'session.json' });
-                } else {
+            await page.context().clearCookies();
 
-                    // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
-                    // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
+            await loginSteps(page, email, password);
 
-                    await page.context().addCookies(sessionState.cookies);
-                }
-            }
+            const userId = await getUserIdFromLocalStorage(page);
+
+            return userId!;
+
+            // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
+            // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
         })
-
     }
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
 
 const waitForRequestMap = new Map<string, Promise<Request>>();
+
+
+export const trackRequest = async (page: Page, url: string, condition: (request: Request) => boolean, alias: string) => {
+
+    // every test should wait for every alias it defines, so we are sure no interception is missed
+
+    assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
+
+    const promise = page
+        .waitForResponse((res) => minimatch(res.request().url(), url) && condition(res.request()))
+        .then((response) => response.request());
+
+    waitForRequestMap.set(alias, promise);
+}
 
 export async function conditionalIntercept(
     page: Page,
@@ -93,15 +113,7 @@ export async function conditionalIntercept(
         }
     });
 
-    // every test should wait for every alias it defines, so we are sure no interception is missed
-
-    assert(!waitForRequestMap.has(alias), `Alias ${alias} already exists`);
-
-    const promise = page
-        .waitForResponse((res) => minimatch(res.request().url(), url) && condition(res.request()))
-        .then((response) => response.request());
-
-    waitForRequestMap.set(alias, promise);
+    trackRequest(page, url, condition, alias);
 }
 
 export async function waitForRequest(alias: string) {
@@ -148,7 +160,9 @@ export const getApolloClient = () => {
                 return fetch(uri, options);
             },
         }),
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+            addTypename: false,
+        }),
     });
 
     return client;
@@ -174,13 +188,13 @@ const loginSteps = async (page: Page, email: string, password: string) => {
 };
 
 export async function getEditorText(page: Page, selector: string = '.CodeMirror'): Promise<string> {
-  return await page.evaluate(
-    (selector) => {
-      const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
-      return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
-    },
-    selector
-  );
+    return await page.evaluate(
+        (selector) => {
+            const editor = document.querySelector(selector) as HTMLElement & { CodeMirror?: any };
+            return editor?.CodeMirror ? editor.CodeMirror.getValue() : '';
+        },
+        selector
+    );
 }
 
 export async function setEditorText(page: Page, value, selector = '.CodeMirror') {
@@ -193,20 +207,30 @@ export async function setEditorText(page: Page, value, selector = '.CodeMirror')
 
 
 export async function listFiles(directoryPath: string): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    fs.readdir(directoryPath, (err, files) => {
-      if (err) {
-        reject(err);
-      } else {
-        const jsonFiles = files.filter((file) => {
-          return (
-            path.extname(file).toLowerCase() === '.json' &&
-            fs.statSync(path.join(directoryPath, file)).isFile()
-          );
-        });
+    return new Promise((resolve, reject) => {
+        fs.readdir(directoryPath, (err, files) => {
+            if (err) {
+                reject(err);
+            } else {
+                const jsonFiles = files.filter((file) => {
+                    return (
+                        path.extname(file).toLowerCase() === '.json' &&
+                        fs.statSync(path.join(directoryPath, file)).isFile()
+                    );
+                });
 
-        resolve(jsonFiles);
-      }
+                resolve(jsonFiles);
+            }
+        });
     });
-  });
+}
+
+export async function fillAutoComplete(page: Page, selector: string, sequence: string, target: string) {
+
+    await expect(async () => {
+        await page.locator(selector).clear();
+        await page.waitForTimeout(1000);
+        await page.locator(selector).pressSequentially(sequence, { delay: 500 });
+        await page.getByText(target).click({ timeout: 1000 });
+    }).toPass();
 }
