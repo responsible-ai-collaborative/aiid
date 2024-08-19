@@ -21,7 +21,7 @@ function CiteDynamicPage(props) {
   const [incident, setIncident] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: incident_id } } },
+    variables: { filter: { incident_id: { EQ: parseInt(incident_id) } } },
   });
 
   useEffect(() => {
