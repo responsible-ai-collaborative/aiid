@@ -19,7 +19,7 @@ RUN pip install boto3
 
 ENV AWS_DEFAULT_REGION=ap-northeast-1
 
-COPY docker-db-backup/bin docker-db-backup/opt/bin
-WORKDIR docker-db-backup/opt/bin
-ENTRYPOINT ["docker-db-backup/opt/bin/entrypoint.sh"]
+COPY bin /opt/bin
+WORKDIR /opt/bin
+ENTRYPOINT ["/opt/bin/entrypoint.sh"]
 CMD ["backup", "prune", "list"]
