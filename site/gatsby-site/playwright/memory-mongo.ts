@@ -37,7 +37,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         await seedFixture(extra, drop);
     }
 
-    console.log('Data seeded successfully');
+    console.log('Memory Mongo initialized');
 }
 
 export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: Record<string, unknown>[], drop?: boolean }) => {

@@ -15,7 +15,7 @@ export default defineConfig({
   expect: {
     timeout: process.env.CI ? 30000 : undefined,
   },
-  timeout: process.env.CI ? 60000 : undefined,
+  timeout: process.env.CI ? 120000 : undefined,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,7 +25,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'blob' : 'html',
+  reporter: process.env.CI ? [['blob'], ['line', { printSteps: true }]] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

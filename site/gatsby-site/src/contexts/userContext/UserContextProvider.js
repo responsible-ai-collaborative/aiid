@@ -205,7 +205,7 @@ export const UserContextProvider = ({ children }) => {
           if (typeof window !== 'undefined' && window.localStorage.getItem('__CUSTOM_DATA_MOCK')) {
             const customData = JSON.parse(window.localStorage.getItem('__CUSTOM_DATA_MOCK'));
 
-            return customData.roles.includes(role);
+            return customData.roles.includes('admin') || customData.roles.includes(role);
           }
 
           return (

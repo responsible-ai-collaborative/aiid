@@ -71,7 +71,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Run playwright tests
-        run: npx playwright test playwright/e2e/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npm run test:e2e:ci
         working-directory: site/gatsby-site
         env:
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
@@ -86,6 +86,9 @@ jobs:
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
           API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SHARD_INDEX: ${{ matrix.shardIndex }}
+          SHARD_TOTAL: ${{ matrix.shardTotal }}
+          TEST_FOLDER: playwright/e2e/
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
