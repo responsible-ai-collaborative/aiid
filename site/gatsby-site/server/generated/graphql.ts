@@ -938,8 +938,10 @@ export type CreateDefaultAdminUserInput = {
   password?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Input type for creating a variant, including incident ID and variant details. */
 export type CreateVariantInput = {
-  incidentId?: InputMaybe<Scalars['Int']['input']>;
+  /** The unique identifier for the incident. */
+  incidentId: Scalars['Int']['input'];
   /** Details about the variant. */
   variant?: InputMaybe<CreateVariantInputVariant>;
 };
@@ -958,8 +960,10 @@ export type CreateVariantInputVariant = {
 
 export type CreateVariantPayload = {
   __typename?: 'CreateVariantPayload';
-  incident_id?: Maybe<Scalars['Int']['output']>;
-  report_number?: Maybe<Scalars['Int']['output']>;
+  /** The unique identifier for the incident. */
+  incident_id: Scalars['Int']['output'];
+  /** The unique report number associated with the incident. */
+  report_number: Scalars['Int']['output'];
 };
 
 /** Filter type for DateTime scalar */
@@ -1322,6 +1326,7 @@ export type History_Incident = {
   embedding?: Maybe<History_IncidentEmbedding>;
   epoch_date_modified?: Maybe<Scalars['Int']['output']>;
   flagged_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  implicated_systems?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   incident_id: Scalars['Int']['output'];
   modifiedBy?: Maybe<Scalars['String']['output']>;
   nlp_similar_incidents?: Maybe<Array<Maybe<History_IncidentNlp_Similar_Incident>>>;
@@ -1375,6 +1380,7 @@ export type History_IncidentInsertInput = {
   embedding?: InputMaybe<History_IncidentEmbeddingInsertInput>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   incident_id: Scalars['Int']['input'];
   modifiedBy?: InputMaybe<Scalars['String']['input']>;
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentInsertInput>>>;
@@ -1504,6 +1510,10 @@ export type History_IncidentQueryInput = {
   flagged_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
@@ -1633,6 +1643,8 @@ export type History_IncidentUpdateInput = {
   epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  implicated_systems_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_inc?: InputMaybe<Scalars['Int']['input']>;
   incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2230,7 +2242,8 @@ export type IncidentFilterType = {
 };
 
 export type IncidentImplicated_SystemsRelationInput = {
-  link: Array<InputMaybe<Scalars['String']['input']>>;
+  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
+  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type IncidentInsertInput = {
@@ -2246,6 +2259,7 @@ export type IncidentInsertInput = {
   embedding?: InputMaybe<IncidentEmbeddingInsertInput>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<IncidentImplicated_SystemsRelationInput>;
   incident_id: Scalars['Int']['input'];
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentInsertInput>>>;
   title: Scalars['String']['input'];
@@ -2411,6 +2425,10 @@ export type IncidentQueryInput = {
   flagged_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  implicated_systems?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  implicated_systems_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems_in?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
+  implicated_systems_nin?: InputMaybe<Array<InputMaybe<EntityQueryInput>>>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
@@ -2589,6 +2607,8 @@ export type IncidentUpdateInput = {
   epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
   flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   flagged_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems?: InputMaybe<IncidentImplicated_SystemsRelationInput>;
+  implicated_systems_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_id?: InputMaybe<Scalars['Int']['input']>;
   incident_id_inc?: InputMaybe<Scalars['Int']['input']>;
   incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3960,14 +3980,14 @@ export type Report = {
   tags: Array<Maybe<Scalars['String']['output']>>;
   text: Scalars['String']['output'];
   title: Scalars['String']['output'];
-  translations?: Maybe<ReportTranslation>;
+  translations?: Maybe<ReportTranslations>;
   url: Scalars['String']['output'];
   user?: Maybe<User>;
 };
 
 
 export type ReportTranslationsArgs = {
-  input?: InputMaybe<Scalars['String']['input']>;
+  input: Scalars['String']['input'];
 };
 
 export type ReportEmbedding = {
@@ -4444,12 +4464,6 @@ export type ReportSortType = {
   url?: InputMaybe<SortType>;
 };
 
-export type ReportTranslation = {
-  __typename?: 'ReportTranslation';
-  text?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-};
-
 export type ReportTranslations = {
   __typename?: 'ReportTranslations';
   text?: Maybe<Scalars['String']['output']>;
@@ -4776,7 +4790,8 @@ export type SubmissionHarmed_PartiesRelationInput = {
 };
 
 export type SubmissionImplicated_SystemsRelationInput = {
-  link: Array<InputMaybe<Scalars['String']['input']>>;
+  create?: InputMaybe<Array<InputMaybe<EntityInsertInput>>>;
+  link?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type SubmissionIncident_EditorsRelationInput = {
@@ -4798,6 +4813,7 @@ export type SubmissionInsertInput = {
   embedding?: InputMaybe<SubmissionEmbeddingInsertInput>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   image_url: Scalars['String']['input'];
+  implicated_systems?: InputMaybe<SubmissionImplicated_SystemsRelationInput>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
   incident_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   incident_title?: InputMaybe<Scalars['String']['input']>;
@@ -5031,6 +5047,8 @@ export type SubmissionUpdateInput = {
   harmed_parties_unset?: InputMaybe<Scalars['Boolean']['input']>;
   image_url?: InputMaybe<Scalars['String']['input']>;
   image_url_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  implicated_systems?: InputMaybe<SubmissionImplicated_SystemsRelationInput>;
+  implicated_systems_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_date?: InputMaybe<Scalars['String']['input']>;
   incident_date_unset?: InputMaybe<Scalars['Boolean']['input']>;
   incident_editors_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -5771,9 +5789,9 @@ export type User = {
 
 export type UserAdminDatum = {
   __typename?: 'UserAdminDatum';
-  creationDate?: Maybe<Scalars['DateTime']['output']>;
-  disabled?: Maybe<Scalars['Boolean']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
+  creationDate: Scalars['DateTime']['output'];
+  disabled: Scalars['Boolean']['output'];
+  email: Scalars['String']['output'];
   lastAuthenticationDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -6059,7 +6077,7 @@ export type FindReportWithTranslationsQueryVariables = Exact<{
 }>;
 
 
-export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations_es?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_en?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_fr?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_ja?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null } | null };
+export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations_es?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null, translations_en?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null, translations_fr?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null, translations_ja?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null } | null };
 
 export type UpdateReportMutationVariables = Exact<{
   filter: ReportFilterType;
@@ -6214,7 +6232,7 @@ export type FindUserQueryVariables = Exact<{
 }>;
 
 
-export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email?: string | null, disabled?: boolean | null, creationDate?: any | null, lastAuthenticationDate?: any | null } | null } | null };
+export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null };
 
 export type FindUsersByRoleQueryVariables = Exact<{
   role?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -6264,7 +6282,7 @@ export type CreateVariantMutationVariables = Exact<{
 }>;
 
 
-export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id?: number | null, report_number?: number | null } | null };
+export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id: number, report_number: number } | null };
 
 export type UpdateVariantMutationVariables = Exact<{
   filter: ReportFilterType;
