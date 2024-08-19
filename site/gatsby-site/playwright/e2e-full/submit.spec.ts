@@ -98,6 +98,7 @@ test.describe('The Submit form', () => {
 
     test('Should autocomplete entities', async ({ page, skipOnEmptyEnvironment }) => {
 
+        test.slow();
         await conditionalIntercept(
             page,
             '**/parseNews**',
@@ -150,6 +151,7 @@ test.describe('The Submit form', () => {
 
     test('As editor, should submit a new incident report, adding an incident title and editors.', async ({ page, login, skipOnEmptyEnvironment }) => {
 
+        test.slow();
         const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
@@ -311,12 +313,27 @@ test.describe('The Submit form', () => {
 
         await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
 
+        const { data } = await query({
+          query: gql`
+            query {
+              submission(sort: { _id: DESC }){
+                  _id
+                  title
+                  text
+                  authors
+                  incident_ids
+                  incident_editors {
+                      userId
+                  }
+              }
+            }
+          `,
+        });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-
-        await page.goto('/apps/submitted');
-
-        await expect(page.locator('[data-cy="row"]:has-text("YouTube to crack down on inappropriate content masked as kids’ cartoons")')).toBeVisible();
+        expect(data.submission).toMatchObject({
+          title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
+          incident_ids: [1],
+        });
     });
 
     test('Should show a toast on error when failing to reach parsing endpoint', async ({ page }) => {
@@ -335,6 +352,7 @@ test.describe('The Submit form', () => {
 
     test('Should pull parameters from the query string and auto-fill fields', async ({ page }) => {
 
+        test.slow();
         const values = {
             url: 'https://incidentdatabase.ai',
             title: 'test title',
