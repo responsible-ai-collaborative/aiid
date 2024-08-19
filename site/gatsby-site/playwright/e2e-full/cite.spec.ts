@@ -7,7 +7,8 @@ import incident50 from '../fixtures/incidents/fullIncident50.json';
 import { gql } from '@apollo/client';
 import { expect } from '@playwright/test';
 import config from '../config';
-import { init, seedCollection, seedFixture } from '../memory-mongo';
+import { init } from '../memory-mongo';
+import { DBIncident } from '../seeds/aiidprod/incidents';
 
 test.describe('Cite pages', () => {
     const discoverUrl = '/apps/discover';
@@ -639,5 +640,28 @@ test.describe('Cite pages', () => {
         expect(data.incident_1).toMatchObject({ editor_dissimilar_incidents: [], editor_similar_incidents: [3] });
         expect(data.incident_2).toMatchObject({ editor_dissimilar_incidents: [3], editor_similar_incidents: [] });
         expect(data.incident_3).toMatchObject({ editor_dissimilar_incidents: [2], editor_similar_incidents: [1] });
+    });
+
+    test('Should load incident data not yet in build', async ({ page }) => {
+
+        const incident: DBIncident = {
+            incident_id: 4,
+            title: 'Test Title',
+            description: 'Incident 4 description',
+            date: "2020-01-01",
+            "Alleged deployer of AI system": ["entity1"],
+            "Alleged developer of AI system": ["entity2"],
+            "Alleged harmed or nearly harmed parties": ["entity3"],
+            editors: ["user1"],
+            reports: [1],
+        }
+
+        await init({ aiidprod: { incidents: [incident] } });
+
+        await page.goto('/cite/4');
+
+        await expect(page.getByText('Incident 4: Test Title')).toBeVisible();
+        await expect(page.getByText('Incident 4 description')).toBeVisible();
+        await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
     });
 });
