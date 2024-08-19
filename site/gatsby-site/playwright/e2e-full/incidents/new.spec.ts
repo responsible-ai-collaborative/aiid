@@ -11,6 +11,8 @@ test.describe('New Incident page', () => {
 
   test('Should successfully create a new incident', async ({ page, login }) => {
 
+    await init();
+
     test.slow();
 
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
@@ -54,10 +56,12 @@ test.describe('New Incident page', () => {
 
     await waitForRequest('logIncidentHistory');
 
-    await page.getByText(`You have successfully create Incident ${4}. View incident`).waitFor();
+    await page.getByText(`You have successfully create Incident 4. View incident`).waitFor();
   });
 
   test('Should clone an incident', async ({ page, login }) => {
+
+    await init();
 
     test.slow();
 
