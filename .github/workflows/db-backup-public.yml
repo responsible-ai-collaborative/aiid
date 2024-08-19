@@ -61,7 +61,7 @@ jobs:
             -e CLOUDFLARE_R2_BUCKET_NAME="${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}" \
             -e BACKUPFILE_PREFIX="backup" \
             -e MONGODB_HOST="mongo" \
-            -e MONGODB_URI="${{ secrets.MONGODB_CONNECTION_STRING }}" \
+            -e MONGODB_URI="" \
             -e MONGODB_DBNAME="aiidprod" \
             -e MONGODB_DBNAME_TRANSLATIONS="translations" \
             -e MONGODB_USERNAME="${{ secrets.MONGO_BACKUP_USER }}" \
