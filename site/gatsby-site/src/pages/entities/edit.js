@@ -28,7 +28,7 @@ function EditEntityPage(props) {
     loading: loadingEntity,
     refetch,
   } = useQuery(FIND_ENTITY, {
-    variables: { query: { entity_id: entityId } },
+    variables: { filter: { entity_id: { EQ: entityId } } },
   });
 
   const loading = loadingEntity;
@@ -55,7 +55,7 @@ function EditEntityPage(props) {
           update: {
             set: {
               name: values.name,
-              // date_modified: new Date(), // TODO: temporarily remove date_modified
+              date_modified: new Date(),
             },
           },
         },
