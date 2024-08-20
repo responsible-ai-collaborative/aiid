@@ -40,6 +40,9 @@ jobs:
           echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
           sudo apt update
           sudo apt install -y mongodb-database-tools
+      
+      - name: Install boto3
+        run: pip install boto3
 
       - name: Generate public backup
         run: |
