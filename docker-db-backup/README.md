@@ -31,7 +31,6 @@ docker run --rm \
   -e CLOUDFLARE_R2_BUCKET_NAME=<Cloudflare R2 bucket name (ie: "aiid-public")> \
   [ -e BACKUPFILE_PREFIX=<Prefix of Backup Filename (default: "backup") \ ]
   [ -e MONGODB_URI=<Target MongoDB URI> \ ]
-  [ -e MONGODB_HOST=<Target MongoDB Host (default: "mongo")> \ ]
   [ -e MONGODB_DBNAME=<Target DB name> \ ]
   [ -e MONGODB_USERNAME=<DB login username> \ ]
   [ -e MONGODB_PASSWORD=<DB login password> \ ]
@@ -68,7 +67,6 @@ Environment variables
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | BACKUPFILE_PREFIX                 | Prefix of Backup Filename                                                                                                                                                                                 | "backup" |
 | MONGODB_URI                       | Target MongoDB URI (ex. `mongodb://mongodb?replicaSet=rs0`). If set, the other `MONGODB_*` variables will be ignored.                                                                                     | -        |
-| MONGODB_HOST                      | Target MongoDB Host                                                                                                                                                                                       | "mongo"  |
 | MONGODB_DBNAME                    | Target DB name                                                                                                                                                                                            | -        |
 | MONGODB_USERNAME                  | DB login username                                                                                                                                                                                         | -        |
 | MONGODB_PASSWORD                  | DB login password                                                                                                                                                                                         | -        |

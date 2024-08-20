@@ -60,7 +60,6 @@ jobs:
             -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}" \
             -e CLOUDFLARE_R2_BUCKET_NAME="${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}" \
             -e BACKUPFILE_PREFIX="backup" \
-            -e MONGODB_HOST="mongo" \
             -e MONGODB_URI="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod" \
             -e MONGODB_DBNAME="aiidprod" \
             -e MONGODB_URI_TRANSLATIONS="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/translations" \

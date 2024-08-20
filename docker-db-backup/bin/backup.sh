@@ -5,7 +5,6 @@ echo "Starting backup.sh script execution..."
 # settings
 IS_PUBLIC_BACKUP=${IS_PUBLIC_BACKUP:-false}
 BACKUPFILE_PREFIX=${BACKUPFILE_PREFIX:-backup}
-MONGODB_HOST=${MONGODB_HOST:-mongo}
 CRONMODE=${CRONMODE:-false}
 CLOUDFLARE_R2_ACCOUNT_ID=${CLOUDFLARE_R2_ACCOUNT_ID}
 if [ "${IS_PUBLIC_BACKUP}" == "true" ]; then
