@@ -28,7 +28,7 @@ docker run --rm \
   -e CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID=<Cloudflare R2 Access ID Key with write permission > \
   -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY=<Cloudflare R2 Access Secret Key with write permission> \
   -e CLOUDFLARE_R2_PUBLIC_BUCKET=<Cloudflare R2 public bucket name (ie: "aiid-public")> \
-  -e CLOUDFLARE_R2_BUCKET=<Cloudflare R2 bucket name (ie: "aiid-public")> \
+  -e CLOUDFLARE_R2_BUCKET_NAME=<Cloudflare R2 bucket name (ie: "aiid-public")> \
   [ -e BACKUPFILE_PREFIX=<Prefix of Backup Filename (default: "backup") \ ]
   [ -e MONGODB_URI=<Target MongoDB URI> \ ]
   [ -e MONGODB_HOST=<Target MongoDB Host (default: "mongo")> \ ]

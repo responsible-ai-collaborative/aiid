@@ -49,12 +49,12 @@ if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" != "x" ]; then
     echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY as well" 1>&2
     exit 1
   fi
-  if [ "${IS_PUBLIC_BACKUP}" == "true" ] && [ -z "${CLOUDFLARE_R2_BUCKET}" ]; then
-    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_PUBLIC_BUCKET as well" 1>&2
+  if [ "${IS_PUBLIC_BACKUP}" == "true" ] && [ -z "${CLOUDFLARE_R2_BUCKET_NAME}" ]; then
+    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_BUCKET_NAME as well" 1>&2
     exit 1
   fi
-  if [ "${IS_PUBLIC_BACKUP}" == "false" ] && [ -z "${CLOUDFLARE_R2_BUCKET}" ]; then
-    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_PRIVATE_BUCKET as well" 1>&2
+  if [ "${IS_PUBLIC_BACKUP}" == "false" ] && [ -z "${CLOUDFLARE_R2_BUCKET_NAME}" ]; then
+    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_BUCKET_NAME as well" 1>&2
     exit 1
   fi
 fi
@@ -114,7 +114,7 @@ time ${TAR_CMD} ${TAR_OPTS} ${TARBALL_FULLPATH} -C ${DIRNAME} ${BASENAME}
 
 if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" != "x" ]; then
   # upload tarball to Cloudflare R2
-  r2_copy_file ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY} ${CLOUDFLARE_R2_BUCKET} ${TARBALL_FULLPATH} ${TARBALL}
+  r2_copy_file ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY} ${CLOUDFLARE_R2_BUCKET_NAME} ${TARBALL_FULLPATH} ${TARBALL}
 elif [ `echo $TARGET_BUCKET_URL | cut -f1 -d":"` == "s3" ]; then
   # transfer tarball to Amazon S3
   s3_copy_file ${TARBALL_FULLPATH} ${TARGET_BUCKET_URL}
