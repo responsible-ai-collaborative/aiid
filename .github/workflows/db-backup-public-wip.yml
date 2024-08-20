@@ -43,7 +43,7 @@ jobs:
 
       - name: Generate public backup
         run: |
-          /db-backup/bin/backup.sh
+          ./bin/backup.sh
         working-directory: db-backup
         env:
           IS_PUBLIC_BACKUP: true
