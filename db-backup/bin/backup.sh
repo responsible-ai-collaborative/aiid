@@ -4,9 +4,11 @@ echo "Starting backup.sh script execution..."
 
 # settings
 IS_PUBLIC_BACKUP=${IS_PUBLIC_BACKUP:-false}
-BACKUPFILE_PREFIX=${BACKUPFILE_PREFIX:-backup}
+BACKUPFILE_PREFIX="backup"
 CRONMODE=${CRONMODE:-false}
 CLOUDFLARE_R2_ACCOUNT_ID=${CLOUDFLARE_R2_ACCOUNT_ID}
+MONGODB_DBNAME="aiidprod"
+MONGODB_DBNAME_TRANSLATIONS="translations"
 
 # start script
 CWD=`/usr/bin/dirname $0`

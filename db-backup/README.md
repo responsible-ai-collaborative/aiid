@@ -2,13 +2,6 @@ This is a quick port of the forked project to support JSON and CSV backups of th
 
 The complete state of the database will be backed up on a weekly basis in both JSON and CSV form. The backups can be downloaded from [here](https://incidentdatabase.ai/research/snapshots/).
 
-What is mongodb-awesome-backup?
--------------------------------
-
-mongodb-awesome-backup is the collection of scripts which backup MongoDB databases to Amazon S3.
-You can set a custom S3 endpoint to use S3 based services like DigitalOcean Spaces instead of Amazon S3.
-
-
 Requirements
 ------------
 
@@ -25,9 +18,7 @@ docker run --rm \
   -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY=<Cloudflare R2 Access Secret Key with write permission> \
   -e CLOUDFLARE_R2_PUBLIC_BUCKET=<Cloudflare R2 public bucket name (ie: "aiid-public")> \
   -e CLOUDFLARE_R2_BUCKET_NAME=<Cloudflare R2 bucket name (ie: "aiid-public")> \
-  [ -e BACKUPFILE_PREFIX=<Prefix of Backup Filename (default: "backup") \ ]
   [ -e MONGODB_URI=<Target MongoDB URI> \ ]
-  [ -e MONGODB_DBNAME=<Target DB name> \ ]
   [ -v ~:/mab \ ]
   weseek/mongodb-awesome-backup
 ```
@@ -54,8 +45,6 @@ Environment variables
 
 | Variable                          | Description                                                                                                                                                                                               | Default  |
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| BACKUPFILE_PREFIX                 | Prefix of Backup Filename                                                                                                                                                                                 | "backup" |
 | MONGODB_URI                       | Target MongoDB URI (ex. `mongodb://mongodb?replicaSet=rs0`). If set, the other `MONGODB_*` variables will be ignored.                                                                                     | -        |
-| MONGODB_DBNAME                    | Target DB name                                                                                                                                                                                            | -        |
 | CRONMODE                          | If set "true", this container is executed in cron mode.  In cron mode, the script will be executed with the specified arguments and at the time specified by CRON_EXPRESSION.                             | "false"  |
 | CRON_EXPRESSION                   | Cron expression (ex. "CRON_EXPRESSION=0 4 * * *" if you want to run at 4:00 every day)                                                                                                                    | -        |
