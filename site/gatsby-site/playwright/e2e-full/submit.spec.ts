@@ -1,5 +1,5 @@
 import parseNews from '../fixtures/api/parseNews.json';
-import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query } from '../utils';
+import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query, fillAutoComplete } from '../utils';
 import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
@@ -201,9 +201,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('[name="description"]').fill('Description');
 
-        await page.locator('#input-incident_editors').fill('Test');
-
-        await page.locator('[aria-label="Cesar Ito"]').click();
+        await fillAutoComplete(page, "#input-incident_editors", 'Ces', 'Cesar Ito');
 
         await page.locator('[name="tags"]').fill('New Tag');
         await page.keyboard.press('Enter');
