@@ -32,7 +32,6 @@ docker run --rm \
   [ -e BACKUPFILE_PREFIX=<Prefix of Backup Filename (default: "backup") \ ]
   [ -e MONGODB_URI=<Target MongoDB URI> \ ]
   [ -e MONGODB_DBNAME=<Target DB name> \ ]
-  [ -e MONGODB_USERNAME=<DB login username> \ ]
   [ -e MONGODB_PASSWORD=<DB login password> \ ]
   [ -e MONGODB_AUTHDB=<Authentication DB name> \ ]
   [ -v ~:/mab \ ]
@@ -68,7 +67,6 @@ Environment variables
 | BACKUPFILE_PREFIX                 | Prefix of Backup Filename                                                                                                                                                                                 | "backup" |
 | MONGODB_URI                       | Target MongoDB URI (ex. `mongodb://mongodb?replicaSet=rs0`). If set, the other `MONGODB_*` variables will be ignored.                                                                                     | -        |
 | MONGODB_DBNAME                    | Target DB name                                                                                                                                                                                            | -        |
-| MONGODB_USERNAME                  | DB login username                                                                                                                                                                                         | -        |
 | MONGODB_PASSWORD                  | DB login password                                                                                                                                                                                         | -        |
 | MONGODB_AUTHDB                    | Authentication DB name                                                                                                                                                                                    | -        |
 | CRONMODE                          | If set "true", this container is executed in cron mode.  In cron mode, the script will be executed with the specified arguments and at the time specified by CRON_EXPRESSION.                             | "false"  |

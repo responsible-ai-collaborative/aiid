@@ -63,7 +63,6 @@ jobs:
             -e MONGODB_URI="${{ secrets.MONGODB_CONNECTION_STRING }}" \
             -e MONGODB_DBNAME="aiidprod" \
             -e MONGODB_DBNAME_TRANSLATIONS="translations" \
-            -e MONGODB_USERNAME="${{ secrets.MONGO_BACKUP_USER }}" \
             -e MONGODB_PASSWORD="${{ secrets.MONGO_BACKUP_USER_PASSWORD }}" \
             -e MONGODB_AUTHDB="admin" \
             -v ~:/mab \
