@@ -48,15 +48,17 @@ function PartiesList({ entities }) {
 
 function ImplicatedSystemsList({ entities }) {
   return (
-    <>
+    <div className="mt-2">
       {entities.length > 0 && (
         <>
-          {' '}
-          The AI implicated system{entities.length > 1 ? 's' : ''}{' '}
-          {entities.length > 1 ? 'are' : 'is'} <EntitiesList entities={entities} />.
+          <Trans ns="entities">
+            The AI implicated system{entities.length > 1 ? 's' : ''}{' '}
+            {entities.length > 1 ? 'are' : 'is'}
+          </Trans>{' '}
+          <EntitiesList entities={entities} />.
         </>
       )}
-    </>
+    </div>
   );
 }
 
@@ -73,12 +75,15 @@ export default function AllegedEntities({ entities }) {
     )
   ) {
     return (
-      <Trans ns="entities">
-        Alleged:{' '}
-        <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
-        developed and deployed an AI system, which harmed <PartiesList entities={entitiesHarmed} />.{' '}
+      <>
+        <Trans ns="entities">
+          Alleged:{' '}
+          <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
+          developed and deployed an AI system, which harmed{' '}
+          <PartiesList entities={entitiesHarmed} />.
+        </Trans>
         <ImplicatedSystemsList entities={entitiesImplicatedSystems} />
-      </Trans>
+      </>
     );
   }
 
@@ -91,10 +96,13 @@ export default function AllegedEntities({ entities }) {
   );
 
   return (
-    <Trans ns="entities">
-      Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
-      <EntitiesList entities={deployers} />, which harmed <PartiesList entities={entitiesHarmed} />.{' '}
+    <>
+      <Trans ns="entities">
+        Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
+        <EntitiesList entities={deployers} />, which harmed{' '}
+        <PartiesList entities={entitiesHarmed} />.
+      </Trans>
       <ImplicatedSystemsList entities={entitiesImplicatedSystems} />
-    </Trans>
+    </>
   );
 }
