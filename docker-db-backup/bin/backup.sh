@@ -7,11 +7,6 @@ IS_PUBLIC_BACKUP=${IS_PUBLIC_BACKUP:-false}
 BACKUPFILE_PREFIX=${BACKUPFILE_PREFIX:-backup}
 CRONMODE=${CRONMODE:-false}
 CLOUDFLARE_R2_ACCOUNT_ID=${CLOUDFLARE_R2_ACCOUNT_ID}
-if [ "${IS_PUBLIC_BACKUP}" == "true" ]; then
-  TARGET_BUCKET_URL=${TARGET_PUBLIC_BUCKET_URL}
-else
-  TARGET_BUCKET_URL=${TARGET_PRIVATE_BUCKET_URL}
-fi
 
 # start script
 CWD=`/usr/bin/dirname $0`
@@ -35,27 +30,21 @@ TARBALL_FULLPATH="${TMPDIR}/${TARBALL}"
 
 # check parameters
 # deprecate the old option
-if [ "x${TARGET_BUCKET_URL}${CLOUDFLARE_R2_ACCOUNT_ID}" == "x" ]; then
-  echo "ERROR: At least one of the environment variables TARGET_BUCKET_URL or CLOUDFLARE_R2_ACCOUNT_ID must be specified." 1>&2
+if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" == "x" ]; then
+  echo "ERROR: CLOUDFLARE_R2_ACCOUNT_ID must be specified." 1>&2
   exit 1
 fi
-if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" != "x" ]; then
-  if [ -z "${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID}" ]; then
-    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID as well" 1>&2
-    exit 1
-  fi
-  if [ -z "${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY}" ]; then
-    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY as well" 1>&2
-    exit 1
-  fi
-  if [ "${IS_PUBLIC_BACKUP}" == "true" ] && [ -z "${CLOUDFLARE_R2_BUCKET_NAME}" ]; then
-    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_BUCKET_NAME as well" 1>&2
-    exit 1
-  fi
-  if [ "${IS_PUBLIC_BACKUP}" == "false" ] && [ -z "${CLOUDFLARE_R2_BUCKET_NAME}" ]; then
-    echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_BUCKET_NAME as well" 1>&2
-    exit 1
-  fi
+if [ -z "${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID}" ]; then
+  echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID as well" 1>&2
+  exit 1
+fi
+if [ -z "${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY}" ]; then
+  echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY as well" 1>&2
+  exit 1
+fi
+if [ -z "${CLOUDFLARE_R2_BUCKET_NAME}" ]; then
+  echo "ERROR: If CLOUDFLARE_R2_ACCOUNT_ID environment variable is defined, you have to define the CLOUDFLARE_R2_BUCKET_NAME as well" 1>&2
+  exit 1
 fi
 
 if [ "${IS_PUBLIC_BACKUP}" == "true" ]; then
@@ -111,13 +100,8 @@ echo "Report contents are subject to their own intellectual property rights. Unl
 echo "Start backup ${TARGET} into ${CLOUDFLARE_R2_BUCKET_NAME} ..."
 time ${TAR_CMD} ${TAR_OPTS} ${TARBALL_FULLPATH} -C ${DIRNAME} ${BASENAME}
 
-if [ "x${CLOUDFLARE_R2_ACCOUNT_ID}" != "x" ]; then
-  # upload tarball to Cloudflare R2
-  r2_copy_file ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY} ${CLOUDFLARE_R2_BUCKET_NAME} ${TARBALL_FULLPATH} ${TARBALL}
-elif [ `echo $TARGET_BUCKET_URL | cut -f1 -d":"` == "s3" ]; then
-  # transfer tarball to Amazon S3
-  s3_copy_file ${TARBALL_FULLPATH} ${TARGET_BUCKET_URL}
-fi
+# upload tarball to Cloudflare R2
+r2_copy_file ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY} ${CLOUDFLARE_R2_BUCKET_NAME} ${TARBALL_FULLPATH} ${TARBALL}
 
 # call healthchecks url for successful backup
 if [ "x${HEALTHCHECKS_URL}" != "x" ]; then
