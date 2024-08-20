@@ -46,10 +46,26 @@ function PartiesList({ entities }) {
   ));
 }
 
+function ImplicatedSystemsList({ entities }) {
+  return (
+    <>
+      {entities.length > 0 && (
+        <>
+          {' '}
+          The AI implicated system{entities.length > 1 ? 's' : ''}{' '}
+          {entities.length > 1 ? 'are' : 'is'} <EntitiesList entities={entities} />.
+        </>
+      )}
+    </>
+  );
+}
+
 export default function AllegedEntities({ entities }) {
   const entitiesHarming = entities.filter((e) => e.harmedEntities.length > 0);
 
   const entitiesHarmed = entities.filter((e) => e.incidentsHarmedBy.length > 0);
+
+  const entitiesImplicatedSystems = entities.filter((e) => e.incidentsImplicatedSystems.length > 0);
 
   if (
     entitiesHarming.every(
@@ -60,7 +76,8 @@ export default function AllegedEntities({ entities }) {
       <Trans ns="entities">
         Alleged:{' '}
         <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
-        developed and deployed an AI system, which harmed <PartiesList entities={entitiesHarmed} />.
+        developed and deployed an AI system, which harmed <PartiesList entities={entitiesHarmed} />.{' '}
+        <ImplicatedSystemsList entities={entitiesImplicatedSystems} />
       </Trans>
     );
   }
@@ -76,7 +93,8 @@ export default function AllegedEntities({ entities }) {
   return (
     <Trans ns="entities">
       Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
-      <EntitiesList entities={deployers} />, which harmed <PartiesList entities={entitiesHarmed} />.
+      <EntitiesList entities={deployers} />, which harmed <PartiesList entities={entitiesHarmed} />.{' '}
+      <ImplicatedSystemsList entities={entitiesImplicatedSystems} />
     </Trans>
   );
 }

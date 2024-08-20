@@ -36,9 +36,17 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
       property: 'Alleged_harmed_or_nearly_harmed_parties',
       key: 'incidentsHarmedBy',
     },
+    {
+      property: 'implicated_systems',
+      key: 'incidentsImplicatedSystems',
+    },
   ];
 
-  const harmingProperties = ['Alleged_deployer_of_AI_system', 'Alleged_developer_of_AI_system'];
+  const harmingProperties = [
+    'Alleged_deployer_of_AI_system',
+    'Alleged_developer_of_AI_system',
+    'implicated_systems',
+  ];
 
   const harmedProperties = ['Alleged_harmed_or_nearly_harmed_parties'];
 
@@ -64,6 +72,7 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
             incidentsHarmedBy: [],
             harmedEntities: [],
             responses: [],
+            incidentsImplicatedSystems: [],
           };
         }
 
@@ -123,6 +132,7 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
           ...entitiesHash[id].incidentsAsBoth,
           ...entitiesHash[id].incidentsAsDeployer,
           ...entitiesHash[id].incidentsAsDeveloper,
+          ...entitiesHash[id].incidentsImplicatedSystems,
         ].includes(incident.incident_id)
       )
       .reduce((harmed, incident) => {

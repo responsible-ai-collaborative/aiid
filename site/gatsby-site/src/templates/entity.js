@@ -387,6 +387,7 @@ export const query = graphql`
     $incidentsAsDeveloper: [Int]
     $incidentsAsBoth: [Int]
     $incidentsHarmedBy: [Int]
+    $incidentsImplicatedSystems: [Int]
   ) {
     incidentsAsDeployer: allMongodbAiidprodIncidents(
       filter: { incident_id: { in: $incidentsAsDeployer } }
@@ -402,6 +403,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 
@@ -419,6 +421,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 
@@ -436,6 +439,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 
@@ -453,6 +457,25 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
+      }
+    }
+
+    incidentsImplicatedSystems: allMongodbAiidprodIncidents(
+      filter: { incident_id: { in: $incidentsImplicatedSystems } }
+    ) {
+      nodes {
+        title
+        description
+        incident_id
+        reports {
+          report_number
+        }
+        date
+        Alleged_deployer_of_AI_system
+        Alleged_developer_of_AI_system
+        Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 

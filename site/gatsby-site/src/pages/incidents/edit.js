@@ -173,6 +173,10 @@ function EditCitePage(props) {
     ]);
   };
 
+  const entityNames = entitiesData?.entities
+    ? entitiesData.entities.map((node) => node.name).sort()
+    : [];
+
   return (
     <div className={'w-full'} {...props}>
       {!loading && (
@@ -218,7 +222,7 @@ function EditCitePage(props) {
         >
           {({ isValid, isSubmitting, submitForm, errors }) => (
             <>
-              <IncidentForm />
+              <IncidentForm entityNames={entityNames} />
               {!isValid && (
                 <div className="text-red-500">
                   Could not validate form:{' '}

@@ -59,7 +59,7 @@ exports.up = async ({ context: { client } }) => {
   );
 
   console.log(
-    `Updated ${incidentsUpdates.modifiedCount} submissions with new implicated_systems field`
+    `Updated ${incidentsUpdates.modifiedCount} incidents with new implicated_systems field`
   );
 
   const incidentsHistoryUpdates = await incidentsHistoryCollection.updateMany(
@@ -72,6 +72,6 @@ exports.up = async ({ context: { client } }) => {
   );
 
   console.log(
-    `Updated ${incidentsHistoryUpdates.modifiedCount} submissions history with new created_at field`
+    `Updated ${incidentsHistoryUpdates.modifiedCount} incidents history with new created_at field`
   );
 };

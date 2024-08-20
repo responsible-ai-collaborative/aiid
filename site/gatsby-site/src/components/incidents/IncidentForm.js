@@ -37,7 +37,7 @@ export const schema = Yup.object().shape({
   implicated_systems: Yup.array().required(),
 });
 
-function IncidentForm() {
+function IncidentForm({ entityNames = [] }) {
   const { values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue } =
     useFormikContext();
 
@@ -168,6 +168,7 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-deployer-of-ai-system-input"
+            options={entityNames}
           />
         </FieldContainer>
 
@@ -180,6 +181,7 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-developer-of-ai-system-input"
+            options={entityNames}
           />
         </FieldContainer>
 
@@ -192,6 +194,7 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-harmed-or-nearly-harmed-parties-input"
+            options={entityNames}
           />
         </FieldContainer>
 
@@ -204,6 +207,7 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-harmed-or-nearly-harmed-parties-input"
+            options={entityNames}
           />
         </FieldContainer>
 
