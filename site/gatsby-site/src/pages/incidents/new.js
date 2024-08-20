@@ -157,6 +157,10 @@ function NewIncidentPage() {
     }
   }, [incidentToCloneData]);
 
+  const entityNames = entitiesData?.entities
+    ? entitiesData.entities.map((node) => node.name).sort()
+    : [];
+
   return (
     <div className={'w-full'}>
       {!loading && (
@@ -173,7 +177,7 @@ function NewIncidentPage() {
         <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={initialValues}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
-              <IncidentForm />
+              <IncidentForm entityNames={entityNames} />
               <Button
                 onClick={submitForm}
                 type="submit"
