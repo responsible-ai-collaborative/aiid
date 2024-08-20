@@ -32,7 +32,6 @@ docker run --rm \
   [ -e BACKUPFILE_PREFIX=<Prefix of Backup Filename (default: "backup") \ ]
   [ -e MONGODB_URI=<Target MongoDB URI> \ ]
   [ -e MONGODB_DBNAME=<Target DB name> \ ]
-  [ -e MONGODB_PASSWORD=<DB login password> \ ]
   [ -e MONGODB_AUTHDB=<Authentication DB name> \ ]
   [ -v ~:/mab \ ]
   weseek/mongodb-awesome-backup
@@ -67,7 +66,6 @@ Environment variables
 | BACKUPFILE_PREFIX                 | Prefix of Backup Filename                                                                                                                                                                                 | "backup" |
 | MONGODB_URI                       | Target MongoDB URI (ex. `mongodb://mongodb?replicaSet=rs0`). If set, the other `MONGODB_*` variables will be ignored.                                                                                     | -        |
 | MONGODB_DBNAME                    | Target DB name                                                                                                                                                                                            | -        |
-| MONGODB_PASSWORD                  | DB login password                                                                                                                                                                                         | -        |
 | MONGODB_AUTHDB                    | Authentication DB name                                                                                                                                                                                    | -        |
 | CRONMODE                          | If set "true", this container is executed in cron mode.  In cron mode, the script will be executed with the specified arguments and at the time specified by CRON_EXPRESSION.                             | "false"  |
 | CRON_EXPRESSION                   | Cron expression (ex. "CRON_EXPRESSION=0 4 * * *" if you want to run at 4:00 every day)                                                                                                                    | -        |
