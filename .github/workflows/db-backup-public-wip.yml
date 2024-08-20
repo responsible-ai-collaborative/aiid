@@ -34,7 +34,6 @@ jobs:
             bash \
             tzdata \
             python3-pip \
-            mongodb-clients \
             curl \
             npm
 
