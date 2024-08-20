@@ -13,9 +13,6 @@ on:
         required: false
         default: 'This is not used'
 
-env:
-  AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
-
 defaults:
   run:
     shell: bash
@@ -40,29 +37,17 @@ jobs:
           load: true
           tags: aiid-docker-backup:latest
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_S3_BACKUP_USER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
       - name: Generate private backup
         run: |
           docker run --rm \
             -e IS_PUBLIC_BACKUP="false" \
-            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_S3_BACKUP_USER_ACCESS_KEY_ID }}" \
-            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_S3_BACKUP_USER_SECRET_ACCESS_KEY }}" \
-            -e TARGET_PRIVATE_BUCKET_URL="${{ vars.AWS_S3_PRIVATE_BUCKET }}" \
-            -e TARGET_PUBLIC_BUCKET_URL="${{ vars.AWS_S3_PUBLIC_BUCKET }}" \
             -e CLOUDFLARE_R2_ACCOUNT_ID="${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}" \
             -e CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID="${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}" \
             -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}" \
             -e CLOUDFLARE_R2_BUCKET_NAME="${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}" \
             -e BACKUPFILE_PREFIX="backup" \
-            -e MONGODB_URI="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/aiidprod" \
+            -e MONGODB_URI="${{ secrets.MONGODB_CONNECTION_STRING }}" \
             -e MONGODB_DBNAME="aiidprod" \
-            -e MONGODB_URI_TRANSLATIONS="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/translations" \
             -e MONGODB_DBNAME_TRANSLATIONS="translations" \
             -v ~:/mab \
             aiid-docker-backup:latest
