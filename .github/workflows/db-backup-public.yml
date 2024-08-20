@@ -63,7 +63,6 @@ jobs:
             -e MONGODB_URI="${{ secrets.MONGODB_CONNECTION_STRING }}" \
             -e MONGODB_DBNAME="aiidprod" \
             -e MONGODB_DBNAME_TRANSLATIONS="translations" \
-            -e MONGODB_AUTHDB="admin" \
             -v ~:/mab \
             aiid-docker-backup:latest
 

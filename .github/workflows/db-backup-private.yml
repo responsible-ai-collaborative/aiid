@@ -64,7 +64,6 @@ jobs:
             -e MONGODB_DBNAME="aiidprod" \
             -e MONGODB_URI_TRANSLATIONS="mongodb+srv://${{ secrets.MONGO_BACKUP_USER }}:${{ secrets.MONGO_BACKUP_USER_PASSWORD }}@aiiddev-aqdmh.gcp.mongodb.net/translations" \
             -e MONGODB_DBNAME_TRANSLATIONS="translations" \
-            -e MONGODB_AUTHDB="admin" \
             -v ~:/mab \
             aiid-docker-backup:latest
 
