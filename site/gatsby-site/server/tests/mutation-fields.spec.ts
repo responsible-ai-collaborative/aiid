@@ -12,6 +12,7 @@ import usersFixture from './fixtures/users';
 import incidentsFixture from './fixtures/incidents';
 import submissionsFixture from './fixtures/submissions';
 import classificationsFixture from './fixtures/classifications';
+import subscriptionsFixture from './fixtures/subscriptions';
 
 const fixtures = [
     quickaddsFixture,
@@ -21,6 +22,7 @@ const fixtures = [
     usersFixture,
     submissionsFixture,
     classificationsFixture,
+    subscriptionsFixture,
 ]
 
 fixtures.forEach((collection) => {

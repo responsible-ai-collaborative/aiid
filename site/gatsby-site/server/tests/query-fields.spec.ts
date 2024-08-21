@@ -10,6 +10,7 @@ import incidentsFixture from './fixtures/incidents';
 import usersFixture from './fixtures/users';
 import submissionsFixture from './fixtures/submissions';
 import classificationsFixture from './fixtures/classifications';
+import subscriptionsFixture from './fixtures/subscriptions';
 
 import * as context from '../context';
 
@@ -21,6 +22,7 @@ const fixtures = [
     usersFixture,
     submissionsFixture,
     classificationsFixture,
+    subscriptionsFixture,
 ]
 
 fixtures.forEach((collection) => {
@@ -138,14 +140,14 @@ fixtures.forEach((collection) => {
 
                 const queryData = {
                     query: `
-                    query ($sort: ${sortTypeName}!) {
-                        ${pluralName} (sort: $sort) {
+                    query ($sort: ${sortTypeName}!, $filter: ${filterTypeName}) {
+                        ${pluralName} (sort: $sort, filter: $filter) {
                             _id
                             ${collection.query}
                         }
                     }
                     `,
-                    variables: { sort: testData.sort },
+                    variables: { sort: testData.sort, filter: testData.filter },
                 };
 
 

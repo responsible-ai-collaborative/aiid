@@ -24,6 +24,8 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
+// TODO: uncomment items after the subscription collection is migrated
+
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
@@ -44,7 +46,7 @@ const ignoreTypes = [
     'ReportUserRelationInput',
     'CreateVariantInput',
 
-    // 'Incident',
+    'Incident',
     'IncidentQueryInput',
     'IncidentUpdateInput',
     'IncidentInsertInput',
@@ -52,12 +54,12 @@ const ignoreTypes = [
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    // 'Entity',
+    'Entity',
     'EntityQueryInput',
     'EntityUpdateInput',
     'EntityInsertInput',
 
-    // 'User',
+    'User',
     'UserQueryInput',
     'UserUpdateInput',
     'UserInsertInput',
@@ -82,6 +84,11 @@ const ignoreTypes = [
     'TaxaQueryInput',
     'TaxaUpdateInput',
     'TaxaInsertInput',
+
+    'Subscription',
+    'SubscriptionQueryInput',
+    'SubscriptionUpdateInput',
+    'SubscriptionInsertInput',
 ];
 
 const ignoredQueries = [
@@ -108,6 +115,9 @@ const ignoredQueries = [
 
     'taxa',
     'taxas',
+
+    'subscription',
+    'subscriptions',
 ];
 
 const ignoredMutations = [
@@ -118,7 +128,6 @@ const ignoredMutations = [
     'updateOneQuickadd',
     'updateManyQuickadds',
     'upsertOneQuickadd',
-    'upsertManyQuickadds',
 
     'deleteOneClassification',
     'deleteManyClassifications',
@@ -127,7 +136,6 @@ const ignoredMutations = [
     'updateOneClassification',
     'updateManyClassifications',
     'upsertOneClassification',
-    'upsertManyClassifications',
 
     'deleteOneReport',
     'deleteManyReports',
@@ -136,7 +144,6 @@ const ignoredMutations = [
     'updateOneReport',
     'updateManyReports',
     'upsertOneReport',
-    'upsertManyReports',
 
     'createVariant',
 
@@ -149,7 +156,6 @@ const ignoredMutations = [
     'updateOneIncident',
     'updateManyIncidents',
     'upsertOneIncident',
-    'upsertManyIncidents',
 
     'deleteOneEntity',
     'deleteManyEntities',
@@ -158,7 +164,6 @@ const ignoredMutations = [
     'updateOneEntity',
     'updateManyEntities',
     'upsertOneEntity',
-    'upsertManyEntities',
 
     'deleteOneUser',
     'deleteManyUsers',
@@ -167,7 +172,6 @@ const ignoredMutations = [
     'updateOneUser',
     'updateManyUsers',
     'upsertOneUser',
-    'upsertManyUsers',
 
     'deleteOneSubmission',
     'deleteManySubmissions',
@@ -188,7 +192,14 @@ const ignoredMutations = [
     'updateOneTaxa',
     'updateManyTaxas',
     'upsertOneTaxa',
-    'upsertManyTaxas',
+
+    'deleteOneSubscription',
+    'deleteManySubscriptions',
+    'insertOneSubscription',
+    'insertManySubscriptions',
+    'updateOneSubscription',
+    'updateManySubscriptions',
+    'upsertOneSubscription',
 ]
 
 /**
