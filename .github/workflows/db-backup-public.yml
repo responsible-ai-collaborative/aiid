@@ -48,7 +48,6 @@ jobs:
           ./bin/list.sh
         working-directory: db-backup
         env:
-          IS_PUBLIC_BACKUP: true
           CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}
