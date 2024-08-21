@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       home:
-        description: 'This can be triggered from the GH page'
+        description: "This can be triggered from the GH page"
         required: false
-        default: 'This is not used'
+        default: "This is not used"
 
 defaults:
   run:
@@ -26,26 +26,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-  
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker-db-backup/Dockerfile
-          load: true
-          tags: aiid-docker-backup:latest
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            coreutils \
+            bash \
+            tzdata \
+            python3-pip \
+            curl \
+            npm
+          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
+          echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt update
+          sudo apt install -y mongodb-database-tools
+      
+      - name: Install boto3
+        run: pip install boto3
 
       - name: Generate public backup
         run: |
-          docker run --rm \
-            -e IS_PUBLIC_BACKUP="true" \
-            -e CLOUDFLARE_R2_ACCOUNT_ID="${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}" \
-            -e CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID="${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}" \
-            -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}" \
-            -e CLOUDFLARE_R2_BUCKET_NAME="${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}" \
-            -e MONGODB_URI="${{ secrets.MONGODB_CONNECTION_STRING }}" \
-            -v ~:/mab \
-            aiid-docker-backup:latest
-
+          ./bin/backup.sh
+          ./bin/prune.sh
+          ./bin/list.sh
+        working-directory: db-backup
+        env:
+          IS_PUBLIC_BACKUP: true
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
