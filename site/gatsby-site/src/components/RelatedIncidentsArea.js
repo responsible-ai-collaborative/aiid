@@ -65,8 +65,15 @@ const RelatedIncidentsArea = ({
     return null;
   }
   return (
-    <div data-cy={`related-${columnKey}`}>
-      <div key={'header'} className="py-2">
+    <div data-cy={`related-${columnKey}`} className="relative">
+      <div
+        key={'header'}
+        className={`py-2 ${
+          loading && similarList.length > 0
+            ? 'absolute w-full h-full flex justify-center items-center bg-slate-600 opacity-20'
+            : ''
+        }`}
+      >
         <label className="text-sm font-medium text-gray-900 dark:text-gray-300 relative">
           {header}
         </label>
@@ -77,7 +84,7 @@ const RelatedIncidentsArea = ({
           </>
         )}
       </div>
-      <div className={`${reportsOpened ? 'reports open' : 'reports'} flex flex-wrap gap-2`}>
+      <div className={`${reportsOpened ? 'reports open' : 'reports'} flex flex-wrap gap-2 py-2`}>
         {similarList &&
           similarList.slice(0, maxIncidents).map((val) => (
             <div

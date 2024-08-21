@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
@@ -91,16 +91,23 @@ function IncidentForm() {
     notifyOnNetworkStatusChange: true,
   });
 
-  const editorSimilarIncidents =
-    editorSimilarIncidentReportsQuery.loading ||
-    editorSimilarIncidentReportsQuery.error ||
-    editorSimilarIncidentReportsQuery.data.incidents.length === 0
-      ? []
-      : editorSimilarIncidentReportsQuery.data.incidents.map((incident) => {
+  const [editorSimilarIncidents, setEditorSimilarIncidents] = useState([]);
+
+  useEffect(() => {
+    if (
+      !editorSimilarIncidentReportsQuery.loading &&
+      !editorSimilarIncidentReportsQuery.error &&
+      editorSimilarIncidentReportsQuery.data.incidents.length > 0
+    ) {
+      setEditorSimilarIncidents(
+        editorSimilarIncidentReportsQuery.data.incidents.map((incident) => {
           return {
             ...incident,
           };
-        });
+        })
+      );
+    }
+  }, [editorSimilarIncidentReportsQuery.loading, editorSimilarIncidentReportsQuery.data]);
 
   useEffect(() => {
     window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
