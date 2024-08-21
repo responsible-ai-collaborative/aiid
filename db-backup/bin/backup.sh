@@ -6,7 +6,6 @@ echo "--------------------------------------"
 
 # settings
 BACKUPFILE_PREFIX="backup"
-CRONMODE=${CRONMODE:-false}
 CLOUDFLARE_R2_ACCOUNT_ID=${CLOUDFLARE_R2_ACCOUNT_ID}
 MONGODB_DBNAME="aiidprod"
 MONGODB_DBNAME_TRANSLATIONS="translations"
@@ -100,10 +99,4 @@ r2_copy_file ${CLOUDFLARE_R2_ACCOUNT_ID} ${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID} ${
 # call healthchecks url for successful backup
 if [ "x${HEALTHCHECKS_URL}" != "x" ]; then
   curl -fsS --retry 3 ${HEALTHCHECKS_URL} >/dev/null
-fi
-
-# clean up working files if in cron mode
-if ${CRONMODE}; then
-  rm -rf ${TARGET}
-  rm -f ${TARBALL_FULLPATH}
 fi
