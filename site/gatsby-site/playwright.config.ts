@@ -13,9 +13,9 @@ export default defineConfig({
   testDir: './playwright',
   globalTimeout: process.env.CI ? 60 * 60 * 1000 : undefined,
   expect: {
-    timeout: process.env.CI ? 30000 : undefined,
+    timeout: process.env.CI ? 60000 : 30000,
   },
-  timeout: process.env.CI ? 120000 : undefined,
+  timeout: process.env.CI ? 180000 : 90000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -23,7 +23,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 3 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? [['blob'], ['line', { printSteps: true }]] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -75,7 +75,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'NODE_OPTIONS=--max-old-space-size=5600 npm run serve',
+    command: 'npx -y pm2 start npm --name "web-server" -- run serve && npx pm2 logs "web-server"',
     url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
   },

@@ -12,6 +12,6 @@ test.describe('Test playwright utils', () => {
 
         await expect(page.getByText('Fula')).toBeVisible();
         await expect(page.getByText('Nito')).toBeVisible();
-        await expect(page.getByText('bue')).toBeVisible();
+        await expect(page.getByText('sarasa')).toBeVisible();
     });
 });
