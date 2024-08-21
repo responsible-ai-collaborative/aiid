@@ -59,30 +59,30 @@ def parse_arguments():
 
 def create_cloudflare_client(account_id, access_key, secret_key, region="auto"):
     endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
-    s3_client = boto3.client(
+    cloudflare_client = boto3.client(
         service_name="s3",
         endpoint_url=endpoint_url,
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
         region_name=region,
     )
-    return s3_client
+    return cloudflare_client
 
 
 def main(args):
-    s3_client = create_cloudflare_client(
+    cloudflare_client = create_cloudflare_client(
         args.account_id, args.access_key, args.secret_key
     )
 
     if args.operation == "list":
-        response = s3_client.list_objects_v2(Bucket=args.bucket_name)
+        response = cloudflare_client.list_objects_v2(Bucket=args.bucket_name)
 
         if "Contents" in response:
             for obj in response["Contents"]:
                 print(obj["Key"], "size:", obj["Size"])
 
     elif args.operation == "upload":
-        s3_client.upload_file(
+        cloudflare_client.upload_file(
             args.file_path,
             args.bucket_name,
             args.object_key,
@@ -95,7 +95,7 @@ def main(args):
         print("-----------------------------")
 
     elif args.operation == "delete":
-        s3_client.delete_object(Bucket=args.bucket_name, Key=args.object_key)
+        cloudflare_client.delete_object(Bucket=args.bucket_name, Key=args.object_key)
         print("-----------------------------")
         print(
             f"Successfully deleted file {args.object_key} from bucket {args.bucket_name}"
@@ -104,7 +104,7 @@ def main(args):
 
     elif args.operation == "check_exists":
         # Raises error/non-zero exit if object doesn't exist. Otherwise success, raises nothing.
-        s3_client.get_object(Bucket=args.bucket_name, Key=args.object_key)
+        cloudflare_client.get_object(Bucket=args.bucket_name, Key=args.object_key)
 
     else:
         raise NotImplementedError

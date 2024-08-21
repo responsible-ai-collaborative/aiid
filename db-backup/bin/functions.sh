@@ -1,17 +1,4 @@
-# default settings
-AWSCLI="/usr/bin/aws"
-AWSCLI_COPY_OPT="s3 cp"
-AWSCLI_LIST_OPT="s3 ls"
-AWSCLI_DEL_OPT="s3 rm"
-AWSCLIOPT=${AWSCLIOPT:-}
-
-CLOUDFLARE_S3_CLIENT_SCRIPT="./cloudflare_s3_operations.py"
-CLOUDFLARE_UPLOAD_SCRIPT="./cloudflare_python/cloudflare_upload_file.py"
-CLOUDFLARE_LIST_OBJECTS_SCRIPT="./cloudflare_python/cloudflare_list_objects.py"
-CLOUDFLARE_DELETE_OBJECT_SCRIPT="./cloudflare_python/cloudflare_delete_object.py"
-CLOUDFLARE_EXIST_OBJECT_SCRIPT="./cloudflare_python/cloudflare_exist_object.py"
-
-DATE_CMD="/bin/date"
+CLOUDFLARE_CLIENT_SCRIPT="./cloudflare_operations.py"
 
 # Check the existence of specified file on Cloudflare R2 bucket.
 # arguments: 1. CLOUDFLARE_R2_ACCOUNT_ID
@@ -21,8 +8,8 @@ DATE_CMD="/bin/date"
 #            5. File path for the bucket item (ie: backup-20231009233543.tar.bz2)
 r2_exists() {
 	if [ $# -ne 5 ]; then return 255; fi
-	echo "python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation check_exists --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5"
-	python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation check_exists --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5
+	echo "python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation check_exists --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5"
+	python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation check_exists --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5
 }
 
 # Output the list of the files on specified Cloudflare R2.
@@ -32,8 +19,8 @@ r2_exists() {
 #            4. Cloudflare R2 Bucket name (ie: aiid-public)
 r2_list_files() {
 	if [ $# -ne 4 ]; then return 255; fi
-	echo "python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation list --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4"
-	python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation list --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4
+	echo "python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation list --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4"
+	python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation list --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4
 }
 
 # Delete the specified file on Cloudflare R2 bucket.
@@ -44,8 +31,8 @@ r2_list_files() {
 #            5. File path for the bucket item (ie: backup-20231009233543.tar.bz2)
 r2_delete_file() {
 	if [ $# -ne 5 ]; then return 255; fi
-	echo "python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation delete --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5"
-	python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation delete --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5
+	echo "python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation delete --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5"
+	python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation delete --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --object_key $5
 }
 
 # Copy the specified file to Cloudflare R2.
@@ -57,8 +44,8 @@ r2_delete_file() {
 #			 6. File key for the bucket item (ie: backup-20231009233543.tar.bz2)
 r2_copy_file() {
 	if [ $# -ne 6 ]; then return 255; fi
-	echo "python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation upload --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --file_path $5 --object_key $6"
-	python3 ${CLOUDFLARE_S3_CLIENT_SCRIPT} --operation upload --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --file_path $5 --object_key $6
+	echo "python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation upload --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --file_path $5 --object_key $6"
+	python3 ${CLOUDFLARE_CLIENT_SCRIPT} --operation upload --account_id $1 --access_key $2 --secret_key $3 --bucket_name $4 --file_path $5 --object_key $6
 }
 
 # Create current datetime string(YYYYmmddHHMMSS)
