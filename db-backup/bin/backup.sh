@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
+echo "--------------------------------------"
 echo "Starting backup.sh script execution..."
+echo "--------------------------------------"
 
 # settings
 IS_PUBLIC_BACKUP=${IS_PUBLIC_BACKUP:-false}

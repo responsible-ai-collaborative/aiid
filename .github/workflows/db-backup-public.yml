@@ -46,8 +46,6 @@ jobs:
             -e CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY="${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}" \
             -e CLOUDFLARE_R2_BUCKET_NAME="${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}" \
             -e MONGODB_URI="${{ secrets.MONGODB_CONNECTION_STRING }}" \
-            -e MONGODB_DBNAME="aiidprod" \
-            -e MONGODB_DBNAME_TRANSLATIONS="translations" \
             -v ~:/mab \
             aiid-docker-backup:latest
 

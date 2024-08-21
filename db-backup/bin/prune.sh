@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
+echo "------------------------------"
 echo "Starting prune.sh execution..."
+echo "------------------------------"
 
 # settings
 BACKUPFILE_PREFIX="backup"
