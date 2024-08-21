@@ -30,7 +30,6 @@ jobs:
         shell: bash
         working-directory: site/gatsby-site
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -59,15 +58,15 @@ jobs:
       - name: Jest run
         run: npm run test:api:ci
         env:
-          REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
-          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
-          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
-          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
-          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
-          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
-          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
-          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
-          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          REALM_APP_ID: ""
+          REALM_API_APP_ID: ""
+          REALM_API_GROUP_ID: ""
+          REALM_API_PUBLIC_KEY: ""
+          REALM_API_PRIVATE_KEY: ""
+          REALM_GRAPHQL_API_KEY: ""
+          API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
+          E2E_ADMIN_USERNAME: ""
+          E2E_ADMIN_PASSWORD: ""
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
 
       - name: Upload coverage reports to Codecov

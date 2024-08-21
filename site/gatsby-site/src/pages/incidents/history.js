@@ -59,7 +59,7 @@ function IncidentHistoryPage(props) {
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
     fetchPolicy: 'network-only',
     variables: {
-      query: { incident_id: incidentId },
+      filter: { incident_id: { EQ: incidentId } },
     },
   });
 
@@ -199,8 +199,8 @@ function IncidentHistoryPage(props) {
 
         await updateIncident({
           variables: {
-            query: { incident_id: incidentId },
-            set: updatedIncident,
+            filter: { incident_id: { EQ: incidentId } },
+            update: { set: updatedIncident },
           },
         });
 
@@ -268,7 +268,7 @@ function IncidentHistoryPage(props) {
                 <hr />
               </div>
               {restoringVersion && (
-                <div className="font-semibold mb-2" data-cy="restoring-message">
+                <div className="font-semibold mb-2" data-testid="restoring-message">
                   <div className="flex gap-3 mb-2">
                     <Trans>Restoring version</Trans>
                     <Spinner />

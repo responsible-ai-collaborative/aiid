@@ -27,7 +27,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
 
   useEffect(() => {
     if (show) {
-      findSubmission({ variables: { query: { _id: submissionId } } });
+      findSubmission({ variables: { filter: { _id: { EQ: submissionId } } } });
     }
   }, [show, submissionId]);
 
@@ -51,24 +51,26 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
 
       await updateSubmission({
         variables: {
-          query: {
-            _id: values._id,
+          filter: {
+            _id: { EQ: values._id },
           },
-          set: {
-            ...update,
-            incident_id: update.incident_id === '' ? 0 : update.incident_id,
-            authors: !isArray(values.authors)
-              ? values.authors.split(',').map((s) => s.trim())
-              : values.authors,
-            submitters: values.submitters
-              ? !isArray(values.submitters)
-                ? values.submitters.split(',').map((s) => s.trim())
-                : values.submitters
-              : ['Anonymous'],
-            plain_text: await stripMarkdown(update.text),
-            date_modified: format(now, 'yyyy-MM-dd'),
-            epoch_date_modified: getUnixTime(now),
-            incident_editors: { link: update.incident_editors },
+          update: {
+            set: {
+              ...update,
+              incident_id: update.incident_id === '' ? 0 : update.incident_id,
+              authors: !isArray(values.authors)
+                ? values.authors.split(',').map((s) => s.trim())
+                : values.authors,
+              submitters: values.submitters
+                ? !isArray(values.submitters)
+                  ? values.submitters.split(',').map((s) => s.trim())
+                  : values.submitters
+                : ['Anonymous'],
+              plain_text: await stripMarkdown(update.text),
+              date_modified: format(now, 'yyyy-MM-dd'),
+              epoch_date_modified: getUnixTime(now),
+              incident_editors: { link: update.incident_editors },
+            },
           },
         },
       });

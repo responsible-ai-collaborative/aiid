@@ -27,7 +27,7 @@
                 "tags": {}
             },
             "write": true,
-            "insert": false,
+            "insert": true,
             "delete": false,
             "search": true,
             "additional_fields": {}

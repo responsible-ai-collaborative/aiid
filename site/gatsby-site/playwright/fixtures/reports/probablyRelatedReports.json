@@ -1,0 +1,24 @@
+{
+    "data": {
+        "reports": [
+            {
+                "__typename": "Report",
+                "report_number": 1,
+                "title": "Report 1 test title",
+                "url": "https://www.bbc.com/news/world-us-canada-46468719"
+            },
+            {
+                "__typename": "Report",
+                "report_number": 2,
+                "title": "Report 2 test title",
+                "url": "https://www.bbc.com/news/world-us-canada-46468719"
+            },
+            {
+                "__typename": "Report",
+                "report_number": 3,
+                "title": "Report 3 test title",
+                "url": "https://www.bbc.com/news/world-us-canada-46468719"
+            }
+        ]
+    }
+}

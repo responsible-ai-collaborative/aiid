@@ -51,7 +51,7 @@ const RolesTable = ({ roles }) => (
 
 export default function UserEditModal({ onClose, userId, alertTitle = '', alertText = '' }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
-    variables: { query: { userId } },
+    variables: { filter: { userId: { EQ: userId } } },
   });
 
   const { user, isRole } = useUserContext();
@@ -94,7 +94,7 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
   };
 
   return (
-    <Modal show={true} onClose={onClose} data-cy="edit-user-modal" size="lg">
+    <Modal show={true} onClose={onClose} data-testid="edit-user-modal" size="lg">
       <Modal.Header>
         <Trans>Edit</Trans>
       </Modal.Header>

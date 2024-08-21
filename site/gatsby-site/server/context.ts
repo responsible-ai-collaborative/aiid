@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import config from "./config";
 import * as reporter from "./reporter";
 
+
 function extractToken(header: string) {
 
     if (header && header!.startsWith('Bearer ')) {
@@ -13,7 +14,7 @@ function extractToken(header: string) {
     return null;
 }
 
-async function verifyToken(token: string) {
+export const verifyToken = async (token: string) => {
 
     const loginResponse = await fetch(
         `https://realm.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login`,
@@ -54,9 +55,7 @@ async function verifyToken(token: string) {
     return response.json();
 }
 
-async function getUser(userId: string) {
-
-    const client = new MongoClient(config.MONGODB_CONNECTION_STRING);
+async function getUser(userId: string, client: MongoClient) {
 
     const db = client.db('customData');
 
@@ -70,7 +69,7 @@ async function getUser(userId: string) {
     }
 }
 
-async function getUserFromHeader(header: string) {
+async function getUserFromHeader(header: string, client: MongoClient) {
 
     const token = extractToken(header);
 
@@ -78,9 +77,14 @@ async function getUserFromHeader(header: string) {
 
         const data = await verifyToken(token);
 
+        if (data == 'token expired') {
+            
+            throw new Error('Token expired');
+        }
+
         if (data.sub) {
 
-            const userData = await getUser(data.sub);
+            const userData = await getUser(data.sub, client);
 
             return userData;
         }
@@ -89,13 +93,11 @@ async function getUserFromHeader(header: string) {
     return null;
 }
 
-export const context = async ({ req }: { req: IncomingMessage }) => {
+export const context = async ({ req, client }: { req: IncomingMessage, client: MongoClient }) => {
 
     try {
 
-        const user = await getUserFromHeader(req.headers.authorization!);
-
-        const client = new MongoClient(config.MONGODB_CONNECTION_STRING!);
+        const user = await getUserFromHeader(req.headers.authorization!, client);
 
         return { user, req, client };
     }
