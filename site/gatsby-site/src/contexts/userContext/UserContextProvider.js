@@ -11,6 +11,25 @@ import useLocalizePath from '../../components/i18n/useLocalizePath';
 import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
 import CustomButton from '../../elements/Button';
 
+function decodeAccessToken(accessToken) {
+  const parts = accessToken.split('.');
+
+  const encodedPayload = parts[1];
+
+  const decodedPayload = atob(encodedPayload);
+
+  const parsedPayload = JSON.parse(decodedPayload);
+
+  const { exp: expires, iat: issuedAt, sub: subject, user_data: userData = {} } = parsedPayload;
+
+  return { expires, issuedAt, subject, userData };
+}
+
+function isTokenExpired(accessToken) {
+  const { expires } = decodeAccessToken(accessToken);
+
+  return Date.now() >= expires * 1000;
+}
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
 const getApolloCLient = (getValidAccessToken) =>
@@ -173,7 +192,7 @@ export const UserContextProvider = ({ children }) => {
   const getValidAccessToken = async () => {
     if (!realmApp.currentUser) {
       await login();
-    } else {
+    } else if (isTokenExpired(realmApp.currentUser.accessToken)) {
       await realmApp.currentUser.refreshCustomData();
     }
 

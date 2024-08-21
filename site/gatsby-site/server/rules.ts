@@ -6,9 +6,9 @@ export const isRole = (role: string) => rule()(
 
         const { user } = context;
 
-        const meetsRole = user && user.roles && user.roles.includes(role);
+        const meetsRole = user?.roles?.includes(role);
 
-        const meetsAdmin = user?.roles.includes('admin');
+        const meetsAdmin = user?.roles?.includes('admin');
 
         const meetsSelf = role == 'self' && user?.id === (info.variableValues?.filter as any)?.userId?.EQ;
 
