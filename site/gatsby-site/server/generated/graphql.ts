@@ -938,8 +938,10 @@ export type CreateDefaultAdminUserInput = {
   password?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Input type for creating a variant, including incident ID and variant details. */
 export type CreateVariantInput = {
-  incidentId?: InputMaybe<Scalars['Int']['input']>;
+  /** The unique identifier for the incident. */
+  incidentId: Scalars['Int']['input'];
   /** Details about the variant. */
   variant?: InputMaybe<CreateVariantInputVariant>;
 };
@@ -958,8 +960,10 @@ export type CreateVariantInputVariant = {
 
 export type CreateVariantPayload = {
   __typename?: 'CreateVariantPayload';
-  incident_id?: Maybe<Scalars['Int']['output']>;
-  report_number?: Maybe<Scalars['Int']['output']>;
+  /** The unique identifier for the incident. */
+  incident_id: Scalars['Int']['output'];
+  /** The unique report number associated with the incident. */
+  report_number: Scalars['Int']['output'];
 };
 
 /** Filter type for DateTime scalar */
@@ -1247,6 +1251,102 @@ export type EntityUpdateInput = {
 
 export type EntityUpdateType = {
   set?: InputMaybe<EntitySetType>;
+};
+
+export type Entity_Relationship = {
+  __typename?: 'Entity_relationship';
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
+  is_symmetric?: Maybe<Scalars['Boolean']['output']>;
+  obj: Entity;
+  pred: Scalars['String']['output'];
+  sub: Entity;
+};
+
+export type Entity_RelationshipInsertInput = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
+  is_symmetric?: InputMaybe<Scalars['Boolean']['input']>;
+  obj: Entity_RelationshipObjRelationInput;
+  pred: Scalars['String']['input'];
+  sub: Entity_RelationshipSubRelationInput;
+};
+
+export type Entity_RelationshipObjRelationInput = {
+  create?: InputMaybe<EntityInsertInput>;
+  link?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Entity_RelationshipQueryInput = {
+  AND?: InputMaybe<Array<Entity_RelationshipQueryInput>>;
+  OR?: InputMaybe<Array<Entity_RelationshipQueryInput>>;
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
+  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  created_at_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  created_at_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_ne?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  is_symmetric?: InputMaybe<Scalars['Boolean']['input']>;
+  is_symmetric_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  is_symmetric_ne?: InputMaybe<Scalars['Boolean']['input']>;
+  obj?: InputMaybe<EntityQueryInput>;
+  obj_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  pred?: InputMaybe<Scalars['String']['input']>;
+  pred_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  pred_gt?: InputMaybe<Scalars['String']['input']>;
+  pred_gte?: InputMaybe<Scalars['String']['input']>;
+  pred_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  pred_lt?: InputMaybe<Scalars['String']['input']>;
+  pred_lte?: InputMaybe<Scalars['String']['input']>;
+  pred_ne?: InputMaybe<Scalars['String']['input']>;
+  pred_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  sub?: InputMaybe<EntityQueryInput>;
+  sub_exists?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export enum Entity_RelationshipSortByInput {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  ObjAsc = 'OBJ_ASC',
+  ObjDesc = 'OBJ_DESC',
+  PredAsc = 'PRED_ASC',
+  PredDesc = 'PRED_DESC',
+  SubAsc = 'SUB_ASC',
+  SubDesc = 'SUB_DESC',
+  IdAsc = '_ID_ASC',
+  IdDesc = '_ID_DESC'
+}
+
+export type Entity_RelationshipSubRelationInput = {
+  create?: InputMaybe<EntityInsertInput>;
+  link?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Entity_RelationshipUpdateInput = {
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
+  created_at_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  is_symmetric?: InputMaybe<Scalars['Boolean']['input']>;
+  is_symmetric_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  obj?: InputMaybe<Entity_RelationshipObjRelationInput>;
+  obj_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  pred?: InputMaybe<Scalars['String']['input']>;
+  pred_unset?: InputMaybe<Scalars['Boolean']['input']>;
+  sub?: InputMaybe<Entity_RelationshipSubRelationInput>;
+  sub_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** Filter type for Float scalar */
@@ -2733,6 +2833,7 @@ export type Mutation = {
   deleteManyChecklists?: Maybe<DeleteManyPayload>;
   deleteManyClassifications?: Maybe<DeleteManyPayload>;
   deleteManyDuplicates?: Maybe<DeleteManyPayload>;
+  deleteManyEntity_relationships?: Maybe<DeleteManyPayload>;
   deleteManyHistory_incidents?: Maybe<DeleteManyPayload>;
   deleteManyHistory_reports?: Maybe<DeleteManyPayload>;
   deleteManyNotifications?: Maybe<DeleteManyPayload>;
@@ -2743,6 +2844,7 @@ export type Mutation = {
   deleteOneChecklist?: Maybe<Checklist>;
   deleteOneClassification?: Maybe<Classification>;
   deleteOneDuplicate?: Maybe<Duplicate>;
+  deleteOneEntity_relationship?: Maybe<Entity_Relationship>;
   deleteOneHistory_incident?: Maybe<History_Incident>;
   deleteOneHistory_report?: Maybe<History_Report>;
   deleteOneNotification?: Maybe<Notification>;
@@ -2758,6 +2860,7 @@ export type Mutation = {
   insertManyChecklists?: Maybe<InsertManyPayload>;
   insertManyClassifications?: Maybe<InsertManyPayload>;
   insertManyDuplicates?: Maybe<InsertManyPayload>;
+  insertManyEntity_relationships?: Maybe<InsertManyPayload>;
   insertManyHistory_incidents?: Maybe<InsertManyPayload>;
   insertManyHistory_reports?: Maybe<InsertManyPayload>;
   insertManyNotifications?: Maybe<InsertManyPayload>;
@@ -2768,6 +2871,7 @@ export type Mutation = {
   insertOneChecklist?: Maybe<Checklist>;
   insertOneClassification?: Maybe<Classification>;
   insertOneDuplicate?: Maybe<Duplicate>;
+  insertOneEntity_relationship?: Maybe<Entity_Relationship>;
   insertOneHistory_incident?: Maybe<History_Incident>;
   insertOneHistory_report?: Maybe<History_Report>;
   insertOneIncident?: Maybe<Incident>;
@@ -2787,6 +2891,7 @@ export type Mutation = {
   replaceOneClassification?: Maybe<Classification>;
   replaceOneDuplicate?: Maybe<Duplicate>;
   replaceOneEntity?: Maybe<Entity>;
+  replaceOneEntity_relationship?: Maybe<Entity_Relationship>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
   replaceOneHistory_report?: Maybe<History_Report>;
   replaceOneIncident?: Maybe<Incident>;
@@ -2799,6 +2904,7 @@ export type Mutation = {
   updateManyChecklists?: Maybe<UpdateManyPayload>;
   updateManyClassifications?: Maybe<UpdateManyPayload>;
   updateManyDuplicates?: Maybe<UpdateManyPayload>;
+  updateManyEntity_relationships?: Maybe<UpdateManyPayload>;
   updateManyHistory_incidents?: Maybe<UpdateManyPayload>;
   updateManyHistory_reports?: Maybe<UpdateManyPayload>;
   updateManyIncidents?: Maybe<UpdateManyPayload>;
@@ -2811,6 +2917,7 @@ export type Mutation = {
   updateOneClassification?: Maybe<Classification>;
   updateOneDuplicate?: Maybe<Duplicate>;
   updateOneEntity?: Maybe<Entity>;
+  updateOneEntity_relationship?: Maybe<Entity_Relationship>;
   updateOneHistory_incident?: Maybe<History_Incident>;
   updateOneHistory_report?: Maybe<History_Report>;
   updateOneIncident?: Maybe<Incident>;
@@ -2827,6 +2934,7 @@ export type Mutation = {
   upsertOneClassification?: Maybe<Classification>;
   upsertOneDuplicate?: Maybe<Duplicate>;
   upsertOneEntity?: Maybe<Entity>;
+  upsertOneEntity_relationship?: Maybe<Entity_Relationship>;
   upsertOneHistory_incident?: Maybe<History_Incident>;
   upsertOneHistory_report?: Maybe<History_Report>;
   upsertOneNotification?: Maybe<Notification>;
@@ -2863,6 +2971,11 @@ export type MutationDeleteManyClassificationsArgs = {
 
 export type MutationDeleteManyDuplicatesArgs = {
   query?: InputMaybe<DuplicateQueryInput>;
+};
+
+
+export type MutationDeleteManyEntity_RelationshipsArgs = {
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
 };
 
 
@@ -2915,6 +3028,11 @@ export type MutationDeleteOneClassificationArgs = {
 
 export type MutationDeleteOneDuplicateArgs = {
   query: DuplicateQueryInput;
+};
+
+
+export type MutationDeleteOneEntity_RelationshipArgs = {
+  query: Entity_RelationshipQueryInput;
 };
 
 
@@ -3001,6 +3119,11 @@ export type MutationInsertManyDuplicatesArgs = {
 };
 
 
+export type MutationInsertManyEntity_RelationshipsArgs = {
+  data: Array<Entity_RelationshipInsertInput>;
+};
+
+
 export type MutationInsertManyHistory_IncidentsArgs = {
   data: Array<History_IncidentInsertInput>;
 };
@@ -3048,6 +3171,11 @@ export type MutationInsertOneClassificationArgs = {
 
 export type MutationInsertOneDuplicateArgs = {
   data: DuplicateInsertInput;
+};
+
+
+export type MutationInsertOneEntity_RelationshipArgs = {
+  data: Entity_RelationshipInsertInput;
 };
 
 
@@ -3146,6 +3274,12 @@ export type MutationReplaceOneEntityArgs = {
 };
 
 
+export type MutationReplaceOneEntity_RelationshipArgs = {
+  data: Entity_RelationshipInsertInput;
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+};
+
+
 export type MutationReplaceOneHistory_IncidentArgs = {
   data: History_IncidentInsertInput;
   query?: InputMaybe<History_IncidentQueryInput>;
@@ -3218,6 +3352,12 @@ export type MutationUpdateManyDuplicatesArgs = {
 };
 
 
+export type MutationUpdateManyEntity_RelationshipsArgs = {
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+  set: Entity_RelationshipUpdateInput;
+};
+
+
 export type MutationUpdateManyHistory_IncidentsArgs = {
   query?: InputMaybe<History_IncidentQueryInput>;
   set: History_IncidentUpdateInput;
@@ -3287,6 +3427,12 @@ export type MutationUpdateOneDuplicateArgs = {
 export type MutationUpdateOneEntityArgs = {
   filter: EntityFilterType;
   update: EntityUpdateType;
+};
+
+
+export type MutationUpdateOneEntity_RelationshipArgs = {
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+  set: Entity_RelationshipUpdateInput;
 };
 
 
@@ -3382,6 +3528,12 @@ export type MutationUpsertOneDuplicateArgs = {
 export type MutationUpsertOneEntityArgs = {
   filter: EntityFilterType;
   update: EntityInsertType;
+};
+
+
+export type MutationUpsertOneEntity_RelationshipArgs = {
+  data: Entity_RelationshipInsertInput;
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
 };
 
 
@@ -3621,6 +3773,8 @@ export type Query = {
   duplicates: Array<Maybe<Duplicate>>;
   entities?: Maybe<Array<Maybe<Entity>>>;
   entity?: Maybe<Entity>;
+  entity_relationship?: Maybe<Entity_Relationship>;
+  entity_relationships: Array<Maybe<Entity_Relationship>>;
   history_incident?: Maybe<History_Incident>;
   history_incidents: Array<Maybe<History_Incident>>;
   history_report?: Maybe<History_Report>;
@@ -3704,6 +3858,18 @@ export type QueryEntityArgs = {
   filter?: InputMaybe<EntityFilterType>;
   pagination?: InputMaybe<PaginationType>;
   sort?: InputMaybe<EntitySortType>;
+};
+
+
+export type QueryEntity_RelationshipArgs = {
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+};
+
+
+export type QueryEntity_RelationshipsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+  sortBy?: InputMaybe<Entity_RelationshipSortByInput>;
 };
 
 
@@ -3952,14 +4118,14 @@ export type Report = {
   tags: Array<Maybe<Scalars['String']['output']>>;
   text: Scalars['String']['output'];
   title: Scalars['String']['output'];
-  translations?: Maybe<ReportTranslation>;
+  translations?: Maybe<ReportTranslations>;
   url: Scalars['String']['output'];
   user?: Maybe<User>;
 };
 
 
 export type ReportTranslationsArgs = {
-  input?: InputMaybe<Scalars['String']['input']>;
+  input: Scalars['String']['input'];
 };
 
 export type ReportEmbedding = {
@@ -4434,12 +4600,6 @@ export type ReportSortType = {
   text?: InputMaybe<SortType>;
   title?: InputMaybe<SortType>;
   url?: InputMaybe<SortType>;
-};
-
-export type ReportTranslation = {
-  __typename?: 'ReportTranslation';
-  text?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type ReportTranslations = {
@@ -5755,9 +5915,9 @@ export type User = {
 
 export type UserAdminDatum = {
   __typename?: 'UserAdminDatum';
-  creationDate?: Maybe<Scalars['DateTime']['output']>;
-  disabled?: Maybe<Scalars['Boolean']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
+  creationDate: Scalars['DateTime']['output'];
+  disabled: Scalars['Boolean']['output'];
+  email: Scalars['String']['output'];
   lastAuthenticationDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -5918,6 +6078,43 @@ export type UpdateEntityMutationVariables = Exact<{
 
 export type UpdateEntityMutation = { __typename?: 'Mutation', updateOneEntity?: { __typename?: 'Entity', entity_id: string } | null };
 
+export type UpsertEntityRelationshipMutationVariables = Exact<{
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+  entity: Entity_RelationshipInsertInput;
+}>;
+
+
+export type UpsertEntityRelationshipMutation = { __typename?: 'Mutation', upsertOneEntity_relationship?: { __typename?: 'Entity_relationship', pred: string, sub: { __typename?: 'Entity', entity_id: string }, obj: { __typename?: 'Entity', entity_id: string } } | null };
+
+export type FindEntityRelationshipsQueryVariables = Exact<{
+  query?: InputMaybe<Entity_RelationshipQueryInput>;
+}>;
+
+
+export type FindEntityRelationshipsQuery = { __typename?: 'Query', entity_relationships: Array<{ __typename?: 'Entity_relationship', _id?: any | null, created_at?: any | null, pred: string, is_symmetric?: boolean | null, sub: { __typename?: 'Entity', entity_id: string }, obj: { __typename?: 'Entity', entity_id: string } } | null> };
+
+export type UpdateEntityRelationshipMutationVariables = Exact<{
+  query: Entity_RelationshipQueryInput;
+  set: Entity_RelationshipUpdateInput;
+}>;
+
+
+export type UpdateEntityRelationshipMutation = { __typename?: 'Mutation', updateOneEntity_relationship?: { __typename?: 'Entity_relationship', pred: string, sub: { __typename?: 'Entity', entity_id: string }, obj: { __typename?: 'Entity', entity_id: string } } | null };
+
+export type AddEntityRelationshipMutationVariables = Exact<{
+  entity: Entity_RelationshipInsertInput;
+}>;
+
+
+export type AddEntityRelationshipMutation = { __typename?: 'Mutation', insertOneEntity_relationship?: { __typename?: 'Entity_relationship', pred: string, sub: { __typename?: 'Entity', entity_id: string }, obj: { __typename?: 'Entity', entity_id: string } } | null };
+
+export type DeleteEntityRelationshipMutationVariables = Exact<{
+  query: Entity_RelationshipQueryInput;
+}>;
+
+
+export type DeleteEntityRelationshipMutation = { __typename?: 'Mutation', deleteOneEntity_relationship?: { __typename?: 'Entity_relationship', pred: string, sub: { __typename?: 'Entity', entity_id: string }, obj: { __typename?: 'Entity', entity_id: string } } | null };
+
 export type FindIncidentQueryVariables = Exact<{
   filter?: InputMaybe<IncidentFilterType>;
 }>;
@@ -6043,7 +6240,7 @@ export type FindReportWithTranslationsQueryVariables = Exact<{
 }>;
 
 
-export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations_es?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_en?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_fr?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null, translations_ja?: { __typename?: 'ReportTranslation', title?: string | null, text?: string | null } | null } | null };
+export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations_es?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null, translations_en?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null, translations_fr?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null, translations_ja?: { __typename?: 'ReportTranslations', title?: string | null, text?: string | null } | null } | null };
 
 export type UpdateReportMutationVariables = Exact<{
   filter: ReportFilterType;
@@ -6198,7 +6395,7 @@ export type FindUserQueryVariables = Exact<{
 }>;
 
 
-export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email?: string | null, disabled?: boolean | null, creationDate?: any | null, lastAuthenticationDate?: any | null } | null } | null };
+export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null };
 
 export type FindUsersByRoleQueryVariables = Exact<{
   role?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -6248,7 +6445,7 @@ export type CreateVariantMutationVariables = Exact<{
 }>;
 
 
-export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id?: number | null, report_number?: number | null } | null };
+export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id: number, report_number: number } | null };
 
 export type UpdateVariantMutationVariables = Exact<{
   filter: ReportFilterType;
@@ -6273,6 +6470,11 @@ export const UpsertEntityDocument = {"kind":"Document","definitions":[{"kind":"O
 export const FindEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<FindEntitiesQuery, FindEntitiesQueryVariables>;
 export const FindEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<FindEntityQuery, FindEntityQueryVariables>;
 export const UpdateEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneEntity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]} as unknown as DocumentNode<UpdateEntityMutation, UpdateEntityMutationVariables>;
+export const UpsertEntityRelationshipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertEntityRelationship"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipQueryInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entity"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneEntity_relationship"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"entity"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertEntityRelationshipMutation, UpsertEntityRelationshipMutationVariables>;
+export const FindEntityRelationshipsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntityRelationships"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_relationships"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"is_symmetric"}}]}}]}}]} as unknown as DocumentNode<FindEntityRelationshipsQuery, FindEntityRelationshipsQueryVariables>;
+export const UpdateEntityRelationshipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateEntityRelationship"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipQueryInput"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"set"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipUpdateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneEntity_relationship"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"set"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateEntityRelationshipMutation, UpdateEntityRelationshipMutationVariables>;
+export const AddEntityRelationshipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddEntityRelationship"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entity"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneEntity_relationship"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"entity"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]}}]} as unknown as DocumentNode<AddEntityRelationshipMutation, AddEntityRelationshipMutationVariables>;
+export const DeleteEntityRelationshipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteEntityRelationship"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipQueryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneEntity_relationship"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteEntityRelationshipMutation, DeleteEntityRelationshipMutationVariables>;
 export const FindIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncident"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}}]}}]}}]} as unknown as DocumentNode<FindIncidentQuery, FindIncidentQueryVariables>;
 export const FindIncidentsTableDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentsTable"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentsTableQuery, FindIncidentsTableQueryVariables>;
 export const FindIncidentEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentEntities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentEntitiesQuery, FindIncidentEntitiesQueryVariables>;

@@ -35,8 +35,8 @@ export const FIND_ENTITY_RELATIONSHIPS = gql`
 `;
 
 export const UPDATE_ENTITY_RELATIONSHIP = gql`
-  mutation UpdateEntity(
-    $query: Entity_relationshipQueryInput
+  mutation UpdateEntityRelationship(
+    $query: Entity_relationshipQueryInput!
     $set: Entity_relationshipUpdateInput!
   ) {
     updateOneEntity_relationship(query: $query, set: $set) {
@@ -66,7 +66,7 @@ export const ADD_ENTITY_RELATIONSHIP = gql`
 `;
 
 export const DELETE_ENTITY_RELATIONSHIP = gql`
-  mutation DeleteEntityRelationship($query: Entity_relationshipQueryInput) {
+  mutation DeleteEntityRelationship($query: Entity_relationshipQueryInput!) {
     deleteOneEntity_relationship(query: $query) {
       pred
       sub {
