@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query FindClassifications($filter: ClassificationFilterType) {\n    classifications(filter: $filter) {\n      _id\n      incidents {\n        incident_id\n      }\n      reports {\n        report_number\n      }\n      notes\n      namespace\n      attributes {\n        short_name\n        value_json\n      }\n      publish\n    }\n  }\n": types.FindClassificationsDocument,
     "\n  mutation UpsertClassification(\n    $filter: ClassificationFilterType!\n    $update: ClassificationInsertType!\n  ) {\n    upsertOneClassification(filter: $filter, update: $update) {\n      _id\n      incidents {\n        incident_id\n      }\n      reports {\n        report_number\n      }\n      notes\n      namespace\n      attributes {\n        short_name\n        value_json\n      }\n      publish\n    }\n  }\n": types.UpsertClassificationDocument,
-    "\n  mutation InsertDuplicate($duplicate: DuplicateInsertInput!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n": types.InsertDuplicateDocument,
+    "\n  mutation InsertDuplicate($duplicate: DuplicateInsertType!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n": types.InsertDuplicateDocument,
     "\n  mutation UpsertEntity($filter: EntityFilterType!, $update: EntityInsertType!) {\n    upsertOneEntity(filter: $filter, update: $update) {\n      entity_id\n      name\n    }\n  }\n": types.UpsertEntityDocument,
     "\n  query FindEntities {\n    entities {\n      entity_id\n      name\n    }\n  }\n": types.FindEntitiesDocument,
     "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n    }\n  }\n": types.FindEntityDocument,
@@ -96,7 +96,7 @@ export function gql(source: "\n  mutation UpsertClassification(\n    $filter: Cl
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation InsertDuplicate($duplicate: DuplicateInsertInput!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n"): (typeof documents)["\n  mutation InsertDuplicate($duplicate: DuplicateInsertInput!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n"];
+export function gql(source: "\n  mutation InsertDuplicate($duplicate: DuplicateInsertType!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n"): (typeof documents)["\n  mutation InsertDuplicate($duplicate: DuplicateInsertType!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

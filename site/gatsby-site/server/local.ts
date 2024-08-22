@@ -56,6 +56,12 @@ import {
     permissions as subscriptionsPermissions
 } from './fields/subscriptions';
 
+import {
+    queryFields as duplicatesQueryFields,
+    mutationFields as duplicatesMutationFields,
+    permissions as duplicatesPermissions
+} from './fields/duplicates';
+
 
 export const getSchema = () => {
 
@@ -75,6 +81,7 @@ export const getSchema = () => {
             ...classificationsQueryFields,
             ...taxaQueryFields,
             ...subscriptionsQueryFields,
+            ...duplicatesQueryFields,
         }
     });
 
@@ -89,6 +96,7 @@ export const getSchema = () => {
             ...submissionsMutationFields,
             ...classificationsMutationFields,
             ...subscriptionsMutationFields,
+            ...duplicatesMutationFields,
         }
     });
 
@@ -125,6 +133,7 @@ export const getSchema = () => {
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
                 ...subscriptionsPermissions.Query,
+                ...duplicatesPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -136,6 +145,7 @@ export const getSchema = () => {
                 ...submissionsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
+                ...duplicatesPermissions.Mutation,
             },
         },
         {

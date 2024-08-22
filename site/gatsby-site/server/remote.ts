@@ -89,6 +89,11 @@ const ignoreTypes = [
     'SubscriptionQueryInput',
     'SubscriptionUpdateInput',
     'SubscriptionInsertInput',
+
+    'Duplicate',
+    'DuplicateQueryInput',
+    'DuplicateUpdateInput',
+    'DuplicateInsertInput',
 ];
 
 const ignoredQueries = [
@@ -118,6 +123,9 @@ const ignoredQueries = [
 
     'subscription',
     'subscriptions',
+
+    'duplicate',
+    'duplicates',
 ];
 
 const ignoredMutations = [
@@ -200,6 +208,14 @@ const ignoredMutations = [
     'updateOneSubscription',
     'updateManySubscriptions',
     'upsertOneSubscription',
+
+    'deleteOneDuplicate',
+    'deleteManyDuplicates',
+    'insertOneDuplicate',
+    'insertManyDuplicates',
+    'updateOneDuplicate',
+    'updateManyDuplicates',
+    'upsertOneDuplicate',``
 ]
 
 /**

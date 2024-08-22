@@ -1032,42 +1032,25 @@ export type Duplicate = {
   true_incident_number?: Maybe<Scalars['Int']['output']>;
 };
 
-export type DuplicateInsertInput = {
+export type DuplicateFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<DuplicateFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<DuplicateFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<DuplicateFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  duplicate_incident_number?: InputMaybe<IntFilter>;
+  true_incident_number?: InputMaybe<IntFilter>;
+};
+
+export type DuplicateInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   duplicate_incident_number?: InputMaybe<Scalars['Int']['input']>;
   true_incident_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type DuplicateQueryInput = {
-  AND?: InputMaybe<Array<DuplicateQueryInput>>;
-  OR?: InputMaybe<Array<DuplicateQueryInput>>;
+export type DuplicateSetType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
   duplicate_incident_number?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  duplicate_incident_number_gt?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_gte?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  duplicate_incident_number_lt?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_lte?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_ne?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   true_incident_number?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  true_incident_number_gt?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_gte?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  true_incident_number_lt?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_lte?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_ne?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
 };
 
 export enum DuplicateSortByInput {
@@ -1079,15 +1062,14 @@ export enum DuplicateSortByInput {
   IdDesc = '_ID_DESC'
 }
 
-export type DuplicateUpdateInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  duplicate_incident_number?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_inc?: InputMaybe<Scalars['Int']['input']>;
-  duplicate_incident_number_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  true_incident_number?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_inc?: InputMaybe<Scalars['Int']['input']>;
-  true_incident_number_unset?: InputMaybe<Scalars['Boolean']['input']>;
+export type DuplicateSortType = {
+  _id?: InputMaybe<SortType>;
+  duplicate_incident_number?: InputMaybe<SortType>;
+  true_incident_number?: InputMaybe<SortType>;
+};
+
+export type DuplicateUpdateType = {
+  set?: InputMaybe<DuplicateSetType>;
 };
 
 export type Embedding = {
@@ -2613,7 +2595,6 @@ export type Mutation = {
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
   replaceOneCandidate?: Maybe<Candidate>;
   replaceOneChecklist?: Maybe<Checklist>;
-  replaceOneDuplicate?: Maybe<Duplicate>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
   replaceOneHistory_report?: Maybe<History_Report>;
   replaceOneNotification?: Maybe<Notification>;
@@ -2673,7 +2654,9 @@ export type MutationDeleteManyChecklistsArgs = {
 
 
 export type MutationDeleteManyDuplicatesArgs = {
-  query?: InputMaybe<DuplicateQueryInput>;
+  filter?: InputMaybe<DuplicateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<DuplicateSortType>;
 };
 
 
@@ -2717,7 +2700,9 @@ export type MutationDeleteOneChecklistArgs = {
 
 
 export type MutationDeleteOneDuplicateArgs = {
-  query: DuplicateQueryInput;
+  filter?: InputMaybe<DuplicateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<DuplicateSortType>;
 };
 
 
@@ -2785,7 +2770,7 @@ export type MutationInsertManyChecklistsArgs = {
 
 
 export type MutationInsertManyDuplicatesArgs = {
-  data: Array<DuplicateInsertInput>;
+  data: Array<InputMaybe<DuplicateInsertType>>;
 };
 
 
@@ -2820,7 +2805,7 @@ export type MutationInsertOneChecklistArgs = {
 
 
 export type MutationInsertOneDuplicateArgs = {
-  data: DuplicateInsertInput;
+  data: DuplicateInsertType;
 };
 
 
@@ -2891,12 +2876,6 @@ export type MutationReplaceOneChecklistArgs = {
 };
 
 
-export type MutationReplaceOneDuplicateArgs = {
-  data: DuplicateInsertInput;
-  query?: InputMaybe<DuplicateQueryInput>;
-};
-
-
 export type MutationReplaceOneHistory_IncidentArgs = {
   data: History_IncidentInsertInput;
   query?: InputMaybe<History_IncidentQueryInput>;
@@ -2928,8 +2907,8 @@ export type MutationUpdateManyChecklistsArgs = {
 
 
 export type MutationUpdateManyDuplicatesArgs = {
-  query?: InputMaybe<DuplicateQueryInput>;
-  set: DuplicateUpdateInput;
+  filter: DuplicateFilterType;
+  update: DuplicateUpdateType;
 };
 
 
@@ -2976,8 +2955,8 @@ export type MutationUpdateOneChecklistArgs = {
 
 
 export type MutationUpdateOneDuplicateArgs = {
-  query?: InputMaybe<DuplicateQueryInput>;
-  set: DuplicateUpdateInput;
+  filter: DuplicateFilterType;
+  update: DuplicateUpdateType;
 };
 
 
@@ -3065,8 +3044,8 @@ export type MutationUpsertOneClassificationArgs = {
 
 
 export type MutationUpsertOneDuplicateArgs = {
-  data: DuplicateInsertInput;
-  query?: InputMaybe<DuplicateQueryInput>;
+  filter: DuplicateFilterType;
+  update: DuplicateInsertType;
 };
 
 
@@ -3300,7 +3279,7 @@ export type Query = {
   classification?: Maybe<Classification>;
   classifications?: Maybe<Array<Maybe<Classification>>>;
   duplicate?: Maybe<Duplicate>;
-  duplicates: Array<Maybe<Duplicate>>;
+  duplicates?: Maybe<Array<Maybe<Duplicate>>>;
   entities?: Maybe<Array<Maybe<Entity>>>;
   entity?: Maybe<Entity>;
   history_incident?: Maybe<History_Incident>;
@@ -3366,14 +3345,16 @@ export type QueryClassificationsArgs = {
 
 
 export type QueryDuplicateArgs = {
-  query?: InputMaybe<DuplicateQueryInput>;
+  filter?: InputMaybe<DuplicateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<DuplicateSortType>;
 };
 
 
 export type QueryDuplicatesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<DuplicateQueryInput>;
-  sortBy?: InputMaybe<DuplicateSortByInput>;
+  filter?: InputMaybe<DuplicateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<DuplicateSortType>;
 };
 
 
@@ -5065,7 +5046,7 @@ export type UpsertClassificationMutationVariables = Exact<{
 export type UpsertClassificationMutation = { __typename?: 'Mutation', upsertOneClassification?: { __typename?: 'Classification', _id?: any | null, notes?: string | null, namespace: string, publish?: boolean | null, incidents?: Array<{ __typename?: 'Incident', incident_id: number } | null> | null, reports?: Array<{ __typename?: 'Report', report_number: number } | null> | null, attributes?: Array<{ __typename?: 'Attribute', short_name?: string | null, value_json?: string | null } | null> | null } | null };
 
 export type InsertDuplicateMutationVariables = Exact<{
-  duplicate: DuplicateInsertInput;
+  duplicate: DuplicateInsertType;
 }>;
 
 
@@ -5449,7 +5430,7 @@ export type DeleteOneVariantMutation = { __typename?: 'Mutation', deleteOneRepor
 
 export const FindClassificationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindClassifications"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"classifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"namespace"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short_name"}},{"kind":"Field","name":{"kind":"Name","value":"value_json"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish"}}]}}]}}]} as unknown as DocumentNode<FindClassificationsQuery, FindClassificationsQueryVariables>;
 export const UpsertClassificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertClassification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneClassification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"namespace"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short_name"}},{"kind":"Field","name":{"kind":"Name","value":"value_json"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish"}}]}}]}}]} as unknown as DocumentNode<UpsertClassificationMutation, UpsertClassificationMutationVariables>;
-export const InsertDuplicateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertDuplicate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DuplicateInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneDuplicate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"duplicate_incident_number"}},{"kind":"Field","name":{"kind":"Name","value":"true_incident_number"}}]}}]}}]} as unknown as DocumentNode<InsertDuplicateMutation, InsertDuplicateMutationVariables>;
+export const InsertDuplicateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertDuplicate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DuplicateInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneDuplicate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"duplicate_incident_number"}},{"kind":"Field","name":{"kind":"Name","value":"true_incident_number"}}]}}]}}]} as unknown as DocumentNode<InsertDuplicateMutation, InsertDuplicateMutationVariables>;
 export const UpsertEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneEntity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<UpsertEntityMutation, UpsertEntityMutationVariables>;
 export const FindEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<FindEntitiesQuery, FindEntitiesQueryVariables>;
 export const FindEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<FindEntityQuery, FindEntityQueryVariables>;
