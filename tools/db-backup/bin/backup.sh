@@ -50,9 +50,7 @@ if [ -z "${CLOUDFLARE_R2_BUCKET_NAME}" ]; then
 fi
 
 echo "Dump MongoDB 'aiidprod' database..."
-mongodump -o ${TARGET} --uri=${MONGODB_URI}/${MONGODB_DBNAME} --excludeCollection=classifications
-echo "Dump filtered 'classifications' collection..."
-mongodump -o ${TARGET} --uri=${MONGODB_URI}/${MONGODB_DBNAME} --collection=classifications --query='{ "publish": true }'
+mongodump -o ${TARGET} --uri=${MONGODB_URI}/${MONGODB_DBNAME}
 
 echo "Dump MongoDB 'translations' database..."
 mongodump -o ${TARGET} --uri=${MONGODB_URI}/${MONGODB_DBNAME_TRANSLATIONS}
