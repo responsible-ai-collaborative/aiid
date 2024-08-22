@@ -76,7 +76,7 @@ head -n 1 classifications_cset_headers.csv >tmp_header.csv
 cat tmp.csv tmp_header.csv >header.csv
 
 # Concat the header and the values to the output
-cat header.csv classifications_cset_values.csv >${TARGET}/classifications.csv
+cat header.csv classifications_cset_values.csv >${TARGET}/classifications_cset.csv
 
 # Cleanup
 rm tmp.csv
