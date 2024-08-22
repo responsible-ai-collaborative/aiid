@@ -1,9 +1,5 @@
-import { waitForRequest, query, mockDate, test, conditionalIntercept } from '../utils';
-import upsertDuplicateClassification from '../fixtures/classifications/upsertDuplicateClassification.json';
-import updateIncident50 from '../fixtures/incidents/updateIncident50.json';
+import { waitForRequest, query, mockDate, test, conditionalIntercept, fillAutoComplete } from '../utils';
 import { format } from 'date-fns';
-import incident10 from '../fixtures/incidents/fullIncident10.json';
-import incident50 from '../fixtures/incidents/fullIncident50.json';
 import { gql } from '@apollo/client';
 import { expect } from '@playwright/test';
 import config from '../config';
@@ -163,71 +159,51 @@ test.describe('Cite pages', () => {
         expect(data.report.flag).toBe(true);
     });
 
-    test.skip('Should remove duplicate', async ({ page }) => {
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'UpsertClassification',
-            upsertDuplicateClassification,
-            'upsertClassification'
-        );
+    test('Should remove duplicate', async ({ page, login }) => {
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'UpdateIncident',
-            updateIncident50,
-            'updateIncident'
-        );
+        test.slow();
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'InsertDuplicate',
-            {
-                data: {
-                    insertOneDuplicate: {
-                        __typename: 'Duplicate',
-                        duplicate_incident_number: 10,
-                        true_incident_number: 50,
-                    },
-                },
-            },
-            'insertDuplicate'
-        );
+        await init();
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName === 'FindIncident' &&
-                req.postDataJSON().variables.query.incident_id === 10,
-            incident10,
-            'findIncident'
-        );
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName === 'FindIncident' &&
-                req.postDataJSON().variables.query.incident_id === 50,
-            incident50,
-            'findIncident'
-        );
-
-        await login(page, config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-
-        await page.goto('/cite/10');
+        await page.goto('/cite/3');
 
         await page.click('[data-cy="remove-duplicate"]');
 
-        await page.fill('#input-duplicateIncidentId', '50');
-        await page.click('#duplicateIncidentId > a[aria-label="50"]');
+        await fillAutoComplete(page, '#input-duplicateIncidentId', '2 incident', 'Incident 2');
 
         await page.click('[data-cy="confirm-remove-duplicate"]');
 
-        await expect(page.locator('text=Incident 10 marked as duplicate')).toBeVisible();
+        await expect(page.locator('text=Incident 3 marked as duplicate')).toBeVisible({ timeout: 30000 });
+
+        const { data } = await query({
+            query: gql`
+            {
+                duplicates(filter: { duplicate_incident_number: { EQ: 3 } }) {
+                    true_incident_number
+                }
+                incident_classifications_3: classifications(filter: { incidents: { EQ: 3 } }) {
+                    namespace
+                    notes
+                    incidents { 
+                        incident_id 
+                    }
+                }
+                incident_classifications_2: classifications(filter: { incidents: { EQ: 2 } }) {
+                    namespace
+                    notes
+                    incidents { 
+                        incident_id 
+                    }
+                }
+            }
+            `,
+        });
+
+        expect(data.duplicates).toEqual([{ true_incident_number: 2 }]);
+        expect(data.incident_classifications_3).toHaveLength(0);
+        expect(data.incident_classifications_2).toHaveLength(3);
     });
 
     test('Should pre-fill submit report form', async ({ page }) => {
@@ -258,14 +234,17 @@ test.describe('Cite pages', () => {
         await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/1');
     });
 
-    test.skip('Should render Next and Previous incident buttons if duplicate incident', async ({ page }) => {
-        await page.goto('/cite/90');
+    test('Should render duplicate page', async ({ page }) => {
+        await page.goto('/cite/5');
+
+        await expect(page.getByText('This incident is a duplicate of Incident 3. All new reports and citations should be directed to incident 3. The reports previously found on this page have been migrated to the previously existing incident.')).toBeVisible();
 
         await expect(page.locator('a:has-text("Next Incident")')).toBeVisible();
-        await expect(page.locator('a:has-text("Next Incident")')).toHaveAttribute('href', '/cite/91');
+        await expect(page.locator('a:has-text("Next Incident")')).toHaveAttribute('disabled');
+
 
         await expect(page.locator('a:has-text("Previous Incident")')).toBeVisible();
-        await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/89');
+        await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/3');
     });
 
     test('Should render the header next/previous buttons', async ({ page }) => {
