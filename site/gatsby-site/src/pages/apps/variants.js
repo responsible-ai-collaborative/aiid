@@ -7,9 +7,9 @@ import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
-import { getVariantStatus, isCompleteReport } from '../../utils/variants';
+import { getVariantStatus } from '../../utils/variants';
 
-export default function IncidentsPage(props) {
+export default function VariantsPage(props) {
   const { data: variantsData, refetch } = useQuery(FIND_VARIANTS);
 
   const [data, setData] = useState(null);
@@ -20,7 +20,7 @@ export default function IncidentsPage(props) {
 
   useEffect(() => {
     if (variantsData && variantsData.reports) {
-      const variants = variantsData.reports.filter((report) => !isCompleteReport(report));
+      const variants = variantsData.reports;
 
       if (variants.length > 0) {
         const fullData = [];
@@ -29,10 +29,10 @@ export default function IncidentsPage(props) {
           .query({
             query: FIND_INCIDENTS,
             variables: {
-              query: {
-                reports_in: variants.map((report) => ({
-                  report_number: report.report_number,
-                })),
+              filter: {
+                reports: {
+                  IN: variants.map((report) => report.report_number),
+                },
               },
             },
           })
