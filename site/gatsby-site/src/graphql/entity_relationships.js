@@ -1,25 +1,8 @@
-import gql from 'graphql-tag';
-
-export const UPSERT_ENTITY_RELATHIONSHIP = gql`
-  mutation UpsertEntityRelationship(
-    $query: Entity_relationshipQueryInput
-    $entity: Entity_relationshipInsertInput!
-  ) {
-    upsertOneEntity_relationship(query: $query, data: $entity) {
-      pred
-      sub {
-        entity_id
-      }
-      obj {
-        entity_id
-      }
-    }
-  }
-`;
+import { gql } from '../../server/generated';
 
 export const FIND_ENTITY_RELATIONSHIPS = gql`
-  query FindEntityRelationships($query: Entity_relationshipQueryInput) {
-    entity_relationships(query: $query) {
+  query FindEntity_relationships($filter: Entity_relationshipFilterType) {
+    entity_relationships(filter: $filter) {
       _id
       created_at
       pred
@@ -35,11 +18,11 @@ export const FIND_ENTITY_RELATIONSHIPS = gql`
 `;
 
 export const UPDATE_ENTITY_RELATIONSHIP = gql`
-  mutation UpdateEntityRelationship(
-    $query: Entity_relationshipQueryInput!
-    $set: Entity_relationshipUpdateInput!
+  mutation UpdateEntity_relationship(
+    $filter: Entity_relationshipFilterType!
+    $update: Entity_relationshipUpdateType!
   ) {
-    updateOneEntity_relationship(query: $query, set: $set) {
+    updateOneEntity_relationship(filter: $filter, update: $update) {
       pred
       sub {
         entity_id
@@ -51,9 +34,9 @@ export const UPDATE_ENTITY_RELATIONSHIP = gql`
   }
 `;
 
-export const ADD_ENTITY_RELATIONSHIP = gql`
-  mutation AddEntityRelationship($entity: Entity_relationshipInsertInput!) {
-    insertOneEntity_relationship(data: $entity) {
+export const UPSERT_ENTITY_RELATIONSHIP = gql(`
+  mutation UpsertEntity_relationship($filter: Entity_relationshipFilterType!, $update: Entity_relationshipInsertType!) {
+    upsertOneEntity_relationship(filter: $filter, update: $update) {
       pred
       sub {
         entity_id
@@ -63,11 +46,11 @@ export const ADD_ENTITY_RELATIONSHIP = gql`
       }
     }
   }
-`;
+`);
 
 export const DELETE_ENTITY_RELATIONSHIP = gql`
-  mutation DeleteEntityRelationship($query: Entity_relationshipQueryInput!) {
-    deleteOneEntity_relationship(query: $query) {
+  mutation DeleteEntity_relationship($filter: Entity_relationshipFilterType) {
+    deleteOneEntity_relationship(filter: $filter) {
       pred
       sub {
         entity_id

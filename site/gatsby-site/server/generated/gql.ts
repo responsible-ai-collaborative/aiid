@@ -18,7 +18,7 @@ const documents = {
     "\n  mutation InsertDuplicate($duplicate: DuplicateInsertInput!) {\n    insertOneDuplicate(data: $duplicate) {\n      duplicate_incident_number\n      true_incident_number\n    }\n  }\n": types.InsertDuplicateDocument,
     "\n  mutation UpsertEntity($filter: EntityFilterType!, $update: EntityInsertType!) {\n    upsertOneEntity(filter: $filter, update: $update) {\n      entity_id\n      name\n    }\n  }\n": types.UpsertEntityDocument,
     "\n  query FindEntities {\n    entities {\n      entity_id\n      name\n    }\n  }\n": types.FindEntitiesDocument,
-    "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n    }\n  }\n": types.FindEntityDocument,
+    "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n      date_modified\n    }\n  }\n": types.FindEntityDocument,
     "\n  mutation UpdateEntity($filter: EntityFilterType!, $update: EntityUpdateType!) {\n    updateOneEntity(filter: $filter, update: $update) {\n      entity_id\n    }\n  }\n": types.UpdateEntityDocument,
     "\n  mutation UpsertEntityRelationship(\n    $query: Entity_relationshipQueryInput\n    $entity: Entity_relationshipInsertInput!\n  ) {\n    upsertOneEntity_relationship(query: $query, data: $entity) {\n      pred\n      sub {\n        entity_id\n      }\n      obj {\n        entity_id\n      }\n    }\n  }\n": types.UpsertEntityRelationshipDocument,
     "\n  query FindEntityRelationships($query: Entity_relationshipQueryInput) {\n    entity_relationships(query: $query) {\n      _id\n      created_at\n      pred\n      sub {\n        entity_id\n      }\n      obj {\n        entity_id\n      }\n      is_symmetric\n    }\n  }\n": types.FindEntityRelationshipsDocument,
@@ -113,7 +113,7 @@ export function gql(source: "\n  query FindEntities {\n    entities {\n      ent
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n    }\n  }\n"): (typeof documents)["\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n    }\n  }\n"];
+export function gql(source: "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n      date_modified\n    }\n  }\n"): (typeof documents)["\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n      date_modified\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

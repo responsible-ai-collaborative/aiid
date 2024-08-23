@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Label from '../../components/forms/Label';
 import {
-  ADD_ENTITY_RELATIONSHIP,
+  UPSERT_ENTITY_RELATIONSHIP,
   DELETE_ENTITY_RELATIONSHIP,
   FIND_ENTITY_RELATIONSHIPS,
 } from '../../graphql/entity_relationships';
@@ -50,7 +50,7 @@ function EditEntityPage(props) {
 
   const [updateEntityMutation] = useMutation(UPDATE_ENTITY);
 
-  const [addRelationshipMutation] = useMutation(ADD_ENTITY_RELATIONSHIP);
+  const [addRelationshipMutation] = useMutation(UPSERT_ENTITY_RELATIONSHIP);
 
   const [removeRelationshipMutation] = useMutation(DELETE_ENTITY_RELATIONSHIP);
 
@@ -71,7 +71,7 @@ function EditEntityPage(props) {
 
   useEffect(() => {
     if (!loadingEntities && entitiesData?.entities) {
-      const entitiesOptions = entitiesData.entities.map((entity) => {
+      let entitiesOptions = entitiesData.entities.map((entity) => {
         return {
           id: entity.entity_id,
           label: entity.name,
@@ -102,7 +102,7 @@ function EditEntityPage(props) {
       setEntityRelationships(options);
       setUpdatedEntityRelationships(options);
 
-      entitiesOptions.filter((entity) => !options.find((option) => option.id === entity.id));
+      entitiesOptions = entitiesOptions.filter((entity) => entity.id !== entityId);
       setEntities(entitiesOptions);
     }
   }, [loadingEntities, entitiesData, entityRelationshipsData, loadingEntityRelationships]);
@@ -127,7 +127,7 @@ function EditEntityPage(props) {
           update: {
             set: {
               name: values.name,
-              date_modified: new Date(),
+              date_modified: new Date().toISOString(),
             },
           },
         },

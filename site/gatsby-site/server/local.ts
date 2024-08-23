@@ -34,10 +34,16 @@ import {
 } from './fields/incidents';
 
 import {
-    queryFields as submissionsQueryFields,
-    mutationFields as submissionsMutationFields,
-    permissions as submissionsPermissions
+  queryFields as submissionsQueryFields,
+  mutationFields as submissionsMutationFields,
+  permissions as submissionsPermissions
 } from './fields/submissions';
+
+import {
+  queryFields as entity_relationshipsQueryFields,
+  mutationFields as entity_relationshipsMutationFields,
+  permissions as entity_relationshipsPermissions
+} from './fields/entity_relationships';
 
 
 export const getSchema = () => {
@@ -55,6 +61,7 @@ export const getSchema = () => {
             ...entitiesQueryFields,
             ...usersQueryFields,
             ...submissionsQueryFields,
+            ...entity_relationshipsQueryFields,
         }
     });
 
@@ -67,6 +74,7 @@ export const getSchema = () => {
             ...entitiesMutationFields,
             ...usersMutationFields,
             ...submissionsMutationFields,
+            ...entity_relationshipsMutationFields
         }
     });
 
@@ -100,6 +108,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Query,
                 ...usersPermissions.Query,
                 ...submissionsPermissions.Query,
+                ...entity_relationshipsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -109,6 +118,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Mutation,
                 ...usersPermissions.Mutation,
                 ...submissionsPermissions.Mutation,
+                ...entity_relationshipsPermissions.Mutation,
             },
         },
         {
