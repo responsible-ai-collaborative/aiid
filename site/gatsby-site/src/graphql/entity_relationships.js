@@ -49,7 +49,7 @@ export const UPSERT_ENTITY_RELATIONSHIP = gql(`
 `);
 
 export const DELETE_ENTITY_RELATIONSHIP = gql`
-  mutation DeleteEntity_relationship($filter: Entity_relationshipFilterType) {
+  mutation DeleteEntity_relationship($filter: Entity_relationshipFilterType!) {
     deleteOneEntity_relationship(filter: $filter) {
       pred
       sub {

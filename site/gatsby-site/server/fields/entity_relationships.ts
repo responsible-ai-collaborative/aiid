@@ -7,23 +7,22 @@ import { Entity_relationshipType } from "../types/entity_relationship";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateQueryFields({ collectionName: 'entitiy_relationships', Type: Entity_relationshipType })
+    ...generateQueryFields({ collectionName: 'entity_relationships', Type: Entity_relationshipType })
 }
 
 
 export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateMutationFields({ collectionName: 'entity_relationships', Type: Entity_relationshipType, generateFields: ['insertOne', 'updateOne', 'upsertOne'] }),
+    ...generateMutationFields({ collectionName: 'entity_relationships', Type: Entity_relationshipType, generateFields: ['updateOne', 'upsertOne', 'deleteOne'] }),
 }
 
 export const permissions = {
     Query: {
-        entity_relationship: allow,
         entity_relationships: allow,
     },
     Mutation: {
-        insertOneEntity_relationship: allow,
         updateOneEntity_relationship: allow,
         upsertOneEntity_relationship: allow,
+        deleteOneEntity_relationship: allow,
     }
 }
