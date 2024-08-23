@@ -8,9 +8,11 @@ export const FIND_ENTITY_RELATIONSHIPS = gql`
       pred
       sub {
         entity_id
+        name
       }
       obj {
         entity_id
+        name
       }
       is_symmetric
     }
@@ -26,9 +28,11 @@ export const UPDATE_ENTITY_RELATIONSHIP = gql`
       pred
       sub {
         entity_id
+        name
       }
       obj {
         entity_id
+        name
       }
     }
   }
@@ -40,9 +44,11 @@ export const UPSERT_ENTITY_RELATIONSHIP = gql(`
       pred
       sub {
         entity_id
+        name
       }
       obj {
         entity_id
+        name
       }
     }
   }
@@ -54,9 +60,11 @@ export const DELETE_ENTITY_RELATIONSHIP = gql`
       pred
       sub {
         entity_id
+        name
       }
       obj {
         entity_id
+        name
       }
     }
   }
