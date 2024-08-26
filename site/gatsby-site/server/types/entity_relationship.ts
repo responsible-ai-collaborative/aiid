@@ -15,3 +15,8 @@ export const Entity_relationshipType = new GraphQLObjectType({
     created_at: { type: GraphQLDateTime },
   },
 });
+
+//@ts-ignore
+Entity_relationshipType.getFields().obj.dependencies = ['obj']
+//@ts-ignore
+Entity_relationshipType.getFields().sub.dependencies = ['sub']

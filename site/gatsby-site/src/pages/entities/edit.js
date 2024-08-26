@@ -60,11 +60,8 @@ function EditEntityPage(props) {
     loading: loadingEntityRelationships,
   } = useQuery(FIND_ENTITY_RELATIONSHIPS, {
     variables: {
-      query: {
-        OR: [
-          { sub: { entity_id: entityId } },
-          { obj: { entity_id: entityId }, is_symmetric: true },
-        ],
+      filter: {
+        OR: [{ sub: { EQ: entityId } }, { obj: { EQ: entityId }, is_symmetric: { EQ: true } }],
       },
     },
   });
@@ -146,7 +143,11 @@ function EditEntityPage(props) {
       for (const rel of relationshipsToAdd) {
         await addRelationshipMutation({
           variables: {
-            entity: {
+            filter: {
+              sub: { EQ: entityId },
+              obj: { EQ: rel.id },
+            },
+            update: {
               sub: { link: entityId },
               obj: { link: rel.id },
               is_symmetric: true,
@@ -160,9 +161,9 @@ function EditEntityPage(props) {
       for (const rel of relationshipsToRemove) {
         await removeRelationshipMutation({
           variables: {
-            query: {
-              sub: { entity_id: entityId },
-              obj: { entity_id: rel.id },
+            filter: {
+              sub: { EQ: entityId },
+              obj: { EQ: rel.id },
             },
           },
         });
@@ -261,21 +262,24 @@ function EditEntityPage(props) {
                       disabled={true}
                     />
 
-                    <Label label={t('Entity Relationships')} />
+                    <Label label={t('Entity Relationships', { ns: 'entities' })} />
                     <Typeahead
                       className={`Typeahead`}
                       onKeyDown={(e) => {
                         if (e.key === ',') {
                           e.preventDefault();
                         }
-                        // if (['Enter', ','].includes(e.key) && e.target.value) {
-                        // }
                       }}
                       multiple
                       onChange={(selected) => setUpdatedEntityRelationships(selected)}
                       options={entities}
                       selected={updatedEntityRelationships}
-                      placeholder={t('Add or remove relationships to other entities')}
+                      placeholder={
+                        loadingEntityRelationships
+                          ? t('Loading related entities...', { ns: 'entities' })
+                          : t('Add or remove relationships to other entities', { ns: 'entities' })
+                      }
+                      loading={loadingEntityRelationships}
                     />
                   </div>
                 </Form>
