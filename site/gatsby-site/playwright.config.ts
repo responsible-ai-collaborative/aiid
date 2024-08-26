@@ -22,7 +22,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 3 : 0,
-  /* Opt out of parallel tests on CI. */
+  // TODO: We can handle only one worker because tests share the same database and many tests are resetting the database.
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? [['blob'], ['line', { printSteps: true }]] : 'html',
