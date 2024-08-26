@@ -201,6 +201,13 @@ export const UserContextProvider = ({ children }) => {
         user,
         isLoggedIn: user && user.isLoggedIn,
         isRole(role) {
+          // This is to allow mocking custom data for testing purposes, (only affects client side features)
+          if (typeof window !== 'undefined' && window.localStorage.getItem('__CUSTOM_DATA_MOCK')) {
+            const customData = JSON.parse(window.localStorage.getItem('__CUSTOM_DATA_MOCK'));
+
+            return customData.roles.includes('admin') || customData.roles.includes(role);
+          }
+
           return (
             user &&
             user.isLoggedIn &&

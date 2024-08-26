@@ -7,6 +7,8 @@ import reports from './seeds/aiidprod/reports';
 import submissions from './seeds/aiidprod/submissions';
 import entities from './seeds/aiidprod/entities';
 import reports_es from './seeds/translations/reports_es';
+import classifications from './seeds/aiidprod/classifications';
+import taxa from './seeds/aiidprod/taxa';
 
 import users from './seeds/customData/users';
 
@@ -19,6 +21,8 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             reports,
             submissions,
             entities,
+            classifications,
+            taxa,
         },
         customData: {
             users,
@@ -33,7 +37,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         await seedFixture(extra, drop);
     }
 
-    console.log('Data seeded successfully');
+    console.log('Memory Mongo initialized');
 }
 
 export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: Record<string, unknown>[], drop?: boolean }) => {
@@ -67,6 +71,24 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
 
             await seedCollection({ database, name, docs, drop });
         }
+    }
+}
+
+export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
+
+    assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), 'Seeding is only allowed on localhost');
+
+    const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
+
+    await client.connect();
+
+    try {
+
+        await fn(client);
+    }
+    finally {
+
+        await client.close();
     }
 }
 

@@ -5,6 +5,7 @@ import config from './config';
 import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
+import * as memoryMongo from './memory-mongo';
 
 declare module '@playwright/test' {
     interface Request {
@@ -17,7 +18,7 @@ export type Options = { defaultItem: string };
 type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<string>,
+    login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string>,
 };
 
 const getUserIdFromLocalStorage = async (page: Page) => {
@@ -53,15 +54,34 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
+        // TODO: this should be removed since we pass the username and password as arguments
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async (email, password) => {
+        await use(async (email, password, { customData } = {}) => {
 
             await page.context().clearCookies();
 
             await loginSteps(page, email, password);
 
             const userId = await getUserIdFromLocalStorage(page);
+
+            if (customData) {
+
+                await page.evaluate(({ customData }) => {
+
+                    localStorage.setItem('__CUSTOM_DATA_MOCK', JSON.stringify(customData));
+
+                }, { customData });
+
+                // upsert user with custom data
+                await memoryMongo.execute(async (client) => {
+
+                    const db = client.db('customData');
+                    const collection = db.collection('users');
+
+                    await collection.updateOne({ userId }, { $set: customData }, { upsert: true });
+                });
+            }
 
             return userId!;
 

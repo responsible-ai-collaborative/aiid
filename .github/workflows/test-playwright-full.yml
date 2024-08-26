@@ -115,13 +115,17 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Run playwright tests
-        run: npx playwright test playwright/e2e-full/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npm run test:e2e:ci
         working-directory: site/gatsby-site
         env:
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
           MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          SHARD_INDEX: ${{ matrix.shardIndex }}
+          SHARD_TOTAL: ${{ matrix.shardTotal }}
+          TEST_FOLDER: playwright/e2e-full/
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
