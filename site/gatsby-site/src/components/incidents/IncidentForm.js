@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
 import RelatedIncidentsArea from '../RelatedIncidentsArea';
 import { gql, useQuery } from '@apollo/client';
-import { debounce } from 'debounce';
 import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { useTranslation } from 'react-i18next';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
+import IncidentsField from './IncidentsField';
+import { Spinner } from 'flowbite-react';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($filter: IncidentFilterType) {
@@ -53,33 +54,6 @@ function IncidentForm() {
     notifyOnNetworkStatusChange: true,
   });
 
-  const selectedSimilarId = useRef(null);
-
-  const similarIdUpdate = useRef(
-    debounce((event) => {
-      const incident_id = Number(event.target.value);
-
-      selectedSimilarId.current = incident_id;
-
-      similarReportsByIdQuery.refetch({
-        filter: {
-          incident_id: { IN: [incident_id] },
-        },
-      });
-    })
-  ).current;
-
-  const similarIncidentsById =
-    similarReportsByIdQuery.loading ||
-    similarReportsByIdQuery.error ||
-    similarReportsByIdQuery.data.incidents.length == 0 ||
-    selectedSimilarId == null
-      ? []
-      : similarReportsByIdQuery.data.incidents.map((incident) => ({
-          incident_id: selectedSimilarId.current,
-          ...incident,
-        }));
-
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
       filter: {
@@ -92,6 +66,31 @@ function IncidentForm() {
   });
 
   const [editorSimilarIncidents, setEditorSimilarIncidents] = useState([]);
+
+  const [similarIncidentsById, setSimilarIncidentsById] = useState([]);
+
+  useEffect(() => {
+    let similarIncidentsById = [];
+
+    if (
+      !similarReportsByIdQuery.loading &&
+      !similarReportsByIdQuery.error &&
+      similarReportsByIdQuery.data?.incidents?.length > 0
+    ) {
+      similarIncidentsById = similarReportsByIdQuery.data.incidents.map((incident) => ({
+        ...incident,
+      }));
+
+      similarIncidentsById = similarIncidentsById.filter(
+        (incident) =>
+          !editorSimilarIncidents.some(
+            (editorIncident) => editorIncident.incident_id === incident.incident_id
+          )
+      );
+      setFieldValue('incidentSearch', []);
+    }
+    setSimilarIncidentsById(similarIncidentsById);
+  }, [similarReportsByIdQuery.loading, similarReportsByIdQuery.data, editorSimilarIncidents]);
 
   useEffect(() => {
     if (
@@ -112,6 +111,16 @@ function IncidentForm() {
   useEffect(() => {
     window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
   }, []);
+
+  useEffect(() => {
+    if (values.incidentSearch?.length > 0) {
+      similarReportsByIdQuery.refetch({
+        filter: {
+          incident_id: { IN: [values.incidentSearch[0]] },
+        },
+      });
+    }
+  }, [values.incidentSearch]);
 
   return (
     <div>
@@ -234,14 +243,43 @@ function IncidentForm() {
 
         <div id="similar-incidents">
           <Label label={t(`Manually-selected similar and dissimilar incidents`)} />
+
+          <div className="border rounded-lg px-2 py-4 mt-4">
+            <IncidentsField
+              name="incidentSearch"
+              multiple={false}
+              placeHolder={t(`Search similar/dissimilar Incident Id`)}
+            />
+
+            {similarReportsByIdQuery.loading && <Spinner size={'sm'} className="mt-2 ml-1" />}
+            {similarIncidentsById.length > 0 && (
+              <RelatedIncidentsArea
+                columnKey={'byId'}
+                header={similarIncidentsById.length > 0 ? 'Incidents search results' : ''}
+                incidents={similarIncidentsById}
+                loading={similarReportsByIdQuery.loading}
+                setFieldValue={setFieldValue}
+                editId={false}
+                error={false}
+                notFoundText={
+                  'No similar incidents found. Please enter an incident ID above to perform the search.'
+                }
+              />
+            )}
+          </div>
           <RelatedIncidentsArea
+            header={
+              editorSimilarIncidents.length > 0 ? t('Assigned similar/dissimilar incidents') : ''
+            }
             columnKey={'editor_similar_incidents'}
             incidents={editorSimilarIncidents}
             loading={editorSimilarIncidentReportsQuery.loading}
             setFieldValue={setFieldValue}
             editId={false}
             error={false}
-            notFoundText={'No similar/dissimilar incidents assigned to this incident.'}
+            notFoundText={
+              'No similar/dissimilar incidents assigned to this incident. Use the search above to assign similar incidents.'
+            }
           />
 
           <SemanticallyRelatedIncidents
@@ -249,36 +287,6 @@ function IncidentForm() {
             setFieldValue={setFieldValue}
             editId={false}
           />
-
-          <div className="border rounded px-2 pb-4 mt-4">
-            <div className="mt-4">
-              <Label
-                label={t(`Search similar/dissimilar Incident Id`)}
-                popover="similarIncidentSearch"
-              />
-              <input
-                type="number"
-                data-cy="similar-id-input"
-                onChange={similarIdUpdate}
-                className={
-                  'mt-2 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white'
-                }
-              />
-            </div>
-
-            <RelatedIncidentsArea
-              columnKey={'byId'}
-              header={similarIncidentsById.length > 0 ? 'Incidents search results' : ''}
-              incidents={similarIncidentsById}
-              loading={similarReportsByIdQuery.loading}
-              setFieldValue={setFieldValue}
-              editId={false}
-              error={false}
-              notFoundText={
-                'No similar incidents found. Please enter an incident ID above to perform the search.'
-              }
-            />
-          </div>
         </div>
       </FormikForm>
     </div>
