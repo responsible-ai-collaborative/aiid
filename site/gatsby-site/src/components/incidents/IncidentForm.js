@@ -246,6 +246,7 @@ function IncidentForm() {
 
           <div className="border rounded-lg px-2 py-4 mt-4">
             <IncidentsField
+              id="incidentSearch"
               name="incidentSearch"
               multiple={false}
               placeHolder={t(`Search similar/dissimilar Incident Id`)}
