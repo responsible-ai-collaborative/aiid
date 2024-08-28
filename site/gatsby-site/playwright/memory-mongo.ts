@@ -17,13 +17,16 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
 
     if (process.env.GATSBY_LOCAL_USER_ID && process.env.GATSBY_LOCAL_USER_ROLES) {
 
-        console.log(`Adding local user [${process.env.GATSBY_LOCAL_USER_ID}] with roles [${process.env.GATSBY_LOCAL_USER_ROLES}] \n`);
+        const userId = process.env.GATSBY_LOCAL_USER_ID;
+        const roles = process.env.GATSBY_LOCAL_USER_ROLES.split(',');
+
+        console.log(`Adding local user [${userId}] with roles [${roles.join(',')}] \n`);
 
         users.push({
             first_name: 'Local',
             last_name: 'User',
-            roles: process.env.GATSBY_LOCAL_USER_ROLES.split(',') as string[],
-            userId: process.env.LOCAL_USER_ID as string,
+            roles,
+            userId,
         });
     }
     else if (require.main === module) {
