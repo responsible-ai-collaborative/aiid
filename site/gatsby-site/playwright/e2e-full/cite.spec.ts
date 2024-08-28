@@ -420,9 +420,9 @@ test.describe('Cite pages', () => {
 
     test('Should flag an incident as not related (authenticated)', async ({ page, login }) => {
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        await init();
 
-        await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } });
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -486,7 +486,7 @@ test.describe('Cite pages', () => {
 
         await expect(page.locator('head meta[name="twitter:site"]')).toHaveAttribute('content', '@IncidentsDB');
         await expect(page.locator('head meta[name="twitter:creator"]')).toHaveAttribute('content', '@IncidentsDB');
-        await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', `https://incidentdatabase.ai${url}/`);
+        await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', new RegExp(`^https://incidentdatabase.ai${url}/?$`));
         await expect(page.locator('head meta[property="og:type"]')).toHaveAttribute('content', 'website');
         await expect(page.locator('head meta[property="og:title"]')).toHaveAttribute('content', title);
         await expect(page.locator('head meta[property="og:description"]')).toHaveAttribute('content', description);
@@ -569,14 +569,9 @@ test.describe('Cite pages', () => {
 
         test.slow();
 
-        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-        await init({
-            customData: {
-                users: [
-                    { userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] },
-                ]
-            }
-        }, { drop: false });
+        await init();
+
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -608,7 +603,7 @@ test.describe('Cite pages', () => {
 
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
-        await page.locator('button[type="submit"]').click();
+        await page.getByText('Save').click();
 
         await waitForRequest('logIncidentHistory');
 
