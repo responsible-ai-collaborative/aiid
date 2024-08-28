@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: "0 10 * * 1" # At 10:00 on Monday.
   workflow_dispatch:
-    inputs:
-      home:
-        description: "This can be triggered from the GH page"
-        required: false
-        default: "This is not used"
 
 defaults:
   run:
