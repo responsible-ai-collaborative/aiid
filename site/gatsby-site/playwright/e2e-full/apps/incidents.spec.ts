@@ -246,14 +246,13 @@ test.describe('Incidents App', () => {
     const rowLocator = page.locator('[data-cy="row"]').first();
     const firstIncident = incidents[0];
 
-    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(7, {timeout: 10000});
+    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(7, { timeout: 10000 });
 
     await expect(rowLocator.locator('[data-cy="cell"]').nth(0)).toHaveText(`Incident ${firstIncident.incident_id}`);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(1)).toHaveText(firstIncident.title);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(2)).toHaveText(firstIncident.description);
 
-    // TODO: fix this, it's returning a one day off date
-    // await expect(rowLocator.locator('[data-cy="cell"]').nth(3)).toHaveText(firstIncident.date);
+    await expect(rowLocator.locator('[data-cy="cell"]').nth(3)).toHaveText(firstIncident.date);
 
     await expect(rowLocator.locator('[data-cy="cell"]').nth(4)).toHaveText(firstIncident.AllegedDeployerOfAISystem.map((i: any) => i.name).join(', '));
     await expect(rowLocator.locator('[data-cy="cell"]').nth(5)).toHaveText(firstIncident.AllegedDeveloperOfAISystem.map((i: any) => i.name).join(', '));
