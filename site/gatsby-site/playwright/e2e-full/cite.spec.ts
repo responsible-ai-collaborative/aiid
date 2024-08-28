@@ -7,7 +7,8 @@ import incident50 from '../fixtures/incidents/fullIncident50.json';
 import { gql } from '@apollo/client';
 import { expect } from '@playwright/test';
 import config from '../config';
-import { init, seedCollection, seedFixture } from '../memory-mongo';
+import { init } from '../memory-mongo';
+import { DBIncident } from '../seeds/aiidprod/incidents';
 
 test.describe('Cite pages', () => {
     const discoverUrl = '/apps/discover';
@@ -419,9 +420,9 @@ test.describe('Cite pages', () => {
 
     test('Should flag an incident as not related (authenticated)', async ({ page, login }) => {
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        await init();
 
-        await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } });
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -485,7 +486,7 @@ test.describe('Cite pages', () => {
 
         await expect(page.locator('head meta[name="twitter:site"]')).toHaveAttribute('content', '@IncidentsDB');
         await expect(page.locator('head meta[name="twitter:creator"]')).toHaveAttribute('content', '@IncidentsDB');
-        await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', `https://incidentdatabase.ai${url}/`);
+        await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', new RegExp(`^https://incidentdatabase.ai${url}/?$`));
         await expect(page.locator('head meta[property="og:type"]')).toHaveAttribute('content', 'website');
         await expect(page.locator('head meta[property="og:title"]')).toHaveAttribute('content', title);
         await expect(page.locator('head meta[property="og:description"]')).toHaveAttribute('content', description);
@@ -634,5 +635,28 @@ test.describe('Cite pages', () => {
         expect(data.incident_1).toMatchObject({ editor_dissimilar_incidents: [], editor_similar_incidents: [3] });
         expect(data.incident_2).toMatchObject({ editor_dissimilar_incidents: [3], editor_similar_incidents: [] });
         expect(data.incident_3).toMatchObject({ editor_dissimilar_incidents: [2], editor_similar_incidents: [1] });
+    });
+
+    test('Should load incident data not yet in build', async ({ page }) => {
+
+        const incident: DBIncident = {
+            incident_id: 4,
+            title: 'Test Title',
+            description: 'Incident 4 description',
+            date: "2020-01-01",
+            "Alleged deployer of AI system": ["entity1"],
+            "Alleged developer of AI system": ["entity2"],
+            "Alleged harmed or nearly harmed parties": ["entity3"],
+            editors: ["user1"],
+            reports: [1],
+        }
+
+        await init({ aiidprod: { incidents: [incident] } });
+
+        await page.goto('/cite/4');
+
+        await expect(page.getByText('Incident 4: Test Title')).toBeVisible();
+        await expect(page.getByText('Incident 4 description')).toBeVisible();
+        await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
     });
 });

@@ -109,7 +109,8 @@ export default function TaxonomiesEditor({
       taxonomiesList.some((t) => t.namespace === query.edit_taxonomy)
     ) {
       setScrolledToTaxonomy(query.edit_taxonomy);
-      taxonomiesList.find((t) => t.namespace === query.edit_taxonomy).ref.current.scrollIntoView();
+      // TODO: this has a race condition where the ref is not yet set
+      taxonomiesList.find((t) => t.namespace === query.edit_taxonomy).ref.current?.scrollIntoView();
     }
   }, [taxonomiesList]);
 

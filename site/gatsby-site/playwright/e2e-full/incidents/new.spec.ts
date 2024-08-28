@@ -1,5 +1,4 @@
-import { test, conditionalIntercept, waitForRequest, query } from '../../utils';
-import { expect } from '@playwright/test';
+import { test, conditionalIntercept, waitForRequest, query, fillAutoComplete } from '../../utils';
 import { init } from '../../memory-mongo';
 
 test.describe('New Incident page', () => {
@@ -10,6 +9,8 @@ test.describe('New Incident page', () => {
   });
 
   test('Should successfully create a new incident', async ({ page, login }) => {
+
+    await init();
 
     test.slow();
 
@@ -34,12 +35,7 @@ test.describe('New Incident page', () => {
     await page.locator('[data-cy="alleged-harmed-or-nearly-harmed-parties-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
 
-    await expect(async () => {
-      await page.locator('#input-editors').clear();
-      await page.waitForTimeout(1000);
-      await page.locator('#input-editors').pressSequentially('Joh', { delay: 500 });
-      await page.getByText('John Doe').click({ timeout: 1000 });
-    }).toPass();
+    await fillAutoComplete(page, '#input-editors', 'Joh', 'John Doe');
 
     await conditionalIntercept(page,
       '**/graphql',
@@ -54,10 +50,12 @@ test.describe('New Incident page', () => {
 
     await waitForRequest('logIncidentHistory');
 
-    await page.getByText(`You have successfully create Incident ${4}. View incident`).waitFor();
+    await page.getByText(`You have successfully create Incident 4. View incident`).waitFor();
   });
 
   test('Should clone an incident', async ({ page, login }) => {
+
+    await init();
 
     test.slow();
 

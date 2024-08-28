@@ -1,5 +1,5 @@
 import parseNews from '../fixtures/api/parseNews.json';
-import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query } from '../utils';
+import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query, fillAutoComplete } from '../utils';
 import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
@@ -147,9 +147,9 @@ test.describe('The Submit form', () => {
 
     test('As editor, should submit a new incident report, adding an incident title and editors.', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        await init();
 
-        await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
+        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Cesar', last_name: 'Ito', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -201,9 +201,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('[name="description"]').fill('Description');
 
-        await page.locator('#input-incident_editors').fill('Test');
-
-        await page.locator('[aria-label="Test User"]').click();
+        await fillAutoComplete(page, "#input-incident_editors", 'Ces', 'Cesar Ito');
 
         await page.locator('[name="tags"]').fill('New Tag');
         await page.keyboard.press('Enter');
@@ -309,7 +307,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
 
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await page.goto('/apps/submitted');
 
@@ -390,10 +388,7 @@ test.describe('The Submit form', () => {
 
     test('Should submit a submission and link it to the current user id', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-
-        await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
-
+        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         const values = {
             url: 'https://incidentdatabase.ai',

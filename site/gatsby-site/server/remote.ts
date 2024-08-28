@@ -24,6 +24,8 @@ const userExecutor = buildHTTPExecutor({
     },
 });
 
+// TODO: uncomment items after the subscription collection is migrated
+
 const ignoreTypes = [
     'Quickadd',
     'QuickaddQueryInput',
