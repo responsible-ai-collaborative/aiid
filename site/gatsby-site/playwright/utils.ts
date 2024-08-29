@@ -194,7 +194,7 @@ export function query(data: QueryOptions<OperationVariables, any>) {
 
     const { query, variables } = data
 
-    return client.query({ query, variables });
+    return client.query({ query, variables, fetchPolicy: 'no-cache' });
 }
 
 const loginSteps = async (page: Page, email: string, password: string) => {
@@ -248,9 +248,19 @@ export async function listFiles(directoryPath: string): Promise<string[]> {
 export async function fillAutoComplete(page: Page, selector: string, sequence: string, target: string) {
 
     await expect(async () => {
+
+        await page.waitForTimeout(500);
+
         await page.locator(selector).clear();
-        await page.waitForTimeout(1000);
-        await page.locator(selector).pressSequentially(sequence, { delay: 500 });
-        await page.getByText(target).click({ timeout: 1000 });
+
+        await page.waitForTimeout(500);
+
+        await page.locator(selector).focus();
+
+        await page.keyboard.type(sequence, {delay: 100});
+
+        await page.getByText(target).first().click({ timeout: 2000 });
+
+        await page.mouse.click(0, 0);
     }).toPass();
 }
