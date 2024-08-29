@@ -9,5 +9,6 @@ export const EntityType = new GraphQLObjectType({
         entity_id: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: new GraphQLNonNull(GraphQLString) },
         created_at: { type: GraphQLDateTime },
+        date_modified: { type: GraphQLDateTime },
     },
 });
