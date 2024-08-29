@@ -81,7 +81,6 @@ namespaces=$(jq -r '.[].namespace' "$taxa_json" | sort | uniq)
 
 # Iterate over each namespace and execute the corresponding process
 for namespace in $namespaces; do
-    echo "Processing namespace: $namespace"
 
     # Temporary JSON file name to store MongoDB export of "classifications"
     classification_json="classifications_${namespace}.json"
