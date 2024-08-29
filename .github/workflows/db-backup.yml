@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: "0 10 * * 1" # At 10:00 on Monday.
   workflow_dispatch:
-    inputs:
-      home:
-        description: "This can be triggered from the GH page"
-        required: false
-        default: "This is not used"
 
 defaults:
   run:
@@ -46,7 +41,7 @@ jobs:
           ./bin/backup.sh
           ./bin/prune.sh
           ./bin/list.sh
-        working-directory: tools/db-backup
+        working-directory: site/db-backup
         env:
           CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}
