@@ -47,7 +47,7 @@ const ignoreTypes = [
     'CreateVariantInput',
 
     // 'Incident',
-    'IncidentQueryInput',
+    // 'IncidentQueryInput',
     'IncidentUpdateInput',
     'IncidentInsertInput',
     'IncidentEditorsRelationInput',
@@ -60,7 +60,7 @@ const ignoreTypes = [
     'EntityInsertInput',
 
     // 'User',
-    'UserQueryInput',
+    // 'UserQueryInput',
     'UserUpdateInput',
     'UserInsertInput',
 
