@@ -36,4 +36,48 @@ test.describe('Navigation', () => {
     await page.getByTestId('sidebar-desktop').locator('#sidebar > [data-testid="sidebar-tree"] > [data-testid="sidebar-welcome"] > [data-testid="sidebar-link"]').click();
     await expect(page.locator('.rightSideTitle')).not.toBeVisible();
   });
+
+  test('Check right sidebar "Contents" scroll-to section on click on docs', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+
+    await page.goto('/');
+
+    const aboutLink = await page.locator('#main-footer .tw-footer-link').filter({ hasText: /^About$/ });
+    if (await aboutLink.count() > 0) {
+      await aboutLink.click();
+      
+      await page.locator('.rightSideTitle:has-text("CONTENTS")').waitFor({ state: 'visible' });
+      const listItems = await page.locator('.rightSideBarUL li');
+      expect(await listItems.count()).toBeGreaterThanOrEqual(1);
+
+      await listItems.nth(1).click();
+      await page.waitForTimeout(700);
+
+      const subject = await page.locator('h2:has-text(\'Why "AI Incidents"?\')');
+      const boundingBox = await subject.boundingBox();
+      expect(boundingBox?.y).toBeCloseTo(0, 30);
+    }
+  });
+
+  test('Check right sidebar "Contents" scroll-to section on click on prismic blog post', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+
+    await page.goto('/blog');
+
+    const postLink = await page.locator('h5:has-text("AI Incident Roundup – January ‘24")');
+    if (await postLink.count() > 0) {
+      await postLink.click();
+
+      await page.locator('.rightSideTitle:has-text("CONTENTS")').waitFor({ state: 'visible' });
+      const listItems = await page.locator('.rightSideBarUL li');
+      expect(await listItems.count()).toBeGreaterThanOrEqual(1);
+
+      await listItems.nth(1).click();
+      await page.waitForTimeout(700);
+
+      const subject = await page.locator('h2:has-text("🗄 Trending in the AIID")');
+      const boundingBox = await subject.boundingBox();
+      expect(boundingBox?.y).toBeCloseTo(0, 30);
+    }
+  });
 });
