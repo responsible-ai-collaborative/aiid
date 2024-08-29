@@ -9,6 +9,11 @@ import gql from 'graphql-tag';
 test.describe('Edit report', () => {
   const url = '/cite/edit?report_number=3&incident_id=3';
 
+  test.beforeEach(async () => {
+
+    await init();
+  });
+
   test('Successfully loads', async ({ page }) => {
     await page.goto(url);
   });
@@ -17,8 +22,7 @@ test.describe('Edit report', () => {
 
     test.slow();
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     // TODO: delete once we implement the new report history
     // it should be done inside the report mutation resolver
@@ -147,8 +151,7 @@ test.describe('Edit report', () => {
 
     test.slow();
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     await conditionalIntercept(
       page,
@@ -231,8 +234,7 @@ test.describe('Edit report', () => {
 
   test('Should delete incident report', async ({ page, login }) => {
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     await page.goto(url);
 
@@ -323,8 +325,7 @@ test.describe('Edit report', () => {
 
     test.slow();
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     await conditionalIntercept(
       page,
@@ -371,9 +372,7 @@ test.describe('Edit report', () => {
 
   test('Should display the report image', async ({ page, login }) => {
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
-
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
     await page.goto(url);
 
     await page.locator('[data-cy="image-preview-figure"] img').waitFor();

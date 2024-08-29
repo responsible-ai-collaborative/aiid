@@ -13,25 +13,10 @@ const gatewaySchema = stitchSchemas({
     subschemas: [localSchema, remoteSchema],
     typeMergingOptions: {
         validationScopes: {
-            'Report.translations': {
-                validationLevel: ValidationLevel.Off, // TODO: delete this once schema is completely migrated
-            },
-            'Report.translations.input': {
-                validationLevel: ValidationLevel.Off, // ditto
-            },
-            ['Incident.reports']: {
-                validationLevel: ValidationLevel.Off, // ditto
-            },
-            ['CreateVariantInput.incidentId']: {
-                validationLevel: ValidationLevel.Off // ditto
-            },
-            ['CreateVariantInput.variant']: {
+            ['Incident.editors']: {
                 validationLevel: ValidationLevel.Off,
             },
-            'Incident.editors': {
-                validationLevel: ValidationLevel.Off, // ditto
-            },
-        },
+        }
     }
 });
 
