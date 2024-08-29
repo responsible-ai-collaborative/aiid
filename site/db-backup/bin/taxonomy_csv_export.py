@@ -1,8 +1,9 @@
 import sys
 import json
 import csv
+import os
 
-def taxonomy_csv_export(namespace, taxa_file, classification_file):
+def taxonomy_csv_export(namespace, taxa_file, classification_file, target_folder):
 
     print(f"Processing namespace '{namespace}'...")
 
@@ -23,8 +24,11 @@ def taxonomy_csv_export(namespace, taxa_file, classification_file):
     # Prepare CSV headers from "field_list.short_name"
     headers = [field['short_name'] for field in field_list]
 
-    # Create a CSV file for the "namespace"
-    csv_filename = f"classifications_{namespace}.csv"
+    # Ensure the target folder exists
+    os.makedirs(target_folder, exist_ok=True)
+
+    # Create a CSV file for the "namespace" in the target folder
+    csv_filename = os.path.join(target_folder, f"classifications_{namespace}.csv")
     
     with open(csv_filename, mode='w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
@@ -56,12 +60,13 @@ def taxonomy_csv_export(namespace, taxa_file, classification_file):
     print(f"CSV file '{csv_filename}' generated successfully.")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python process_namespace.py <namespace> <taxa_file> <classification_file>")
+    if len(sys.argv) != 5:
+        print("Usage: python process_namespace.py <namespace> <taxa_file> <classification_file> <target_folder>")
         sys.exit(1)
 
     namespace = sys.argv[1]
     taxa_file = sys.argv[2]
     classification_file = sys.argv[3]
+    target_folder = sys.argv[4]
 
-    taxonomy_csv_export(namespace, taxa_file, classification_file)
+    taxonomy_csv_export(namespace, taxa_file, classification_file, target_folder)

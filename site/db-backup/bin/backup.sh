@@ -95,7 +95,7 @@ for namespace in $namespaces; do
     fi
 
     # Invoke the Python script with the provided parameters
-    python3 taxonomy_csv_export.py "$namespace" "$taxa_json" "$classification_json"
+    python3 taxonomy_csv_export.py "$namespace" "$taxa_json" "$classification_json" ${TARGET}
 
     # Check if the Python script ran successfully
     if [ $? -ne 0 ]; then
