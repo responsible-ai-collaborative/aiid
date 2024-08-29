@@ -1,4 +1,4 @@
-const { ObjectID } = require('bson');
+const { ObjectId } = require('bson');
 
 const AlgoliaUpdater = require('../../../src/utils/AlgoliaUpdater');
 
@@ -12,7 +12,7 @@ const incidents = [
 
 const reports = [
   {
-    _id: new ObjectID('60dd465f80935bc89e6f9b01'),
+    _id: new ObjectId('60dd465f80935bc89e6f9b01'),
     authors: ['Alistair Barr'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',
@@ -36,7 +36,7 @@ const reports = [
     url: 'https://url.com/stuff',
   },
   {
-    _id: new ObjectID('60dd465f80935bc89e6f9b02'),
+    _id: new ObjectId('60dd465f80935bc89e6f9b02'),
     authors: ['Alistair Barr'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',
@@ -62,7 +62,7 @@ const reports = [
 
   // this report hast no parent incidents
   {
-    _id: new ObjectID('60dd465f80935bc89e6f9b07'),
+    _id: new ObjectId('60dd465f80935bc89e6f9b07'),
     authors: ['Test User'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',

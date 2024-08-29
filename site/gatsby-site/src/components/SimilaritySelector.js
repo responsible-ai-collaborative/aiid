@@ -72,7 +72,7 @@ const SimilaritySelector = ({
               removeFromNotSureList(incident_id);
             },
           },
-        ].map((button) => {
+        ].map((button, index) => {
           let btnProps = {
             size: 'xs',
             'aria-pressed': button.show,
@@ -85,6 +85,10 @@ const SimilaritySelector = ({
             btnProps.color = button.variant;
           } else {
             btnProps.color = 'light';
+          }
+
+          if (index === 1) {
+            btnProps.className = 'rounded-none';
           }
 
           return (

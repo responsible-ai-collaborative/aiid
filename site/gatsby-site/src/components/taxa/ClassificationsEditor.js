@@ -34,12 +34,12 @@ export default function TaxonomiesEditor({
     setCanEditTaxonomies(taxa.nodes.some((t) => canEditTaxonomy(t.namespace)));
   }, [user]);
 
-  const incidentsQuery = incidentId ? { incidents: { incident_id: incidentId } } : {};
+  const incidentsQuery = incidentId ? { incidents: { EQ: incidentId } } : {};
 
-  const reportsQuery = reportNumber ? { reports: { report_number: reportNumber } } : {};
+  const reportsQuery = reportNumber ? { reports: { EQ: reportNumber } } : {};
 
   const { data } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { ...incidentsQuery, ...reportsQuery } },
+    variables: { filter: { ...incidentsQuery, ...reportsQuery } },
   });
 
   const [taxonomies, setTaxonomies] = useState([]);
@@ -85,6 +85,10 @@ export default function TaxonomiesEditor({
 
     const canEdit = canEditTaxonomy(namespace);
 
+    if (canEdit) {
+      taxonomy.initialEditing = true;
+    }
+
     setTaxonomiesList((list) => {
       taxonomiesListSize.current = taxonomiesList.length;
       return [...list, { ...taxonomy, canEdit, ref: createRef() }];
@@ -105,7 +109,8 @@ export default function TaxonomiesEditor({
       taxonomiesList.some((t) => t.namespace === query.edit_taxonomy)
     ) {
       setScrolledToTaxonomy(query.edit_taxonomy);
-      taxonomiesList.find((t) => t.namespace === query.edit_taxonomy).ref.current.scrollIntoView();
+      // TODO: this has a race condition where the ref is not yet set
+      taxonomiesList.find((t) => t.namespace === query.edit_taxonomy).ref.current?.scrollIntoView();
     }
   }, [taxonomiesList]);
 

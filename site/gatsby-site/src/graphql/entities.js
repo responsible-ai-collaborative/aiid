@@ -1,38 +1,39 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-export const UPSERT_ENTITY = gql`
-  mutation UpsertEntity($query: EntityQueryInput, $entity: EntityInsertInput!) {
-    upsertOneEntity(query: $query, data: $entity) {
+export const UPSERT_ENTITY = gql(`
+  mutation UpsertEntity($filter: EntityFilterType!, $update: EntityInsertType!) {
+    upsertOneEntity(filter: $filter, update: $update) {
       entity_id
       name
     }
   }
-`;
+`);
 
-export const FIND_ENTITIES = gql`
+export const FIND_ENTITIES = gql(`
   query FindEntities {
-    entities(limit: 9999) {
+    entities {
       entity_id
       name
     }
   }
-`;
+`);
 
-export const FIND_ENTITY = gql`
-  query FindEntity($query: EntityQueryInput) {
-    entity(query: $query) {
+export const FIND_ENTITY = gql(`
+  query FindEntity($filter: EntityFilterType) {
+    entity(filter: $filter) {
       entity_id
       name
       created_at
-      date_modified
     }
   }
-`;
+`);
 
-export const UPDATE_ENTITY = gql`
-  mutation UpdateEntity($query: EntityQueryInput, $set: EntityUpdateInput!) {
-    updateOneEntity(query: $query, set: $set) {
+// TODO: temporarily remove date_modified
+
+export const UPDATE_ENTITY = gql(`
+  mutation UpdateEntity($filter: EntityFilterType!, $update: EntityUpdateType!) {
+    updateOneEntity(filter: $filter, update: $update) {
       entity_id
     }
   }
-`;
+`);

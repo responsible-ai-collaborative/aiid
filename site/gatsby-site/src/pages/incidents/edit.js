@@ -3,7 +3,7 @@ import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, UPDATE_INCIDENT, UPDATE_INCIDENTS } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -26,7 +26,7 @@ function EditCitePage(props) {
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { filter: { incident_id: { EQ: incidentId } } },
   });
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
@@ -34,6 +34,8 @@ function EditCitePage(props) {
   const loading = loadingIncident || loadingEntities;
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const [updateIncidents] = useMutation(UPDATE_INCIDENTS);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -111,11 +113,13 @@ function EditCitePage(props) {
 
       await updateIncident({
         variables: {
-          query: {
-            incident_id: incidentId,
+          filter: {
+            incident_id: { EQ: incidentId },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
@@ -130,10 +134,37 @@ function EditCitePage(props) {
         user
       );
 
+      await updateSimilarIncidentsReciprocal(
+        updated.editor_similar_incidents,
+        updated.editor_dissimilar_incidents
+      );
+
       addToast(updateSuccessToast({ incidentId }));
     } catch (error) {
       addToast(updateErrorToast({ incidentId, error }));
     }
+  };
+
+  const updateSimilarIncidentsReciprocal = async (similarIncidents, dissimilarIncidents) => {
+    const updateIncidentSet = async (incidents, setKey) => {
+      if (incidents.length > 0) {
+        const querySet = {
+          [setKey]: [incident.incident_id],
+        };
+
+        await updateIncidents({
+          variables: {
+            filter: { incident_id: { IN: incidents } },
+            update: { set: querySet },
+          },
+        });
+      }
+    };
+
+    await Promise.all([
+      updateIncidentSet(similarIncidents, 'editor_similar_incidents'),
+      updateIncidentSet(dissimilarIncidents, 'editor_dissimilar_incidents'),
+    ]);
   };
 
   return (

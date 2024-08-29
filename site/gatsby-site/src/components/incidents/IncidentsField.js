@@ -21,9 +21,11 @@ export default function IncidentsField({ id, name, placeHolder = '', multiple = 
 
   const [selected, setSelected] = useState(
     value
-      .slice()
-      .sort()
-      .map((id) => ({ id, title: '' }))
+      ? value
+          .slice()
+          .sort()
+          .map((id) => ({ id, title: '' }))
+      : []
   );
 
   useEffect(() => {

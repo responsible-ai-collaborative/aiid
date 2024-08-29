@@ -32,13 +32,20 @@ jobs:
     environment: ${{ inputs.environment }}
     runs-on:
       labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: site/gatsby-site
     permissions:
       pull-requests: write
     steps:
+      - name: Cleanup Disk Space
+        run: |
+          echo "Before removing files:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "After removing files:"
+          df -h
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -60,15 +67,18 @@ jobs:
       - name: Install dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
         run: npm ci
+        working-directory: site/gatsby-site
 
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
+        working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
       - name: Build using Netlify
         run: netlify build --context ${{ inputs.netlify-context }} --offline
+        working-directory: site/gatsby-site
         env:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -102,6 +112,17 @@ jobs:
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
           GATSBY_COMMIT_SHA: ${{ inputs.sha }}
           TRANSLATE_DRY_RUN: ${{ vars.TRANSLATE_DRY_RUN }}
+          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
+          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
+          REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
+          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
+          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+
+      - name: Build size
+        run: |
+          du -ah . 2>/dev/null | sort -rh | head -n 20
 
       - name: Upload to netlify
         id: deploy-netlify

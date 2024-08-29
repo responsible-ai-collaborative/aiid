@@ -6,8 +6,8 @@ import { stripMarkdown } from '../utils/typography';
 import { useTranslation } from 'react-i18next';
 
 const relatedIncidentIdsQuery = gql`
-  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
-    incidents(query: $query) {
+  query ProbablyRelatedIncidentIds($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       title
     }
@@ -122,8 +122,8 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         dbResponse = await client.query({
           query: relatedIncidentIdsQuery,
           variables: {
-            query: {
-              incident_id_in: incidentIds,
+            filter: {
+              incident_id: { IN: incidentIds },
             },
           },
         });

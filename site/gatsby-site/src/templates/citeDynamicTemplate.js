@@ -42,19 +42,19 @@ function CiteDynamicTemplate({
   const [metaTitle, setMetaTitle] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id } },
+    variables: { filter: { incident_id: { EQ: parseInt(incident_id) } } },
   });
 
   const { data: prevIncident } = useQuery(FIND_INCIDENT, {
-    variables: { query: { incident_id: parseInt(incident_id) - 1 } },
+    variables: { filter: { incident_id: { EQ: parseInt(incident_id) - 1 } } },
   });
 
   const { data: nextIncident } = useQuery(FIND_INCIDENT, {
-    variables: { query: { incident_id: parseInt(incident_id) + 1 } },
+    variables: { filter: { incident_id: { EQ: parseInt(incident_id) + 1 } } },
   });
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incidents: { incident_id }, publish: true } },
+    variables: { filter: { incidents: { EQ: incident_id }, publish: { EQ: true } } },
   });
 
   useEffect(() => {

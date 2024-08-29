@@ -9,14 +9,10 @@ const config = require('./config');
 
 cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
+const adapter = require('gatsby-adapter-netlify').default;
+
 const plugins = [
   'layout',
-  {
-    resolve: `gatsby-plugin-netlify`,
-    options: {
-      mergeCachingHeaders: false,
-    },
-  },
   {
     resolve: `gatsby-plugin-catch-links`,
     options: {
@@ -304,6 +300,9 @@ module.exports = {
     siteUrl: config.gatsby.siteUrl,
   },
   plugins: plugins,
+  adapter: adapter({
+    excludeDatastoreFromEngineFunction: true,
+  }),
   trailingSlash: `always`,
   flags: {
     DEV_SSR: true,

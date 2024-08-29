@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { graphql } from 'gatsby';
+import { Link, graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 import { Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
@@ -13,9 +13,11 @@ import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
 function ReportPage(props) {
   const {
-    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications },
+    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications, incident },
     data,
   } = props;
+
+  const incidentId = incident?.incident_id;
 
   const { t } = useTranslation();
 
@@ -41,19 +43,33 @@ function ReportPage(props) {
           data-cy="edit-report"
           size={'xs'}
           color="light"
-          href={`/cite/edit?report_number=${report.report_number}`}
+          href={`/cite/edit?report_number=${report.report_number}${
+            incidentId ? `&incident_id=${incidentId}` : ''
+          }`}
           className="hover:no-underline "
         >
           <Trans>Edit</Trans>
         </Button>
       );
     }
-  }, []);
+  }, [loading]);
 
   return (
     <>
       <div className={'titleWrapper'}>
-        <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
+        <div className="flex content-between w-full">
+          <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
+          {incidentId && (
+            <Link
+              to={`/cite/${incident.incident_id}#r${report.report_number}`}
+              className="hover:no-underline mb-5"
+            >
+              <Button outline={true} color={'light'}>
+                <Trans>Back to Incident {{ incidentId }}</Trans>
+              </Button>
+            </Link>
+          )}
+        </div>
         <SocialShareButtons
           metaTitle={metaTitle}
           path={props.location.pathname}
@@ -222,6 +238,11 @@ export const query = graphql`
         }
         publish
       }
+    }
+    incident: mongodbAiidprodIncidents(
+      reports: { elemMatch: { report_number: { in: [$report_number] } } }
+    ) {
+      incident_id
     }
   }
 `;

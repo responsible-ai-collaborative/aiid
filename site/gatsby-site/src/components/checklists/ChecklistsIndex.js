@@ -235,7 +235,16 @@ const ChecklistsIndex = ({ users }) => {
             <FontAwesomeIcon icon={faCheckToSlot} size="5x" />
             <br />
             <p className="text-gray-400">
-              <Trans>You haven’t made any checklists (yet).</Trans>
+              {loggedIn ? (
+                <Trans>You haven’t made any checklists (yet).</Trans>
+              ) : (
+                <Trans>
+                  <LocalizedLink className="text-gray-600 underline" to="/login">
+                    Sign in
+                  </LocalizedLink>{' '}
+                  to create checklists.
+                </Trans>
+              )}
             </p>
           </div>
         )}
