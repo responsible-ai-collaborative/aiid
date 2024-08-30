@@ -30,7 +30,7 @@ const submissions: DBSubmission[] = [
         title: "Sample title",
         url: "http://example.com",
         user: "user1",
-        implicated_systems: ["entity4"]
+        implicated_systems: ["entity1"]
     }
 ]
 

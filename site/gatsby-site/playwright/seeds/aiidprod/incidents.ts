@@ -16,7 +16,7 @@ const incidents: DBIncident[] = [
         "Alleged harmed or nearly harmed parties": ["entity3"],
         editors: ["user1"],
         reports: [1],
-        implicated_systems: ["entity4"],
+        implicated_systems: ["entity1"],
 
         // TODO: this aren't required but break the build if missing
         nlp_similar_incidents: [],
@@ -33,7 +33,7 @@ const incidents: DBIncident[] = [
         "Alleged harmed or nearly harmed parties": ["entity3"],
         editors: ["user1"],
         reports: [2],
-        implicated_systems: ["entity4"],
+        implicated_systems: ["entity1"],
 
         // TODO: this aren't required but break the build if missing
         nlp_similar_incidents: [],
@@ -89,7 +89,7 @@ const incidents: DBIncident[] = [
         },
         // this field is currently present in the database but not mapped to any graphql fueld
         // "created_at": 1407974400000
-        implicated_systems: ["amazon"],
+        implicated_systems: ["entity1"],
     },
 ]
 

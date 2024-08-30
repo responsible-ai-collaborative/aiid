@@ -150,6 +150,7 @@ export const incidentSchema = schema.shape({
   description: description.required('*Description is required'),
   incident_date: incident_date.required('*Incident Date required'),
   incident_ids: yup.mixed(),
+  implicated_systems: yup.array().required('*Implicated Systems is required'),
 });
 
 export const reportSchema = schema.shape({

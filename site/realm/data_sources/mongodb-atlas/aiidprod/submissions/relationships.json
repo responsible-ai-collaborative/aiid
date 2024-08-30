@@ -28,11 +28,5 @@
         "source_key": "user",
         "foreign_key": "userId",
         "is_list": false
-    },
-    "implicated_systems": {
-        "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
-        "source_key": "implicated_systems",
-        "foreign_key": "entity_id",
-        "is_list": true
     }
 }

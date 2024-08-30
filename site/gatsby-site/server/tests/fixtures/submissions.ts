@@ -37,7 +37,7 @@ const submission1 = {
     title: "Submission 1",
     url: "http://example.com",
     user: "user1",
-    implicated_systems: ["entity4"]
+    implicated_systems: ["entity1"]
 }
 
 const submission2 = {
@@ -62,7 +62,7 @@ const submission2 = {
     title: "Submission 2",
     url: "http://example.com",
     user: "user1",
-    implicated_systems: ["entity4"]
+    implicated_systems: ["entity1"]
 }
 
 const submission3 = {
@@ -75,7 +75,7 @@ const submission3 = {
     date_submitted: "2023-11-14T00:00:00.000Z",
     deployers: ["entity3"],
     description: "Another sample description",
-    developers: ["entity4"],
+    developers: ["entity1"],
     harmed_parties: ["entity5"],
     incident_editors: ["editor3"],
     image_url: "https://sample_image_url_4.com",
@@ -87,7 +87,7 @@ const submission3 = {
     title: "Submission 3",
     url: "http://example.com",
     user: "user1",
-    implicated_systems: ["entity4"]
+    implicated_systems: ["entity1"]
 }
 
 

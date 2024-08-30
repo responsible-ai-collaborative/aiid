@@ -1,7 +1,7 @@
 import { GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
-import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver } from "../utils";
+import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getRelationshipConfig } from "../utils";
 import { UserType } from "./user";
 import { NlpSimilarIncidentType } from "../types";
 import { ReportType } from "./report";
@@ -61,13 +61,7 @@ export const IncidentType = new GraphQLObjectType({
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
         tsne: { type: TsneType },
-        implicated_systems: {
-            type: new GraphQLList(EntityType),
-            resolve: getListRelationshipResolver('implicated_systems', 'entity_id', EntityType, 'aiidprod', 'entities'),
-            extensions: {
-                relationship: getListRelationshipExtension('implicated_systems', 'entity_id', GraphQLString, 'aiidprod', 'entities')
-            },
-        },
+        implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'aiidprod', 'entities'),
     },
 });
 

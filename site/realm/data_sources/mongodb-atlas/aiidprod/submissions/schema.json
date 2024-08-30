@@ -150,12 +150,6 @@
         },
         "quiet": {
             "bsonType": "bool"
-        },
-        "implicated_systems": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
         }
     },
     "required": [
