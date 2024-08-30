@@ -22,6 +22,10 @@ export default function EntityCard({ entity, ...props }) {
       header: 'Incidents involved as Deployer',
       key: 'incidentsAsDeployer',
     },
+    {
+      header: 'Incidents implicated systems',
+      key: 'incidentsImplicatedSystems',
+    },
   ];
 
   return (

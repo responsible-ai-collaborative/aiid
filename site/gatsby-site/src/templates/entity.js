@@ -28,6 +28,7 @@ const incidentFields = [
   'incidentsAsDeployer',
   'incidentsAsDeveloper',
   'incidentsHarmedBy',
+  'incidentsImplicatedSystems',
 ];
 
 const EntityPage = ({ pageContext, data, ...props }) => {
@@ -46,6 +47,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsAsDeveloper,
     incidentsAsBoth,
     incidentsHarmedBy,
+    incidentsImplicatedSystems,
     entities: entitiesData,
     responses,
   } = data;
@@ -55,6 +57,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsHarmedBy: incidentsHarmedBy.nodes.sort(sortByReports),
     incidentsAsDeveloper: incidentsAsDeveloper.nodes.sort(sortByReports),
     incidentsAsDeployer: incidentsAsDeployer.nodes.sort(sortByReports),
+    incidentsImplicatedSystems: incidentsImplicatedSystems.nodes.sort(sortByReports),
   };
 
   const sections = [
@@ -73,6 +76,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     {
       header: 'Incidents involved as Deployer',
       key: 'incidentsAsDeployer',
+    },
+    {
+      header: 'Incidents implicated systems',
+      key: 'incidentsImplicatedSystems',
     },
   ];
 

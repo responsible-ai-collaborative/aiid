@@ -10,6 +10,7 @@ const incidentFields = [
   'incidentsAsDeployer',
   'incidentsAsDeveloper',
   'incidentsHarmedBy',
+  'incidentsImplicatedSystems',
 ];
 
 const entitiesFields = ['relatedEntities'];
