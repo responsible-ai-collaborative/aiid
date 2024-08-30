@@ -567,8 +567,6 @@ test.describe('Cite pages', () => {
 
     test('Should link similar incidents', async ({ page, login }) => {
 
-        test.slow();
-
         await init();
 
         await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });

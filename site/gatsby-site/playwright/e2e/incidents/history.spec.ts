@@ -244,7 +244,7 @@ test.describe('Incidents', () => {
 
   test('Should display the Version History details modal', async ({ page }) => {
 
-    test.slow();
+    
 
     await page.goto(url);
 
