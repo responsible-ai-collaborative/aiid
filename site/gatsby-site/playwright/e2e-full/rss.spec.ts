@@ -2,9 +2,11 @@ import { expect } from '@playwright/test';
 import config from '../config';
 import { test } from '../utils';
 import { XMLParser } from 'fast-xml-parser';
+import { init } from '../memory-mongo';
 
 test.describe('RSS', () => {
   test('Should generate a valid RSS feed', async ({ page }) => {
+    await init();
     const response = await page.request.get('/rss.xml');
     expect(response.status()).toBe(200);
     expect(response.headers()['content-type']).toContain('application/xml');
@@ -22,6 +24,7 @@ test.describe('RSS', () => {
 
   if (!config.isEmptyEnvironment) {
     test('Should generate a valid RSS feed data', async ({ page }) => {
+      await init();
       const response = await page.request.get('/rss.xml');
       expect(response.status()).toBe(200);
       expect(response.headers()['content-type']).toContain('application/xml');
