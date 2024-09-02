@@ -10,7 +10,7 @@ export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed
 
 const submissions: DBSubmission[] = [
     {
-        _id: new ObjectId("5d34b8c29ced494f010ed469"),
+        _id: new ObjectId("6140e4b4b9b4f7b3b3b1b1b1"),
         authors: ["Author 1", "Author 2"],
         cloudinary_id: "sample_cloudinary_id",
         date_downloaded: "2021-09-14",

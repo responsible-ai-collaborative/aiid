@@ -78,7 +78,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Incident');
 
@@ -86,7 +86,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]')).toContainText('Successfully promoted submission to Incident 4 and Report 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 4 and Report 9');
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -110,7 +110,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await fillAutoComplete(page, '#input-incident_ids', 'Inc', 'Incident 1');
 
@@ -142,7 +142,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await fillAutoComplete(page, '#input-incident_ids', 'inci', 'Incident 2');
         await fillAutoComplete(page, '#input-incident_ids', 'Kron', 'Kronos');
@@ -177,7 +177,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Issue');
 
@@ -185,7 +185,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]')).toContainText('Successfully promoted submission to Issue 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 9');
 
         const { data: { reports } } = await query({
             query: gql`{
@@ -248,7 +248,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await page.locator('input[name="url"]').fill('https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/');
         await page.click('[data-cy="fetch-info"]');
@@ -347,7 +347,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await page.fill('input[name="date_published"]', '3000-01-01');
 
@@ -360,7 +360,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await page.fill('input[name="date_downloaded"]', '3000-01-01');
 
@@ -391,7 +391,7 @@ test.describe('Submitted reports', () => {
         `,
         });
 
-        expect(submissions.find((s) => s._id === '5d34b8c29ced494f010ed469').incident_editors.map((e) => e.userId)).toContain(userId);
+        expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').incident_editors.map((e) => e.userId)).toContain(userId);
     });
 
     test('Unclaims a submission', async ({ page, login }) => {
@@ -511,7 +511,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await expect(page.locator('[data-cy="image-preview-figure"] img')).toHaveAttribute(
             'src',
@@ -562,12 +562,11 @@ test.describe('Submitted reports', () => {
     });
 
     test('Edits a submission - links to existing incident - Incident Data should be hidden', async ({ page, login }) => {
-        
         await init();
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
-        await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         await page.fill(`input[name="incident_ids"]`, '1');
 

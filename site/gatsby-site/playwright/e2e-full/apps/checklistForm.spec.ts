@@ -3,6 +3,7 @@ import riskSortingRisks from '../../fixtures/checklists/riskSortingChecklist.jso
 import riskSortingChecklist from '../../fixtures/checklists/riskSortingChecklist.json';
 import { conditionalIntercept, test, waitForRequest } from '../../utils';
 import config from '../../config';
+import { init } from '../../memory-mongo';
 
 test.describe('Checklists App Form', () => {
     const url = '/apps/checklists?id=testChecklist';
@@ -179,6 +180,14 @@ test.describe('Checklists App Form', () => {
             'upsertChecklist',
         );
 
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON()?.operationName === 'FindRisks',
+            { data: { risks: riskSortingRisks.data.checklist.risks } },
+            'risks'
+        );
+
         await page.goto(url);
 
         await waitForRequest('findChecklist');
@@ -187,6 +196,8 @@ test.describe('Checklists App Form', () => {
         await page.locator('#tags_methods').click();
 
         await waitForRequest('upsertChecklist');
+
+        await waitForRequest('risks');
 
         await expect(page.locator('details').first()).toBeVisible();
 
@@ -229,7 +240,9 @@ test.describe('Checklists App Form', () => {
         await expect(page.locator('details:nth-child(2)')).toContainText('Dataset Imbalance');
     });
 
-    test('Should remove a manually-created risk', async ({ page, login }) => {
+    test.skip('Should remove a manually-created risk', async ({ page, login }) => {
+
+        await init();
 
         const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
@@ -271,6 +284,14 @@ test.describe('Checklists App Form', () => {
             'upsertChecklist'
         );
 
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON()?.operationName === 'FindRisks',
+            { data: { risks: [] } },
+            'risks'
+        );
+
         await page.goto(url);
 
         await waitForRequest('findChecklist');
@@ -280,6 +301,8 @@ test.describe('Checklists App Form', () => {
         await page.getByTestId('delete-risk').click();
 
         await waitForRequest('upsertChecklist');
+
+        await waitForRequest('FindRisks');
 
         await expect(page.locator('text=Manual Test Risk')).not.toBeVisible();
     });

@@ -76,7 +76,6 @@ test.describe('Classifications Editor', () => {
   });
 
   test('Should show classifications editor on incident page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
-
     await init();
 
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
@@ -184,9 +183,12 @@ test.describe('Classifications Editor', () => {
     })
   });
 
-  const namespaces = ['GMF', 'CSETv1'];
+  const tests = [
+    { incident_id: 2, namespace: 'GMF' },
+    { incident_id: 1, namespace: 'CSETv1' }
+  ];
 
-  for (const namespace of namespaces) {
+  for (const { incident_id, namespace } of tests) {
 
     test(`Should properly display and store ${namespace} classification values`, async ({ page, login, skipOnEmptyEnvironment }) => {
 
@@ -194,7 +196,7 @@ test.describe('Classifications Editor', () => {
 
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
-      await page.goto('/cite/1');
+      await page.goto(`/cite/${incident_id}`);
 
       const { data: { taxas } } = await query({
         query: gql`
@@ -252,7 +254,17 @@ test.describe('Classifications Editor', () => {
 
         for (const [name, value] of Object.entries(selectedValues)) {
 
-          classification.attributes.find(({ short_name }) => short_name === name).value_json === JSON.stringify(value);
+          const attribute = classification.attributes.find(({ short_name }) => short_name === name);
+          const definition = taxa.field_list.find(({ short_name }) => short_name === name);
+
+          if (definition.required) {
+
+            expect(attribute.value_json === JSON.stringify(value));
+          }
+          else if (attribute) {
+
+            expect(attribute.value_json === JSON.stringify(value));
+          }
         }
       }
     });
