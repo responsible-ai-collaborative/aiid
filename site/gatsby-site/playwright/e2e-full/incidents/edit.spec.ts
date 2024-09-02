@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { conditionalIntercept, waitForRequest, test } from '../../utils';
+import { conditionalIntercept, waitForRequest, test, fillAutoComplete } from '../../utils';
 import { init } from '../../memory-mongo';
 
 test.describe('Incidents', () => {
@@ -7,15 +7,15 @@ test.describe('Incidents', () => {
 
   test('Should successfully edit incident fields', async ({ page, login }) => {
 
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
     await init({
       customData: {
         users: [
-          { userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] },
           { userId: 'pablo', first_name: 'Pablo', last_name: 'Costa', roles: ['admin'] },
         ]
       }
-    }, { drop: false });
+    });
+
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
 
     await page.goto(url);
 
@@ -35,8 +35,7 @@ test.describe('Incidents', () => {
 
     await expect(await page.locator('[title="Sean McGregor"]')).toBeVisible();
 
-    await page.locator('#input-editors').fill('Pablo');
-    await page.locator('[aria-label="Pablo Costa"]').click();
+    await fillAutoComplete(page, '#input-editors', 'Pab', 'Pablo Costa');
 
     await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'logIncidentHistory', {
       data: {
