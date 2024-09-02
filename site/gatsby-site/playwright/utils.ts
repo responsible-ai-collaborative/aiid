@@ -250,7 +250,7 @@ export async function fillAutoComplete(page: Page, selector: string, sequence: s
     await expect(async () => {
         await page.locator(selector).clear();
         await page.waitForTimeout(1000);
-        await page.locator(selector).pressSequentially(sequence, { delay: 500 });
-        await page.getByText(target).click({ timeout: 1000 });
+        await page.locator(selector).pressSequentially(sequence.substring(0, Math.floor(Math.random() * sequence.length) + 1), { delay: 500 });
+        await page.getByText(target).first().click({ timeout: 1000 });
     }).toPass();
 }
