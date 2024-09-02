@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
 import { init, seedCollection } from '../memory-mongo';
 import { fillAutoComplete, query, setEditorText, test } from '../utils';
-import config from '../../config';
+import config from '../config';
 import { DBSubmission } from '../seeds/aiidprod/submissions';
 import { ObjectId } from 'mongodb';
 
