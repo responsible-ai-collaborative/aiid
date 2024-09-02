@@ -263,7 +263,10 @@ function EditEntityPage(props) {
                       disabled={true}
                     />
 
-                    <Label label={t('Entity Relationships', { ns: 'entities' })} />
+                    <Label
+                      label={t('Entity Relationships', { ns: 'entities' })}
+                      popover="entityRelationships"
+                    />
                     <Typeahead
                       className={`Typeahead`}
                       onKeyDown={(e) => {
