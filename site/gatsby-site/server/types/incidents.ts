@@ -53,6 +53,7 @@ export const IncidentType = new GraphQLObjectType({
                 relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities')
             },
         },
+        implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         editors: getListRelationshipConfig(UserType, GraphQLString, 'editors', 'userId', 'users', 'customData'),
@@ -61,7 +62,6 @@ export const IncidentType = new GraphQLObjectType({
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
         tsne: { type: TsneType },
-        implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'aiidprod', 'entities'),
     },
 });
 

@@ -93,7 +93,7 @@ exports = async function (changeEvent) {
   }
 
   // Check if Entity fields changed
-  const entitiesChanged = updatedFields.some(field => field.match(/Alleged deployer of AI system|Alleged developer of AI system|Alleged harmed or nearly harmed parties/));
+  const entitiesChanged = updatedFields.some(field => field.match(/Alleged deployer of AI system|Alleged developer of AI system|Alleged harmed or nearly harmed parties|implicated_systems/));
 
   try {
     if (entitiesChanged) {
@@ -101,6 +101,7 @@ exports = async function (changeEvent) {
         'Alleged deployer of AI system',
         'Alleged developer of AI system',
         'Alleged harmed or nearly harmed parties',
+        'implicated_systems',
       ];
 
       let entities = [];

@@ -101,6 +101,12 @@ function NewIncidentPage() {
         createEntityMutation
       );
 
+      newIncident.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       newIncident.editor_similar_incidents = [];
       newIncident.editor_dissimilar_incidents = [];
 
@@ -115,6 +121,7 @@ function NewIncidentPage() {
       newIncident.AllegedDeveloperOfAISystem = newIncident.AllegedDeveloperOfAISystem.link;
       newIncident.AllegedHarmedOrNearlyHarmedParties =
         newIncident.AllegedHarmedOrNearlyHarmedParties.link;
+      newIncident.implicated_systems = newIncident.implicated_systems.link;
       newIncident.editors = newIncident.editors.link;
 
       await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
@@ -135,6 +142,7 @@ function NewIncidentPage() {
           AllegedDeployerOfAISystem,
           AllegedDeveloperOfAISystem,
           AllegedHarmedOrNearlyHarmedParties,
+          implicated_systems,
           editors,
           editor_notes,
         } = incidentToCloneData.incident;
@@ -148,6 +156,7 @@ function NewIncidentPage() {
           AllegedHarmedOrNearlyHarmedParties: AllegedHarmedOrNearlyHarmedParties.map(
             (entity) => entity.entity_id
           ),
+          implicated_systems: implicated_systems.map((entity) => entity.entity_id),
           editor_notes,
           editors: editors.map((editor) => editor.userId),
         });

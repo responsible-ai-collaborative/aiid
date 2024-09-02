@@ -137,12 +137,12 @@ export const transformIncidentData = (incident, user) => {
     AllegedDeployerOfAISystem,
     AllegedDeveloperOfAISystem,
     AllegedHarmedOrNearlyHarmedParties,
+    implicated_systems,
     reports,
     embedding,
     nlp_similar_incidents,
     tsne,
     editors,
-    implicated_systems,
   } = incident;
 
   if (AllegedDeployerOfAISystem) {
@@ -217,10 +217,10 @@ const INCIDENT_TO_COMPARE = {
   AllegedDeployerOfAISystem: 'Alleged Deployer of AI System',
   AllegedDeveloperOfAISystem: 'Alleged Developer of AI System',
   AllegedHarmedOrNearlyHarmedParties: 'Alleged Harmed or Nearly Harmed Parties',
+  implicated_systems: 'Implicated Systems',
   editors: 'Editors',
   editor_notes: 'Editor Notes',
   reports: 'Reports',
-  implicated_systems: 'Implicated Systems',
 };
 
 export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {

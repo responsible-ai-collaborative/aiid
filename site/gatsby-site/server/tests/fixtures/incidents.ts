@@ -2,8 +2,8 @@ import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
 
-type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
-    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] }
+type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'implicated_systems' | 'reports' | 'editors'>
+    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] } & { implicated_systems: string[] }
     & { reports: number[] }
     & { editors: string[] }
 
@@ -158,6 +158,7 @@ const incident1: DBIncident = {
     "Alleged deployer of AI system": [],
     "Alleged developer of AI system": [],
     "Alleged harmed or nearly harmed parties": [],
+    implicated_systems: [],
     description: "Test description 1",
     title: "Test Incident 1",
     editors: [
@@ -205,6 +206,7 @@ const incident2: DBIncident = {
         "entity1"
     ],
     "Alleged harmed or nearly harmed parties": [],
+    implicated_systems: [],
     description: "Test description 2",
     title: "Test Incident 2",
     editors: [
@@ -237,8 +239,7 @@ const incident2: DBIncident = {
         x: -0.3,
         y: -0.4
     },
-    reports: [3],
-    implicated_systems: []
+    reports: [3]
 };
 
 const incident3: DBIncident = {
@@ -255,6 +256,7 @@ const incident3: DBIncident = {
     "Alleged harmed or nearly harmed parties": [
         "test harmed party 3"
     ],
+    implicated_systems: [],
     description: "Test description 3",
     title: "Test Incident 3",
     editors: [],

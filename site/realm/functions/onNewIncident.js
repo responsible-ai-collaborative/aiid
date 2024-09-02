@@ -40,6 +40,7 @@ exports = async function (changeEvent) {
       'Alleged deployer of AI system',
       'Alleged developer of AI system',
       'Alleged harmed or nearly harmed parties',
+      'implicated_systems',
     ];
     const entities = [];
 

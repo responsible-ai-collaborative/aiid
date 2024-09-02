@@ -32,9 +32,9 @@ export const schema = Yup.object().shape({
   AllegedDeployerOfAISystem: Yup.array().required(),
   AllegedDeveloperOfAISystem: Yup.array().required(),
   AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
+  implicated_systems: Yup.array().required(),
   editors: Yup.array().of(Yup.string()).required(),
   editor_notes: Yup.string().nullable(),
-  implicated_systems: Yup.array().required(),
 });
 
 function IncidentForm({ entityNames = [] }) {
@@ -206,7 +206,7 @@ function IncidentForm({ entityNames = [] }) {
             errors={errors}
             touched={touched}
             schema={schema}
-            data-cy="alleged-harmed-or-nearly-harmed-parties-input"
+            data-cy="implicated-systems-input"
             options={entityNames}
           />
         </FieldContainer>

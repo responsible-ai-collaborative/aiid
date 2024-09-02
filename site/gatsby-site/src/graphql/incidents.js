@@ -24,6 +24,10 @@ export const FIND_INCIDENT = gql(`
         entity_id
         name
       }
+      implicated_systems {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -67,12 +71,12 @@ export const FIND_INCIDENTS_TABLE = gql(`
         entity_id
         name
       }
-      reports {
-        report_number
-      }
       implicated_systems {
         entity_id
         name
+      }
+      reports {
+        report_number
       }
     }
   }
@@ -91,6 +95,10 @@ export const FIND_INCIDENT_ENTITIES = gql(`
         name
       }
       AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      implicated_systems {
         entity_id
         name
       }
@@ -119,6 +127,10 @@ export const FIND_INCIDENTS = gql(`
         name
       }
       AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      implicated_systems {
         entity_id
         name
       }
@@ -170,6 +182,10 @@ export const UPDATE_INCIDENT = gql(`
         name
       }
       AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      implicated_systems {
         entity_id
         name
       }
@@ -241,6 +257,10 @@ export const FIND_FULL_INCIDENT = gql(`
         entity_id
         name
       }
+      implicated_systems {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -275,10 +295,6 @@ export const FIND_FULL_INCIDENT = gql(`
         x
         y
       }
-      implicated_systems {
-        entity_id
-        name
-      }
     }
   }
 `);
@@ -298,6 +314,7 @@ export const FIND_INCIDENT_HISTORY = gql(`
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
       AllegedHarmedOrNearlyHarmedParties
+      implicated_systems
       _id
       date
       description
