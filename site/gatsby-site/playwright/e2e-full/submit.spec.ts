@@ -1,10 +1,10 @@
 import { expect } from '@playwright/test';
 import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
-import { init, seedCollection } from '../../memory-mongo';
-import { fillAutoComplete, query, setEditorText, test } from '../../utils';
+import { init, seedCollection } from '../memory-mongo';
+import { fillAutoComplete, query, setEditorText, test } from '../utils';
 import config from '../../config';
-import { DBSubmission } from '../../seeds/aiidprod/submissions';
+import { DBSubmission } from '../seeds/aiidprod/submissions';
 import { ObjectId } from 'mongodb';
 
 test.describe('Submitted reports', () => {
