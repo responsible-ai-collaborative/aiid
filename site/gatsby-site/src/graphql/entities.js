@@ -29,8 +29,6 @@ export const FIND_ENTITY = gql(`
   }
 `);
 
-// TODO: temporarily remove date_modified
-
 export const UPDATE_ENTITY = gql(`
   mutation UpdateEntity($filter: EntityFilterType!, $update: EntityUpdateType!) {
     updateOneEntity(filter: $filter, update: $update) {

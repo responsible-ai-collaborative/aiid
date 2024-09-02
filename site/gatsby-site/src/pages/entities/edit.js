@@ -211,6 +211,7 @@ function EditEntityPage(props) {
             initialValues={{
               ...entity,
             }}
+            enableReinitialize
           >
             {({
               values,

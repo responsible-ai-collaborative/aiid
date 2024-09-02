@@ -943,8 +943,10 @@ export type CreateVariantInputVariant = {
 
 export type CreateVariantPayload = {
   __typename?: 'CreateVariantPayload';
-  incident_id?: Maybe<Scalars['Int']['output']>;
-  report_number?: Maybe<Scalars['Int']['output']>;
+  /** The unique identifier for the incident. */
+  incident_id: Scalars['Int']['output'];
+  /** The unique report number associated with the incident. */
+  report_number: Scalars['Int']['output'];
 };
 
 /** Filter type for DateTime scalar */
@@ -3992,12 +3994,6 @@ export type ReportSortType = {
   url?: InputMaybe<SortType>;
 };
 
-export type ReportTranslation = {
-  __typename?: 'ReportTranslation';
-  text?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-};
-
 export type ReportTranslations = {
   __typename?: 'ReportTranslations';
   text?: Maybe<Scalars['String']['output']>;
@@ -5139,9 +5135,9 @@ export type User = {
 
 export type UserAdminDatum = {
   __typename?: 'UserAdminDatum';
-  creationDate?: Maybe<Scalars['DateTime']['output']>;
-  disabled?: Maybe<Scalars['Boolean']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
+  creationDate: Scalars['DateTime']['output'];
+  disabled: Scalars['Boolean']['output'];
+  email: Scalars['String']['output'];
   lastAuthenticationDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -5546,7 +5542,7 @@ export type FindUserQueryVariables = Exact<{
 }>;
 
 
-export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email?: string | null, disabled?: boolean | null, creationDate?: any | null, lastAuthenticationDate?: any | null } | null } | null };
+export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null };
 
 export type FindUsersByRoleQueryVariables = Exact<{
   role?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -5596,7 +5592,7 @@ export type CreateVariantMutationVariables = Exact<{
 }>;
 
 
-export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id?: number | null, report_number?: number | null } | null };
+export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id: number, report_number: number } | null };
 
 export type UpdateVariantMutationVariables = Exact<{
   filter: ReportFilterType;
