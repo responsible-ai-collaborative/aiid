@@ -18,7 +18,7 @@ urls.forEach(({ namespace, url }) => {
 
       const fieldListQuery = gql`
         {
-          taxa(query: { namespace_in: ["${namespace}"] }) {
+          taxa(filter: { namespace: {IN: ["${namespace}"] }  }) {
             namespace
             field_list {
               long_name
