@@ -104,7 +104,7 @@ export default function CheckListForm({
     error: generatedRisksErrors,
   } = useQuery(
     gql`
-      query {
+      query FindRisks {
         risks(input: { tags: [${searchTags.map((t) => `"${t}"`).join(', ')}] }) {
           tags
           title
