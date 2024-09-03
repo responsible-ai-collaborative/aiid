@@ -12,7 +12,9 @@ const urlsToTest = [
     url: blogPostUrl,
     title: `Join the Responsible AI Collaborative Founding Staff`,
     shareButtonSections: 1,
-    fbShareUrl: /https:\/\/www\.facebook\.com\/(share_channel\/\?link=https%3A%2F%2Fincidentdatabase\.ai%2Fblog%2Fjoin-raic%2F|login\/\?next=https%3A%2F%2Fwww\.facebook\.com%2Fshare_channel%2F%3Flink%3Dhttps%253A%252F%252Fincidentdatabase\.ai%252Fblog%252Fjoin-raic%252F%26)/
+    fbShareUrl: [
+      'https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fshare_channel%2F%3Flink%3Dhttps%253A%252F%252Fincidentdatabase.ai%252Fblog%252Fjoin-raic%252F%26',
+    ]
   },
 ];
 
@@ -22,7 +24,9 @@ if (!config.IS_EMPTY_ENVIRONMENT) {
     url: incidentUrl,
     title: 'Incident 3: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees',
     shareButtonSections: 1,
-    fbShareUrl: /https:\/\/www\.facebook\.com\/(share_channel\/\?link=https%3A%2F%2Fincidentdatabase\.ai%2F(cite%2F3%2F|blog%2Fjoin-raic%2F)|login\/\?next=https%3A%2F%2Fwww\.facebook\.com%2Fshare_channel%2F%3Flink%3Dhttps%253A%252F%252Fincidentdatabase\.ai%252Fblog%252Fjoin-raic%252F%26)/
+    fbShareUrl: [
+      'https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fshare_channel%2F%3Flink%3Dhttps%253A%252F%252Fincidentdatabase.ai%252Fcite%252F3%252F%26',
+    ]
   });
 }
 
@@ -91,7 +95,10 @@ test.describe('Social Share Buttons', () => {
 
       const popup = await popupPromise;
 
-      await expect(popup).toHaveURL(fbShareUrl);
+      expect(async () => {
+        const popupUrl = await popup.url();
+        await expect(fbShareUrl.some(url => popupUrl.includes(url))).toBeTruthy();
+      }).toPass();
     });
   });
 
