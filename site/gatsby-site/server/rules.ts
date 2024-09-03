@@ -15,10 +15,8 @@ export const isRole = (role: string) => rule()(
 
         const meetsAdmin = user?.roles.includes('admin');
 
-        const meetsSelf = role == 'self' && user?.id === (info.variableValues?.filter as any)?.userId?.EQ;
 
-
-        if (meetsRole || meetsAdmin || meetsSelf) {
+        if (meetsRole || meetsAdmin) {
 
             return true;
         }
