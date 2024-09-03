@@ -128,7 +128,7 @@ test.describe('Report History', () => {
 
     await waitForRequest('FindReportHistory');
 
-    await expect(page).toHaveURL('/cite/history/?report_number=3&incident_id=3');
+    await expect(page).toHaveURL('/cite/history/?report_number=376&incident_id=3');
 
     await page.goBack();
 
