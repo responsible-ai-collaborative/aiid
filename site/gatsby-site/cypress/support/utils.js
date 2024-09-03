@@ -17,11 +17,9 @@ export const getApolloClient = () => {
 
   const password = Cypress.env('e2ePassword');
 
-  const realmAppId = Cypress.env('realmAppId');
-
   const client = new ApolloClient({
     link: new HttpLink({
-      uri: `https://services.cloud.mongodb.com/api/client/v2.0/app/${realmAppId}/graphql`,
+      uri: `/api/graphql`,
 
       fetch: async (uri, options) => {
         options.headers.email = email;

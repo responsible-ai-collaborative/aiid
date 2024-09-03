@@ -9,23 +9,6 @@ const { gql } = require('@apollo/client');
 test.describe('Incidents', () => {
   const url = '/incidents/history/?incident_id=10';
 
-  let user;
-
-  test.beforeAll(async () => {
-    const response = await query({
-      query: gql`
-        {
-          user(filter: { first_name: { EQ: "Test" }, last_name: { EQ: "User" } }) {
-            userId
-            first_name
-            last_name
-          }
-        }
-      `,
-    });
-    user = response.data.user;
-  });
-
   test('Successfully loads', async ({ page }) => {
     await page.goto(url);
   });
@@ -129,7 +112,9 @@ test.describe('Incidents', () => {
   });
 
   test('Should restore an Incident previous version', async ({ page, login }) => {
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    
+    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+
     await page.goto(url);
 
     await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidentHistory', incidentHistory, 'FindIncidentHistory');
@@ -212,7 +197,7 @@ test.describe('Incidents', () => {
       AllegedDeployerOfAISystem: { link: initialVersion.AllegedDeployerOfAISystem },
       AllegedDeveloperOfAISystem: { link: initialVersion.AllegedDeveloperOfAISystem },
       AllegedHarmedOrNearlyHarmedParties: { link: initialVersion.AllegedHarmedOrNearlyHarmedParties },
-      editors: { link: initialVersion.editors.concat(user.userId) },
+      editors: { link: initialVersion.editors.concat(userId) },
     };
 
     delete updatedIncident._id;
@@ -230,8 +215,8 @@ test.describe('Incidents', () => {
       ...initialVersion,
       editor_notes: updatedIncident.editor_notes,
       epoch_date_modified: updatedIncident.epoch_date_modified,
-      editors: initialVersion.editors.concat(user.userId),
-      modifiedBy: user.userId,
+      editors: initialVersion.editors.concat(userId),
+      modifiedBy: userId,
     };
 
     delete expectedIncident._id;
@@ -244,7 +229,7 @@ test.describe('Incidents', () => {
 
   test('Should display the Version History details modal', async ({ page }) => {
 
-    test.slow();
+
 
     await page.goto(url);
 

@@ -1,7 +1,7 @@
 import { GraphQLFieldConfigMap } from "graphql";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
-import { isAdmin, isRole } from "../rules";
+import { isRole, isSelf } from "../rules";
 import { UserType } from "../types/user";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
@@ -17,10 +17,10 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
 export const permissions = {
     Query: {
-        user: isRole('self'),
+        user: isSelf(),
         users: isRole('incident_editor'), //TODO: this needs more work
     },
     Mutation: {
-        updateOneUser: isRole('self'),
+        updateOneUser: isSelf(),
     },
 }
