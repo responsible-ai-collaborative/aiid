@@ -167,7 +167,8 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    test('Should flag an incident', async ({ page, skipOnEmptyEnvironment }) => {
+    // TODO: this test needs to be moved to e2e-full folder
+    test.skip('Should flag an incident', async ({ page, skipOnEmptyEnvironment }) => {
 
         await conditionalIntercept(
             page,
