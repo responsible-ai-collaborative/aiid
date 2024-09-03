@@ -61,25 +61,41 @@ export default function NewsSearchPage() {
 
   const { data: submissionsData } = useQuery(
     gql`
-      query ExistingSubmissions($query: SubmissionQueryInput!) {
-        submissions(query: $query, limit: 9999) {
+      query ExistingSubmissions($filter: SubmissionFilterType!) {
+        submissions(filter: $filter) {
           url
         }
       }
     `,
-    { variables: { query: { url_in: newsArticleUrls } } }
+    {
+      variables: {
+        filter: {
+          url: {
+            IN: newsArticleUrls,
+          },
+        },
+      },
+    }
   );
 
   const { data: reportsData } = useQuery(
     gql`
-      query ExistingReports($query: ReportQueryInput!) {
-        reports(query: $query, limit: 9999) {
+      query ExistingReports($filter: ReportFilterType!) {
+        reports(filter: $filter) {
           report_number
           url
         }
       }
     `,
-    { variables: { query: { url_in: newsArticleUrls } } }
+    {
+      variables: {
+        filter: {
+          url: {
+            IN: newsArticleUrls,
+          },
+        },
+      },
+    }
   );
 
   const [updateCandidate] = useMutation(gql`
