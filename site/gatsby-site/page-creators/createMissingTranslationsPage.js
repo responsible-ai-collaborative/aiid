@@ -9,7 +9,6 @@ const readFile = util.promisify(fs.readFile);
 const readdir = util.promisify(fs.readdir);
 
 const createMissingTranslationsPage = async (graphql, createPage) => {
-  const translations = {};
 
   let allLocales = [];
 
@@ -28,24 +27,10 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
       const data = JSON.parse(json);
 
       for (const key of Object.keys(data)) {
-        translations[file] ||= {};
-        translations[file][key] ||= {};
-        translations[file][key][locale] = data[key];
 
-        translationEntries.push({ locale, file, key });
-      }
-    }
-  }
+        const translation = data[key];
 
-  const missingTranslations = {};
-
-  for (const file of Object.keys(translations)) {
-    for (const key of Object.keys(translations[file])) {
-      const localesWithTranslations = Object.keys(translations[file][key]);
-
-      if (localesWithTranslations.length < allLocales.length) {
-        missingTranslations[file] ||= {};
-        missingTranslations[file][key] ||= translations[file][key];
+        translationEntries.push({ locale, file, key, translation });
       }
     }
   }
@@ -53,7 +38,7 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
   createPage({
     path: '/meta/i18n',
     component: path.resolve('./src/templates/missingTranslations.js'),
-    context: { missingTranslations, allLocales, translationEntries },
+    context: { allLocales, translationEntries },
   });
 };
 
