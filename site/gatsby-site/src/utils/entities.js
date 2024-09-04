@@ -147,7 +147,7 @@ module.exports.makeIncidentsHash = (incidents) =>
     return hash;
   }, {});
 
-module.exports.makeEntitiesHash = (entities, entityRelationships) =>
+module.exports.makeEntitiesHash = (entities, entityRelationships = []) =>
   entities.reduce((hash, entity) => {
     entity.entityRelationships =
       entityRelationships?.filter(
