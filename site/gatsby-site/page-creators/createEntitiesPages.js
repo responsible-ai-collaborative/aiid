@@ -83,6 +83,7 @@ const createEntitiesPages = async (graphql, createPage) => {
     component: path.resolve('./src/templates/entities.js'),
     context: {
       entities,
+      entityRelationships: entityRelationships.nodes,
     },
   });
 };

@@ -259,6 +259,13 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         sortType: sortByCount,
       },
       {
+        title: t('Entity Relationships'),
+        accessor: 'entityRelationships',
+        Cell: EntitiesCell,
+        filter: entitiesFilter,
+        sortType: sortByCount,
+      },
+      {
         title: t('Incident Responses'),
         accessor: 'responses',
         Cell: ResponseCell,
