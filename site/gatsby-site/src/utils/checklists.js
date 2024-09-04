@@ -251,6 +251,7 @@ const exportCsv = (checklist, generatedRisks) => {
 
 const DeleteButton = (props) => (
   <button
+    data-testid="delete-risk"
     {...{
       ...props,
       className: `

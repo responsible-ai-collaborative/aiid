@@ -78,7 +78,7 @@ test.describe('Integrity', () => {
     const { data: { classifications } } = await query({
       query: gql`
         query {
-          classifications(limit: 999999) {
+          classifications {
             incidents {
               incident_id
             }
@@ -94,13 +94,13 @@ test.describe('Integrity', () => {
     const { data: { classifications, taxas } } = await query({
       query: gql`
         query {
-          taxas(limit: 999999) {
+          taxas {
             namespace
             field_list {
               short_name
             }
           }
-          classifications(limit: 999999) {
+          classifications {
             namespace
             attributes {
               short_name

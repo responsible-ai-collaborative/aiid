@@ -1031,8 +1031,63 @@ const items: DBClassification[] = [
         "notes": "",
         "publish": true,
         "reports": [],
-    }
+    },
 
+    {
+        namespace: "GMF",
+        publish: true,
+        notes: "",
+        attributes: [
+            {
+                short_name: "Known AI Goal",
+                value_json: "[\"Question Answering\"]"
+            },
+            {
+                short_name: "Known AI Goal Snippets",
+                value_json: "[{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"You can pose any question you like and be sure to receive an answer, wrapped in the authority of the algorithm rather than the soothsayer.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Question Answering\\\"]\"}]}]"
+            },
+            {
+                short_name: "Known AI Technology",
+                value_json: "[\"Distributional Learning\",\"Language Modeling\"]"
+            },
+            {
+                short_name: "Known AI Technology Snippets",
+                value_json: "[{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\" It has clear biases, telling you that America is “good” and that Somalia is “dangerous”; and it’s amenable to special pleading, noting that eating babies is “okay” as long as you are “really, really hungry.”\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Distributional Learning\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"You can pose any question you like and be sure to receive an answer, wrapped in the authority of the algorithm rather than the soothsayer.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Language Modeling\\\"]\"}]}]"
+            },
+            {
+                short_name: "Potential AI Technology",
+                value_json: "[\"Transformer\"]"
+            },
+            {
+                short_name: "Potential AI Technology Snippets",
+                value_json: "[{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"You can pose any question you like and be sure to receive an answer, wrapped in the authority of the algorithm rather than the soothsayer.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Transformer\\\"]\"}]}]"
+            },
+            {
+                short_name: "Known AI Technical Failure",
+                value_json: "[\"Distributional Bias\",\"Gaming Vulnerability\"]"
+            },
+            {
+                short_name: "Known AI Technical Failure Snippets",
+                value_json: "[{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"Ask Delphi is no different in this regard, and its training data incorporates some unusual sources, including a series of one-sentence prompts scraped from two subreddits: r/AmITheAsshole and r/Confessions.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Distributional Bias\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\" It has clear biases, telling you that America is “good” and that Somalia is “dangerous”; and it’s amenable to special pleading, noting that eating babies is “okay” as long as you are “really, really hungry.”\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Distributional Bias\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"Most of Ask Delphi’s judgements, though, aren’t so much ethically wrong as they are obviously influenced by their framing. Even very small changes to how you pose a particular quandary can flip the system’s judgement from condemnation to approval.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Gaming Vulnerability\\\"]\"}]}]"
+            },
+            {
+                short_name: "Potential AI Technical Failure",
+                value_json: "[\"Overfitting\",\"Robustness Failure\",\"Context Misidentification\",\"Limited Dataset\"]"
+            },
+            {
+                short_name: "Potential AI Technical Failure Snippets",
+                value_json: "[{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"Sometimes it’s obvious how to tip the scales. For example, the AI will tell you that “drunk driving” is wrong but that “having a few beers while driving because it hurts no-one” is a-okay. If you add the phrase “if it makes everyone happy” to the end of your statement, then the AI will smile beneficently on any immoral activity of your choice, up to and including genocide. Similarly, if you add “without apologizing” to the end of many benign descriptions, like “standing still” or “making pancakes,” it will assume you should have apologized and tells you that you’re being rude. Ask Delphi is a creature of context.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Overfitting\\\",\\\"Context Misidentification\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"Most of Ask Delphi’s judgements, though, aren’t so much ethically wrong as they are obviously influenced by their framing. Even very small changes to how you pose a particular quandary can flip the system’s judgement from condemnation to approval.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Overfitting\\\",\\\"Robustness Failure\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"Others found the system woefully inconsistent, illogical and offensive. \\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Robustness Failure\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"The folks behind the project drew on some eyebrow-raising sources to help train the AI, including the “Am I the Asshole?” subreddit, the “Confessions” subreddit, and the “Dear Abby” advice column, according to the paper the team behind Delphi published about the experiment.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Limited Dataset\\\"]\"}]},{\"attributes\":[{\"short_name\":\"Snippet Text\",\"value_json\":\"\\\"Ask Delphi is no different in this regard, and its training data incorporates some unusual sources, including a series of one-sentence prompts scraped from two subreddits: r/AmITheAsshole and r/Confessions.\\\"\"},{\"short_name\":\"Related Classifications\",\"value_json\":\"[\\\"Limited Dataset\\\"]\"}]}]"
+            },
+            {
+                short_name: "Potential AI Technical Failure Classification Discussion",
+                value_json: "\"Limited Dataset: US ethics only, data sourced from two subreddits and a column.\""
+            }
+        ],
+        incidents: [
+            1,
+        ],
+        reports: [],
+    },
 ]
 
 export default items;

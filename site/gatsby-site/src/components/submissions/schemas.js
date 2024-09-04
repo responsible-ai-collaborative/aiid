@@ -139,7 +139,7 @@ export const schema = yup.object().shape({
       message: "Incident Editor can't be longer than 200 characters",
     })
     .nullable(),
-  editor_notes: yup.string(),
+  editor_notes: yup.string().nullable(),
 });
 
 export const incidentSchema = schema.shape({
