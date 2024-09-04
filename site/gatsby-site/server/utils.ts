@@ -487,7 +487,7 @@ class LinkValidationError extends Error {
  * 
  * @async
  */
-async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Record<string, any>, updateObj: UpdateObj, context: Context): Promise<Record<string, unknown> | Error> {
+async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Record<string, any>, updateObj: UpdateObj, context: Context) {
 
     const parsedUpdate: any = {};
 
@@ -499,7 +499,6 @@ async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Recor
 
             const name = key.slice(0, -5);
             const field = fields[name];
-
 
             await (field.extensions!.relationship as any).linkValidation(updateArg, context);
 

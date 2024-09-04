@@ -1,8 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
-import gql from 'graphql-tag';
-
 import { FIND_CLASSIFICATION, UPSERT_CLASSIFICATION } from '../../graphql/classifications';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
@@ -14,6 +12,7 @@ import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
 import SubmitButton from 'components/ui/SubmitButton';
 import { uniq } from 'lodash';
+import { FIND_ENTITIES } from '../../graphql/entities';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, reportNumber, onSubmit, active },
@@ -45,18 +44,20 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     },
   }));
 
-  const incidentsQuery = incidentId ? { incidents: { incident_id: incidentId } } : {};
+  const incidentsQuery = incidentId ? { incidents: { EQ: incidentId } } : {};
 
-  const reportsQuery = reportNumber ? { reports: { report_number: reportNumber } } : {};
+  const reportsQuery = reportNumber ? { reports: { EQ: reportNumber } } : {};
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { ...incidentsQuery, ...reportsQuery }, namespace },
+    variables: { filter: { ...incidentsQuery, ...reportsQuery }, namespace: { EQ: namespace } },
     skip: !active,
   });
 
   //TODO: why does this fetch all classifications? 🤔
   const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { namespace: taxonomy.namespace } },
+    variables: {
+      filter: { namespace: { EQ: taxonomy.namespace } },
+    },
     skip: !active,
   });
 
@@ -71,13 +72,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       if (taxonomy.complete_entities) {
         setEntitiesData(
           await client.query({
-            query: gql`
-              query FindEntities {
-                entities {
-                  name
-                }
-              }
-            `,
+            query: FIND_ENTITIES,
           })
         );
       }
@@ -169,7 +164,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       );
 
       const data = {
-        __typename: undefined,
         notes: values.notes,
         publish: values.publish,
         attributes: attributes.map((a) => a),
@@ -201,12 +195,12 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       await upsertClassification({
         variables: {
-          query: {
+          filter: {
             ...incidentsQuery,
             ...reportsQuery,
-            namespace,
+            namespace: { EQ: namespace },
           },
-          data,
+          update: data,
         },
       });
     } catch (e) {

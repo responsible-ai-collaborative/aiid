@@ -55,7 +55,7 @@ function EditEntityPage(props) {
           update: {
             set: {
               name: values.name,
-              date_modified: new Date(),
+              date_modified: new Date().toISOString(),
             },
           },
         },
@@ -102,6 +102,7 @@ function EditEntityPage(props) {
             initialValues={{
               ...entity,
             }}
+            enableReinitialize
           >
             {({
               values,

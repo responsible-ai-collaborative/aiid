@@ -42,8 +42,7 @@ test.describe('Variants App', () => {
 
     test('Should Delete a Variant - Incident Editor user', async ({ page, login }) => {
 
-        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-        await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
 
@@ -60,9 +59,9 @@ test.describe('Variants App', () => {
 
     test('Should Approve a Variant - Incident Editor user', async ({ page, login }) => {
 
-        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-        await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
+        await init();
 
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
 
@@ -76,8 +75,9 @@ test.describe('Variants App', () => {
 
     test('Should Reject a Variant - Incident Editor user', async ({ page, login }) => {
 
-        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-        await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
+        await init();
+
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
 
@@ -91,8 +91,9 @@ test.describe('Variants App', () => {
 
     test('Should Edit a Variant - Incident Editor user', async ({ page, login }) => {
 
-        const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-        await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
+        await init();
+        
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
         const newDatePublished = '2000-01-01';
         const newText = 'New text example with more than 80 characters. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';

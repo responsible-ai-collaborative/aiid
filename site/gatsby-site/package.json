@@ -130,7 +130,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
+    "test:e2e:ci": "DEBUG=pw:webserver npx playwright test $TEST_FOLDER --shard=$SHARD_INDEX/$SHARD_TOTAL",
     "test:api": "jest --setupFiles dotenv/config --runInBand --forceExit",
     "test:api:ci": "jest --runInBand --forceExit",
     "codegen": "graphql-codegen --config codegen.ts",
