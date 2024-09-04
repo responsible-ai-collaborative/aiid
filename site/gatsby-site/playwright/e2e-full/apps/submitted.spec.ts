@@ -1,10 +1,10 @@
 import { expect } from '@playwright/test';
 import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
-import { init, seedCollection } from '../memory-mongo';
-import { fillAutoComplete, query, setEditorText, test } from '../utils';
-import config from '../config';
-import { DBSubmission } from '../seeds/aiidprod/submissions';
+import { init, seedCollection } from '../../memory-mongo';
+import { fillAutoComplete, query, setEditorText, test } from '../../utils';
+import config from '../../config';
+import { DBSubmission } from '../../seeds/aiidprod/submissions';
 import { ObjectId } from 'mongodb';
 
 test.describe('Submitted reports', () => {
@@ -562,7 +562,6 @@ test.describe('Submitted reports', () => {
     });
 
     test('Edits a submission - links to existing incident - Incident Data should be hidden', async ({ page, login }) => {
-
         await init();
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });

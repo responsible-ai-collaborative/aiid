@@ -20,8 +20,6 @@ test.describe('Edit report', () => {
 
   test('Should load and update report values', async ({ page, login }) => {
 
-    test.slow();
-
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     // TODO: delete once we implement the new report history
@@ -149,7 +147,7 @@ test.describe('Edit report', () => {
 
   test('Should load and update Issue values', async ({ page, login }) => {
 
-    test.slow();
+    
 
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
@@ -264,7 +262,7 @@ test.describe('Edit report', () => {
 
   test('Should link a report to another incident', async ({ page, login }) => {
 
-    test.slow();
+    
 
     const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
     await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
@@ -323,7 +321,7 @@ test.describe('Edit report', () => {
 
   test('Should convert an incident report to an issue', async ({ page, login }) => {
 
-    test.slow();
+    
 
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
