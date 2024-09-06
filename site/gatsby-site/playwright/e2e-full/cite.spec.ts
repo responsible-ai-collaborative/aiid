@@ -476,33 +476,33 @@ test.describe('Cite pages', () => {
     });
 
     test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+
+        await init();
+
+        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
 
         await page.goto('/cite/3');
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'UpsertSubscription',
-            {
-                data: {
-                    upsertOneSubscription: {
-                        _id: 'dummyIncidentId',
-                    },
-                },
-            },
-            'upsertSubscription'
-        );
-
         await page.locator('button:has-text("Notify Me of Updates")').click();
 
-        await waitForRequest('upsertSubscription');
+        await expect(page.locator('[data-cy="toast"]')).toHaveText(`You have successfully subscribed to updates on incident 3`);
 
-        await expect(page.locator('[data-cy="toast"]')).toBeVisible();
 
-        await expect(page.locator('[data-cy="toast"]')).toHaveText(
-            `You have successfully subscribed to updates on incident 3`
-        );
+        const { data } = await query({
+            query: gql`
+              query SubscriptionQuery($filter: SubscriptionFilterType!){
+                subscriptions(filter: $filter) {
+                  type
+                  incident_id {
+                    incident_id
+                  }
+                }
+              }
+            `,
+            variables: { filter: { userId: { EQ: userId } } },
+        });
+
+        expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
     });
 
     test('Should show proper entities card text', async ({ page }) => {
