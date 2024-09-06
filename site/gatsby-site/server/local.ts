@@ -50,6 +50,11 @@ import {
     permissions as taxaPermissions
 } from './fields/taxa';
 
+import {
+    queryFields as candidatesQueryFields,
+    mutationFields as candidatesMutationFields,
+    permissions as candidatesPermissions
+} from './fields/candidates';
 
 export const getSchema = () => {
 
@@ -68,6 +73,7 @@ export const getSchema = () => {
             ...submissionsQueryFields,
             ...classificationsQueryFields,
             ...taxaQueryFields,
+            ...candidatesQueryFields,
         }
     });
 
@@ -81,6 +87,7 @@ export const getSchema = () => {
             ...usersMutationFields,
             ...submissionsMutationFields,
             ...classificationsMutationFields,
+            ...candidatesMutationFields,
         }
     });
 
@@ -116,6 +123,7 @@ export const getSchema = () => {
                 ...submissionsPermissions.Query,
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
+                ...candidatesPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -126,6 +134,7 @@ export const getSchema = () => {
                 ...usersPermissions.Mutation,
                 ...submissionsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
+                ...candidatesPermissions.Mutation,
             },
         },
         {

@@ -28,8 +28,8 @@ export default function NewsSearchPage() {
 
   const { data: newsArticlesData, loading } = useQuery(
     gql`
-      query NewsArticles($query: CandidateQueryInput!) {
-        candidates(query: $query, limit: 9999) {
+      query NewsArticles($filter: CandidateFilterType!) {
+        candidates(filter: $filter) {
           title
           url
           similarity
@@ -43,17 +43,19 @@ export default function NewsSearchPage() {
     `,
     {
       variables: {
-        query: {
-          match: true,
-          date_published_in: Array(14)
-            .fill()
-            .map((e, i) =>
-              new Date(
-                new Date().getTime() - 86400000 * i // i days ago
-              )
-                .toISOString()
-                .slice(0, 10)
-            ),
+        filter: {
+          match: { EQ: true },
+          date_published: {
+            IN: Array(14)
+              .fill()
+              .map((e, i) =>
+                new Date(
+                  new Date().getTime() - 86400000 * i // i days ago
+                )
+                  .toISOString()
+                  .slice(0, 10)
+              ),
+          },
         },
       },
     }

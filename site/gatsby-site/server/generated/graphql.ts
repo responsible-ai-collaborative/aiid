@@ -98,25 +98,16 @@ export type BooleanNotFilter = {
 export type Candidate = {
   __typename?: 'Candidate';
   _id?: Maybe<Scalars['ObjectId']['output']>;
-  authors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  classification_similarity?: Maybe<Array<Maybe<CandidateClassification_Similarity>>>;
-  date_downloaded?: Maybe<Scalars['String']['output']>;
-  date_published?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
+  date_published: Scalars['String']['output'];
   dismissed?: Maybe<Scalars['Boolean']['output']>;
   embedding?: Maybe<CandidateEmbedding>;
-  epoch_date_downloaded?: Maybe<Scalars['Int']['output']>;
-  epoch_date_published?: Maybe<Scalars['Int']['output']>;
-  image_url?: Maybe<Scalars['String']['output']>;
-  language?: Maybe<Scalars['String']['output']>;
-  match: Scalars['Boolean']['output'];
+  match?: Maybe<Scalars['Boolean']['output']>;
   matching_entities?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   matching_harm_keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   matching_keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  plain_text?: Maybe<Scalars['String']['output']>;
   similarity?: Maybe<Scalars['Float']['output']>;
-  source_domain?: Maybe<Scalars['String']['output']>;
-  text?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
   url: Scalars['String']['output'];
 };
 
@@ -165,12 +156,24 @@ export type CandidateClassification_SimilarityUpdateInput = {
 export type CandidateEmbedding = {
   __typename?: 'CandidateEmbedding';
   from_text_hash?: Maybe<Scalars['String']['output']>;
+  source?: Maybe<Scalars['String']['output']>;
   vector?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
 };
 
 export type CandidateEmbeddingInsertInput = {
   from_text_hash?: InputMaybe<Scalars['String']['input']>;
   vector?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+};
+
+export type CandidateEmbeddingInsertType = {
+  source?: InputMaybe<Scalars['String']['input']>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+};
+
+export type CandidateEmbeddingObjectFilterType = {
+  opr?: InputMaybe<OprExists>;
+  source?: InputMaybe<StringFilter>;
+  vector?: InputMaybe<IntFilter>;
 };
 
 export type CandidateEmbeddingQueryInput = {
@@ -191,6 +194,17 @@ export type CandidateEmbeddingQueryInput = {
   vector_nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
 };
 
+export type CandidateEmbeddingSetObjectType = {
+  /** If set to true, the object would be overwriten entirely, including fields that are not specified. Non-null validation rules will apply. Once set to true, any child object will overwriten invariably of the value set to this field. */
+  _OVERWRITE?: InputMaybe<Scalars['Boolean']['input']>;
+  source?: InputMaybe<Scalars['String']['input']>;
+  vector?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+};
+
+export type CandidateEmbeddingSortType = {
+  source?: InputMaybe<SortType>;
+};
+
 export type CandidateEmbeddingUpdateInput = {
   from_text_hash?: InputMaybe<Scalars['String']['input']>;
   from_text_hash_unset?: InputMaybe<Scalars['Boolean']['input']>;
@@ -198,178 +212,52 @@ export type CandidateEmbeddingUpdateInput = {
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type CandidateInsertInput = {
+export type CandidateFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<CandidateFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<CandidateFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<CandidateFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
+  date_published?: InputMaybe<StringFilter>;
+  dismissed?: InputMaybe<BooleanFilter>;
+  embedding?: InputMaybe<CandidateEmbeddingObjectFilterType>;
+  match?: InputMaybe<BooleanFilter>;
+  matching_entities?: InputMaybe<StringFilter>;
+  matching_harm_keywords?: InputMaybe<StringFilter>;
+  matching_keywords?: InputMaybe<StringFilter>;
+  similarity?: InputMaybe<FloatFilter>;
+  title?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+};
+
+export type CandidateInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  classification_similarity?: InputMaybe<Array<InputMaybe<CandidateClassification_SimilarityInsertInput>>>;
-  date_downloaded?: InputMaybe<Scalars['String']['input']>;
-  date_published?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
+  date_published: Scalars['String']['input'];
   dismissed?: InputMaybe<Scalars['Boolean']['input']>;
-  embedding?: InputMaybe<CandidateEmbeddingInsertInput>;
-  epoch_date_downloaded?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published?: InputMaybe<Scalars['Int']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  language?: InputMaybe<Scalars['String']['input']>;
-  match: Scalars['Boolean']['input'];
+  embedding?: InputMaybe<CandidateEmbeddingInsertType>;
+  match?: InputMaybe<Scalars['Boolean']['input']>;
   matching_entities?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_harm_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  plain_text?: InputMaybe<Scalars['String']['input']>;
   similarity?: InputMaybe<Scalars['Float']['input']>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
   url: Scalars['String']['input'];
 };
 
-export type CandidateQueryInput = {
-  AND?: InputMaybe<Array<CandidateQueryInput>>;
-  OR?: InputMaybe<Array<CandidateQueryInput>>;
+export type CandidateSetType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  authors_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  classification_similarity?: InputMaybe<Array<InputMaybe<CandidateClassification_SimilarityQueryInput>>>;
-  classification_similarity_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  classification_similarity_in?: InputMaybe<Array<InputMaybe<CandidateClassification_SimilarityQueryInput>>>;
-  classification_similarity_nin?: InputMaybe<Array<InputMaybe<CandidateClassification_SimilarityQueryInput>>>;
-  date_downloaded?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_downloaded_gt?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_gte?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_downloaded_lt?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_lte?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_ne?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date_published?: InputMaybe<Scalars['String']['input']>;
-  date_published_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_published_gt?: InputMaybe<Scalars['String']['input']>;
-  date_published_gte?: InputMaybe<Scalars['String']['input']>;
-  date_published_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_published_lt?: InputMaybe<Scalars['String']['input']>;
-  date_published_lte?: InputMaybe<Scalars['String']['input']>;
-  date_published_ne?: InputMaybe<Scalars['String']['input']>;
-  date_published_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   dismissed?: InputMaybe<Scalars['Boolean']['input']>;
-  dismissed_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  dismissed_ne?: InputMaybe<Scalars['Boolean']['input']>;
-  embedding?: InputMaybe<CandidateEmbeddingQueryInput>;
-  embedding_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_downloaded?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_downloaded_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_downloaded_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_published?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_published_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_published_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  image_url_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url_gt?: InputMaybe<Scalars['String']['input']>;
-  image_url_gte?: InputMaybe<Scalars['String']['input']>;
-  image_url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  image_url_lt?: InputMaybe<Scalars['String']['input']>;
-  image_url_lte?: InputMaybe<Scalars['String']['input']>;
-  image_url_ne?: InputMaybe<Scalars['String']['input']>;
-  image_url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  language?: InputMaybe<Scalars['String']['input']>;
-  language_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  language_gt?: InputMaybe<Scalars['String']['input']>;
-  language_gte?: InputMaybe<Scalars['String']['input']>;
-  language_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  language_lt?: InputMaybe<Scalars['String']['input']>;
-  language_lte?: InputMaybe<Scalars['String']['input']>;
-  language_ne?: InputMaybe<Scalars['String']['input']>;
-  language_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  embedding?: InputMaybe<CandidateEmbeddingSetObjectType>;
   match?: InputMaybe<Scalars['Boolean']['input']>;
-  match_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  match_ne?: InputMaybe<Scalars['Boolean']['input']>;
   matching_entities?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_entities_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  matching_entities_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_entities_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_harm_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_harm_keywords_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  matching_harm_keywords_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_harm_keywords_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_keywords_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  matching_keywords_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_keywords_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  plain_text?: InputMaybe<Scalars['String']['input']>;
-  plain_text_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  plain_text_gt?: InputMaybe<Scalars['String']['input']>;
-  plain_text_gte?: InputMaybe<Scalars['String']['input']>;
-  plain_text_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  plain_text_lt?: InputMaybe<Scalars['String']['input']>;
-  plain_text_lte?: InputMaybe<Scalars['String']['input']>;
-  plain_text_ne?: InputMaybe<Scalars['String']['input']>;
-  plain_text_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   similarity?: InputMaybe<Scalars['Float']['input']>;
-  similarity_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  similarity_gt?: InputMaybe<Scalars['Float']['input']>;
-  similarity_gte?: InputMaybe<Scalars['Float']['input']>;
-  similarity_in?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
-  similarity_lt?: InputMaybe<Scalars['Float']['input']>;
-  similarity_lte?: InputMaybe<Scalars['Float']['input']>;
-  similarity_ne?: InputMaybe<Scalars['Float']['input']>;
-  similarity_nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  source_domain_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  source_domain_gt?: InputMaybe<Scalars['String']['input']>;
-  source_domain_gte?: InputMaybe<Scalars['String']['input']>;
-  source_domain_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  source_domain_lt?: InputMaybe<Scalars['String']['input']>;
-  source_domain_lte?: InputMaybe<Scalars['String']['input']>;
-  source_domain_ne?: InputMaybe<Scalars['String']['input']>;
-  source_domain_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  text_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  text_gt?: InputMaybe<Scalars['String']['input']>;
-  text_gte?: InputMaybe<Scalars['String']['input']>;
-  text_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  text_lt?: InputMaybe<Scalars['String']['input']>;
-  text_lte?: InputMaybe<Scalars['String']['input']>;
-  text_ne?: InputMaybe<Scalars['String']['input']>;
-  text_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   title?: InputMaybe<Scalars['String']['input']>;
-  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  title_gt?: InputMaybe<Scalars['String']['input']>;
-  title_gte?: InputMaybe<Scalars['String']['input']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title_lt?: InputMaybe<Scalars['String']['input']>;
-  title_lte?: InputMaybe<Scalars['String']['input']>;
-  title_ne?: InputMaybe<Scalars['String']['input']>;
-  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   url?: InputMaybe<Scalars['String']['input']>;
-  url_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  url_gt?: InputMaybe<Scalars['String']['input']>;
-  url_gte?: InputMaybe<Scalars['String']['input']>;
-  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  url_lt?: InputMaybe<Scalars['String']['input']>;
-  url_lte?: InputMaybe<Scalars['String']['input']>;
-  url_ne?: InputMaybe<Scalars['String']['input']>;
-  url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export enum CandidateSortByInput {
@@ -401,52 +289,20 @@ export enum CandidateSortByInput {
   IdDesc = '_ID_DESC'
 }
 
-export type CandidateUpdateInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  classification_similarity?: InputMaybe<Array<InputMaybe<CandidateClassification_SimilarityUpdateInput>>>;
-  classification_similarity_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_downloaded?: InputMaybe<Scalars['String']['input']>;
-  date_downloaded_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_published?: InputMaybe<Scalars['String']['input']>;
-  date_published_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  dismissed?: InputMaybe<Scalars['Boolean']['input']>;
-  dismissed_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  embedding?: InputMaybe<CandidateEmbeddingUpdateInput>;
-  embedding_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_downloaded?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_published?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  image_url_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  language?: InputMaybe<Scalars['String']['input']>;
-  language_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  match?: InputMaybe<Scalars['Boolean']['input']>;
-  match_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  matching_entities?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_entities_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  matching_harm_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_harm_keywords_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  matching_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  matching_keywords_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  plain_text?: InputMaybe<Scalars['String']['input']>;
-  plain_text_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  similarity?: InputMaybe<Scalars['Float']['input']>;
-  similarity_inc?: InputMaybe<Scalars['Float']['input']>;
-  similarity_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  source_domain_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  text_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  url_unset?: InputMaybe<Scalars['Boolean']['input']>;
+export type CandidateSortType = {
+  _id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
+  date_published?: InputMaybe<SortType>;
+  dismissed?: InputMaybe<SortType>;
+  embedding?: InputMaybe<CandidateEmbeddingSortType>;
+  match?: InputMaybe<SortType>;
+  similarity?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  url?: InputMaybe<SortType>;
+};
+
+export type CandidateUpdateType = {
+  set?: InputMaybe<CandidateSetType>;
 };
 
 export type Checklist = {
@@ -943,10 +799,8 @@ export type CreateVariantInputVariant = {
 
 export type CreateVariantPayload = {
   __typename?: 'CreateVariantPayload';
-  /** The unique identifier for the incident. */
-  incident_id: Scalars['Int']['output'];
-  /** The unique report number associated with the incident. */
-  report_number: Scalars['Int']['output'];
+  incident_id?: Maybe<Scalars['Int']['output']>;
+  report_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Filter type for DateTime scalar */
@@ -2282,6 +2136,102 @@ export type IncidentNlp_Similar_IncidentUpdateInput = {
   similarity_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type IncidentQueryInput = {
+  AND?: InputMaybe<Array<IncidentQueryInput>>;
+  AllegedDeployerOfAISystem_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  AllegedDeveloperOfAISystem_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  AllegedHarmedOrNearlyHarmedParties_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  OR?: InputMaybe<Array<IncidentQueryInput>>;
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
+  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
+  date?: InputMaybe<Scalars['String']['input']>;
+  date_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  date_gt?: InputMaybe<Scalars['String']['input']>;
+  date_gte?: InputMaybe<Scalars['String']['input']>;
+  date_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  date_lt?: InputMaybe<Scalars['String']['input']>;
+  date_lte?: InputMaybe<Scalars['String']['input']>;
+  date_ne?: InputMaybe<Scalars['String']['input']>;
+  date_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  description_gt?: InputMaybe<Scalars['String']['input']>;
+  description_gte?: InputMaybe<Scalars['String']['input']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_lt?: InputMaybe<Scalars['String']['input']>;
+  description_lte?: InputMaybe<Scalars['String']['input']>;
+  description_ne?: InputMaybe<Scalars['String']['input']>;
+  description_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  editor_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  editor_notes_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  editor_notes_gt?: InputMaybe<Scalars['String']['input']>;
+  editor_notes_gte?: InputMaybe<Scalars['String']['input']>;
+  editor_notes_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  editor_notes_lt?: InputMaybe<Scalars['String']['input']>;
+  editor_notes_lte?: InputMaybe<Scalars['String']['input']>;
+  editor_notes_ne?: InputMaybe<Scalars['String']['input']>;
+  editor_notes_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_similar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  editor_similar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editor_similar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  editors?: InputMaybe<Array<InputMaybe<UserQueryInput>>>;
+  editors_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  editors_in?: InputMaybe<Array<InputMaybe<UserQueryInput>>>;
+  editors_nin?: InputMaybe<Array<InputMaybe<UserQueryInput>>>;
+  embedding?: InputMaybe<IncidentEmbeddingQueryInput>;
+  embedding_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  epoch_date_modified_gt?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified_gte?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  epoch_date_modified_lt?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified_lte?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified_ne?: InputMaybe<Scalars['Int']['input']>;
+  epoch_date_modified_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  flagged_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  flagged_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  flagged_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
+  incident_id_gte?: InputMaybe<Scalars['Int']['input']>;
+  incident_id_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  incident_id_lt?: InputMaybe<Scalars['Int']['input']>;
+  incident_id_lte?: InputMaybe<Scalars['Int']['input']>;
+  incident_id_ne?: InputMaybe<Scalars['Int']['input']>;
+  incident_id_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentQueryInput>>>;
+  nlp_similar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  nlp_similar_incidents_in?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentQueryInput>>>;
+  nlp_similar_incidents_nin?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentQueryInput>>>;
+  reports_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  title_gt?: InputMaybe<Scalars['String']['input']>;
+  title_gte?: InputMaybe<Scalars['String']['input']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title_lt?: InputMaybe<Scalars['String']['input']>;
+  title_lte?: InputMaybe<Scalars['String']['input']>;
+  title_ne?: InputMaybe<Scalars['String']['input']>;
+  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  tsne?: InputMaybe<IncidentTsneQueryInput>;
+  tsne_exists?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type IncidentReportsRelationInput = {
   link: Array<InputMaybe<Scalars['Int']['input']>>;
 };
@@ -2621,7 +2571,6 @@ export type Mutation = {
   logReportHistory?: Maybe<LogReportHistoryPayload>;
   processNotifications?: Maybe<Scalars['Int']['output']>;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
-  replaceOneCandidate?: Maybe<Candidate>;
   replaceOneChecklist?: Maybe<Checklist>;
   replaceOneDuplicate?: Maybe<Duplicate>;
   replaceOneEntity?: Maybe<Entity>;
@@ -2678,7 +2627,9 @@ export type MutationCreateVariantArgs = {
 
 
 export type MutationDeleteManyCandidatesArgs = {
-  query?: InputMaybe<CandidateQueryInput>;
+  filter?: InputMaybe<CandidateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<CandidateSortType>;
 };
 
 
@@ -2720,7 +2671,9 @@ export type MutationDeleteManySubscriptionsArgs = {
 
 
 export type MutationDeleteOneCandidateArgs = {
-  query: CandidateQueryInput;
+  filter?: InputMaybe<CandidateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<CandidateSortType>;
 };
 
 
@@ -2793,7 +2746,7 @@ export type MutationGetUserArgs = {
 
 
 export type MutationInsertManyCandidatesArgs = {
-  data: Array<CandidateInsertInput>;
+  data: Array<InputMaybe<CandidateInsertType>>;
 };
 
 
@@ -2833,7 +2786,7 @@ export type MutationInsertManySubscriptionsArgs = {
 
 
 export type MutationInsertOneCandidateArgs = {
-  data: CandidateInsertInput;
+  data: CandidateInsertType;
 };
 
 
@@ -2907,12 +2860,6 @@ export type MutationPromoteSubmissionToReportArgs = {
 };
 
 
-export type MutationReplaceOneCandidateArgs = {
-  data: CandidateInsertInput;
-  query?: InputMaybe<CandidateQueryInput>;
-};
-
-
 export type MutationReplaceOneChecklistArgs = {
   data: ChecklistInsertInput;
   query?: InputMaybe<ChecklistQueryInput>;
@@ -2937,6 +2884,11 @@ export type MutationReplaceOneHistory_ReportArgs = {
 };
 
 
+export type MutationReplaceOneIncidentArgs = {
+  query?: InputMaybe<IncidentQueryInput>;
+};
+
+
 export type MutationReplaceOneNotificationArgs = {
   data: NotificationInsertInput;
   query?: InputMaybe<NotificationQueryInput>;
@@ -2949,9 +2901,14 @@ export type MutationReplaceOneSubscriptionArgs = {
 };
 
 
+export type MutationReplaceOneUserArgs = {
+  query?: InputMaybe<UserQueryInput>;
+};
+
+
 export type MutationUpdateManyCandidatesArgs = {
-  query?: InputMaybe<CandidateQueryInput>;
-  set: CandidateUpdateInput;
+  filter: CandidateFilterType;
+  update: CandidateUpdateType;
 };
 
 
@@ -3004,8 +2961,8 @@ export type MutationUpdateManySubscriptionsArgs = {
 
 
 export type MutationUpdateOneCandidateArgs = {
-  query?: InputMaybe<CandidateQueryInput>;
-  set: CandidateUpdateInput;
+  filter: CandidateFilterType;
+  update: CandidateUpdateType;
 };
 
 
@@ -3087,8 +3044,8 @@ export type MutationUpdateOneUserArgs = {
 
 
 export type MutationUpsertOneCandidateArgs = {
-  data: CandidateInsertInput;
-  query?: InputMaybe<CandidateQueryInput>;
+  filter: CandidateFilterType;
+  update: CandidateInsertType;
 };
 
 
@@ -3206,6 +3163,7 @@ export type NotificationQueryInput = {
   type_lte?: InputMaybe<Scalars['String']['input']>;
   type_ne?: InputMaybe<Scalars['String']['input']>;
   type_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  userId?: InputMaybe<UserQueryInput>;
   userId_exists?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -3335,7 +3293,7 @@ export type Query = {
   /** Custom scalar for MongoDB ObjectID */
   ObjectId?: Maybe<Scalars['ObjectId']['output']>;
   candidate?: Maybe<Candidate>;
-  candidates: Array<Maybe<Candidate>>;
+  candidates?: Maybe<Array<Maybe<Candidate>>>;
   checklist?: Maybe<Checklist>;
   checklists: Array<Maybe<Checklist>>;
   classification?: Maybe<Classification>;
@@ -3369,14 +3327,16 @@ export type Query = {
 
 
 export type QueryCandidateArgs = {
-  query?: InputMaybe<CandidateQueryInput>;
+  filter?: InputMaybe<CandidateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<CandidateSortType>;
 };
 
 
 export type QueryCandidatesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<CandidateQueryInput>;
-  sortBy?: InputMaybe<CandidateSortByInput>;
+  filter?: InputMaybe<CandidateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<CandidateSortType>;
 };
 
 
@@ -3895,6 +3855,12 @@ export type ReportSortType = {
   text?: InputMaybe<SortType>;
   title?: InputMaybe<SortType>;
   url?: InputMaybe<SortType>;
+};
+
+export type ReportTranslation = {
+  __typename?: 'ReportTranslation';
+  text?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type ReportTranslations = {
@@ -4441,6 +4407,7 @@ export type SubscriptionQueryInput = {
   _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
   _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
   entityId_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  incident_id?: InputMaybe<IncidentQueryInput>;
   incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
   type_exists?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4451,6 +4418,7 @@ export type SubscriptionQueryInput = {
   type_lte?: InputMaybe<Scalars['String']['input']>;
   type_ne?: InputMaybe<Scalars['String']['input']>;
   type_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  userId?: InputMaybe<UserQueryInput>;
   userId_exists?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -5038,9 +5006,9 @@ export type User = {
 
 export type UserAdminDatum = {
   __typename?: 'UserAdminDatum';
-  creationDate: Scalars['DateTime']['output'];
-  disabled: Scalars['Boolean']['output'];
-  email: Scalars['String']['output'];
+  creationDate?: Maybe<Scalars['DateTime']['output']>;
+  disabled?: Maybe<Scalars['Boolean']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
   lastAuthenticationDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -5053,6 +5021,51 @@ export type UserFilterType = {
   last_name?: InputMaybe<StringFilter>;
   roles?: InputMaybe<StringFilter>;
   userId?: InputMaybe<StringFilter>;
+};
+
+export type UserQueryInput = {
+  AND?: InputMaybe<Array<UserQueryInput>>;
+  OR?: InputMaybe<Array<UserQueryInput>>;
+  _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
+  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
+  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
+  first_name?: InputMaybe<Scalars['String']['input']>;
+  first_name_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  first_name_gt?: InputMaybe<Scalars['String']['input']>;
+  first_name_gte?: InputMaybe<Scalars['String']['input']>;
+  first_name_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  first_name_lt?: InputMaybe<Scalars['String']['input']>;
+  first_name_lte?: InputMaybe<Scalars['String']['input']>;
+  first_name_ne?: InputMaybe<Scalars['String']['input']>;
+  first_name_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  last_name?: InputMaybe<Scalars['String']['input']>;
+  last_name_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  last_name_gt?: InputMaybe<Scalars['String']['input']>;
+  last_name_gte?: InputMaybe<Scalars['String']['input']>;
+  last_name_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  last_name_lt?: InputMaybe<Scalars['String']['input']>;
+  last_name_lte?: InputMaybe<Scalars['String']['input']>;
+  last_name_ne?: InputMaybe<Scalars['String']['input']>;
+  last_name_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  roles?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  roles_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  roles_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  roles_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+  userId_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  userId_gt?: InputMaybe<Scalars['String']['input']>;
+  userId_gte?: InputMaybe<Scalars['String']['input']>;
+  userId_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  userId_lt?: InputMaybe<Scalars['String']['input']>;
+  userId_lte?: InputMaybe<Scalars['String']['input']>;
+  userId_ne?: InputMaybe<Scalars['String']['input']>;
+  userId_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type UserSetType = {
@@ -5415,7 +5428,7 @@ export type FindUserQueryVariables = Exact<{
 }>;
 
 
-export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null };
+export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email?: string | null, disabled?: boolean | null, creationDate?: any | null, lastAuthenticationDate?: any | null } | null } | null };
 
 export type FindUsersByRoleQueryVariables = Exact<{
   role?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -5465,7 +5478,7 @@ export type CreateVariantMutationVariables = Exact<{
 }>;
 
 
-export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id: number, report_number: number } | null };
+export type CreateVariantMutation = { __typename?: 'Mutation', createVariant?: { __typename?: 'CreateVariantPayload', incident_id?: number | null, report_number?: number | null } | null };
 
 export type UpdateVariantMutationVariables = Exact<{
   filter: ReportFilterType;
