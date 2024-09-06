@@ -123,7 +123,7 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000",
+    "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
     "build": "gatsby build --prefix-paths",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
@@ -172,6 +172,7 @@
     "jest-cli": "^29.7.0",
     "lint-staged": "^10.5.3",
     "mongodb-memory-server": "^9.1.8",
+    "netlify-cli": "^17.35.0",
     "netlify-plugin-cypress": "^2.2.1",
     "postcss": "^8.4.31",
     "prettier": "^2.2.1",

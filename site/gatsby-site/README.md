@@ -60,15 +60,7 @@ To set up a local development environment for the AIID project, follow these ste
    npm run start:memory-mongo
    ```
 
-5. **Install Netlify CLI**
-
-   Ensure that you have the Netlify CLI installed globally on your machine. If not, install it using npm:
-
-   ```bash
-   npm install -g netlify-cli
-   ```
-
-6. **Start Gatsby and Netlify Development Server**
+5. **Start Gatsby and Netlify Development Server**
 
    Finally, start the Gatsby development server along with Netlify dev using:
 
