@@ -13,8 +13,6 @@ test.describe('Cite pages', () => {
 
     const url = `/cite/${incidentId}`;
 
-    let user: { userId: string };
-
     let lastIncidentId: number;
 
     test.beforeAll(async ({ request }) => {
@@ -26,11 +24,6 @@ test.describe('Cite pages', () => {
         const response = await query({
             query: gql`
                         {
-                            user(filter: { first_name: {EQ: "Test"}, last_name: {EQ: "User" }}) {
-                                userId
-                                first_name
-                                last_name
-                            }
                             incidents(sort: {incident_id: DESC}, pagination: {limit: 1}) {
                                 incident_id
                             }
@@ -38,7 +31,6 @@ test.describe('Cite pages', () => {
                     `,
         });
 
-        user = response.data.user;
         lastIncidentId = response.data.incidents[0].incident_id;
     });
 
@@ -545,8 +537,6 @@ test.describe('Cite pages', () => {
     });
 
     test('Should link similar incidents', async ({ page, login }) => {
-
-        test.slow();
 
         await init();
 

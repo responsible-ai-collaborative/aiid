@@ -46,8 +46,8 @@ const ignoreTypes = [
     'ReportUserRelationInput',
     'CreateVariantInput',
 
-    'Incident',
-    'IncidentQueryInput',
+    // 'Incident',
+    // 'IncidentQueryInput',
     'IncidentUpdateInput',
     'IncidentInsertInput',
     'IncidentEditorsRelationInput',
@@ -59,8 +59,8 @@ const ignoreTypes = [
     'EntityUpdateInput',
     'EntityInsertInput',
 
-    'User',
-    'UserQueryInput',
+    // 'User',
+    // 'UserQueryInput',
     'UserUpdateInput',
     'UserInsertInput',
 
@@ -145,6 +145,15 @@ const ignoredMutations = [
     'updateManyClassifications',
     'upsertOneClassification',
 
+    'deleteOneClassification',
+    'deleteManyClassifications',
+    'insertOneClassification',
+    'insertManyClassifications',
+    'updateOneClassification',
+    'updateManyClassifications',
+    'upsertOneClassification',
+    'upsertManyClassifications',
+
     'deleteOneReport',
     'deleteManyReports',
     'insertOneReport',
@@ -215,7 +224,7 @@ const ignoredMutations = [
     'insertManyDuplicates',
     'updateOneDuplicate',
     'updateManyDuplicates',
-    'upsertOneDuplicate',``
+    'upsertOneDuplicate',
 ]
 
 /**
