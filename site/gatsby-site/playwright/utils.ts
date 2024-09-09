@@ -19,6 +19,7 @@ type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
     login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string>,
+    retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
 };
 
 const getUserIdFromLocalStorage = async (page: Page) => {
@@ -88,7 +89,20 @@ export const test = base.extend<TestFixtures>({
             // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
             // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
         })
-    }
+    },
+
+    retryDelay: [async ({ }, use, testInfo) => {
+
+        if (testInfo.retry > 0) {
+            const delayDuration = 1000 * testInfo.retry;
+
+            console.log(`Adding delay of ${delayDuration} ms for retry count ${testInfo.retry}`);
+
+            await new Promise(resolve => setTimeout(resolve, delayDuration));
+        }
+
+        await use();
+    }, { auto: true }],
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
