@@ -112,28 +112,27 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                 ${singleColumn ? 'grid-cols-[1fr_3fr]' : 'lg:grid-cols-[repeat(4,_auto)]'}
               `}
               >
-                {canEdit && (
-                  <div key={'NOTES'} className="tw-classification-container">
-                    <div className="tw-field">
-                      <Tooltip content={'Admin notes'}>
-                        <p>{'Notes'}</p>
-                      </Tooltip>
-                    </div>
-                    <Markdown>{taxonomy.notes}</Markdown>
-                  </div>
-                )}
-                {(showAllClassifications ? taxonomy.classificationsArray : topClassifications)
-                  .filter(
-                    (field) => !(field.renderAs === 'description_toggle' && field.value == 'No')
-                  )
-                  .map((field) => {
-                    if (field.renderAs === 'description_toggle') {
-                      return { ...field, value: field.longDescription };
-                    }
+                {['dummy-notes']
+                  .concat(
+                    (showAllClassifications
+                      ? taxonomy.classificationsArray
+                      : topClassifications.slice(canEdit ? 1 : 0)
+                    )
+                      .filter(
+                        (field) => !(field.renderAs === 'description_toggle' && field.value == 'No')
+                      )
+                      .map((field) => {
+                        if (field.renderAs === 'description_toggle') {
+                          return { ...field, value: field.longDescription };
+                        }
 
-                    return field;
-                  })
+                        return field;
+                      })
+                  )
+                  .filter((field) => canEdit || field !== 'dummy-notes')
                   .map((field, i) => {
+                    const showNotes = field === 'dummy-notes';
+
                     const isFirst = singleColumn ? i == 0 : i < 2;
 
                     const isLast = singleColumn
@@ -154,11 +153,15 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                           ${isLast ? 'border-b-0' : ''} 
                         `}
                         >
-                          <Tooltip content={field.shortDescription}>
-                            <p>
-                              {field.name} {field.renderAs}
-                            </p>
-                          </Tooltip>
+                          {showNotes ? (
+                            <p>Notes</p>
+                          ) : (
+                            <Tooltip content={field.shortDescription}>
+                              <p>
+                                {field.name} {field.renderAs}
+                              </p>
+                            </Tooltip>
+                          )}
                         </div>
                         <Markdown
                           className={`
@@ -172,7 +175,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                           ${isLast ? 'border-b-0' : ''}
                         `}
                         >
-                          {field.value}
+                          {showNotes ? taxonomy.notes : field.value}
                         </Markdown>
                       </>
                     );
