@@ -84,6 +84,11 @@ const ignoreTypes = [
     'TaxaQueryInput',
     'TaxaUpdateInput',
     'TaxaInsertInput',
+
+    'Candidate',
+    'CandidateQueryInput',
+    'CandidateUpdateInput',
+    'CandidateInsertInput',
 ];
 
 const ignoredQueries = [
@@ -110,6 +115,9 @@ const ignoredQueries = [
 
     'taxa',
     'taxas',
+  
+    'candidate',
+    'candidates'
 ];
 
 const ignoredMutations = [
@@ -191,6 +199,15 @@ const ignoredMutations = [
     'updateManyTaxas',
     'upsertOneTaxa',
     'upsertManyTaxas',
+
+    'deleteOneCandidates',
+    'deleteManyCandidates',
+    'insertOneCandidate',
+    'insertManyCandidates',
+    'updateOneCandidate',
+    'updateManyCandidates',
+    'upsertOneCandidate',
+    'upsertManyCandidates',
 ]
 
 /**
