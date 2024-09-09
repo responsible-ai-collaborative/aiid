@@ -55,6 +55,12 @@ const CandidateType = new GraphQLObjectType({
     dismissed: {
       type: GraphQLBoolean,
     },
+    text: {
+      type: GraphQLString,
+    },
+    plain_text: {
+      type: GraphQLString,
+    },
   },
 });
 

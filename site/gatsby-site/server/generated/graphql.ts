@@ -106,7 +106,9 @@ export type Candidate = {
   matching_entities?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   matching_harm_keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   matching_keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  plain_text?: Maybe<Scalars['String']['output']>;
   similarity?: Maybe<Scalars['Float']['output']>;
+  text?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   url: Scalars['String']['output'];
 };
@@ -225,7 +227,9 @@ export type CandidateFilterType = {
   matching_entities?: InputMaybe<StringFilter>;
   matching_harm_keywords?: InputMaybe<StringFilter>;
   matching_keywords?: InputMaybe<StringFilter>;
+  plain_text?: InputMaybe<StringFilter>;
   similarity?: InputMaybe<FloatFilter>;
+  text?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   url?: InputMaybe<StringFilter>;
 };
@@ -240,7 +244,9 @@ export type CandidateInsertType = {
   matching_entities?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_harm_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  plain_text?: InputMaybe<Scalars['String']['input']>;
   similarity?: InputMaybe<Scalars['Float']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
   url: Scalars['String']['input'];
 };
@@ -255,7 +261,9 @@ export type CandidateSetType = {
   matching_entities?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_harm_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   matching_keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  plain_text?: InputMaybe<Scalars['String']['input']>;
   similarity?: InputMaybe<Scalars['Float']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;
 };
@@ -296,7 +304,9 @@ export type CandidateSortType = {
   dismissed?: InputMaybe<SortType>;
   embedding?: InputMaybe<CandidateEmbeddingSortType>;
   match?: InputMaybe<SortType>;
+  plain_text?: InputMaybe<SortType>;
   similarity?: InputMaybe<SortType>;
+  text?: InputMaybe<SortType>;
   title?: InputMaybe<SortType>;
   url?: InputMaybe<SortType>;
 };

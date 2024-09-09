@@ -18,6 +18,7 @@ import { useUserContext } from 'contexts/userContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import useToast, { SEVERITY } from '../../hooks/useToast';
 
 export default function NewsSearchPage() {
   const { t } = useTranslation(['submit']);
@@ -38,6 +39,7 @@ export default function NewsSearchPage() {
           matching_entities
           date_published
           dismissed
+          text
         }
       }
     `,
@@ -101,8 +103,8 @@ export default function NewsSearchPage() {
   );
 
   const [updateCandidate] = useMutation(gql`
-    mutation UpdateCandidate($query: CandidateQueryInput!, $set: CandidateUpdateInput!) {
-      updateOneCandidate(query: $query, set: $set) {
+    mutation UpdateCandidate($filter: CandidateFilterType!, $update: CandidateUpdateType!) {
+      updateOneCandidate(filter: $filter, update: $update) {
         url
       }
     }
@@ -275,6 +277,8 @@ function CandidateCard({
   dismissed = false,
   existingSubmissions,
 }) {
+  const addToast = useToast();
+
   const { isRole } = useUserContext();
 
   const localizePath = useLocalizePath();
@@ -347,18 +351,23 @@ function CandidateCard({
               {isRole('incident_editor') &&
                 (dismissed ? (
                   <Dropdown.Item
-                    onClick={() => {
+                    onClick={async () => {
                       setDismissedArticles((dismissedArticles) => {
                         const updatedValue = { ...dismissedArticles };
 
                         updatedValue[newsArticle.url] = false;
                         return updatedValue;
                       });
-                      updateCandidate({
+                      await updateCandidate({
                         variables: {
-                          query: { url: newsArticle.url },
-                          set: { dismissed: false },
+                          filter: { url: { EQ: newsArticle.url } },
+                          update: { set: { dismissed: false } },
                         },
+                      });
+
+                      addToast({
+                        message: `Restored article: ${newsArticle.url}`,
+                        severity: SEVERITY.success,
                       });
                     }}
                   >
@@ -372,18 +381,22 @@ function CandidateCard({
                   </Dropdown.Item>
                 ) : (
                   <Dropdown.Item
-                    onClick={() => {
+                    onClick={async () => {
                       setDismissedArticles((dismissedArticles) => {
                         const updatedValue = { ...dismissedArticles };
 
                         updatedValue[newsArticle.url] = true;
                         return updatedValue;
                       });
-                      updateCandidate({
+                      await updateCandidate({
                         variables: {
-                          query: { url: newsArticle.url },
-                          set: { dismissed: true },
+                          filter: { url: { EQ: newsArticle.url } },
+                          update: { set: { dismissed: true } },
                         },
+                      });
+                      addToast({
+                        message: `Dismissed article: ${newsArticle.url}`,
+                        severity: SEVERITY.success,
                       });
                     }}
                   >
