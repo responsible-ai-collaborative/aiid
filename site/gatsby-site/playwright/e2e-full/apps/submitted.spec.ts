@@ -371,7 +371,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
@@ -398,7 +398,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -454,7 +454,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = Array.from(Array(10).keys()).map(i => {
 
@@ -523,7 +523,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),

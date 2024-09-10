@@ -11,14 +11,6 @@ export const UPSERT_SUBSCRIPTION = gql(`
   }
 `);
 
-export const UPDATE_SUBSCRIPTION = gql(`
-  mutation UpdateSubscription($filter: SubscriptionFilterType!, $update: SubscriptionUpdateType!) {
-    updateOneSubscription(filter: $filter, update: $update) {
-      _id
-    }
-  }
-`);
-
 export const FIND_SUBSCRIPTIONS = gql(`
   query FindSubscriptions($filter: SubscriptionFilterType!) {
     subscriptions(filter: $filter) {
@@ -68,6 +60,9 @@ export const FIND_USER_SUBSCRIPTIONS = gql(`
       entityId {
         entity_id
         name
+      }
+      userId {
+        userId
       }
       type
     }

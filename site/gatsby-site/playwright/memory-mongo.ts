@@ -12,6 +12,7 @@ import taxa from './seeds/aiidprod/taxa';
 import duplicates from './seeds/aiidprod/duplicates';
 
 import users from './seeds/customData/users';
+import subscriptions from './seeds/customData/subscriptions';
 
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
@@ -28,6 +29,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         },
         customData: {
             users,
+            subscriptions,
         },
         translations: {
             reports_es,

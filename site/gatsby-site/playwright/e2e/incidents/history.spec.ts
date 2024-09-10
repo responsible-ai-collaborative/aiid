@@ -113,7 +113,7 @@ test.describe('Incidents', () => {
 
   test('Should restore an Incident previous version', async ({ page, login }) => {
     
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await page.goto(url);
 

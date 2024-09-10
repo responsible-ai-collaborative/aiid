@@ -61,14 +61,12 @@ export const isSubscriptionOwner = () => rule()(
 
         const { user } = context;
 
-        const meetsSelfFilter = args.filter?.userId?.EQ === user?.id;
-
         const meetsOwnership = subscriptions.every(s => s.userId === user?.id);
 
         const meetsAdmin = user?.roles.includes('admin');
 
 
-        if (meetsAdmin || meetsOwnership || meetsSelfFilter) {
+        if (meetsAdmin || meetsOwnership) {
 
             return true;
         }

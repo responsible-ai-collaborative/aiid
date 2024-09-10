@@ -471,7 +471,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
 
         await page.goto('/cite/3');
 

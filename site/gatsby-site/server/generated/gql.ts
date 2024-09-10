@@ -53,7 +53,6 @@ const documents = {
     "\n  mutation InsertSubmission($data: SubmissionInsertType!) {\n    insertOneSubmission(data: $data) {\n      _id\n    }\n  }\n": types.InsertSubmissionDocument,
     "\n  mutation PromoteSubmission($input: PromoteSubmissionToReportInput!) {\n    promoteSubmissionToReport(input: $input) {\n      incident_ids\n      report_number\n    }\n  }\n": types.PromoteSubmissionDocument,
     "\n  mutation UpsertSubscription(\n    $filter: SubscriptionFilterType!\n    $update: SubscriptionInsertType!\n  ) {\n    upsertOneSubscription(filter: $filter, update: $update) {\n      _id\n    }\n  }\n": types.UpsertSubscriptionDocument,
-    "\n  mutation UpdateSubscription($filter: SubscriptionFilterType!, $update: SubscriptionUpdateType!) {\n    updateOneSubscription(filter: $filter, update: $update) {\n      _id\n    }\n  }\n": types.UpdateSubscriptionDocument,
     "\n  query FindSubscriptions($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      userId {\n        userId\n      }\n    }\n  }\n": types.FindSubscriptionsDocument,
     "\n  query FindSubscriptionsFull($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      _id\n      incident_id {\n        incident_id\n        title\n      }\n      entityId {\n        entity_id\n        name\n      }\n      type\n      userId {\n        userId\n      }\n    }\n  }\n": types.FindSubscriptionsFullDocument,
     "\n  mutation DeleteSubscriptions($filter: SubscriptionFilterType!) {\n    deleteManySubscriptions(filter: $filter) {\n      deletedCount\n    }\n  }\n": types.DeleteSubscriptionsDocument,
@@ -245,10 +244,6 @@ export function gql(source: "\n  mutation PromoteSubmission($input: PromoteSubmi
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation UpsertSubscription(\n    $filter: SubscriptionFilterType!\n    $update: SubscriptionInsertType!\n  ) {\n    upsertOneSubscription(filter: $filter, update: $update) {\n      _id\n    }\n  }\n"): (typeof documents)["\n  mutation UpsertSubscription(\n    $filter: SubscriptionFilterType!\n    $update: SubscriptionInsertType!\n  ) {\n    upsertOneSubscription(filter: $filter, update: $update) {\n      _id\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation UpdateSubscription($filter: SubscriptionFilterType!, $update: SubscriptionUpdateType!) {\n    updateOneSubscription(filter: $filter, update: $update) {\n      _id\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateSubscription($filter: SubscriptionFilterType!, $update: SubscriptionUpdateType!) {\n    updateOneSubscription(filter: $filter, update: $update) {\n      _id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

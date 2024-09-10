@@ -155,16 +155,16 @@ const fixture: Fixture<Subscription, SubscriptionUpdateType, SubscriptionInsertT
         }
     },
     testSingular: {
-        allowed: [subscriber],
-        denied: [anonymous],
+        allowed: [subscriber, admin],
+        denied: [anonymous, editor],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: {
             _id: "60a7c5b7b4f5b8a6d8f9c7e4",
         }
     },
     testPluralFilter: {
-        allowed: [subscriber],
-        denied: [anonymous],
+        allowed: [subscriber, admin],
+        denied: [anonymous, editor],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
@@ -175,8 +175,8 @@ const fixture: Fixture<Subscription, SubscriptionUpdateType, SubscriptionInsertT
         ]
     },
     testPluralSort: {
-        allowed: [subscriber],
-        denied: [anonymous],
+        allowed: [subscriber, admin],
+        denied: [anonymous, editor],
         sort: { type: "ASC" },
         filter: { userId: { EQ: subscriber.userId } },
         result: [
@@ -190,7 +190,7 @@ const fixture: Fixture<Subscription, SubscriptionUpdateType, SubscriptionInsertT
     },
     testPluralPagination: {
         allowed: [admin],
-        denied: [subscriber, anonymous],
+        denied: [subscriber, editor, anonymous],
         pagination: { limit: 1, skip: 2 },
         sort: { _id: "ASC" },
         result: [
