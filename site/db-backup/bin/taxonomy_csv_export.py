@@ -49,7 +49,12 @@ def taxonomy_csv_export(namespace, taxa_file, classification_file, target_folder
             published_value = classification_item.get('publish', '')
             
             # Create a dictionary to quickly access attribute values by "short_name"
-            attribute_dict = {attr['short_name']: json.loads(attr['value_json']) if 'value_json' in attr else '' for attr in attributes}
+            attribute_dict = {}
+            for attr in attributes:
+                value = json.loads(attr['value_json']) if 'value_json' in attr else ''
+                if isinstance(value, list):
+                    value = ', '.join(map(str, value))
+                attribute_dict[attr['short_name']] = value
             
             # Get the corresponding values for each header
             row = [attribute_dict.get(header, '') for header in headers]
