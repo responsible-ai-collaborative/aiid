@@ -177,7 +177,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=true]').should('exist');
   });
 
-  it('Incident Updates: Should not display user subscriptions to deleted Incidents', () => {
+  maybeIt('Incident Updates: Should not display user subscriptions to deleted Incidents', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
