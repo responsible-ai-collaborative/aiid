@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-export default async function handler(req, res) {
-  const { text, max_retries, num, includeSimilar = true } = JSON.parse(req.body);
+exports.handler = async function (event) {
+  const { text, max_retries, num, includeSimilar = true } = JSON.parse(event.body);
 
   // Example result
   // {
@@ -14,6 +14,7 @@ export default async function handler(req, res) {
   //      "msg": "[(0.9972602725028992, 10), (0.996686577796936, 73), (0.9966337084770203, 134)]",
   //      "best_url": "https://incidentdatabase.ai/apps/discover?display=details&incident_id=10"
   //  }}
+
   const awsRoot = 'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com';
 
   let similarResponse;
@@ -30,6 +31,7 @@ export default async function handler(req, res) {
   ) {
     error = null;
     try {
+      // Request to the text-to-embed endpoint
       embeddingResponse = await axios({
         url: awsRoot + '/text-to-embed',
         method: 'POST',
@@ -37,12 +39,14 @@ export default async function handler(req, res) {
           text: text,
         },
       });
+
       if (embeddingResponse?.status === 200) {
         const embedding = embeddingResponse.data.body.embedding;
 
         const embeddingString = JSON.stringify(embedding.vector);
 
         if (includeSimilar) {
+          // Request to the embed-to-db-similar endpoint
           similarResponse = await axios({
             url: awsRoot + '/embed-to-db-similar',
             method: 'POST',
@@ -51,24 +55,29 @@ export default async function handler(req, res) {
               embed: embeddingString,
             },
           });
+
           if (similarResponse?.status === 200) {
-            // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
+            // Parsing the response
             const parsedEmbedding = JSON.parse(
               similarResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
             );
 
-            res.status(200).json({
-              embedding,
-              incidents: parsedEmbedding.map((arr) => ({
-                incident_id: arr[1],
-                similarity: arr[0],
-              })),
-            });
-            return;
+            return {
+              statusCode: 200,
+              body: JSON.stringify({
+                embedding,
+                incidents: parsedEmbedding.map((arr) => ({
+                  incident_id: arr[1],
+                  similarity: arr[0],
+                })),
+              }),
+            };
           }
         } else {
-          res.status(200).json({ embedding });
-          return;
+          return {
+            statusCode: 200,
+            body: JSON.stringify({ embedding }),
+          };
         }
       }
     } catch (e) {
@@ -77,5 +86,9 @@ export default async function handler(req, res) {
     }
     tries++;
   }
-  res.status(500).json({ error });
-}
+
+  return {
+    statusCode: 500,
+    body: JSON.stringify({ error: error?.message || 'Unknown error occurred' }),
+  };
+};
