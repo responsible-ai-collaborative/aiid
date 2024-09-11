@@ -73,7 +73,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-            site/gatsby-site/.cache/functions
+            site/gatsby-site/netlify/functions
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
 
       - name: Extract branch name
@@ -91,7 +91,7 @@ jobs:
           parallel: true
           group: "Cypress e2e tests"
           tag: ${{ steps.extract_branch.outputs.branch }}
-          start: node node_modules/.bin/gatsby serve -p 8000 -H 127.0.0.1
+          start: npm run start
           wait-on: http://127.0.0.1:8000
           wait-on-timeout: 60
         env:
