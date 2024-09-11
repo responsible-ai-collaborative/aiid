@@ -9,7 +9,6 @@ const readFile = util.promisify(fs.readFile);
 const readdir = util.promisify(fs.readdir);
 
 const createMissingTranslationsPage = async (graphql, createPage) => {
-
   let allLocales = [];
 
   const locales = await readdir('./i18n/locales/');
@@ -27,7 +26,6 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
       const data = JSON.parse(json);
 
       for (const key of Object.keys(data)) {
-
         const translation = data[key];
 
         translationEntries.push({ locale, file, key, translation });
