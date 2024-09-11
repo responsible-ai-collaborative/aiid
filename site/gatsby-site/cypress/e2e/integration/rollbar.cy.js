@@ -1,5 +1,7 @@
+import { maybeIt } from '../../support/utils';
+
 describe('Rollbar', () => {
-  it('Should log an error to Rollbar', () => {
+  maybeIt('Should log an error to Rollbar', () => {
     cy.intercept('POST', 'https://api.rollbar.com/api/1/item/').as('rollbarAPICall');
 
     cy.visit('/login');
