@@ -66,5 +66,9 @@
     "quiet": {
         "title": "Est-ce un rapport silencieux ?",
         "text": "Les rapports silencieux sont ceux qui ne seront pas publiés dans la section « Derniers rapports » de la page d'accueil. Les rapports silencieux sont utilisés pour les rapports utiles pour les données internes mais qui n'ont pas besoin d'être promus. Si vous n'êtes pas sûr, laissez ce champ vide."
+    },
+    "implicated_systems": {
+        "title": "Systèmes d'IA impliqués dans l'incident",
+        "text": "Si plusieurs, appuyez sur « entrée » pour commencer un nouvel élément"
     }
 }

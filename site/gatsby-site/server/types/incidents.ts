@@ -1,7 +1,7 @@
 import { GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
-import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver } from "../utils";
+import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getRelationshipConfig } from "../utils";
 import { UserType } from "./user";
 import { NlpSimilarIncidentType } from "../types";
 import { ReportType } from "./report";
@@ -53,6 +53,7 @@ export const IncidentType = new GraphQLObjectType({
                 relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities')
             },
         },
+        implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         editors: getListRelationshipConfig(UserType, GraphQLString, 'editors', 'userId', 'users', 'customData'),
@@ -60,7 +61,7 @@ export const IncidentType = new GraphQLObjectType({
         flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
-        tsne: { type: TsneType }
+        tsne: { type: TsneType },
     },
 });
 
@@ -77,3 +78,5 @@ IncidentType.getFields().AllegedDeveloperOfAISystem.dependencies = ['Alleged dev
 IncidentType.getFields().AllegedHarmedOrNearlyHarmedParties.dependencies = ['Alleged harmed or nearly harmed parties'];
 //@ts-ignore 
 IncidentType.getFields().editors.dependencies = ['editors'];
+//@ts-ignore
+IncidentType.getFields().implicated_systems.dependencies = ['implicated_systems'];

@@ -221,7 +221,15 @@ export function SelectColumnFilter({
 }
 
 export function formatDateField(date) {
-  const dateObj = new Date(date);
+  let dateObj;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    // If the date is in YYYY-MM-DD format, add the time to ensure it stays in local time
+    dateObj = new Date(`${date}T00:00:00`);
+  } else {
+    // For other formats, just create a new Date object directly
+    dateObj = new Date(date);
+  }
 
   if (dateObj instanceof Date && !isNaN(dateObj)) {
     return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;

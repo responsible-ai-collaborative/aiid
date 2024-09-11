@@ -1,12 +1,13 @@
 import { ObjectId } from 'bson';
 import { Submission } from '../../../server/generated/graphql'
 
-export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors'>
+export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors' | 'implicated_systems'>
     & { developers: string[] }
     & { deployers: string[] }
     & { harmed_parties: string[] }
     & { user: string }
     & { incident_editors: string[] }
+    & { implicated_systems: string[] }
 
 const submissions: DBSubmission[] = [
     {
@@ -31,6 +32,7 @@ const submissions: DBSubmission[] = [
         title: "Sample title",
         url: "http://example.com",
         user: "user1",
+        implicated_systems: ["entity1"],
         incident_title: "Incident title",
         incident_date: "2021-09-14",
         editor_notes: "",
