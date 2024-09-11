@@ -91,7 +91,7 @@ jobs:
           parallel: true
           group: "Cypress e2e tests"
           tag: ${{ steps.extract_branch.outputs.branch }}
-          start: npm run start
+          start: npx -y pm2 start npm --name "web-server" -- run serve && npx pm2 logs "web-server"
           wait-on: http://127.0.0.1:8000
           wait-on-timeout: 60
         env:
