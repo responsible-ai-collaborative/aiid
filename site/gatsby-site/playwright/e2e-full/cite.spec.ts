@@ -471,7 +471,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
+        const [userId, accessToken] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
 
         await page.goto('/cite/3');
 
@@ -492,7 +492,9 @@ test.describe('Cite pages', () => {
               }
             `,
             variables: { filter: { userId: { EQ: userId } } },
-        });
+        },
+            { authorization: `Bearer ${accessToken}` }
+        );
 
         expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
     });
