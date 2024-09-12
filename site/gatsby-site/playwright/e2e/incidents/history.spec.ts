@@ -52,7 +52,7 @@ test.describe('Incidents', () => {
     }
 
     const lastRowIndex = incidentHistory.data.history_incidents.length - 1;
-    console.log(lastRowIndex, rows);
+
     const lastRow = rows[lastRowIndex];
     await lastRow.evaluate((node) => node.textContent.includes('Initial version'));
   });
