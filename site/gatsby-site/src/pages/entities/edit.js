@@ -13,11 +13,7 @@ import * as Yup from 'yup';
 import { format } from 'date-fns';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Label from '../../components/forms/Label';
-import {
-  UPSERT_ENTITY_RELATIONSHIP,
-  DELETE_ENTITY_RELATIONSHIP,
-  FIND_ENTITY_RELATIONSHIPS,
-} from '../../graphql/entity_relationships';
+import { FIND_ENTITY_RELATIONSHIPS } from '../../graphql/entity_relationships';
 
 const schema = Yup.object().shape({
   name: Yup.string().required(),
@@ -49,10 +45,6 @@ function EditEntityPage(props) {
   const loading = loadingEntity;
 
   const [updateEntityMutation] = useMutation(UPDATE_ENTITY);
-
-  const [addRelationshipMutation] = useMutation(UPSERT_ENTITY_RELATIONSHIP);
-
-  const [removeRelationshipMutation] = useMutation(DELETE_ENTITY_RELATIONSHIP);
 
   const {
     data: entityRelationshipsData,
@@ -116,20 +108,6 @@ function EditEntityPage(props) {
 
   const handleSubmit = async (values) => {
     try {
-      await updateEntityMutation({
-        variables: {
-          filter: {
-            entity_id: { EQ: entityId },
-          },
-          update: {
-            set: {
-              name: values.name,
-              date_modified: new Date().toISOString(),
-            },
-          },
-        },
-      });
-
       // Process the updated relationships and perform necessary updates in the database
       const relationshipsToAdd = updatedEntityRelationships.filter(
         (rel) => !entityRelationships.some((er) => er.id === rel.id)
@@ -139,35 +117,18 @@ function EditEntityPage(props) {
         (er) => !updatedEntityRelationships.some((rel) => rel.id === er.id)
       );
 
-      // Add new relationships
-      for (const rel of relationshipsToAdd) {
-        await addRelationshipMutation({
-          variables: {
-            filter: {
-              sub: { EQ: entityId },
-              obj: { EQ: rel.id },
-            },
-            update: {
-              sub: { link: entityId },
-              obj: { link: rel.id },
-              is_symmetric: true,
-              pred: 'related',
-            },
+      await updateEntityMutation({
+        variables: {
+          input: {
+            entity_id: entityId,
+            created_at: values.created_at,
+            name: values.name,
+            date_modified: new Date().toISOString(),
+            entity_relationships_to_add: relationshipsToAdd,
+            entity_relationships_to_remove: relationshipsToRemove,
           },
-        });
-      }
-
-      // Remove old relationships
-      for (const rel of relationshipsToRemove) {
-        await removeRelationshipMutation({
-          variables: {
-            filter: {
-              sub: { EQ: entityId },
-              obj: { EQ: rel.id },
-            },
-          },
-        });
-      }
+        },
+      });
 
       refetch();
       refetchEntityRelationships();

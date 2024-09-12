@@ -37,35 +37,3 @@ export const UPDATE_ENTITY_RELATIONSHIP = gql`
     }
   }
 `;
-
-export const UPSERT_ENTITY_RELATIONSHIP = gql(`
-  mutation UpsertEntity_relationship($filter: Entity_relationshipFilterType!, $update: Entity_relationshipInsertType!) {
-    upsertOneEntity_relationship(filter: $filter, update: $update) {
-      pred
-      sub {
-        entity_id
-        name
-      }
-      obj {
-        entity_id
-        name
-      }
-    }
-  }
-`);
-
-export const DELETE_ENTITY_RELATIONSHIP = gql`
-  mutation DeleteEntity_relationship($filter: Entity_relationshipFilterType!) {
-    deleteOneEntity_relationship(filter: $filter) {
-      pred
-      sub {
-        entity_id
-        name
-      }
-      obj {
-        entity_id
-        name
-      }
-    }
-  }
-`;
