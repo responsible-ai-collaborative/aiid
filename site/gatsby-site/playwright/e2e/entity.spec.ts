@@ -4,10 +4,11 @@ import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscription
 import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
 import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions.js';
 import config from '../config';
+import { init } from '../memory-mongo';
 
 const entity = {
-  entity_id: 'google',
-  name: 'Google',
+  entity_id: 'entity1',
+  name: 'Entity 1',
 };
 
 test.describe('Individual Entity page', () => {
@@ -25,6 +26,7 @@ test.describe('Individual Entity page', () => {
   });
 
   test('Should subscribe to new Entity incidents (authenticated user)', async ({ page, login }) => {
+    await init();
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
@@ -64,6 +66,7 @@ test.describe('Individual Entity page', () => {
   });
 
   test('Should unsubscribe to new Entity incidents (authenticated user)', async ({ page, login }) => {
+    await init();
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await conditionalIntercept(
@@ -102,6 +105,7 @@ test.describe('Individual Entity page', () => {
   });
 
   test('Should not subscribe to new Entity incidents (user unauthenticated)', async ({ page }) => {
+    await init();
     await page.goto(url);
 
     await page.locator('button:has-text("Follow")').scrollIntoViewIfNeeded();
@@ -111,12 +115,14 @@ test.describe('Individual Entity page', () => {
   });
 
   test('Should not display Edit button for unauthenticated users', async ({ page }) => {
+    await init();
     await page.goto(url);
     await expect(page.locator('[data-cy="edit-entity-btn"]')).not.toBeVisible();
   });
 
   test('Should display Edit button only for Admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    await init({customData: {users:[{user_id: userId, role: 'admin', first_name: 'Test', last_name: 'User'}]}}, { drop: true });
 
     await conditionalIntercept(
       page,

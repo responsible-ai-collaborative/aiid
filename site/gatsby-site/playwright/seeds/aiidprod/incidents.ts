@@ -88,6 +88,48 @@ const incidents: DBIncident[] = [
         // this field is currently present in the database but not mapped to any graphql fueld
         // "created_at": 1407974400000
     },
+    {
+        incident_id: 4,
+        date: "2014-08-14",
+        reports: [
+            9
+        ],
+        "Alleged deployer of AI system": [
+            "entity1"
+        ],
+        "Alleged developer of AI system": [],
+        "Alleged harmed or nearly harmed parties": [],
+        description: "Kronos’s scheduling algorithm and its use by Starbucks managers allegedly negatively impacted financial and scheduling stability for Starbucks employees, which disadvantaged wage workers.",
+        title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
+        editors: [
+            "619b47ea5eed5334edfa3bbc"
+        ],
+        nlp_similar_incidents: [
+            {
+                incident_id: 1,
+                similarity: 0.9988328814506531
+            },
+        ],
+        editor_similar_incidents: [],
+        editor_dissimilar_incidents: [],
+        flagged_dissimilar_incidents: [],
+        embedding: {
+            vector: [
+                -0.06841292232275009,
+                0.08255906403064728
+            ],
+            from_reports: [
+                16,
+                17
+            ]
+        },
+        tsne: {
+            x: 0.0487331398239335,
+            y: 0.38604577108881916
+        },
+        // this field is currently present in the database but not mapped to any graphql fueld
+        // "created_at": 1407974400000
+    },
 ]
 
 export default incidents;

@@ -131,7 +131,7 @@ const incidentFilter = (rows, [field], value) =>
   rows.filter((row) => {
     return row.values[field].some((incident) =>
       ['incident_id', 'title'].some((field) =>
-        incident[field].toString().toLowerCase().includes(value)
+        incident[field].toString().toLowerCase().includes(value.toLowerCase())
       )
     );
   });

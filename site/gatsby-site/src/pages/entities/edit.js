@@ -229,6 +229,8 @@ function EditEntityPage(props) {
                       popover="entityRelationships"
                     />
                     <Typeahead
+                      id="ta-entity-relationships"
+                      inputProps={{ 'data-cy': 'entity-relationships' }}
                       className={`Typeahead`}
                       onKeyDown={(e) => {
                         if (e.key === ',') {
