@@ -179,10 +179,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     try {
       await unsubscribeToEntityMutation({
         variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.entity,
-            userId: { userId: user.id },
-            entityId: { entity_id: id },
+          filter: {
+            type: { EQ: SUBSCRIPTION_TYPE.entity },
+            userId: { EQ: user.id },
+            entityId: { EQ: id },
           },
         },
       });
