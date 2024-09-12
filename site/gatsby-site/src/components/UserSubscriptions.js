@@ -98,7 +98,9 @@ const UserSubscriptions = () => {
       });
     } else {
       await deleteSubscriptions({
-        variables: { query: { type: SUBSCRIPTION_TYPE.newIncidents, userId: { userId: user.id } } },
+        variables: {
+          filter: { type: { EQ: SUBSCRIPTION_TYPE.newIncidents }, userId: { EQ: user.id } },
+        },
       });
     }
     setIsSubscribeToNewIncidents(checked);
