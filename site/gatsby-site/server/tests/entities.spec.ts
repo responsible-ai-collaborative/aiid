@@ -77,8 +77,6 @@ describe(`Entities`, () => {
 
     const response = await makeRequest(url, mutationData);
 
-    console.log(response.body)
-
     expect(response.body.data).toMatchObject({
       updateEntityAndRelationships: {
         entity_id: "entity1",
