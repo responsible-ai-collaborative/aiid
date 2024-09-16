@@ -61,7 +61,8 @@ describe('Subscriptions', () => {
     }
   );
 
-  maybeIt('Incident Updates: Delete a user subscription', () => {
+  // TODO: test will be fixed in https://github.com/responsible-ai-collaborative/aiid/pull/3054
+  it.skip('Incident Updates: Delete a user subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -99,7 +100,8 @@ describe('Subscriptions', () => {
     );
   });
 
-  maybeIt('Incident Updates: Delete the last subscription', () => {
+  // TODO: test will be fixed in https://github.com/responsible-ai-collaborative/aiid/pull/3054
+  it.skip('Incident Updates: Delete the last subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -177,7 +179,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=true]').should('exist');
   });
 
-  it('Incident Updates: Should not display user subscriptions to deleted Incidents', () => {
+  maybeIt('Incident Updates: Should not display user subscriptions to deleted Incidents', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -210,8 +212,8 @@ describe('Subscriptions', () => {
     });
   });
 
-  // mocking userId does not work
-  maybeIt('New Incidents: Subscribe/Unsubscribe', () => {
+  // TODO: test will be fixed in https://github.com/responsible-ai-collaborative/aiid/pull/3054
+  it.skip('New Incidents: Subscribe/Unsubscribe', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -319,7 +321,8 @@ describe('Subscriptions', () => {
     }
   );
 
-  maybeIt('Entity: Delete a user subscription', () => {
+  // TODO: test will be fixed in https://github.com/responsible-ai-collaborative/aiid/pull/3054
+  it.skip('Entity: Delete a user subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -357,7 +360,8 @@ describe('Subscriptions', () => {
     );
   });
 
-  maybeIt('Entity: Delete the last subscription', () => {
+  // TODO: test will be fixed in https://github.com/responsible-ai-collaborative/aiid/pull/3054
+  it.skip('Entity: Delete the last subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(

@@ -4,9 +4,9 @@ import axios from 'axios';
 
 const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
 
-export default async function handler(req, res) {
+exports.handler = async function (event) {
   try {
-    const { url } = req.query;
+    const url = event.queryStringParameters.url;
 
     const article = await getArticle(url, { cookies: false });
 
@@ -21,11 +21,20 @@ export default async function handler(req, res) {
       text: article.content?.replace(stripImages, '').trim(),
     };
 
-    res.status(200).json(response);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(response),
+    };
   } catch (error) {
-    res.status(500).send([error.message, error.stack].filter((e) => e).join('\n\n'));
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: error.message,
+        stack: error.stack,
+      }),
+    };
   }
-}
+};
 
 // Runs first with { cookies: false },
 // then on error recurses with { cookies: true } as a fallback.
@@ -72,7 +81,7 @@ const getHtmlWithCookies = async (url) => {
     }
   );
 
-  axiosInstance.get(url).then((response) => {
-    return response.data;
-  });
+  const response = await axiosInstance.get(url);
+
+  return response.data;
 };

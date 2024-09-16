@@ -73,7 +73,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-            site/gatsby-site/.cache/functions
+            site/gatsby-site/netlify/functions
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
 
       - name: Extract branch name
@@ -91,7 +91,7 @@ jobs:
           parallel: true
           group: "Cypress e2e tests"
           tag: ${{ steps.extract_branch.outputs.branch }}
-          start: node node_modules/.bin/gatsby serve -p 8000 -H 127.0.0.1
+          start: npx -y pm2 start npm --name "web-server" -- run serve && npx pm2 logs "web-server"
           wait-on: http://127.0.0.1:8000
           wait-on-timeout: 60
         env:
@@ -118,8 +118,8 @@ jobs:
           INSTRUMENT: true
           # Since this is triggered on a pull request, we set the commit message to the pull request title
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
-          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
-          CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
           GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
