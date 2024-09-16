@@ -16,9 +16,7 @@ test.describe('Edit Entity', () => {
   
   test('Should successfully edit Entity fields', async ({ page, login, skipOnEmptyEnvironment }) => {
   
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-  
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
   
     await page.goto(url);
   
@@ -65,9 +63,7 @@ test.describe('Edit Entity', () => {
 
   test('Should display an error message when editing Entity fails',
     async ({ page, login, skipOnEmptyEnvironment }) => {
-      const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-
-      await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await page.goto(url);
 
@@ -97,8 +93,8 @@ test.describe('Edit Entity', () => {
       await page.getByText("Save", { exact: true }).click();
 
       const updateEntityRequest = await waitForRequest('UpdateEntity');
-      expect(updateEntityRequest.postDataJSON().variables.filter.entity_id.EQ).toBe(entity_id);
-      expect(updateEntityRequest.postDataJSON().variables.update.set.name).toBe(values.name);
+      expect(updateEntityRequest.postDataJSON().variables.input.entity_id).toBe(entity_id);
+      expect(updateEntityRequest.postDataJSON().variables.input.name).toBe(values.name);
 
       await expect(page.locator('.tw-toast')).toContainText('Error updating Entity.');
     }
@@ -106,11 +102,8 @@ test.describe('Edit Entity', () => {
 
   test('Should successfully add Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
   
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-
     await init();
-  
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
   
     await page.goto(url);
   
@@ -141,11 +134,8 @@ test.describe('Edit Entity', () => {
 
   test('Should successfully remove Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
   
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-
     await init();
-  
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
   
     await page.goto(`/entities/edit?entity_id=entity2`);
 

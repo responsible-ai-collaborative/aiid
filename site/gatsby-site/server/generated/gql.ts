@@ -19,7 +19,7 @@ const documents = {
     "\n  mutation UpsertEntity($filter: EntityFilterType!, $update: EntityInsertType!) {\n    upsertOneEntity(filter: $filter, update: $update) {\n      entity_id\n      name\n    }\n  }\n": types.UpsertEntityDocument,
     "\n  query FindEntities {\n    entities {\n      entity_id\n      name\n    }\n  }\n": types.FindEntitiesDocument,
     "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n      date_modified\n    }\n  }\n": types.FindEntityDocument,
-    "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateOneEntity(input: $input) {\n      entity_id\n    }\n  }\n": types.UpdateEntityDocument,
+    "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n": types.UpdateEntityDocument,
     "\n  query FindEntity_relationships($filter: Entity_relationshipFilterType) {\n    entity_relationships(filter: $filter) {\n      _id\n      created_at\n      pred\n      sub {\n        entity_id\n        name\n      }\n      obj {\n        entity_id\n        name\n      }\n      is_symmetric\n    }\n  }\n": types.FindEntity_RelationshipsDocument,
     "\n  mutation UpdateEntity_relationship(\n    $filter: Entity_relationshipFilterType!\n    $update: Entity_relationshipUpdateType!\n  ) {\n    updateOneEntity_relationship(filter: $filter, update: $update) {\n      pred\n      sub {\n        entity_id\n        name\n      }\n      obj {\n        entity_id\n        name\n      }\n    }\n  }\n": types.UpdateEntity_RelationshipDocument,
     "\n  query FindIncident($filter: IncidentFilterType) {\n    incident(filter: $filter) {\n      incident_id\n      title\n      description\n      editors {\n        userId\n        first_name\n        last_name\n      }\n      date\n      AllegedDeployerOfAISystem {\n        entity_id\n        name\n      }\n      AllegedDeveloperOfAISystem {\n        entity_id\n        name\n      }\n      AllegedHarmedOrNearlyHarmedParties {\n        entity_id\n        name\n      }\n      nlp_similar_incidents {\n        incident_id\n        similarity\n      }\n      editor_similar_incidents\n      editor_dissimilar_incidents\n      flagged_dissimilar_incidents\n      reports {\n        report_number\n      }\n      embedding {\n        from_reports\n        vector\n      }\n      editor_notes\n    }\n  }\n": types.FindIncidentDocument,
@@ -114,7 +114,7 @@ export function gql(source: "\n  query FindEntity($filter: EntityFilterType) {\n
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateOneEntity(input: $input) {\n      entity_id\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateOneEntity(input: $input) {\n      entity_id\n    }\n  }\n"];
+export function gql(source: "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

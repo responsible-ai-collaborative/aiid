@@ -83,7 +83,6 @@ test.describe('Entities page', () => {
     expect(await page.locator('[data-cy="edit-entity-btn"]').count()).toBe(0);
 
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await page.goto(url);
     const editButton = page.locator('[data-cy="edit-entity-btn"]').first();
     expect(await editButton.getAttribute('href')).toBe('/entities/edit?entity_id=facebook');
     await editButton.click();

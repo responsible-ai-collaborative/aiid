@@ -13,8 +13,8 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 const UpdateOneEntityPayload = new GraphQLObjectType({
   name: 'UpdateOneEntityPayload',
   fields: {
-    created_at: { type: new GraphQLNonNull(GraphQLDateTime) },
-    date_modified: { type: new GraphQLNonNull(GraphQLDateTime) },
+    created_at: { type: GraphQLDateTime },
+    date_modified: { type: GraphQLDateTime },
     entity_id: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     entity_relationships_to_add: { type: new GraphQLList(GraphQLString) },
@@ -25,8 +25,8 @@ const UpdateOneEntityPayload = new GraphQLObjectType({
 const UpdateOneEntityInput = new GraphQLInputObjectType({
   name: 'UpdateOneEntityInput',
   fields: {
-    created_at: { type: new GraphQLNonNull(GraphQLDateTime) },
-    date_modified: { type: new GraphQLNonNull(GraphQLDateTime) },
+    created_at: { type: GraphQLDateTime },
+    date_modified: { type: GraphQLDateTime },
     entity_id: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     entity_relationships_to_add: { type: new GraphQLList(GraphQLJSONObject) },
@@ -38,7 +38,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
   ...generateMutationFields({ collectionName: 'entities', Type: EntityType, generateFields: ['updateOne', 'upsertOne'] }),
 
-  updateOneEntity: {
+  updateEntityAndRelationships: {
     type: new GraphQLNonNull(UpdateOneEntityPayload),
     args: {
       input: { type: new GraphQLNonNull(UpdateOneEntityInput) },
@@ -101,7 +101,7 @@ export const permissions = {
     entities: allow,
   },
   Mutation: {
-    updateOneEntity: allow,
+    updateEntityAndRelationships: allow,
     upsertOneEntity: allow,
   }
 }
