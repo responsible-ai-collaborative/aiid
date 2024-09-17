@@ -103,6 +103,7 @@ function NewIncidentPage() {
 
       newIncident.editor_similar_incidents = [];
       newIncident.editor_dissimilar_incidents = [];
+      newIncident.flagged_dissimilar_incidents = [];
 
       await insertIncident({ variables: { data: newIncident } });
 
