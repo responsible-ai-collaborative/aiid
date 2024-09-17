@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../utils";
+import { init } from "../../memory-mongo";
 
 
 test.describe('Reports App', () => {
@@ -14,6 +15,7 @@ test.describe('Reports App', () => {
   });
 
   test('Filters a report by title', async ({ page }) => {
+    await init();
     await page.goto(url + '?view=reports');
     await page.locator('[data-cy="filter"]').nth(1).locator('input').fill('Report 2');
     await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
