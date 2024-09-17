@@ -132,6 +132,10 @@ See [mongo.md](mongo.md)
 
 ## Setting up a development environment
 
+## Important Notice
+
+This project is currently undergoing a significant restructuring as we transition away from the recently deprecated Atlas GraphQL endpoint. Please note that some parts of the documentation may be outdated. For the most up-to-date information and guidance, please follow [this link](site/gatsby-site/README.md) to the latest documentation.
+
 Depending on what feature you are working on, there will be different systems you'll need to set up after you've forked and cloned this repository:
 
 ### Basic setup

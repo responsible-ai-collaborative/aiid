@@ -34,6 +34,8 @@ const createBlogPages = require('./page-creators/createBlogPages');
 
 const createDocPages = require('./page-creators/createDocPages');
 
+const createMissingTranslationsPage = require('./page-creators/createMissingTranslationsPage');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -75,6 +77,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
+    createMissingTranslationsPage,
     createBlogPages,
     createCitationPages,
     createWordCountsPages,
@@ -255,7 +258,7 @@ exports.onPreInit = async ({ reporter }) => {
 
   const lookupIndex = new LookupIndex({
     client: mongoClient,
-    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
+    filePath: path.join(__dirname, 'netlify', 'functions', 'lookupIndex.json'),
   });
 
   await lookupIndex.run();
