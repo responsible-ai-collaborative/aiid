@@ -1,15 +1,47 @@
-import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
+import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLInt, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
 import { getGraphQLInsertType, getGraphQLFilterType, getGraphQLSortType, GraphQLPaginationType, MongoDbOptions, getMongoDbSort, getMongoDbProjection, getMongoDbQueryResolver, validateUpdateArgs, getMongoDbUpdate, GetMongoDbProjectionOptions, UpdateObj } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
-import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 import pluralizeLib from 'pluralize';
-import config from "./config";
 import { getGraphQLSetType } from "graphql-to-mongodb/lib/src/graphQLUpdateType";
 import { GraphQLFieldsType } from "graphql-to-mongodb/lib/src/common";
 import { QueryCallback, QueryOptions } from "graphql-to-mongodb/lib/src/queryResolver";
 import { getMongoDbFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
 import { UpdateCallback } from "graphql-to-mongodb/lib/src/updateResolver";
+import { ObjectIdScalar } from "./scalars";
+
+
+const DeleteManyPayload = new GraphQLObjectType({
+    name: 'DeleteManyPayload',
+    fields: {
+        deletedCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+    },
+});
+
+const InsertManyPayload = new GraphQLObjectType({
+    name: 'InsertManyPayload',
+    fields: {
+        insertedIds: {
+            type: new GraphQLNonNull(new GraphQLList(ObjectIdScalar)),
+        },
+    },
+});
+
+
+const UpdateManyPayload = new GraphQLObjectType({
+    name: 'UpdateManyPayload',
+    fields: {
+        modifiedCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+        matchedCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+    },
+});
+
 
 export function pluralize(s: string) {
     return pluralizeLib.plural(s);
@@ -738,60 +770,6 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
     }
 
     return fields;
-}
-
-/**
- * Makes an API request to the MongoDB Atlas Admin API, supporting only GET methods.
- * This function handles authentication using a public/private API key pair and returns the response from the API.
- * 
- * **Note:** Use with caution as this function has admin privileges.
- * 
- * @param {Object} params - The parameters for the API request.
- * @param {string} params.path - The API endpoint path.
- * @param {string} [params.method='GET'] - The HTTP method for the request. Currently, only 'GET' is supported.
- * @returns {Promise<any>} - The response from the API or an error object if the request fails.
- * 
- * @throws {Error} Throws an error if an unsupported HTTP method is provided.
- */
-export const apiRequest = async ({ path, method = "GET" }: { method?: string, path: string }) => {
-
-    const loginResponse = await fetch('https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username: config.REALM_API_PUBLIC_KEY,
-            apiKey: config.REALM_API_PRIVATE_KEY,
-        }),
-    });
-
-    const data = await loginResponse.json();
-
-    if (loginResponse.status != 200) {
-        return {
-            status: loginResponse.status,
-            error: data.error
-        }
-    }
-
-    let response = null;
-
-    const url = `https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`;
-    const headers = { "Authorization": `Bearer ${data.access_token}` };
-
-    if (method == 'GET') {
-
-        const result = await fetch(url, { headers });
-
-        response = await result.json();
-    }
-    else {
-
-        throw `Unsupported method ${method}`;
-    }
-
-    return response;
 }
 
 /**

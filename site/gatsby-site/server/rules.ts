@@ -1,12 +1,10 @@
 import { rule } from "graphql-shield";
-import { Context } from "./interfaces";
-import { DBSubscription } from "../playwright/seeds/customData/subscriptions";
+import { Context, DBSubscription, DBUser } from "./interfaces";
 import { getMongoDbFilter } from "graphql-to-mongodb";
 import { SubscriptionType } from "./types/subscription";
 import { getSimplifiedType } from "./utils";
 import { GraphQLFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
 import { UserType } from "./types/user";
-import { DBUser } from '../playwright/seeds/customData/users'
 
 export const isRole = (role: string) => rule()(
     async (parent, args, context: Context, info) => {

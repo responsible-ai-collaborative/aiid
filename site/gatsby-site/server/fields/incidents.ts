@@ -1,33 +1,10 @@
-import { GraphQLFieldConfigMap, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull } from "graphql";
 import { allow } from "graphql-shield";
-import { generateMutationFields, generateQueryFields, getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getQueryResolver } from "../utils";
+import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context } from "../interfaces";
-import { ObjectIdScalar } from "../scalars";
 import { isRole } from "../rules";
-import { NlpSimilarIncidentType } from "../types";
 import { linkReportsToIncidents } from "./common";
-import { UserType } from "../types/user";
-import { ReportType } from "../types/report";
-import { EntityType } from "../types/entity";
 import { IncidentType } from "../types/incidents";
-
-
-export const incidentEmbedding = (reports: Record<string, any>[]) => {
-    reports = reports.filter((report) => report.embedding);
-    return reports.length == 0
-        ? null
-        : {
-            vector: reports
-                .map((report) => report.embedding!.vector)
-                .reduce(
-                    (sum, vector) => vector!.map((component: number, i: number) => component + sum[i]),
-                    Array(reports[0].embedding!.vector!.length).fill(0)
-                )
-                .map((component: number) => component / reports.length),
-
-            from_reports: reports.map((report) => report.report_number),
-        };
-};
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 

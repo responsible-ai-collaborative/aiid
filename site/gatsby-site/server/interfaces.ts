@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User } from './generated/graphql';
 
 export interface Context {
     user: {
@@ -8,3 +9,31 @@ export interface Context {
     req: Request,
     client: MongoClient,
 }
+
+export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
+    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] }
+    & { reports: number[] }
+    & { editors: string[] }
+
+export type DBEntity = Entity;
+
+export type DBDuplicate = Duplicate;
+
+export type DBClassification = Omit<Classification, 'incidents' | 'reports'>
+    & { incidents: number[] }
+    & { reports: number[] }
+
+export type DBReport = Omit<Report, 'user'>
+    & { user: string }
+
+export type DBUser = Omit<User, 'adminData'>;
+
+export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors'>
+    & { developers: string[] }
+    & { deployers: string[] }
+    & { harmed_parties: string[] }
+    & { user: string }
+    & { incident_editors: string[] }
+
+export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'userId'>
+    & { entityId?: string, incident_id?: number, userId: string };

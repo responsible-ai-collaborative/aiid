@@ -3,7 +3,7 @@ import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
 import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver } from "../utils";
 import { UserType } from "./user";
-import { NlpSimilarIncidentType } from "../types";
+import { NlpSimilarIncidentType } from "./types";
 import { ReportType } from "./report";
 
 const EmbeddingType = new GraphQLObjectType({

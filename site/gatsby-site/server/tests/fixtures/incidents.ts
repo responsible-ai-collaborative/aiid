@@ -2,11 +2,6 @@ import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
 
-type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
-    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] }
-    & { reports: number[] }
-    & { editors: string[] }
-
 const subscriber = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),
     first_name: 'Subscriber',

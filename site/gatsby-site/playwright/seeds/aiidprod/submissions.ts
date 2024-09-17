@@ -1,12 +1,5 @@
 import { ObjectId } from 'bson';
-import { Submission } from '../../../server/generated/graphql'
-
-export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors'>
-    & { developers: string[] }
-    & { deployers: string[] }
-    & { harmed_parties: string[] }
-    & { user: string }
-    & { incident_editors: string[] }
+import { DBSubmission } from '../../../server/interfaces';
 
 const submissions: DBSubmission[] = [
     {
