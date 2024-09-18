@@ -1,6 +1,7 @@
 import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
+import { DBIncident } from "../../interfaces";
 
 const subscriber = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),

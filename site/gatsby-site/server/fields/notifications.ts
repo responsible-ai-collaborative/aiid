@@ -5,6 +5,7 @@ import { NotificationType } from '../types/notification';
 import { allow } from 'graphql-shield';
 import { getUserAdminData, sendEmail } from './common';
 import * as reporter from '../reporter';
+import { isRole } from '../rules';
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
@@ -439,7 +440,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             try {
                 result += await notificationsToNewPromotions(context);
-            } 
+            }
             catch (error: any) {
 
                 error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
@@ -453,8 +454,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
 export const permissions = {
     Query: {
-        notifications: allow,
-        subscriptions: allow,
+        notification: isRole('admin'),
+        notifications: isRole('admin'),
     },
     Mutation: {
         processNotifications: allow, // TODO: add a custom SECRET_KEY to allow this mutation
