@@ -4,15 +4,7 @@
         "private": false
     },
     {
-        "name": "getEmailTemplateNewIncident",
-        "private": true
-    },
-    {
         "name": "logRollbar",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateIncidentUpdate",
         "private": true
     },
     {
@@ -25,10 +17,6 @@
     },
     {
         "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateNewReportAddedToAnIncident",
         "private": true
     },
     {
@@ -60,32 +48,12 @@
         "private": false
     },
     {
-        "name": "getEmailTemplateSubmissionApproved",
-        "private": true
-    },
-    {
         "name": "apiRequest",
         "private": false,
         "disable_arg_logs": true
     },
     {
-        "name": "getEmailTemplatePasswordReset",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateEntityIncidentUpdated",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateConfirmEmail",
-        "private": true
-    },
-    {
         "name": "passwordReset",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateNewEntityIncident",
         "private": true
     },
     {
