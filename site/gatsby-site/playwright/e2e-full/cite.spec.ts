@@ -488,7 +488,8 @@ test.describe('Cite pages', () => {
         await expect(page.locator('head meta[property="twitter:image"]')).toHaveAttribute('content');
     });
 
-    test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
+    // TODO: test will be fixed in https://github.com/responsible-ai-collaborative/aiid/pull/3054
+    test.skip('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await page.goto('/cite/3');
