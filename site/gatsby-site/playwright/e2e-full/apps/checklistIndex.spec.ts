@@ -78,7 +78,7 @@ test.describe('Checklists App Index', () => {
         await expect(page.locator(newChecklistButtonSelector)).toBeVisible();
     });
 
-    test.skip('Should show delete buttons only for owned checklists', async ({ page, login }) => {
+    test('Should show delete buttons only for owned checklists', async ({ page, login }) => {
 
         const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
