@@ -7,6 +7,9 @@ interface Config {
     REALM_APP_ID: string
     API_MONGODB_CONNECTION_STRING: string
     ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: string
+    SENDGRID_API_KEY: string;
+    SENDGRID_SENDER_NAME: string;
+    SENDGRID_SENDER: string;
     [key: string]: string;
 };
 
@@ -19,6 +22,9 @@ const config: Config = {
     REALM_APP_ID: process.env.REALM_APP_ID!,
     API_MONGODB_CONNECTION_STRING: process.env.API_MONGODB_CONNECTION_STRING!,
     ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: process.env.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN!,
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY!,
+    SENDGRID_SENDER_NAME: process.env.SENDGRID_SENDER_NAME!,
+    SENDGRID_SENDER: process.env.SENDGRID_SENDER!
 }
 
 Object.keys(config).forEach((key) => {

@@ -127,9 +127,6 @@ interface SendEmailParams {
     templateId: string; // Email template ID
 }
 
-const SENDER = "notifications@incidentdatabase.ai";
-const SENDER_NAME = "AIID:Notifications";
-
 function buildEmailData(recipients: Record<string, string>[], subject: string, dynamicData: Record<string, string | Date>, emailTemplateBody: string) {
 
     const personalizations = recipients.map((recipient) => {
@@ -163,8 +160,8 @@ function buildEmailData(recipients: Record<string, string>[], subject: string, d
 
     const emailData = {
         from: {
-            email: SENDER,
-            name: SENDER_NAME,
+            email: config.SENDGRID_SENDER,
+            name: config.SENDGRID_SENDER_NAME,
         },
         personalizations,
         content: [

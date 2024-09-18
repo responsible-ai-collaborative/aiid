@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User } from './generated/graphql';
+import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification } from './generated/graphql';
 
 export interface Context {
     user: {
@@ -37,3 +37,5 @@ export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed
 
 export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'userId'>
     & { entityId?: string, incident_id?: number, userId: string };
+
+export type DBNotification = Omit<Notification, 'userId'> & { userId?: string }
