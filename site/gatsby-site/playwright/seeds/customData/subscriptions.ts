@@ -1,5 +1,5 @@
 import { ObjectId } from 'bson';
-import { Subscription } from '../../../server/generated/graphql'
+import { DBSubscription } from '../../../server/interfaces';
 
 const items: DBSubscription[] = [
     {
