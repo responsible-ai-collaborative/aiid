@@ -28,7 +28,7 @@ export const IncidentType = new GraphQLObjectType({
         _id: { type: ObjectIdScalar },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
-        editor_notes: { type: GraphQLString },
+        editor_notes: { type: new GraphQLNonNull(GraphQLString) },
         epoch_date_modified: { type: GraphQLInt },
         incident_id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: new GraphQLNonNull(GraphQLString) },
@@ -57,7 +57,7 @@ export const IncidentType = new GraphQLObjectType({
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         editors: getListRelationshipConfig(UserType, GraphQLString, 'editors', 'userId', 'users', 'customData'),
         embedding: { type: EmbeddingType },
-        flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
+        flagged_dissimilar_incidents: { type: new GraphQLNonNull(new GraphQLList(GraphQLInt)) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
         tsne: { type: TsneType }

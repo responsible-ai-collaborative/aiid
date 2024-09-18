@@ -640,6 +640,8 @@ test.describe('Cite pages', () => {
             "Alleged harmed or nearly harmed parties": ["entity3"],
             editors: ["user1"],
             reports: [1],
+            editor_notes: "",
+            flagged_dissimilar_incidents: []
         }
 
         await init({ aiidprod: { incidents: [incident] } });

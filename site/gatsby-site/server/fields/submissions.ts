@@ -104,6 +104,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         nlp_similar_incidents: submission.nlp_similar_incidents || [],
                         editor_similar_incidents: submission.editor_similar_incidents || [],
                         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
+                        editor_notes: "",
+                        flagged_dissimilar_incidents: [],
                     }
                     if (submission.embedding) {
                         newIncident.embedding = {
