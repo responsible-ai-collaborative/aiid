@@ -4,6 +4,7 @@ import { makeRequest, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
 import * as common from '../fields/common';
 import { DBEntity, DBIncident, DBNotification, DBReport, DBSubscription, DBUser } from '../interfaces';
+import config from '../config';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -47,7 +48,7 @@ describe(`Notifications`, () => {
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue({});
 
-        const response = await makeRequest(url, mutationData);
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });
 
         expect(response.body.data).toMatchObject({ processNotifications: 0 })
         expect(sendEmailMock).toHaveBeenCalledTimes(0);
@@ -160,7 +161,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue({});
 
-        const response = await makeRequest(url, mutationData);
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -290,7 +291,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue({});
 
-        const response = await makeRequest(url, mutationData);
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -422,7 +423,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue({});
 
-        const response = await makeRequest(url, mutationData);
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -548,7 +549,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue({});
 
-        const response = await makeRequest(url, mutationData);
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -675,7 +676,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue({});
 
-        const response = await makeRequest(url, mutationData);
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({

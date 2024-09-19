@@ -42,6 +42,13 @@ const notification1: DBNotification = {
     userId: subscriber.userId,
 }
 
+const notification2: DBNotification = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
+    type: 'incident',
+    userId: subscriber.userId,
+    incident_id: 1,
+}
+
 
 const fixture: Fixture<Subscription, SubscriptionUpdateType, SubscriptionInsertType> = {
     name: 'subscriptions',
@@ -73,16 +80,16 @@ const fixture: Fixture<Subscription, SubscriptionUpdateType, SubscriptionInsertT
         },
     },
     testSingular: {
-        allowed: [subscriber, admin],
-        denied: [anonymous, editor],
+        allowed: [admin],
+        denied: [anonymous, subscriber, editor],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         result: {
             _id: "60a7c5b7b4f5b8a6d8f9c7e4",
         }
     },
     testPluralFilter: {
-        allowed: [subscriber, admin],
-        denied: [anonymous, editor],
+        allowed: [admin],
+        denied: [anonymous, subscriber, editor],
         filter: {
             _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') },
         },
@@ -93,8 +100,8 @@ const fixture: Fixture<Subscription, SubscriptionUpdateType, SubscriptionInsertT
         ]
     },
     testPluralSort: {
-        allowed: [subscriber, admin],
-        denied: [anonymous, editor],
+        allowed: [admin],
+        denied: [anonymous, subscriber, editor],
         sort: { type: "ASC" },
         filter: { userId: { EQ: subscriber.userId } },
         result: [

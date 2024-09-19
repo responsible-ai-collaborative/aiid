@@ -5,6 +5,7 @@ import { SubscriptionType } from "./types/subscription";
 import { getSimplifiedType } from "./utils";
 import { GraphQLFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
 import { UserType } from "./types/user";
+import config, { Config } from "./config";
 
 export const isRole = (role: string) => rule()(
     async (parent, args, context: Context, info) => {
@@ -71,6 +72,23 @@ export const isSubscriptionOwner = () => rule()(
 
         return new Error('not authorized')
     },
+)
+
+export const hasHeaderSecret = (headerName: keyof Config) => rule()(
+
+    async (parent, args, context: Context, info) => {
+
+        const { req } = context;
+
+        const name = headerName.toLowerCase();
+
+        if (req.headers[name] && req.headers[name] != config[headerName]) {
+
+            return new Error('not authorized')
+        }
+
+        return true;
+    }
 )
 
 export const isAdmin = isRole('admin');

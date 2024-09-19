@@ -2,10 +2,9 @@ import { GraphQLFieldConfigMap, GraphQLInt } from 'graphql';
 import { generateQueryFields } from '../utils';
 import { Context, DBEntity, DBIncident, DBReport, DBSubscription, DBNotification } from '../interfaces';
 import { NotificationType } from '../types/notification';
-import { allow } from 'graphql-shield';
 import { getUserAdminData, sendEmail } from './common';
 import * as reporter from '../reporter';
-import { isRole } from '../rules';
+import { hasHeaderSecret, isRole } from '../rules';
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
@@ -458,6 +457,6 @@ export const permissions = {
         notifications: isRole('admin'),
     },
     Mutation: {
-        processNotifications: allow, // TODO: add a custom SECRET_KEY to allow this mutation
+        processNotifications: hasHeaderSecret("PROCESS_NOTIFICATIONS_SECRET"),
     }
 }

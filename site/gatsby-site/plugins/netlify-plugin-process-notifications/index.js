@@ -1,28 +1,13 @@
 import apolloClient from '@apollo/client';
 
-import Realm from 'realm-web';
-
 import { fetch } from 'cross-fetch';
-
-const getValidAccessToken = async () => {
-  const realmApp = new Realm.App({
-    id: process.env.GATSBY_REALM_APP_ID,
-  });
-
-  let credentials = Realm.Credentials.apiKey(process.env.REALM_GRAPHQL_API_KEY);
-
-  await realmApp.logIn(credentials);
-
-  return realmApp.currentUser.accessToken;
-};
 
 const client = new apolloClient.ApolloClient({
   link: new apolloClient.HttpLink({
-    uri: `https://services.cloud.mongodb.com/api/client/v2.0/app/${process.env.GATSBY_REALM_APP_ID}/graphql`,
+    uri: `http://127.0.0.1:4000/api/graphql`,
     fetch: async (uri, options) => {
-      const accessToken = await getValidAccessToken();
+      options.headers.PROCESS_NOTIFICATIONS_SECRET = process.env.PROCESS_NOTIFICATIONS_SECRET;
 
-      options.headers.Authorization = `Bearer ${accessToken}`;
       return fetch(uri, options);
     },
   }),
@@ -43,6 +28,8 @@ const processNotifications = async () => {
 
   return processResult;
 };
+
+processNotifications();
 
 // Runs on build success
 export const onSuccess = async function ({

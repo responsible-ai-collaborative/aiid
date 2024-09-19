@@ -1,12 +1,13 @@
 import { MongoClient } from 'mongodb';
 import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification } from './generated/graphql';
+import { IncomingMessage } from 'http';
 
 export interface Context {
     user: {
         id: string,
         roles: string[],
     } | null,
-    req: Request,
+    req: IncomingMessage,
     client: MongoClient,
 }
 
