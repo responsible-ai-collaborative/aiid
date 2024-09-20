@@ -149,11 +149,11 @@ function NewIncidentPage() {
           AllegedHarmedOrNearlyHarmedParties: AllegedHarmedOrNearlyHarmedParties.map(
             (entity) => entity.entity_id
           ),
-          editor_notes,
+          editor_notes: editor_notes ?? '',
           editors: editors.map((editor) => editor.userId),
         });
       } else {
-        setInitialValues({ editors: [] });
+        setInitialValues({ editors: [], editor_notes: '' });
       }
     }
   }, [incidentToCloneData]);
