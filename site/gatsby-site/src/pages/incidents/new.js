@@ -153,7 +153,7 @@ function NewIncidentPage() {
           editors: editors.map((editor) => editor.userId),
         });
       } else {
-        setInitialValues({ editors: [] });
+        setInitialValues({ editors: [], editor_notes: '' });
       }
     }
   }, [incidentToCloneData]);
