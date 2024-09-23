@@ -23,13 +23,13 @@ jobs:
   tests:
     name: Run Playwright tests
     environment: ${{ inputs.environment }}
-    timeout-minutes: 60
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shardIndex: [1, 2, 3, 4]
-        shardTotal: [4]
+        shardIndex: [1, 2, 3, 4, 5, 6]
+        shardTotal: [6]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,7 +63,7 @@ jobs:
         with:
           path: |
             site/gatsby-site/public
-            site/gatsby-site/.cache/functions
+            site/gatsby-site/netlify/functions
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
 
       - name: Install playwright browsers
@@ -71,13 +71,24 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Run playwright tests
-        run: npx playwright test playwright/e2e/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npm run test:e2e:ci
         working-directory: site/gatsby-site
         env:
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
+          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
+          REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
+          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
+          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
+          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SHARD_INDEX: ${{ matrix.shardIndex }}
+          SHARD_TOTAL: ${{ matrix.shardTotal }}
+          TEST_FOLDER: playwright/e2e/
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

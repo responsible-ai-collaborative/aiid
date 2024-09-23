@@ -16,7 +16,7 @@ const ToolPage = (props) => {
 
   const { data, loading } = useQuery(FIND_CLASSIFICATION, {
     variables: {
-      query: { incidents_in: { incident_id: parseInt(incident_id) }, namespace_in: allNamespaces },
+      filter: { incidents: { IN: parseInt(incident_id) }, namespace: { IN: allNamespaces } },
     },
   });
 

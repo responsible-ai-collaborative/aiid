@@ -13,19 +13,19 @@ export default defineConfig({
   testDir: './playwright',
   globalTimeout: process.env.CI ? 60 * 60 * 1000 : undefined,
   expect: {
-    timeout: process.env.CI ? 30000 : undefined,
+    timeout: process.env.CI ? 60000 : 30000,
   },
-  timeout: process.env.CI ? 60000 : undefined,
+  timeout: process.env.CI ? 180000 : 90000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 3 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  // TODO: We can handle only one worker because tests share the same database and many tests are resetting the database.
+  workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'blob' : 'html',
+  reporter: process.env.CI ? [['blob'], ['line', { printSteps: true }]] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -39,7 +39,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], launchOptions: { args: ['--auto-open-devtools-for-tabs'] } },
     },
 
     // {
@@ -75,7 +75,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'NODE_OPTIONS=--max-old-space-size=5600 npm run serve',
+    command: 'npx -y pm2 start npm --name "web-server" -- run serve && npx pm2 logs "web-server"',
     url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
   },

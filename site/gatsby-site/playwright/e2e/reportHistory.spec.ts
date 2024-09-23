@@ -5,27 +5,9 @@ import updateOneReport from '../fixtures/reports/updateOneReport.json';
 import supportedLanguages from '../../src/components/i18n/languages.json';
 import { expect } from '@playwright/test';
 import config from '../config';
-const { gql } = require('@apollo/client');
 
 test.describe('Report History', () => {
   const url = '/cite/history?report_number=3206&incident_id=563';
-
-  let user;
-
-  test.beforeAll(async () => {
-    const { data: { user: userData } } = await query({
-      query: gql`
-        {
-          user(filter: { first_name: { EQ: "Test" }, last_name: { EQ: "User" } }) {
-            userId
-            first_name
-            last_name
-          }
-        }
-      `,
-    });
-    user = userData;
-  });
 
   test('Successfully loads', async ({ page }) => {
     await page.goto(url);
@@ -146,7 +128,7 @@ test.describe('Report History', () => {
 
     await waitForRequest('FindReportHistory');
 
-    await expect(page).toHaveURL('/cite/history/?report_number=3&incident_id=3');
+    await expect(page).toHaveURL('/cite/history/?report_number=376&incident_id=3');
 
     await page.goBack();
 
@@ -163,7 +145,7 @@ test.describe('Report History', () => {
   });
 
   test('Should restore a Report previous version', async ({ page, login }) => {
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await page.goto(url);
 
@@ -273,7 +255,7 @@ test.describe('Report History', () => {
       ...initialVersion,
       editor_notes: updatedReport.editor_notes,
       epoch_date_modified: updatedReport.epoch_date_modified,
-      modifiedBy: user.userId,
+      modifiedBy: userId,
     };
 
     delete expectedReport._id;

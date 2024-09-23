@@ -23,7 +23,7 @@ test.describe('Incidents App', () => {
 
   test('Successfully filter and edit incident 3', async ({ page, login }) => {
     test.slow();
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
     await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
 
     await conditionalIntercept(

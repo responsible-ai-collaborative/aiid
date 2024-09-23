@@ -5,6 +5,7 @@ import config from './config';
 import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
+import * as memoryMongo from './memory-mongo';
 
 declare module '@playwright/test' {
     interface Request {
@@ -17,7 +18,8 @@ export type Options = { defaultItem: string };
 type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { skipSession?: boolean }) => Promise<string>,
+    login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string>,
+    retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
 };
 
 const getUserIdFromLocalStorage = async (page: Page) => {
@@ -53,9 +55,10 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
+        // TODO: this should be removed since we pass the username and password as arguments
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async (email, password) => {
+        await use(async (email, password, { customData } = {}) => {
 
             await page.context().clearCookies();
 
@@ -63,12 +66,43 @@ export const test = base.extend<TestFixtures>({
 
             const userId = await getUserIdFromLocalStorage(page);
 
+            if (customData) {
+
+                await page.evaluate(({ customData }) => {
+
+                    localStorage.setItem('__CUSTOM_DATA_MOCK', JSON.stringify(customData));
+
+                }, { customData });
+
+                // upsert user with custom data
+                await memoryMongo.execute(async (client) => {
+
+                    const db = client.db('customData');
+                    const collection = db.collection('users');
+
+                    await collection.updateOne({ userId }, { $set: customData }, { upsert: true });
+                });
+            }
+
             return userId!;
 
             // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
             // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
         })
-    }
+    },
+
+    retryDelay: [async ({ }, use, testInfo) => {
+
+        if (testInfo.retry > 0) {
+            const delayDuration = 1000 * testInfo.retry;
+
+            console.log(`Adding delay of ${delayDuration} ms for retry count ${testInfo.retry}`);
+
+            await new Promise(resolve => setTimeout(resolve, delayDuration));
+        }
+
+        await use();
+    }, { auto: true }],
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
@@ -174,7 +208,7 @@ export function query(data: QueryOptions<OperationVariables, any>) {
 
     const { query, variables } = data
 
-    return client.query({ query, variables });
+    return client.query({ query, variables, fetchPolicy: 'no-cache' });
 }
 
 const loginSteps = async (page: Page, email: string, password: string) => {
@@ -230,7 +264,7 @@ export async function fillAutoComplete(page: Page, selector: string, sequence: s
     await expect(async () => {
         await page.locator(selector).clear();
         await page.waitForTimeout(1000);
-        await page.locator(selector).pressSequentially(sequence, { delay: 500 });
-        await page.getByText(target).click({ timeout: 1000 });
+        await page.locator(selector).pressSequentially(sequence.substring(0, Math.floor(Math.random() * sequence.length) + 1), { delay: 500 });
+        await page.getByText(target).first().click({ timeout: 1000 });
     }).toPass();
 }
