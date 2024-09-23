@@ -42,8 +42,6 @@ test.describe('New Incident page', () => {
       'logIncidentHistory'
     );
 
-    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-
     await page.getByText('Save').click();
 
     await waitForRequest('logIncidentHistory');
