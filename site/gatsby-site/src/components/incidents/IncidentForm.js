@@ -105,6 +105,11 @@ function IncidentForm() {
           };
         })
       );
+    } else if (
+      !editorSimilarIncidentReportsQuery.loading &&
+      editorSimilarIncidentReportsQuery.data.incidents.length === 0
+    ) {
+      setEditorSimilarIncidents([]);
     }
   }, [editorSimilarIncidentReportsQuery.loading, editorSimilarIncidentReportsQuery.data]);
 

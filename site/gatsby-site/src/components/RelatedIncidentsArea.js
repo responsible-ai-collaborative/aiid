@@ -44,10 +44,11 @@ const RelatedIncidentsArea = ({
   }, [reportsExist]);
 
   useEffect(() => {
-    if (reports || incidents) {
+    if (reports?.length > 0 || incidents?.length > 0) {
       setSimilarList(reports || incidents);
     } else {
       setSimilarList([]);
+      setNotSureList([]);
     }
   }, [reports, incidents]);
 
