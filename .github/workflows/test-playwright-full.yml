@@ -165,7 +165,7 @@ jobs:
           merge-multiple: true
 
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html --output playwright-report-full ./all-blob-reports
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
 
       - name: Rename report directory
         run: mv playwright-report playwright-report-full
