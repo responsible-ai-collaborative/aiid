@@ -18,10 +18,11 @@ const incidents: DBIncident[] = [
         reports: [1],
 
         // TODO: this aren't required but break the build if missing
+        editor_notes: "",
         nlp_similar_incidents: [],
         editor_similar_incidents: [],
         editor_dissimilar_incidents: [],
-
+        flagged_dissimilar_incidents: [],
     },
     {
         incident_id: 2,
@@ -34,9 +35,11 @@ const incidents: DBIncident[] = [
         reports: [2],
 
         // TODO: this aren't required but break the build if missing
+        editor_notes: "",
         nlp_similar_incidents: [],
         editor_similar_incidents: [],
         editor_dissimilar_incidents: [],
+        flagged_dissimilar_incidents: [],
     },
     {
         incident_id: 3,
@@ -48,6 +51,7 @@ const incidents: DBIncident[] = [
             7,
             8,
         ],
+        editor_notes: "",
         "Alleged deployer of AI system": [
             "starbucks"
         ],
