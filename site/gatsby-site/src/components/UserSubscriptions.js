@@ -111,6 +111,7 @@ const UserSubscriptions = () => {
           checked={isSubscribeToNewIncidents}
           label={t('Notify me of new Incidents')}
           onChange={onSusbcribeToggle}
+          data-cy="subscribe-all"
           name="subscribe-all"
           disabled={loading || deleting || subscribingToNewIncidents}
         />
