@@ -16,9 +16,7 @@ test.describe('Edit Entity', () => {
   
   test('Should successfully edit Entity fields', async ({ page, login, skipOnEmptyEnvironment }) => {
   
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-  
-    await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
   
     await page.goto(url);
   
@@ -65,9 +63,7 @@ test.describe('Edit Entity', () => {
 
   test('Should display an error message when editing Entity fails',
     async ({ page, login, skipOnEmptyEnvironment }) => {
-      const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-
-      await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await page.goto(url);
 
@@ -97,10 +93,73 @@ test.describe('Edit Entity', () => {
       await page.getByText("Save", { exact: true }).click();
 
       const updateEntityRequest = await waitForRequest('UpdateEntity');
-      expect(updateEntityRequest.postDataJSON().variables.filter.entity_id.EQ).toBe(entity_id);
-      expect(updateEntityRequest.postDataJSON().variables.update.set.name).toBe(values.name);
+      expect(updateEntityRequest.postDataJSON().variables.input.entity_id).toBe(entity_id);
+      expect(updateEntityRequest.postDataJSON().variables.input.name).toBe(values.name);
 
       await expect(page.locator('.tw-toast')).toContainText('Error updating Entity.');
     }
   );
+
+  test('Should successfully add Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
+  
+    await init();
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+  
+    await page.goto(url);
+  
+    await page.locator('[data-cy="entity-relationships"]').fill("Entity 2");
+    await page.locator("#ta-entity-relationships-item-0").click();
+  
+    await page.getByText("Save", { exact: true }).click();
+  
+    await expect(page.locator('.tw-toast')).toContainText('Entity updated successfully.');
+
+    const { data: entityRelationships } = await query({
+      query: gql`{
+        entity_relationships(filter: { sub: { EQ: "${entity_id}" } }) {
+          sub {
+            entity_id
+          }
+          obj {
+            entity_id
+          }
+        }
+      }`,
+    });
+
+    expect(entityRelationships.entity_relationships).toHaveLength(1);
+  
+    await expect(page.locator('.tw-toast')).toContainText('Entity updated successfully.');
+  });
+
+  test('Should successfully remove Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
+  
+    await init();
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+  
+    await page.goto(`/entities/edit?entity_id=entity2`);
+
+    await page.locator('.rbt.Typeahead .rbt-token-remove-button').first().click();
+  
+    await page.getByText("Save", { exact: true }).click();
+  
+    await expect(page.locator('.tw-toast')).toContainText('Entity updated successfully.');
+
+    const { data: entityRelationships } = await query({
+      query: gql`{
+        entity_relationships(filter: { sub: { EQ: "${entity_id}" } }) {
+          sub {
+            entity_id
+          }
+          obj {
+            entity_id
+          }
+        }
+      }`,
+    });
+
+    expect(entityRelationships.entity_relationships).toHaveLength(0);
+  
+    await expect(page.locator('.tw-toast')).toContainText('Entity updated successfully.');
+  });
 });

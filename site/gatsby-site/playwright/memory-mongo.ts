@@ -11,6 +11,7 @@ import classifications from './seeds/aiidprod/classifications';
 import taxa from './seeds/aiidprod/taxa';
 
 import users from './seeds/customData/users';
+import entity_relationships from './seeds/aiidprod/entity_relationships';
 
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
@@ -23,6 +24,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             entities,
             classifications,
             taxa,
+            entity_relationships
         },
         customData: {
             users,

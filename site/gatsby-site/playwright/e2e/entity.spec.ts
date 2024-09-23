@@ -4,6 +4,7 @@ import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscription
 import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
 import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions.js';
 import config from '../config';
+import { init } from '../memory-mongo';
 
 const entity = {
   entity_id: 'google',
