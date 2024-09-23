@@ -37,7 +37,7 @@ test.describe('Subscriptions', () => {
     for (let index = 0; index < incidentSubscriptions.length; index++) {
       const incident = incidentSubscriptions[index].incident_id;
 
-      await page.locator('[data-cy="incident-subscription-item"] > div').nth(index).locator(`:has-text("Updates on incident #${incident.incident_id}: ${incident.title}")`).click();
+      await expect(page.locator('[data-cy="incident-subscription-item"] > div').nth(index).locator(`:has-text("Updates on incident #${incident.incident_id}: ${incident.title}")`)).toBeVisible();
     }
   });
 
