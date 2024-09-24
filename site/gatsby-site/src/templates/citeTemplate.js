@@ -61,7 +61,7 @@ function CiteTemplate({
 
   const localizePath = useLocalizePath();
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState();
 
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
