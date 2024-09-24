@@ -98,12 +98,12 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     if (user) {
       await subscribeToNewReportsMutation({
         variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.incident,
-            userId: { userId: user.id },
-            incident_id: { incident_id: incident_id },
+          filter: {
+            type: { EQ: SUBSCRIPTION_TYPE.incident },
+            userId: { EQ: user.id },
+            incident_id: { EQ: incident_id },
           },
-          subscription: {
+          update: {
             type: SUBSCRIPTION_TYPE.incident,
             userId: {
               link: user.id,

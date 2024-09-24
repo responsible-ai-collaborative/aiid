@@ -2,26 +2,18 @@ import { gql } from '../../server/generated';
 
 export const UPSERT_SUBSCRIPTION = gql(`
   mutation UpsertSubscription(
-    $query: SubscriptionQueryInput
-    $subscription: SubscriptionInsertInput!
+    $filter: SubscriptionFilterType!
+    $update: SubscriptionInsertType!
   ) {
-    upsertOneSubscription(query: $query, data: $subscription) {
-      _id
-    }
-  }
-`);
-
-export const UPDATE_SUBSCRIPTION = gql(`
-  mutation UpdateSubscription($query: SubscriptionQueryInput, $set: SubscriptionUpdateInput!) {
-    updateOneSubscription(query: $query, set: $set) {
+    upsertOneSubscription(filter: $filter, update: $update) {
       _id
     }
   }
 `);
 
 export const FIND_SUBSCRIPTIONS = gql(`
-  query FindSubscriptions($query: SubscriptionQueryInput!) {
-    subscriptions(query: $query) {
+  query FindSubscriptions($filter: SubscriptionFilterType!) {
+    subscriptions(filter: $filter) {
       userId {
         userId
       }
@@ -30,8 +22,8 @@ export const FIND_SUBSCRIPTIONS = gql(`
 `);
 
 export const FIND_FULL_SUBSCRIPTIONS = gql(`
-  query FindSubscriptionsFull($query: SubscriptionQueryInput!) {
-    subscriptions(query: $query) {
+  query FindSubscriptionsFull($filter: SubscriptionFilterType!) {
+    subscriptions(filter: $filter) {
       _id
       incident_id {
         incident_id
@@ -50,16 +42,16 @@ export const FIND_FULL_SUBSCRIPTIONS = gql(`
 `);
 
 export const DELETE_SUBSCRIPTIONS = gql(`
-  mutation DeleteSubscriptions($query: SubscriptionQueryInput) {
-    deleteManySubscriptions(query: $query) {
+  mutation DeleteSubscriptions($filter: SubscriptionFilterType!) {
+    deleteManySubscriptions(filter: $filter) {
       deletedCount
     }
   }
 `);
 
 export const FIND_USER_SUBSCRIPTIONS = gql(`
-  query FindUserSubscriptions($query: SubscriptionQueryInput!) {
-    subscriptions(query: $query) {
+  query FindUserSubscriptions($filter: SubscriptionFilterType!) {
+    subscriptions(filter: $filter) {
       _id
       incident_id {
         incident_id
@@ -68,6 +60,9 @@ export const FIND_USER_SUBSCRIPTIONS = gql(`
       entityId {
         entity_id
         name
+      }
+      userId {
+        userId
       }
       type
     }
