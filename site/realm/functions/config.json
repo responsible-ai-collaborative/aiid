@@ -1,19 +1,11 @@
 [
     {
-        "name": "processNotifications",
-        "private": false
-    },
-    {
         "name": "logRollbar",
         "private": true
     },
     {
         "name": "onNewUser",
         "private": true
-    },
-    {
-        "name": "getUser",
-        "private": false
     },
     {
         "name": "onIncidentUpdate",
