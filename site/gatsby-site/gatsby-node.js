@@ -334,19 +334,23 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
       translationsActivity.setStatus('Updating incidents indexes...');
 
-      const algoliaClient = algoliasearch(
-        config.header.search.algoliaAppId,
-        config.header.search.algoliaAdminKey
-      );
+      try {
+        const algoliaClient = algoliasearch(
+          config.header.search.algoliaAppId,
+          config.header.search.algoliaAdminKey
+        );
 
-      const algoliaUpdater = new AlgoliaUpdater({
-        languages,
-        mongoClient,
-        algoliaClient,
-        reporter,
-      });
+        const algoliaUpdater = new AlgoliaUpdater({
+          languages,
+          mongoClient,
+          algoliaClient,
+          reporter,
+        });
 
-      await algoliaUpdater.run();
+        await algoliaUpdater.run();
+      } catch (e) {
+        reporter.panicOnBuild('Error updating Algolia index:', e);
+      }
     } else {
       throw `Missing environment variable, can't run translation process.`;
     }
