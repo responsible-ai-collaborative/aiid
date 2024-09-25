@@ -247,7 +247,10 @@ function IncidentForm() {
         </FieldContainer>
 
         <div id="similar-incidents">
-          <Label label={t(`Manually-selected similar and dissimilar incidents`)} />
+          <Label
+            label={t(`Manually-selected similar and dissimilar incidents`)}
+            popover="similarIncidentSearch"
+          />
 
           <div className="border rounded-lg px-2 py-4 mt-4">
             <IncidentsField
