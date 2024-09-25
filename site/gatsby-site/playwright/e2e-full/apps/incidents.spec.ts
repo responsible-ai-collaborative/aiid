@@ -162,8 +162,6 @@ test.describe('Incidents App', () => {
     await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
     await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
 
-    // TODO: Fix this
-
     const incidents = await query({
       query: gql`{
             incidents {
@@ -188,7 +186,6 @@ test.describe('Incidents App', () => {
     const firstRow = page.locator('[data-cy="row"]').first();
 
     // AllegedDeployerOfAISystem
-    console.log(firstIncident)
     for (const [index, deployer] of firstIncident.AllegedDeployerOfAISystem.entries()) {
       const link = await firstRow.locator('[data-cy=cell]').nth(4).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
       expect(link).toContain(`/entities/${deployer.entity_id}/`);
