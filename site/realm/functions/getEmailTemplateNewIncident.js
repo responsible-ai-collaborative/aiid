@@ -1,12 +1,102 @@
-const ignoreWhitespace = (s) => s.replace(/\s+/g, ' ').trim();
 
 exports = function () {
+  
+  const incidentStyle = ignoreWhitespace(`
+    padding: 32px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    font-size: 90%;
+  `);
+
+  const incidentImageStyle = ignoreWhitespace(`
+    border-radius: 8px;
+    float: right; 
+    margin-top: 16px;
+    margin-left: 16px;
+    margin-bottom: 16px;
+  `);
+
+  const entityStyle = ignoreWhitespace(`
+    border: 1px solid;
+    text-decoration: none;
+    padding: 2px 6px;
+    margin: 0px 2px;
+    border-radius: 4px;
+  `);
+
+  return insertContent(
+    `
+      <p style="margin-top: 0px;">
+        Greetings,
+      </p>
+
+      <p>
+        A <a href="{{incidentUrl}}">new incident</a> has been added to the AI incident database.
+        You can manage your subscriptions to these notifications from
+        <a href="">your account page</a>.
+      </p>
+
+      <div style="${incidentStyle}">
+        <h1 style="font-size: 100%; margin-top: 0px;">
+          Incident {{incidentId}}: {{incidentTitle}}
+        </h1>
+
+        <img src="" height="200" align="right" style="${incidentImageStyle}" />
+
+        <p style="font-size: 85%;">{{incidentDate}}</p>
+
+        <p style="font-size: 85%;">
+          {{incidentDescription}}
+        </p>
+        <p style="margin-bottom: 0px; line-height: 1.75;">
+          <strong>Alleged</strong>:
+          <a href="" style="${entityStyle}">{{developers}}</a> developed an AI system deployed by
+          <a href="" style="${entityStyle}">{{deployers}}</a> which harmed 
+          <a href="" style="${entityStyle}">{{entitiesHarmed}}</a>.
+        </p>
+      </div>
+      <p style="margin-bottom: 32px">
+        Sincerely,<br>
+        Responsible AI Collaborative
+      </p>
+    `,
+    { title: 'New Incident' }
+  );
+};
+
+// Shared
+const ignoreWhitespace = (s) => s.replace(/\s+/g, ' ').trim();
+const insertContent = (content, variables) => {
 	return `
 	<!doctype html>
 	<html>
 		<head>
 			<meta charset="utf-8"/>
-			<title>New Incident</title>
+			<title>${variables.title}</title>
+      <style>
+        /* These media queries may not be supported,
+         * so we have to ensure it works
+         * with the default color schemes too.
+         */
+        @media (prefers-color-scheme: dark) {
+          body {
+            background: #212b39;
+            color: white;
+          }
+          a {
+            color: #3abef8;
+          }
+        }
+        @media (prefers-color-scheme: light) {
+          body {
+            background: white;
+            color: black;
+          }
+          a {
+            color: #2764eb;
+          }
+        }
+      </style>
 		</head>
 		<body style="${bodyStyle}">
 			<div style="${wrapperStyle}">
@@ -21,46 +111,13 @@ exports = function () {
 					</div>
 				</div>
 				<div style="padding: 32px;">
-					<p style="margin-top: 0px;">
-						Greetings,
-					</p>
-
-					<p>
-						A <a href="{{incidentUrl}}">new incident</a> has been added to the AI incident database.
-						You can manage your subscriptions to these notifications from
-						<a href="">your account page</a>.
-					</p>
-
-					<div style="${incidentStyle}">
-						<h1 style="font-size: 100%; margin-top: 0px;">
-							Incident {{incidentId}}: {{incidentTitle}}
-						</h1>
-
-						<img src="" height="200" align="right" style="${incidentImageStyle}" />
-
-						<p style="font-size: 85%;">{{incidentDate}}</p>
-
-						<p style="font-size: 85%;">
-							{{incidentDescription}}
-						</p>
-						<p style="margin-bottom: 0px; line-height: 1.75;">
-							<strong>Alleged</strong>:
-							<a href="" style="${entityStyle}">{{developers}}</a> developed an AI system deployed by
-							<a href="" style="${entityStyle}">{{deployers}}</a> which harmed 
-							<a href="" style="${entityStyle}">{{entitiesHarmed}}</a>.
-						</p>
-					</div>
-					<p style="margin-bottom: 32px">
-						Sincerely,<br>
-						Responsible AI Collaborative
-					</p>
+          ${content}
 				</div>
 			</div>
 		</body>
 	</html>
-	`.replace(/\n\t/g, '\n').trim();
-};
-
+  `.replace(/\n\t/g, '\n').trim();
+}
 const bodyStyle = ignoreWhitespace(`
   font-family: karla; 
   padding: 16px;
@@ -76,33 +133,12 @@ const headerStyle = ignoreWhitespace(`
   text-align: center;
   margin-bottom: 16px;
 `);
-const incidentStyle = ignoreWhitespace(`
-  padding: 32px;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  font-size: 90%;
-`);
-const entityStyle = ignoreWhitespace(`
-  border: 1px solid;
-  text-decoration: none;
-  padding: 2px 6px;
-  margin: 0px 2px;
-  border-radius: 4px;
-`);
 const headerTitleStyle = ignoreWhitespace(`
   line-height: 70px;
   vertical-align: top;
   font-size: 125%;
   font-weight: 400;
 `);
-const incidentImageStyle = ignoreWhitespace(`
-  border-radius: 8px;
-  float: right; 
-  margin-top: 16px;
-  margin-left: 16px;
-  margin-bottom: 16px;
-`);
-
 const aiidLogoBase64 = `data:image/png;base64,
 iVBORw0KGgoAAAANSUhEUgAAAZAAAADaCAYAAACICxRyAAAACXBIWXMAAC4jAAAuIwF4pT92AAAg
 AElEQVR42ux9eXBc1ZX+ue91tyRbsuRNtizLlrxgsBnAhgDe8M4Wg1nDkgCzVhK2kKVCwjDzC0lI
@@ -605,4 +641,4 @@ IXrY+ZM99PvNA0ceQLo/kKRjg6XxM3dnMElXRo3oieemBwO/7M5n+/+3bwY3AIAgDFT33xkn8KeV
 wnUDzcGlMSIQRCKD63EjcWBG8jB6yBokS7OJivONQBqKRA2WoI2wqO7c0Wx+VyXOgjiaVHG1SH6D
 1VAkwRzRaBAH4FvLJBtYxUUSzBSiQB7Abr9cs0MlaGAqfoL5QhCIA8DtF6wbUO5/ZghBGnmzATww
 9anS7JezAAAAAElFTkSuQmCC`.replace(/\s/g, '');
-
+module.exports = exports;
