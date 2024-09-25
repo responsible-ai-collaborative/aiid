@@ -69,7 +69,7 @@ const RelatedIncidentsArea = ({
     <div data-cy={`related-${columnKey}`}>
       <div key={'header'} className="py-2">
         <label className="text-sm font-medium text-gray-900 dark:text-gray-300 relative">
-          {header}
+          {t(header)}
         </label>
         {loading && (
           <>
@@ -154,7 +154,7 @@ const RelatedIncidentsArea = ({
             {error ? error : ''}
             <span className="text-xs text-gray-500">
               {notFoundText
-                ? notFoundText
+                ? t(notFoundText)
                 : t(`No related ${!reports ? 'incidents' : 'reports'} found.`)}
             </span>
           </span>
