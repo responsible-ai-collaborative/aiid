@@ -264,7 +264,7 @@ function IncidentForm() {
             {similarIncidentsById.length > 0 && (
               <RelatedIncidentsArea
                 columnKey={'byId'}
-                header={similarIncidentsById.length > 0 ? 'Incidents search results' : ''}
+                header={similarIncidentsById.length > 0 ? t('Incidents search results') : ''}
                 incidents={similarIncidentsById}
                 loading={similarReportsByIdQuery.loading}
                 setFieldValue={setFieldValue}
