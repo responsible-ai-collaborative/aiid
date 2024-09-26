@@ -1,3 +1,5 @@
-import config from "../envVars";
+import {envVars, checkCypressEnvVars} from "../envVars";
 
-export default config;
+checkCypressEnvVars();
+
+export default envVars;

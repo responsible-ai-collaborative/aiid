@@ -1,6 +1,5 @@
-const requiredEnvVars = {
-  E2E_ADMIN_PASSWORD: process.env.E2E_ADMIN_PASSWORD || '',
-  E2E_ADMIN_USERNAME: process.env.E2E_ADMIN_USERNAME || '',
+// Server environment variables
+const requiredServerEnvVars = {
   REALM_API_APP_ID: process.env.REALM_API_APP_ID || '',
   REALM_API_GROUP_ID: process.env.REALM_API_GROUP_ID || '',
   REALM_API_PRIVATE_KEY: process.env.REALM_API_PRIVATE_KEY || '',
@@ -11,17 +10,44 @@ const requiredEnvVars = {
   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: process.env.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN || '',
 };
 
-const optionalEnvVars = {
-  IS_EMPTY_ENVIRONMENT: process.env.IS_EMPTY_ENVIRONMENT || '',
-  AVAILABLE_LANGUAGES: process.env.GATSBY_AVAILABLE_LANGUAGES || '',
+const optionalServerEnvVars = {};
+
+const checkServerEnvVars = () => {
+  Object.keys(requiredServerEnvVars).forEach((key) => {
+    if (requiredServerEnvVars[key] === undefined || requiredServerEnvVars[key] === '') {
+      throw new Error(`Required Server environment variable "${key}" is undefined or empty`);
+    }
+  });
 };
 
-Object.keys(requiredEnvVars).forEach((key) => {
-  if (requiredEnvVars[key] === undefined || requiredEnvVars[key] === '') {
-    throw new Error(`Required environment variable "${key}" is undefined or empty`);
-  }
-});
+// Cypress environment variables
+const requiredCypressEnvVars = {
+  E2E_ADMIN_PASSWORD: process.env.E2E_ADMIN_PASSWORD || '',
+  E2E_ADMIN_USERNAME: process.env.E2E_ADMIN_USERNAME || '',
+};
 
-const envVars = { ...requiredEnvVars, ...optionalEnvVars };
+const optionalCypressEnvVars = {
+  IS_EMPTY_ENVIRONMENT: process.env.IS_EMPTY_ENVIRONMENT ?? '',
+  AVAILABLE_LANGUAGES: process.env.GATSBY_AVAILABLE_LANGUAGES ?? '',
+};
 
-module.exports = envVars;
+const checkCypressEnvVars = () => {
+  Object.keys(requiredCypressEnvVars).forEach((key) => {
+    if (requiredCypressEnvVars[key] === undefined || requiredCypressEnvVars[key] === '') {
+      throw new Error(`Required Cypress environment variable "${key}" is undefined or empty`);
+    }
+  });
+};
+
+const envVars = {
+  ...requiredServerEnvVars,
+  ...optionalServerEnvVars,
+  ...requiredCypressEnvVars,
+  ...optionalCypressEnvVars,
+};
+
+module.exports = {
+  envVars,
+  checkServerEnvVars,
+  checkCypressEnvVars,
+};

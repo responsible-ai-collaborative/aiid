@@ -1,3 +1,5 @@
-import config from "../../gatsby-site/envVars";
+import {envVars, checkServerEnvVars} from "../../gatsby-site/envVars";
 
-export default config;
+checkServerEnvVars();
+
+export default envVars;
