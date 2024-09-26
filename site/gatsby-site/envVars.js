@@ -1,21 +1,21 @@
 // Server environment variables
 const requiredServerEnvVars = {
-  REALM_API_APP_ID: process.env.REALM_API_APP_ID || '',
-  REALM_API_GROUP_ID: process.env.REALM_API_GROUP_ID || '',
-  REALM_API_PRIVATE_KEY: process.env.REALM_API_PRIVATE_KEY || '',
-  REALM_API_PUBLIC_KEY: process.env.REALM_API_PUBLIC_KEY || '',
-  REALM_GRAPHQL_API_KEY: process.env.REALM_GRAPHQL_API_KEY || '',
-  REALM_APP_ID: process.env.REALM_APP_ID || '',
-  API_MONGODB_CONNECTION_STRING: process.env.API_MONGODB_CONNECTION_STRING || '',
-  ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: process.env.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN || '',
+  REALM_API_APP_ID: process.env.REALM_API_APP_ID,
+  REALM_API_GROUP_ID: process.env.REALM_API_GROUP_ID,
+  REALM_API_PRIVATE_KEY: process.env.REALM_API_PRIVATE_KEY,
+  REALM_API_PUBLIC_KEY: process.env.REALM_API_PUBLIC_KEY,
+  REALM_GRAPHQL_API_KEY: process.env.REALM_GRAPHQL_API_KEY,
+  REALM_APP_ID: process.env.REALM_APP_ID,
+  API_MONGODB_CONNECTION_STRING: process.env.API_MONGODB_CONNECTION_STRING,
+  ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: process.env.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN,
 };
 
 const optionalServerEnvVars = {};
 
 const checkServerEnvVars = () => {
   Object.keys(requiredServerEnvVars).forEach((key) => {
-    if (requiredServerEnvVars[key] === undefined || requiredServerEnvVars[key] === '') {
-      throw new Error(`Required Server environment variable "${key}" is undefined or empty`);
+    if (requiredServerEnvVars[key] === undefined) {
+      throw new Error(`Required Server environment variable "${key}" is undefined`);
     }
   });
 };
