@@ -50,18 +50,18 @@ const Unsubscribe = () => {
     try {
       setUnsubscribing(true);
 
-      const query = {
-        userId: { userId },
+      const filter = {
+        userId: { EQ: userId },
       };
 
       if (subscriptionType === SUBSCRIPTION_TYPE.incident) {
-        query.type = subscriptionType;
-        query.incident_id = { incident_id: `${incidentId}` };
+        filter.type = { EQ: subscriptionType };
+        filter.incident_id = { EQ: incidentId };
       } else if (subscriptionType === SUBSCRIPTION_TYPE.newIncidents) {
-        query.type = subscriptionType;
+        filter.type = { EQ: subscriptionType };
       }
 
-      await DeleteSubscriptions({ variables: { query } });
+      await DeleteSubscriptions({ variables: { filter } });
       addToast({
         message: <>{t('You have successfully unsubscribed.')}</>,
         severity: SEVERITY.success,

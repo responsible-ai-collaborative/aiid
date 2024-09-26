@@ -53,8 +53,6 @@ test.describe('New Incident page', () => {
 
     await init();
 
-    
-
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
 
     const newIncidentId = 4;

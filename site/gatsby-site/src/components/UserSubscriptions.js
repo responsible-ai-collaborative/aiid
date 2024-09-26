@@ -27,7 +27,7 @@ const UserSubscriptions = () => {
   const [isSubscribeToNewIncidents, setIsSubscribeToNewIncidents] = useState(false);
 
   const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
-    variables: { query: { userId: { userId: user.id } } },
+    variables: { filter: { userId: { EQ: user.id } } },
   });
 
   const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS);
@@ -39,7 +39,7 @@ const UserSubscriptions = () => {
     if (confirm(t('Do you want to delete this subscription?'))) {
       setDeletingId(subscriptionId);
 
-      await deleteSubscriptions({ variables: { query: { _id: subscriptionId } } });
+      await deleteSubscriptions({ variables: { filter: { _id: { EQ: subscriptionId } } } });
 
       const newIncidentSubscriptionList = incidentSubscriptions.filter(
         (subscription) =>
@@ -98,7 +98,9 @@ const UserSubscriptions = () => {
       });
     } else {
       await deleteSubscriptions({
-        variables: { query: { type: SUBSCRIPTION_TYPE.newIncidents, userId: { userId: user.id } } },
+        variables: {
+          filter: { type: { EQ: SUBSCRIPTION_TYPE.newIncidents }, userId: { EQ: user.id } },
+        },
       });
     }
     setIsSubscribeToNewIncidents(checked);
