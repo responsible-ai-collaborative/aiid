@@ -1,10 +1,7 @@
 import { gql } from '../../server/generated';
 
 export const UPSERT_SUBSCRIPTION = gql(`
-  mutation UpsertSubscription(
-    $filter: SubscriptionFilterType!
-    $update: SubscriptionInsertType!
-  ) {
+  mutation UpsertSubscription($filter: SubscriptionFilterType!, $update: SubscriptionInsertType!) {
     upsertOneSubscription(filter: $filter, update: $update) {
       _id
     }

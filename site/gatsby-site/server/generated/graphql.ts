@@ -2190,12 +2190,12 @@ export type IncidentInsertType = {
   date: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
+  editor_notes: Scalars['String']['input'];
   editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editors?: InputMaybe<IncidentEditorsRelationInput>;
   embedding?: InputMaybe<IncidentEmbeddingInsertType>;
   epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  flagged_dissimilar_incidents: Array<InputMaybe<Scalars['Int']['input']>>;
   incident_id: Scalars['Int']['input'];
   nlp_similar_incidents?: InputMaybe<Array<InputMaybe<IncidentNlp_Similar_IncidentInsertType>>>;
   reports?: InputMaybe<IncidentReportsRelationInput>;
