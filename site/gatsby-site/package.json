@@ -147,7 +147,7 @@
     "@graphql-codegen/typescript-mongodb": "^3.0.0",
     "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@netlify/plugin-gatsby": "^3.8.1",
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.8",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.13",
