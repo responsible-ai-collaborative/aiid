@@ -127,6 +127,27 @@ test.describe('Subscriptions', () => {
         await expect(page.locator('button[role=switch][aria-checked=true]')).toBeVisible();
     });
 
+    test('New Incidents: Should let you toggle it on and off', async ({ page, login }) => {
+
+        await init();
+
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
+
+        await page.goto(url);
+
+        await expect(page.locator('#subscribe-all')).not.toBeDisabled();
+
+        await page.locator('#subscribe-all').click();
+
+        await expect(page.locator('input[name=subscribe-all]')).toBeChecked();
+
+        await page.locator('#subscribe-all').click();
+
+        await expect(page.locator('#subscribe-all')).not.toBeDisabled();
+
+        await expect(page.locator('input[name=subscribe-all]')).toHaveCount(0);
+    });
+
     test('Incident Updates: Should not display user subscriptions to deleted Incidents', async ({ page, login }) => {
 
         await init();
