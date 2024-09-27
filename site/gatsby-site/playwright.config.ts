@@ -74,9 +74,9 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
+  webServer: process.env.CI ? {
     command: 'npx -y pm2 start npm --name "web-server" -- run serve && npx pm2 logs "web-server"',
     url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
-  },
+  } : undefined,
 });
