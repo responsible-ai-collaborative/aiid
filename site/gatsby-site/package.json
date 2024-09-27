@@ -124,7 +124,7 @@
   "main": "n/a",
   "scripts": {
     "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
-    "build": "gatsby build --prefix-paths",
+    "build": "netlify build --offline --context=${npm_config_context:-deploy-preview}",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
@@ -147,7 +147,7 @@
     "@graphql-codegen/typescript-mongodb": "^3.0.0",
     "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@netlify/plugin-gatsby": "^3.8.1",
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.8",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.13",

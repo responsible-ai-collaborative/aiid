@@ -71,7 +71,7 @@ jobs:
           echo "MongoDB has started on port 4110."
 
       - name: Build using Netlify
-        run: netlify build --context preview --offline
+        run: npm run build
         working-directory: site/gatsby-site
         env:
           INSTRUMENT: true

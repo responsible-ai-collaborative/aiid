@@ -80,6 +80,7 @@ export interface Fixture<T, U, I = any> {
         allowed: User[];
         denied: User[];
         sort: unknown;
+        filter?: unknown;
         result: DeepPartial<T>[];
     } | null;
     testPluralPagination: {

@@ -18,7 +18,7 @@ export type Options = { defaultItem: string };
 type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string>,
+    login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string[]>,
     retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
 };
 
@@ -31,6 +31,18 @@ const getUserIdFromLocalStorage = async (page: Page) => {
             if (storage.value == 'local-userpass') {
                 const match = storage.name.match(/user\(([^)]+)\):providerType/);
                 return match?.[1];
+            }
+        }
+    }
+}
+const getAccessTokenFromLocalStorage = async (page: Page, userId: string) => {
+
+    const storage = await page.context().storageState();
+
+    for (const origin of storage.origins) {
+        for (const storage of origin.localStorage) {
+            if (storage.name.endsWith(`user(${userId}):accessToken`)) {
+                return storage.value;
             }
         }
     }
@@ -66,6 +78,8 @@ export const test = base.extend<TestFixtures>({
 
             const userId = await getUserIdFromLocalStorage(page);
 
+            const accessToken = await getAccessTokenFromLocalStorage(page, userId!);
+
             if (customData) {
 
                 await page.evaluate(({ customData }) => {
@@ -84,7 +98,7 @@ export const test = base.extend<TestFixtures>({
                 });
             }
 
-            return userId!;
+            return [userId!, accessToken!];
 
             // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
             // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
@@ -204,11 +218,11 @@ export const getApolloClient = () => {
 
 const client = getApolloClient();
 
-export function query(data: QueryOptions<OperationVariables, any>) {
+export function query(data: QueryOptions<OperationVariables, any>, headers = {}) {
 
     const { query, variables } = data
 
-    return client.query({ query, variables, fetchPolicy: 'no-cache' });
+    return client.query({ query, variables, fetchPolicy: 'no-cache', context: { headers } });
 }
 
 const loginSteps = async (page: Page, email: string, password: string) => {
