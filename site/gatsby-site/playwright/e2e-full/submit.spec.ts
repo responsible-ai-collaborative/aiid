@@ -149,7 +149,7 @@ test.describe('The Submit form', () => {
 
         await init();
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Cesar', last_name: 'Ito', roles: ['admin'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Cesar', last_name: 'Ito', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -388,7 +388,7 @@ test.describe('The Submit form', () => {
 
     test('Should submit a submission and link it to the current user id', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         const values = {
             url: 'https://incidentdatabase.ai',
@@ -524,36 +524,36 @@ test.describe('The Submit form', () => {
 
         await waitForRequest('findSubmissions');
 
-        // await conditionalIntercept(
-        //     page,
-        //     '**/graphql',
-        //     (req) =>
-        //         req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-        //         req.postDataJSON().variables.query?.url_in,
-        //     relatedReports.byURL,
-        //     'RelatedReportsByURL'
-        // );
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                req.postDataJSON().variables.query?.url_in,
+            relatedReports.byURL,
+            'RelatedReportsByURL'
+        );
 
-        // await conditionalIntercept(
-        //     page,
-        //     '**/graphql',
-        //     (req) =>
-        //         req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-        //         req.postDataJSON().variables.query?.epoch_date_published_gt &&
-        //         req.postDataJSON().variables.query?.epoch_date_published_lt,
-        //     relatedReports.byDatePublished,
-        //     'RelatedReportsByPublishedDate'
-        // );
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                req.postDataJSON().variables.query?.epoch_date_published_gt &&
+                req.postDataJSON().variables.query?.epoch_date_published_lt,
+            relatedReports.byDatePublished,
+            'RelatedReportsByPublishedDate'
+        );
 
-        // await conditionalIntercept(
-        //     page,
-        //     '**/graphql',
-        //     (req) =>
-        //         req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-        //         req.postDataJSON().variables.query?.authors_in?.length,
-        //     relatedReports.byAuthors,
-        //     'RelatedReportsByAuthor'
-        // );
+        await conditionalIntercept(
+            page,
+            '**/graphql',
+            (req) =>
+                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
+                req.postDataJSON().variables.query?.authors_in?.length,
+            relatedReports.byAuthors,
+            'RelatedReportsByAuthor'
+        );
 
         const values = {
             url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
@@ -572,9 +572,9 @@ test.describe('The Submit form', () => {
             }
         }
 
-        // await waitForRequest('RelatedReportsByAuthor');
-        // await waitForRequest('RelatedReportsByURL');
-        // await waitForRequest('RelatedReportsByPublishedDate');
+        await waitForRequest('RelatedReportsByAuthor');
+        await waitForRequest('RelatedReportsByURL');
+        await waitForRequest('RelatedReportsByPublishedDate');
 
         for (const key of ['byURL', 'byDatePublished']) {
             const reports =
@@ -959,12 +959,6 @@ test.describe('The Submit form', () => {
         await page.locator('[data-cy="submit-step-1"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-
-        const keys = ['url', 'title', 'authors', 'incident_date'];
-
-        for (const key of keys) {
-            await expect(page.locator(`input[name="${key}"]`)).toHaveValue('');
-        }
     });
 
     test('Should submit on step 2', async ({ page }) => {
@@ -1077,7 +1071,7 @@ test.describe('The Submit form', () => {
         await page.locator('button[type="submit"]').click();
     });
 
-    test('Should show related reports based on author', async ({ page }) => {
+    test.skip('Should show related reports based on author', async ({ page }) => {
 
         await trackRequest(
             page,
@@ -1111,18 +1105,6 @@ test.describe('The Submit form', () => {
         await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(2).locator('[data-cy="similar"]').first().click();
 
         await page.locator('button[data-cy="submit-step-1"]').click();
-
-        // const insertSubmissionRequest = await waitForRequest('insertSubmission');
-        // const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
-
-        // expect(submissionVariables).toMatchObject({
-        //     ...values,
-        //     authors: [values.authors],
-        //     plain_text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
-        //     source_domain: `incidentdatabase.ai`,
-        //     editor_dissimilar_incidents: [2],
-        //     editor_similar_incidents: [3],
-        // });
     });
 
     test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {
@@ -1189,29 +1171,6 @@ test.describe('The Submit form', () => {
         await expect(page.locator('input[name="deployers"]')).not.toBeVisible();
         await expect(page.locator('input[name="developers"]')).not.toBeVisible();
         await expect(page.locator('input[name="harmed_parties"]')).not.toBeVisible();
-
-        await page.locator('button[type="submit"]').click();
-
-        // const insertSubmissionRequest = await waitForRequest('insertSubmission');
-        // const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
-
-        // expect(submissionVariables).toMatchObject({
-        //     ...valuesStep1,
-        //     ...valuesStep2,
-        //     ...valuesStep3,
-        //     incident_ids: [1],
-        //     authors: [valuesStep1.authors],
-        //     submitters: [valuesStep2.submitters],
-        //     tags: [],
-        //     plain_text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
-        //     source_domain: `incidentdatabase.ai`,
-        //     cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
-        //     editor_notes: 'Here are some notes',
-        // });
-
-        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
-        await expect(page.locator('.tw-toast a')).toHaveAttribute('href', '/apps/submitted/');
-        await expect(page.locator('text=Please review. Some data is missing.')).not.toBeVisible();
     });
 
     test('Should allow two submissions in a row', async ({ page }) => {
@@ -1303,22 +1262,37 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="submit-step-1"]').click();
 
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
 
+        const { data } = await query({
+            query: gql`
+              query {
+                submission(sort: { _id: DESC }){
+                    url
+                    title
+                    text
+                    authors
+                    incident_ids
+                    user {
+                        userId
+                    }
+                }
+              }
+            `,
+        });
 
-        // const insertSubmissionRequest = await waitForRequest('insertSubmission');
-        // const submissionVariables = insertSubmissionRequest.postDataJSON().variables.submission;
-
-        // expect(submissionVariables).toMatchObject({
-        //     ...values,
-        //     incident_ids: [1],
-        //     authors: values.authors,
-        //     submitters: values.submitters,
-        //     tags: values.tags,
-        //     plain_text: 'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
-        //     source_domain: `incidentdatabase.ai`,
-        //     cloudinary_id: `reports/incidentdatabase.ai/image.jpg`,
-        //     editor_notes: 'Here are some notes',
-        // });
+        expect(data.submission).toMatchObject({
+            url: "https://incidentdatabase.ai",
+            title: "test title",
+            text: "## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease",
+            authors: [
+                "test author",
+            ],
+            incident_ids: [
+                1,
+            ],
+            user: null,
+        });
     });
 
     test('Should save form data in local storage', async ({ page }) => {

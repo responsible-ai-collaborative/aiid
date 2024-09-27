@@ -16,7 +16,7 @@ test.describe('Edit Entity', () => {
   
   test('Should successfully edit Entity fields', async ({ page, login, skipOnEmptyEnvironment }) => {
   
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
   
     await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
   
@@ -65,7 +65,7 @@ test.describe('Edit Entity', () => {
 
   test('Should display an error message when editing Entity fails',
     async ({ page, login, skipOnEmptyEnvironment }) => {
-      const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+      const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] }, }, { drop: true });
 
