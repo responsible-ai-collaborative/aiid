@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { test, conditionalIntercept, waitForRequest } from '../utils';
+import config from '../config';
 
 test.describe('Signup', () => {
   const url = '/signup';
@@ -38,13 +39,11 @@ test.describe('Signup', () => {
   });
 
   test('Should display the error toast message if the user already exists', async ({ page, skipOnEmptyEnvironment }) => {
-    if (!skipOnEmptyEnvironment) return;
-
     await page.goto(url);
 
     await page.locator('[data-cy="signup-btn"]').click();
 
-    await page.locator('input[name=email]').fill(process.env.e2eUsername);
+    await page.locator('input[name=email]').fill(config.E2E_ADMIN_USERNAME);
     await page.locator('input[name=password]').fill('anyPassword');
     await page.locator('input[name=passwordConfirm]').fill('anyPassword');
     await page.locator('[data-cy="signup-btn"]').click();
