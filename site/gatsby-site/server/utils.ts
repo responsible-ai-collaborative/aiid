@@ -544,6 +544,27 @@ async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Recor
     return parsedUpdate;
 }
 
+async function parseDBMappings(Type: GraphQLObjectType, updateArg: Record<string, any>,) {
+
+    const parsedUpdate: any = {};
+
+    const fields = Type.toConfig().fields;
+
+    for (const [key, value] of Object.entries(updateArg)) {
+
+        if (fields[key].extensions?.dbMapping) {
+
+            parsedUpdate[fields[key].extensions!.dbMapping as string] = value;
+        }
+        else {
+            parsedUpdate[key] = value;
+        }
+    }
+
+    return parsedUpdate;
+
+}
+
 type Data = { [key: string]: any }
 
 type MutationFields = 'deleteOne' | 'deleteMany' | 'insertOne' | 'insertMany' | 'updateOne' | 'updateMany' | 'upsertOne';
@@ -561,7 +582,20 @@ const defaultMutationFields: MutationFields[] = ['deleteOne', 'deleteMany', 'ins
  * @param {MutationFields[]} [params.generateFields=defaultMutationFields] - An array specifying which mutation fields to generate.
  * @returns {GraphQLFieldConfigMap<any, any>} - A map of GraphQL field configurations for the generated mutations.
  */
-export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultMutationFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: MutationFields[] }): GraphQLFieldConfigMap<any, any> {
+export function generateMutationFields({
+    collectionName,
+    databaseName = 'aiidprod',
+    Type,
+    generateFields = defaultMutationFields,
+    onResolve = (operation, context, result) => Promise.resolve(result),
+}:
+    {
+        collectionName: string,
+        databaseName?: string,
+        Type: GraphQLObjectType<any, any>,
+        generateFields?: MutationFields[],
+        onResolve?: (operation: MutationFields, context: Context, result: any) => Promise<any>
+    }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = capitalize(singularize(collectionName));
     const pluralName = capitalize(pluralize(collectionName));
@@ -615,7 +649,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 try {
 
-                    const insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
+                    let insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
+                    insert = await parseDBMappings(Type, insert);
 
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
@@ -624,7 +659,7 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                     const inserted = await collection.findOne({ _id: result.insertedId });
 
-                    return inserted;
+                    return onResolve('insertOne', context, inserted);
                 }
                 catch (e) {
 
@@ -652,7 +687,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const collection = db.collection(collectionName);
 
                     const insert = await Promise.all(data.map(async (item) => {
-                        return await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
+                        const result = await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
+                        return await parseDBMappings(Type, result);
                     }));
 
                     const result = await collection.insertMany(insert);
@@ -684,7 +720,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    let update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    update = await parseDBMappings(Type, update);
 
                     await collection.updateOne(filter, { $set: update }, options);
 
@@ -717,7 +754,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    let update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    update = await parseDBMappings(Type, update);
 
                     const result = await collection.updateMany(filter, { $set: update }, options);
 
@@ -749,7 +787,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
+                    let update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
+                    update = await parseDBMappings(Type, update);
 
                     await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
 
@@ -838,8 +877,10 @@ export const getListRelationshipResolver = (
 
         const collection = db.collection(collectionName);
 
-        const result = source[sourceFieldOnDatabase ?? sourceField]?.length
-            ? await collection.find({ [targetField]: { $in: source[sourceFieldOnDatabase ?? sourceField] } }, options).toArray()
+        const field = sourceFieldOnDatabase ?? sourceField;
+
+        const result = source[field]?.length
+            ? await collection.find({ [targetField]: { $in: source[field] } }, options).toArray()
             : []
 
         return result;
