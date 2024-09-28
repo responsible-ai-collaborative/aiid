@@ -277,23 +277,13 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
     console.log(`New Incident #${incidentId}`);
 
     const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
-    const subscriptionsCollection = context.client.db('customData').collection<DBSubscription>("subscriptions");
 
-    const subscriptionsToNewIncidents = await subscriptionsCollection.find({ type: 'new-incidents' }).toArray();
+    await notificationsCollection.insertOne({
+        type: 'new-incidents',
+        incident_id: incidentId,
+        processed: false,
+    });
 
-    console.log(`There are ${subscriptionsToNewIncidents.length} subscribers to New Incidents.`);
-
-    // If there are subscribers to New Incidents > Insert a pending notification to process in the next build
-
-    if (subscriptionsToNewIncidents.length > 0) {
-        await notificationsCollection.insertOne({
-            type: 'new-incidents',
-            incident_id: incidentId,
-            processed: false,
-        });
-    }
-
-    // Process Entity Subscriptions
     const entityFields: (keyof DBIncident)[] = [
         'Alleged deployer of AI system',
         'Alleged developer of AI system',
@@ -312,23 +302,13 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
     }
 
     for (const entityId of entities) {
-        // Find subscriptions to this specific entity
-        const subscriptionsToEntity = await subscriptionsCollection.find({
+
+        await notificationsCollection.insertOne({
             type: 'entity',
-            entityId
-        }).toArray();
-
-        console.log(`There are ${subscriptionsToEntity.length} subscribers to Entity:`, entityId);
-
-        // If there are subscribers to Entities > Insert a pending notification to process in the next build
-        if (subscriptionsToEntity.length > 0) {
-            await notificationsCollection.insertOne({
-                type: 'entity',
-                incident_id: incidentId,
-                entity_id: entityId,
-                processed: false,
-            });
-        }
+            incident_id: incidentId,
+            entity_id: entityId,
+            processed: false,
+        });
     }
 
     return fullDocument;

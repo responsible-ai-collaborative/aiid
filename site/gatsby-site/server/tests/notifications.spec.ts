@@ -3,9 +3,10 @@ import { ApolloServer } from "@apollo/server";
 import { makeRequest, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
 import * as common from '../fields/common';
-import { DBEntity, DBIncident, DBNotification, DBReport, DBSubscription, DBUser } from '../interfaces';
+import { DBEntity, DBIncident, DBNotification, DBReport, DBSubmission, DBSubscription, DBUser } from '../interfaces';
 import config from '../config';
-import { IncidentInsertType } from '../generated/graphql';
+import { IncidentInsertType, PromoteSubmissionToReportInput } from '../generated/graphql';
+import { ObjectId } from 'bson';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -702,18 +703,6 @@ describe(`Notifications`, () => {
 
     it(`Should create Incident and Entity Notifications on Incident creation`, async () => {
 
-        const subscriptions: DBSubscription[] = [
-            {
-                type: 'new-incidents',
-                userId: 'user1',
-            },
-            {
-                type: 'entity',
-                entityId: 'entity-1',
-                userId: 'user1',
-            },
-        ]
-
         const users: DBUser[] = [
             {
                 userId: "user1",
@@ -731,7 +720,6 @@ describe(`Notifications`, () => {
         await seedFixture({
             customData: {
                 users,
-                subscriptions,
                 notifications: [],
             },
             aiidprod: {
@@ -795,6 +783,126 @@ describe(`Notifications`, () => {
                 processed: false,
                 entity_id: "entity-1",
             }
+        ]);
+    })
+
+    it(`Should create Incident and Entity Notifications on submission promotion`, async () => {
+
+        const users: DBUser[] = [
+            {
+                userId: "user1",
+                roles: ['admin'],
+            }
+        ]
+
+        const entities: DBEntity[] = [
+            {
+                entity_id: 'entity-1',
+                name: 'Entity 1',
+            }
+        ]
+
+        const submissions: DBSubmission[] = [
+            {
+                _id: new ObjectId("5f8f4b3b9b3e6f001f3b3b3b"),
+                title: "Submission 1",
+                authors: [],
+                date_downloaded: new Date().toISOString(),
+                date_modified: new Date().toISOString(),
+                date_published: new Date().toISOString(),
+                date_submitted: new Date().toISOString(),
+                epoch_date_modified: 1,
+                image_url: 'image_url',
+                language: 'en',
+                plain_text: 'plain_text',
+                source_domain: 'source_domain',
+                submitters: [],
+                developers: [],
+                deployers: ['entity-1'],
+                harmed_parties: [],
+                incident_editors: [],
+                tags: [],
+                text: 'text',
+                url: 'url',
+                user: 'user_id',
+            },
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                notifications: [],
+            },
+            aiidprod: {
+                incidents: [],
+                reports: [],
+                entities,
+                submissions,
+            }
+        });
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+
+        const mutationData: { query: string, variables: { input: PromoteSubmissionToReportInput } } = {
+            query: `
+            mutation ($input: PromoteSubmissionToReportInput!) {
+                promoteSubmissionToReport(input: $input) {
+                    incident_ids
+                    report_number
+                }
+            }
+            `,
+            variables: {
+                input: {
+                    submission_id: "5f8f4b3b9b3e6f001f3b3b3b",
+                    is_incident_report: true,
+                    incident_ids: [],
+                }
+            }
+        };
+
+
+        const response = await makeRequest(url, mutationData);
+
+        expect(response.body.data).toMatchObject({
+            promoteSubmissionToReport: {
+                incident_ids: [1],
+                report_number: 1,
+            }
+        })
+
+        const result = await makeRequest(url, {
+            query: `
+            query {
+                notifications {
+                    type
+                    incident_id
+                    processed
+                    entity_id
+                }
+            }
+            `});
+
+        expect(result.body.data.notifications).toMatchObject([
+            {
+                type: "new-incidents",
+                incident_id: 1,
+                processed: false,
+                entity_id: null,
+            },
+            {
+                entity_id: "entity-1",
+                incident_id: 1,
+                processed: false,
+                type: "entity",
+            },
+            {
+                type: "submission-promoted",
+                incident_id: 1,
+                processed: false,
+                entity_id: null,
+            },
         ]);
     })
 });
