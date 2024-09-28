@@ -3,14 +3,13 @@ import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context } from "../interfaces";
 import { isRole } from "../rules";
-import { linkReportsToIncidents } from "./common";
+import { createNotificationsOnNewIncident, linkReportsToIncidents } from "./common";
 import { IncidentType } from "../types/incidents";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
     ...generateQueryFields({ collectionName: 'incidents', Type: IncidentType })
 }
-
 
 
 const LinkReportsToIncidentsInput = new GraphQLInputObjectType({
@@ -23,7 +22,19 @@ const LinkReportsToIncidentsInput = new GraphQLInputObjectType({
 
 export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateMutationFields({ collectionName: 'incidents', Type: IncidentType, generateFields: ['insertOne', 'updateOne', 'updateMany'] }),
+    ...generateMutationFields({
+        collectionName: 'incidents',
+        Type: IncidentType,
+        generateFields: ['insertOne', 'updateOne', 'updateMany'],
+        onResolve: async (operation, context, result) => {
+
+            if (operation === 'insertOne') {
+                return createNotificationsOnNewIncident(result, context);
+            }
+
+            return result;
+        },
+    }),
 
     linkReportsToIncidents: {
         type: new GraphQLList(IncidentType),

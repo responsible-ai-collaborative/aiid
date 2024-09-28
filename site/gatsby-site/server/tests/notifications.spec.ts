@@ -5,6 +5,7 @@ import * as context from '../context';
 import * as common from '../fields/common';
 import { DBEntity, DBIncident, DBNotification, DBReport, DBSubscription, DBUser } from '../interfaces';
 import config from '../config';
+import { IncidentInsertType } from '../generated/graphql';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -698,4 +699,102 @@ describe(`Notifications`, () => {
         }));
         expect(response.body.data).toMatchObject({ processNotifications: 1 });
     });
+
+    it(`Should create Incident and Entity Notifications on Incident creation`, async () => {
+
+        const subscriptions: DBSubscription[] = [
+            {
+                type: 'new-incidents',
+                userId: 'user1',
+            },
+            {
+                type: 'entity',
+                entityId: 'entity-1',
+                userId: 'user1',
+            },
+        ]
+
+        const users: DBUser[] = [
+            {
+                userId: "user1",
+                roles: ['admin'],
+            }
+        ]
+
+        const entities: DBEntity[] = [
+            {
+                entity_id: 'entity-1',
+                name: 'Entity 1',
+            }
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                subscriptions,
+                notifications: [],
+            },
+            aiidprod: {
+                incidents: [],
+                entities,
+            }
+        });
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+
+
+        const newIncident: IncidentInsertType = {
+            incident_id: 1,
+            date: "2024-01-01",
+            title: "Test Incident",
+            editor_notes: "",
+            flagged_dissimilar_incidents: [],
+            AllegedDeployerOfAISystem: { link: ['entity-1'] },
+            AllegedDeveloperOfAISystem: { link: [] },
+            AllegedHarmedOrNearlyHarmedParties: { link: [] },
+            editors: { link: ['user1'] },
+            reports: { link: [] },
+        }
+
+        await makeRequest(url, {
+            query: `
+                mutation($data: IncidentInsertType!) {
+                    insertOneIncident(data: $data) {
+                        incident_id
+                    }
+                }
+            `,
+            variables: {
+                data: newIncident,
+            }
+        });
+
+        const result = await makeRequest(url, {
+            query: `
+            query {
+                notifications {
+                    type
+                    incident_id
+                    processed
+                    entity_id
+                }
+            }
+            `});
+
+        expect(result.body.data.notifications).toMatchObject([
+            {
+                type: 'new-incidents',
+                incident_id: 1,
+                processed: false,
+                entity_id: null,
+            },
+            {
+                type: "entity",
+                incident_id: 1,
+                processed: false,
+                entity_id: "entity-1",
+            }
+        ]);
+    })
 });
