@@ -80,9 +80,10 @@ export const hasHeaderSecret = (headerName: keyof Config) => rule()(
 
         const { req } = context;
 
-        const name = headerName.toLowerCase();
+        const headerValue = req.headers[headerName.toLowerCase()];
+        const configValue = config[headerName];
 
-        if (req.headers[name] && req.headers[name] != config[headerName]) {
+        if (!headerValue || !configValue || (configValue && headerValue && configValue != headerValue)) {
 
             return new Error('not authorized')
         }
