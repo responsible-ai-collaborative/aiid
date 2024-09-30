@@ -562,15 +562,11 @@ test.describe('Cite pages', () => {
 
         await page.goto('/incidents/edit/?incident_id=3');
 
-        await page.locator('[data-cy="similar-id-input"]').fill('1');
-
-        await expect(page.getByText('#1 - Report 1')).toBeVisible();
+        await fillAutoComplete(page, '#input-incidentSearch', '1 Incident', 'Incident 1');
 
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText("Yes").click();
 
-        await page.locator('[data-cy="similar-id-input"]').fill('2');
-
-        await expect(page.getByText('#2 - Report 2')).toBeVisible();
+        await fillAutoComplete(page, '#input-incidentSearch', '2 Incident', 'Incident 2');
 
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
