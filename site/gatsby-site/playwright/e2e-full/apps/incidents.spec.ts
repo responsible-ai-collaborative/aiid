@@ -83,9 +83,10 @@ test.describe('Incidents App', () => {
   });
 
   test('Successfully assigns similar/dissimilar incidents to incident 3', async ({ page, login }) => {
-    test.slow();
-    const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
+
+    await init();
+
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
 
     await conditionalIntercept(
       page,
@@ -111,7 +112,7 @@ test.describe('Incidents App', () => {
     await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
     await page.click('text=Edit');
 
-    await page.waitForSelector('[data-cy="incident-form"]', { timeout: 12000 });
+    await page.waitForSelector('[data-cy="incident-form"]');
     await expect(page.locator('.submission-modal h3')).toHaveText('Edit Incident 3');
 
     await page.locator(`[data-cy=title-input]`).fill('Test title');
@@ -205,7 +206,7 @@ test.describe('Incidents App', () => {
   });
 
   test('Should display a list of live incidents', async ({ page }) => {
-    test.slow();
+
     await init({
       aiidprod: {
         incidents: [
