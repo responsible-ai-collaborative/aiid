@@ -16,7 +16,7 @@ defaults:
 
 jobs:
   build-and-run-backups:
-    # If the execution is triggered by a schedule, the environment is production
+ # If the execution is triggered by a schedule, the environment is production
     environment: ${{ inputs.environment || 'production' }}
     name: Backup
     runs-on: ubuntu-latest
@@ -25,6 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  # Puedes especificar la versión que prefieras
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -32,7 +37,6 @@ jobs:
             coreutils \
             bash \
             tzdata \
-            python3-pip \
             curl \
             npm
           wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
@@ -59,3 +63,4 @@ jobs:
           CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
           MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          
