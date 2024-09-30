@@ -606,17 +606,19 @@ test.describe('Cite pages', () => {
 
     test('Should load incident data not yet in build', async ({ page }) => {
 
+        await init();
+
         const incident: DBIncident = {
             incident_id: 4,
             title: 'Test Title',
             description: 'Incident 4 description',
             date: "2020-01-01",
-            "Alleged deployer of AI system": ["entity1"],
-            "Alleged developer of AI system": ["entity2"],
-            "Alleged harmed or nearly harmed parties": ["entity3"],
+            "Alleged deployer of AI system": ["entity-1"],
+            "Alleged developer of AI system": ["entity-2"],
+            "Alleged harmed or nearly harmed parties": ["entity-3"],
             editors: ["user1"],
             reports: [1],
-            editor_notes: "",
+            editor_notes: "This is an editor note",
             flagged_dissimilar_incidents: []
         }
 
