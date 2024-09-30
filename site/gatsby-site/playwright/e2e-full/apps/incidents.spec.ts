@@ -22,9 +22,10 @@ test.describe('Incidents App', () => {
   });
 
   test('Successfully filter and edit incident 3', async ({ page, login }) => {
-    test.slow();
-    const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
-    await init({ customData: { users: [{ userId, first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] }] } }, { drop: true });
+
+    await init();
+
+    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
     await conditionalIntercept(
       page,
@@ -59,8 +60,6 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
     await fillAutoComplete(page, "#input-editors", "Joh", "John Doe");
-
-    await page.locator('[data-cy=similar]').click();
 
     await page.getByText('Update', { exact: true }).click();
 
