@@ -40,11 +40,15 @@ jobs:
           sudo apt update
           sudo apt install -y mongodb-database-tools
       
-      - name: Install boto3
-        run: pip install boto3
+      - name: Set up Python virtual environment and install boto3
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install boto3
 
       - name: Generate public backup
         run: |
+          source venv/bin/activate
           ./bin/backup.sh
           ./bin/prune.sh
           ./bin/list.sh
