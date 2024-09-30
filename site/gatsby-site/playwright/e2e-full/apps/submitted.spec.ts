@@ -4,8 +4,8 @@ import { isArray } from 'lodash';
 import { init, seedCollection } from '../../memory-mongo';
 import { fillAutoComplete, query, setEditorText, test } from '../../utils';
 import config from '../../config';
-import { DBSubmission } from '../../seeds/aiidprod/submissions';
 import { ObjectId } from 'mongodb';
+import { DBSubmission } from '../../../server/interfaces';
 
 test.describe('Submitted reports', () => {
     const url = '/apps/submitted';
@@ -575,5 +575,110 @@ test.describe('Submitted reports', () => {
         await fillAutoComplete(page, '#input-incident_ids', 'inci', 'Incident 1');
 
         await expect(page.locator('[data-cy="incident-data-section"]')).not.toBeVisible();
+    });
+
+    test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
+        await init();
+
+        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        await page.locator('select[data-cy="promote-select"]').selectOption('Incident');
+
+        page.on('dialog', dialog => dialog.accept());
+
+        await page.locator('[data-cy="promote-button"]').click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 4 and Report 9');
+
+        const { data: { incident } } = await query({
+            query: gql`{
+                incident(sort: { incident_id: DESC }) {
+                    _id
+                    AllegedDeployerOfAISystem {
+                        entity_id
+                    }
+                    AllegedDeveloperOfAISystem {
+                        entity_id
+                    }
+                    AllegedHarmedOrNearlyHarmedParties {
+                        entity_id
+                    }
+                    date
+                    description
+                    editor_dissimilar_incidents
+                    editor_notes
+                    editors {
+                        userId
+                    }
+                    editor_similar_incidents
+                    embedding {
+                        from_reports
+                        vector
+                    }
+                    epoch_date_modified
+                    flagged_dissimilar_incidents
+                    incident_id
+                    nlp_similar_incidents {
+                        incident_id
+                        similarity
+                    }
+                    title
+                    tsne {
+                        x
+                        y
+                    }
+                    reports {
+                        report_number
+                        user {
+                            userId
+                        }
+                    }
+                }
+            }
+        `,
+        });
+
+        expect(incident).toMatchObject({
+            _id: expect.any(String),
+            AllegedDeployerOfAISystem: [
+                {
+                    entity_id: "entity-1",
+                },
+            ],
+            AllegedDeveloperOfAISystem: [
+                {
+                    entity_id: "entity-2",
+                },
+            ],
+            AllegedHarmedOrNearlyHarmedParties: [
+                {
+                    entity_id: "entity-3",
+                },
+            ],
+            date: "2021-09-14",
+            description: "Sample description",
+            editor_dissimilar_incidents: [],
+            editor_notes: "This is an editor note",
+            editors: [],
+            editor_similar_incidents: [],
+            embedding: null,
+            epoch_date_modified: null,
+            flagged_dissimilar_incidents: [],
+            incident_id: 4,
+            nlp_similar_incidents: [],
+            title: "Incident title",
+            tsne: null,
+            reports: [
+                {
+                    report_number: 9,
+                    user: {
+                        userId: "user1",
+                    },
+                },
+            ],
+
+        })
     });
 });

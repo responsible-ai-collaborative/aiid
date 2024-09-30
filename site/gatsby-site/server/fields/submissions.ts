@@ -8,7 +8,7 @@ import {
     GraphQLInputObjectType
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
-import { Context } from '../interfaces';
+import { Context, DBSubmission } from '../interfaces';
 import { allow } from 'graphql-shield';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
@@ -57,7 +57,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
         resolve: async (source, { input }, context) => {
 
-            const submissions = context.client.db('aiidprod').collection("submissions");
+            const submissions = context.client.db('aiidprod').collection<DBSubmission>("submissions");
             const incidents = context.client.db('aiidprod').collection("incidents");
             const reports = context.client.db('aiidprod').collection("reports");
             const notificationsCollection = context.client.db('customData').collection("notifications");
@@ -70,7 +70,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 throw new Error('Submission not found');
             }
 
-            const { _id: undefined, ...submission } = target;
+            const { _id: undefined, ...submission }: DBSubmission = target;
 
             const parentIncidents: Array<Record<string, unknown> & { incident_id?: number, reports?: Record<string, unknown>[] }> = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
@@ -104,7 +104,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         nlp_similar_incidents: submission.nlp_similar_incidents || [],
                         editor_similar_incidents: submission.editor_similar_incidents || [],
                         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
-                        editor_notes: "",
+                        editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
                     }
                     if (submission.embedding) {
