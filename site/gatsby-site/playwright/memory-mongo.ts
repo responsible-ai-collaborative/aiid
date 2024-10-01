@@ -17,6 +17,25 @@ import subscriptions from './seeds/customData/subscriptions';
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
+    if (process.env.GATSBY_LOCAL_USER_ID && process.env.GATSBY_LOCAL_USER_ROLES) {
+
+        const userId = process.env.GATSBY_LOCAL_USER_ID;
+        const roles = process.env.GATSBY_LOCAL_USER_ROLES.split(',');
+
+        console.log(`Adding local user [${userId}] with roles [${roles.join(',')}] \n`);
+
+        users.push({
+            first_name: 'Local',
+            last_name: 'User',
+            roles,
+            userId,
+        });
+    }
+    else if (require.main === module) {
+
+        console.log('No local user provided. Use GATSBY_LOCAL_USER_ID and GATSBY_LOCAL_USER_ROLES to provide one');
+    }
+
     await seedFixture({
         aiidprod: {
             incidents,
@@ -107,7 +126,7 @@ async function start() {
 
     await init();
 
-    console.log(`\nIn memory mongodb started on  ${instance.getUri()} \n\n`,);
+    console.log(`\n\n\nIn memory mongodb started on  ${instance.getUri()} \n\n`,);
 };
 
 async function stop() {
