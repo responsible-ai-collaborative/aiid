@@ -4,21 +4,21 @@ type DBEntity = Entity;
 
 const entities: DBEntity[] = [
     {
-        entity_id: 'entity1',
+        entity_id: 'entity-1',
         name: 'Entity 1',
         created_at: new Date(1609459200000).toISOString(),
         date_modified: new Date(1609459200000).toISOString(),
     },
 
     {
-        entity_id: 'entity2',
+        entity_id: 'entity-2',
         name: 'Entity 2',
         created_at: new Date(1609459200000).toISOString(),
         date_modified: new Date(1609459200000).toISOString(),
     },
 
     {
-        entity_id: 'entity3',
+        entity_id: 'entity-3',
         name: 'Entity 3',
         created_at: new Date(1609459200000).toISOString(),
         date_modified: new Date(1609459200000).toISOString(),
