@@ -7,7 +7,7 @@ on:
     inputs:
       environment:
         description: The Github environment to load secrets from
-        type: string  
+        type: string
         required: true
 
 defaults:
@@ -25,6 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -32,19 +37,18 @@ jobs:
             coreutils \
             bash \
             tzdata \
-            python3-pip \
             curl \
             npm
           wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
           echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
           sudo apt update
           sudo apt install -y mongodb-database-tools
-      
-      - name: Install boto3
-        run: pip install boto3
 
       - name: Generate public backup
         run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install boto3
           ./bin/backup.sh
           ./bin/prune.sh
           ./bin/list.sh

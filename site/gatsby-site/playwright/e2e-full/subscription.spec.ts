@@ -187,13 +187,13 @@ test.describe('Subscriptions', () => {
         const subscriptions: DBSubscription[] = [
             {
                 _id: new ObjectId("62f40cd14016f5858d72385d"),
-                entityId: 'entity1',
+                entityId: 'entity-1',
                 type: SUBSCRIPTION_TYPE.entity,
                 userId: userId,
             },
             {
                 _id: new ObjectId("62f40cd14016f5858d72385e"),
-                entityId: 'entity2',
+                entityId: 'entity-2',
                 type: SUBSCRIPTION_TYPE.entity,
                 userId: userId,
             }
@@ -229,13 +229,13 @@ test.describe('Subscriptions', () => {
         const subscriptions: DBSubscription[] = [
             {
                 _id: new ObjectId("62f40cd14016f5858d72385d"),
-                entityId: 'entity1',
+                entityId: 'entity-1',
                 type: SUBSCRIPTION_TYPE.entity,
                 userId: userId,
             },
             {
                 _id: new ObjectId("62f40cd14016f5858d72385e"),
-                entityId: 'entity2',
+                entityId: 'entity-2',
                 type: SUBSCRIPTION_TYPE.entity,
                 userId: userId,
             }
