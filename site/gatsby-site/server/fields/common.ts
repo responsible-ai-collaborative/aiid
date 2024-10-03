@@ -2,7 +2,8 @@ import { MongoClient } from "mongodb";
 import templates from "../emails/templates";
 import config from "../config";
 import * as reporter from '../reporter';
-import { Context, DBIncident, DBNotification, DBSubscription } from "../interfaces";
+import { Context, DBIncident, DBNotification, DBReport, DBSubscription } from "../interfaces";
+import _ from "lodash";
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
@@ -270,7 +271,7 @@ export const apiRequest = async ({ path, method = "GET" }: { method?: string, pa
     return response;
 }
 
-export const createNotificationsOnNewIncident = async (fullDocument: DBIncident, context: Context): Promise<DBIncident> => {
+export const createNotificationsOnNewIncident = async (fullDocument: DBIncident, context: Context): Promise<void> => {
 
     const incidentId = fullDocument.incident_id;
 
@@ -310,6 +311,75 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
             processed: false,
         });
     }
+}
 
-    return fullDocument;
+export const createNotificationsOnUpdatedIncident = async (fullDocument: DBIncident, fullDocumentBeforeChange: DBIncident, context: Context): Promise<void> => {
+
+    const incidentId: number = fullDocument.incident_id;
+
+    const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
+    const reportsCollection = context.client.db('aiidprod').collection<DBReport>("reports");
+
+
+    // TODO: make it work for multiple reports?
+    const newReportNumber = _.difference(fullDocument.reports, fullDocumentBeforeChange.reports)[0];
+
+    let notification: DBNotification | undefined;
+
+    if (newReportNumber) {
+        const newReport = await reportsCollection.findOne({ report_number: newReportNumber });
+
+        // If the new Report is not a Variant > Insert a pending notification to process in the next build
+        if (newReport &&
+            newReport.title && newReport.title !== '' &&
+            newReport.url && newReport.url !== '' &&
+            newReport.source_domain && newReport.source_domain !== '') {
+
+            // If there is a new Report > Insert a pending notification to process in the next build
+            notification = {
+                type: 'new-report-incident',
+                incident_id: incidentId,
+                report_number: newReportNumber,
+                processed: false,
+            };
+        }
+    } else {
+        // If any other Incident field is updated > Insert a pending notification to process in the next build
+        notification = { type: 'incident-updated', incident_id: incidentId, processed: false };
+    }
+
+    if (notification) {
+        await notificationsCollection.updateOne(notification, { $set: notification }, { upsert: true });
+    }
+
+
+    const entityFields: (keyof DBIncident)[] = [
+        'Alleged deployer of AI system',
+        'Alleged developer of AI system',
+        'Alleged harmed or nearly harmed parties',
+    ];
+
+    const entities: string[] = [];
+
+    for (const field of entityFields) {
+        const entitiesAdded: string[] = _.difference(fullDocument[field], fullDocumentBeforeChange[field]);
+
+        for (const entity of entitiesAdded) {
+            if (!entities.includes(entity)) {
+                entities.push(entity);
+            }
+        }
+    }
+
+    for (const entityId of entities) {
+
+        const notification: DBNotification = {
+            type: 'entity',
+            incident_id: incidentId,
+            entity_id: entityId,
+            isUpdate: true,
+            processed: false,
+        };
+        await notificationsCollection.updateOne(notification, { $set: notification }, { upsert: true });
+    }
 }

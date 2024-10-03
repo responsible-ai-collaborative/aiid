@@ -587,14 +587,14 @@ export function generateMutationFields({
     databaseName = 'aiidprod',
     Type,
     generateFields = defaultMutationFields,
-    onResolve = (operation, context, result) => Promise.resolve(result),
+    onResolve = undefined,
 }:
     {
         collectionName: string,
         databaseName?: string,
         Type: GraphQLObjectType<any, any>,
         generateFields?: MutationFields[],
-        onResolve?: (operation: MutationFields, context: Context, result: any) => Promise<any>
+        onResolve?: (operation: Extract<MutationFields, 'insertOne' | 'updateOne'>, context: Context, params?: { initial?: any, result?: any }) => Promise<any>
     }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = capitalize(singularize(collectionName));
@@ -659,7 +659,12 @@ export function generateMutationFields({
 
                     const inserted = await collection.findOne({ _id: result.insertedId });
 
-                    return onResolve('insertOne', context, inserted);
+                    if (onResolve) {
+
+                        return onResolve('insertOne', context, { result: inserted });
+                    }
+
+                    return inserted;
                 }
                 catch (e) {
 
@@ -713,7 +718,7 @@ export function generateMutationFields({
         fields[`updateOne${singularName}`] = {
             type: Type,
             args: getUpdateArgs(Type),
-            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
+            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context: Context) => {
 
                 try {
 
@@ -723,9 +728,16 @@ export function generateMutationFields({
                     let update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
                     update = await parseDBMappings(Type, update);
 
+                    const initial = await collection.findOne(filter);
+
                     await collection.updateOne(filter, { $set: update }, options);
 
                     const updated = await collection.findOne(filter);
+
+                    if (onResolve) {
+
+                        return onResolve('updateOne', context, { result: updated, initial });
+                    }
 
                     return updated;
                 }
