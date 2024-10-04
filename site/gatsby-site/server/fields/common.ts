@@ -187,7 +187,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
 
         sgMail.setApiKey(config.SENDGRID_API_KEY);
 
-        const response = await sgMail.send({
+        const [response] = await sgMail.send({
             from: emailData.from,
             personalizations: emailData.personalizations,
             html: emailData.html
