@@ -94,7 +94,6 @@ jobs:
           SENDGRID_SENDER: test@test.com
           PROCESS_NOTIFICATIONS_SECRET: sarasa      
 
-
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

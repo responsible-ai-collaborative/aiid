@@ -84,11 +84,11 @@ const UserSubscriptions = () => {
     if (checked) {
       await subscribeToNewIncidentsMutation({
         variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.newIncidents,
-            userId: { userId: user.id },
+          filter: {
+            type: { EQ: SUBSCRIPTION_TYPE.newIncidents },
+            userId: { EQ: user.id },
           },
-          subscription: {
+          update: {
             type: SUBSCRIPTION_TYPE.newIncidents,
             userId: {
               link: user.id,
@@ -110,6 +110,7 @@ const UserSubscriptions = () => {
     <div className="mt-4">
       <div className="my-4">
         <ToggleSwitch
+          id="subscribe-all"
           checked={isSubscribeToNewIncidents}
           label={t('Notify me of new Incidents')}
           onChange={onSusbcribeToggle}

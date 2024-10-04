@@ -71,7 +71,7 @@ jobs:
           echo "MongoDB has started on port 4110."
 
       - name: Build using Netlify
-        run: netlify build --context preview --offline
+        run: npm run build
         working-directory: site/gatsby-site
         env:
           INSTRUMENT: true
@@ -138,7 +138,6 @@ jobs:
           SENDGRID_SENDER_NAME: Test Preview
           SENDGRID_SENDER: test@test.com
           PROCESS_NOTIFICATIONS_SECRET: sarasa      
-
 
       - name: Upload Playwright traces
         if: failure()
