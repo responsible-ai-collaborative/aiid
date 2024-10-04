@@ -552,7 +552,7 @@ async function parseDBMappings(Type: GraphQLObjectType, updateArg: Record<string
 
     for (const [key, value] of Object.entries(updateArg)) {
 
-        if (fields[key].extensions?.dbMapping) {
+        if (fields[key]?.extensions?.dbMapping) {
 
             parsedUpdate[fields[key].extensions!.dbMapping as string] = value;
         }
