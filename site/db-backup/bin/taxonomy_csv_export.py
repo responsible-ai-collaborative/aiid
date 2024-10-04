@@ -3,6 +3,28 @@ import json
 import csv
 import os
 
+def extract_entities(json_data):
+    entities = []
+    for item in json_data['attributes']:
+        if item['short_name'] == 'Entity':
+            entities.append(item['value_json'])
+            break
+    return entities
+
+def extract_snippets(json_data):
+    snippets = ''
+    for item in json_data['attributes']:
+        # convert value_json to string
+        escapedText =  json.loads(item['value_json'])
+
+        if(isinstance(escapedText, list)):
+            escapedText = ', '.join(escapedText)
+        else:
+            escapedText = str(escapedText)
+
+        snippets = snippets + item['short_name'] + ': ' + escapedText + '\n'
+    return snippets
+
 def taxonomy_csv_export(namespace, taxa_file, classification_file, target_folder):
 
     print(f"Processing namespace '{namespace}'...")
@@ -52,8 +74,23 @@ def taxonomy_csv_export(namespace, taxa_file, classification_file, target_folder
             attribute_dict = {}
             for attr in attributes:
                 value = json.loads(attr['value_json']) if 'value_json' in attr else ''
+                
                 if isinstance(value, list):
-                    value = ', '.join(map(str, value))
+                    flattened_list = []
+                    for item in value:
+                        # Transform JSON entities data into a list of entities
+                        if isinstance(item, dict) and attr['short_name'] == 'Entities':
+                            flattened_list.append(extract_entities(item))
+                        else:
+                            # Transform JSON snippets data into text
+                            if isinstance(item, dict) and 'Snippets' in attr['short_name']:
+                                flattened_list.append(extract_snippets(item))
+                            else:
+                                flattened_list.append(item)
+                    # Flatten the list and remove extra quotes
+                    flattened_list = [str(item).strip('"') for sublist in flattened_list for item in (sublist if isinstance(sublist, list) else [sublist])]
+                    value = ', '.join(flattened_list)
+
                 attribute_dict[attr['short_name']] = value
             
             # Get the corresponding values for each header
