@@ -93,3 +93,4 @@ jobs:
       netlify-context: deploy-preview
       netlify-alias: pr-${{ github.event.pull_request.number }}
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
+      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app

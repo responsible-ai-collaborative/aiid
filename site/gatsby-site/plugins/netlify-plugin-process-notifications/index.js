@@ -2,11 +2,22 @@ import apolloClient from '@apollo/client';
 
 import { fetch } from 'cross-fetch';
 
+const config = {
+  SITE_URL: process.env.SITE_URL,
+  PROCESS_NOTIFICATIONS_SECRET: process.env.PROCESS_NOTIFICATIONS_SECRET,
+};
+
+Object.keys(config).forEach((key) => {
+  if (config[key] === undefined) {
+    throw new Error(`Config property ${key} is undefined`);
+  }
+});
+
 const client = new apolloClient.ApolloClient({
   link: new apolloClient.HttpLink({
-    uri: `http://127.0.0.1:4000/api/graphql`,
+    uri: `${config.SITE_URL}/api/graphql`,
     fetch: async (uri, options) => {
-      options.headers.PROCESS_NOTIFICATIONS_SECRET = process.env.PROCESS_NOTIFICATIONS_SECRET;
+      options.headers.PROCESS_NOTIFICATIONS_SECRET = config.PROCESS_NOTIFICATIONS_SECRET;
 
       return fetch(uri, options);
     },
