@@ -78,5 +78,9 @@
     "quiet": {
         "title": "¿Es un informe silencioso?",
         "text": "Los informes silenciosos son aquellos que no se publicarán en la sección 'Últimos informes' de la página de inicio. Los informes silenciosos se utilizan para informes que son útiles para datos internos pero que no necesitan promocionarse. Si no está seguro, deje este campo en blanco."
+    },
+    "similarIncidentSearch": {
+        "title": "Buscar incidentes similares",
+        "text": "Busque un incidente similar o diferente escribiendo un ID de incidente. Si el incidente resultante es similar, haga clic en 'Sí', si es diferente, haga clic en 'No'. Si no está seguro, haga clic en 'No estoy seguro'. Una vez seleccionado, el incidente se agregará a la sección del formulario 'Incidentes similares y diferentes seleccionados manualmente'. Una vez agregado, si desea eliminarlo, haga clic en el botón “No estoy seguro”."
     }
 }

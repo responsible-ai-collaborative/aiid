@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { Button } from 'flowbite-react';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,23 @@ const SimilaritySelector = ({
   const { values, setFieldValue } = useFormikContext();
 
   const { t } = useTranslation();
+
+  /* This useEffect is specific for the IncidentForm since it uses two instances of relatedIncidentsArea which can't communicate with each other
+   * When a user selects an incident as similar or dissimilar in one instance, the other instance should remove it from the notSureList
+   */
+  useEffect(() => {
+    values?.editor_similar_incidents?.forEach((incident) => {
+      if (notSureList.includes(incident)) {
+        removeFromNotSureList(incident);
+      }
+    });
+
+    values?.editor_dissimilar_incidents?.forEach((incident) => {
+      if (notSureList.includes(incident)) {
+        removeFromNotSureList(incident);
+      }
+    });
+  }, [values.editor_similar_incidents, values.editor_dissimilar_incidents]);
 
   return (
     <div>

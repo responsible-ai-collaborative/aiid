@@ -8,7 +8,7 @@ import {
     GraphQLInputObjectType
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
-import { Context } from '../interfaces';
+import { Context, DBSubmission } from '../interfaces';
 import { allow } from 'graphql-shield';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
@@ -57,7 +57,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
         resolve: async (source, { input }, context) => {
 
-            const submissions = context.client.db('aiidprod').collection("submissions");
+            const submissions = context.client.db('aiidprod').collection<DBSubmission>("submissions");
             const incidents = context.client.db('aiidprod').collection("incidents");
             const reports = context.client.db('aiidprod').collection("reports");
             const notificationsCollection = context.client.db('customData').collection("notifications");
@@ -70,7 +70,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 throw new Error('Submission not found');
             }
 
-            const { _id: undefined, ...submission } = target;
+            const { _id: undefined, ...submission }: DBSubmission = target;
 
             const parentIncidents: Array<Record<string, unknown> & { incident_id?: number, reports?: Record<string, unknown>[] }> = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
@@ -97,14 +97,13 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         reports: [],
                         editors,
                         date: submission.incident_date,
-                        epoch_date_modified: submission.epoch_date_modified,
                         "Alleged deployer of AI system": submission.deployers || [],
                         "Alleged developer of AI system": submission.developers || [],
                         "Alleged harmed or nearly harmed parties": submission.harmed_parties || [],
                         nlp_similar_incidents: submission.nlp_similar_incidents || [],
                         editor_similar_incidents: submission.editor_similar_incidents || [],
                         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
-                        editor_notes: "",
+                        editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
                     }
                     if (submission.embedding) {
@@ -112,6 +111,9 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                             vector: submission.embedding.vector,
                             from_reports: [report_number]
                         }
+                    }
+                    if(submission.epoch_date_modified) {
+                        newIncident.epoch_date_modified = submission.epoch_date_modified;
                     }
 
                     await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id });
@@ -214,7 +216,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 date_published: new Date(submission.date_published),
                 date_submitted: new Date(submission.date_submitted),
                 epoch_date_downloaded: getUnixTime(submission.date_downloaded),
-                epoch_date_modified: submission.epoch_date_modified,
                 epoch_date_published: getUnixTime(submission.date_published),
                 epoch_date_submitted: getUnixTime(submission.date_submitted),
                 image_url: submission.image_url,
@@ -235,6 +236,10 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             if (submission.user) {
                 newReport.user = submission.user;
+            }
+
+            if(submission.epoch_date_modified) {
+                newReport.epoch_date_modified = submission.epoch_date_modified;
             }
 
             await reports.insertOne({ ...newReport, report_number: newReport.report_number });

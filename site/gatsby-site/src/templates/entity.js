@@ -112,10 +112,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     networkStatus: subscriptionNetworkStatus,
   } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
-      query: {
-        type: SUBSCRIPTION_TYPE.entity,
-        userId: { userId: user?.id },
-        entityId: { entity_id: id },
+      filter: {
+        type: { EQ: SUBSCRIPTION_TYPE.entity },
+        userId: { EQ: user?.id },
+        entityId: { EQ: id },
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -126,12 +126,12 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       try {
         await subscribeToEntityMutation({
           variables: {
-            query: {
-              type: SUBSCRIPTION_TYPE.entity,
-              userId: { userId: user.id },
-              entityId: { entity_id: id },
+            filter: {
+              type: { EQ: SUBSCRIPTION_TYPE.entity },
+              userId: { EQ: user.id },
+              entityId: { EQ: id },
             },
-            subscription: {
+            update: {
               type: SUBSCRIPTION_TYPE.entity,
               userId: { link: user.id },
               entityId: { link: id },
@@ -179,10 +179,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     try {
       await unsubscribeToEntityMutation({
         variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.entity,
-            userId: { userId: user.id },
-            entityId: { entity_id: id },
+          filter: {
+            type: { EQ: SUBSCRIPTION_TYPE.entity },
+            userId: { EQ: user.id },
+            entityId: { EQ: id },
           },
         },
       });

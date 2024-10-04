@@ -19,8 +19,6 @@ test.describe('Classifications App', () => {
 
     test('Successfully edit a CSET classification', async ({ page, login }) => {
 
-        
-
         await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
         await page.goto(url);

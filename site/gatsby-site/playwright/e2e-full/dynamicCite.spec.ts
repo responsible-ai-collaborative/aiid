@@ -18,7 +18,7 @@ test.describe('Dynamic Cite pages', () => {
 
   test('Should load dynamic Incident data', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
     await init();
 
     await seedCollection({ name: 'users', docs: [{ userId: userId, roles: ['admin'], first_name: 'John', last_name: 'Doe' }], drop: false });
