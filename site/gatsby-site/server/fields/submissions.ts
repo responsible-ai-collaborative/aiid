@@ -97,7 +97,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         reports: [],
                         editors,
                         date: submission.incident_date,
-                        epoch_date_modified: submission.epoch_date_modified,
                         "Alleged deployer of AI system": submission.deployers || [],
                         "Alleged developer of AI system": submission.developers || [],
                         "Alleged harmed or nearly harmed parties": submission.harmed_parties || [],
@@ -112,6 +111,9 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                             vector: submission.embedding.vector,
                             from_reports: [report_number]
                         }
+                    }
+                    if(submission.epoch_date_modified) {
+                        newIncident.epoch_date_modified = submission.epoch_date_modified;
                     }
 
                     await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id });
@@ -214,7 +216,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 date_published: new Date(submission.date_published),
                 date_submitted: new Date(submission.date_submitted),
                 epoch_date_downloaded: getUnixTime(submission.date_downloaded),
-                epoch_date_modified: submission.epoch_date_modified,
                 epoch_date_published: getUnixTime(submission.date_published),
                 epoch_date_submitted: getUnixTime(submission.date_submitted),
                 image_url: submission.image_url,
@@ -235,6 +236,10 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             if (submission.user) {
                 newReport.user = submission.user;
+            }
+
+            if(submission.epoch_date_modified) {
+                newReport.epoch_date_modified = submission.epoch_date_modified;
             }
 
             await reports.insertOne({ ...newReport, report_number: newReport.report_number });
