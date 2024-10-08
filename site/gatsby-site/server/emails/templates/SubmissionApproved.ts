@@ -116,7 +116,7 @@ export default `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http:/
     </style>
       <style>
         @media screen and (max-width:480px) {
-          table\0 {
+          table {
             width: 480px !important;
             }
         }
