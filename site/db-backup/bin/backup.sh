@@ -68,6 +68,7 @@ CSV_FILE="${TARGET}/reports.csv"
 FIELDS="_id,authors,date_downloaded,date_modified,date_published,date_submitted,description,epoch_date_downloaded,epoch_date_modified,epoch_date_published,epoch_date_submitted,image_url,language,ref_number,report_number,source_domain,submitters,text,title,url,tags"
 mongoexport --uri="${MONGODB_URI}/${MONGODB_DBNAME}" --collection=reports --out="${JSON_FILE}" --jsonArray --jsonFormat=relaxed --fields="${FIELDS}"
 python3 convert_json_to_csv.py "${JSON_FILE}" "${CSV_FILE}" "${FIELDS}"
+rm -f $JSON_FILE
 
 ###### End Reports CSV Export ######
 
