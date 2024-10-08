@@ -380,7 +380,7 @@ async function notificationsToNewPromotions(context: Context) {
                             templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
                         };
 
-                        sendEmail(sendEmailParams);
+                        await sendEmail(sendEmailParams);
                     }
 
                 } catch (error: any) {
