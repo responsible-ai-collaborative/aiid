@@ -8,13 +8,11 @@ import PasswordReset from './PasswordReset';
 import SubmissionApproved from './SubmissionApproved';
 
 const templates: Record<string, any> = {
-    ConfirmEmail: ConfirmEmail,
     EntityIncidentUpdated: EntityIncidentUpdated,
     IncidentUpdate: IncidentUpdate,
     NewEntityIncident: NewEntityIncident,
     NewIncident: NewIncident,
     NewReportAddedToAnIncident: NewReportAddedToAnIncident,
-    PasswordReset: PasswordReset,
     SubmissionApproved: SubmissionApproved
 };
 
