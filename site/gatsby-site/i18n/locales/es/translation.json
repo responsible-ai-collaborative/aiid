@@ -563,5 +563,11 @@
   "Read the Source": "Leer la Fuente",
   "Redirecting...": "Redirigiendo",
   "Random Incident": "Incidente aleatorio",
-  "Risk Checklists": "Control de Riesgos"
+  "Risk Checklists": "Control de Riesgos",
+  "Manually-selected similar and dissimilar incidents": "Incidentes similares y disímiles seleccionados manualmente",
+  "Search similar/dissimilar Incident Id": "Buscar incidente similar/disímil por ID",
+  "Assigned similar/dissimilar incidents": "Incidentes similares/disímiles asignados",
+  "No similar/dissimilar incidents assigned to this incident. Use the search above to assign similar incidents.": "No se han asignado incidentes similares/disímiles a este incidente. Utiliza la búsqueda de arriba para asignar incidentes similares.",
+  "No similar incidents found. Please enter an incident ID above to perform the search.": "No se encontraron incidentes similares. Por favor, introduce un ID de incidente arriba para realizar la búsqueda.",
+  "Incidents search results": "Resultados de la búsqueda de incidentes"
 }

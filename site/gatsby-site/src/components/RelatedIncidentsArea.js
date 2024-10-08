@@ -17,6 +17,7 @@ const RelatedIncidentsArea = ({
   editSimilar = true,
   editId = true,
   error,
+  notFoundText = null,
 }) => {
   const { t } = useTranslation();
 
@@ -43,10 +44,11 @@ const RelatedIncidentsArea = ({
   }, [reportsExist]);
 
   useEffect(() => {
-    if (reports || incidents) {
+    if (reports?.length > 0 || incidents?.length > 0) {
       setSimilarList(reports || incidents);
     } else {
       setSimilarList([]);
+      setNotSureList([]);
     }
   }, [reports, incidents]);
 
@@ -66,7 +68,9 @@ const RelatedIncidentsArea = ({
   return (
     <div data-cy={`related-${columnKey}`}>
       <div key={'header'} className="py-2">
-        {header}
+        <label className="text-sm font-medium text-gray-900 dark:text-gray-300 relative">
+          {header}
+        </label>
         {loading && (
           <>
             {' '}
@@ -146,7 +150,14 @@ const RelatedIncidentsArea = ({
             </div>
           ))}
         {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
-          <span data-cy="no-related-reports">{error ? error : t('No related reports found.')}</span>
+          <span data-cy="no-related-reports">
+            {error ? error : ''}
+            <span className="text-xs text-gray-500">
+              {notFoundText
+                ? t(notFoundText)
+                : t(`No related ${!reports ? 'incidents' : 'reports'} found.`)}
+            </span>
+          </span>
         )}
       </div>
       {similarList.length > maxIncidents && (

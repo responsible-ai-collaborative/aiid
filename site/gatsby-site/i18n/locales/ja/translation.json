@@ -543,5 +543,11 @@
   "Read the Source": "情報源を読む",
   "Redirecting...": "リダイレクト中...",
   "Random Incident": "おまかせ表示",
-  "Risk Checklists": "Risk Checklists"
+  "Risk Checklists": "Risk Checklists",
+  "Manually-selected similar and dissimilar incidents": "手動で選択された類似および非類似のインシデント",
+  "Search similar/dissimilar Incident Id": "類似/非類似のインシデントIDを検索",
+  "Assigned similar/dissimilar incidents": "割り当てられた類似/非類似のインシデント",
+  "No similar/dissimilar incidents assigned to this incident. Use the search above to assign similar incidents.": "このインシデントには類似/非類似のインシデントが割り当てられていません。上記の検索を使用して類似のインシデントを割り当ててください。",
+  "No similar incidents found. Please enter an incident ID above to perform the search.": "類似のインシデントが見つかりませんでした。上記のインシデントIDを入力して検索してください。",
+  "Incidents search results": "インシデント検索結果"
 }
