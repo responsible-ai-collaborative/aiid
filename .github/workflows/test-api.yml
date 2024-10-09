@@ -72,6 +72,7 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
           PROCESS_NOTIFICATIONS_SECRET: sarasa     
+          SITE_URL: https://incidentdatabase.test
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
