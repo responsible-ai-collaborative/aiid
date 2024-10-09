@@ -5,6 +5,7 @@ import { NotificationType } from '../types/notification';
 import { getUserAdminData, sendEmail } from './common';
 import * as reporter from '../reporter';
 import { hasHeaderSecret, isRole } from '../rules';
+import config from '../config';
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
@@ -48,7 +49,7 @@ const markNotificationsAsNotProcessed = async (notificationsCollection: any, not
 const buildEntityList = (allEntities: any, entityIds: any) => {
     const entityNames = entityIds.map((entityId: string) => {
         const entity = allEntities.find((entity: any) => entity.entity_id === entityId);
-        return entity ? `<a href="https://incidentdatabase.ai/entities/${entity.entity_id}">${entity.name}</a>` : '';
+        return entity ? `<a href="${config.SITE_URL}/entities/${entity.entity_id}">${entity.name}</a>` : '';
     });
 
     if (entityNames.length < 3) { return entityNames.join(' and '); }
@@ -106,7 +107,7 @@ async function notificationsToNewIncidents(context: Context) {
                                 dynamicData: {
                                     incidentId: `${incident.incident_id}`,
                                     incidentTitle: incident.title,
-                                    incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                                    incidentUrl: `${config.SITE_URL}/cite/${incident.incident_id}`,
                                     incidentDescription: incident.description ?? undefined,
                                     incidentDate: incident.date,
                                     developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
@@ -203,8 +204,8 @@ async function notificationsToIncidentUpdates(context: Context) {
                                 dynamicData: {
                                     incidentId: `${incident.incident_id}`,
                                     incidentTitle: incident.title,
-                                    incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
-                                    reportUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}#r${newReportNumber}`,
+                                    incidentUrl: `${config.SITE_URL}/cite/${incident.incident_id}`,
+                                    reportUrl: `${config.SITE_URL}/cite/${incident.incident_id}#r${newReportNumber}`,
                                     reportTitle: newReport ? newReport.title : '',
                                     reportAuthor: (newReport && newReport.authors[0]) ? newReport.authors[0] : '',
                                 },
@@ -294,11 +295,11 @@ async function notificationsToNewEntityIncidents(context: Context) {
                                 dynamicData: {
                                     incidentId: `${incident.incident_id}`,
                                     incidentTitle: incident.title,
-                                    incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                                    incidentUrl: `${config.SITE_URL}/cite/${incident.incident_id}`,
                                     incidentDescription: incident.description ?? undefined,
                                     incidentDate: incident.date,
                                     entityName: entity.name,
-                                    entityUrl: `https://incidentdatabase.ai/entities/${entity.entity_id}`,
+                                    entityUrl: `${config.SITE_URL}/entities/${entity.entity_id}`,
                                     developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
                                     deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
@@ -373,7 +374,7 @@ async function notificationsToNewPromotions(context: Context) {
                             dynamicData: {
                                 incidentId: `${incident.incident_id}`,
                                 incidentTitle: incident.title,
-                                incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+                                incidentUrl: `${config.SITE_URL}/cite/${incident.incident_id}`,
                                 incidentDescription: incident.description ?? undefined,
                                 incidentDate: incident.date,
                             },

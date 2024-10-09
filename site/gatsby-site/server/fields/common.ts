@@ -150,6 +150,8 @@ function buildEmailData(recipients: Record<string, string>[], subject: string, d
             newDynamicData['userId'] = recipient.userId;
         }
 
+        newDynamicData.siteUrl = config.SITE_URL;
+
         return {
             to: { email: recipient.email },
             subject,

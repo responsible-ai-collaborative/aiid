@@ -206,7 +206,7 @@ export default `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http:/
       </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="79b1a951-2f75-4d6e-940b-6610516555e0" data-mc-module-version="2019-10-22">
         <tbody>
           <tr>
-            <td style="padding:5px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><a href="https://incidentdatabase.ai/account"><span style="font-size: 12px; color: #1188e6; background-color: rgb(255, 255, 255)">Manage Subscriptions</span></a></div><div></div></div></td>
+            <td style="padding:5px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><a href="{{siteUrl}}/account"><span style="font-size: 12px; color: #1188e6; background-color: rgb(255, 255, 255)">Manage Subscriptions</span></a></div><div></div></div></td>
           </tr>
         </tbody>
       </table></td>
