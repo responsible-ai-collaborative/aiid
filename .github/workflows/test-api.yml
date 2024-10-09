@@ -71,7 +71,7 @@ jobs:
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
-          PROCESS_NOTIFICATIONS_SECRET: sarasa
+          PROCESS_NOTIFICATIONS_SECRET: sarasa     
           SITE_URL: https://incidentdatabase.test
 
       - name: Upload coverage reports to Codecov
