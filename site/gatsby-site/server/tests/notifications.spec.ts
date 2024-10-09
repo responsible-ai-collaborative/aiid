@@ -179,7 +179,7 @@ describe(`Notifications`, () => {
             dynamicData: {
                 incidentId: "1",
                 incidentTitle: "Incident 1",
-                incidentUrl: "https://incidentdatabase.ai/cite/1",
+                incidentUrl: "http://localhost:8000/cite/1",
                 incidentDescription: "Incident 1 description",
                 incidentDate: incidents[0].date,
                 developers: "",
@@ -309,11 +309,11 @@ describe(`Notifications`, () => {
             dynamicData: {
                 incidentId: "1",
                 incidentTitle: "Incident 1",
-                incidentUrl: "https://incidentdatabase.ai/cite/1",
+                incidentUrl: "http://localhost:8000/cite/1",
                 incidentDescription: "Incident 1 description",
                 incidentDate: incidents[0].date,
                 entityName: "Entity 1",
-                entityUrl: "https://incidentdatabase.ai/entities/entity-1",
+                entityUrl: "http://localhost:8000/entities/entity-1",
                 developers: "",
                 deployers: "",
                 entitiesHarmed: "",
@@ -441,8 +441,8 @@ describe(`Notifications`, () => {
             dynamicData: {
                 incidentId: "1",
                 incidentTitle: "Incident 1",
-                incidentUrl: "https://incidentdatabase.ai/cite/1",
-                reportUrl: "https://incidentdatabase.ai/cite/1#r1",
+                incidentUrl: "http://localhost:8000/cite/1",
+                reportUrl: "http://localhost:8000/cite/1#r1",
                 reportTitle: "Report 1",
                 reportAuthor: "",
             },
@@ -567,8 +567,8 @@ describe(`Notifications`, () => {
             dynamicData: {
                 incidentId: "1",
                 incidentTitle: "Incident 1",
-                incidentUrl: "https://incidentdatabase.ai/cite/1",
-                reportUrl: "https://incidentdatabase.ai/cite/1#rundefined",
+                incidentUrl: "http://localhost:8000/cite/1",
+                reportUrl: "http://localhost:8000/cite/1#rundefined",
                 reportTitle: "",
                 reportAuthor: "",
             },
@@ -694,7 +694,7 @@ describe(`Notifications`, () => {
             dynamicData: {
                 incidentId: "1",
                 incidentTitle: "Incident 1",
-                incidentUrl: "https://incidentdatabase.ai/cite/1",
+                incidentUrl: "http://localhost:8000/cite/1",
                 incidentDescription: "Incident 1 description",
                 incidentDate: incidents[0].date,
             },
