@@ -126,6 +126,9 @@ const ignoredQueries = [
 
     'duplicate',
     'duplicates',
+
+    'notification',
+    'notifications',
 ];
 
 const ignoredMutations = [
@@ -225,6 +228,8 @@ const ignoredMutations = [
     'updateOneDuplicate',
     'updateManyDuplicates',
     'upsertOneDuplicate',
+
+    'processNotifications',
 ]
 
 /**
