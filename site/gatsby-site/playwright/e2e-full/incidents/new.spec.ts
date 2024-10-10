@@ -42,8 +42,6 @@ test.describe('New Incident page', () => {
       'logIncidentHistory'
     );
 
-    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-
     await page.getByText('Save').click();
 
     await waitForRequest('logIncidentHistory');
@@ -54,8 +52,6 @@ test.describe('New Incident page', () => {
   test('Should clone an incident', async ({ page, login }) => {
 
     await init();
-
-    
 
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
 

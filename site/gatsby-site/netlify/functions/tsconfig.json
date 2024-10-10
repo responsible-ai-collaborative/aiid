@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "module": "Node16",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": false, /* Can't enable strict mode here because there is a package using a with statement */
+        "skipLibCheck": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+    }
+}

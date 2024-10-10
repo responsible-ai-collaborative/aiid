@@ -54,7 +54,7 @@ const ignoreTypes = [
     'IncidentReportsRelationInput',
     'LinkReportsToIncidentsInput',
 
-    // 'Entity',
+    'Entity',
     'EntityQueryInput',
     'EntityUpdateInput',
     'EntityInsertInput',
@@ -84,6 +84,16 @@ const ignoreTypes = [
     'TaxaQueryInput',
     'TaxaUpdateInput',
     'TaxaInsertInput',
+
+    'Subscription',
+    'SubscriptionQueryInput',
+    'SubscriptionUpdateInput',
+    'SubscriptionInsertInput',
+
+    'Duplicate',
+    'DuplicateQueryInput',
+    'DuplicateUpdateInput',
+    'DuplicateInsertInput',
 ];
 
 const ignoredQueries = [
@@ -110,6 +120,12 @@ const ignoredQueries = [
 
     'taxa',
     'taxas',
+
+    'subscription',
+    'subscriptions',
+
+    'duplicate',
+    'duplicates',
 ];
 
 const ignoredMutations = [
@@ -120,7 +136,14 @@ const ignoredMutations = [
     'updateOneQuickadd',
     'updateManyQuickadds',
     'upsertOneQuickadd',
-    'upsertManyQuickadds',
+
+    'deleteOneClassification',
+    'deleteManyClassifications',
+    'insertOneClassification',
+    'insertManyClassifications',
+    'updateOneClassification',
+    'updateManyClassifications',
+    'upsertOneClassification',
 
     'deleteOneClassification',
     'deleteManyClassifications',
@@ -138,7 +161,6 @@ const ignoredMutations = [
     'updateOneReport',
     'updateManyReports',
     'upsertOneReport',
-    'upsertManyReports',
 
     'createVariant',
 
@@ -151,7 +173,6 @@ const ignoredMutations = [
     'updateOneIncident',
     'updateManyIncidents',
     'upsertOneIncident',
-    'upsertManyIncidents',
 
     'deleteOneEntity',
     'deleteManyEntities',
@@ -160,7 +181,6 @@ const ignoredMutations = [
     'updateOneEntity',
     'updateManyEntities',
     'upsertOneEntity',
-    'upsertManyEntities',
 
     'deleteOneUser',
     'deleteManyUsers',
@@ -169,7 +189,6 @@ const ignoredMutations = [
     'updateOneUser',
     'updateManyUsers',
     'upsertOneUser',
-    'upsertManyUsers',
 
     'deleteOneSubmission',
     'deleteManySubmissions',
@@ -190,7 +209,22 @@ const ignoredMutations = [
     'updateOneTaxa',
     'updateManyTaxas',
     'upsertOneTaxa',
-    'upsertManyTaxas',
+
+    'deleteOneSubscription',
+    'deleteManySubscriptions',
+    'insertOneSubscription',
+    'insertManySubscriptions',
+    'updateOneSubscription',
+    'updateManySubscriptions',
+    'upsertOneSubscription',
+
+    'deleteOneDuplicate',
+    'deleteManyDuplicates',
+    'insertOneDuplicate',
+    'insertManyDuplicates',
+    'updateOneDuplicate',
+    'updateManyDuplicates',
+    'upsertOneDuplicate',
 ]
 
 /**
