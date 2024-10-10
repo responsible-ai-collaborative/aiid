@@ -27,7 +27,7 @@ const config: Config = {
     NOTIFICATIONS_SENDER_NAME: process.env.NOTIFICATIONS_SENDER_NAME!,
     NOTIFICATIONS_SENDER: process.env.NOTIFICATIONS_SENDER!,
     PROCESS_NOTIFICATIONS_SECRET: process.env.PROCESS_NOTIFICATIONS_SECRET!,
-    SITE_URL: process.env.SITE_URL! || process.env.URL!, // URL is set by Netlify
+    SITE_URL: process.env.SITE_URL!,
 }
 
 Object.keys(config).forEach((key) => {

@@ -80,6 +80,10 @@ jobs:
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
+      - name: Set SITE_URL environment variable for branch deploy
+        if: ${{ inputs.netlify-alias != '' && github.ref == format('refs/heads/{0}', inputs.netlify-alias) }}
+        run: netlify env:set SITE_URL ${{ inputs.site-url }} --scope functions --context branch:${{ inputs.netlify-alias }}
+
       - name: Build using Netlify
         run: netlify build --context ${{ inputs.netlify-context }} --offline
         working-directory: site/gatsby-site
