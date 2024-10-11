@@ -137,7 +137,7 @@ const config = {
         items: [
           { title: 'About', label: 'about', url: '/about', items: [] },
           { title: 'Contact and Follow', label: 'contact', url: '/contact' },
-          { title: 'About Apps', label: 'about_apps', url: '/about_apps' },
+          { title: 'Apps and Summaries', label: 'about_apps', url: '/about_apps' },
           { title: 'Editor’s Guide', label: 'editors-guide', url: '/editors-guide' },
         ],
       },
