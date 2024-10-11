@@ -572,15 +572,31 @@ type MutationFields = 'deleteOne' | 'deleteMany' | 'insertOne' | 'insertMany' | 
 const defaultMutationFields: MutationFields[] = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany', 'upsertOne'];
 
 /**
- * Auto-generates GraphQL mutation fields for a specified collection, supporting various operations like delete, insert, update, and upsert.
- * This function creates mutation fields based on the provided GraphQL object type, enabling CRUD operations on the collection.
+ * Auto-generates GraphQL mutation fields for a specified collection, supporting various CRUD operations.
+ * This function creates mutation fields based on the provided GraphQL object type, enabling operations like delete, insert, update, and upsert on the collection.
  * 
  * @param {Object} params - The parameters for generating the mutation fields.
  * @param {string} params.collectionName - The name of the collection to perform mutations on.
- * @param {string} [params.databaseName='aiidprod'] - The name of the database containing the collection.
+ * @param {string} [params.databaseName='aiidprod'] - The name of the database containing the collection. Defaults to 'aiidprod'.
  * @param {GraphQLObjectType<any, any>} params.Type - The GraphQL object type representing the structure of the collection's documents.
- * @param {MutationFields[]} [params.generateFields=defaultMutationFields] - An array specifying which mutation fields to generate.
+ * @param {MutationFields[]} [params.generateFields=defaultMutationFields] - An array specifying which mutation fields to generate. Defaults to all available mutations.
+ * @param {Function} [params.onResolve] - Optional callback function to be called after certain mutation operations (insertOne, updateOne).
+ * @param {Function} params.onResolve.operation - The type of operation being performed ('insertOne' or 'updateOne').
+ * @param {Object} params.onResolve.context - The context object passed to the resolver.
+ * @param {Object} params.onResolve.params - Additional parameters including the initial state and result of the operation.
  * @returns {GraphQLFieldConfigMap<any, any>} - A map of GraphQL field configurations for the generated mutations.
+ * 
+ * @example
+ * const userMutations = generateMutationFields({
+ *   collectionName: 'users',
+ *   Type: UserType,
+ *   generateFields: ['insertOne', 'updateOne', 'deleteOne'],
+ *   onResolve: async (operation, context, params) => {
+ *     if (operation === 'insertOne') {
+ *       // Perform additional actions after inserting a user
+ *     }
+ *   }
+ * });
  */
 export function generateMutationFields({
     collectionName,
