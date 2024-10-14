@@ -43,18 +43,7 @@ describe(`Checklists`, () => {
 
         const response = await makeRequest(url, mutationData);
 
-        //console.log(`response`, response);
-
         expect(response.body.errors).toBe(undefined);
-//        expect(response.body.errors).toMatchObject([{
-//            "extensions": {
-//                "code": "INTERNAL_SERVER_ERROR",
-//            },
-//            "message": "Invalid linked ids: AllegedDeployerOfAISystem -> [entity-1]",
-//            "path": [
-//                "insertOneIncident",
-//            ],
-//        }]);
     });
 
 });
