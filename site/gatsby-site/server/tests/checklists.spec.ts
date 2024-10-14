@@ -17,17 +17,23 @@ describe(`Checklists`, () => {
     it(`Query`, async () => {
         const mutationData = {
             query: `
-                query($tags: [String]) {
-                  risks(input: { tags: $tags }) {
-                    title
-                    tags
-                  }
+              query {
+                checklists {
+                  name
                 }
+              }
             `,
             variables: { tags: ["GMF:Known AI Technology:Transformer"] }
         };
 
         await seedFixture({
+            aiidprod: {
+                checklists: [
+                    {
+                        id: "849bd303-261f-4abe-8746-77dad5841dbe"
+                    }
+                ]
+            },
             customData: {
                 users: [
                     {

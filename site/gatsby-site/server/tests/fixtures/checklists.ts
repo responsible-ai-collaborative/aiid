@@ -52,7 +52,7 @@ const anonymous = {
     userId: 'anon',
 }
 
-const fixture: Fixture<ChecklistInput, ChecklistUpdateInput, ChecklistInsertInput> = {
+const fixture: Fixture<ChecklistType, ChecklistUpdateType, ChecklistInsertType> = {
     name: 'checklists',
     query: `
         _id
