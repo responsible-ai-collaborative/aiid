@@ -6,11 +6,19 @@ import { Context } from "../interfaces";
 import { UserType } from "./user";
 
 
-export const ReportType = new GraphQLObjectType({
-    name: 'Report',
+export const ChecklistType = new GraphQLObjectType({
+    name: 'Checklist',
     fields: {
         _id: { type: ObjectIdScalar },
-        authors: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+        owner_id: { type: new GraphQLString },
+        tags_methods: { type: new GraphQLList(GraphQLString) },
+        tags_goals: { type: new GraphQLList(GraphQLString) },
+        tags_other: { type: new GraphQLList(GraphQLString) },
+        about: { type: new GraphQLString },
+        risks: { type: new GraphQLList(GraphQLObjectType) },
+        id: { type: new GraphQLString },
+        name: { type: new GraphQLString },
+        /*authors: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         cloudinary_id: { type: new GraphQLNonNull(GraphQLString) },
         date_downloaded: { type: new GraphQLNonNull(DateTimeResolver) },
         date_modified: { type: new GraphQLNonNull(DateTimeResolver) },
@@ -56,7 +64,7 @@ export const ReportType = new GraphQLObjectType({
 
                 return { text: "", title: "" }
             },
-        }
+        }*/
     }
 });
 
