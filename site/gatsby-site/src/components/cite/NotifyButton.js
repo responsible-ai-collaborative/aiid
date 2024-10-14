@@ -11,7 +11,7 @@ function NotifyButton({ subscribing, onClick, subscribed }) {
   return (
     <Button color="gray" onClick={onClick}>
       <div className="flex gap-2 items-center">
-        {subscribing ? (
+        {subscribing || subscribed == undefined ? (
           <div>
             <Spinner size="sm" />
           </div>

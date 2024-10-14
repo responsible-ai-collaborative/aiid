@@ -1,11 +1,19 @@
-import { test } from '../utils';
+import { query, test } from '../utils';
 import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions';
-import { conditionalIntercept, waitForRequest } from '../utils';
+import gql from 'graphql-tag';
+import { expect } from '@playwright/test';
 
 test.describe('Unsubscribe pages', () => {
-  const userId = '6304204e580ff154aefea0c6';
-  const incidentId = 10;
+  const incidentId = 3;
   const url = `/unsubscribe`;
+  let userId: string;
+  let accessToken: string;
+
+  test.beforeEach(async ({ page, login }) => {
+    if (!userId) {
+      [userId, accessToken] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    }
+  });
 
   test('Successfully loads', async ({ page }) => {
     await page.goto(url);
@@ -45,58 +53,37 @@ test.describe('Unsubscribe pages', () => {
   test('Should unsubscribe from all subscriptions', async ({ page }) => {
     await page.goto(`${url}?type=all&userId=${userId}`);
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) =>
-        req.postDataJSON().operationName === 'DeleteSubscriptions' &&
-        req.postDataJSON().variables.query.userId.userId === userId &&
-        !req.postDataJSON().variables.query.incident_id,
-      {
-        data: {
-          deleteManySubscriptions: {
-            __typename: 'DeleteManyPayload',
-            deletedCount: 0,
-          },
-        },
-      },
-      'DeleteSubscriptions'
-    );
-
     await page.getByText('Confirm').click();
 
-    const deleteSubscriptionsRequest = await waitForRequest('DeleteSubscriptions');
     await page.locator('[data-cy="toast"]').getByText('You have successfully unsubscribed.').waitFor();
 
     await page.getByText('Continue').click();
+
     await page.waitForURL('/');
+
+
+    const { data: { subscriptions: subscriptionsData } } = await query({
+      query: gql`
+      query {
+          subscriptions(filter: {userId: {EQ:"${userId}"}}) {
+              _id
+              userId {
+                  userId
+              }
+          }
+      }`,
+    },
+      { authorization: `Bearer ${accessToken}` }
+    );
+
+    expect(subscriptionsData).toHaveLength(0);
   });
 
   test('Should unsubscribe from an incident subscription', async ({ page }) => {
     await page.goto(`${url}?type=${SUBSCRIPTION_TYPE.incident}&userId=${userId}&incidentId=${incidentId}`);
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) =>
-        req.postDataJSON().operationName === 'DeleteSubscriptions' &&
-        req.postDataJSON().variables.query.type === SUBSCRIPTION_TYPE.incident &&
-        req.postDataJSON().variables.query.userId.userId === userId &&
-        req.postDataJSON().variables.query.incident_id.incident_id === `${incidentId}`,
-      {
-        data: {
-          deleteManySubscriptions: {
-            __typename: 'DeleteManyPayload',
-            deletedCount: 0,
-          },
-        },
-      },
-      'DeleteSubscriptions'
-    );
-
     await page.getByText('Confirm').click();
 
-    const deleteSubscriptionsRequest = await waitForRequest('DeleteSubscriptions');
     await page.locator('[data-cy="toast"]').getByText('You have successfully unsubscribed.').waitFor();
 
     await page.getByText('Continue').click();
@@ -106,28 +93,8 @@ test.describe('Unsubscribe pages', () => {
   test('Should unsubscribe from new incidents subscription', async ({ page }) => {
     await page.goto(`${url}?type=${SUBSCRIPTION_TYPE.newIncidents}&userId=${userId}`);
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) =>
-        req.postDataJSON().operationName === 'DeleteSubscriptions' &&
-        req.postDataJSON().variables.query.type === SUBSCRIPTION_TYPE.newIncidents &&
-        req.postDataJSON().variables.query.userId.userId === userId &&
-        !req.postDataJSON().variables.query.incident_id,
-      {
-        data: {
-          deleteManySubscriptions: {
-            __typename: 'DeleteManyPayload',
-            deletedCount: 0,
-          },
-        },
-      },
-      'DeleteSubscriptions'
-    );
-
     await page.getByText('Confirm').click();
 
-    await waitForRequest('DeleteSubscriptions');
     await page.locator('[data-cy="toast"]').getByText('You have successfully unsubscribed.').waitFor();
 
     await page.getByText('Continue').click();

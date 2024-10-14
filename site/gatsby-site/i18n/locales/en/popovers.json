@@ -86,5 +86,9 @@
     "entityRelationships": {
         "title": "Entity Relationships",
         "text": "To what other entities this entity has a direct relationship. For example, 'Amazon' and 'Amazon Workers' could be linked entities."
+    },
+    "similarIncidentSearch": {
+        "title": "Search for similar incidents",
+        "text": "Search for a similar or dissimilar incident by typing an incident ID. If the resulting incident is similar click 'Yes', if it's dissimilar click 'No'. If you're not sure click 'Not sure'. Once selected, the incident will be added to the 'Manually-selected similar and dissimilar incidents' section of the form. Once added, if you want to remove it, click the 'Not Sure' button."
     }
 }
