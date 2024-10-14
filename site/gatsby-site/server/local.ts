@@ -56,6 +56,19 @@ import {
     permissions as candidatesPermissions
 } from './fields/candidates';
 
+import {
+    queryFields as subscriptionsQueryFields,
+    mutationFields as subscriptionsMutationFields,
+    permissions as subscriptionsPermissions
+} from './fields/subscriptions';
+
+import {
+    queryFields as duplicatesQueryFields,
+    mutationFields as duplicatesMutationFields,
+    permissions as duplicatesPermissions
+} from './fields/duplicates';
+
+
 export const getSchema = () => {
 
     const query = new GraphQLObjectType({
@@ -74,6 +87,8 @@ export const getSchema = () => {
             ...classificationsQueryFields,
             ...taxaQueryFields,
             ...candidatesQueryFields,
+            ...subscriptionsQueryFields,
+            ...duplicatesQueryFields,
         }
     });
 
@@ -88,6 +103,8 @@ export const getSchema = () => {
             ...submissionsMutationFields,
             ...classificationsMutationFields,
             ...candidatesMutationFields,
+            ...subscriptionsMutationFields,
+            ...duplicatesMutationFields,
         }
     });
 
@@ -124,6 +141,8 @@ export const getSchema = () => {
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
                 ...candidatesPermissions.Query,
+                ...subscriptionsPermissions.Query,
+                ...duplicatesPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -135,6 +154,8 @@ export const getSchema = () => {
                 ...submissionsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
                 ...candidatesPermissions.Mutation,
+                ...subscriptionsPermissions.Mutation,
+                ...duplicatesPermissions.Mutation,
             },
         },
         {

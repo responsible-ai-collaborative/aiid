@@ -103,6 +103,7 @@ function NewIncidentPage() {
 
       newIncident.editor_similar_incidents = [];
       newIncident.editor_dissimilar_incidents = [];
+      newIncident.flagged_dissimilar_incidents = [];
 
       await insertIncident({ variables: { data: newIncident } });
 
@@ -148,11 +149,11 @@ function NewIncidentPage() {
           AllegedHarmedOrNearlyHarmedParties: AllegedHarmedOrNearlyHarmedParties.map(
             (entity) => entity.entity_id
           ),
-          editor_notes,
+          editor_notes: editor_notes ?? '',
           editors: editors.map((editor) => editor.userId),
         });
       } else {
-        setInitialValues({ editors: [] });
+        setInitialValues({ editors: [], editor_notes: '' });
       }
     }
   }, [incidentToCloneData]);

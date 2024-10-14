@@ -62,29 +62,59 @@ mongoexport -o ${TARGET}/quickadd.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v 
 mongoexport -o ${TARGET}/submissions.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --collection=submissions --fields=authors,date_downloaded,date_modified,date_published,date_submitted,image_url,incident_date,incident_id,language,mongodb_id,source_domain,submitters,text,title,url
 mongoexport -o ${TARGET}/reports.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --collection=reports --fields=_id,incident_id,authors,date_downloaded,date_modified,date_published,date_submitted,description,epoch_date_downloaded,epoch_date_modified,epoch_date_published,epoch_date_submitted,image_url,language,ref_number,report_number,source_domain,submitters,text,title,url,tags
 
-# Taxa CSV Export
+###### Begin Taxa CSV Export ######
 
-# Get the field names
-mongoexport -o classifications_cset_headers.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --query='{ "namespace": {"$regex": "^CSET" }}' --collection=classifications --noHeaderLine --fields='attributes.0.short_name,attributes.1.short_name,attributes.2.short_name,attributes.3.short_name,attributes.4.short_name,attributes.5.short_name,attributes.6.short_name,attributes.7.short_name,attributes.8.short_name,attributes.9.short_name,attributes.10.short_name,attributes.11.short_name,attributes.12.short_name,attributes.13.short_name,attributes.14.short_name,attributes.15.short_name,attributes.16.short_name,attributes.17.short_name,attributes.18.short_name,attributes.19.short_name,attributes.20.short_name,attributes.21.short_name,attributes.22.short_name,attributes.23.short_name,attributes.24.short_name,attributes.25.short_name,attributes.26.short_name,attributes.27.short_name,attributes.28.short_name,attributes.29.short_name,attributes.30.short_name,attributes.31.short_name'
+# Temporary file name to store MongoDB export of "taxa"
+taxa_json="taxa_items.json"
 
-# Get the values
-mongoexport -o classifications_cset_values.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --query='{ "namespace": {"$regex": "^CSET" }}' --collection=classifications --noHeaderLine --fields='_id,incident_id,namespace,publish,attributes.0.value_json,attributes.1.value_json,attributes.2.value_json,attributes.3.value_json,attributes.4.value_json,attributes.5.value_json,attributes.6.value_json,attributes.7.value_json,attributes.8.value_json,attributes.9.value_json,attributes.10.value_json,attributes.11.value_json,attributes.12.value_json,attributes.13.value_json,attributes.14.value_json,attributes.15.value_json,attributes.16.value_json,attributes.17.value_json,attributes.18.value_json,attributes.19.value_json,attributes.20.value_json,attributes.21.value_json,attributes.22.value_json,attributes.23.value_json,attributes.24.value_json,attributes.25.value_json,attributes.26.value_json,attributes.27.value_json,attributes.28.value_json,attributes.29.value_json,attributes.30.value_json,attributes.31.value_json'
+# Export all documents from the "taxa" collection to a temporary JSON file
+mongoexport --uri=${MONGODB_URI}/${MONGODB_DBNAME} -c taxa --type=json -o $taxa_json --jsonArray --quiet
 
-# Construct the header
-echo -n "_id,incident_id,namespace,publish," >tmp.csv
-head -n 1 classifications_cset_headers.csv >tmp_header.csv
-cat tmp.csv tmp_header.csv >header.csv
+# Check if mongoexport ran successfully
+if [ $? -ne 0 ]; then
+    echo "Error executing mongoexport for the 'taxa' collection. Check the MongoDB URI and other parameters."
+    exit 1
+fi
 
-# Concat the header and the values to the output
-cat header.csv classifications_cset_values.csv >${TARGET}/classifications_cset.csv
+# Get all unique namespaces from the taxa JSON file
+namespaces=$(jq -r '.[].namespace' "$taxa_json" | sort | uniq)
 
-# Cleanup
-rm tmp.csv
-rm tmp_header.csv
-rm header.csv
-rm classifications_cset_headers.csv
-rm classifications_cset_values.csv
+# Iterate over each namespace and execute the corresponding process
+for namespace in $namespaces; do
 
+    # Temporary JSON file name to store MongoDB export of "classifications"
+    classification_json="classifications_${namespace}.json"
+
+    # Run mongoexport to export documents from the "classifications" collection
+    mongoexport --uri=${MONGODB_URI}/${MONGODB_DBNAME} -c classifications --type=json -o $classification_json --query="{\"namespace\": \"$namespace\"}" --jsonArray --quiet
+
+    # Check if mongoexport ran successfully
+    if [ $? -ne 0 ]; then
+        echo "Error executing mongoexport for the namespace $namespace. Check the MongoDB URI and other parameters."
+        continue # Skip to the next namespace if there is an error
+    fi
+
+    # Invoke the Python script with the provided parameters
+    python3 taxonomy_csv_export.py "$namespace" "$taxa_json" "$classification_json" ${TARGET}
+
+    # Check if the Python script ran successfully
+    if [ $? -ne 0 ]; then
+        echo "Error executing taxonomy_csv_export.py for the namespace $namespace."
+        continue # Skip to the next namespace if there is an error
+    fi
+
+    # Delete the temporary JSON file
+    rm -f $classification_json
+done
+
+# Delete the temporary JSON file
+rm -f $taxa_json
+
+echo "All namespaces have completed processing."
+
+###### End Taxa CSV Export ######
+
+## Create a license file
 echo "Report contents are subject to their own intellectual property rights. Unless otherwise noted, the database is shared under (CC BY-SA 4.0). See: https://creativecommons.org/licenses/by-sa/4.0/" >${TARGET}/license.txt
 
 # run tar command

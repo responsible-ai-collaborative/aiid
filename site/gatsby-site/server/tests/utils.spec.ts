@@ -41,7 +41,9 @@ describe(`Utils`, () => {
                         ]
                     },
                     "date": "2029-01-01",
-                    "title": "Test"
+                    "title": "Test",
+                    "editor_notes": "",
+                    "flagged_dissimilar_incidents": []
                 }
             }
 
