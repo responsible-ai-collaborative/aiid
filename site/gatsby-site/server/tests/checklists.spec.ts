@@ -2,7 +2,6 @@ import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
 import { makeRequest, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
-import checklists from './fixtures/checklists';
 
 describe(`Checklists`, () => {
     let server: ApolloServer, url: string;
@@ -29,7 +28,6 @@ describe(`Checklists`, () => {
         };
 
         await seedFixture({
-            aiidprod: { checklists },
             customData: {
                 users: [
                     {
