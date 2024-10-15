@@ -94,6 +94,11 @@ const ignoreTypes = [
     'DuplicateQueryInput',
     'DuplicateUpdateInput',
     'DuplicateInsertInput',
+
+    'Checklist',
+    'ChecklistQueryInput',
+    'ChecklistUpdateInput',
+    'ChecklistInsertInput',
 ];
 
 const ignoredQueries = [
