@@ -6,7 +6,7 @@ import { ChecklistType } from "../types/checklist";
 
 export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
-    ...generateQueryFields({ collectionName: 'checklists', Type: TaxaType })
+    ...generateQueryFields({ collectionName: 'checklists', Type: ChecklistType })
 }
 
 

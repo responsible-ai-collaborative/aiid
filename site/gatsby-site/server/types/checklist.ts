@@ -10,18 +10,31 @@ export const ChecklistType = new GraphQLObjectType({
     name: 'Checklist',
     fields: {
         _id: { type: ObjectIdScalar },
-        owner_id: { type: new GraphQLString },
+        owner_id: { type: GraphQLString },
         tags_methods: { type: new GraphQLList(GraphQLString) },
         tags_goals: { type: new GraphQLList(GraphQLString) },
         tags_other: { type: new GraphQLList(GraphQLString) },
-        about: { type: new GraphQLString },
-        risks: { type: new GraphQLList(GraphQLObjectType) },
-        id: { type: new GraphQLString },
-        name: { type: new GraphQLString },
+        about: { type: GraphQLString },
+        risks: { 
+          type: new GraphQLList(
+            new GraphQLObjectType({
+              name: 'Risks',
+              fields: () => ({
+                  id: { type: GraphQLString },
+                  tags: { type: new GraphQLList(GraphQLString) },
+                  severity: { type: GraphQLString },
+                  title: { type: GraphQLString },
+                  generated: { type: GraphQLBoolean },
+                  risk_status: { type: GraphQLString },
+                  likelihood: { type: GraphQLString },
+                  touched: { type: GraphQLBoolean },
+                  risk_notes: { type: GraphQLString },
+              })
+            })
+          )
+        },
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
     }
 });
 
-//@ts-ignore
-ReportType.getFields().translations.dependencies = [];
-//@ts-ignore
-ReportType.getFields().user.dependencies = ['user'];

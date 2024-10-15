@@ -16,6 +16,11 @@ import {
 } from './fields/reports';
 
 import {
+    queryFields as checklistsQueryFields,
+    permissions as checklistsPermissions
+} from './fields/checklists';
+
+import {
     queryFields as entitiesQueryFields,
     mutationFields as entitiesMutationFields,
     permissions as entitiesPermissions
@@ -82,6 +87,7 @@ export const getSchema = () => {
             ...taxaQueryFields,
             ...subscriptionsQueryFields,
             ...duplicatesQueryFields,
+            ...checklistsQueryFields,
         }
     });
 
@@ -134,6 +140,7 @@ export const getSchema = () => {
                 ...taxaPermissions.Query,
                 ...subscriptionsPermissions.Query,
                 ...duplicatesPermissions.Query,
+                ...checklistsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
