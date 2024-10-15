@@ -7,7 +7,7 @@ export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'us
 const items: DBSubscription[] = [
     {
         _id: new ObjectId("619b47eb5eed5334edfa3bd7"),
-        entityId: "entity1",
+        entityId: "entity-1",
         incident_id: undefined,
         type: "entity",
         userId: "user1",

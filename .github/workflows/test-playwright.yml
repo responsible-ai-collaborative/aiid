@@ -89,6 +89,11 @@ jobs:
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/e2e/
+          MAILERSEND_API_KEY: something
+          NOTIFICATIONS_SENDER_NAME: Test Preview
+          NOTIFICATIONS_SENDER: test@test.com
+          PROCESS_NOTIFICATIONS_SECRET: sarasa 
+          SITE_URL: https://incidentdatabase.test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
