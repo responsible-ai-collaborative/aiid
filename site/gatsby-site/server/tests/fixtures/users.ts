@@ -118,8 +118,8 @@ const fixture: Fixture<User, UserUpdateType> = {
     testInsertOne: null,
     testInsertMany: null,
     testUpdateOne: {
-        allowed: [admin, subscriber, anonymous],
-        denied: [],
+        allowed: [admin, subscriber,],
+        denied: [anonymous],
         filter: { userId: { EQ: 'user2' } },
         update: { set: { first_name: 'Updated John' } },
         result: { first_name: 'Updated John' }
