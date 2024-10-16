@@ -77,7 +77,7 @@ Follow these steps to get your local environment up and running for development 
 
 ### Overview
 
-The AIID API is built to facilitate interactions with the AI Incident Database. 
+The AIID API is built to facilitate interactions with the AI Incident Database. It is implemented as a collection of serverless functions that are composed ("stitched") into a singular GraphQL endpoint.
 
 1. **Access the Apollo Explorer**
 
