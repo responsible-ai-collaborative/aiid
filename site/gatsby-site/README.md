@@ -115,7 +115,7 @@ The query should return a response similar to this:
 
 #### Folders
 
-The api is contained within the `server` directory. The following folders are present in the project:
+The API is contained within the `server` directory. The following folders are present in the project:
 
 - **fields/**: Contains the field definitions for the GraphQL root fields.
 - **generated/**: Holds the generated GraphQL types derived from the schema using the GraphQL code generator CLI.
