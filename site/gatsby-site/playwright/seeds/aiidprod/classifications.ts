@@ -1,10 +1,5 @@
 import { ObjectId } from 'bson';
-import { Classification } from '../../../server/generated/graphql'
-
-type DBClassification = Omit<Classification, 'incidents' | 'reports'>
-    & { incidents: number[] }
-    & { reports: number[] }
-
+import { DBClassification } from '../../../server/interfaces';
 
 const items: DBClassification[] = [
     {

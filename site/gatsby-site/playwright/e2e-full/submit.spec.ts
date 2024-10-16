@@ -245,8 +245,6 @@ test.describe('The Submit form', () => {
 
     test('Should submit a new report linked to incident 1 once all fields are filled properly', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        test.slow();
-
         await init();
 
         await conditionalIntercept(

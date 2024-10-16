@@ -1,12 +1,11 @@
 import { rule } from "graphql-shield";
-import { Context } from "./interfaces";
-import { DBSubscription } from "../playwright/seeds/customData/subscriptions";
+import { Context, DBSubscription, DBUser } from "./interfaces";
 import { getMongoDbFilter } from "graphql-to-mongodb";
 import { SubscriptionType } from "./types/subscription";
 import { getSimplifiedType } from "./utils";
 import { GraphQLFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
 import { UserType } from "./types/user";
-import { DBUser } from '../playwright/seeds/customData/users'
+import config, { Config } from "./config";
 
 export const isRole = (role: string) => rule()(
     async (parent, args, context: Context, info) => {
@@ -73,6 +72,48 @@ export const isSubscriptionOwner = () => rule()(
 
         return new Error('not authorized')
     },
+)
+
+export const hasHeaderSecret = (headerName: keyof Config) => rule()(
+
+    async (parent, args, context: Context, info) => {
+
+        const { req } = context;
+
+        const headerValue = req.headers[headerName.toLowerCase()];
+        const configValue = config[headerName];
+
+        if (!headerValue || !configValue || (configValue && headerValue && configValue != headerValue)) {
+
+            return new Error('not authorized')
+        }
+
+        return true;
+    }
+)
+
+export const notQueriesAdminData = () => rule()(
+
+    async (parent, args, context: Context, info) => {
+
+        const fieldNodes = info.fieldNodes;
+
+        for (const fieldNode of fieldNodes) {
+            if (fieldNode.selectionSet) {
+                const selections = fieldNode.selectionSet.selections;
+
+                for (const selection of selections) {
+
+                    if (selection.kind === 'Field' && selection.name.value === 'adminData') {
+
+                        return new Error('not authorized')
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
 )
 
 export const isAdmin = isRole('admin');
