@@ -172,20 +172,24 @@ const SubmissionEdit = ({ id }) => {
                   developers:
                     submission.developers === null
                       ? []
-                      : submission.developers.map((item) => item.name || item),
+                      : submission.developers.filter((item) => item.name).map((item) => item.name),
                   deployers:
                     submission.deployers === null
                       ? []
-                      : submission.deployers.map((item) => item.name || item),
+                      : submission.deployers.filter((item) => item.name).map((item) => item.name),
                   harmed_parties:
                     submission.harmed_parties === null
                       ? []
-                      : submission.harmed_parties.map((item) => item.name || item),
+                      : submission.harmed_parties
+                          .filter((item) => item.name)
+                          .map((item) => item.name),
                   implicated_systems:
                     submission.implicated_systems === null ||
                     submission.implicated_systems === undefined
                       ? []
-                      : submission.implicated_systems.map((item) => item.name || item),
+                      : submission.implicated_systems
+                          .filter((item) => item.name)
+                          .map((item) => item.name),
                 }}
               >
                 <SubmissionEditForm

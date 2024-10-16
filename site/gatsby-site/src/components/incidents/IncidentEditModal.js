@@ -70,6 +70,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         embedding: undefined,
         editors: { link: values.editors },
         tsne: undefined,
+        incidentSearch: undefined,
       };
 
       const { entities } = entitiesData;

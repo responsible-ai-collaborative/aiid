@@ -192,6 +192,7 @@ const incident1: DBIncident = {
         y: -0.2
     },
     reports: [1, 2],
+    editor_notes: "Sample editor notes",
 };
 
 const incident2: DBIncident = {
@@ -239,7 +240,8 @@ const incident2: DBIncident = {
         x: -0.3,
         y: -0.4
     },
-    reports: [3]
+    reports: [3],
+    editor_notes: "",
 };
 
 const incident3: DBIncident = {
@@ -256,7 +258,6 @@ const incident3: DBIncident = {
     "Alleged harmed or nearly harmed parties": [
         "test harmed party 3"
     ],
-    implicated_systems: [],
     description: "Test description 3",
     title: "Test Incident 3",
     editors: [],
@@ -288,7 +289,8 @@ const incident3: DBIncident = {
         y: -0.6
     },
     reports: [2, 3],
-    implicated_systems: ['test system 1']
+    implicated_systems: ['test system 1'],
+    editor_notes: "",
 };
 
 const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
@@ -430,6 +432,8 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             reports: { link: [1, 2] },
             incident_id: 5,
             editors: { link: [editor1.userId] },
+            editor_notes: "",
+            flagged_dissimilar_incidents: [],
         },
         result: {
             _id: expect.any(String),

@@ -18,7 +18,7 @@ test.describe('Admin', () => {
     'Should display a list of users, their roles and allow edition',
     async ({ page, login, skipOnEmptyEnvironment }) => {
 
-      const userId = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+      const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
       const users = [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }];
 
       await page.goto(baseUrl);

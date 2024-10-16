@@ -1,13 +1,5 @@
 import { ObjectId } from 'bson';
-import { Submission } from '../../../server/generated/graphql'
-
-export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors' | 'implicated_systems'>
-    & { developers: string[] }
-    & { deployers: string[] }
-    & { harmed_parties: string[] }
-    & { user: string }
-    & { incident_editors: string[] }
-    & { implicated_systems: string[] }
+import { DBSubmission } from '../../../server/interfaces';
 
 const submissions: DBSubmission[] = [
     {
@@ -18,10 +10,10 @@ const submissions: DBSubmission[] = [
         date_modified: "2021-09-14T00:00:00.000Z",
         date_published: "2021-09-14",
         date_submitted: "2021-09-14T00:00:00.000Z",
-        deployers: ["entity1"],
+        deployers: ["entity-1"],
         description: "Sample description",
-        developers: ["entity2"],
-        harmed_parties: ["entity3"],
+        developers: ["entity-2"],
+        harmed_parties: ["entity-3"],
         incident_editors: ["editor1"],
         image_url: "https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg",
         language: "en",
@@ -35,7 +27,7 @@ const submissions: DBSubmission[] = [
         implicated_systems: ["entity1"],
         incident_title: "Incident title",
         incident_date: "2021-09-14",
-        editor_notes: "",
+        editor_notes: "This is an editor note",
     },
 
 ]
