@@ -5,7 +5,7 @@ import NewIncident from './NewIncident';
 import NewReportAddedToAnIncident from './NewReportAddedToAnIncident';
 import SubmissionApproved from './SubmissionApproved';
 
-const templates: Record<string, any> = {
+const templates: Record<string, string> = {
     EntityIncidentUpdated: EntityIncidentUpdated,
     IncidentUpdate: IncidentUpdate,
     NewEntityIncident: NewEntityIncident,
