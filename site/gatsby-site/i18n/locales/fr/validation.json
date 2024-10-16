@@ -28,5 +28,7 @@
   "*Description is required": "*La description est requise",
   "*Incident Date is required": "*Date de l'incident requise",
   "*Incident Date required": "*Date de l'incident requise",
-  "*Incident ID(s) must be a number": "*L'ID de l'incident doit être un nombre"
+  "*Incident ID(s) must be a number": "*L'ID de l'incident doit être un nombre",
+  "Implicated Systems must have at least 3 characters": "Les systèmes impliqués doivent comporter au moins 3 caractères",
+  "Implicated Systems can't be longer than 200 characters": "Les systèmes impliqués ne peuvent pas comporter plus de 200 caractères"
 }

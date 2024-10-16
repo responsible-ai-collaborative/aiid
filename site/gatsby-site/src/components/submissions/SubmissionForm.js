@@ -32,6 +32,7 @@ import {
   faAlignLeft,
   faStickyNote,
   faTenge,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Checkbox, Select } from 'flowbite-react';
@@ -95,7 +96,14 @@ const SubmissionForm = ({ onChange = null }) => {
           cloudinary_id,
         };
 
-        for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+        for (const key of [
+          'authors',
+          'submitters',
+          'developers',
+          'deployers',
+          'harmed_parties',
+          'implicated_systems',
+        ]) {
           if (newValues[key] && !Array.isArray(newValues[key])) {
             newValues[key] = [newValues[key]];
           }
@@ -419,6 +427,16 @@ const SubmissionForm = ({ onChange = null }) => {
               label={t('Alleged harmed or nearly harmed parties')}
               icon={faBolt}
               placeholder={t('Who experienced negative impacts?')}
+              className="mt-3"
+              options={entityNames}
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="implicated_systems"
+              label={t('Implicated AI systems')}
+              icon={faGear}
+              placeholder={t('Which AI systems were involved?')}
               className="mt-3"
               options={entityNames}
               {...TextInputGroupProps}

@@ -48,6 +48,7 @@ const typeDefs = `
         Alleged_developer_of_AI_system: [String]
         Alleged_harmed_or_nearly_harmed_parties: [String]
         tsne: mongodbAiidprodIncidentsTsne
+        implicated_systems: [String]
     }
     
     type mongodbAiidprodSubmissions implements Node {
