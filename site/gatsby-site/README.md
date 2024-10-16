@@ -124,11 +124,11 @@ The API is contained within the `server` directory. The following folders are pr
 
 #### Important Files
 
-- `remote.ts`: Contains the remote GraphQL schema.
-- `local.ts`: Contains the local GraphQL schema.
-- `schema.ts`: Combines both remote and local schemas into the final schema.
-- `netlify/functions/graphql.ts`: Contains the GraphQL server setup.
-
+- **`remote.ts`**: Handles the auto-generated MongoDB Atlas schema, ignoring fields that have migrated to the local GraphQL schema.  
+- **`local.ts`**: Handles the local GraphQL schema, where migrated fields from the remote schema are added. These fields are ignored in `remote.ts`.  
+- **`schema.ts`**: Combines the remote and local schemas into the final schema using **schema stitching** from GraphQL Tools.
+- **`netlify/functions/graphql.ts`**: Sets up the **GraphQL server** and exposes it as a **Netlify function**, loading the schema from `schema.ts`.
+- 
 ### Running Tests
 
 To run Jest tests locally:
