@@ -3428,8 +3428,8 @@ export type Query = {
   entity?: Maybe<Entity>;
   history_incident?: Maybe<History_Incident>;
   history_incidents: Array<Maybe<History_Incident>>;
-  history_report?: Maybe<History_Report>;
-  history_reports: Array<Maybe<History_Report>>;
+  history_report?: Maybe<ReportHistory>;
+  history_reports?: Maybe<Array<Maybe<ReportHistory>>>;
   incident?: Maybe<Incident>;
   incidents?: Maybe<Array<Maybe<Incident>>>;
   notification?: Maybe<Notification>;
@@ -3529,14 +3529,16 @@ export type QueryHistory_IncidentsArgs = {
 
 
 export type QueryHistory_ReportArgs = {
-  query?: InputMaybe<History_ReportQueryInput>;
+  filter?: InputMaybe<ReportHistoryFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ReportHistorySortType>;
 };
 
 
 export type QueryHistory_ReportsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<History_ReportQueryInput>;
-  sortBy?: InputMaybe<History_ReportSortByInput>;
+  filter?: InputMaybe<ReportHistoryFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ReportHistorySortType>;
 };
 
 
@@ -3847,6 +3849,105 @@ export type ReportFilterType = {
   title?: InputMaybe<StringFilter>;
   url?: InputMaybe<StringFilter>;
   user?: InputMaybe<StringFilter>;
+};
+
+export type ReportHistory = {
+  __typename?: 'ReportHistory';
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  authors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  cloudinary_id?: Maybe<Scalars['String']['output']>;
+  date_downloaded: Scalars['DateTime']['output'];
+  date_modified: Scalars['DateTime']['output'];
+  date_published: Scalars['DateTime']['output'];
+  date_submitted: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  editor_notes?: Maybe<Scalars['String']['output']>;
+  embedding?: Maybe<ReportEmbedding>;
+  epoch_date_downloaded?: Maybe<Scalars['Int']['output']>;
+  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
+  epoch_date_published?: Maybe<Scalars['Int']['output']>;
+  epoch_date_submitted?: Maybe<Scalars['Int']['output']>;
+  flag?: Maybe<Scalars['Boolean']['output']>;
+  image_url?: Maybe<Scalars['String']['output']>;
+  inputs_outputs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  is_incident_report?: Maybe<Scalars['Boolean']['output']>;
+  language?: Maybe<Scalars['String']['output']>;
+  modifiedBy?: Maybe<Scalars['String']['output']>;
+  plain_text?: Maybe<Scalars['String']['output']>;
+  quiet?: Maybe<Scalars['Boolean']['output']>;
+  report_number?: Maybe<Scalars['Int']['output']>;
+  source_domain?: Maybe<Scalars['String']['output']>;
+  submitters?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  text?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReportHistoryFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<ReportHistoryFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<ReportHistoryFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<ReportHistoryFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  authors?: InputMaybe<StringFilter>;
+  cloudinary_id?: InputMaybe<StringFilter>;
+  date_downloaded?: InputMaybe<DateTimeFilter>;
+  date_modified?: InputMaybe<DateTimeFilter>;
+  date_published?: InputMaybe<DateTimeFilter>;
+  date_submitted?: InputMaybe<DateTimeFilter>;
+  description?: InputMaybe<StringFilter>;
+  editor_notes?: InputMaybe<StringFilter>;
+  embedding?: InputMaybe<ReportEmbeddingObjectFilterType>;
+  epoch_date_downloaded?: InputMaybe<IntFilter>;
+  epoch_date_modified?: InputMaybe<IntFilter>;
+  epoch_date_published?: InputMaybe<IntFilter>;
+  epoch_date_submitted?: InputMaybe<IntFilter>;
+  flag?: InputMaybe<BooleanFilter>;
+  image_url?: InputMaybe<StringFilter>;
+  inputs_outputs?: InputMaybe<StringFilter>;
+  is_incident_report?: InputMaybe<BooleanFilter>;
+  language?: InputMaybe<StringFilter>;
+  modifiedBy?: InputMaybe<StringFilter>;
+  plain_text?: InputMaybe<StringFilter>;
+  quiet?: InputMaybe<BooleanFilter>;
+  report_number?: InputMaybe<IntFilter>;
+  source_domain?: InputMaybe<StringFilter>;
+  submitters?: InputMaybe<StringFilter>;
+  tags?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
+};
+
+export type ReportHistorySortType = {
+  _id?: InputMaybe<SortType>;
+  cloudinary_id?: InputMaybe<SortType>;
+  date_downloaded?: InputMaybe<SortType>;
+  date_modified?: InputMaybe<SortType>;
+  date_published?: InputMaybe<SortType>;
+  date_submitted?: InputMaybe<SortType>;
+  description?: InputMaybe<SortType>;
+  editor_notes?: InputMaybe<SortType>;
+  embedding?: InputMaybe<ReportEmbeddingSortType>;
+  epoch_date_downloaded?: InputMaybe<SortType>;
+  epoch_date_modified?: InputMaybe<SortType>;
+  epoch_date_published?: InputMaybe<SortType>;
+  epoch_date_submitted?: InputMaybe<SortType>;
+  flag?: InputMaybe<SortType>;
+  image_url?: InputMaybe<SortType>;
+  is_incident_report?: InputMaybe<SortType>;
+  language?: InputMaybe<SortType>;
+  modifiedBy?: InputMaybe<SortType>;
+  plain_text?: InputMaybe<SortType>;
+  quiet?: InputMaybe<SortType>;
+  report_number?: InputMaybe<SortType>;
+  source_domain?: InputMaybe<SortType>;
+  text?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  url?: InputMaybe<SortType>;
+  user?: InputMaybe<SortType>;
 };
 
 export type ReportInsertType = {
@@ -5428,11 +5529,11 @@ export type LogReportHistoryMutationVariables = Exact<{
 export type LogReportHistoryMutation = { __typename?: 'Mutation', logReportHistory?: { __typename?: 'LogReportHistoryPayload', report_number?: number | null } | null };
 
 export type FindReportHistoryQueryVariables = Exact<{
-  query?: InputMaybe<History_ReportQueryInput>;
+  filter?: InputMaybe<ReportHistoryFilterType>;
 }>;
 
 
-export type FindReportHistoryQuery = { __typename?: 'Query', history_reports: Array<{ __typename?: 'History_report', _id?: any | null, authors: Array<string | null>, cloudinary_id: string, date_downloaded: any, date_modified: any, date_published: any, date_submitted: any, description?: string | null, editor_notes?: string | null, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, flag?: boolean | null, image_url: string, inputs_outputs?: Array<string | null> | null, is_incident_report?: boolean | null, language: string, modifiedBy?: string | null, plain_text: string, report_number: number, submitters: Array<string | null>, tags: Array<string | null>, text: string, title: string, url: string, source_domain: string, user?: string | null, quiet?: boolean | null, embedding?: { __typename?: 'History_reportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null> };
+export type FindReportHistoryQuery = { __typename?: 'Query', history_reports?: Array<{ __typename?: 'ReportHistory', _id?: any | null, authors?: Array<string | null> | null, cloudinary_id?: string | null, date_downloaded: any, date_modified: any, date_published: any, date_submitted: any, description?: string | null, editor_notes?: string | null, epoch_date_downloaded?: number | null, epoch_date_modified?: number | null, epoch_date_published?: number | null, epoch_date_submitted?: number | null, flag?: boolean | null, image_url?: string | null, inputs_outputs?: Array<string | null> | null, is_incident_report?: boolean | null, language?: string | null, modifiedBy?: string | null, plain_text?: string | null, report_number?: number | null, submitters?: Array<string | null> | null, tags?: Array<string | null> | null, text?: string | null, title?: string | null, url?: string | null, source_domain?: string | null, user?: string | null, quiet?: boolean | null, embedding?: { __typename?: 'ReportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null> | null };
 
 export type FindReportsQueryVariables = Exact<{
   filter: ReportFilterType;
@@ -5640,7 +5741,7 @@ export const UpdateReportDocument = {"kind":"Document","definitions":[{"kind":"O
 export const DeleteOneReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<DeleteOneReportMutation, DeleteOneReportMutationVariables>;
 export const LinkReportsToIncidentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LinkReportsToIncidents"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LinkReportsToIncidentsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"linkReportsToIncidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]}}]} as unknown as DocumentNode<LinkReportsToIncidentsMutation, LinkReportsToIncidentsMutationVariables>;
 export const LogReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logReportHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<LogReportHistoryMutation, LogReportHistoryMutationVariables>;
-export const FindReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"sortBy"},"value":{"kind":"EnumValue","value":"EPOCH_DATE_MODIFIED_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_text_hash"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"user"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindReportHistoryQuery, FindReportHistoryQueryVariables>;
+export const FindReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportHistoryFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"date_modified"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_text_hash"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"user"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindReportHistoryQuery, FindReportHistoryQueryVariables>;
 export const FindReportsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReports"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindReportsQuery, FindReportsQueryVariables>;
 export const FindReportsTableDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportsTable"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"report_number"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}}]}}]}}]} as unknown as DocumentNode<FindReportsTableQuery, FindReportsTableQueryVariables>;
 export const FlagReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FlagReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"report_number"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flagReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"report_number"},"value":{"kind":"Variable","name":{"kind":"Name","value":"report_number"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}}]}}]}}]} as unknown as DocumentNode<FlagReportMutation, FlagReportMutationVariables>;

@@ -129,6 +129,9 @@ const ignoredQueries = [
 
     'notification',
     'notifications',
+
+    'history_report',
+    'history_reports',
 ];
 
 const ignoredMutations = [

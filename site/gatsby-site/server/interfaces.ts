@@ -27,6 +27,8 @@ export type DBClassification = Omit<Classification, 'incidents' | 'reports'>
 export type DBReport = Omit<Report, 'user'>
     & { user: string }
 
+export type DBReportHistory = DBReport & { modifiedBy: string };
+
 export type DBUser = Omit<User, 'adminData'>;
 
 export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors'>

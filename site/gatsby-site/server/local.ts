@@ -68,6 +68,12 @@ import {
     permissions as notificationsPermissions
 } from './fields/notifications';
 
+import {
+    queryFields as reportsHistoryQueryFields,
+    permissions as reportsHistoryPermissions
+} from './fields/reportsHistory';
+
+
 
 export const getSchema = () => {
 
@@ -89,6 +95,7 @@ export const getSchema = () => {
             ...subscriptionsQueryFields,
             ...duplicatesQueryFields,
             ...notificationsQueryFields,
+            ...reportsHistoryQueryFields,
         }
     });
 
@@ -142,6 +149,7 @@ export const getSchema = () => {
                 ...subscriptionsPermissions.Query,
                 ...duplicatesPermissions.Query,
                 ...notificationsPermissions.Query,
+                ...reportsHistoryPermissions.Query,
             },
             Mutation: {
                 "*": deny,
