@@ -16,3 +16,4 @@ export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed
     & { harmed_parties: string[] }
     & { user: string }
     & { incident_editors: string[] }
+    & { implicated_systems: string[] }
