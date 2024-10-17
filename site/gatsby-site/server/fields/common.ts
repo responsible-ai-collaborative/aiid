@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import templates from "../emails/templates";
 import config from "../config";
 import * as reporter from '../reporter';
-import { Context, DBIncident, DBNotification, DBReport, DBReportHistory } from "../interfaces";
+import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
 import { Recipient, EmailParams, MailerSend } from "mailersend";
 
@@ -391,3 +391,16 @@ export const logReportHistory = async (updated: DBReport, context: Context) => {
 
     await reportHistoryCollection.insertOne(reportHistory);
 };
+
+export const logIncidentHistory = async (updated: DBIncident, context: Context) => {
+
+    const incidentHistory: DBIncidentHistory = {
+        ...updated,
+        modifiedBy: context.user?.id ?? '',
+        _id: undefined,
+    }
+
+    const incidentHistoryCollection = context.client.db('history').collection<DBIncidentHistory>("incidents");
+
+    await incidentHistoryCollection.insertOne(incidentHistory);
+}

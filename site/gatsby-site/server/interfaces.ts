@@ -16,6 +16,8 @@ export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDe
     & { reports: number[] }
     & { editors: string[] }
 
+export type DBIncidentHistory = DBIncident & { modifiedBy: string };
+
 export type DBEntity = Entity;
 
 export type DBDuplicate = Duplicate;

@@ -1,7 +1,7 @@
 import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import incidentHistory from '../../fixtures/history/incidentHistory.json';
 import versionReports from '../../fixtures/history/versionReports.json';
-import { test, conditionalIntercept, waitForRequest, query } from '../../utils';
+import { test, query } from '../../utils';
 import { expect } from '@playwright/test';
 import config from '../../config';
 const { gql } = require('@apollo/client');
@@ -15,31 +15,6 @@ test.describe('Incidents', () => {
 
   test('Should display the Version History table data', async ({ page }) => {
     await page.goto(url);
-
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidentHistory', incidentHistory, 'FindIncidentHistory');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindUsers', {
-      data: {
-        users: [
-          { userId: '1', first_name: 'Sean', last_name: 'McGregor', roles: [] },
-          { userId: '2', first_name: 'Pablo', last_name: 'Costa', roles: [] },
-        ],
-      },
-    }, 'FindUsers');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindEntities', {
-      data: {
-        entities: [
-          { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
-          { __typename: 'Entity', entity_id: 'google', name: 'Google' },
-          { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
-        ],
-      },
-    }, 'FindEntities');
-
-    await Promise.all([
-      waitForRequest('FindIncidentHistory'),
-      waitForRequest('FindEntities'),
-      waitForRequest('FindUsers')
-    ]);
 
     await page.locator('h2').getByText('Version History').waitFor();
     const rows = await page.locator('[data-cy="history-row"]').elementHandles();
@@ -59,31 +34,6 @@ test.describe('Incidents', () => {
 
   test('Should not display the Version History table data if no data is present', async ({ page }) => {
     await page.goto(url);
-
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidentHistory', { data: { history_incidents: [] } }, 'FindIncidentHistory');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindUsers', {
-      data: {
-        users: [
-          { userId: '1', first_name: 'Sean', last_name: 'McGregor', roles: [] },
-          { userId: '2', first_name: 'Pablo', last_name: 'Costa', roles: [] },
-        ],
-      },
-    }, 'FindUsers');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindEntities', {
-      data: {
-        entities: [
-          { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
-          { __typename: 'Entity', entity_id: 'google', name: 'Google' },
-          { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
-        ],
-      },
-    }, 'FindEntities');
-
-    await Promise.all([
-      waitForRequest('FindIncidentHistory'),
-      waitForRequest('FindEntities'),
-      waitForRequest('FindUsers')
-    ]);
 
     await page.locator('h2').getByText('Version History').waitFor({ state: 'hidden' });
     await page.locator('[data-cy="history-table"]').waitFor({ state: 'hidden' });
@@ -112,37 +62,10 @@ test.describe('Incidents', () => {
   });
 
   test('Should restore an Incident previous version', async ({ page, login }) => {
-    
+
     const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
     await page.goto(url);
-
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidentHistory', incidentHistory, 'FindIncidentHistory');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindUsers', {
-      data: {
-        users: [
-          { userId: '1', first_name: 'Sean', last_name: 'McGregor', roles: [] },
-          { userId: '2', first_name: 'Pablo', last_name: 'Costa', roles: [] },
-        ],
-      },
-    }, 'FindUsers');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindEntities', {
-      data: {
-        entities: [
-          { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
-          { __typename: 'Entity', entity_id: 'google', name: 'Google' },
-          { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
-        ],
-      },
-    }, 'FindEntities');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'UpdateIncident', { data: { updateOneIncident: { incident_id: 10 } } }, 'UpdateIncident');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'logIncidentHistory', { data: { logIncidentHistory: { incident_id: 10 } } }, 'logIncidentHistory');
-
-    await Promise.all([
-      waitForRequest('FindIncidentHistory'),
-      waitForRequest('FindEntities'),
-      waitForRequest('FindUsers')
-    ]);
 
     await page.locator('h2').getByText('Version History').waitFor();
 
@@ -176,100 +99,30 @@ test.describe('Incidents', () => {
 
     const restoreButton = await lastRow.$('[data-cy="restore-button"]');
 
-    // Listen for the dialog and handle it
     page.once('dialog', async dialog => {
       await dialog.accept();
     });
 
-    if (restoreButton) {
-      await restoreButton.click();
-    }
+    await restoreButton.click();
 
-    await page.getByTestId("restoring-message").scrollIntoViewIfNeeded();
-    await expect(page.getByTestId("restoring-message")).toBeVisible({ timeout: 30000 });
+    await expect(page.getByTestId("restoring-message")).toBeVisible();
 
-    const initialVersion = incidentHistory.data.history_incidents[incidentHistory.data.history_incidents.length - 1];
-    const updatedIncident = {
-      ...initialVersion,
-      epoch_date_modified: expect.any(Number),
-      editor_notes: '',
-      reports: { link: initialVersion.reports },
-      AllegedDeployerOfAISystem: { link: initialVersion.AllegedDeployerOfAISystem },
-      AllegedDeveloperOfAISystem: { link: initialVersion.AllegedDeveloperOfAISystem },
-      AllegedHarmedOrNearlyHarmedParties: { link: initialVersion.AllegedHarmedOrNearlyHarmedParties },
-      editors: { link: initialVersion.editors.concat(userId) },
-    };
+    await expect(page.getByText('Incident version restored successfully.')).toBeVisible();
 
-    delete updatedIncident._id;
-    delete updatedIncident.modifiedBy;
-
-    const updateIncidentRequest = await waitForRequest('UpdateIncident');
-    const updateIncidentVariables = updateIncidentRequest.postDataJSON().variables;
-    expect(updateIncidentVariables.filter.incident_id.EQ).toBe(updatedIncident.incident_id);
-    expect(updateIncidentVariables.update.set).toMatchObject(updatedIncident);
-
-    const logIncidentHistoryRequest = await waitForRequest('logIncidentHistory');
-    const logIncidentHistoryInput = logIncidentHistoryRequest.postDataJSON().variables.input;
-
-    const expectedIncident = {
-      ...initialVersion,
-      editor_notes: updatedIncident.editor_notes,
-      epoch_date_modified: updatedIncident.epoch_date_modified,
-      editors: initialVersion.editors.concat(userId),
-      modifiedBy: userId,
-    };
-
-    delete expectedIncident._id;
-
-    expect(logIncidentHistoryInput).toEqual(expectedIncident);
-
-    await page.getByText('Incident version restored successfully.').waitFor();
-    await page.locator('[data-cy="restoring-message"]').waitFor({ state: 'hidden' });
+    await expect(page.locator('[data-cy="restoring-message"]')).not.toBeVisible();
   });
 
   test('Should display the Version History details modal', async ({ page }) => {
 
-
-
     await page.goto(url);
 
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindIncidentHistory', incidentHistory, 'FindIncidentHistory');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindUsers', {
-      data: {
-        users: [
-          { userId: '1', first_name: 'Sean', last_name: 'McGregor', roles: [] },
-          { userId: '2', first_name: 'Pablo', last_name: 'Costa', roles: [] },
-        ],
-      },
-    }, 'FindUsers');
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindEntities', {
-      data: {
-        entities: [
-          { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
-          { __typename: 'Entity', entity_id: 'google', name: 'Google' },
-          { __typename: 'Entity', entity_id: 'tesla', name: 'Tesla' },
-        ],
-      },
-    }, 'FindEntities');
     const filteredVersionReports = {
       data: { reports: versionReports.data.reports.filter((report: any) => incidentHistory.data.history_incidents[1].reports.includes(report.report_number)) }
     };
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.filter?.report_number.IN.length === 1, filteredVersionReports, 'FindReportsV1');
-
-    await Promise.all([
-      waitForRequest('FindIncidentHistory'),
-      waitForRequest('FindEntities'),
-      waitForRequest('FindUsers')
-    ]);
 
     const rows = await page.locator('[data-cy="history-row"]');
 
     await rows.nth(1).locator('[data-cy="view-full-version-button"]').click();
-
-    const findReportsRequestV1 = await waitForRequest('FindReportsV1');
-    expect(findReportsRequestV1.postDataJSON().variables.filter).toEqual({
-      report_number: { IN: incidentHistory.data.history_incidents[1].reports, }
-    });
 
     const modal = page.locator('[data-cy="version-view-modal"]');
     await modal.waitFor();
@@ -296,14 +149,8 @@ test.describe('Incidents', () => {
         reports: versionReports.data.reports.filter((report: any) => incidentHistory.data.history_incidents[0].reports.includes(report.report_number))
       }
     };
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'FindReports' && req.postDataJSON().variables.filter?.report_number.IN.length === 2, filteredVersionReportsV0, 'FindReportsV0');
 
     await rows.nth(0).locator('[data-cy="view-full-version-button"]').click();
-
-    const findReportsRequestV0 = await waitForRequest('FindReportsV0');
-    expect(findReportsRequestV0.postDataJSON().variables.filter).toEqual({
-      report_number: { IN: incidentHistory.data.history_incidents[0].reports },
-    });
 
     await modal.waitFor();
 

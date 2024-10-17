@@ -19,7 +19,6 @@ import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { graphql } from 'gatsby';
 
@@ -53,8 +52,6 @@ function IncidentHistoryPage(props) {
   });
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
-  const { logIncidentHistory } = useLogIncidentHistory();
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
     fetchPolicy: 'network-only',
@@ -203,14 +200,6 @@ function IncidentHistoryPage(props) {
             update: { set: updatedIncident },
           },
         });
-
-        await logIncidentHistory(
-          {
-            ...incident,
-            ...updatedIncident,
-          },
-          user
-        );
 
         await refetchHistory();
 

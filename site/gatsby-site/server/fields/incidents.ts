@@ -3,7 +3,7 @@ import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context } from "../interfaces";
 import { isRole } from "../rules";
-import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, linkReportsToIncidents } from "./common";
+import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, linkReportsToIncidents, logIncidentHistory } from "./common";
 import { IncidentType } from "../types/incidents";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
@@ -29,6 +29,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
         onResolve: async (operation, context, params) => {
 
             const { result, initial } = params!;
+
+            await logIncidentHistory(result, context);
 
             if (operation === 'insertOne') {
 
@@ -70,6 +72,9 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
         resolve: getQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
 
             const incidentsCollection = context.client.db('aiidprod').collection<{ editors: string[] }>("incidents");
+
+
+            // update date modified here
 
             await incidentsCollection.updateOne({ incident_id: args.incidentId }, { $set: { flagged_dissimilar_incidents: args.dissimilarIds } });
 

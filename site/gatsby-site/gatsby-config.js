@@ -304,6 +304,6 @@ module.exports = {
   }),
   trailingSlash: `always`,
   flags: {
-    DEV_SSR: true,
+    // DEV_SSR: true,
   },
 };

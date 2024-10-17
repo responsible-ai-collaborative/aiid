@@ -586,6 +586,8 @@ const defaultMutationFields: MutationFields[] = ['deleteOne', 'deleteMany', 'ins
  * @param {Function} params.onResolve.operation - The type of operation being performed ('insertOne' or 'updateOne').
  * @param {Object} params.onResolve.context - The context object passed to the resolver.
  * @param {Object} params.onResolve.params - Additional parameters including the initial state and result of the operation.
+ * @param {Object} params.onResolve.params.initial - The initial value of the database record before the operation is executed.
+ * @param {Object} params.onResolve.params.result - The returned value of the resolver in database format after the operation is completed.
  * @returns {GraphQLFieldConfigMap<any, any>} - A map of GraphQL field configurations for the generated mutations.
  * 
  * @example

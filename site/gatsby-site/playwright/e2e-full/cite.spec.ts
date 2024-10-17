@@ -355,28 +355,12 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'logIncidentHistory',
-            {
-                data: {
-                    logIncidentHistory: {
-                        incident_id: 3,
-                    },
-                },
-            },
-            'logIncidentHistory'
-        );
-
         const now = new Date('March 14 2042 13:37:11');
         await mockDate(page, now);
 
         await page.goto('/cite/3');
 
         await page.locator('[data-cy="similar-incidents-column"] [data-cy="flag-similar-incident"]').first().click();
-
-        await waitForRequest('logIncidentHistory');
 
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
@@ -395,20 +379,6 @@ test.describe('Cite pages', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'logIncidentHistory',
-            {
-                data: {
-                    logIncidentHistory: {
-                        incident_id: 3,
-                    },
-                },
-            },
-            'logIncidentHistory'
-        );
-
         await page.goto('/cite/3');
 
         const now = new Date();
@@ -417,8 +387,6 @@ test.describe('Cite pages', () => {
         }`);
 
         await page.locator('[data-cy="similar-incidents-column"] [data-cy="flag-similar-incident"]').first().click();
-
-        await waitForRequest('logIncidentHistory');
 
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
@@ -544,22 +512,6 @@ test.describe('Cite pages', () => {
 
         await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName === 'logIncidentHistory',
-            {
-                "data": {
-                    "logIncidentHistory": {
-                        "incident_id": 50,
-                        "__typename": "LogIncidentHistoryPayload"
-                    }
-                }
-            },
-            'logIncidentHistory'
-        );
-
         await page.goto('/incidents/edit/?incident_id=3');
 
         await fillAutoComplete(page, '#input-incidentSearch', '1 Incident', 'Incident 1');
@@ -571,8 +523,6 @@ test.describe('Cite pages', () => {
         await page.locator('[data-cy="related-byId"] [data-cy="result"]:nth-child(1)').getByText('No', { exact: true }).click();
 
         await page.getByText('Save').click();
-
-        await waitForRequest('logIncidentHistory');
 
         await expect(page.locator('.tw-toast:has-text("Incident 3 updated successfully.")')).toBeVisible();
 
