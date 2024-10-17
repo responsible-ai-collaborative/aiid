@@ -132,6 +132,9 @@ const ignoredQueries = [
 
     'history_report',
     'history_reports',
+
+    'history_incident',
+    'history_incidents',
 ];
 
 const ignoredMutations = [

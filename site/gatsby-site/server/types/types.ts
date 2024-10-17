@@ -15,3 +15,19 @@ export const EmbeddingType = new GraphQLObjectType({
         vector: { type: new GraphQLList(GraphQLFloat) }
     }
 });
+
+export const IncidentEmbeddingType = new GraphQLObjectType({
+    name: 'IncidentEmbedding',
+    fields: {
+        from_reports: { type: new GraphQLList(GraphQLInt) },
+        vector: { type: new GraphQLList(GraphQLFloat) }
+    }
+});
+
+export const TsneType = new GraphQLObjectType({
+    name: 'IncidentTsne',
+    fields: {
+        x: { type: GraphQLFloat },
+        y: { type: GraphQLFloat }
+    }
+});

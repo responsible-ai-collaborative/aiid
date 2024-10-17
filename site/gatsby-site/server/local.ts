@@ -73,6 +73,10 @@ import {
     permissions as reportsHistoryPermissions
 } from './fields/reportsHistory';
 
+import {
+    queryFields as incidentsHistoryQueryFields,
+    permissions as incidentsHistoryPermissions,
+} from './fields/incidentsHistory';
 
 
 export const getSchema = () => {
@@ -96,6 +100,7 @@ export const getSchema = () => {
             ...duplicatesQueryFields,
             ...notificationsQueryFields,
             ...reportsHistoryQueryFields,
+            ...incidentsHistoryQueryFields,
         }
     });
 
@@ -150,6 +155,7 @@ export const getSchema = () => {
                 ...duplicatesPermissions.Query,
                 ...notificationsPermissions.Query,
                 ...reportsHistoryPermissions.Query,
+                ...incidentsHistoryPermissions.Query,
             },
             Mutation: {
                 "*": deny,
