@@ -50,12 +50,17 @@ export const seedUsers = async (users: { userId: string, roles: string[] | null 
     });
 }
 
-export const makeRequest = async (url: string, data: { variables?: Record<string, unknown>, query: string }) => {
+export const makeRequest = async (url: string, data: { query: string, variables?: Record<string, unknown> }, headers?: Record<string, string>) => {
 
-    return supertest(url)
+    const request = supertest(url)
         .post('/')
         .set('Authorization', `Bearer dummyToken`)
-        .send(data);
+
+    if (headers) {
+        request.set(headers);
+    }
+
+    return request.send(data);
 }
 
 type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;

@@ -1,34 +1,10 @@
 [
     {
-        "name": "processNotifications",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateNewIncident",
-        "private": true
-    },
-    {
         "name": "logRollbar",
         "private": true
     },
     {
-        "name": "getEmailTemplateIncidentUpdate",
-        "private": true
-    },
-    {
         "name": "onNewUser",
-        "private": true
-    },
-    {
-        "name": "getUser",
-        "private": false
-    },
-    {
-        "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateNewReportAddedToAnIncident",
         "private": true
     },
     {
@@ -60,20 +36,12 @@
         "private": false
     },
     {
-        "name": "getEmailTemplateSubmissionApproved",
-        "private": true
-    },
-    {
         "name": "apiRequest",
         "private": false,
         "disable_arg_logs": true
     },
     {
         "name": "getEmailTemplatePasswordReset",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateEntityIncidentUpdated",
         "private": true
     },
     {
@@ -85,10 +53,6 @@
         "private": true
     },
     {
-        "name": "getEmailTemplateNewEntityIncident",
-        "private": true
-    },
-    {
         "name": "confirmUser",
         "private": true
     },
@@ -96,11 +60,6 @@
         "name": "createDefaultAdminUser",
         "private": false,
         "run_as_system": true
-    },
-    {
-        "name": "onNewIncident",
-        "private": false,
-        "disable_arg_logs": true
     },
     {
         "name": "logIncidentHistory",

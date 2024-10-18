@@ -1,28 +1,24 @@
 import apolloClient from '@apollo/client';
 
-import Realm from 'realm-web';
-
 import { fetch } from 'cross-fetch';
 
-const getValidAccessToken = async () => {
-  const realmApp = new Realm.App({
-    id: process.env.GATSBY_REALM_APP_ID,
-  });
-
-  let credentials = Realm.Credentials.apiKey(process.env.REALM_GRAPHQL_API_KEY);
-
-  await realmApp.logIn(credentials);
-
-  return realmApp.currentUser.accessToken;
+const config = {
+  SITE_URL: process.env.SITE_URL,
+  PROCESS_NOTIFICATIONS_SECRET: process.env.PROCESS_NOTIFICATIONS_SECRET,
 };
+
+Object.keys(config).forEach((key) => {
+  if (config[key] === undefined) {
+    throw new Error(`Config property ${key} is undefined`);
+  }
+});
 
 const client = new apolloClient.ApolloClient({
   link: new apolloClient.HttpLink({
-    uri: `https://services.cloud.mongodb.com/api/client/v2.0/app/${process.env.GATSBY_REALM_APP_ID}/graphql`,
+    uri: `${config.SITE_URL}/api/graphql`,
     fetch: async (uri, options) => {
-      const accessToken = await getValidAccessToken();
+      options.headers.PROCESS_NOTIFICATIONS_SECRET = config.PROCESS_NOTIFICATIONS_SECRET;
 
-      options.headers.Authorization = `Bearer ${accessToken}`;
       return fetch(uri, options);
     },
   }),

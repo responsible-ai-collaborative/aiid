@@ -1,6 +1,6 @@
 import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { getListRelationshipConfig, getRelationshipConfig } from "../utils";
-import { NlpSimilarIncidentType } from "../types";
+import { NlpSimilarIncidentType } from "./types";
 import { EntityType } from "../types/entity";
 import { GraphQLLong } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
