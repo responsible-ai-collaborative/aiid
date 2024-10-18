@@ -40,8 +40,6 @@ const processNotifications = async () => {
   return processResult;
 };
 
-processNotifications();
-
 // Runs on build success
 export const onSuccess = async function ({
   // Core utilities
