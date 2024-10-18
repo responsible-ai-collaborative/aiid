@@ -3,7 +3,7 @@ import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context } from "../interfaces";
 import { isRole } from "../rules";
-import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, linkReportsToIncidents } from "./common";
+import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, hasRelevantUpdates, linkReportsToIncidents } from "./common";
 import { IncidentType } from "../types/incidents";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
@@ -37,7 +37,10 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             if (operation === 'updateOne') {
 
-                await createNotificationsOnUpdatedIncident(result, initial, context);
+                if (hasRelevantUpdates(initial, result)) {
+
+                    await createNotificationsOnUpdatedIncident(result, initial, context);
+                }
             }
 
             return result;

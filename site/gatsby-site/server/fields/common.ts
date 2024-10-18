@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import templates from "../emails/templates";
 import config from "../config";
 import * as reporter from '../reporter';
-import { Context, DBIncident, DBNotification, DBReport, DBSubscription } from "../interfaces";
+import { Context, DBIncident, DBNotification, DBReport } from "../interfaces";
 import _ from "lodash";
 import { Recipient, EmailParams, MailerSend } from "mailersend";
 
@@ -306,6 +306,48 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
             processed: false,
         });
     }
+}
+
+function compareWithLodash(value: any, other: any): boolean | undefined {
+
+    if (Array.isArray(value) && Array.isArray(other)) {
+
+        return _.isEqual(_.sortBy(value), _.sortBy(other));
+    }
+
+    return undefined; // have lodash use its default comparison
+}
+
+export function hasRelevantUpdates(before: DBIncident, after: DBIncident): boolean {
+
+    const monitoredFields: (keyof DBIncident | "embedding.vector" | "embedding.from_reports" | "tsne.x" | "tsne.y")[] = [
+        "_id",
+        "date",
+        "description",
+        "editor_notes",
+        "title",
+        "Alleged deployer of AI system",
+        "Alleged developer of AI system",
+        "Alleged harmed or nearly harmed parties",
+        "reports",
+        "editors",
+        "embedding.vector",
+        "embedding.from_reports",
+        "tsne.x",
+        "tsne.y",
+        "editor_dissimilar_incidents",
+        "editor_similar_incidents",
+        "flagged_dissimilar_incidents",
+        "nlp_similar_incidents",
+    ];
+
+    const hasMonitoredUpdates = monitoredFields.some((field) => {
+        const beforeValue = _.get(before, field);
+        const afterValue = _.get(after, field);
+        return !_.isEqualWith(beforeValue, afterValue, compareWithLodash);
+    });
+
+    return hasMonitoredUpdates;
 }
 
 export const createNotificationsOnUpdatedIncident = async (fullDocument: DBIncident, fullDocumentBeforeChange: DBIncident, context: Context): Promise<void> => {
