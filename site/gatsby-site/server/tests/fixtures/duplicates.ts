@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Duplicate, DuplicateUpdateType, DuplicateInsertType } from "../../generated/graphql";
-import { DBDuplicate } from "../../../playwright/seeds/aiidprod/duplicates";
+import { DBDuplicate } from "../../interfaces";
 
 const duplicate1: DBDuplicate = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e1'),

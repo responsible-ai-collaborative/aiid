@@ -3200,11 +3200,29 @@ export type MutationUpsertOneSubscriptionArgs = {
 export type Notification = {
   __typename?: 'Notification';
   _id?: Maybe<Scalars['ObjectId']['output']>;
+  entity_id?: Maybe<Scalars['String']['output']>;
   incident_id?: Maybe<Scalars['Int']['output']>;
+  isUpdate?: Maybe<Scalars['Boolean']['output']>;
   processed?: Maybe<Scalars['Boolean']['output']>;
+  report_number?: Maybe<Scalars['Int']['output']>;
   sentDate?: Maybe<Scalars['DateTime']['output']>;
   type?: Maybe<Scalars['String']['output']>;
   userId?: Maybe<User>;
+};
+
+export type NotificationFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<NotificationFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<NotificationFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<NotificationFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  entity_id?: InputMaybe<StringFilter>;
+  incident_id?: InputMaybe<IntFilter>;
+  isUpdate?: InputMaybe<BooleanFilter>;
+  processed?: InputMaybe<BooleanFilter>;
+  report_number?: InputMaybe<IntFilter>;
+  sentDate?: InputMaybe<DateTimeFilter>;
+  type?: InputMaybe<StringFilter>;
+  userId?: InputMaybe<StringFilter>;
 };
 
 export type NotificationInsertInput = {
@@ -3274,6 +3292,17 @@ export enum NotificationSortByInput {
   IdAsc = '_ID_ASC',
   IdDesc = '_ID_DESC'
 }
+
+export type NotificationSortType = {
+  _id?: InputMaybe<SortType>;
+  entity_id?: InputMaybe<SortType>;
+  incident_id?: InputMaybe<SortType>;
+  isUpdate?: InputMaybe<SortType>;
+  processed?: InputMaybe<SortType>;
+  report_number?: InputMaybe<SortType>;
+  sentDate?: InputMaybe<SortType>;
+  type?: InputMaybe<SortType>;
+};
 
 export type NotificationUpdateInput = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
@@ -3404,7 +3433,7 @@ export type Query = {
   incident?: Maybe<Incident>;
   incidents?: Maybe<Array<Maybe<Incident>>>;
   notification?: Maybe<Notification>;
-  notifications: Array<Maybe<Notification>>;
+  notifications?: Maybe<Array<Maybe<Notification>>>;
   quickadd?: Maybe<Quickadd>;
   quickadds?: Maybe<Array<Maybe<Quickadd>>>;
   report?: Maybe<Report>;
@@ -3526,14 +3555,16 @@ export type QueryIncidentsArgs = {
 
 
 export type QueryNotificationArgs = {
-  query?: InputMaybe<NotificationQueryInput>;
+  filter?: InputMaybe<NotificationFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<NotificationSortType>;
 };
 
 
 export type QueryNotificationsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<NotificationQueryInput>;
-  sortBy?: InputMaybe<NotificationSortByInput>;
+  filter?: InputMaybe<NotificationFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<NotificationSortType>;
 };
 
 
