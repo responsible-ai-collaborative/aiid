@@ -94,3 +94,4 @@ jobs:
       netlify-alias:
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+      site-url: ${{ vars.SITE_URL }}
