@@ -19,7 +19,7 @@ describe(`Notifications`, () => {
         await server?.stop();
     });
 
-    it(`processNotifications mutation - shouldn't send anything`, async () => {
+    it(`processNotifications mutation - shouldn't send anything when notifications collection is empty`, async () => {
 
         const mutationData = {
             query: `
