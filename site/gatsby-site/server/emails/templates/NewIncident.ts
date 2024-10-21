@@ -1,5 +1,4 @@
-exports = function () {
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+export default `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
         <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -117,7 +116,7 @@ exports = function () {
       </style>
         <style>
           @media screen and (max-width:480px) {
-            table\0 {
+            table {
               width: 480px !important;
               }
           }
@@ -159,9 +158,8 @@ exports = function () {
           <tr>
             <td style="padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="color: #000000; font-family: arial, helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline">Greetings {{email}},</span></div>
     <div style="font-family: inherit; text-align: inherit"><br></div>
-    <div style="font-family: inherit; text-align: inherit">A new incident has just been added to the AI Incident Database for an entity you monitor.<br>
+    <div style="font-family: inherit; text-align: inherit">A new incident has just been added to the AI Incident Database.<br>
     <br>
-    <u>Entity</u>: <a href="{{entityUrl}}"><span style="color: #1188e6; background-color: rgb(255, 255, 255)">{{entityName}}</span></a><br>
     <u>Incident</u><span style="font-family: arial, helvetica, sans-serif"><u> Number</u></span><span style="font-family: arial, helvetica, sans-serif">: </span><a href="{{incidentUrl}}"><span style="box-sizing: border-box; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-style: inherit; font-variant-ligatures: inherit; font-variant-caps: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-size: 14px; vertical-align: baseline; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image-source: initial; border-image-slice: initial; border-image-width: initial; border-image-outset: initial; border-image-repeat: initial; outline-color: initial; outline-style: none; outline-width: initial; color: #1188e6; text-decoration-line: none; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; transition-duration: 0.3s; transition-timing-function: ease; transition-delay: 0s; transition-property: color; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif">{{incidentId}}</span></a><br>
     <u>Incident Title</u>: <span style="color: #000000; font-family: arial, helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline">{{incidentTitle}}</span><br>
     <u>Incident Description</u>: <span style="color: #000000; font-family: arial, helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline">{{incidentDescription}}</span><br>
@@ -208,7 +206,7 @@ exports = function () {
       </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="79b1a951-2f75-4d6e-940b-6610516555e0" data-mc-module-version="2019-10-22">
         <tbody>
           <tr>
-            <td style="padding:5px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><a href="https://incidentdatabase.ai/account"><span style="font-size: 12px; color: #1188e6; background-color: rgb(255, 255, 255)">Manage Subscriptions</span></a></div><div></div></div></td>
+            <td style="padding:5px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><a href="{{siteUrl}}/account"><span style="font-size: 12px; color: #1188e6; background-color: rgb(255, 255, 255)">Manage Subscriptions</span></a></div><div></div></div></td>
           </tr>
         </tbody>
       </table></td>
@@ -233,4 +231,3 @@ exports = function () {
           </center>
         </body>
       </html>`;
-};

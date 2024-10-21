@@ -1,6 +1,4 @@
-import { Entity } from '../../../server/generated/graphql'
-
-type DBEntity = Entity;
+import { DBEntity } from '../../../server/interfaces';
 
 const entities: DBEntity[] = [
     {

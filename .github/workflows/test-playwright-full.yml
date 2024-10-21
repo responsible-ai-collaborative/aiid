@@ -134,10 +134,11 @@ jobs:
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/e2e-full/
-          SENDGRID_API_KEY: something
-          SENDGRID_SENDER_NAME: Test Preview
-          SENDGRID_SENDER: test@test.com
-          PROCESS_NOTIFICATIONS_SECRET: sarasa 
+          MAILERSEND_API_KEY: something
+          NOTIFICATIONS_SENDER_NAME: Test Preview
+          NOTIFICATIONS_SENDER: test@test.com
+          PROCESS_NOTIFICATIONS_SECRET: sarasa
+          SITE_URL: http://localhost:8000
 
       - name: Upload Playwright traces
         if: failure()

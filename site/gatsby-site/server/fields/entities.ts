@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLObjectType } from "graphql";
+import { GraphQLFieldConfigMap } from "graphql";
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";

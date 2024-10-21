@@ -3,7 +3,7 @@ import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
 import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver } from "../utils";
 import { UserType } from "./user";
-import { NlpSimilarIncidentType } from "../types";
+import { NlpSimilarIncidentType } from "./types";
 import { ReportType } from "./report";
 
 const EmbeddingType = new GraphQLObjectType({
@@ -36,21 +36,24 @@ export const IncidentType = new GraphQLObjectType({
             type: new GraphQLList(EntityType),
             resolve: getListRelationshipResolver('AllegedDeployerOfAISystem', 'entity_id', EntityType, 'aiidprod', 'entities', 'Alleged deployer of AI system'),
             extensions: {
-                relationship: getListRelationshipExtension('AllegedDeployerOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+                relationship: getListRelationshipExtension('AllegedDeployerOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities'),
+                dbMapping: 'Alleged deployer of AI system',
             },
         },
         AllegedDeveloperOfAISystem: {
             type: new GraphQLList(EntityType),
             resolve: getListRelationshipResolver('AllegedDeveloperOfAISystem', 'entity_id', EntityType, 'aiidprod', 'entities', 'Alleged developer of AI system'),
             extensions: {
-                relationship: getListRelationshipExtension('AllegedDeveloperOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+                relationship: getListRelationshipExtension('AllegedDeveloperOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities'),
+                dbMapping: 'Alleged developer of AI system',
             },
         },
         AllegedHarmedOrNearlyHarmedParties: {
             type: new GraphQLList(EntityType),
             resolve: getListRelationshipResolver('AllegedHarmedOrNearlyHarmedParties', 'entity_id', EntityType, 'aiidprod', 'entities', 'Alleged harmed or nearly harmed parties'),
             extensions: {
-                relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+                relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities'),
+                dbMapping: 'Alleged harmed or nearly harmed parties',
             },
         },
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },

@@ -73,6 +73,7 @@
     "is-absolute-url": "^3.0.3",
     "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
+    "mailersend": "^2.3.0",
     "md5": "^2.3.0",
     "minimatch": "^9.0.4",
     "mongodb": "^6.4.0",
@@ -124,7 +125,7 @@
   "main": "n/a",
   "scripts": {
     "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
-    "build": "netlify build --offline --context=${npm_config_context:-deploy-preview}",
+    "build": "netlify build --offline --context=${npm_config_context:-branch-deploy}",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
