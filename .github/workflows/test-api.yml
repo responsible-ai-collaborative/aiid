@@ -67,11 +67,12 @@ jobs:
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
           E2E_ADMIN_USERNAME: ""
           E2E_ADMIN_PASSWORD: ""
-          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
-          SENDGRID_API_KEY: something
-          SENDGRID_SENDER_NAME: Test Preview
-          SENDGRID_SENDER: test@test.com
-          PROCESS_NOTIFICATIONS_SECRET: sarasa     
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: sarasa
+          MAILERSEND_API_KEY: something
+          NOTIFICATIONS_SENDER_NAME: Test Preview
+          NOTIFICATIONS_SENDER: test@test.com
+          PROCESS_NOTIFICATIONS_SECRET: sarasa
+          SITE_URL: http://localhost:8000
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
