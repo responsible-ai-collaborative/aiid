@@ -1,10 +1,10 @@
-import { waitForRequest, query, mockDate, test, conditionalIntercept, fillAutoComplete } from '../utils';
+import { query, mockDate, test, fillAutoComplete } from '../utils';
 import { format } from 'date-fns';
 import { gql } from '@apollo/client';
 import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
-import { DBIncident } from '../seeds/aiidprod/incidents';
+import { DBIncident } from '../../server/interfaces';
 
 test.describe('Cite pages', () => {
     const discoverUrl = '/apps/discover';
@@ -108,20 +108,6 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName === 'logReportHistory',
-            {
-                data: {
-                    logReportHistory: {
-                        report_number: 3,
-                    },
-                },
-            },
-            'logReportHistory'
-        );
-
         await page.goto(url + '#' + _id);
 
         await page.click(`[id="r${_id}"] [data-cy="expand-report-button"]`);
@@ -131,8 +117,6 @@ test.describe('Cite pages', () => {
         await expect(modal).toBeVisible();
 
         await modal.locator('[data-cy="flag-toggle"]').click();
-
-        await waitForRequest('logReportHistory');
 
         await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
 
