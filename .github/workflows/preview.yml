@@ -47,7 +47,7 @@ jobs:
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
-      netlify-context: branch-deploy
+      netlify-context: deploy-preview
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-test:
@@ -90,7 +90,6 @@ jobs:
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
-      netlify-context: branch-deploy
+      netlify-context: deploy-preview
       netlify-alias: pr-${{ github.event.pull_request.number }}
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
-      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app
