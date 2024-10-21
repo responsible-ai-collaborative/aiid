@@ -84,7 +84,7 @@ jobs:
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
     uses: ./.github/workflows/deploy.yml
-    needs: [cache-modifier, call-test, call-test-api, call-test-playwright]
+    needs: [cache-modifier, call-test, call-test-api, call-test-playwright, call-test-playwright-full]
     secrets: inherit
     permissions:
       pull-requests: write
