@@ -42,13 +42,11 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
     },
   ];
 
-  const harmingProperties = [
-    'Alleged_deployer_of_AI_system',
-    'Alleged_developer_of_AI_system',
-    'implicated_systems',
-  ];
+  const harmingProperties = ['Alleged_deployer_of_AI_system', 'Alleged_developer_of_AI_system'];
 
   const harmedProperties = ['Alleged_harmed_or_nearly_harmed_parties'];
+
+  const otherProperties = ['implicated_systems'];
 
   for (const incident of incidents) {
     const { incident_id, reports } = incident;
@@ -93,6 +91,12 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
         }
 
         if (harmedProperties.some((f) => f === field.property)) {
+          if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
+            entitiesHash[id][field.key].push(incident_id);
+          }
+        }
+
+        if (otherProperties.some((f) => f === field.property)) {
           if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
             entitiesHash[id][field.key].push(incident_id);
           }
