@@ -776,7 +776,16 @@ test.describe('The Submit form', () => {
             'parseNews',
         );
 
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
         await page.goto(url + `?${params.toString()}`);
+
+        await waitForRequest('findSubmissions');
 
         await waitForRequest('parseNews');
 
