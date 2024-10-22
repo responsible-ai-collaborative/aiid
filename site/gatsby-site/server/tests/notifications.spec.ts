@@ -8,8 +8,6 @@ import config from '../config';
 import { IncidentFilterType, IncidentInsertType, IncidentUpdateType, PromoteSubmissionToReportInput } from '../generated/graphql';
 import { ObjectId } from 'bson';
 
-const sendgridResponse = { body: {}, statusCode: 200, headers: {} };
-
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
 
@@ -21,7 +19,7 @@ describe(`Notifications`, () => {
         await server?.stop();
     });
 
-    it(`processNotifications mutation - shouldn't send anything`, async () => {
+    it(`processNotifications mutation - shouldn't send anything when notifications collection is empty`, async () => {
 
         const mutationData = {
             query: `
@@ -1112,5 +1110,108 @@ describe(`Notifications`, () => {
                 entity_id: "entity-2",
             },
         ]);
+    })
+
+    it(`Shouldn't create notifications for fields not monitored`, async () => {
+
+        const users: DBUser[] = [
+            {
+                userId: "user1",
+                roles: ['admin'],
+            }
+        ]
+
+        const incidents: DBIncident[] = [
+            {
+                _id: new ObjectId("60a7c5b7b4f5b8a6d8f9c7e0"),
+                incident_id: 1,
+                date: "2023-01-14T00:00:00.000Z",
+                "Alleged deployer of AI system": [],
+                "Alleged developer of AI system": [],
+                "Alleged harmed or nearly harmed parties": [],
+                description: "Test description 1",
+                title: "Test Incident 1",
+                editors: [
+                    "user1"
+                ],
+                nlp_similar_incidents: [
+                    {
+                        incident_id: 2,
+                        similarity: 0.9
+                    },
+                    {
+                        incident_id: 3,
+                        similarity: 0.85
+                    }
+                ],
+                editor_similar_incidents: [],
+                editor_dissimilar_incidents: [],
+                flagged_dissimilar_incidents: [],
+                embedding: {
+                    vector: [
+                        0.1,
+                        0.2,
+                    ],
+                    from_reports: [
+                        105,
+                        104,
+                    ],
+                },
+                tsne: {
+                    x: -0.1,
+                    y: -0.2
+                },
+                reports: [],
+                editor_notes: "Sample editor notes",
+            },
+
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                notifications: [],
+            },
+            aiidprod: {
+                incidents,
+            }
+        });
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+
+        const mutationData: { query: string, variables: { filter: IncidentFilterType, update: IncidentUpdateType } } = {
+            query: `
+                mutation($filter: IncidentFilterType!, $update: IncidentUpdateType!) {
+                    updateOneIncident(filter: $filter, update: $update) {
+                        incident_id
+                    }
+                }
+            `,
+            variables: {
+                filter: { incident_id: { EQ: 1 } },
+                update: {
+                    set: {
+                        epoch_date_modified: 1,
+                    }
+                },
+            }
+        };
+
+        await makeRequest(url, mutationData);
+
+        const result = await makeRequest(url, {
+            query: `
+            query {
+                notifications {
+                    type
+                    incident_id
+                    processed
+                    entity_id
+                }
+            }
+            `});
+
+        expect(result.body.data.notifications).toMatchObject([]);
     })
 });

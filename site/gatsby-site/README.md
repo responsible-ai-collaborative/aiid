@@ -77,7 +77,7 @@ Follow these steps to get your local environment up and running for development 
 
 ### Overview
 
-The AIID API is built to facilitate interactions with the AI Incident Database. 
+The AIID API is built to facilitate interactions with the AI Incident Database. It is implemented as a collection of serverless functions that are composed ("stitched") into a singular GraphQL endpoint.
 
 1. **Access the Apollo Explorer**
 
@@ -115,7 +115,7 @@ The query should return a response similar to this:
 
 #### Folders
 
-The api is contained within the `server` directory. The following folders are present in the project:
+The API is contained within the `server` directory. The following folders are present in the project:
 
 - **fields/**: Contains the field definitions for the GraphQL root fields.
 - **generated/**: Holds the generated GraphQL types derived from the schema using the GraphQL code generator CLI.
@@ -124,11 +124,11 @@ The api is contained within the `server` directory. The following folders are pr
 
 #### Important Files
 
-- `remote.ts`: Contains the remote GraphQL schema.
-- `local.ts`: Contains the local GraphQL schema.
-- `schema.ts`: Combines both remote and local schemas into the final schema.
-- `netlify/functions/graphql.ts`: Contains the GraphQL server setup.
-
+- **`remote.ts`**: Handles the auto-generated MongoDB Atlas schema, ignoring fields that have migrated to the local GraphQL schema.  
+- **`local.ts`**: Handles the local GraphQL schema, where migrated fields from the remote schema are added. These fields are ignored in `remote.ts`.  
+- **`schema.ts`**: Combines the remote and local schemas into the final schema using **schema stitching** from GraphQL Tools.
+- **`netlify/functions/graphql.ts`**: Sets up the **GraphQL server** and exposes it as a **Netlify function**, loading the schema from `schema.ts`.
+- 
 ### Running Tests
 
 To run Jest tests locally:
@@ -149,7 +149,9 @@ npm run codegen
 
 ### Schema and API Stitching
 
-The API previously relied on the MongoDB Realm GraphQL API to fetch data, but now that it has been deprecated, we have migrated to a new API. During the migration from Realm to our API, we stitch two GraphQL schemas: one from Atlas and one local. These schemas can be found in the `remote.ts` and `local.ts` files respectively. The final combined schema is found in `schema.ts`.
+> [!IMPORTANT]
+
+The API previously relied on the MongoDB Atlas Realm GraphQL API to fetch data, [but now that it has been deprecated](https://www.mongodb.com/developer/products/atlas/deprecating-mongodb-atlas-graphql-hosting-services/), we have migrated to a new API that we implement in this codebase. During the migration from Realm to our API, we stitch two GraphQL schemas: the auto-generated one from Atlas and the one defined in this codebase. These schemas can be found in the `remote.ts` and `local.ts` files respectively. The migration process involves progressively transferring GraphQL fields and functionality from the remote schema to the local one. The final combined schema is found in `schema.ts`.
 
 ### Email notifications
 

@@ -8,10 +8,6 @@
         "private": true
     },
     {
-        "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
         "name": "logReportHistory",
         "private": false
     },
@@ -64,11 +60,6 @@
         "name": "createDefaultAdminUser",
         "private": false,
         "run_as_system": true
-    },
-    {
-        "name": "onNewIncident",
-        "private": false,
-        "disable_arg_logs": true
     },
     {
         "name": "logIncidentHistory",
