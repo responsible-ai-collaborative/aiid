@@ -5,15 +5,11 @@
 [[plugins]]
   package = "@netlify/plugin-gatsby"
 
-[[context.production.plugins]]
+[[plugins]]
   package = "/plugins/netlify-plugin-create-admin-user"
-  [context.production.plugins.inputs]
-    event = "onSuccess"
 
-[[context.production.plugins]]
+[[plugins]]
   package = "/plugins/netlify-plugin-process-notifications"
-  [context.production.plugins.inputs]
-    event = "onSuccess"
 
 [build.processing.html]
   pretty_urls = false
