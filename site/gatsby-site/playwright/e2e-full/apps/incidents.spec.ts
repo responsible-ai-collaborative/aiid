@@ -252,7 +252,7 @@ test.describe('Incidents App', () => {
     await page.getByText('Reports', { exact: true }).click();
 
     await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(3);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(4);
 
     const firstCiteLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
     expect(firstCiteLink).toMatch(/^\/cite\/\d+#r\d+$/);

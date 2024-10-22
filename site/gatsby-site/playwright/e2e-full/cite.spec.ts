@@ -339,12 +339,11 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        const now = new Date('March 14 2042 13:37:11');
-        await mockDate(page, now);
-
         await page.goto('/cite/3');
 
         await page.locator('[data-cy="similar-incidents-column"] [data-cy="flag-similar-incident"]').first().click();
+
+        await expect(page.getByText('Incident flagged successfully. Our editors will remove it from this list if it not relevant.')).toBeVisible();
 
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
@@ -365,13 +364,11 @@ test.describe('Cite pages', () => {
 
         await page.goto('/cite/3');
 
-        const now = new Date();
-        await page.addInitScript(`{
-            Date.now = () => ${now.getTime()};
-        }`);
-
         await page.locator('[data-cy="similar-incidents-column"] [data-cy="flag-similar-incident"]').first().click();
 
+        await expect(page.getByText('Incident flagged successfully. Our editors will remove it from this list if it not relevant.')).toBeVisible();
+
+        
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
                                 flagged_dissimilar_incidents

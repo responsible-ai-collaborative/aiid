@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import { init } from '../memory-mongo';
 
 test.describe('Report History', () => {
-  const url = '/cite/history?report_number=';
+  const url = '/cite/history?report_number=1';
   const urlNoHistory = '/cite/history?report_number=2';
 
   test('Successfully loads', async ({ page }) => {
