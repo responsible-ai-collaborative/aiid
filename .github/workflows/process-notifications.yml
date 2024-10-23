@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Call GraphQL API
         env:
-          SITE_URL: ${{ secrets.SITE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
           PROCESS_NOTIFICATIONS_SECRET: ${{ secrets.PROCESS_NOTIFICATIONS_SECRET }}
         run: |
           curl -X POST "$SITE_URL/api/graphql" \
