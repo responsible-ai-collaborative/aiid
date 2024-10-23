@@ -19,6 +19,7 @@ import {
   faTable,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { useLocation } from '@reach/router';
 
 const TreeNode = ({ item, isCollapsed, onClick, setNavCollapsed, level = 0, className = '' }) => {
   const hasChildren = item.items && item.items.length > 0;
@@ -109,12 +110,54 @@ const TreeNode = ({ item, isCollapsed, onClick, setNavCollapsed, level = 0, clas
   );
 };
 
-const Tree = ({ items, isCollapsed, setNavCollapsed, additionalNodes = [] }) => {
-  const allItems = [...items, ...additionalNodes];
+const Tree = ({ items, isCollapsed, setNavCollapsed, localizePath, additionalNodes = [] }) => {
+  const location = useLocation(); // Listen for location changes
+
+  const [currentLocation, setCurrentLocation] = React.useState('');
+
+  React.useEffect(() => {
+    setCurrentLocation(location.pathname); // Update the current location on path change
+  }, [location]);
+
+  const subtreeNav = (subItems) => {
+    return subItems.map((item) => {
+      const localizedPath = localizePath({ path: item.url || item.path });
+
+      const currentVisit =
+        currentLocation &&
+        [localizedPath, `${localizedPath}/`].includes(localizePath({ path: currentLocation }));
+
+      let childVisit = false;
+
+      const children = item.items?.length > 0 ? subtreeNav(item.items) : [];
+
+      children.forEach((childItem) => {
+        if (
+          !childVisit &&
+          [
+            localizePath({ path: childItem.url }),
+            `${localizePath({ path: childItem.url })}/`,
+          ].includes(currentLocation)
+        ) {
+          childVisit = true;
+        }
+      });
+
+      return {
+        ...item,
+        items: children,
+        current: currentVisit,
+        collapsed: !currentVisit && !childVisit,
+        childVisit,
+      };
+    });
+  };
+
+  const processedItems = subtreeNav([...items, ...additionalNodes]);
 
   return (
     <ul className="tree flex flex-col space-y-2">
-      {allItems.map((item) => (
+      {processedItems.map((item) => (
         <TreeNode
           key={item.url || item.path || item.title}
           item={item}
