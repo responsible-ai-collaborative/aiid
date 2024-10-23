@@ -152,7 +152,7 @@ class Translator {
       .find(reportsQuery)
       .toArray();
 
-    this.reporter.log(`Processing traslation of ${reports.length} incident reports`);
+    this.reporter.log(`Processing translation of ${reports.length} incident reports`);
 
     const concurrency = 10;
 
