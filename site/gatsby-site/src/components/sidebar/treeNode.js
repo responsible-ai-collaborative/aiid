@@ -52,7 +52,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
         />
 
         {!item.collapsed && hasChildren ? (
-          <ul>
+          <ul className="ml-3">
             {item.items.map((item, index) => (
               <TreeNode
                 className="subtree"
@@ -81,47 +81,51 @@ const NodeLink = ({
   const { t } = useTranslation();
 
   return (
-    <Link
-      title={title}
-      to={item.url}
-      onClick={click}
-      className={`${
-        isCollapsed ? 'w-10 h-10' : ''
-      } hover:no-underline flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
-      data-testid={`sidebar-link${item.current ? '-active' : ''}`}
-    >
-      {icon &&
-        (isCollapsed ? (
-          <Tooltip content={t(item.title)} placement="right">
-            {icon}
-          </Tooltip>
-        ) : (
-          <>{icon}</>
-        ))}
-      <span
+    <div className="relative">
+      <Link
+        title={title}
+        to={item.url}
+        onClick={click}
         className={`${
-          isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
-        } transition-[font-size] duration-500 flex flex-grow justify-between`}
-        style={{ fontSize: isCollapsed ? '0' : undefined }}
+          isCollapsed ? 'w-10 h-10' : ''
+        } hover:no-underline flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
+        data-testid={`sidebar-link${item.current ? '-active' : ''}`}
       >
-        <span className="ml-3 block transition-none">
-          <Trans>{item.title}</Trans>
+        {icon &&
+          (isCollapsed ? (
+            <Tooltip content={t(item.title)} placement="right">
+              {icon}
+            </Tooltip>
+          ) : (
+            <>{icon}</>
+          ))}
+        <span
+          className={`${
+            isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
+          } transition-[font-size] duration-500 flex flex-grow justify-between`}
+          style={{ fontSize: isCollapsed ? '0' : undefined }}
+        >
+          <span className="ml-3 block transition-none">
+            <Trans>{item.title}</Trans>
+          </span>
         </span>
+      </Link>
+      <>
+        {' '}
         {!config.sidebar.frontLine && item.title && hasChildren ? (
           <button
             onClick={(ev) => {
               ev.preventDefault();
-              // ev.stopPropagation()
               click();
             }}
             aria-label="collapse"
-            className="collapser"
+            className="collapser absolute right-1 top-1/2 transform -translate-y-1/2"
           >
             {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
           </button>
         ) : null}
-      </span>
-    </Link>
+      </>
+    </div>
   );
 };
 
