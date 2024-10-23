@@ -66,9 +66,9 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
       const itemItems = item.items.map((item) => {
         item = item.item.document.data;
         return {
-          url: item.item_url.url || item.item_path || '/',
-          title: item.item_title,
-          label: item.item_label,
+          url: item.item_url?.url || item.item_path || '/',
+          title: item.title,
+          label: item.label,
           items: [],
         };
       });

@@ -37,6 +37,8 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   const icon = getIcon(item.label, item.current);
 
+  console.log(item);
+
   return (
     <>
       <li className={`z-50`} data-testid={'sidebar-' + item.label}>
@@ -99,14 +101,22 @@ const NodeLink = ({
       <span
         className={`${
           isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
-        } transition-[font-size] duration-500`}
+        } transition-[font-size] duration-500 flex flex-grow justify-between`}
         style={{ fontSize: isCollapsed ? '0' : undefined }}
       >
         <span className="ml-3 block transition-none">
           <Trans>{item.title}</Trans>
         </span>
         {!config.sidebar.frontLine && item.title && hasChildren ? (
-          <button onClick={click} aria-label="collapse" className="collapser">
+          <button
+            onClick={(ev) => {
+              ev.preventDefault();
+              // ev.stopPropagation()
+              click();
+            }}
+            aria-label="collapse"
+            className="collapser"
+          >
             {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
           </button>
         ) : null}
