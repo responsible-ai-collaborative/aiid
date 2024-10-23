@@ -8,11 +8,11 @@ import {
     GraphQLInputObjectType
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
-import { Context, DBSubmission } from '../interfaces';
+import { Context, DBIncident, DBSubmission } from '../interfaces';
 import { allow } from 'graphql-shield';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
-import { linkReportsToIncidents } from './common';
+import { createNotificationsOnNewIncident, linkReportsToIncidents } from './common';
 import { SubmissionType } from '../types/submission';
 
 
@@ -58,7 +58,9 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
         resolve: async (source, { input }, context) => {
 
             const submissions = context.client.db('aiidprod').collection<DBSubmission>("submissions");
-            const incidents = context.client.db('aiidprod').collection("incidents");
+            const incidents = context.client.db('aiidprod').collection<DBIncident>("incidents");
+
+            // TODO: Strictly type these collections using the DB* types
             const reports = context.client.db('aiidprod').collection("reports");
             const notificationsCollection = context.client.db('customData').collection("notifications");
             const incidentsHistory = context.client.db('history').collection("incidents");
@@ -72,7 +74,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             const { _id: undefined, ...submission }: DBSubmission = target;
 
-            const parentIncidents: Array<Record<string, unknown> & { incident_id?: number, reports?: Record<string, unknown>[] }> = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
+            const parentIncidents: DBIncident[] = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
             const lastReport = await reports.find({}).sort({ report_number: -1 }).limit(1).next();
 
@@ -90,13 +92,13 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         ? ['65031f49ec066d7c64380f5c'] // Default user. For more information refer to the wiki page: https://github.com/responsible-ai-collaborative/aiid/wiki/Special-non%E2%80%90secret-values
                         : submission.incident_editors;
 
-                    const newIncident: Record<string, unknown> = {
+                    const newIncident: DBIncident = {
                         title: submission.incident_title || submission.title,
                         description: submission.description,
                         incident_id,
                         reports: [],
                         editors,
-                        date: submission.incident_date,
+                        date: submission.incident_date!,
                         "Alleged deployer of AI system": submission.deployers || [],
                         "Alleged developer of AI system": submission.developers || [],
                         "Alleged harmed or nearly harmed parties": submission.harmed_parties || [],
@@ -117,6 +119,10 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                     }
 
                     await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id });
+
+
+                    await createNotificationsOnNewIncident(newIncident, context);
+
 
                     if (submission.user) {
 

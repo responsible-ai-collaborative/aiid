@@ -1,7 +1,5 @@
 import { Report } from '../../../server/generated/graphql'
-
-type DBReport = Omit<Report, 'user'>
-    & { user: string }
+import { DBReport } from '../../../server/interfaces';
 
 const items: DBReport[] = [
     {
