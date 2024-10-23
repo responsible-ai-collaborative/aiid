@@ -1,12 +1,4 @@
-import { Incident } from '../../../server/generated/graphql'
-
-type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors' | 'implicated_systems'>
-    & { "Alleged deployer of AI system": string[] } 
-    & { "Alleged developer of AI system": string[] } 
-    & { "Alleged harmed or nearly harmed parties": string[] } 
-    & { implicated_systems: string[] }
-    & { reports: number[] }
-    & { editors: string[] }
+import { DBIncident } from '../../../server/interfaces';
 
 const incidents: DBIncident[] = [
     {

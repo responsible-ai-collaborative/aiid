@@ -1,11 +1,7 @@
 import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
-
-type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'implicated_systems' | 'reports' | 'editors'>
-    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] } & { implicated_systems: string[] }
-    & { reports: number[] }
-    & { editors: string[] }
+import { DBIncident } from "../../interfaces";
 
 const subscriber = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),
@@ -413,14 +409,14 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
         allowed: [editor1],
         denied: [anonymous, subscriber],
         filter: { _id: { EQ: incident1._id } },
-        update: { set: { title: 'edited title' } },
-        result: { title: 'edited title' }
+        update: { set: { title: 'edited title', AllegedDeployerOfAISystem: { link: ['entity1'] } } },
+        result: { title: 'edited title', AllegedDeployerOfAISystem: [{ entity_id: 'entity1' }] }
     },
     testUpdateMany: {
         allowed: [editor1],
         denied: [subscriber],
         filter: { incident_id: { EQ: 1 } },
-        update: { set: { title: 'edited tile' } },
+        update: { set: { title: 'edited tile', AllegedDeployerOfAISystem: { link: ['entity1'] } } },
         result: { modifiedCount: 1, matchedCount: 1 }
     },
     testInsertOne: {
@@ -434,6 +430,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             editors: { link: [editor1.userId] },
             editor_notes: "",
             flagged_dissimilar_incidents: [],
+            AllegedDeployerOfAISystem: { link: ['entity1'] },
         },
         result: {
             _id: expect.any(String),
@@ -445,6 +442,9 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             ],
             editors: [
                 { userId: 'editor1' }
+            ],
+            AllegedDeployerOfAISystem: [
+                { entity_id: 'entity1' }
             ]
         }
     },

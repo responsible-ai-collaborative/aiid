@@ -1,15 +1,47 @@
-import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
+import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLInt, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
 import { getGraphQLInsertType, getGraphQLFilterType, getGraphQLSortType, GraphQLPaginationType, MongoDbOptions, getMongoDbSort, getMongoDbProjection, getMongoDbQueryResolver, validateUpdateArgs, getMongoDbUpdate, GetMongoDbProjectionOptions, UpdateObj } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
-import { DeleteManyPayload, InsertManyPayload, UpdateManyPayload } from "./types";
 import pluralizeLib from 'pluralize';
-import config from "./config";
 import { getGraphQLSetType } from "graphql-to-mongodb/lib/src/graphQLUpdateType";
 import { GraphQLFieldsType } from "graphql-to-mongodb/lib/src/common";
 import { QueryCallback, QueryOptions } from "graphql-to-mongodb/lib/src/queryResolver";
 import { getMongoDbFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
 import { UpdateCallback } from "graphql-to-mongodb/lib/src/updateResolver";
+import { ObjectIdScalar } from "./scalars";
+
+
+const DeleteManyPayload = new GraphQLObjectType({
+    name: 'DeleteManyPayload',
+    fields: {
+        deletedCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+    },
+});
+
+const InsertManyPayload = new GraphQLObjectType({
+    name: 'InsertManyPayload',
+    fields: {
+        insertedIds: {
+            type: new GraphQLNonNull(new GraphQLList(ObjectIdScalar)),
+        },
+    },
+});
+
+
+const UpdateManyPayload = new GraphQLObjectType({
+    name: 'UpdateManyPayload',
+    fields: {
+        modifiedCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+        matchedCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+    },
+});
+
 
 export function pluralize(s: string) {
     return pluralizeLib.plural(s);
@@ -512,6 +544,27 @@ async function parseRelationshipFields(Type: GraphQLObjectType, updateArg: Recor
     return parsedUpdate;
 }
 
+async function parseDBMappings(Type: GraphQLObjectType, updateArg: Record<string, any>,) {
+
+    const parsedUpdate: any = {};
+
+    const fields = Type.toConfig().fields;
+
+    for (const [key, value] of Object.entries(updateArg)) {
+
+        if (fields[key]?.extensions?.dbMapping) {
+
+            parsedUpdate[fields[key].extensions!.dbMapping as string] = value;
+        }
+        else {
+            parsedUpdate[key] = value;
+        }
+    }
+
+    return parsedUpdate;
+
+}
+
 type Data = { [key: string]: any }
 
 type MutationFields = 'deleteOne' | 'deleteMany' | 'insertOne' | 'insertMany' | 'updateOne' | 'updateMany' | 'upsertOne';
@@ -519,17 +572,48 @@ type MutationFields = 'deleteOne' | 'deleteMany' | 'insertOne' | 'insertMany' | 
 const defaultMutationFields: MutationFields[] = ['deleteOne', 'deleteMany', 'insertOne', 'insertMany', 'updateOne', 'updateMany', 'upsertOne'];
 
 /**
- * Auto-generates GraphQL mutation fields for a specified collection, supporting various operations like delete, insert, update, and upsert.
- * This function creates mutation fields based on the provided GraphQL object type, enabling CRUD operations on the collection.
+ * Auto-generates GraphQL mutation fields for a specified collection, supporting various CRUD operations.
+ * This function creates mutation fields based on the provided GraphQL object type, enabling operations like delete, insert, update, and upsert on the collection.
  * 
  * @param {Object} params - The parameters for generating the mutation fields.
  * @param {string} params.collectionName - The name of the collection to perform mutations on.
- * @param {string} [params.databaseName='aiidprod'] - The name of the database containing the collection.
+ * @param {string} [params.databaseName='aiidprod'] - The name of the database containing the collection. Defaults to 'aiidprod'.
  * @param {GraphQLObjectType<any, any>} params.Type - The GraphQL object type representing the structure of the collection's documents.
- * @param {MutationFields[]} [params.generateFields=defaultMutationFields] - An array specifying which mutation fields to generate.
+ * @param {MutationFields[]} [params.generateFields=defaultMutationFields] - An array specifying which mutation fields to generate. Defaults to all available mutations.
+ * @param {Function} [params.onResolve] - Optional callback function to be called after certain mutation operations (insertOne, updateOne).
+ * @param {Function} params.onResolve.operation - The type of operation being performed ('insertOne' or 'updateOne').
+ * @param {Object} params.onResolve.context - The context object passed to the resolver.
+ * @param {Object} params.onResolve.params - Additional parameters including the initial state and result of the operation.
+ * @param {Object} params.onResolve.params.initial - The initial value of the database record before the operation is executed.
+ * @param {Object} params.onResolve.params.result - The returned value of the resolver in database format after the operation is completed.
  * @returns {GraphQLFieldConfigMap<any, any>} - A map of GraphQL field configurations for the generated mutations.
+ * 
+ * @example
+ * const userMutations = generateMutationFields({
+ *   collectionName: 'users',
+ *   Type: UserType,
+ *   generateFields: ['insertOne', 'updateOne', 'deleteOne'],
+ *   onResolve: async (operation, context, params) => {
+ *     if (operation === 'insertOne') {
+ *       // Perform additional actions after inserting a user
+ *     }
+ *   }
+ * });
  */
-export function generateMutationFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultMutationFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: MutationFields[] }): GraphQLFieldConfigMap<any, any> {
+export function generateMutationFields({
+    collectionName,
+    databaseName = 'aiidprod',
+    Type,
+    generateFields = defaultMutationFields,
+    onResolve = undefined,
+}:
+    {
+        collectionName: string,
+        databaseName?: string,
+        Type: GraphQLObjectType<any, any>,
+        generateFields?: MutationFields[],
+        onResolve?: (operation: Extract<MutationFields, 'insertOne' | 'updateOne'>, context: Context, params?: { initial?: any, result?: any }) => Promise<any>
+    }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = capitalize(singularize(collectionName));
     const pluralName = capitalize(pluralize(collectionName));
@@ -583,7 +667,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
 
                 try {
 
-                    const insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
+                    let insert = await parseRelationshipFields(Type, data, getMongoDbUpdate({ set: data }).update, context);
+                    insert = await parseDBMappings(Type, insert);
 
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
@@ -591,6 +676,11 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const result = await collection.insertOne(insert);
 
                     const inserted = await collection.findOne({ _id: result.insertedId });
+
+                    if (onResolve) {
+
+                        return onResolve('insertOne', context, { result: inserted });
+                    }
 
                     return inserted;
                 }
@@ -620,7 +710,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const collection = db.collection(collectionName);
 
                     const insert = await Promise.all(data.map(async (item) => {
-                        return await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
+                        const result = await parseRelationshipFields(Type, item, getMongoDbUpdate({ set: item }).update, context);
+                        return await parseDBMappings(Type, result);
                     }));
 
                     const result = await collection.insertMany(insert);
@@ -645,18 +736,26 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
         fields[`updateOne${singularName}`] = {
             type: Type,
             args: getUpdateArgs(Type),
-            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context) => {
+            resolve: getUpdateResolver(Type, async (filter, mongoUpdate, options, projection, obj, args, context: Context) => {
 
                 try {
 
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    let update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    update = await parseDBMappings(Type, update);
+
+                    const initial = await collection.findOne(filter);
 
                     await collection.updateOne(filter, { $set: update }, options);
 
                     const updated = await collection.findOne(filter);
+
+                    if (onResolve) {
+
+                        return onResolve('updateOne', context, { result: updated, initial });
+                    }
 
                     return updated;
                 }
@@ -685,7 +784,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    let update = await parseRelationshipFields(Type, args.update.set, mongoUpdate, context);
+                    update = await parseDBMappings(Type, update);
 
                     const result = await collection.updateMany(filter, { $set: update }, options);
 
@@ -717,7 +817,8 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
+                    let update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
+                    update = await parseDBMappings(Type, update);
 
                     await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
 
@@ -738,60 +839,6 @@ export function generateMutationFields({ collectionName, databaseName = 'aiidpro
     }
 
     return fields;
-}
-
-/**
- * Makes an API request to the MongoDB Atlas Admin API, supporting only GET methods.
- * This function handles authentication using a public/private API key pair and returns the response from the API.
- * 
- * **Note:** Use with caution as this function has admin privileges.
- * 
- * @param {Object} params - The parameters for the API request.
- * @param {string} params.path - The API endpoint path.
- * @param {string} [params.method='GET'] - The HTTP method for the request. Currently, only 'GET' is supported.
- * @returns {Promise<any>} - The response from the API or an error object if the request fails.
- * 
- * @throws {Error} Throws an error if an unsupported HTTP method is provided.
- */
-export const apiRequest = async ({ path, method = "GET" }: { method?: string, path: string }) => {
-
-    const loginResponse = await fetch('https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username: config.REALM_API_PUBLIC_KEY,
-            apiKey: config.REALM_API_PRIVATE_KEY,
-        }),
-    });
-
-    const data = await loginResponse.json();
-
-    if (loginResponse.status != 200) {
-        return {
-            status: loginResponse.status,
-            error: data.error
-        }
-    }
-
-    let response = null;
-
-    const url = `https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`;
-    const headers = { "Authorization": `Bearer ${data.access_token}` };
-
-    if (method == 'GET') {
-
-        const result = await fetch(url, { headers });
-
-        response = await result.json();
-    }
-    else {
-
-        throw `Unsupported method ${method}`;
-    }
-
-    return response;
 }
 
 /**
@@ -860,8 +907,10 @@ export const getListRelationshipResolver = (
 
         const collection = db.collection(collectionName);
 
-        const result = source[sourceFieldOnDatabase ?? sourceField]?.length
-            ? await collection.find({ [targetField]: { $in: source[sourceFieldOnDatabase ?? sourceField] } }, options).toArray()
+        const field = sourceFieldOnDatabase ?? sourceField;
+
+        const result = source[field]?.length
+            ? await collection.find({ [targetField]: { $in: source[field] } }, options).toArray()
             : []
 
         return result;
