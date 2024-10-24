@@ -55,10 +55,6 @@ const TreeNode = ({
         className={`tree-node-header flex items-center cursor-pointer rounded-md ${
           isCollapsed ? 'collapsed' : ''
         }`}
-        role="button" // Adding interactive role for accessibility
-        tabIndex={0} // Adding tabIndex to make it focusable via keyboard
-        onClick={() => toggleExpand(item)}
-        onKeyDown={handleKeyDown} // Handle keyboard events
         aria-expanded={isExpanded}
         aria-label={item.title}
       >
