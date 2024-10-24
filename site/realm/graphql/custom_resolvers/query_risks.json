@@ -48,12 +48,6 @@
                                     "bsonType": "string"
                                 }
                             },
-                            "implicated_systems": {
-                                "bsonType": "array",
-                                "items": {
-                                    "bsonType": "string"
-                                }
-                            },
                             "_id": {
                                 "bsonType": "objectId"
                             },
