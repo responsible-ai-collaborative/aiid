@@ -41,10 +41,11 @@ test.describe('Report History', () => {
 
     for (let index = 0; index < history_reports.length; index++) {
       const history = history_reports[index];
-      await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(
+      const rowIndex = rows - index - 1;
+      await expect(page.locator('[data-cy="history-row"]').nth(rowIndex)).toContainText(
         `${format(fromUnixTime(history.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`
       );
-      await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(
+      await expect(page.locator('[data-cy="history-row"]').nth(rowIndex)).toContainText(
         `Modified by: ${history.modifiedBy === 'user1' ? 'Test User' : 'Sean McGregor'}`
       );
     }
