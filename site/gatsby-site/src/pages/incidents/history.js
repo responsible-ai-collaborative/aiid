@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import {
-  FIND_FULL_INCIDENT,
-  FIND_INCIDENT_HISTORY,
-  UPDATE_INCIDENT,
-} from '../../graphql/incidents';
+import { FIND_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_USERS } from '../../graphql/users';
 import { FIND_ENTITIES } from '../../graphql/entities';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
@@ -41,8 +37,6 @@ function IncidentHistoryPage(props) {
 
   const [incidentVersionDetails, setIncidentVersionDetails] = useState(null);
 
-  const [incident, setIncident] = useState(null);
-
   const [incidentClassifications, setIncidentClassifications] = useState([]);
 
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
@@ -53,13 +47,6 @@ function IncidentHistoryPage(props) {
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
-  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    fetchPolicy: 'network-only',
-    variables: {
-      filter: { incident_id: { EQ: incidentId } },
-    },
-  });
-
   const {
     data: incidentHistoryData,
     loading: loadingIncidentHistory,
@@ -67,8 +54,8 @@ function IncidentHistoryPage(props) {
   } = useQuery(FIND_INCIDENT_HISTORY, {
     fetchPolicy: 'network-only',
     variables: {
-      query: {
-        incident_id: incidentId,
+      filter: {
+        incident_id: { EQ: incidentId },
       },
     },
   });
@@ -79,14 +66,6 @@ function IncidentHistoryPage(props) {
       variables: { filter: { incidents: { EQ: incidentId } } },
     }
   );
-
-  useEffect(() => {
-    if (incidentData?.incident) {
-      setIncident({ ...incidentData.incident });
-    } else {
-      setIncident(undefined);
-    }
-  }, [incidentData]);
 
   useEffect(() => {
     if (incidentHistoryData?.history_incidents?.length > 0) {
@@ -140,7 +119,6 @@ function IncidentHistoryPage(props) {
   }, [classificationsData]);
 
   const loading =
-    loadingIncident ||
     loadingIncidentHistory ||
     loadingUsers ||
     loadingEntities ||

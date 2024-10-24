@@ -6,9 +6,9 @@ export const IncidentHistoryType = new GraphQLObjectType({
     name: 'IncidentHistory',
     fields: {
         _id: { type: ObjectIdScalar },
-        AllegedDeployerOfAISystem: { type: new GraphQLList(GraphQLString) },
-        AllegedDeveloperOfAISystem: { type: new GraphQLList(GraphQLString) },
-        AllegedHarmedOrNearlyHarmedParties: { type: new GraphQLList(GraphQLString) },
+        AllegedDeployerOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged deployer of AI system'] },
+        AllegedDeveloperOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged developer of AI system'] },
+        AllegedHarmedOrNearlyHarmedParties: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged harmed or nearly harmed parties'] },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         modifiedBy: { type: GraphQLString },
