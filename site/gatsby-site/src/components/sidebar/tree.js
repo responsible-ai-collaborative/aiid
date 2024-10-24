@@ -79,8 +79,8 @@ Tree.propTypes = {
   setNavCollapsed: PropTypes.func,
   localizePath: PropTypes.func,
   additionalNodes: PropTypes.array,
-  expandedNodes: PropTypes.object.isRequired, // Added expandedNodes as a required prop
-  toggleExpand: PropTypes.func.isRequired, // Added toggleExpand as a required prop
+  expandedNodes: PropTypes.object.isRequired,
+  toggleExpand: PropTypes.func.isRequired,
 };
 
 export default Tree;

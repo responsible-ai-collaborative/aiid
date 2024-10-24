@@ -159,6 +159,14 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     setIsUserLoggedIn(!!user?.profile.email);
   }, [user]);
 
+  // We want the bottom edge of the sidebar
+  // to rest at bottom edge of the viewport.
+  // Since the sidebar has `position: sticky`,
+  // that means that in the initial view,
+  // its height should be 100vh - (the visible height of the header)
+  // Then, when we scroll down, its height should be 100vh.
+  // There's no way to do this in pure CSS
+  // so we have to check ourselves with an IntersectionObserver.
   const [headerVisiblePixels, setHeaderVisiblePixels] = useState(80);
 
   const threshold = Array(1000)
@@ -182,6 +190,11 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     return () => observer.disconnect();
   }, []);
 
+  // When we've scrolled to where the footer is visible,
+  // the collapse button should no longer be at the bottom of the viewport,
+  // so we need to unset `position: fixed`.
+  // This can result in the collapse button flashing into view,
+  // but that seems to be the least objectionable option.
   const [atBottom, setAtBottom] = useState(false);
 
   useEffect(() => {
@@ -280,6 +293,13 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
               `}
               title={isCollapsed ? t('Expand') : t('Collapse')}
               onClick={() => {
+                // If the user, e.g. from the landing page
+                // collapses the sidebar and then uncollapses it,
+                // navigating to /discover
+                // should still cause the sidebar to collapse.
+                // However, when changing the collapsed state
+                // to one that is not its default value,
+                // that state should be preserved across pages.
                 setManual(defaultCollapsed == isCollapsed);
                 collapseMenu(!isCollapsed);
               }}
