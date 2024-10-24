@@ -66,9 +66,9 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
       const itemItems = item.items.map((item) => {
         item = item.item.document.data;
         return {
-          url: item.item_url.url || item.item_path || '/',
-          title: item.item_title,
-          label: item.item_label,
+          url: item.url?.url || item.path || '/',
+          title: item.title,
+          label: item.label,
           items: [],
         };
       });
@@ -97,6 +97,31 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
   const [redirectTo, setRedirectTo] = useState('/');
+
+  // Safe access to localStorage using browser check
+  const [expandedNodes, setExpandedNodes] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('sidebarExpandedNodes');
+
+      return savedState ? JSON.parse(savedState) : {};
+    }
+    return {};
+  });
+
+  // Toggle the expansion of a node and save to localStorage
+  const toggleExpand = (item) => {
+    setExpandedNodes((prevState) => {
+      const newState = {
+        ...prevState,
+        [item.url || item.path || item.title]: !prevState[item.url || item.path || item.title],
+      };
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('sidebarExpandedNodes', JSON.stringify(newState)); // Save to localStorage
+      }
+      return newState;
+    });
+  };
 
   useEffect(() => {
     if (!manual) {
@@ -210,6 +235,8 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
             setNavCollapsed={setNavCollapsed}
             isCollapsed={isCollapsed}
             localizePath={localizePath}
+            expandedNodes={expandedNodes} // Pass the expandedNodes state
+            toggleExpand={toggleExpand} // Pass the toggleExpand function
             additionalNodes={[
               {
                 label: 'user',
@@ -274,7 +301,6 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
                 // to one that is not its default value,
                 // that state should be preserved across pages.
                 setManual(defaultCollapsed == isCollapsed);
-
                 collapseMenu(!isCollapsed);
               }}
             />

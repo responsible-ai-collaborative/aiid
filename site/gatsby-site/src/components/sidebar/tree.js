@@ -1,96 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import config from '../../../config';
-import TreeNode from './treeNode';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { useLocation } from '@reach/router';
-
-const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
-  let subs = [];
-
-  treeRoot.forEach((item) => {
-    const defaultNavSetting = {
-      url: item.url,
-      label: item.label,
-      title: item.title,
-      items: subtreeNav(item.items, currentLocation, localizePath),
-      collapsed: false,
-      childVisit: false,
-      current: false,
-    };
-
-    let currentVisit, childVisit;
-
-    if (typeof currentLocation == 'undefined' && typeof document != 'undefined') {
-      currentLocation = document.location.pathname;
-    }
-
-    currentVisit =
-      currentLocation &&
-      [
-        localizePath({ path: item.url }),
-        localizePath({ path: config.gatsby.pathPrefix + item.url === '/' ? '' : item.url }),
-      ].includes(localizePath({ path: currentLocation }));
-
-    childVisit = false;
-    defaultNavSetting.items.forEach((item) => {
-      if (
-        !childVisit &&
-        currentLocation &&
-        (localizePath({ path: currentLocation }) === localizePath({ path: item.url }) ||
-          localizePath({ path: currentLocation }) ===
-            localizePath({ path: config.gatsby.pathPrefix + item.url }))
-      ) {
-        childVisit = true;
-      }
-    });
-
-    defaultNavSetting.collapsed = !currentVisit && !childVisit;
-    defaultNavSetting.childVisit = childVisit;
-    defaultNavSetting.current = currentVisit;
-
-    subs.push(defaultNavSetting);
-  });
-  return subs;
-};
+import TreeNode from './treeNode';
 
 const Tree = ({
-  setNavCollapsed = null,
+  items,
+  isCollapsed,
+  setNavCollapsed,
   localizePath,
-  isCollapsed = false,
   additionalNodes = [],
-  items = [],
+  expandedNodes,
+  toggleExpand,
 }) => {
-  const location = useLocation();
+  const location = useLocation(); // Listen for location changes
 
-  const [navSettings, setNavSetting] = useState(
-    subtreeNav([...items, ...additionalNodes], location.pathname, localizePath)
-  );
+  const [currentLocation, setCurrentLocation] = React.useState('');
 
-  useEffect(() => {
-    const nodes = subtreeNav([...items, ...additionalNodes], location.pathname, localizePath);
+  React.useEffect(() => {
+    setCurrentLocation(location.pathname); // Update the current location on path change
+  }, [location]);
 
-    setNavSetting(nodes);
-  }, [items, additionalNodes]);
+  const subtreeNav = (subItems) => {
+    return subItems.map((item) => {
+      const localizedPath = localizePath({ path: item.url || item.path });
 
-  const toggle = (url) => {
-    setNavSetting(subtreeNav(navSettings, url, localizePath));
-    setNavCollapsed && setNavCollapsed(true);
+      const currentVisit =
+        currentLocation &&
+        [localizedPath, `${localizedPath}/`].includes(localizePath({ path: currentLocation }));
+
+      let childVisit = false;
+
+      const children = item.items?.length > 0 ? subtreeNav(item.items) : [];
+
+      children.forEach((childItem) => {
+        if (
+          !childVisit &&
+          [
+            localizePath({ path: childItem.url }),
+            `${localizePath({ path: childItem.url })}/`,
+          ].includes(currentLocation)
+        ) {
+          childVisit = true;
+        }
+      });
+
+      return {
+        ...item,
+        items: children,
+        current: currentVisit,
+        collapsed: !currentVisit && !childVisit,
+        childVisit,
+      };
+    });
   };
 
+  const processedItems = subtreeNav([...items, ...additionalNodes]);
+
   return (
-    <>
-      {navSettings.map((cur, index) => {
-        return (
-          <TreeNode
-            key={cur.url + index.toString()}
-            setCollapsed={toggle}
-            navSetting={navSettings}
-            item={cur}
-            isCollapsed={isCollapsed}
-          />
-        );
-      })}
-    </>
+    <ul className="tree flex flex-col space-y-2">
+      {processedItems.map((item) => (
+        <TreeNode
+          key={item.url || item.path || item.title}
+          item={item}
+          isCollapsed={isCollapsed}
+          setNavCollapsed={setNavCollapsed}
+          isExpanded={expandedNodes[item.url || item.path || item.title] || false} // Check if the node is expanded
+          toggleExpand={toggleExpand} // Pass down the toggle function
+          expandedNodes={expandedNodes}
+        />
+      ))}
+    </ul>
   );
+};
+
+Tree.propTypes = {
+  items: PropTypes.array.isRequired,
+  isCollapsed: PropTypes.bool,
+  setNavCollapsed: PropTypes.func,
+  localizePath: PropTypes.func,
+  additionalNodes: PropTypes.array,
+  expandedNodes: PropTypes.object.isRequired,
+  toggleExpand: PropTypes.func.isRequired,
 };
 
 export default Tree;
