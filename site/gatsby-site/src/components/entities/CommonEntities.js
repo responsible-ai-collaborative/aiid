@@ -28,6 +28,7 @@ export default function CommonEntities() {
           Alleged_deployer_of_AI_system
           Alleged_developer_of_AI_system
           Alleged_harmed_or_nearly_harmed_parties
+          implicated_systems
         }
       }
       entities: allMongodbAiidprodEntities {

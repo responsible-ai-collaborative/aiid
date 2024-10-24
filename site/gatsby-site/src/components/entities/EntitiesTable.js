@@ -252,6 +252,13 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         sortType: sortByCount,
       },
       {
+        title: t('As Implicated system'),
+        accessor: 'incidentsImplicatedSystems',
+        Cell: IncidentsCell,
+        filter: incidentFilter,
+        sortType: sortByCount,
+      },
+      {
         title: t('Related Entities'),
         accessor: 'relatedEntities',
         Cell: EntitiesCell,

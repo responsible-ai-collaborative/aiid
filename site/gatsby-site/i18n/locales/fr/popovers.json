@@ -67,6 +67,10 @@
         "title": "Est-ce un rapport silencieux ?",
         "text": "Les rapports silencieux sont ceux qui ne seront pas publiés dans la section « Derniers rapports » de la page d'accueil. Les rapports silencieux sont utilisés pour les rapports utiles pour les données internes mais qui n'ont pas besoin d'être promus. Si vous n'êtes pas sûr, laissez ce champ vide."
     },
+    "implicated_systems": {
+        "title": "Systèmes d'IA impliqués dans l'incident",
+        "text": "Si plusieurs, appuyez sur « entrée » pour commencer un nouvel élément"
+    },
     "similarIncidentSearch": {
         "title": "Rechercher des incidents similaires",
         "text": "Recherchez un incident similaire ou différent en saisissant un ID d'incident. Si l'incident qui en résulte est similaire, cliquez sur « Oui », s'il est différent, cliquez sur « Non ». Si vous n'êtes pas sûr, cliquez sur « Pas sûr ». Une fois sélectionné, l'incident sera ajouté à la section « Incidents similaires et différents sélectionnés manuellement » du formulaire. Une fois ajouté, si vous souhaitez le supprimer, cliquez sur le bouton « Pas sûr »."

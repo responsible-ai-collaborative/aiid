@@ -197,6 +197,7 @@ test.describe('Incidents', () => {
       AllegedDeployerOfAISystem: { link: initialVersion.AllegedDeployerOfAISystem },
       AllegedDeveloperOfAISystem: { link: initialVersion.AllegedDeveloperOfAISystem },
       AllegedHarmedOrNearlyHarmedParties: { link: initialVersion.AllegedHarmedOrNearlyHarmedParties },
+      implicated_systems: { link: initialVersion.implicated_systems },
       editors: { link: initialVersion.editors.concat(userId) },
     };
 
