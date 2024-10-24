@@ -1,143 +1,135 @@
 import React from 'react';
-import { Tooltip } from 'flowbite-react';
-import OpenedSvg from '../images/opened';
-import ClosedSvg from '../images/closed';
-import config from '../../../config';
-import Link from '../ui/Link';
-import { Trans, useTranslation } from 'react-i18next';
-import {
-  faDoorOpen,
-  faSearch,
-  faPlusCircle,
-  faMedal,
-  faList,
-  faNewspaper,
-  faChartPie,
-  faTable,
-  faBuilding,
-  faUser,
-  faSquareCheck,
-  faShapes,
-  faDice,
-} from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
+import { ChevronDown, ChevronRight } from 'react-feather';
+import Link from '../ui/Link'; // Assuming you have this component for internal links
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBuilding,
+  faChartPie,
+  faDice,
+  faDoorOpen,
+  faList,
+  faMedal,
+  faNewspaper,
+  faPlusCircle,
+  faSearch,
+  faShapes,
+  faSquareCheck,
+  faTable,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 
-const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed = false }) => {
+const TreeNode = ({
+  item,
+  isCollapsed,
+  onClick,
+  setNavCollapsed,
+  level = 0,
+  className = '',
+  isExpanded,
+  toggleExpand,
+  expandedNodes,
+}) => {
+  const hasChildren = item.items && item.items.length > 0;
+
+  const icon = getIcon(item.label, item.current);
+
   const calculatedClassName = `${className || ''} item ${
     item.current
       ? 'active bg-light-orange text-white dark:bg-gray-700'
       : 'text-white md:text-inherit hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
   }`;
 
-  const hasChildren = item.items.length > 0;
-
-  const click = () => {
-    setCollapsed(item['url']);
+  // Ensure keyboard accessibility
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleExpand(item);
+    }
   };
 
-  const icon = getIcon(item.label, item.current);
-
-  console.log(item);
-
   return (
-    <>
-      <li className={`z-50`} data-testid={'sidebar-' + item.label}>
-        <NodeLink
-          item={item}
-          isCollapsed={isCollapsed}
-          click={click}
-          icon={icon}
-          hasChildren={hasChildren}
-          calculatedClassName={calculatedClassName}
-        />
-
-        {!item.collapsed && hasChildren ? (
-          <ul className="ml-3">
-            {item.items.map((item, index) => (
-              <TreeNode
-                className="subtree"
-                key={item.url + index.toString()}
-                setCollapsed={setCollapsed}
-                navSetting={navSetting}
-                item={item}
-              />
-            ))}
-          </ul>
-        ) : null}
-      </li>
-    </>
-  );
-};
-
-const NodeLink = ({
-  item,
-  isCollapsed = false,
-  click,
-  icon,
-  hasChildren,
-  calculatedClassName,
-  title,
-}) => {
-  const { t } = useTranslation();
-
-  return (
-    <div className="relative">
-      <Link
-        title={title}
-        to={item.url}
-        onClick={click}
-        className={`${
-          isCollapsed ? 'w-10 h-10' : ''
-        } hover:no-underline flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
-        data-testid={`sidebar-link${item.current ? '-active' : ''}`}
+    <li className="tree-node">
+      <div
+        className={`tree-node-header flex items-center cursor-pointer rounded-md ${
+          isCollapsed ? 'collapsed' : ''
+        }`}
+        role="button" // Adding interactive role for accessibility
+        tabIndex={0} // Adding tabIndex to make it focusable via keyboard
+        onClick={() => toggleExpand(item)}
+        onKeyDown={handleKeyDown} // Handle keyboard events
+        aria-expanded={isExpanded}
+        aria-label={item.title}
       >
-        {icon &&
-          (isCollapsed ? (
-            <Tooltip content={t(item.title)} placement="right">
-              {icon}
-            </Tooltip>
-          ) : (
-            <>{icon}</>
-          ))}
-        <span
-          className={`${
-            isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
-          } transition-[font-size] duration-500 flex flex-grow justify-between`}
-          style={{ fontSize: isCollapsed ? '0' : undefined }}
-        >
-          <span className="ml-3 block transition-none">
+        {/* Link to the item if it has a URL or Path */}
+        {item.url || item.path ? (
+          <Link
+            title={item.title}
+            to={item.url || item.path}
+            onClick={onClick}
+            className={`hover:no-underline flex rounded-lg items-center p-2 md:text-base font-normal group transition-none w-full ${
+              isCollapsed ? 'w-10 h-10' : ''
+            } ${calculatedClassName}`}
+            data-testid={`sidebar-link${item.current ? '-active' : ''}`}
+          >
+            {icon && (isCollapsed ? <span className="tooltip">{icon}</span> : <>{icon}</>)}
+            <span className={`ml-3 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+              <Trans>{item.title}</Trans>
+            </span>
+          </Link>
+        ) : (
+          <span className="tree-node-title ml-3">
             <Trans>{item.title}</Trans>
           </span>
-        </span>
-      </Link>
-      <>
-        {' '}
-        {!config.sidebar.frontLine && item.title && hasChildren ? (
-          <button
-            onClick={(ev) => {
-              ev.preventDefault();
-              click();
-            }}
-            aria-label="collapse"
-            className="collapser absolute right-1 top-1/2 transform -translate-y-1/2"
+        )}
+        {/* Toggle Icon (if it has children) */}
+        {hasChildren && (
+          <span
+            className="mr-2"
+            onClick={() => toggleExpand(item)} // Only clicking the arrow expands/collapses
+            role="button" // Adding interactive role
+            tabIndex={0} // Making it focusable
+            onKeyDown={handleKeyDown} // Keyboard accessibility
+            style={{ cursor: 'pointer' }}
           >
-            {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
-          </button>
-        ) : null}
-      </>
-    </div>
+            {isExpanded ? <ChevronDown /> : <ChevronRight />}
+          </span>
+        )}
+      </div>
+
+      {/* Render children recursively */}
+      {hasChildren && isExpanded && (
+        <ul className={`ml-${(level + 1) * 4}`}>
+          {item.items.map((childItem) => (
+            <TreeNode
+              key={childItem.url || childItem.path || childItem.title}
+              item={childItem}
+              isCollapsed={isCollapsed}
+              onClick={onClick}
+              setNavCollapsed={setNavCollapsed}
+              level={level + 1}
+              isExpanded={
+                expandedNodes[childItem.url || childItem.path || childItem.title] || false
+              } // Pass down expanded state
+              toggleExpand={toggleExpand} // Pass down toggleExpand function
+              expandedNodes={expandedNodes}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
   );
 };
 
+// Helper function to get the icon
 function getIcon(label, current = false) {
   const fontAwesomeStyles = `
     w-6 h-6
     transition-[width] duration-500 
-
     group-hover:text-white 
     dark:group-hover:text-white 
     pointer fa
-    
     ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
   `;
 
@@ -168,7 +160,7 @@ function getIcon(label, current = false) {
       ),
       user: <FontAwesomeIcon titleId="user" icon={faUser} className={fontAwesomeStyles} />,
       checklists: (
-        <FontAwesomeIcon titleId="entities" icon={faSquareCheck} className={fontAwesomeStyles} />
+        <FontAwesomeIcon titleId="checklists" icon={faSquareCheck} className={fontAwesomeStyles} />
       ),
       random: <FontAwesomeIcon titleId="random" icon={faDice} className={fontAwesomeStyles} />,
       spatial: (
@@ -216,5 +208,17 @@ function getIcon(label, current = false) {
     }[label] || <FontAwesomeIcon titleId={label} icon={faShapes} className={fontAwesomeStyles} />
   );
 }
+
+TreeNode.propTypes = {
+  item: PropTypes.object.isRequired,
+  isCollapsed: PropTypes.bool,
+  onClick: PropTypes.func,
+  setNavCollapsed: PropTypes.func,
+  level: PropTypes.number,
+  className: PropTypes.string,
+  isExpanded: PropTypes.bool,
+  toggleExpand: PropTypes.func,
+  expandedNodes: PropTypes.object,
+};
 
 export default TreeNode;

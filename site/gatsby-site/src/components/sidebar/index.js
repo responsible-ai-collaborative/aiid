@@ -98,6 +98,31 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
 
   const [redirectTo, setRedirectTo] = useState('/');
 
+  // Safe access to localStorage using browser check
+  const [expandedNodes, setExpandedNodes] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('sidebarExpandedNodes');
+
+      return savedState ? JSON.parse(savedState) : {};
+    }
+    return {};
+  });
+
+  // Toggle the expansion of a node and save to localStorage
+  const toggleExpand = (item) => {
+    setExpandedNodes((prevState) => {
+      const newState = {
+        ...prevState,
+        [item.url || item.path || item.title]: !prevState[item.url || item.path || item.title],
+      };
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('sidebarExpandedNodes', JSON.stringify(newState)); // Save to localStorage
+      }
+      return newState;
+    });
+  };
+
   useEffect(() => {
     if (!manual) {
       collapseMenu(defaultCollapsed);
@@ -134,14 +159,6 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     setIsUserLoggedIn(!!user?.profile.email);
   }, [user]);
 
-  // We want the bottom edge of the sidebar
-  // to rest at bottom edge of the viewport.
-  // Since the sidebar has `position: sticky`,
-  // that means that in the initial view,
-  // its height should be 100vh - (the visible height of the header)
-  // Then, when we scroll down, its height should be 100vh.
-  // There's no way to do this in pure CSS
-  // so we have to check ourselves with an IntersectionObserver.
   const [headerVisiblePixels, setHeaderVisiblePixels] = useState(80);
 
   const threshold = Array(1000)
@@ -165,11 +182,6 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     return () => observer.disconnect();
   }, []);
 
-  // When we've scrolled to where the footer is visible,
-  // the collapse button should no longer be at the bottom of the viewport,
-  // so we need to unset `position: fixed`.
-  // This can result in the collapse button flashing into view,
-  // but that seems to be the least objectionable option.
   const [atBottom, setAtBottom] = useState(false);
 
   useEffect(() => {
@@ -210,6 +222,8 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
             setNavCollapsed={setNavCollapsed}
             isCollapsed={isCollapsed}
             localizePath={localizePath}
+            expandedNodes={expandedNodes} // Pass the expandedNodes state
+            toggleExpand={toggleExpand} // Pass the toggleExpand function
             additionalNodes={[
               {
                 label: 'user',
@@ -266,15 +280,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
               `}
               title={isCollapsed ? t('Expand') : t('Collapse')}
               onClick={() => {
-                // If the user, e.g. from the landing page
-                // collapses the sidebar and then uncollapses it,
-                // navigating to /discover
-                // should still cause the sidebar to collapse.
-                // However, when changing the collapsed state
-                // to one that is not its default value,
-                // that state should be preserved across pages.
                 setManual(defaultCollapsed == isCollapsed);
-
                 collapseMenu(!isCollapsed);
               }}
             />
