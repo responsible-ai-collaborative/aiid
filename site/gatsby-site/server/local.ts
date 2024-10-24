@@ -34,10 +34,16 @@ import {
 } from './fields/incidents';
 
 import {
-    queryFields as submissionsQueryFields,
-    mutationFields as submissionsMutationFields,
-    permissions as submissionsPermissions
+  queryFields as submissionsQueryFields,
+  mutationFields as submissionsMutationFields,
+  permissions as submissionsPermissions
 } from './fields/submissions';
+
+import {
+  queryFields as entity_relationshipsQueryFields,
+  mutationFields as entity_relationshipsMutationFields,
+  permissions as entity_relationshipsPermissions
+} from './fields/entity_relationships';
 
 import {
     queryFields as classificationsQueryFields,
@@ -84,6 +90,7 @@ export const getSchema = () => {
             ...entitiesQueryFields,
             ...usersQueryFields,
             ...submissionsQueryFields,
+            ...entity_relationshipsQueryFields,
             ...classificationsQueryFields,
             ...taxaQueryFields,
             ...subscriptionsQueryFields,
@@ -101,6 +108,7 @@ export const getSchema = () => {
             ...entitiesMutationFields,
             ...usersMutationFields,
             ...submissionsMutationFields,
+            ...entity_relationshipsMutationFields,
             ...classificationsMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
@@ -137,6 +145,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Query,
                 ...usersPermissions.Query,
                 ...submissionsPermissions.Query,
+                ...entity_relationshipsPermissions.Query,
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
                 ...subscriptionsPermissions.Query,
@@ -151,6 +160,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Mutation,
                 ...usersPermissions.Mutation,
                 ...submissionsPermissions.Mutation,
+                ...entity_relationshipsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
