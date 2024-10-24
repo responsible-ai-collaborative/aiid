@@ -8,9 +8,6 @@
 [[plugins]]
   package = "/plugins/netlify-plugin-create-admin-user"
 
-[[plugins]]
-  package = "/plugins/netlify-plugin-process-notifications"
-
 [build.processing.html]
   pretty_urls = false
 

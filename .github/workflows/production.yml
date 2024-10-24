@@ -84,7 +84,7 @@ jobs:
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
     uses: ./.github/workflows/deploy.yml
-    needs: [cache-modifier, call-test, call-test-api, call-test-playwright]
+    needs: [cache-modifier, call-test, call-test-api, call-test-playwright, call-test-playwright-full]
     secrets: inherit
     permissions:
       pull-requests: write
@@ -95,3 +95,10 @@ jobs:
       netlify-alias:
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+  
+  call-process-notifications:
+    needs: call-deploy
+    uses: ./.github/workflows/process-notifications.yml
+    secrets: inherit
+    with:
+      environment: production

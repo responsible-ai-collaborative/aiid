@@ -1,7 +1,5 @@
 import { ObjectId } from 'bson';
-import { Duplicate } from '../../../server/generated/graphql'
-
-export type DBDuplicate = Duplicate;
+import { DBDuplicate } from '../../../server/interfaces';
 
 const items: DBDuplicate[] = [
     {

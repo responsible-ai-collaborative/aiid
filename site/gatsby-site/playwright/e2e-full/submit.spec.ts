@@ -245,8 +245,6 @@ test.describe('The Submit form', () => {
 
     test('Should submit a new report linked to incident 1 once all fields are filled properly', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        test.slow();
-
         await init();
 
         await conditionalIntercept(
@@ -778,7 +776,16 @@ test.describe('The Submit form', () => {
             'parseNews',
         );
 
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
         await page.goto(url + `?${params.toString()}`);
+
+        await waitForRequest('findSubmissions');
 
         await waitForRequest('parseNews');
 
