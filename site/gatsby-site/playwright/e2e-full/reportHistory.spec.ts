@@ -16,10 +16,12 @@ test.describe('Report History', () => {
 
   test('Should display the Report Version History table data', async ({ page }) => {
 
+    await init();
+
     const { data: { history_reports } } = await query({
       query: gql`
         {
-          history_reports {
+          history_reports(sort: {epoch_date_modified: DESC}) {
             title
             report_number
             epoch_date_modified
