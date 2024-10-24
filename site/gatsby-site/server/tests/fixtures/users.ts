@@ -45,8 +45,8 @@ const fixture: Fixture<User, UserUpdateType> = {
         },
     },
     testSingular: {
-        allowed: [subscriber],
-        denied: [anonymous],
+        allowed: [anonymous],
+        denied: [],
         filter: { userId: { EQ: 'user2' } },
         result: {
             first_name: 'Jane',
@@ -56,8 +56,8 @@ const fixture: Fixture<User, UserUpdateType> = {
         }
     },
     testPluralFilter: {
-        allowed: [admin],
-        denied: [subscriber, anonymous],
+        allowed: [admin, subscriber, anonymous],
+        denied: [],
         filter: {
             userId: { IN: ['user1', 'user3'] },
         },
@@ -77,8 +77,8 @@ const fixture: Fixture<User, UserUpdateType> = {
         ],
     },
     testPluralPagination: {
-        allowed: [admin],
-        denied: [subscriber, anonymous],
+        allowed: [admin, subscriber, anonymous],
+        denied: [],
         pagination: { limit: 1, skip: 1 },
         sort: { first_name: "ASC" },
         result: [
@@ -91,8 +91,8 @@ const fixture: Fixture<User, UserUpdateType> = {
         ],
     },
     testPluralSort: {
-        allowed: [admin],
-        denied: [subscriber, anonymous],
+        allowed: [admin, subscriber, anonymous],
+        denied: [],
         sort: { first_name: "ASC" },
         result: [
             {
@@ -118,7 +118,7 @@ const fixture: Fixture<User, UserUpdateType> = {
     testInsertOne: null,
     testInsertMany: null,
     testUpdateOne: {
-        allowed: [admin, subscriber],
+        allowed: [admin, subscriber,],
         denied: [anonymous],
         filter: { userId: { EQ: 'user2' } },
         update: { set: { first_name: 'Updated John' } },

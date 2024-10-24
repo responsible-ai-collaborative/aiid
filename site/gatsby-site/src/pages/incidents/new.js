@@ -7,7 +7,6 @@ import {
   FIND_INCIDENT,
   GET_LATEST_INCIDENT_ID,
   INSERT_INCIDENT,
-  LOG_INCIDENT_HISTORY,
 } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
@@ -39,8 +38,6 @@ function NewIncidentPage() {
   const loading = loadingLastIncident || loadingEntities || loadingIncidentToClone;
 
   const [insertIncident] = useMutation(INSERT_INCIDENT);
-
-  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -106,19 +103,6 @@ function NewIncidentPage() {
       newIncident.flagged_dissimilar_incidents = [];
 
       await insertIncident({ variables: { data: newIncident } });
-
-      // Set the user as the last modifier
-      newIncident.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
-
-      newIncident.epoch_date_modified = getUnixTime(new Date());
-
-      newIncident.AllegedDeployerOfAISystem = newIncident.AllegedDeployerOfAISystem.link;
-      newIncident.AllegedDeveloperOfAISystem = newIncident.AllegedDeveloperOfAISystem.link;
-      newIncident.AllegedHarmedOrNearlyHarmedParties =
-        newIncident.AllegedHarmedOrNearlyHarmedParties.link;
-      newIncident.editors = newIncident.editors.link;
-
-      await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
 
       addToast(insertSuccessToast({ newIncidentId }));
     } catch (error) {

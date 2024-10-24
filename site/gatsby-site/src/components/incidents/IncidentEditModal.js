@@ -11,7 +11,6 @@ import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();
@@ -31,8 +30,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
-
-  const { logIncidentHistory } = useLogIncidentHistory();
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -112,16 +109,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
           },
         },
       });
-
-      await logIncidentHistory(
-        {
-          ...incident,
-          ...updated,
-          reports: incident.reports,
-          embedding: incident.embedding,
-        },
-        user
-      );
 
       addToast(updateSuccessToast({ incidentId }));
 

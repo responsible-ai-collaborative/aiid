@@ -59,7 +59,10 @@ const IncidentStatsCard = ({
             >
               {stat.label}
             </div>
-            <div className={`p-4 border-1 ${i == 0 ? 'border-t-0' : ''} border-gray-200`}>
+            <div
+              className={`p-4 border-1 ${i == 0 ? 'border-t-0' : ''} border-gray-200`}
+              data-testid={stat.label}
+            >
               {stats[stat.key]}
             </div>
           </Fragment>

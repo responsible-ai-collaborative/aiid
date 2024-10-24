@@ -37,17 +37,7 @@ test.describe('Incidents', () => {
 
     await fillAutoComplete(page, '#input-editors', 'Pab', 'Pablo Costa');
 
-    await conditionalIntercept(page, '**/graphql', (req) => req.postDataJSON().operationName == 'logIncidentHistory', {
-      data: {
-        logIncidentHistory: {
-          incident_id: 112,
-        },
-      },
-    }, 'logIncidentHistory');
-
     await page.getByText('Save', { exact: true }).click();
-
-    await waitForRequest('logIncidentHistory');
 
     await page.locator('.tw-toast:has-text("Incident 3 updated successfully.")').isVisible();
   });

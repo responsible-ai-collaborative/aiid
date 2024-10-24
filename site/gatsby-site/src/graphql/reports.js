@@ -137,8 +137,8 @@ export const LOG_REPORT_HISTORY = gql(`
 `);
 
 export const FIND_REPORT_HISTORY = gql(`
-  query FindReportHistory($query: History_reportQueryInput) {
-    history_reports(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
+  query FindReportHistory($filter: ReportHistoryFilterType) {
+    history_reports(filter: $filter, sort: { date_modified: DESC }) {
       _id
       authors
       cloudinary_id

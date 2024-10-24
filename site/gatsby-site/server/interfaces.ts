@@ -16,6 +16,8 @@ export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDe
     & { reports: number[] }
     & { editors: string[] }
 
+export type DBIncidentHistory = DBIncident & { modifiedBy: string };
+
 export type DBEntity = Entity;
 
 export type DBDuplicate = Duplicate;
@@ -26,6 +28,8 @@ export type DBClassification = Omit<Classification, 'incidents' | 'reports'>
 
 export type DBReport = Omit<Report, 'user'>
     & { user: string }
+
+export type DBReportHistory = DBReport & { modifiedBy: string };
 
 export type DBUser = Omit<User, 'adminData'>;
 

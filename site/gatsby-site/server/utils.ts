@@ -452,10 +452,12 @@ const defaultQueryFields: QueryFields[] = ['plural', 'singular'];
  * @param {QueryFields[]} [params.generateFields=defaultQueryFields] - An array specifying whether to generate singular, plural, or both query fields.
  * @returns {GraphQLFieldConfigMap<any, any>} - A map of GraphQL field configurations for the generated queries.
  */
-export function generateQueryFields({ collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields }: { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: QueryFields[] }): GraphQLFieldConfigMap<any, any> {
+export function generateQueryFields(
+    { collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields, fieldName = undefined }:
+        { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: QueryFields[], fieldName?: string }): GraphQLFieldConfigMap<any, any> {
 
-    const singularName = singularize(collectionName);
-    const pluralName = pluralize(collectionName);
+    const singularName = singularize(fieldName ?? collectionName);
+    const pluralName = pluralize(fieldName ?? collectionName);
 
     const fields: GraphQLFieldConfigMap<any, Context> = {};
 
