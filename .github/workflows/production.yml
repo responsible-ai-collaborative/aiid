@@ -95,3 +95,10 @@ jobs:
       netlify-alias:
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+  
+  call-process-notifications:
+    needs: call-deploy
+    uses: ./.github/workflows/process-notifications.yml
+    secrets: inherit
+    with:
+      environment: production
