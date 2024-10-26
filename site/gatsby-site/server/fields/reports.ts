@@ -92,7 +92,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
             const { result } = params!;
 
-            if (operation === 'updateOne') {
+            if (operation === 'updateOne' || operation === 'insertOne') {
 
                 await logReportHistory(result, context)
             }

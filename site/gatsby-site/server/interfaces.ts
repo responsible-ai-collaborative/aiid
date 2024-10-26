@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification } from './generated/graphql';
+import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification, History_Report, History_Incident } from './generated/graphql';
 import { IncomingMessage } from 'http';
 
 export interface Context {
@@ -16,7 +16,8 @@ export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDe
     & { reports: number[] }
     & { editors: string[] }
 
-export type DBIncidentHistory = DBIncident & { modifiedBy: string };
+export type DBIncidentHistory = Omit<History_Incident, '__typename' | 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties'>
+    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] };
 
 export type DBEntity = Entity;
 
@@ -29,7 +30,7 @@ export type DBClassification = Omit<Classification, 'incidents' | 'reports'>
 export type DBReport = Omit<Report, 'user'>
     & { user: string }
 
-export type DBReportHistory = DBReport & { modifiedBy: string };
+export type DBReportHistory = Omit<History_Report, '__typename'>;
 
 export type DBUser = Omit<User, 'adminData'>;
 

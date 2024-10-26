@@ -276,7 +276,7 @@ export const FIND_FULL_INCIDENT = gql(`
 `);
 
 export const FIND_INCIDENT_HISTORY = gql(`
-  query FindIncidentHistory($filter: IncidentHistoryFilterType) {
+  query FindIncidentHistory($filter: History_incidentFilterType) {
     history_incidents(filter: $filter, sort: {epoch_date_modified: DESC}) {
       incident_id
       AllegedDeployerOfAISystem

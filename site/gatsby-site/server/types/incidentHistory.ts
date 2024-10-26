@@ -3,7 +3,7 @@ import { ObjectIdScalar } from "../scalars";
 import { IncidentEmbeddingType, NlpSimilarIncidentType, TsneType } from "./types";
 
 export const IncidentHistoryType = new GraphQLObjectType({
-    name: 'IncidentHistory',
+    name: 'History_incident',
     fields: {
         _id: { type: ObjectIdScalar },
         AllegedDeployerOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged deployer of AI system'] },

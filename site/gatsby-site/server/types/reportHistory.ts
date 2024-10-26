@@ -4,7 +4,7 @@ import { ObjectIdScalar } from "../scalars";
 import { EmbeddingType } from "./types";
 
 export const ReportHistoryType = new GraphQLObjectType({
-    name: 'ReportHistory',
+    name: 'History_report',
     fields: {
         _id: { type: ObjectIdScalar },
         authors: { type: new GraphQLList(GraphQLString) },

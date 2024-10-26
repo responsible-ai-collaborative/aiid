@@ -128,16 +128,8 @@ export const LINK_REPORTS_TO_INCIDENTS = gql(`
   }
 `);
 
-export const LOG_REPORT_HISTORY = gql(`
-  mutation logReportHistory($input: History_reportInsertInput!) {
-    logReportHistory(input: $input) {
-      report_number
-    }
-  }
-`);
-
 export const FIND_REPORT_HISTORY = gql(`
-  query FindReportHistory($filter: ReportHistoryFilterType) {
+  query FindReportHistory($filter: History_reportFilterType) {
     history_reports(filter: $filter, sort: { date_modified: DESC }) {
       _id
       authors
