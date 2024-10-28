@@ -43,6 +43,23 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
                                 url
                               }
                               path
+                              items {
+                                item {
+                                  document {
+                                    ... on PrismicSidebarItem {
+                                      id
+                                      data {
+                                        title
+                                        label
+                                        url {
+                                          url
+                                        }
+                                        path
+                                      }
+                                    }
+                                  }
+                                }
+                              }
                             }
                           }
                         }
@@ -58,31 +75,21 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     }
   `);
 
-  let sidebarItems = [];
+  const processItem = (item) => {
+    const { data } = item.item.document;
 
-  if (sidebar.data.items.length > 0) {
-    sidebarItems = sidebar.data.items.map((item) => {
-      item = item.item.document.data;
-      const itemItems = item.items.map((item) => {
-        item = item.item.document.data;
-        return {
-          url: item.url?.url || item.path || '/',
-          title: item.title,
-          label: item.label,
-          items: [],
-        };
-      });
+    const children = data.items?.map(processItem) || [];
 
-      return {
-        url: item.url.url || item.path || '/',
-        title: item.title,
-        label: item.label,
-        items: itemItems,
-      };
-    });
-  } else {
-    sidebarItems = navConfig;
-  }
+    return {
+      url: data.url?.url || data.path || '/',
+      title: data.title,
+      label: data.label,
+      items: children,
+    };
+  };
+
+  const sidebarItems =
+    sidebar.data.items.length > 0 ? sidebar.data.items.map(processItem) : navConfig;
 
   const localizePath = useLocalizePath();
 

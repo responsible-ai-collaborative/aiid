@@ -12,12 +12,12 @@ const Tree = ({
   expandedNodes,
   toggleExpand,
 }) => {
-  const location = useLocation(); // Listen for location changes
+  const location = useLocation();
 
   const [currentLocation, setCurrentLocation] = React.useState('');
 
   React.useEffect(() => {
-    setCurrentLocation(location.pathname); // Update the current location on path change
+    setCurrentLocation(location.pathname);
   }, [location]);
 
   const subtreeNav = (subItems) => {
@@ -28,21 +28,11 @@ const Tree = ({
         currentLocation &&
         [localizedPath, `${localizedPath}/`].includes(localizePath({ path: currentLocation }));
 
-      let childVisit = false;
-
+      // Recursively process child items
       const children = item.items?.length > 0 ? subtreeNav(item.items) : [];
 
-      children.forEach((childItem) => {
-        if (
-          !childVisit &&
-          [
-            localizePath({ path: childItem.url }),
-            `${localizePath({ path: childItem.url })}/`,
-          ].includes(currentLocation)
-        ) {
-          childVisit = true;
-        }
-      });
+      // Check if any child has a "currentVisit" status to determine "childVisit"
+      const childVisit = children.some((child) => child.current || child.childVisit);
 
       return {
         ...item,
