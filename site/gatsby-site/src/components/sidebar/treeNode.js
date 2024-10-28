@@ -96,7 +96,7 @@ const TreeNode = ({
 
       {/* Render children recursively */}
       {hasChildren && isExpanded && (
-        <ul className={`ml-${(level + 1) * 4}`}>
+        <ul className={`ml-${(level + 1) * 4} space-y-1`}>
           {item.items.map((childItem) => (
             <TreeNode
               key={childItem.url || childItem.path || childItem.title}
