@@ -50,7 +50,7 @@ const TreeNode = ({
   };
 
   return (
-    <li className="tree-node">
+    <li className="tree-node" data-testid={'sidebar-' + item.label}>
       <div
         className={`tree-node-header flex items-center cursor-pointer rounded-md ${
           isCollapsed ? 'collapsed' : ''

@@ -47,7 +47,7 @@ const Tree = ({
   const processedItems = subtreeNav([...items, ...additionalNodes]);
 
   return (
-    <ul className="tree flex flex-col space-y-2">
+    <>
       {processedItems.map((item) => (
         <TreeNode
           key={item.url || item.path || item.title}
@@ -59,7 +59,7 @@ const Tree = ({
           expandedNodes={expandedNodes}
         />
       ))}
-    </ul>
+    </>
   );
 };
 
