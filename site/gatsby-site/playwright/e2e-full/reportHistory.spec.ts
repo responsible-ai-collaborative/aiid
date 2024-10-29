@@ -21,10 +21,10 @@ test.describe('Report History', () => {
     const { data: { history_reports } } = await query({
       query: gql`
         {
-          history_reports(sort: {epoch_date_modified: DESC}) {
+          history_reports(sort: {date_modified: DESC}) {
             title
             report_number
-            epoch_date_modified
+            date_modified
             modifiedBy
           }
         }
@@ -41,11 +41,11 @@ test.describe('Report History', () => {
 
     for (let index = 0; index < history_reports.length; index++) {
       const history = history_reports[index];
-      const rowIndex = rows - index - 1;
-      await expect(page.locator('[data-cy="history-row"]').nth(rowIndex)).toContainText(
-        `${format(fromUnixTime(history.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`
-      );
-      await expect(page.locator('[data-cy="history-row"]').nth(rowIndex)).toContainText(
+      const date = format(new Date(history.date_modified), 'yyyy-MM-dd hh:mm a');
+
+      await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(date);
+
+      await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(
         `Modified by: ${history.modifiedBy === 'user1' ? 'Test User' : 'Sean McGregor'}`
       );
     }
@@ -102,17 +102,18 @@ test.describe('Report History', () => {
     const { data: { history_reports } } = await query({
       query: gql`
         {
-          history_reports {
+          history_reports(sort: {date_modified: DESC}) {
             title
+            text
             report_number
-            epoch_date_modified
+            date_modified
             modifiedBy
           }
         }
       `
     });
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
 
     await page.goto(url);
 
@@ -128,13 +129,39 @@ test.describe('Report History', () => {
       await dialog.accept();
     });
 
-    await page.locator('[data-cy="history-row"]').last().locator('[data-cy="restore-button"]').click();
+    await page.locator('[data-cy="history-row"] [data-cy="restore-button"]').last().click();
     await expect(page.getByTestId("restoring-message")).toBeVisible();
 
 
     await expect(page.locator('[data-cy="toast"]')).toHaveText('Report version restored successfully.');
 
     await expect(page.locator('[data-cy="restoring-message"]')).not.toBeVisible();
+
+
+    const { data: { report, history_report } } = await query({
+      query: gql`
+        {
+          report(filter: {report_number: { EQ:  1 }}) {
+            title
+            text
+            report_number
+            date_modified
+          }
+          history_report(sort: {date_modified: DESC}) {
+            title
+            text
+            report_number
+            date_modified
+            modifiedBy
+          }
+        }
+      `
+    });
+
+    // TODO: be more specific about the report that was restored
+    await expect(report.title).toBe(history_reports[history_reports.length - 1].title);
+    await expect(report.text).toBe(history_reports[history_reports.length - 1].text);
+    await expect(history_report.modifiedBy).toBe(userId);
   });
 
   test('Should display the Report Version History details modal', async ({ page }) => {

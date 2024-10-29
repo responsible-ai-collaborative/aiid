@@ -108,6 +108,7 @@ function IncidentHistoryPage() {
           __typename: undefined,
           _id: undefined,
           changes: undefined,
+          date_modified: new Date(),
           epoch_date_modified: getUnixTime(new Date()),
           editor_notes: version.editor_notes ? version.editor_notes : '',
           embedding: version.embedding
