@@ -60,5 +60,6 @@
   "Clear Form": "フォームをクリアする",
   "Saving changes...": "変更を保存中...",
   "Draft saved": "下書きが保存されました",
-  "Saving as draft...": "下書きとして保存中..."
+  "Saving as draft...": "下書きとして保存中...",
+  "Once you submit this form, you won't be able to make changes. Are you sure you want to submit?": "このフォームを送信すると、変更できなくなります。送信してもよろしいですか？"
 }
