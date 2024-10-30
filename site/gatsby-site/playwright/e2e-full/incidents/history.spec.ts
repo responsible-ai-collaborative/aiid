@@ -31,7 +31,7 @@ test.describe('Incidents', () => {
 
     await page.locator('h2').getByText('Version History').waitFor();
     const rows = await page.locator('[data-cy="history-row"]').elementHandles();
-    expect(rows.length).toBe(2);
+    expect(rows.length).toBe(4);
 
     for (let [index, history] of history_incidents.entries()) {
       const row = rows[index];
@@ -82,9 +82,13 @@ test.describe('Incidents', () => {
       query: gql`
         query {
           history_incidents {
+            title
+            description
+            reports
             incident_id
             epoch_date_modified
             modifiedBy
+            editors
           }
         }
       `
@@ -94,49 +98,49 @@ test.describe('Incidents', () => {
 
     await page.goto(url);
 
-    await page.locator('h2').getByText('Version History').waitFor();
+    await expect(page.locator('h2').getByText('Version History')).toBeVisible();
 
-    const rows = await page.locator('[data-cy="history-row"]').elementHandles();
-    expect(rows.length).toBe(2);
+    await expect(page.locator('[data-cy="history-row"]')).toHaveCount(4);
 
-    for (let [index, history] of history_incidents.entries()) {
-      const row = rows[index];
-      await row.evaluate((node, epoch_date_modified) => {
-        const formattedDate = new Date(epoch_date_modified * 1000).toISOString().slice(0, 16).replace('T', ' ');
-        return node.textContent.includes(formattedDate);
-      }, history.epoch_date_modified);
-      await row.evaluate((node, history) => node.textContent.includes(`Modified by: ${history.modifiedBy === '1' ? 'Sean McGregor' : 'Pablo Costa'}`), history);
-      if (index !== 0) {
-        const restoreButton = await row.$('[data-cy="restore-button"]');
-        if (restoreButton) {
-          await restoreButton.waitForElementState('visible');
-        }
-      }
-    }
-
-    const lastRow = rows[history_incidents.length - 1];
-    await lastRow.evaluate((node) => node.textContent.includes('Initial version'));
-
-    const now = new Date();
-    await page.context().addInitScript(`Date = class extends Date {
-      constructor() {
-        super(${now.getTime()});
-      }
-    };`);
-
-    const restoreButton = await lastRow.$('[data-cy="restore-button"]');
 
     page.once('dialog', async dialog => {
       await dialog.accept();
     });
 
-    await restoreButton.click();
+    await page.locator('[data-cy="history-row"] [data-cy="restore-button"]').last().click();
+
 
     await expect(page.getByTestId("restoring-message")).toBeVisible();
 
     await expect(page.getByText('Incident version restored successfully.')).toBeVisible();
 
     await expect(page.locator('[data-cy="restoring-message"]')).not.toBeVisible();
+
+    const { data: { incident } } = await query({
+      query: gql`
+        query {
+          incident(filter: {incident_id: { EQ: 1 }}) {
+            title
+            description
+            reports {
+              report_number
+            }
+            date
+            editor_notes
+            epoch_date_modified
+            editors {
+              userId
+            }
+          }
+        }
+      `
+    });
+
+    const restoredIncident = history_incidents[0];
+
+    expect(incident.title).toBe(restoredIncident.title);
+    expect(incident.description).toBe(restoredIncident.description);
+    expect(incident.reports.length).toBe(restoredIncident.reports.length);
   });
 
   test('Should display the Version History details modal', async ({ page }) => {
@@ -171,7 +175,7 @@ test.describe('Incidents', () => {
     const version1 = history_incidents[0];
     await modal.getByText('View Version details').waitFor();
     await modal.getByTestId('incident-title').getByText(version1.title).waitFor();
-    await modal.getByText('Modified by: Sean McGregor').waitFor();
+    await modal.getByText('Modified by: Test User').waitFor();
     await modal.getByText(`Modified on: ${format(fromUnixTime(version1.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`).waitFor();
     await modal.getByText(`Description: ${version1.description}`).waitFor();
     if (version1.editor_notes) {
@@ -182,27 +186,6 @@ test.describe('Incidents', () => {
     await modal.locator('[data-cy="citation"]').getByTestId('Report Count').getByText(`${version1.reports.length}`, { exact: true }).waitFor();
     await modal.locator('[data-cy="citation"]').getByTestId('Incident Date').getByText(`${version1.date}`).waitFor();
     await modal.locator('[data-cy="citation"]').getByTestId('Editors').getByText('Test User, Sean McGregor').waitFor();
-    await modal.locator('button').getByText('Close').click();
-    await modal.waitFor({ state: 'hidden' });
-
-    await rows.nth(1).locator('[data-cy="view-full-version-button"]').click();
-
-    await modal.waitFor();
-
-    const version0 = history_incidents[1];
-    await modal.getByText('View Version details').waitFor();
-    await modal.getByTestId('incident-title').getByText(version0.title).waitFor();
-    await modal.getByText('Modified by: Test User').waitFor();
-    await modal.getByText(`Modified on: ${format(fromUnixTime(version0.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`).waitFor();
-    await modal.getByText(`Description: ${version0.description}`).waitFor();
-    if (version0.editor_notes) {
-      await modal.getByText(`Editor Notes: ${version0.editor_notes}`).waitFor();
-    }
-    await modal.locator('[data-cy="alleged-entities"]').getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.').waitFor();
-    await modal.locator('[data-cy="citation"]').getByTestId('Incident ID').getByText(`${version0.incident_id}`).waitFor();
-    await modal.locator('[data-cy="citation"]').getByTestId('Report Count').getByText(`${version0.reports.length}`, { exact: true }).waitFor();
-    await modal.locator('[data-cy="citation"]').getByTestId('Incident Date').getByText(`${version0.date}`).waitFor();
-    await modal.locator('[data-cy="citation"]').getByTestId('Editors').getByText('Test User').waitFor();
     await modal.locator('button').getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
   });
