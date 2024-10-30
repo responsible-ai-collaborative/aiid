@@ -52,4 +52,26 @@ test.describe('Account', () => {
 
     await expect(page.getByTestId('edit-user-modal')).toBeVisible();
   });
+
+    test('Should allow editing their own first and last name as a subscriber', async ({ page, login }) => {
+
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'Test', last_name: 'User' } });
+
+    await page.goto(url);
+
+    await page.locator('button:has-text("Edit")').click();
+
+    const editUserModal = page.getByTestId('edit-user-modal');
+
+    await editUserModal.locator('[id="last_name"]').fill('New last name');
+    await editUserModal.locator('button:has-text("Submit")').click();
+
+    await expect(editUserModal).not.toBeVisible();
+
+    await expect(page.locator('[data-cy="toast"]')).toContainText('User updated.', { timeout: 60000 });
+
+    const detailsTable = page.locator('[data-cy="details-table"]');
+
+    await expect(detailsTable.locator('td:text-is("New last name")')).toBeVisible();
+  });
 });
