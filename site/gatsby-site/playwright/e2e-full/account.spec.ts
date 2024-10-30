@@ -29,7 +29,6 @@ test.describe('Account', () => {
 
     await page.goto(url);
 
-
     await page.locator('button:has-text("Edit")').click();
 
     const editUserModal = page.getByTestId('edit-user-modal');
@@ -71,5 +70,20 @@ test.describe('Account', () => {
 
     await expect(page.locator('[data-cy="user-first-name"]').locator('td:text-is("New first name")')).toBeVisible();
     await expect(page.locator('[data-cy="user-last-name"]').locator('td:text-is("New last name")')).toBeVisible();
+  });
+
+  test('Should not allow to edit roles (subscriber user)', async ({ page, login }) => {
+
+    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'Test', last_name: 'User' } });
+
+    await page.goto(url);
+
+    await page.locator('button:has-text("Edit")').click();
+
+    const editUserModal = page.getByTestId('edit-user-modal');
+
+    const rolesInput = editUserModal.locator('[id="roles"]');
+
+    await expect(rolesInput).toBeDisabled({ timeout: 3000 });
   });
 });
