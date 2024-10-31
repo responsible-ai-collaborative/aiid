@@ -11,7 +11,7 @@ on:
 jobs:
   execute-mutation:
     runs-on: ubuntu-latest
-
+    environment: ${{ inputs.environment }}
     steps:
       - name: Call GraphQL API
         env:
