@@ -87,6 +87,7 @@ export interface UserAdminData {
     creationDate?: Date;
     lastAuthenticationDate?: Date;
     disabled?: boolean;
+    userId?: string;
 }
 
 export const getUserAdminData = async (userId: string) => {
@@ -104,6 +105,31 @@ export const getUserAdminData = async (userId: string) => {
     }
 
     return response;
+}
+
+export const getUsersAdminData = async () => {
+
+    const response = await apiRequest({ path: `/users` });
+
+    const result: UserAdminData[] = [];
+
+    for (const userData of response) {
+
+        if (userData.data?.email) {
+
+            const user: UserAdminData = {};
+
+            user.email = userData.data.email;
+            user.creationDate = new Date(userData.creation_date * 1000);
+            user.lastAuthenticationDate = new Date(userData.last_authentication_date * 1000);
+            user.disabled = userData.disabled;
+            user.userId = userData._id;
+
+            result.push(user);
+        }
+    }
+
+    return result;
 }
 
 interface SendEmailParams {
