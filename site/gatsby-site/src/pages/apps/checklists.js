@@ -5,7 +5,7 @@ import { debounce } from 'debounce';
 import { Formik } from 'formik';
 import { graphql } from 'gatsby';
 import { useQueryParams, StringParam } from 'use-query-params';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client/react/hooks';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import CheckListForm from 'components/checklists/CheckListForm';
@@ -38,7 +38,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   useEffect(() => setHydrated(true), []);
 
   const { data: savedChecklistData, loading: savedChecklistLoading } = useQuery(FIND_CHECKLIST, {
-    variables: { query: { id: query.id } },
+    variables: { filter: { id: query.id } },
   });
 
   const savedChecklist = savedChecklistData?.checklist && savedChecklistData.checklist;

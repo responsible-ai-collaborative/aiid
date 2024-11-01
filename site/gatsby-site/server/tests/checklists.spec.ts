@@ -49,6 +49,8 @@ describe(`Checklists`, () => {
 
         const response = await makeRequest(url, mutationData);
 
+        console.log(JSON.stringify(response.body.data, null, 2));
+
         expect(response.body.errors).toBe(undefined);
     });
 
