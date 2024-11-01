@@ -156,10 +156,19 @@ interface SendEmailParams {
     templateId: string; // Email template ID
 }
 
-function replacePlaceholdersWithAllowedKeys(template: string, data: { [key: string]: string }, allowedKeys: string[]): string {
+export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string }, allowedKeys: string[]): string => {
     return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
         return allowedKeys.includes(key) && key in data ? data[key] : match;
     });
+}
+
+export const mailersendBulkSend = async (emails: EmailParams[]) => {
+
+    const mailersend = new MailerSend({
+        apiKey: config.MAILERSEND_API_KEY,
+    });
+
+    await mailersend.email.sendBulk(emails);
 }
 
 export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
@@ -171,10 +180,6 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
     }
 
     try {
-
-        const mailersend = new MailerSend({
-            apiKey: config.MAILERSEND_API_KEY,
-        });
 
         const bulk: EmailParams[] = [];
 
@@ -205,7 +210,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
             bulk.push(emailParams);
         }
 
-        await mailersend.email.sendBulk(bulk);
+        await mailersendBulkSend(bulk);
 
     } catch (error: any) {
         error.message = `[Send Email]: ${error.message}`;
