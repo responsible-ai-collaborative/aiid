@@ -11,6 +11,7 @@ const Tree = ({
   additionalNodes = [],
   expandedNodes,
   toggleExpand,
+  isMobile,
 }) => {
   const location = useLocation();
 
@@ -57,6 +58,7 @@ const Tree = ({
           isExpanded={expandedNodes[item.url || item.path || item.title] || false} // Check if the node is expanded
           toggleExpand={toggleExpand} // Pass down the toggle function
           expandedNodes={expandedNodes}
+          isMobile={isMobile}
         />
       ))}
     </>

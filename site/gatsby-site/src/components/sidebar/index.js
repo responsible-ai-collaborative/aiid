@@ -155,6 +155,8 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
       }
     }
 
+    handleResize();
+
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -253,6 +255,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
               },
             ]}
             items={sidebarItems}
+            isMobile={isMobile}
           />
           {config.sidebar.links && config.sidebar.links?.length > 0 && (
             <li className="tw-li-divider">

@@ -30,6 +30,7 @@ const TreeNode = ({
   isExpanded,
   toggleExpand,
   expandedNodes,
+  isMobile,
 }) => {
   const hasChildren = item.items && item.items.length > 0;
 
@@ -82,7 +83,7 @@ const TreeNode = ({
         {/* Toggle Icon (if it has children) */}
         {hasChildren && (
           <span
-            className="mr-2"
+            className={`mr-2 ${isMobile ? 'text-white' : ''}`}
             onClick={() => toggleExpand(item)} // Only clicking the arrow expands/collapses
             role="button" // Adding interactive role
             tabIndex={0} // Making it focusable
@@ -110,6 +111,7 @@ const TreeNode = ({
               } // Pass down expanded state
               toggleExpand={toggleExpand} // Pass down toggleExpand function
               expandedNodes={expandedNodes}
+              isMobile={isMobile}
             />
           ))}
         </ul>
