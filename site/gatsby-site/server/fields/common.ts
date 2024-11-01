@@ -220,7 +220,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
-            .setTo(recipients.map((recipient) => new Recipient(recipient.email)))
+            .setBcc(recipients.map((recipient) => new Recipient(recipient.email)))
             .setPersonalization(personalizations)
             .setSubject(subject)
             // We have to do this because MailerSend is escaping the placeholders containing html tags
