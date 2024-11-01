@@ -160,7 +160,7 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
+        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
         const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
@@ -290,7 +290,7 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
+        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
         const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
@@ -422,7 +422,7 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
+        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
         const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
@@ -548,7 +548,7 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
+        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
         const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
@@ -675,7 +675,7 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ email: 'test@test.com' });
+        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
         const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
