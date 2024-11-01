@@ -453,6 +453,8 @@ export type Checklist = {
   __typename?: 'Checklist';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   about?: Maybe<Scalars['String']['output']>;
+  date_created?: Maybe<Scalars['DateTime']['output']>;
+  date_updated?: Maybe<Scalars['DateTime']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   owner_id?: Maybe<Scalars['String']['output']>;
@@ -468,6 +470,8 @@ export type ChecklistFilterType = {
   OR?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
   about?: InputMaybe<StringFilter>;
+  date_created?: InputMaybe<DateTimeFilter>;
+  date_updated?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
   owner_id?: InputMaybe<StringFilter>;
@@ -685,6 +689,8 @@ export enum ChecklistSortByInput {
 export type ChecklistSortType = {
   _id?: InputMaybe<SortType>;
   about?: InputMaybe<SortType>;
+  date_created?: InputMaybe<SortType>;
+  date_updated?: InputMaybe<SortType>;
   id?: InputMaybe<SortType>;
   name?: InputMaybe<SortType>;
   owner_id?: InputMaybe<SortType>;
@@ -3236,6 +3242,24 @@ export type PaginationType = {
   skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Precedents = {
+  __typename?: 'Precedents';
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  incident_id?: Maybe<Scalars['Int']['output']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type PrecedentsObjectFilterType = {
+  description?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  incident_id?: InputMaybe<IntFilter>;
+  opr?: InputMaybe<OprExists>;
+  tags?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+};
+
 export type PromoteSubmissionToReportInput = {
   incident_ids: Array<InputMaybe<Scalars['Int']['input']>>;
   is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3848,6 +3872,7 @@ export type Risks = {
   generated?: Maybe<Scalars['Boolean']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   likelihood?: Maybe<Scalars['String']['output']>;
+  precedents?: Maybe<Array<Maybe<Precedents>>>;
   risk_notes?: Maybe<Scalars['String']['output']>;
   risk_status?: Maybe<Scalars['String']['output']>;
   severity?: Maybe<Scalars['String']['output']>;
@@ -3865,6 +3890,7 @@ export type RisksObjectFilterType = {
   id?: InputMaybe<StringFilter>;
   likelihood?: InputMaybe<StringFilter>;
   opr?: InputMaybe<OprExists>;
+  precedents?: InputMaybe<PrecedentsObjectFilterType>;
   risk_notes?: InputMaybe<StringFilter>;
   risk_status?: InputMaybe<StringFilter>;
   severity?: InputMaybe<StringFilter>;
