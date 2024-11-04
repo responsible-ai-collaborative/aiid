@@ -10,6 +10,16 @@ test.describe('The Submit form', () => {
     const url = '/apps/submit';
     const parserURL = '/api/parseNews**';
 
+    // Listen for the dialog and handle it
+    test.beforeEach(async ({ page }) => {
+      page.once('dialog', async dialog => {
+        const dialogMessage = dialog.message();
+        if (dialogMessage.includes('Please confirm you are ready to submit this report. Report details cannot be changed after submission.') || dialogMessage.includes('Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.') || dialogMessage.includes('Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.') || dialogMessage.includes('このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません')) {
+          await dialog.accept();
+        }
+      });
+    });
+
     test('Successfully loads', async ({ page }) => {
         await page.goto(url);
     });
