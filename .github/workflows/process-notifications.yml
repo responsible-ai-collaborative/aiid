@@ -12,14 +12,30 @@ jobs:
   execute-mutation:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-
     steps:
       - name: Call GraphQL API
         env:
           SITE_URL: ${{ vars.SITE_URL }}
           PROCESS_NOTIFICATIONS_SECRET: ${{ secrets.PROCESS_NOTIFICATIONS_SECRET }}
         run: |
-          curl -X POST "$SITE_URL/api/graphql" \
-          -H "Content-Type: application/json" \
-          -H "PROCESS_NOTIFICATIONS_SECRET: $PROCESS_NOTIFICATIONS_SECRET" \
-          -d '{"query":"mutation { processNotifications }"}'
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST "$SITE_URL/api/graphql" \
+            -H "Content-Type: application/json" \
+            -H "PROCESS_NOTIFICATIONS_SECRET: $PROCESS_NOTIFICATIONS_SECRET" \
+            -d '{"query":"mutation { processNotifications }"}')
+
+          HTTP_STATUS=$RESPONSE
+
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "GraphQL mutation failed with HTTP status: $HTTP_STATUS"
+            cat response.json
+            exit 1
+          fi
+
+          if jq -e 'has("errors") or has("errorType")' response.json > /dev/null; then
+            echo "GraphQL mutation failed with the following response:"
+            jq '.' response.json
+            exit 1
+          fi
+
+          echo "GraphQL mutation succeeded!"
+          jq '.' response.json
