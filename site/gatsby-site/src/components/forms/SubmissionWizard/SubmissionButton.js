@@ -11,7 +11,7 @@ const SubmissionButton = ({ onClick, ...props }) => {
         if (
           confirm(
             t(
-              "Once you submit this form, you won't be able to make changes. Are you sure you want to submit?"
+              'Please confirm you are ready to submit this report. Report details cannot be changed after submission.'
             )
           )
         ) {

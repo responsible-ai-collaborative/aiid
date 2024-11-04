@@ -59,5 +59,5 @@
   "Submit a new incident report to the Artificial Intelligence Incident Database.": "Soumettre un nouveau rapport d'incident à la base de données des incidents d'intelligence artificielle.",
   "Draft saved": "Brouillon enregistré",
   "Saving as draft...": "Enregistrement en tant que brouillon...",
-  "Once you submit this form, you won't be able to make changes. Are you sure you want to submit?": "Une fois que vous aurez soumis ce formulaire, vous ne pourrez plus apporter de modifications. Êtes-vous sûr de vouloir soumettre ?"
+  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission."
 }
