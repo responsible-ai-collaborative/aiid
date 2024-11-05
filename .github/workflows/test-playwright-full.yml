@@ -138,7 +138,7 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
           PROCESS_NOTIFICATIONS_SECRET: sarasa
-          SITE_URL: https://incidentdatabase.test
+          SITE_URL: http://localhost:8000
 
       - name: Upload Playwright traces
         if: failure()

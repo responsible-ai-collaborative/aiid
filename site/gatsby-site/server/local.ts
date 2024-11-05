@@ -68,6 +68,12 @@ import {
     permissions as duplicatesPermissions
 } from './fields/duplicates';
 
+import {
+    queryFields as notificationsQueryFields,
+    mutationFields as notificationsMutationFields,
+    permissions as notificationsPermissions
+} from './fields/notifications';
+
 
 export const getSchema = () => {
 
@@ -89,6 +95,7 @@ export const getSchema = () => {
             ...candidatesQueryFields,
             ...subscriptionsQueryFields,
             ...duplicatesQueryFields,
+            ...notificationsQueryFields,
         }
     });
 
@@ -105,6 +112,7 @@ export const getSchema = () => {
             ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
+            ...notificationsMutationFields,
         }
     });
 
@@ -115,7 +123,6 @@ export const getSchema = () => {
 
     /**
      * Configures permissions for the GraphQL API using graphql-shield.
-     * This configuration starts with all fields being private (denied access) and requires explicit permission settings for each field.
      * 
      * The `shield` function is used to define the permissions for queries and mutations, with default access set to deny (`deny`).
      * Permissions are then selectively granted using specific permissions configurations (e.g., `quickAddsPermissions`, `reportsPermissions`).
@@ -143,6 +150,7 @@ export const getSchema = () => {
                 ...candidatesPermissions.Query,
                 ...subscriptionsPermissions.Query,
                 ...duplicatesPermissions.Query,
+                ...notificationsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -156,6 +164,7 @@ export const getSchema = () => {
                 ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
+                ...notificationsPermissions.Mutation,
             },
         },
         {
