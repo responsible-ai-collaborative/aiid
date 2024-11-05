@@ -1,0 +1,7 @@
+# This file is only used when starting a local dev server via `npm run start` or `npm run serve`
+# when deploying please take a look at deploy-netlify.toml
+
+/api/graphql /.netlify/functions/graphql 200
+/api/parseNews /.netlify/functions/parseNews 200
+/api/semanticallyRelated /.netlify/functions/semanticallyRelated 200
+/api/lookupbyurl /.netlify/functions/lookupbyurl 200

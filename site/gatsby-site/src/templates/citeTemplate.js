@@ -61,11 +61,11 @@ function CiteTemplate({
 
   const localizePath = useLocalizePath();
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState();
 
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
-      query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
+      filter: { userId: { EQ: user?.id }, incident_id: { EQ: incident.incident_id } },
     },
   });
 
@@ -98,12 +98,12 @@ function CiteTemplate({
 
           await subscribeToNewReportsMutation({
             variables: {
-              query: {
-                type: SUBSCRIPTION_TYPE.incident,
-                userId: { userId: user.id },
-                incident_id: { incident_id: incidentId },
+              filter: {
+                type: { EQ: SUBSCRIPTION_TYPE.incident },
+                userId: { EQ: user.id },
+                incident_id: { EQ: incidentId },
               },
-              subscription: {
+              update: {
                 type: SUBSCRIPTION_TYPE.incident,
                 userId: {
                   link: user.id,
@@ -232,8 +232,8 @@ function CiteTemplate({
           </div>
         </div>
       </div>
-      <div className="flex mt-6">
-        <div className="shrink-1">
+      <div className="flex mt-6 justify-between">
+        <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
               <div>
@@ -350,7 +350,7 @@ function CiteTemplate({
 
             <Row className="mt-6">
               <Col>
-                <Card>
+                <Card className="max-w-3xl mx-auto">
                   <ImageCarousel nodes={sortedReports} />
                 </Card>
               </Col>

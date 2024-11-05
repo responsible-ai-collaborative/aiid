@@ -34,6 +34,8 @@ const createBlogPages = require('./page-creators/createBlogPages');
 
 const createDocPages = require('./page-creators/createDocPages');
 
+const createMissingTranslationsPage = require('./page-creators/createMissingTranslationsPage');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -75,6 +77,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
+    createMissingTranslationsPage,
     createBlogPages,
     createCitationPages,
     createWordCountsPages,
@@ -255,7 +258,7 @@ exports.onPreInit = async ({ reporter }) => {
 
   const lookupIndex = new LookupIndex({
     client: mongoClient,
-    filePath: path.join(__dirname, 'src', 'api', 'lookupIndex.json'),
+    filePath: path.join(__dirname, 'netlify', 'functions', 'lookupIndex.json'),
   });
 
   await lookupIndex.run();
@@ -331,19 +334,23 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
       translationsActivity.setStatus('Updating incidents indexes...');
 
-      const algoliaClient = algoliasearch(
-        config.header.search.algoliaAppId,
-        config.header.search.algoliaAdminKey
-      );
+      try {
+        const algoliaClient = algoliasearch(
+          config.header.search.algoliaAppId,
+          config.header.search.algoliaAdminKey
+        );
 
-      const algoliaUpdater = new AlgoliaUpdater({
-        languages,
-        mongoClient,
-        algoliaClient,
-        reporter,
-      });
+        const algoliaUpdater = new AlgoliaUpdater({
+          languages,
+          mongoClient,
+          algoliaClient,
+          reporter,
+        });
 
-      await algoliaUpdater.run();
+        await algoliaUpdater.run();
+      } catch (e) {
+        reporter.panicOnBuild('Error updating Algolia index:', e);
+      }
     } else {
       throw `Missing environment variable, can't run translation process.`;
     }

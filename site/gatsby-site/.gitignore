@@ -12,3 +12,5 @@ node_modules
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+/netlify/functions/lookupIndex.json

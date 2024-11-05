@@ -1,7 +1,5 @@
 import { ObjectId } from 'bson';
-import { User } from '../../../server/generated/graphql'
-
-type DBUser = Omit<User, ''>
+import { DBUser } from '../../../server/interfaces';
 
 const users: DBUser[] = [
     {

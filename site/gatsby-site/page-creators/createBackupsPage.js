@@ -19,7 +19,7 @@ const createBackupsPage = (_, createPage) => {
       resolve(
         S3.send(new ListObjectsV2Command({ Bucket: config.cloudflareR2.bucketName })).then(
           (result) => {
-            const backups = result.Contents;
+            const backups = result.Contents ?? [];
 
             backups.sort(function (a, b) {
               if (a.Key < b.Key) {

@@ -3,7 +3,7 @@ import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
 import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver } from "../utils";
 import { UserType } from "./user";
-import { NlpSimilarIncidentType } from "../types";
+import { NlpSimilarIncidentType } from "./types";
 import { ReportType } from "./report";
 
 const EmbeddingType = new GraphQLObjectType({
@@ -28,7 +28,7 @@ export const IncidentType = new GraphQLObjectType({
         _id: { type: ObjectIdScalar },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
-        editor_notes: { type: GraphQLString },
+        editor_notes: { type: new GraphQLNonNull(GraphQLString) },
         epoch_date_modified: { type: GraphQLInt },
         incident_id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: new GraphQLNonNull(GraphQLString) },
@@ -36,28 +36,31 @@ export const IncidentType = new GraphQLObjectType({
             type: new GraphQLList(EntityType),
             resolve: getListRelationshipResolver('AllegedDeployerOfAISystem', 'entity_id', EntityType, 'aiidprod', 'entities', 'Alleged deployer of AI system'),
             extensions: {
-                relationship: getListRelationshipExtension('AllegedDeployerOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+                relationship: getListRelationshipExtension('AllegedDeployerOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities'),
+                dbMapping: 'Alleged deployer of AI system',
             },
         },
         AllegedDeveloperOfAISystem: {
             type: new GraphQLList(EntityType),
             resolve: getListRelationshipResolver('AllegedDeveloperOfAISystem', 'entity_id', EntityType, 'aiidprod', 'entities', 'Alleged developer of AI system'),
             extensions: {
-                relationship: getListRelationshipExtension('AllegedDeveloperOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+                relationship: getListRelationshipExtension('AllegedDeveloperOfAISystem', 'entity_id', GraphQLString, 'aiidprod', 'entities'),
+                dbMapping: 'Alleged developer of AI system',
             },
         },
         AllegedHarmedOrNearlyHarmedParties: {
             type: new GraphQLList(EntityType),
             resolve: getListRelationshipResolver('AllegedHarmedOrNearlyHarmedParties', 'entity_id', EntityType, 'aiidprod', 'entities', 'Alleged harmed or nearly harmed parties'),
             extensions: {
-                relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities')
+                relationship: getListRelationshipExtension('AllegedHarmedOrNearlyHarmedParties', 'entity_id', GraphQLString, 'aiidprod', 'entities'),
+                dbMapping: 'Alleged harmed or nearly harmed parties',
             },
         },
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         editors: getListRelationshipConfig(UserType, GraphQLString, 'editors', 'userId', 'users', 'customData'),
         embedding: { type: EmbeddingType },
-        flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
+        flagged_dissimilar_incidents: { type: new GraphQLNonNull(new GraphQLList(GraphQLInt)) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
         tsne: { type: TsneType }

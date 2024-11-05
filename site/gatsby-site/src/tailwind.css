@@ -605,6 +605,10 @@
     @apply bg-blue-100 !important;
   }
 
+  [data-cy="incident-form"] #similar-incidents .Typeahead .rbt-menu.dropdown-menu.show {
+    @apply max-h-[130px] !important;
+  }
+
   .floating-label-dropdown button {
     @apply hover:text-blue-500 hover:bg-white hover:border-blue-500 !important;
   }
