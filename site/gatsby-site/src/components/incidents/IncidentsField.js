@@ -7,7 +7,8 @@ import { FIND_INCIDENTS_TITLE } from '../../graphql/incidents';
 const filterBy = (option, text) => {
   return (
     option?.title.toLowerCase().includes(text.toLowerCase()) ||
-    text.toLowerCase().includes(option.id?.toString())
+    text.toLowerCase().includes(option.id?.toString()) ||
+    `${option.id} - ${option.title}`.toLowerCase().includes(text.toLowerCase())
   );
 };
 

@@ -1,5 +1,4 @@
-exports = function () {
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+export default `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
         <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -117,7 +116,7 @@ exports = function () {
       </style>
         <style>
           @media screen and (max-width:480px) {
-            table\0 {
+            table {
               width: 480px !important;
               }
           }
@@ -203,8 +202,8 @@ exports = function () {
       </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="79b1a951-2f75-4d6e-940b-6610516555e0" data-mc-module-version="2019-10-22">
         <tbody>
           <tr>
-            <td style="padding:5px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><a href="https://incidentdatabase.ai/unsubscribe?type=incident&amp;userId={{userId}}&amp;incidentId={{incidentId}}"><span style="font-size: 12px">Unsubscribe from Incident</span></a><span style="font-size: 12px"> &nbsp;&nbsp;</span></div>
-    <div style="font-family: inherit; text-align: center"><a href="https://incidentdatabase.ai/unsubscribe?type=all&amp;userId={{userId}}"><span style="font-size: 12px">Unsubscribe from All Notifications</span></a></div><div></div></div></td>
+            <td style="padding:5px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><a href="{{siteUrl}}/unsubscribe?type=incident&amp;userId={{userId}}&amp;incidentId={{incidentId}}"><span style="font-size: 12px">Unsubscribe from Incident</span></a><span style="font-size: 12px"> &nbsp;&nbsp;</span></div>
+    <div style="font-family: inherit; text-align: center"><a href="{{siteUrl}}/unsubscribe?type=all&amp;userId={{userId}}"><span style="font-size: 12px">Unsubscribe from All Notifications</span></a></div><div></div></div></td>
           </tr>
         </tbody>
       </table></td>
@@ -229,4 +228,3 @@ exports = function () {
           </center>
         </body>
       </html>`;
-};
