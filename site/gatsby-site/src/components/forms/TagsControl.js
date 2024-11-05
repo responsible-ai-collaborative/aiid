@@ -27,7 +27,7 @@ const TagsControl = ({
       onChange={(value) => {
         setTouched(true);
         setValue(value);
-        if (handleChange) {
+        if (handleChange && handleChange.length > 0) {
           handleChange(value);
         }
       }}
