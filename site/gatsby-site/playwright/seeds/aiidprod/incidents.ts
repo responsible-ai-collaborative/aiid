@@ -1,9 +1,4 @@
-import { Incident } from '../../../server/generated/graphql'
-
-export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
-    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] }
-    & { reports: number[] }
-    & { editors: string[] }
+import { DBIncident } from '../../../server/interfaces';
 
 const incidents: DBIncident[] = [
     {
@@ -11,9 +6,9 @@ const incidents: DBIncident[] = [
         title: "Incident 1",
         description: "Incident 1 Description",
         date: "2020-01-01",
-        "Alleged deployer of AI system": ["entity1"],
-        "Alleged developer of AI system": ["entity2"],
-        "Alleged harmed or nearly harmed parties": ["entity3"],
+        "Alleged deployer of AI system": ["entity-1"],
+        "Alleged developer of AI system": ["entity-2"],
+        "Alleged harmed or nearly harmed parties": ["entity-3"],
         editors: ["user1"],
         reports: [1],
 
@@ -28,9 +23,9 @@ const incidents: DBIncident[] = [
         incident_id: 2,
         title: "Incident 2",
         date: "2020-01-01",
-        "Alleged deployer of AI system": ["entity1"],
-        "Alleged developer of AI system": ["entity2"],
-        "Alleged harmed or nearly harmed parties": ["entity3"],
+        "Alleged deployer of AI system": ["entity-1"],
+        "Alleged developer of AI system": ["entity-2"],
+        "Alleged harmed or nearly harmed parties": ["entity-3"],
         editors: ["user1"],
         reports: [2],
 

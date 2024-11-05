@@ -26,6 +26,11 @@ on:
         type: string
         required: false
         default: ""
+      site-url:
+        description: The URL of the site to deploy
+        type: string
+        default: ""
+        required: false
 
 jobs:
   netlify-deploy:
@@ -119,6 +124,8 @@ jobs:
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          PROCESS_NOTIFICATIONS_SECRET: ${{ secrets.PROCESS_NOTIFICATIONS_SECRET }}
 
       - name: Build size
         run: |

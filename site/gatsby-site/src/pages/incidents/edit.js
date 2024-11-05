@@ -82,6 +82,7 @@ function EditCitePage(props) {
           __typename: undefined,
         },
         __typename: undefined,
+        incidentSearch: undefined,
       };
 
       const { entities } = entitiesData;

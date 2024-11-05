@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Subscription, SubscriptionUpdateType, SubscriptionInsertType } from "../../generated/graphql";
-import { DBSubscription } from "../../../playwright/seeds/customData/subscriptions";
+import { DBSubscription } from "../../interfaces";
 
 const entity1 = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e1'),

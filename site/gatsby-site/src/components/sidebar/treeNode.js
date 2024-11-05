@@ -10,7 +10,7 @@ import {
   faSearch,
   faPlusCircle,
   faMedal,
-  faSortAlphaDown,
+  faList,
   faNewspaper,
   faChartPie,
   faTable,
@@ -141,13 +141,7 @@ function getIcon(label, current = false) {
       leaderboard: (
         <FontAwesomeIcon titleId="leaderboard" icon={faMedal} className={fontAwesomeStyles} />
       ),
-      wordcounts: (
-        <FontAwesomeIcon
-          titleId="wordcounts"
-          icon={faSortAlphaDown}
-          className={fontAwesomeStyles}
-        />
-      ),
+      list: <FontAwesomeIcon titleId="list" icon={faList} className={fontAwesomeStyles} />,
       blog: <FontAwesomeIcon titleId="blog" icon={faNewspaper} className={fontAwesomeStyles} />,
       taxonomies: (
         <FontAwesomeIcon titleId="taxonomies" icon={faChartPie} className={fontAwesomeStyles} />

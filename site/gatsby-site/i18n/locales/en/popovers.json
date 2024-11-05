@@ -78,5 +78,9 @@
     "quiet": {
         "title": "Quiet",
         "text": "Quiet reports are those that will not be published in the 'Latest Reports' section of the homepage. Quiet reports are used for reports that are useful for internal data but do not need to be promoted. If you are unsure, leave this field blank."
+    },
+    "similarIncidentSearch": {
+        "title": "Search for similar incidents",
+        "text": "Search for a similar or dissimilar incident by typing an incident ID. If the resulting incident is similar click 'Yes', if it's dissimilar click 'No'. If you're not sure click 'Not sure'. Once selected, the incident will be added to the 'Manually-selected similar and dissimilar incidents' section of the form. Once added, if you want to remove it, click the 'Not Sure' button."
     }
 }

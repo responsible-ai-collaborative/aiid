@@ -1,13 +1,10 @@
 import { ObjectId } from 'bson';
-import { Subscription } from '../../../server/generated/graphql'
-
-export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'userId'>
-    & { entityId?: string, incident_id?: number, userId?: string };
+import { DBSubscription } from '../../../server/interfaces';
 
 const items: DBSubscription[] = [
     {
         _id: new ObjectId("619b47eb5eed5334edfa3bd7"),
-        entityId: "entity1",
+        entityId: "entity-1",
         incident_id: undefined,
         type: "entity",
         userId: "user1",
