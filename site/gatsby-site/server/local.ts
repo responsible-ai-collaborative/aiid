@@ -17,6 +17,7 @@ import {
 
 import {
     queryFields as checklistsQueryFields,
+    queryFields as checklistsMutationFields,
     permissions as checklistsPermissions
 } from './fields/checklists';
 
@@ -110,6 +111,7 @@ export const getSchema = () => {
             ...classificationsMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
+            ...checklistsMutationFields,
             ...notificationsMutationFields,
         }
     });

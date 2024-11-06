@@ -5,7 +5,7 @@ import { debounce } from 'debounce';
 import { Formik } from 'formik';
 import { graphql } from 'gatsby';
 import { useQueryParams, StringParam } from 'use-query-params';
-import { useQuery, useMutation } from '@apollo/client/react/hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import CheckListForm from 'components/checklists/CheckListForm';

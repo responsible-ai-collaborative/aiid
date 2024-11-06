@@ -31,7 +31,7 @@ const allChecklistFields = `
 `;
 
 export const FIND_CHECKLISTS = gql`
-  filter findChecklists($filter: ChecklistFilterType) {
+  query findChecklists($filter: ChecklistFilterType) {
     checklists(filter: $filter) {
       id
       owner_id
