@@ -83,6 +83,16 @@ GOOGLE_MAPS_API_KEY=  # API key for accessing Google Maps services
 ```
 
 
+#### MailerSend environment variables
+
+Unless the feature you are working on requires sending email notifications, you can leave these variables with the `dummy` value. Otherwise, follow the instructions here: [MailerSend setup](#mailersend-setup)
+
+
+#### Cloudflare R2 storage environment variables
+
+Unless the feature you are working on requires Cloudflare R2 storage, you can leave these variables empty. Otherwise, follow the instructions here: [Cloudflare R2 storage](#Cloudflare-R2-storage)
+
+
 #### Additional Configuration
 
 When building the site, some steps can take a while to run. This can be inconvenient when you are working on a feature unrelated to the steps taking the most time in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/main/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
@@ -496,6 +506,13 @@ Add the following environment variable on Netlify:
 12. In `Triggers` select `A document is published` and `A document is unpublished`
 13. Click `Add this webhook`
 
+### MailerSend setup
+
+Create an account on [MailerSend](https://www.mailersend.com/) and generate and API Key. This key should be added to the `.env` file as `MAILERSEND_API_KEY`.
+
+### Cloudflare R2 storage
+
+Create an account on [Cloudflare](https://www.cloudflare.com/) and create a new R2 storage bucket. 
 
 ### Deployment Workflows on GitHub Actions
 
