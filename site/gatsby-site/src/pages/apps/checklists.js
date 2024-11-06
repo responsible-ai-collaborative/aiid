@@ -38,7 +38,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   useEffect(() => setHydrated(true), []);
 
   const { data: savedChecklistData, loading: savedChecklistLoading } = useQuery(FIND_CHECKLIST, {
-    variables: { query: { id: query.id } },
+    variables: { filter: { id: query.id } },
   });
 
   const savedChecklist = savedChecklistData?.checklist && savedChecklistData.checklist;

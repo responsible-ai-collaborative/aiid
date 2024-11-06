@@ -455,122 +455,30 @@ export type Checklist = {
   about?: Maybe<Scalars['String']['output']>;
   date_created?: Maybe<Scalars['DateTime']['output']>;
   date_updated?: Maybe<Scalars['DateTime']['output']>;
-  entity_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   owner_id?: Maybe<Scalars['String']['output']>;
-  risks?: Maybe<Array<Maybe<ChecklistRisk>>>;
+  risks?: Maybe<Array<Maybe<Risks>>>;
   tags_goals?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   tags_methods?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   tags_other?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
-export type ChecklistInsertInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  about?: InputMaybe<Scalars['String']['input']>;
-  date_created?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  entity_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  owner_id?: InputMaybe<Scalars['String']['input']>;
-  risks?: InputMaybe<Array<InputMaybe<ChecklistRiskInsertInput>>>;
-  tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-export type ChecklistQueryInput = {
-  AND?: InputMaybe<Array<ChecklistQueryInput>>;
-  OR?: InputMaybe<Array<ChecklistQueryInput>>;
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  about?: InputMaybe<Scalars['String']['input']>;
-  about_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  about_gt?: InputMaybe<Scalars['String']['input']>;
-  about_gte?: InputMaybe<Scalars['String']['input']>;
-  about_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  about_lt?: InputMaybe<Scalars['String']['input']>;
-  about_lte?: InputMaybe<Scalars['String']['input']>;
-  about_ne?: InputMaybe<Scalars['String']['input']>;
-  about_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_created?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_created_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_created_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_updated_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_updated_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  entity_id?: InputMaybe<Scalars['String']['input']>;
-  entity_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  entity_id_gt?: InputMaybe<Scalars['String']['input']>;
-  entity_id_gte?: InputMaybe<Scalars['String']['input']>;
-  entity_id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  entity_id_lt?: InputMaybe<Scalars['String']['input']>;
-  entity_id_lte?: InputMaybe<Scalars['String']['input']>;
-  entity_id_ne?: InputMaybe<Scalars['String']['input']>;
-  entity_id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_ne?: InputMaybe<Scalars['String']['input']>;
-  id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  name_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_ne?: InputMaybe<Scalars['String']['input']>;
-  name_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  owner_id?: InputMaybe<Scalars['String']['input']>;
-  owner_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  owner_id_gt?: InputMaybe<Scalars['String']['input']>;
-  owner_id_gte?: InputMaybe<Scalars['String']['input']>;
-  owner_id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  owner_id_lt?: InputMaybe<Scalars['String']['input']>;
-  owner_id_lte?: InputMaybe<Scalars['String']['input']>;
-  owner_id_ne?: InputMaybe<Scalars['String']['input']>;
-  owner_id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  risks?: InputMaybe<Array<InputMaybe<ChecklistRiskQueryInput>>>;
-  risks_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  risks_in?: InputMaybe<Array<InputMaybe<ChecklistRiskQueryInput>>>;
-  risks_nin?: InputMaybe<Array<InputMaybe<ChecklistRiskQueryInput>>>;
-  tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_goals_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_goals_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_goals_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_methods_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_other_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+export type ChecklistFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  about?: InputMaybe<StringFilter>;
+  date_created?: InputMaybe<DateTimeFilter>;
+  date_updated?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+  owner_id?: InputMaybe<StringFilter>;
+  risks?: InputMaybe<RisksObjectFilterType>;
+  tags_goals?: InputMaybe<StringFilter>;
+  tags_methods?: InputMaybe<StringFilter>;
+  tags_other?: InputMaybe<StringFilter>;
 };
 
 export type ChecklistRisk = {
@@ -778,31 +686,14 @@ export enum ChecklistSortByInput {
   IdDesc = '_ID_DESC'
 }
 
-export type ChecklistUpdateInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  about?: InputMaybe<Scalars['String']['input']>;
-  about_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_created?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  entity_id?: InputMaybe<Scalars['String']['input']>;
-  entity_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  name_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  owner_id?: InputMaybe<Scalars['String']['input']>;
-  owner_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  risks?: InputMaybe<Array<InputMaybe<ChecklistRiskUpdateInput>>>;
-  risks_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_goals_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other_unset?: InputMaybe<Scalars['Boolean']['input']>;
+export type ChecklistSortType = {
+  _id?: InputMaybe<SortType>;
+  about?: InputMaybe<SortType>;
+  date_created?: InputMaybe<SortType>;
+  date_updated?: InputMaybe<SortType>;
+  id?: InputMaybe<SortType>;
+  name?: InputMaybe<SortType>;
+  owner_id?: InputMaybe<SortType>;
 };
 
 export type Classification = {
@@ -2661,7 +2552,6 @@ export type Mutation = {
   deleteManyQuickadds?: Maybe<DeleteManyPayload>;
   deleteManySubscriptions?: Maybe<DeleteManyPayload>;
   deleteOneCandidate?: Maybe<Candidate>;
-  deleteOneChecklist?: Maybe<Checklist>;
   deleteOneDuplicate?: Maybe<Duplicate>;
   deleteOneHistory_incident?: Maybe<History_Incident>;
   deleteOneHistory_report?: Maybe<History_Report>;
@@ -2680,7 +2570,6 @@ export type Mutation = {
   insertManyNotifications?: Maybe<InsertManyPayload>;
   insertManyQuickadds?: Maybe<InsertManyPayload>;
   insertOneCandidate?: Maybe<Candidate>;
-  insertOneChecklist?: Maybe<Checklist>;
   insertOneDuplicate?: Maybe<Duplicate>;
   insertOneHistory_incident?: Maybe<History_Incident>;
   insertOneHistory_report?: Maybe<History_Report>;
@@ -2695,7 +2584,6 @@ export type Mutation = {
   processNotifications?: Maybe<Scalars['Int']['output']>;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
   replaceOneCandidate?: Maybe<Candidate>;
-  replaceOneChecklist?: Maybe<Checklist>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
   replaceOneHistory_report?: Maybe<History_Report>;
   replaceOneIncident?: Maybe<Incident>;
@@ -2710,7 +2598,6 @@ export type Mutation = {
   updateManyNotifications?: Maybe<UpdateManyPayload>;
   updateManyQuickadds?: Maybe<UpdateManyPayload>;
   updateOneCandidate?: Maybe<Candidate>;
-  updateOneChecklist?: Maybe<Checklist>;
   updateOneDuplicate?: Maybe<Duplicate>;
   updateOneEntity?: Maybe<Entity>;
   updateOneHistory_incident?: Maybe<History_Incident>;
@@ -2724,7 +2611,6 @@ export type Mutation = {
   updateOneSubscription?: Maybe<Subscription>;
   updateOneUser?: Maybe<User>;
   upsertOneCandidate?: Maybe<Candidate>;
-  upsertOneChecklist?: Maybe<Checklist>;
   upsertOneClassification?: Maybe<Classification>;
   upsertOneDuplicate?: Maybe<Duplicate>;
   upsertOneEntity?: Maybe<Entity>;
@@ -2748,11 +2634,6 @@ export type MutationCreateVariantArgs = {
 
 export type MutationDeleteManyCandidatesArgs = {
   query?: InputMaybe<CandidateQueryInput>;
-};
-
-
-export type MutationDeleteManyChecklistsArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
 };
 
 
@@ -2794,11 +2675,6 @@ export type MutationDeleteManySubscriptionsArgs = {
 
 export type MutationDeleteOneCandidateArgs = {
   query: CandidateQueryInput;
-};
-
-
-export type MutationDeleteOneChecklistArgs = {
-  query: ChecklistQueryInput;
 };
 
 
@@ -2867,11 +2743,6 @@ export type MutationInsertManyCandidatesArgs = {
 };
 
 
-export type MutationInsertManyChecklistsArgs = {
-  data: Array<ChecklistInsertInput>;
-};
-
-
 export type MutationInsertManyDuplicatesArgs = {
   data: Array<InputMaybe<DuplicateInsertType>>;
 };
@@ -2899,11 +2770,6 @@ export type MutationInsertManyQuickaddsArgs = {
 
 export type MutationInsertOneCandidateArgs = {
   data: CandidateInsertInput;
-};
-
-
-export type MutationInsertOneChecklistArgs = {
-  data: ChecklistInsertInput;
 };
 
 
@@ -2973,12 +2839,6 @@ export type MutationReplaceOneCandidateArgs = {
 };
 
 
-export type MutationReplaceOneChecklistArgs = {
-  data: ChecklistInsertInput;
-  query?: InputMaybe<ChecklistQueryInput>;
-};
-
-
 export type MutationReplaceOneHistory_IncidentArgs = {
   data: History_IncidentInsertInput;
   query?: InputMaybe<History_IncidentQueryInput>;
@@ -3010,12 +2870,6 @@ export type MutationReplaceOneUserArgs = {
 export type MutationUpdateManyCandidatesArgs = {
   query?: InputMaybe<CandidateQueryInput>;
   set: CandidateUpdateInput;
-};
-
-
-export type MutationUpdateManyChecklistsArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
-  set: ChecklistUpdateInput;
 };
 
 
@@ -3058,12 +2912,6 @@ export type MutationUpdateManyQuickaddsArgs = {
 export type MutationUpdateOneCandidateArgs = {
   query?: InputMaybe<CandidateQueryInput>;
   set: CandidateUpdateInput;
-};
-
-
-export type MutationUpdateOneChecklistArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
-  set: ChecklistUpdateInput;
 };
 
 
@@ -3141,12 +2989,6 @@ export type MutationUpdateOneUserArgs = {
 export type MutationUpsertOneCandidateArgs = {
   data: CandidateInsertInput;
   query?: InputMaybe<CandidateQueryInput>;
-};
-
-
-export type MutationUpsertOneChecklistArgs = {
-  data: ChecklistInsertInput;
-  query?: InputMaybe<ChecklistQueryInput>;
 };
 
 
@@ -3400,6 +3242,24 @@ export type PaginationType = {
   skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Precedents = {
+  __typename?: 'Precedents';
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  incident_id?: Maybe<Scalars['Int']['output']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type PrecedentsObjectFilterType = {
+  description?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  incident_id?: InputMaybe<IntFilter>;
+  opr?: InputMaybe<OprExists>;
+  tags?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+};
+
 export type PromoteSubmissionToReportInput = {
   incident_ids: Array<InputMaybe<Scalars['Int']['input']>>;
   is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3419,7 +3279,7 @@ export type Query = {
   candidate?: Maybe<Candidate>;
   candidates: Array<Maybe<Candidate>>;
   checklist?: Maybe<Checklist>;
-  checklists: Array<Maybe<Checklist>>;
+  checklists?: Maybe<Array<Maybe<Checklist>>>;
   classification?: Maybe<Classification>;
   classifications?: Maybe<Array<Maybe<Classification>>>;
   duplicate?: Maybe<Duplicate>;
@@ -3463,14 +3323,16 @@ export type QueryCandidatesArgs = {
 
 
 export type QueryChecklistArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
+  filter?: InputMaybe<ChecklistFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ChecklistSortType>;
 };
 
 
 export type QueryChecklistsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<ChecklistQueryInput>;
-  sortBy?: InputMaybe<ChecklistSortByInput>;
+  filter?: InputMaybe<ChecklistFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ChecklistSortType>;
 };
 
 
@@ -4005,8 +3867,36 @@ export type ReportUserRelationInput = {
   link?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Risks = {
+  __typename?: 'Risks';
+  generated?: Maybe<Scalars['Boolean']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  likelihood?: Maybe<Scalars['String']['output']>;
+  precedents?: Maybe<Array<Maybe<Precedents>>>;
+  risk_notes?: Maybe<Scalars['String']['output']>;
+  risk_status?: Maybe<Scalars['String']['output']>;
+  severity?: Maybe<Scalars['String']['output']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Scalars['String']['output']>;
+  touched?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type RisksInput = {
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type RisksObjectFilterType = {
+  generated?: InputMaybe<BooleanFilter>;
+  id?: InputMaybe<StringFilter>;
+  likelihood?: InputMaybe<StringFilter>;
+  opr?: InputMaybe<OprExists>;
+  precedents?: InputMaybe<PrecedentsObjectFilterType>;
+  risk_notes?: InputMaybe<StringFilter>;
+  risk_status?: InputMaybe<StringFilter>;
+  severity?: InputMaybe<StringFilter>;
+  tags?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  touched?: InputMaybe<BooleanFilter>;
 };
 
 export type RisksPayloadItem = {
