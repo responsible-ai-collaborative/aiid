@@ -576,26 +576,6 @@ In addition to that, you have to add your Netlify site URL to the allowed origin
 5. Click `Save Draft`
 6. Deploy draft
 
-## Social Networks login integration
-
-To enable social network login, you will need to add the following configuration to your Atlas App Service.
-
-Add this secret value to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
-
-```
-facebookAppSecret = [Facebook App Secret, see comment below for more information]
-```
-
-- To get the Facebook App Secret you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and click on your app > Settings > Basic.
-
-On Facebook Authentication settings, set the "Client ID" with the Facebook App Id. To get the Facebook App ID you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and check your app.
-
-"Redirect URIs" is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
-
-
-About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
-
-
 ### Restoring Production database to Staging
 
 There is a GitHub Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
