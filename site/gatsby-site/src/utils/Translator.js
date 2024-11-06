@@ -72,20 +72,26 @@ class Translator {
   async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
+    const reportsTranslatedCollection = this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`);
 
     const query = {
       report_number: { $in: originalIds },
       $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
     };
 
-    const translated = await incidents.find(query, { projection: { report_number: 1 } }).toArray();
+    const translated = await reportsTranslatedCollection
+      .find(query, { projection: { report_number: 1 } })
+      .toArray();
 
     return translated;
   }
 
   async saveTranslatedReports({ items, language }) {
-    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
+    const reportsTranslatedCollection = this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`);
 
     const translated = [];
 
@@ -97,7 +103,7 @@ class Translator {
       translated.push({ report_number, text, title, plain_text });
     }
 
-    return incidents.insertMany(translated);
+    return reportsTranslatedCollection.insertMany(translated);
   }
 
   async translateReport({ entry, to }) {
