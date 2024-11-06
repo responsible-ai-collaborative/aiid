@@ -448,10 +448,8 @@ Restarting Gatsby should make the new taxonomy available on the citation pages, 
 
 
 ## Public GraphQL endpoint
-The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
 
-### Accessing the endpoint
-You can check the endpoint [here](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Fincidentdatabase.ai%2Fapi%2Fgraphql)
+You can check the endpoint here: [https://incidentdatabase.ai/api/graphql](https://incidentdatabase.ai/api/graphql).
 
 ### Sample request
 
