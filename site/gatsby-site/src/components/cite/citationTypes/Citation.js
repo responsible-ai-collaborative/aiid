@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getFormattedName } from '../../../utils/typography';
 
-const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
+const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) => {
   const docs = [...nodes];
 
   // Sort the docs according to their submit date
@@ -48,7 +48,7 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
   const editorFirstNameInitial = first_name[0] + '.';
 
   const text = t(
-    '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',
+    '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}: {{incidentTitle}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',
     {
       submitterCite,
       incidentDate,
@@ -56,6 +56,7 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
       editorLastName,
       editorFirstNameInitial,
       retrievalString,
+      incidentTitle,
     }
   );
 
