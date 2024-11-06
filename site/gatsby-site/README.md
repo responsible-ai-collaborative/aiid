@@ -53,6 +53,16 @@ Once you have cloned the repository, to set up a local development environment f
 
    Ensure that each variable is set correctly to match your development environment's requirements.
 
+#### Additional Configuration
+
+When building the site, some steps can take a while to run. This can be inconvenient when you are working on a feature unrelated to the steps taking the most time in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/main/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
+
+```bash
+SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitiationPages gatsby develop
+```
+
+In general, skipping the TSNE visualization has the most significant reduction in build time.
+
 
 ### 3. **Start a Memory Mongo Instance**
 
