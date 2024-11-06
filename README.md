@@ -305,30 +305,6 @@ As soon as a user is signed in, the system assigns a `subscriber` role by defaul
 
 Deployment of the site consists of two parts: deployment of the backend related features that runs as a GitHub Action and deployment of the frontend related features that runs on Netlify:
 
-### Netlify
-The Netlify build process runs every time a push is made to an open PR or `main` or `develop`.
-To correctly set up  this process, the following environment variables need to be created using Netlify's build settings UI:
-
-```
-ALGOLIA_ADMIN_KEY=
-AWS_LAMBDA_JS_RUNTIME=nodejs18.x # required to run the Gatsby v5
-GATSBY_ALGOLIA_APP_ID=
-GATSBY_ALGOLIA_SEARCH_KEY=
-GATSBY_REALM_APP_ID=
-MONGODB_CONNECTION_STRING=
-MONGODB_REPLICA_SET=
-GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
-GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployment stability
-NODE_VERSION=18 # this is required by Gatsby v5
-NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
-# The following "CLOUDFLARE_R2" variables are required to create the /research/snapshots/ page
-CLOUDFLARE_R2_ACCOUNT_ID=[The Cloudflare R2 account ID (e.g.: 8f4144a9d995a9921d0200db59f6a00e)]
-CLOUDFLARE_R2_ACCESS_KEY_ID=[The Cloudflare R2 access key ID (e.g.: 7aa73208bc89cee3195879e578b291ee)]
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=[The Cloudflare R2 secret access key]
-CLOUDFLARE_R2_BUCKET_NAME=[The Cloudflare R2 bucket name (e.g.: 'aiid-public')]
-GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=[The Cloudflare R2 public bucket URL (e.g.: https://pub-daddb16dc28841779b83690f75eb5c58.r2.dev)]
-```
-
 ### New Netlify Setup
 
 This guide walks you through the steps to set up a Netlify site for your project by importing an existing project from GitHub.
