@@ -595,18 +595,6 @@ On Facebook Authentication settings, set the "Client ID" with the Facebook App I
 
 About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
 
-### Error logging
-
-This project uses [Rollbar](https://rollbar.com) for error logging for the whole site, including background processes.
-
-To log the errors a Realm secret value should be set:
-```
-rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
-```
-In addition to that, this env variable should be set as well:
-```
-GATSBY_ROLLBAR_TOKEN: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
-```
 
 ### Restoring Production database to Staging
 
