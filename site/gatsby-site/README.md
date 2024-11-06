@@ -118,9 +118,12 @@ const YourComponent = () => {
 
 The AIID API is built to facilitate interactions with the AI Incident Database. It is implemented as a collection of serverless functions that are composed ("stitched") into a singular GraphQL endpoint.
 
-1. **Access the Apollo Explorer**
+The GraphQL API can be accessed and tested in two ways:
 
-   Navigate to `http://localhost:8000/api/graphql` in your web browser. The Apollo Explorer instance should be displayed, allowing you to introspect and run queries against the API.
+- Production endpoint: `https://incidentdatabase.ai/api/graphql`  
+- Local development endpoint: `http://localhost:8000/api/graphql`
+
+Both URLs support interactive exploration through Apollo Explorer, allowing you to visually build and test GraphQL queries and mutations.
 
 ### Performing Queries
 
@@ -134,8 +137,6 @@ query {
   }
 }
 ```
-
-### Expected Response
 
 The query should return a response similar to this:
 
