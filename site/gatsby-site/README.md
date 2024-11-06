@@ -491,22 +491,7 @@ Netlify is used to host the AIID frontend and API.
 #### 7. Personal Access Token
 
 Go to your Netlify account settings and create a new personal access token. This token will be used to authenticate the GitHub Actions workflows. `NETLIFY_AUTH_TOKEN` should be set as a GitHub secret.
-node migrator up
-```
-To run a specific migration:
-```
-node migrator up --name 2022.02.18T16.29.14.increment-report-number.js
-```
-### Adding a new migration
-To add a new migration, execute the following command and define the `up` and `down` processes as pertinent.
-```
-node migrator create --name increment-report-number.js --folder migrations
-```
-
-Execution is taken care of by the [umzug](https://github.com/sequelize/umzug) package. Please refer to its documentation for more information.
-
-
-## Prismic setup
+### Prismic setup
 
 This project uses Prismic to fetch page content. You can still run the project without setting a Prismic account.
 
@@ -517,12 +502,12 @@ This project uses Prismic to fetch page content. You can still run the project w
 5. Click `Create repository`
 6. Create a new token in Settings > API & Security > Content API tab > Change Repository security to `Private API – Require an access token for any request` > Create new app > Permanent access tokens > Save value for later
 
-### Adding the Prismic content types
+#### Adding the Prismic content types
 
-#### Prismic Custom Types
+##### Prismic Custom Types
 You can find the list of all custom types in the folder `custom_types`
 
-#### How to create a new Custom Type
+##### How to create a new Custom Type
 1. From the prismic left menu click `Custom Types`
 2. Click `Create new custom type`
 3. Give it a name (name of the json in custom_types folder)
@@ -530,7 +515,7 @@ You can find the list of all custom types in the folder `custom_types`
 5. Paste the JSON content from the predefined custom types inside the json
 6. Click `Save`
 
-#### Adding Prismic documents
+##### Adding Prismic documents
 
 1. On the Prismic dashboard left menu click `Documents`
 2. Click `Create new`
