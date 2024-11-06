@@ -104,12 +104,6 @@ The site has three components that are considered "serverless," meaning there is
 
 More details are available in the `Production System` information below. We recommend most people forego setting up a development environment with their own Index and Database. You should instead concentrate on setting up a Gatsby development site.
 
-**Style guide:**
-
-1. `ESLint` and `Prettier` have been configured to help enforcing code styles. Configuration details can be found in `.eslintrc.json` and `.prettierrc`.
-2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
-3. `format` and `lint` scripts can be used manually to fix style issues.
-
 ## Production System
 
 ### Netlify

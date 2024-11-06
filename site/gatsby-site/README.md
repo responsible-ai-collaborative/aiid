@@ -372,6 +372,13 @@ It is recommended to install the [Jest extension](https://marketplace.visualstud
 > [!NOTE]
 > Make sure to have `/site/gatsby-site` as the root folder in vscode to run the tests.
 
+## Style guide
+
+1. `ESLint` and `Prettier` have been configured to help enforcing code styles. Configuration details can be found in `.eslintrc.json` and `.prettierrc`.
+2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
+3. `format` and `lint` scripts can be used manually to fix style issues.
+
+
 ## Database Migrations
 Migration files are stored in the `/site/gatsby-size/migrations` folder and their executions are logged in the `migrations` collection.
 
