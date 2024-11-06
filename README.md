@@ -301,59 +301,6 @@ As soon as a user is signed in, the system assigns a `subscriber` role by defaul
 | `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
 
 
-## Deployment Setup
-
-Deployment of the site consists of two parts: deployment of the backend related features that runs as a GitHub Action and deployment of the frontend related features that runs on Netlify:
-
-### New Netlify Setup
-
-This guide walks you through the steps to set up a Netlify site for your project by importing an existing project from GitHub.
-
-### Prerequisites
-
-- Ensure you have a GitHub account and your project is already pushed to a repository.
-- Make sure you have a Netlify account. If not, sign up at [Netlify](https://www.netlify.com/).
-
-### Steps to Set Up
-
-#### 1. Add New Site
-
-- Go to your Netlify dashboard.
-- Click on **Add New Site**.
-
-#### 2. Import Existing Project
-
-- Choose **Import Existing Project**.
-
-#### 3. Deploy with GitHub
-
-- Select **Deploy with GitHub** to connect your GitHub account.
-
-#### 4. Select Repository
-
-- Choose the repository where your project is located.
-
-#### 5. Configure Deployment
-
-- Under **Branch to Deploy**, select `main`. This setting doesn't matter for now.
-- Leave all other settings as default.
-- Click on **Deploy Site**.
-
-#### 6. Site Configuration
-
-##### Build and Deploy
-
-- Navigate to **Site Configuration** > **Build & Deploy**.
-- Under **Build Settings** > **Build Status**, find **Stopped Builds**.
-- Click **Save**.
-
-##### Site Details
-
-- Go to **Site Configuration** > **Site Details**.
-- Copy the `NETLIFY_SITE_ID`. This will be useful when setting up the GitHub environment.
-
-
-
 ## Adding new Taxonomies
 
 ### To add new taxonomies, follow these steps:
