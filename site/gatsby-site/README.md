@@ -2,7 +2,7 @@
 
 Once you have cloned the repository, to set up a local development environment for the AIID project, follow these steps:
 
-1. **Navigate to the Gatsby Site Directory**
+### 1. **Navigate to the Gatsby Site Directory and Install Dependencies**
 
    Open your terminal and navigate to the `site/gatsby-site` directory:
 
@@ -10,15 +10,13 @@ Once you have cloned the repository, to set up a local development environment f
    cd site/gatsby-site
    ```
 
-2. **Install Dependencies**
-
    Run the following command to install all necessary dependencies:
 
    ```bash
    npm install
    ```
 
-3. **Configure Environment Variables**
+### 2. **Configure Environment Variables**
 
    Create a `.env` file in the root of the `gatsby-site` directory. Add the following environment variables to the file, replacing the placeholders with your actual credentials:
 
@@ -55,7 +53,8 @@ Once you have cloned the repository, to set up a local development environment f
 
    Ensure that each variable is set correctly to match your development environment's requirements.
 
-4. **Start a Memory Mongo Instance**
+
+### 3. **Start a Memory Mongo Instance**
 
    To start a memory MongoDB instance, run the following command:
 
@@ -63,7 +62,7 @@ Once you have cloned the repository, to set up a local development environment f
    npm run start:memory-mongo
    ```
 
-5. **Start Gatsby and Netlify Development Server**
+### 4. **Start Gatsby and Netlify Development Server**
 
    Finally, start the Gatsby development server along with Netlify dev using:
 
@@ -73,6 +72,46 @@ Once you have cloned the repository, to set up a local development environment f
 
 Follow these steps to get your local environment up and running for development with the AIID project. Make sure to replace the placeholder values in the `.env` file with your actual credentials to ensure proper functionality.
 
+
+## AIID Frontend
+
+### Overview
+
+The AIID frontend is built using Gatsby, a static site generator that allows for fast, optimized websites. The frontend is designed to provide a user-friendly interface for browsing incidents, submitting new incidents, and viewing incident details.
+
+### Tailwind CSS & Flowbite
+
+This project uses [Tailwind CSS](https://tailwindcss.com/) framework with its class syntax. 
+More specifically, we base our components on [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS.
+
+### Steps for developing
+
+In order to keep styling consistency on the site, we follow a set of steps when developing. This is also to make the development process more agile and simple.
+
+1. Develop your component using [Flowbite React components](https://flowbite-react.com/)
+2. If your components is not fully contemplated by Flowbite react, check [Flowbite components](https://flowbite.com/#components) and use the provided HTMLs.
+3. If you need to improve styling, use only Tailwind CSS classes.
+
+**Examples**
+If you want to place a new [Flowbite React button](https://flowbite-react.com/buttons):
+
+```javascript
+import { Button } from 'flowbite-react';
+
+const YourComponent = () => {
+    return <Button color='success'>New button</Button>
+}
+
+```
+
+If you want to customize a [Flowbite button](https://flowbite.com/docs/components/buttons/):
+
+```javascript
+const YourComponent = () => {
+    return <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Default</button>
+}
+```
+
 ## AIID API 
 
 ### Overview
@@ -81,7 +120,7 @@ The AIID API is built to facilitate interactions with the AI Incident Database. 
 
 1. **Access the Apollo Explorer**
 
-   Navigate to `http://localhost:8000/graphql` in your web browser. The Apollo Explorer instance should be displayed, allowing you to introspect and run queries against the API.
+   Navigate to `http://localhost:8000/api/graphql` in your web browser. The Apollo Explorer instance should be displayed, allowing you to introspect and run queries against the API.
 
 ### Performing Queries
 
@@ -128,16 +167,6 @@ The API is contained within the `server` directory. The following folders are pr
 - **`local.ts`**: Handles the local GraphQL schema, where migrated fields from the remote schema are added. These fields are ignored in `remote.ts`.  
 - **`schema.ts`**: Combines the remote and local schemas into the final schema using **schema stitching** from GraphQL Tools.
 - **`netlify/functions/graphql.ts`**: Sets up the **GraphQL server** and exposes it as a **Netlify function**, loading the schema from `schema.ts`.
-- 
-### Running Tests
-
-To run Jest tests locally:
-
-```sh
-npm run test:api
-```
-
-It is recommended to install the Jest extension for VS Code to enhance the testing experience.
 
 ### Running Code Generation
 
@@ -249,3 +278,86 @@ And finally, as part of the site build process, we processed all pending notific
         "processed": false
     }
     ```
+
+
+## Testing
+
+### E2E Testing
+
+We use Playwright for end-to-end testing. You can either run the tests against the local development environment or against a local build of the site.
+
+#### Local Development Environment
+
+First make sure you you've followed the steps to set up the local development environment for the AIID project. 
+
+Make sure you have a local mongo instance running:
+
+```sh
+npm run start:memory-mongo
+```
+
+Then, start the Gatsby and Netlify development server:
+
+```sh
+npm run start
+```
+
+Finally, run the Playwright tests:
+
+```sh
+npm run test:e2e
+```
+
+Running tests this way will allow you to make changes to the site and see the results of the tests in real time.
+
+#### Local Build
+
+First, start a memory MongoDB instance:
+
+```sh
+npm run start:memory-mongo
+```
+
+Then, build the Gatsby site:
+
+```sh
+npm run build
+```
+
+Then, start the Gatsby and Netlify development server:
+
+```sh
+npm run start
+```
+
+Finally, run the Playwright tests:
+
+```sh
+npm run test:e2e
+```
+
+Running tests this way will allow you to test the site as it would be deployed to production.
+
+#### VS Code Extension
+
+It is recommended to install the [Playwright extension](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) for VS Code to enhance the testing experience. It allows you to run tests directly from the editor, view test results, and debug tests.
+
+> [!NOTE]
+> Make sure to have `/site/gatsby-site` as the root folder in vscode to run the tests.
+
+
+### API
+
+We use Jest for API testing. It does not have any dependencies on the local development environment, so you can run the tests at any time:
+
+```sh
+npm run test:api
+```
+
+#### VS Code Extension
+
+It is recommended to install the [Jest extension](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest) for VS Code to enhance the testing experience. It allows you to run tests directly from the editor, view test results, and debug tests.
+
+> [!NOTE]
+> Make sure to have `/site/gatsby-site` as the root folder in vscode to run the tests.
+

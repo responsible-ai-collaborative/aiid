@@ -130,8 +130,6 @@ See [mongo.md](mongo.md)
 
 [Cloudinary](https://www.cloudinary.com) is what we use to host and manage report images.
 
-## Setting up a development environment
-
 ## Important Notice
 
 This project is currently undergoing a significant restructuring as we transition away from the recently deprecated Atlas GraphQL endpoint. Please note that some parts of the documentation may be outdated. For the most up-to-date information and guidance, please follow [this link](site/gatsby-site/README.md) to the latest documentation.
@@ -423,41 +421,6 @@ As soon as a user is signed in, the system assigns a `subscriber` role by defaul
 | `admin`                       | This role has full access to the site, including the ability to edit users' roles.                                                     |
 
 
-## Front-end development
-
-### Tailwind CSS & Flowbite
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) framework with its class syntax. 
-More specifically, we base our components on [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS.
-
-### Steps for developing
-
-In order to keep styling consistency on the site, we follow a set of steps when developing. This is also to make the development process more agile and simple.
-
-1. Develop your component using [Flowbite React components](https://flowbite-react.com/)
-2. If your components is not fully contemplated by Flowbite react, check [Flowbite components](https://flowbite.com/#components) and use the provided HTMLs.
-3. If you need to improve styling, use only Tailwind CSS classes.
-
-**Examples**
-If you want to place a new [Flowbite React button](https://flowbite-react.com/buttons):
-
-```javascript
-import { Button } from 'flowbite-react';
-
-const YourComponent = () => {
-    return <Button color='success'>New button</Button>
-}
-
-```
-
-If you want to customize a [Flowbite button](https://flowbite.com/docs/components/buttons/):
-
-```javascript
-const YourComponent = () => {
-    return <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Default</button>
-}
-```
-
 ## Deployment Setup
 
 Deployment of the site consists of two parts: deployment of the backend related features that runs as a GitHub Action and deployment of the frontend related features that runs on Netlify:
@@ -609,27 +572,6 @@ All three workflows share a common set of environment variables, which need to b
 - `REALM_API_APP_ID`    
 - `REALM_API_GROUP_ID`  
 
-### Testing
-
-For integration testing, we use Cypress. You can run the desktop app continuously as part of your development environment or run it on demand in headless mode.
-
-First, add two new environment variables:
-
-```
-E2E_ADMIN_USERNAME=
-E2E_ADMIN_PASSWORD=
-```
-As their names imply, they should be an existing user's credentials with the `admin` role.
-
-To use the desktop version, run:
-```
-npm run test:e2e
-```
-
-And to run it in continuous integration (headless) mode:
-```
-npm run test:e2e:ci
-```
 
 ## Adding new Taxonomies
 
