@@ -128,58 +128,6 @@ See [mongo.md](mongo.md)
 
 This project is currently undergoing a significant restructuring as we transition away from the recently deprecated Atlas GraphQL endpoint. Please note that some parts of the documentation may be outdated. For the most up-to-date information and guidance, please follow [this link](site/gatsby-site/README.md) to the latest documentation.
 
-Depending on what feature you are working on, there will be different systems you'll need to set up after you've forked and cloned this repository:
-
-### Basic setup
-Get a Gatsby environment working. Most of the time, you'll only need to run:
-
-```
-npm install --global gatsby-cli
-```
-Create a `.env` file under `site/gatsby-site` with the following contents:
-
-```
-GATSBY_REALM_APP_ID=aiidstitch2-sasvc
-MONGODB_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
-MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
-MONGODB_REPLICA_SET=aiiddev-shard-00-02.seam4.mongodb.net,aiiddev-shard-00-01.seam4.mongodb.net,aiiddev-shard-00-00.seam4.mongodb.net
-
-GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
-GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
-GATSBY_AVAILABLE_LANGUAGES=en,es,fr
-SKIP_PAGE_CREATOR=createTsneVisualizationPage
-GATSBY_PRISMIC_REPO_NAME=
-PRISMIC_ACCESS_TOKEN=
-IS_EMPTY_ENVIRONMENT=
-```
-
-For `GATSBY_PRISMIC_REPO_NAME` and `PRISMIC_ACCESS_TOKEN` variables, please [follow prismic setup below](https://github.com/responsible-ai-collaborative/aiid#prismic-setup)
-
-For complete empty environment (no database data, no Algolia index, no Prismic content), set `IS_EMPTY_ENVIRONMENT=true`. This will disable all tests that require data.
-
-This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
-
-In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
-
-```
-npm install
-```
-
-You are ready to start a local copy of the project:
-
-```
-gatsby develop
-```
-You should have a local copy of the project running on https://localhost:8000.
-
-The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changes to the backend you will need your own development backend that you can control, modify, and potentially break.
-
-```bash
-SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitiationPages gatsby develop
-```
-
-In general, skipping the TSNE visualization has the most significant reduction in build time.
-
 ### MongoDB setup
 
 If the feature you are working on includes structural changes to the MongoDB database or Realm functions, you'll need to create your own project by going to https://cloud.mongodb.com and following these steps:
