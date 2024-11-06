@@ -290,8 +290,8 @@ test.describe('Cite pages', () => {
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
 
         expect(bibText).toBe(
-            `@article{aiid:3,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3},url={https://incidentdatabase.ai/cite/3},year={2014},urldate={${date}}}`
-        );
+          `@article{aiid:3,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:CrasheswithManeuveringCharacteristicsAugmentationSystem(MCAS)},url={https://incidentdatabase.ai/cite/3},year={2018},urldate={${date}},note={RetrievedAugust2024from\\url{https://incidentdatabase.ai/cite/3}}}`
+      );
     });
 
     test('Should display similar incidents', async ({ page }) => {
