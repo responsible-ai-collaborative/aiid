@@ -43,6 +43,8 @@ function CitationFormat({ incidentReports, incident }) {
             {Object.keys(formats).map((format) => {
               const Component = citationTypes[format].default;
 
+              console.log('incidentTitle', incident.title, incident.date, incident.incident_id);
+
               return (
                 <Component
                   key={format}
