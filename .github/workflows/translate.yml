@@ -1,0 +1,31 @@
+name: Translate Reports
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 1" # Run every Monday at midnight
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run translation script
+        env:
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          TRANSLATE_DRY_RUN: ${{ vars.TRANSLATE_DRY_RUN }}
+        run: node src/scripts/translateReports.js
+

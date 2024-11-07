@@ -4,9 +4,10 @@ const fs = require('fs');
 
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
-const { Translate } = require('@google-cloud/translate').v2;
+//const { Translate } = require('@google-cloud/translate').v2;
 
-const { startCase, differenceWith } = require('lodash');
+//const { startCase, differenceWith } = require('lodash');
+const { startCase } = require('lodash');
 
 const config = require('./config');
 
@@ -36,15 +37,15 @@ const createDocPages = require('./page-creators/createDocPages');
 
 const createMissingTranslationsPage = require('./page-creators/createMissingTranslationsPage');
 
-const algoliasearch = require('algoliasearch');
+//const algoliasearch = require('algoliasearch');
 
-const Translator = require('./src/utils/Translator');
+//const Translator = require('./src/scripts/Translator');
 
 const { MongoClient } = require('mongodb');
 
 const { getLanguages } = require('./i18n');
 
-const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
+//const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const typeDefs = require('./typeDefs');
 
@@ -286,79 +287,79 @@ exports.onPreBootstrap = async ({ reporter }) => {
     migrationsActivity.end();
   }
 
-  if (process.env.CONTEXT === 'production') {
-    const translationsActivity = reporter.activityTimer(`Translations`);
+  // if (process.env.CONTEXT === 'production') {
+  //   const translationsActivity = reporter.activityTimer(`Translations`);
 
-    translationsActivity.start();
+  //   translationsActivity.start();
 
-    const configuredLanguages = getLanguages();
+  //   const configuredLanguages = getLanguages();
 
-    const unavailableLanguages = differenceWith(
-      config.i18n.availableLanguages,
-      configuredLanguages,
-      (aLang, cLang) => {
-        return cLang.code === aLang;
-      }
-    );
+  //   const unavailableLanguages = differenceWith(
+  //     config.i18n.availableLanguages,
+  //     configuredLanguages,
+  //     (aLang, cLang) => {
+  //       return cLang.code === aLang;
+  //     }
+  //   );
 
-    if (unavailableLanguages.length > 0) {
-      throw `Language config error. Review your GATSBY_AVAILABLE_LANGUAGES variable. You've included a language that hasn't been configured yet: ${unavailableLanguages
-        .map((l) => l)
-        .join(', ')}`;
-    }
+  //   if (unavailableLanguages.length > 0) {
+  //     throw `Language config error. Review your GATSBY_AVAILABLE_LANGUAGES variable. You've included a language that hasn't been configured yet: ${unavailableLanguages
+  //       .map((l) => l)
+  //       .join(', ')}`;
+  //   }
 
-    if (
-      config.mongodb.translationsConnectionString &&
-      config.i18n.translateApikey &&
-      config.i18n.availableLanguages &&
-      config.header.search.algoliaAdminKey &&
-      config.header.search.algoliaAppId
-    ) {
-      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
-        reporter.warn(
-          'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
-        );
-      }
+  //   if (
+  //     config.mongodb.translationsConnectionString &&
+  //     config.i18n.translateApikey &&
+  //     config.i18n.availableLanguages &&
+  //     config.header.search.algoliaAdminKey &&
+  //     config.header.search.algoliaAppId
+  //   ) {
+  //     if (process.env.TRANSLATE_DRY_RUN !== 'false') {
+  //       reporter.warn(
+  //         'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
+  //       );
+  //     }
 
-      translationsActivity.setStatus('Translating incident reports...');
+  //     translationsActivity.setStatus('Translating incident reports...');
 
-      const translateClient = new Translate({ key: config.i18n.translateApikey });
+  //     const translateClient = new Translate({ key: config.i18n.translateApikey });
 
-      const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+  //     const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
-      const languages = getLanguages();
+  //     const languages = getLanguages();
 
-      const translator = new Translator({ mongoClient, translateClient, languages, reporter });
+  //     const translator = new Translator({ mongoClient, translateClient, languages, reporter });
 
-      await translator.run();
+  //     await translator.run();
 
-      translationsActivity.setStatus('Updating incidents indexes...');
+  //     translationsActivity.setStatus('Updating incidents indexes...');
 
-      try {
-        const algoliaClient = algoliasearch(
-          config.header.search.algoliaAppId,
-          config.header.search.algoliaAdminKey
-        );
+  //     try {
+  //       const algoliaClient = algoliasearch(
+  //         config.header.search.algoliaAppId,
+  //         config.header.search.algoliaAdminKey
+  //       );
 
-        const algoliaUpdater = new AlgoliaUpdater({
-          languages,
-          mongoClient,
-          algoliaClient,
-          reporter,
-        });
+  //       const algoliaUpdater = new AlgoliaUpdater({
+  //         languages,
+  //         mongoClient,
+  //         algoliaClient,
+  //         reporter,
+  //       });
 
-        await algoliaUpdater.run();
-      } catch (e) {
-        reporter.panicOnBuild('Error updating Algolia index:', e);
-      }
-    } else {
-      throw `Missing environment variable, can't run translation process.`;
-    }
+  //       await algoliaUpdater.run();
+  //     } catch (e) {
+  //       reporter.panicOnBuild('Error updating Algolia index:', e);
+  //     }
+  //   } else {
+  //     throw `Missing environment variable, can't run translation process.`;
+  //   }
 
-    translationsActivity.end();
-  } else {
-    reporter.warn('Netlify CONTEXT is not production, skipping translations.');
-  }
+  //   translationsActivity.end();
+  // } else {
+  //   reporter.warn('Netlify CONTEXT is not production, skipping translations.');
+  // }
 };
 
 exports.onPreBuild = function ({ reporter }) {
