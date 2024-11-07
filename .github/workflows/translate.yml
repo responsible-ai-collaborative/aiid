@@ -23,10 +23,11 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Run translation script
+        run: node src/scripts/translateReports.js
+        working-directory: site/gatsby-site
         env:
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           TRANSLATE_DRY_RUN: ${{ vars.TRANSLATE_DRY_RUN }}
-        run: node src/scripts/translateReports.js
 
