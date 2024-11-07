@@ -155,7 +155,7 @@ class Translator {
         const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
 
         this.reporter.error(errorMessage);
-        throw errorMessage;
+        throw new Error(errorMessage);
       }
 
       this.reporter.log(
