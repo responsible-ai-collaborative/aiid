@@ -48,6 +48,7 @@ const reporter = { log: console.log, error: console.error };
     console.log('Translation completed successfully.');
   } catch (error) {
     console.error('Error during the translation process:', error.message);
+    process.exit(1);
   } finally {
     if (mongoClient) {
       try {
