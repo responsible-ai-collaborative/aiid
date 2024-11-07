@@ -49,7 +49,7 @@ class Translator {
     }, concurrency);
 
     q.error((err, task) => {
-      this.reporter.log(
+      this.reporter.error(
         `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
       );
       throw new Error(
