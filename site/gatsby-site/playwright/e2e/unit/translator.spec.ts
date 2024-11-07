@@ -239,7 +239,7 @@ test("Translations - Shouldn't call Google's translate api and use translation p
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test('Translations - Should translate reports with submission date greater than TRANSLATE_SUBMISSION_DATE_START', async ({ page }) => {
+test('Translations - Should translate reports with submission date greater than an specific report submission date', async ({ page }) => {
   const submissionDateStart = '2021-01-01';
 
   const translatedReportsES = [];
