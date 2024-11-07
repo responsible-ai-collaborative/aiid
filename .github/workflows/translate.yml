@@ -18,8 +18,9 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install NPM dependencies
+        run: npm ci
+        working-directory: site/gatsby-site
 
       - name: Run translation script
         env:
