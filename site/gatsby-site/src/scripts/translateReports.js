@@ -10,7 +10,7 @@ const Translator = require('./Translator');
 
 const { getLanguages } = require('../../i18n');
 
-const reporter = { log: console.log };
+const reporter = { log: console.log, error: console.error };
 
 (async () => {
   let mongoClient;

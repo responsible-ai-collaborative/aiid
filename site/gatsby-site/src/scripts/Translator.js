@@ -8,7 +8,22 @@ const remarkStrip = require('strip-markdown');
 
 const keys = ['text', 'title'];
 
+/**
+ * @typedef {Object} Reporter
+ * @property {function(string):void} log
+ * @property {function(string):void} error
+ */
+
 class Translator {
+  /**
+   * @param {Object} options
+   * @param {import('mongodb').MongoClient} options.mongoClient
+   * @param {Object} options.translateClient
+   * @param {string[]} options.languages
+   * @param {Reporter} options.reporter
+   * @param {string} [options.submissionDateStart]
+   * @param {boolean} [options.dryRun]
+   */
   constructor({
     mongoClient,
     translateClient,
@@ -18,10 +33,6 @@ class Translator {
     dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
   }) {
     this.translateClient = translateClient;
-    /**
-     * @type {import('mongodb').MongoClient}
-     * @public
-     */
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
