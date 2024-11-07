@@ -52,6 +52,9 @@ class Translator {
       this.reporter.log(
         `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
       );
+      throw new Error(
+        `Translation process failed for report ${task.entry.report_number}. Error: ${err.code} - ${err.message}`
+      );
     });
 
     const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
