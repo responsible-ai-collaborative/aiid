@@ -12,6 +12,7 @@ const keys = ['text', 'title'];
  * @typedef {Object} Reporter
  * @property {function(string):void} log
  * @property {function(string):void} error
+ * @property {function(string):void} warn
  */
 
 class Translator {
@@ -145,6 +146,12 @@ class Translator {
   }
 
   async run() {
+    if (this.dryRun) {
+      this.reporter.warn(
+        'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
+      );
+    }
+
     await this.mongoClient.connect();
 
     let reportsQuery = {};
