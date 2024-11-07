@@ -149,7 +149,9 @@ class Translator {
       );
       reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
     } else {
-      this.reporter.log(`Translating all incident reports`);
+      this.reporter.log(
+        `Translating all incident reports. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
+      );
     }
 
     const reports = await this.mongoClient
