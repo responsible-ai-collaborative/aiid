@@ -246,7 +246,7 @@ test('Translations - Should translate reports with submission date greater than 
 
   const translatedReportsEN = [];
 
-  const reporter = { log: sinon.stub() };
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
   const reportsCollection = {
     find: sinon.stub().returns({
