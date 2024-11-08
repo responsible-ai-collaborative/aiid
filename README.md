@@ -19,6 +19,8 @@
   &nbsp;
   <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/translate.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/translate.yml/badge.svg?branch=main"></a>
   &nbsp;
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/db-backup.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/db-backup.yml/badge.svg?branch=main"></a>
+  &nbsp;
   <a href="https://codecov.io/gh/responsible-ai-collaborative/aiid"><img src="https://codecov.io/gh/responsible-ai-collaborative/aiid/graph/badge.svg?token=SKMVE2G1GU"></a>
   &nbsp;
   <a href="https://forms.gle/v7UHJvEkYSJQ7jHj7"><img src="https://img.shields.io/badge/Join%20the%20RAIC%20Slack!-purple?logo=slack&"></a>
