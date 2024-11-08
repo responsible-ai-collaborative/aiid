@@ -5,6 +5,7 @@ import * as reporter from '../reporter';
 import { Context, DBIncident, DBNotification, DBReport } from "../interfaces";
 import _ from "lodash";
 import { Recipient, EmailParams, MailerSend } from "mailersend";
+import jwt from 'jsonwebtoken';
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
@@ -90,46 +91,31 @@ export interface UserAdminData {
     userId?: string;
 }
 
+const usersCache: UserAdminData[] = [];
+
 export const getUserAdminData = async (userId: string) => {
 
-    const userApiResponse = await apiRequest({ path: `/users/${userId}` });
+    let user = usersCache.find((user) => user.userId === userId);
 
-    const response: UserAdminData = {};
+    if (!user) {
 
-    if (userApiResponse.data) {
+        const userApiResponse = await apiRequest({ path: `/users/${userId}` });
 
-        response.email = userApiResponse.data.email;
-        response.creationDate = new Date(userApiResponse.creation_date * 1000);
-        response.lastAuthenticationDate = new Date(userApiResponse.last_authentication_date * 1000);
-        response.disabled = userApiResponse.disabled;
-    }
+        if (userApiResponse.data) {
 
-    return response;
-}
+            user = {
+                email: userApiResponse.data.email,
+                creationDate: new Date(userApiResponse.creation_date * 1000),
+                lastAuthenticationDate: new Date(userApiResponse.last_authentication_date * 1000),
+                disabled: userApiResponse.disabled,
+                userId,
+            }
 
-export const getUsersAdminData = async () => {
-
-    const response = await apiRequest({ path: `/users` });
-
-    const result: UserAdminData[] = [];
-
-    for (const userData of response) {
-
-        if (userData.data?.email) {
-
-            const user: UserAdminData = {};
-
-            user.email = userData.data.email;
-            user.creationDate = new Date(userData.creation_date * 1000);
-            user.lastAuthenticationDate = new Date(userData.last_authentication_date * 1000);
-            user.disabled = userData.disabled;
-            user.userId = userData._id;
-
-            result.push(user);
+            usersCache.push(user);
         }
     }
 
-    return result;
+    return user;
 }
 
 interface SendEmailParams {
@@ -220,20 +206,23 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
     }
 }
 
+
+let cachedToken: string | null = null;
+let tokenExpiration: number | null = null;
+
 /**
- * Makes an API request to the MongoDB Atlas Admin API, supporting only GET methods.
- * This function handles authentication using a public/private API key pair and returns the response from the API.
+ * Fetches the access token for the MongoDB Atlas Admin API.
  * 
- * **Note:** Use with caution as this function has admin privileges.
+ * Note: The token is cached to speed up subsequent requests. Tokens expire after 30 minutes.
  * 
- * @param {Object} params - The parameters for the API request.
- * @param {string} params.path - The API endpoint path.
- * @param {string} [params.method='GET'] - The HTTP method for the request. Currently, only 'GET' is supported.
- * @returns {Promise<any>} - The response from the API or an error object if the request fails.
- * 
- * @throws {Error} Throws an error if an unsupported HTTP method is provided.
+ * @returns {Promise<string>} A promise that resolves to the access token.
  */
-export const apiRequest = async ({ path, method = "GET" }: { method?: string, path: string }) => {
+const getAccessToken = async () => {
+
+    // do not wait for the last minute to get a new token
+    if (cachedToken && tokenExpiration && Date.now() < tokenExpiration * 1000 + 5 * 60 * 1000) {
+        return cachedToken;
+    }
 
     const loginResponse = await fetch('https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login', {
         method: 'POST',
@@ -249,20 +238,50 @@ export const apiRequest = async ({ path, method = "GET" }: { method?: string, pa
     const data = await loginResponse.json();
 
     if (loginResponse.status != 200) {
-        return {
-            status: loginResponse.status,
-            error: data.error
-        }
+        throw new Error(`Login failed: ${data.error}`);
     }
+
+    const decoded = jwt.decode(data.access_token) as { exp: number };
+
+    cachedToken = data.access_token;
+    tokenExpiration = decoded.exp;
+
+    return cachedToken;
+};
+
+/**
+ * Makes an API request to the MongoDB Atlas Admin API, supporting only GET methods.
+ * This function handles authentication using a public/private API key pair and returns the response from the API.
+ * 
+ * Rate limited to 100 calls / minute
+ * 
+ * **Note:** Use with caution as this function has admin privileges.
+ * 
+ * @param {Object} params - The parameters for the API request.
+ * @param {string} params.path - The API endpoint path.
+ * @param {string} [params.method='GET'] - The HTTP method for the request. Currently, only 'GET' is supported.
+ * @returns {Promise<any>} - The response from the API or an error object if the request fails.
+ * 
+ * @throws {Error} Throws an error if an unsupported HTTP method is provided.
+ */
+export const apiRequest = async ({ path, params = {}, method = "GET" }: { method?: string, params?: Record<string, string>, path: string }) => {
+
+    const accessToken = await getAccessToken();
+
+    const url = new URL(`https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`);
+
+    if (Object.keys(params).length > 0) {
+        const searchParams = new URLSearchParams(params);
+        url.search = searchParams.toString();
+    }
+
+    const headers = { "Authorization": `Bearer ${accessToken}` };
 
     let response = null;
 
-    const url = `https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`;
-    const headers = { "Authorization": `Bearer ${data.access_token}` };
-
     if (method == 'GET') {
 
-        const result = await fetch(url, { headers });
+        const result = await fetch(url.toString(), { headers });
 
         response = await result.json();
     }
