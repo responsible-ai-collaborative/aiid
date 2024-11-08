@@ -45,21 +45,26 @@ export const extractHeadersFromMarkdown = (markdown) => {
   if (!markdown) {
     return [];
   }
+
   const headers = [];
 
   const lines = markdown.split('\n');
 
   lines.forEach((line) => {
-    if (line.startsWith('# ')) {
+    const match = line.match(/^(#{1,2})\s+(.*)/); // Match `#` or `##` headers
+
+    if (match) {
+      const level = match[1].length; // 1 for `#`, 2 for `##`
+
+      const title = match[2];
+
       headers.push({
-        id: slugify(line.replace('# ', ''), { lower: true }),
-        title: line.replace('# ', ''),
-      });
-    }
-    if (line.startsWith('## ')) {
-      headers.push({
-        id: slugify(line.replace('## ', ''), { lower: true }),
-        title: line.replace('## ', ''),
+        id: slugify(title, {
+          lower: true,
+          remove: /["'`?!]/g, // Removes quotes and similar characters
+        }),
+        title,
+        level,
       });
     }
   });
