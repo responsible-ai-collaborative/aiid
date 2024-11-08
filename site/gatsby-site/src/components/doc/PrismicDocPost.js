@@ -62,7 +62,7 @@ const PrismicDocPost = ({ doc, location }) => {
       </div>
       {doc.data.content.map((content, index) => (
         <>
-          {content.markdown && (
+          {content.markdown?.richText.length > 0 && (
             <div className="prose">
               {(() => {
                 const rawMarkdown = RichText.asText(content.markdown.richText);
