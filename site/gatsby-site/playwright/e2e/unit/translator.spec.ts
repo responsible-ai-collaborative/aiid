@@ -80,7 +80,7 @@ test('Translations - Should translate languages only if report language differs 
 
   const translatedReportsES = [];
 
-  const reporter = { log: sinon.stub() };
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
   const reportsCollection = {
     find: sinon.stub().returns({
@@ -162,7 +162,7 @@ test("Translations - Shouldn't call Google's translate api and use translation p
 
   const translatedReportsES = [];
 
-  const reporter = { log: sinon.stub() };
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
   const reportsCollection = {
     find: sinon.stub().returns({
@@ -341,7 +341,7 @@ test('Translations - Should not translate if the report was already translated',
     },
   ];
 
-  const reporter = { log: sinon.stub() };
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
   const reportsCollection = {
     find: sinon.stub().returns({
