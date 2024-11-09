@@ -13,6 +13,7 @@ import { Heading1, Heading2 } from 'components/CustomHeaders';
 import { RichText } from 'prismic-reactjs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
 
 const PrismicDocPost = ({ doc, location }) => {
   let headers = [];
@@ -62,12 +63,16 @@ const PrismicDocPost = ({ doc, location }) => {
       </div>
       {doc.data.content.map((content, index) => (
         <>
-          {content.markdown && (
+          {content.markdown?.richText.length > 0 && (
             <div className="prose">
               {(() => {
                 const rawMarkdown = RichText.asText(content.markdown.richText);
 
-                return <ReactMarkdown remarkPlugins={[remarkGfm]}>{rawMarkdown}</ReactMarkdown>;
+                return (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
+                    {rawMarkdown}
+                  </ReactMarkdown>
+                );
               })()}
             </div>
           )}
