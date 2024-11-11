@@ -70,7 +70,6 @@ import {
 
 import {
     queryFields as notificationsQueryFields,
-    mutationFields as notificationsMutationFields,
     permissions as notificationsPermissions
 } from './fields/notifications';
 
@@ -112,7 +111,6 @@ export const getSchema = () => {
             ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
-            ...notificationsMutationFields,
         }
     });
 
@@ -164,7 +162,6 @@ export const getSchema = () => {
                 ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
-                ...notificationsPermissions.Mutation,
             },
         },
         {
