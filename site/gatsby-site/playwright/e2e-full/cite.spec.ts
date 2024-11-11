@@ -278,7 +278,7 @@ test.describe('Cite pages', () => {
     });
 
     test('Should display correct BibTex Citation', async ({ page }) => {
-        await page.goto("/cite/3");
+        await page.goto("/cite/2");
 
         const date = format(new Date(), 'MMMMd,y');
 
@@ -290,7 +290,7 @@ test.describe('Cite pages', () => {
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
 
         expect(bibText).toBe(
-          `@article{aiid:3,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:CrasheswithManeuveringCharacteristicsAugmentationSystem(MCAS)},url={https://incidentdatabase.ai/cite/3},year={2018},urldate={${date}},note={RetrievedAugust2024from\\url{https://incidentdatabase.ai/cite/3}}}`
+          `@article{aiid:2,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber2:Warehouserobotrupturescanofbearsprayandinjuresworkers},url={https://incidentdatabase.ai/cite/2},year={2018},urldate={November11,2024},note={RetrievedAugust2024from\\url{https://incidentdatabase.ai/cite/2}}}`
       );
     });
 
