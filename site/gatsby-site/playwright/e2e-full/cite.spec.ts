@@ -290,7 +290,7 @@ test.describe('Cite pages', () => {
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
 
         expect(bibText).toBe(
-          `@article{aiid:2,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber2:Warehouserobotrupturescanofbearsprayandinjuresworkers},url={https://incidentdatabase.ai/cite/2},year={2018},urldate={November11,2024},note={RetrievedAugust2024from\\url{https://incidentdatabase.ai/cite/2}}}`
+          `@article{aiid:3,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:KronosSchedulingAlgorithmAllegedlyCausedFinancialIssuesforStarbucksEmployees(MCAS)},url={https://incidentdatabase.ai/cite/3},year={2014},urldate={${date}},note={RetrievedAugust2024from\\url{https://incidentdatabase.ai/cite/3}}}`
       );
     });
 
