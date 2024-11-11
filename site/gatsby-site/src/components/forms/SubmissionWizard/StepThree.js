@@ -160,6 +160,8 @@ const FormDetails = ({
 
   const [submitCount, setSubmitCount] = useState(0);
 
+  const [entityNamesList, setEntityNamesList] = useState(entityNames);
+
   const { isRole } = useUserContext();
 
   const {
@@ -190,6 +192,26 @@ const FormDetails = ({
       resetForm();
     }
   }, [submissionFailed, submissionComplete, submissionReset]);
+
+  const handleEntityChange = (values) => {
+    // Update entityNamesList with adding values that are not in entityNamesList
+    const newEntityNamesList = values
+      .filter((value) => {
+        if (!value.label) {
+          return !entityNamesList.includes(value);
+        }
+        return !entityNamesList.includes(value?.label);
+      })
+      .map((entity) => {
+        if (entity.label) {
+          return entity.label;
+        } else {
+          return entity;
+        }
+      });
+
+    setEntityNamesList([...entityNamesList, ...newEntityNamesList]);
+  };
 
   const saveInLocalStorage = useRef(
     debounce((values) => {
@@ -265,8 +287,8 @@ const FormDetails = ({
                 placeholder={t('Who employed or was responsible for the technology?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -282,8 +304,8 @@ const FormDetails = ({
                 placeholder={t('Who created or built the technology involved in the incident?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -299,8 +321,8 @@ const FormDetails = ({
                 placeholder={t('Who experienced negative impacts?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
