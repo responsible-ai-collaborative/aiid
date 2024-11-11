@@ -10,6 +10,10 @@ import Sponsors from 'components/landing/Sponsors';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { extractHeaders } from 'utils/extractHeaders';
 import { Heading1, Heading2 } from 'components/CustomHeaders';
+import { RichText } from 'prismic-reactjs';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
 
 const PrismicDocPost = ({ doc, location }) => {
   let headers = [];
@@ -59,6 +63,19 @@ const PrismicDocPost = ({ doc, location }) => {
       </div>
       {doc.data.content.map((content, index) => (
         <>
+          {content.markdown?.richText.length > 0 && (
+            <div className="prose">
+              {(() => {
+                const rawMarkdown = RichText.asText(content.markdown.richText);
+
+                return (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
+                    {rawMarkdown}
+                  </ReactMarkdown>
+                );
+              })()}
+            </div>
+          )}
           {content.text && (
             <div className="prose">
               <PrismicRichText key={index} field={content.text.richText} components={components} />
