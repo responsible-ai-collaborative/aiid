@@ -20,11 +20,14 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: site/gatsby-site/package-lock.json
 
       - name: Install dependencies
+        working-directory: site/gatsby-site
         run: npm ci
 
       - name: Process Notifications
+        working-directory: site/gatsby-site
         env:
           REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
           REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
