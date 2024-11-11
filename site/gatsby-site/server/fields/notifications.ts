@@ -2,7 +2,7 @@ import { GraphQLFieldConfigMap, GraphQLInt } from 'graphql';
 import { generateQueryFields } from '../utils';
 import { Context, DBEntity, DBIncident, DBReport, DBSubscription, DBNotification } from '../interfaces';
 import { NotificationType } from '../types/notification';
-import { getUserAdminData, sendEmail } from './common';
+import { getUserAdminData, getUsersAdminData, sendEmail } from './common';
 import * as reporter from '../reporter';
 import { hasHeaderSecret, isRole } from '../rules';
 import config from '../config';
@@ -14,18 +14,12 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
 
 const getRecipients = async (userIds: string[]) => {
-    const recipients = [];
+    const users = await getUsersAdminData();
 
-    for (const userId of userIds) {
-        const userResponse = await getUserAdminData(userId);
+    const recipients = users
+        .filter((user) => userIds.includes(user.userId!))
+        .map((user) => ({ email: user.email!, userId: user.userId! }));
 
-        if (userResponse?.email) {
-            recipients.push({
-                email: userResponse.email,
-                userId,
-            });
-        }
-    }
     return recipients;
 }
 

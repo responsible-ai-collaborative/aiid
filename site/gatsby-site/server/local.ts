@@ -57,6 +57,12 @@ import {
 } from './fields/taxa';
 
 import {
+    queryFields as candidatesQueryFields,
+    mutationFields as candidatesMutationFields,
+    permissions as candidatesPermissions
+} from './fields/candidates';
+
+import {
     queryFields as subscriptionsQueryFields,
     mutationFields as subscriptionsMutationFields,
     permissions as subscriptionsPermissions
@@ -93,6 +99,7 @@ export const getSchema = () => {
             ...entity_relationshipsQueryFields,
             ...classificationsQueryFields,
             ...taxaQueryFields,
+            ...candidatesQueryFields,
             ...subscriptionsQueryFields,
             ...duplicatesQueryFields,
             ...notificationsQueryFields,
@@ -110,6 +117,7 @@ export const getSchema = () => {
             ...submissionsMutationFields,
             ...entity_relationshipsMutationFields,
             ...classificationsMutationFields,
+            ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
             ...notificationsMutationFields,
@@ -148,6 +156,7 @@ export const getSchema = () => {
                 ...entity_relationshipsPermissions.Query,
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
+                ...candidatesPermissions.Query,
                 ...subscriptionsPermissions.Query,
                 ...duplicatesPermissions.Query,
                 ...notificationsPermissions.Query,
@@ -162,6 +171,7 @@ export const getSchema = () => {
                 ...submissionsPermissions.Mutation,
                 ...entity_relationshipsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
+                ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
                 ...notificationsPermissions.Mutation,

@@ -12,7 +12,6 @@ jobs:
   execute-mutation:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-
     steps:
       - name: Call GraphQL API
         env:
@@ -32,9 +31,9 @@ jobs:
             exit 1
           fi
 
-          if jq -e '.errors' response.json > /dev/null; then
-            echo "GraphQL mutation failed with errors:"
-            jq '.errors' response.json
+          if jq -e 'has("errors") or has("errorType")' response.json > /dev/null; then
+            echo "GraphQL mutation failed with the following response:"
+            jq '.' response.json
             exit 1
           fi
 
