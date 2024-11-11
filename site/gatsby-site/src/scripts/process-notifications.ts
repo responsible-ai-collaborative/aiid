@@ -437,6 +437,8 @@ export const run = async () => {
         error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
         reporter.error(error);
     }
+
+    return result;
 }
 
 if (require.main === module) {

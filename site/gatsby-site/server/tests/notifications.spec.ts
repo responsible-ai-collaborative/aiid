@@ -9,6 +9,7 @@ import { IncidentFilterType, IncidentInsertType, IncidentUpdateType, PromoteSubm
 import { ObjectId } from 'bson';
 import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../fields/common';
+import { run } from '../../src/scripts/process-notifications';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -22,15 +23,6 @@ describe(`Notifications`, () => {
     });
 
     it(`processNotifications mutation - shouldn't send anything when notifications collection is empty`, async () => {
-
-        const mutationData = {
-            query: `
-                mutation {
-                    processNotifications
-                }
-            `,
-        };
-
 
         await seedFixture({
             customData: {
@@ -49,12 +41,10 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });
+        await run();
 
-        expect(response.body.data).toMatchObject({ processNotifications: 0 })
         expect(sendEmailMock).toHaveBeenCalledTimes(0);
     });
 
@@ -162,10 +152,13 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
+
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
+
+        const result = await run();
+
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -188,7 +181,8 @@ describe(`Notifications`, () => {
             },
             templateId: "NewIncident",
         }));
-        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+
+        expect(result).toBe(1);
     });
 
     it(`processNotifications mutation - notifications of new incident entities`, async () => {
@@ -292,10 +286,11 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
+
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
+        const result = await run();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -320,7 +315,7 @@ describe(`Notifications`, () => {
             },
             templateId: "NewEntityIncident",
         }));
-        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+        expect(result).toBe(1);
     });
 
     it(`processNotifications mutation - notifications of new incident reports`, async () => {
@@ -424,10 +419,10 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
+        const result = await run();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -448,7 +443,7 @@ describe(`Notifications`, () => {
             },
             templateId: "NewReportAddedToAnIncident",
         }));
-        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+        expect(result).toBe(1);
     });
 
     it(`processNotifications mutation - notifications of incident updates`, async () => {
@@ -550,10 +545,10 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
+        const result = await run();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -574,7 +569,7 @@ describe(`Notifications`, () => {
             },
             templateId: "IncidentUpdate",
         }));
-        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+        expect(result).toBe(1);
     });
 
     it(`processNotifications mutation - notifications of submission promotion`, async () => {
@@ -677,10 +672,10 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUsersAdminData').mockResolvedValue([{ userId: '123', email: 'test@test.com' }]);
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(common, 'sendEmail').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });;
+        const result = await run();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -700,7 +695,7 @@ describe(`Notifications`, () => {
             },
             templateId: "SubmissionApproved",
         }));
-        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+        expect(result).toBe(1);
     });
 
     it(`Should create Incident and Entity Notifications on Incident creation`, async () => {
@@ -1333,13 +1328,14 @@ describe(`Notifications`, () => {
         };
 
         jest.spyOn(common, 'sendEmail').mockRestore();
-        jest.spyOn(common, 'getUsersAdminData').mockResolvedValueOnce([{ userId: 'user1', email: 'test@test.com' }, { userId: 'user2', email: 'test2@test.com' }]);
-        
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValueOnce({ userId: 'user1', email: 'test@test.com' })
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValueOnce({ userId: 'user2', email: 'test2@test.com' });
+
         const mockMailersendBulkSend = jest.spyOn(common, 'mailersendBulkSend').mockResolvedValue();
 
-        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });
+        const result = await run();
 
-        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+        expect(result).toBe(1);
 
         expect(mockMailersendBulkSend.mock.calls[0][0][0]).toMatchObject({
             from: {
