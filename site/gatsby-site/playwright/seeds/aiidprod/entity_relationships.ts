@@ -5,8 +5,8 @@ type DBEntity_Relationship = Omit<Entity_Relationship, 'sub' | 'obj'>
 
 const entity_relationships: DBEntity_Relationship[] = [
   {
-    sub: 'entity2',
-    "obj": 'entity3',
+    sub: 'entity-2',
+    "obj": 'entity-3',
     "is_symmetric": true,
     pred: 'related',
   }

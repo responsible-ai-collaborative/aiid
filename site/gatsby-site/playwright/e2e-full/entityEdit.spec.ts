@@ -138,10 +138,20 @@ test.describe('Edit Entity', () => {
 
   test('Should successfully remove Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
   
-    await init();
+    await init({
+      aiidprod: {
+        entity_relationships: [
+          {
+            sub: 'entity-2',
+            obj: entity_id,
+            is_symmetric: true,
+          },
+        ],
+      },
+    });
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
   
-    await page.goto(`/entities/edit?entity_id=entity2`);
+    await page.goto(`/entities/edit?entity_id=${entity_id}`);
 
     await page.locator('.rbt.Typeahead .rbt-token-remove-button').first().click();
   
