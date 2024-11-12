@@ -38,7 +38,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) =>
       url = {https://incidentdatabase.ai/cite/${incident_id}},
       year = {${incidentDate.substring(0, 4)}},
       urldate = {${format(new Date(), 'MMMM d, y')}},
-      note = {Retrieved August 2024 from 
+      note = {Retrieved ${format(new Date(), 'MMMM yyyy')} from 
         \\url{https://incidentdatabase.ai/cite/${incident_id}}}`.replace(/^ +/, '\t') +
     '\n' +
     '}';
