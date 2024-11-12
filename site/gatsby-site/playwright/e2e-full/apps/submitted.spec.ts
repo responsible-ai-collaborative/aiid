@@ -666,13 +666,13 @@ test.describe('Submitted reports', () => {
             embedding: null,
             epoch_date_modified: null,
             flagged_dissimilar_incidents: [],
-            incident_id: 4,
+            incident_id: 5,
             nlp_similar_incidents: [],
             title: "Incident title",
             tsne: null,
             reports: [
                 {
-                    report_number: 9,
+                    report_number: 10,
                     user: {
                         userId: "user1",
                     },

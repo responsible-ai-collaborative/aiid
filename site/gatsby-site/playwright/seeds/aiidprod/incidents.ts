@@ -94,7 +94,7 @@ const incidents: DBIncident[] = [
             9
         ],
         "Alleged deployer of AI system": [
-            "entity1"
+            "entity-1"
         ],
         "Alleged developer of AI system": [],
         "Alleged harmed or nearly harmed parties": [],
