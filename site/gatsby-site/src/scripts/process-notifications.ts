@@ -117,7 +117,7 @@ async function notificationsToNewIncidents(context: Context) {
 
                         error.message = `[Process Pending Notifications: New Incidents]: ${error.message}`;
 
-                        reporter.error(error);
+                        throw error;
                     }
                 }
             }
@@ -215,7 +215,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                     error.message = `[Process Pending Notifications: Incidents Updates]: ${error.message}`;
 
-                    reporter.error(error);
+                    throw error;
                 }
             }
         }
@@ -309,7 +309,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                     error.message = `[Process Pending Notifications: New Entity Incidents]: ${error.message}`;
 
-                    reporter.error(error);
+                    throw error;
                 }
             }
         }
@@ -380,7 +380,7 @@ async function notificationsToNewPromotions(context: Context) {
 
                     error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
 
-                    reporter.error(error);
+                    throw error;
                 }
             }
         }
@@ -402,41 +402,13 @@ export const run = async () => {
 
     let result = 0; // Pending notifications processed count
 
-    try {
-        result += await notificationsToNewIncidents(context);
-    }
-    catch (error: any) {
+    result += await notificationsToNewIncidents(context);
 
-        error.message = `[Process Pending Notifications: New Incidents]: ${error.message}`;
-        reporter.error(error);
-    }
+    result += await notificationsToNewEntityIncidents(context);
 
-    try {
-        result += await notificationsToNewEntityIncidents(context);
-    }
-    catch (error: any) {
+    result += await notificationsToIncidentUpdates(context);
 
-        error.message = `[Process Pending Notifications: New Entity Incidents]: ${error.message}`;
-        reporter.error(error);
-    }
-
-    try {
-        result += await notificationsToIncidentUpdates(context);
-    }
-    catch (error: any) {
-
-        error.message = `[Process Pending Notifications: Incidents Updates]: ${error.message}`;
-        reporter.error(error);
-    }
-
-    try {
-        result += await notificationsToNewPromotions(context);
-    }
-    catch (error: any) {
-
-        error.message = `[Process Pending Notifications: Submission Promoted]: ${error.message}`;
-        reporter.error(error);
-    }
+    result += await notificationsToNewPromotions(context);
 
     return result;
 }
@@ -449,9 +421,10 @@ if (require.main === module) {
             process.exit(0);
         } catch (error: any) {
             console.error(error);
+            reporter.error(error);
             process.exit(1);
         }
     }
-    
+
     processNotifications();
 }
