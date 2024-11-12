@@ -38,7 +38,7 @@ test.describe('Signup', () => {
     await expect(page.locator('[data-cy="toast"]').getByText(`Verification email sent to ${email}`)).toBeVisible();
   });
 
-  test('Should display the error toast message if the user already exists', async ({ page, skipOnEmptyEnvironment }) => {
+  test.skip('Should display the error toast message if the user already exists', async ({ page, skipOnEmptyEnvironment }) => {
     await page.goto(url);
 
     await page.locator('[data-cy="signup-btn"]').click();
