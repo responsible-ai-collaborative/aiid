@@ -50,15 +50,11 @@ export const seedUsers = async (users: { userId: string, roles: string[] | null 
     });
 }
 
-export const makeRequest = async (url: string, data: { query: string, variables?: Record<string, unknown> }, headers?: Record<string, string>) => {
+export const makeRequest = async (url: string, data: { query: string, variables?: Record<string, unknown> }, headers: Record<string, string> = { Authorization: `Bearer dummyToken` }) => {
 
     const request = supertest(url)
         .post('/')
-        .set('Authorization', `Bearer dummyToken`)
-
-    if (headers) {
-        request.set(headers);
-    }
+        .set(headers)
 
     return request.send(data);
 }

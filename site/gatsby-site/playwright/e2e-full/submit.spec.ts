@@ -10,6 +10,16 @@ test.describe('The Submit form', () => {
     const url = '/apps/submit';
     const parserURL = '/api/parseNews**';
 
+    // Listen for the dialog and handle it
+    test.beforeEach(async ({ page }) => {
+      page.once('dialog', async dialog => {
+        const dialogMessage = dialog.message();
+        if (dialogMessage.includes('Please confirm you are ready to submit this report. Report details cannot be changed after submission.') || dialogMessage.includes('Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.') || dialogMessage.includes('Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.') || dialogMessage.includes('このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません')) {
+          await dialog.accept();
+        }
+      });
+    });
+
     test('Successfully loads', async ({ page }) => {
         await page.goto(url);
     });
@@ -1487,4 +1497,54 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast:has-text("Please verify all information programmatically pulled from the report")')).toBeVisible();
         await expect(page.locator('.tw-toast:has-text("Error fetching news.")')).not.toBeVisible();
     });
+
+    test('Should autocomplete new entities', async ({ page, skipOnEmptyEnvironment }) => {
+
+      await conditionalIntercept(
+          page,
+          '**/parseNews**',
+          () => true,
+          parseNews,
+          'parseNews'
+      );
+
+      await trackRequest(
+          page,
+          '**/graphql',
+          (req) => req.postDataJSON().operationName == 'FindSubmissions',
+          'findSubmissions'
+      );
+
+      await page.goto(url);
+
+      await waitForRequest('findSubmissions');
+
+      await page.locator('input[name="url"]').fill(
+          `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      await page.locator('button:has-text("Fetch info")').click();
+
+      await waitForRequest('parseNews');
+
+      await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+      await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+      await page.locator('[data-cy="to-step-2"]').click();
+
+      await page.locator('[data-cy="to-step-3"]').click();
+
+      await page.locator('input[name="developers"]').fill('New entity');
+      await page.keyboard.press('Enter');
+
+      await page.locator('input[name="deployers"]').fill('New entity');
+
+      await page.locator('#deployers-tags .dropdown-item[aria-label="New entity"]').click();
+
+      await page.locator('button[type="submit"]').click();
+
+      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+      await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+  });
 });

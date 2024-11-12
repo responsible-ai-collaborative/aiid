@@ -156,48 +156,19 @@ interface SendEmailParams {
     templateId: string; // Email template ID
 }
 
-function buildEmailData(recipients: Record<string, string>[], subject: string, dynamicData: Record<string, string | Date>, emailTemplateBody: string) {
-
-    const personalizations = recipients.map((recipient) => {
-
-        const newDynamicData: any = {}
-
-        for (var key in dynamicData) {
-            if (dynamicData.hasOwnProperty(key)) {
-                newDynamicData[`${key}`] = dynamicData[key];
-            }
-        }
-
-        if (recipient.email) {
-            newDynamicData['email'] = recipient.email;
-        }
-
-        if (recipient.userId) {
-            newDynamicData['userId'] = recipient.userId;
-        }
-
-        newDynamicData.siteUrl = config.SITE_URL;
-
-        return {
-            to: { email: recipient.email },
-            subject,
-            substitutions: newDynamicData,
-        };
-    });
-
-    const emailData = {
-        from: { email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME },
-        personalizations,
-        html: emailTemplateBody,
-    }
-
-    return emailData;
-}
-
-function replacePlaceholdersWithAllowedKeys(template: string, data: { [key: string]: string }, allowedKeys: string[]): string {
+export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string }, allowedKeys: string[]): string => {
     return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
         return allowedKeys.includes(key) && key in data ? data[key] : match;
     });
+}
+
+export const mailersendBulkSend = async (emails: EmailParams[]) => {
+
+    const mailersend = new MailerSend({
+        apiKey: config.MAILERSEND_API_KEY,
+    });
+
+    await mailersend.email.sendBulk(emails);
 }
 
 export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
@@ -209,26 +180,37 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
     }
 
     try {
-        const emailData = buildEmailData(recipients, subject, dynamicData, emailTemplateBody);
 
-        const mailersend = new MailerSend({
-            apiKey: config.MAILERSEND_API_KEY,
-        });
+        const bulk: EmailParams[] = [];
 
-        const personalizations = emailData.personalizations
-            .map((personalization) => ({ data: personalization.substitutions, email: personalization.to.email }));
+        for (const recipient of recipients) {
 
-        const emailParams = new EmailParams()
-            .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
-            .setTo(recipients.map((recipient) => new Recipient(recipient.email)))
-            .setPersonalization(personalizations)
-            .setSubject(subject)
+            const personalizations = [{
+                email: recipient.email,
+                data: {
+                    ...dynamicData,
+                    email: recipient.email,
+                    userId: recipient.userId,
+                    siteUrl: config.SITE_URL,
+                }
+            }]
+
             // We have to do this because MailerSend is escaping the placeholders containing html tags
-            .setHtml(replacePlaceholdersWithAllowedKeys(emailData.html, dynamicData, ['developers', 'deployers', 'entitiesHarmed']));
-        //TODO: add a text version of the email
-        // .setText("Greetings from the team, you got this message through MailerSend.");
+            const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed'])
 
-        await mailersend.email.send(emailParams);
+            const emailParams = new EmailParams()
+                .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
+                .setTo([new Recipient(recipient.email, '')])
+                .setPersonalization(personalizations)
+                .setSubject(subject)
+                .setHtml(html);
+            //TODO: add a text version of the email
+            // .setText("Greetings from the team, you got this message through MailerSend.");
+
+            bulk.push(emailParams);
+        }
+
+        await mailersendBulkSend(bulk);
 
     } catch (error: any) {
         error.message = `[Send Email]: ${error.message}`;
