@@ -6,9 +6,15 @@ on:
         description: The Github environment to load secrets from
         type: string
         required: true
+      force-deploy:
+        description: Skip processing notifications if force deploy is true
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   execute-process:
+    if: ${{ inputs.force-deploy != true }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
