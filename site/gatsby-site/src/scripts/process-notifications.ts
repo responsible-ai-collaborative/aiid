@@ -1,8 +1,9 @@
-import { getUserAdminData, sendEmail } from "../../server/fields/common";
+import { getUserAdminData } from "../../server/fields/common";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
 import { MongoClient } from "mongodb";
+import { sendEmail } from "../../server/emails";
 
 const getRecipients = async (userIds: string[]) => {
 
