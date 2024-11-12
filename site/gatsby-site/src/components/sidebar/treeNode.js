@@ -71,9 +71,11 @@ const TreeNode = ({
             data-testid={`sidebar-link${item.current ? '-active' : ''}`}
           >
             {icon && (isCollapsed ? <span className="tooltip">{icon}</span> : <>{icon}</>)}
-            <span className={`ml-3 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
-              <Trans>{item.title}</Trans>
-            </span>
+            {!isCollapsed && (
+              <span className={`ml-3 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                <Trans>{item.title}</Trans>
+              </span>
+            )}
           </Link>
         ) : (
           <span className="tree-node-title ml-3">
@@ -81,7 +83,7 @@ const TreeNode = ({
           </span>
         )}
         {/* Toggle Icon (if it has children) */}
-        {hasChildren && (
+        {hasChildren && !isCollapsed && (
           <span
             className={`mr-2 ${isMobile ? 'text-white' : ''}`}
             onClick={() => toggleExpand(item)} // Only clicking the arrow expands/collapses

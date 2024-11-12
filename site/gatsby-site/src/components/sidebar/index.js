@@ -130,6 +130,11 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
     });
   };
 
+  const toggleAllItems = () => {
+    setExpandedNodes([]);
+    localStorage.setItem('sidebarExpandedNodes', JSON.stringify({}));
+  };
+
   useEffect(() => {
     if (!manual) {
       collapseMenu(defaultCollapsed);
@@ -312,6 +317,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
                 // that state should be preserved across pages.
                 setManual(defaultCollapsed == isCollapsed);
                 collapseMenu(!isCollapsed);
+                toggleAllItems();
               }}
             />
           </div>
