@@ -98,8 +98,8 @@ const incidents: DBIncident[] = [
         ],
         "Alleged developer of AI system": [],
         "Alleged harmed or nearly harmed parties": [],
-        description: "Kronos’s scheduling algorithm and its use by Starbucks managers allegedly negatively impacted financial and scheduling stability for Starbucks employees, which disadvantaged wage workers.",
-        title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
+        description: "Test description 4",
+        title: "Test title 4",
         editors: [
             "619b47ea5eed5334edfa3bbc"
         ],
