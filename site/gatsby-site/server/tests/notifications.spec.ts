@@ -10,7 +10,7 @@ import { IncidentFilterType, IncidentInsertType, IncidentUpdateType, PromoteSubm
 import { ObjectId } from 'bson';
 import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
-import { run } from '../../src/scripts/process-notifications';
+import { processNotifications } from '../../src/scripts/process-notifications';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -44,7 +44,7 @@ describe(`Notifications`, () => {
 
         const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
-        await run();
+        await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(0);
     });
@@ -150,7 +150,7 @@ describe(`Notifications`, () => {
         const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
 
-        const result = await run();
+        const result = await processNotifications();
 
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
@@ -276,7 +276,7 @@ describe(`Notifications`, () => {
 
         const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
-        const result = await run();
+        const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -400,7 +400,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
-        const result = await run();
+        const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -519,7 +519,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
-        const result = await run();
+        const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -639,7 +639,7 @@ describe(`Notifications`, () => {
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
         const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
-        const result = await run();
+        const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -1297,7 +1297,7 @@ describe(`Notifications`, () => {
 
         const mockMailersendBulkSend = jest.spyOn(emails, 'mailersendBulkSend').mockResolvedValue();
 
-        const result = await run();
+        const result = await processNotifications();
 
         expect(result).toBe(1);
 
@@ -1500,7 +1500,7 @@ describe(`Notifications`, () => {
         });
 
 
-        await expect(run()).rejects.toThrow('Failed to send email');
+        await expect(processNotifications()).rejects.toThrow('Failed to send email');
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
 
         const result = await makeRequest(url, {

@@ -395,7 +395,7 @@ async function notificationsToNewPromotions(context: Context) {
     return result;
 }
 
-export const run = async () => {
+export const processNotifications = async () => {
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
@@ -414,18 +414,19 @@ export const run = async () => {
     return result;
 }
 
-if (require.main === module) {
-    async function processNotifications() {
-        try {
-            await run();
-            console.log('Process Pending Notifications: Completed.');
-            process.exit(0);
-        } catch (error: any) {
-            console.error(error);
-            reporter.error(error);
-            process.exit(1);
-        }
+export const run = async () => {
+    try {
+        await processNotifications();
+        console.log('Process Pending Notifications: Completed.');
+        process.exit(0);
+    } catch (error: any) {
+        console.error(error);
+        reporter.error(error);
+        process.exit(1);
     }
+}
 
-    processNotifications();
+if (require.main === module) {
+
+    run();
 }
