@@ -128,7 +128,7 @@ let tokenExpiration: number | null = null;
  */
 const getAccessToken = async () => {
 
-    // do not wait for the last minute to get a new token
+    // Refresh the authentication token well before expiration to avoid interruptions\
     if (cachedToken && tokenExpiration && Date.now() < tokenExpiration * 1000 + 5 * 60 * 1000) {
         return cachedToken;
     }
