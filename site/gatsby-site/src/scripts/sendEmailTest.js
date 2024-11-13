@@ -1,5 +1,8 @@
 import { sendEmail } from '../../server/fields/common.ts';
 
+// from site/gatsby-site, run with
+// TEST_EMAIL_TO_ADDRESS=<address> dotenv run <path to>/npx ts-node src/scripts/sendEmailTest.js
+
 const email = process.env.TEST_EMAIL_TO_ADDRESS;
 
 if (!email) {
