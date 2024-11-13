@@ -1,4 +1,4 @@
-  import { 
+import { 
   ignoreWhitespace,
   insertContent,
   bodyStyle,
@@ -6,7 +6,7 @@
   headerStyle,
   headerTitleStyle,
   mainActionLink,
-} from '../shared.ts'
+} from './shared'
 
 const getEmailTemplate = () => {
   
