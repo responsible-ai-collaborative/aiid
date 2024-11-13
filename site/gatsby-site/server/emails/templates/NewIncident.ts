@@ -51,7 +51,7 @@ const getEmailTemplate = () => {
       <p>
         A <a href="{{incidentUrl}}">new incident</a> has been added to the AI incident database.
         You can manage your subscriptions to these notifications from
-        <a href="">your account page</a>.
+        <a href="https://incidentdatabase.ai/account/">your account page</a>.
       </p>
 
       <div style="${incidentStyle}">
@@ -66,9 +66,9 @@ const getEmailTemplate = () => {
         </p>
         <p style="margin-bottom: 0px; line-height: 1.75;">
           <strong>Alleged</strong>:
-          <a href="" style="${entityStyle}">{{developers}}</a> developed an AI system deployed by
-          <a href="" style="${entityStyle}">{{deployers}}</a> which harmed 
-          <a href="" style="${entityStyle}">{{entitiesHarmed}}</a>.
+          <span style="${entityStyle}">{{developers}}</span> developed an AI system deployed by
+          <span style="${entityStyle}">{{deployers}}</span> which harmed 
+          <span style="${entityStyle}">{{entitiesHarmed}}</span>.
         </p>
       </div>
       <p style="margin-bottom: 32px">
