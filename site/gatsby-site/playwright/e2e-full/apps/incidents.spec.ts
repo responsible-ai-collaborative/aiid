@@ -80,69 +80,69 @@ test.describe('Incidents App', () => {
       title: 'Test title',
       description: 'New description',
     });
+  });
 
-    test('Entities should link to entities page', async ({ page }) => {
+  test('Entities should link to entities page', async ({ page }) => {
 
-      await init();
-      await page.goto(url);
+    await init();
+    await page.goto(url);
 
-      await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
-      await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
+    await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
+    await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
 
-      const { data: { incidents } } = await query({
-        query: gql`{
-            incidents {
-              incident_id
-              title
-              description
-              date
-              AllegedDeployerOfAISystem {
-                entity_id
-                name
-              }
-              AllegedDeveloperOfAISystem {
-                entity_id
-                name
-              }
-              AllegedHarmedOrNearlyHarmedParties {
-                entity_id
-                name
-              }
-              implicated_systems {
-                entity_id
-                name
-              }
+    const { data: { incidents } } = await query({
+      query: gql`{
+          incidents {
+            incident_id
+            title
+            description
+            date
+            AllegedDeployerOfAISystem {
+              entity_id
+              name
             }
-          }`
-      });
-
-      const rowLocator = page.locator('[data-cy="row"]').first();
-      const firstIncident = incidents[0];
-
-      for (const [index, deployer] of firstIncident.AllegedDeployerOfAISystem.entries()) {
-
-        const link = await rowLocator.locator('[data-cy="cell"]').nth(4).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-        expect(link).toContain(`/entities/${deployer.entity_id}`);
-      }
-
-      for (const [index, developer] of firstIncident.AllegedDeveloperOfAISystem.entries()) {
-
-        const link = await rowLocator.locator('[data-cy="cell"]').nth(5).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-        expect(link).toContain(`/entities/${developer.entity_id}`);
-      }
-
-      for (const [index, harmed] of firstIncident.AllegedHarmedOrNearlyHarmedParties.entries()) {
-
-        const link = await rowLocator.locator('[data-cy="cell"]').nth(6).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-        expect(link).toContain(`/entities/${harmed.entity_id}`);
-      }
-
-      for (const [index, implicated_system] of firstIncident.implicated_systems.entries()) {
-
-        const link = await rowLocator.locator('[data-cy="cell"]').nth(7).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-        expect(link).toContain(`/entities/${implicated_system.entity_id}`);
-      }
+            AllegedDeveloperOfAISystem {
+              entity_id
+              name
+            }
+            AllegedHarmedOrNearlyHarmedParties {
+              entity_id
+              name
+            }
+            implicated_systems {
+              entity_id
+              name
+            }
+          }
+        }`
     });
+
+    const rowLocator = page.locator('[data-cy="row"]').first();
+    const firstIncident = incidents[0];
+
+    for (const [index, deployer] of firstIncident.AllegedDeployerOfAISystem.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(4).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${deployer.entity_id}`);
+    }
+
+    for (const [index, developer] of firstIncident.AllegedDeveloperOfAISystem.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(5).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${developer.entity_id}`);
+    }
+
+    for (const [index, harmed] of firstIncident.AllegedHarmedOrNearlyHarmedParties.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(6).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${harmed.entity_id}`);
+    }
+
+    for (const [index, implicated_system] of firstIncident.implicated_systems.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(7).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${implicated_system.entity_id}`);
+    }
   });
 
   test('Successfully assigns similar/dissimilar incidents to incident 3', async ({ page, login }) => {
@@ -216,56 +216,6 @@ test.describe('Incidents App', () => {
       editor_similar_incidents: [1],
       editor_dissimilar_incidents: [2],
     });
-  });
-
-  test('Entities should link to entities page', async ({ page }) => {
-
-    await page.goto(url);
-
-    await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
-    await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
-
-    const incidents = await query({
-      query: gql`{
-            incidents {
-              title
-              description
-              editor_dissimilar_incidents
-              editor_similar_incidents
-              AllegedDeployerOfAISystem {
-                entity_id
-              }
-              AllegedDeveloperOfAISystem {
-                entity_id
-              }
-              AllegedHarmedOrNearlyHarmedParties {
-                entity_id
-              }
-            }
-          }`
-    });
-
-    const firstIncident = incidents.data.incidents[0];
-    const firstRow = page.locator('[data-cy="row"]').first();
-
-    // AllegedDeployerOfAISystem
-    for (const [index, deployer] of firstIncident.AllegedDeployerOfAISystem.entries()) {
-      const link = await firstRow.locator('[data-cy=cell]').nth(4).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-      expect(link).toContain(`/entities/${deployer.entity_id}/`);
-    }
-
-    // AllegedDeveloperOfAISystem
-    for (const [index, developer] of firstIncident.AllegedDeveloperOfAISystem.entries()) {
-      const link = await firstRow.locator('[data-cy=cell]').nth(5).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-      expect(link).toContain(`/entities/${developer.entity_id}/`);
-    }
-
-    // AllegedHarmedOrNearlyHarmedParties
-    for (const [index, harmed] of firstIncident.AllegedHarmedOrNearlyHarmedParties.entries()) {
-      const link = await firstRow.locator('[data-cy=cell]').nth(6).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-      expect(link).toContain(`/entities/${harmed.entity_id}/`);
-    }
-
   });
 
   test('Should display a list of live incidents', async ({ page }) => {
@@ -357,7 +307,7 @@ test.describe('Incidents App', () => {
     const rowLocator = page.locator('[data-cy="row"]').first();
     const firstIncident = incidents[0];
 
-    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(7, { timeout: 10000 });
+    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(8, { timeout: 10000 });
 
     await expect(rowLocator.locator('[data-cy="cell"]').nth(0)).toHaveText(`Incident ${firstIncident.incident_id}`);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(1)).toHaveText(firstIncident.title);
@@ -403,7 +353,7 @@ test.describe('Incidents App', () => {
     const rowLocator = page.locator('[data-cy="row"]').first();
     const firstIncident = incidents[0];
 
-    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(7, { timeout: 10000 });
+    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(8, { timeout: 10000 });
 
     await expect(rowLocator.locator('[data-cy="cell"]').nth(0)).toHaveText(`Incident ${firstIncident.incident_id}`);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(1)).toHaveText(firstIncident.title);

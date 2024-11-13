@@ -11,7 +11,7 @@ export interface Context {
   client: MongoClient,
 }
 
-export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors'>
+export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors' | 'implicated_systems'>
   & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[], implicated_systems: string[] }
   & { reports: number[] }
   & { editors: string[] }
@@ -29,7 +29,7 @@ export type DBReport = Omit<Report, 'user'>
 
 export type DBUser = Omit<User, 'adminData'>;
 
-export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors'>
+export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed_parties' | 'user' | 'incident_editors' | 'implicated_systems'>
   & { developers: string[] }
   & { deployers: string[] }
   & { harmed_parties: string[] }
