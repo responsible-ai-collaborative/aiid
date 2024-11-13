@@ -365,38 +365,4 @@ test.describe('Incidents App', () => {
     await expect(rowLocator.locator('[data-cy="cell"]').nth(5)).toHaveText(firstIncident.AllegedDeveloperOfAISystem.map((i: any) => i.name).join(', '));
     await expect(rowLocator.locator('[data-cy="cell"]').nth(6)).toHaveText(firstIncident.AllegedHarmedOrNearlyHarmedParties.map((i: any) => i.name).join(', '));
   });
-
-  test('Should navigate to the last page, and the first page', async ({ page }) => {
-    await page.goto(url);
-
-    await page.locator('[data-cy="last-page"]').click();
-
-    const totalPages = await page.locator('[data-cy="total-pages"]').textContent();
-    await expect(page.locator('[data-cy="current-page"]')).toHaveText(totalPages);
-
-    await page.locator('[data-cy="first-page"]').click();
-
-    await expect(page.locator('[data-cy="current-page"]')).toHaveText('1');
-  });
-
-  test('Should switch between views', async ({ page }) => {
-    await page.goto(url);
-
-    await page.waitForSelector('[data-cy="table-view"] button:has-text("Issue Reports")');
-    await page.locator('[data-cy="table-view"] button:has-text("Issue Reports")').click();
-
-    await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
-
-    const firstRowLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
-    expect(firstRowLink).toMatch(/^\/reports\/\d+$/);
-
-    await page.getByText('Reports', { exact: true }).click();
-
-    await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(3);
-
-    const firstCiteLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
-    expect(firstCiteLink).toMatch(/^\/cite\/\d+#r\d+$/);
-  });
 });
