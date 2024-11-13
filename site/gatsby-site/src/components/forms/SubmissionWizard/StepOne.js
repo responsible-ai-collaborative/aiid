@@ -28,6 +28,7 @@ import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
 import { debounce } from 'debounce';
+import SubmissionButton from './SubmissionButton';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -433,7 +434,7 @@ const FormDetails = ({
           </Button>
         </div>
         <div className="flex justify-end mt-4 gap-2">
-          <Button
+          <SubmissionButton
             data-cy="submit-step-1"
             disabled={isSubmitting || parsingNews}
             onClick={() => {
@@ -448,14 +449,7 @@ const FormDetails = ({
                 submitForm
               );
             }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
-              </div>
-            )}
-            <Trans>Submit</Trans>
-          </Button>
+          />
         </div>
       </Form>
 
