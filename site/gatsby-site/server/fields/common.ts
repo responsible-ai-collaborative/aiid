@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import templates from "../emails/templates";
 import config from "../config";
 import * as reporter from '../reporter';
@@ -90,18 +90,19 @@ export interface UserAdminData {
     userId?: string;
 }
 
-export const getUserAdminData = async (userId: string) => {
+export const getUserAdminData = async (userId: string, context: Context) => {
 
-    const userApiResponse = await apiRequest({ path: `/users/${userId}` });
+    const authUsersCollection = context.client.db('auth').collection("users");
+    const authUser = await authUsersCollection.findOne({ _id: new ObjectId(userId) });
 
     const response: UserAdminData = {};
 
-    if (userApiResponse.data) {
+    if (authUser) {
 
-        response.email = userApiResponse.data.email;
-        response.creationDate = new Date(userApiResponse.creation_date * 1000);
-        response.lastAuthenticationDate = new Date(userApiResponse.last_authentication_date * 1000);
-        response.disabled = userApiResponse.disabled;
+        response.email = authUser.email;
+        response.creationDate = new Date(); //TODO: find a way to get this data
+        response.lastAuthenticationDate = new Date(); //TODO: find a way to get this data
+        response.disabled = false;
     }
 
     return response;
