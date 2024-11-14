@@ -16,7 +16,7 @@ import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { useUserContext } from '../../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { getUnixTime } from 'date-fns';
 
 function NewIncidentPage() {

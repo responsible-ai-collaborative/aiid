@@ -3,7 +3,7 @@ import IncidentReportForm, { schema } from '../../components/forms/IncidentRepor
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useLogReportHistory } from '../../hooks/useLogReportHistory';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Spinner, Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,

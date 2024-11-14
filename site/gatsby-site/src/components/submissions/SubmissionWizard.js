@@ -5,7 +5,7 @@ import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 const SubmissionWizard = ({
   submitForm,

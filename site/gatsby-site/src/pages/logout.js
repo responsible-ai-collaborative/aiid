@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Spinner } from 'flowbite-react';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { navigate } from 'gatsby';
 import { Trans } from 'react-i18next';
 import useLocalizePath from '../components/i18n/useLocalizePath';

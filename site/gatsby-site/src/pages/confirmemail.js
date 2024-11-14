@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import Link from '../components/ui/Link';
 import { Spinner } from 'flowbite-react';

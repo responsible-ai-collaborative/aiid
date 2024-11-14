@@ -7,7 +7,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import Card from 'elements/Card';
 import Envelope from '../../images/neural-net-envelope.png';

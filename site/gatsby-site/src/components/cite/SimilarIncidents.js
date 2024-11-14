@@ -7,7 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { FIND_FULL_INCIDENT, FLAG_INCIDENT_SIMILARITY } from '../../graphql/incidents';
 import md5 from 'md5';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 import Button from '../../elements/Button';

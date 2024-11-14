@@ -12,7 +12,7 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { debounce } from 'debounce';
 import SubmissionButton from './SubmissionButton';
 

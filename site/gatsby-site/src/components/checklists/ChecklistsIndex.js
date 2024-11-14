@@ -16,7 +16,7 @@ import gql from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 
 import CardSkeleton from 'elements/Skeletons/Card';
-import { useUserContext } from '../../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import {
   DeleteButton,

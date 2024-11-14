@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';

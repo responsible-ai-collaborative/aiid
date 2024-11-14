@@ -13,7 +13,7 @@ import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 function EditCitePage(props) {

@@ -8,7 +8,7 @@ import {
   faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
 import { Button, ToggleSwitch } from 'flowbite-react';

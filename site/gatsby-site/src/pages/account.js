@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spinner } from 'flowbite-react';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import UserSubscriptions from 'components/UserSubscriptions';

@@ -9,7 +9,7 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import lodash from 'lodash';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 const supportedRoles = [
   { name: 'admin', description: 'All permissions' },

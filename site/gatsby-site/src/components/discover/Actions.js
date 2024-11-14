@@ -15,7 +15,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import { getUnixTime } from 'date-fns';
 import useLocalizePath from 'components/i18n/useLocalizePath';

@@ -9,7 +9,7 @@ import {
   NumericArrayParam,
 } from 'use-query-params';
 import Link from 'components/ui/Link';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse, getUnixTime } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';

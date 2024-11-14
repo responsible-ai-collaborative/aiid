@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Spinner } from 'flowbite-react';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

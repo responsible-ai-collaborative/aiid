@@ -7,7 +7,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { useMenuContext } from 'contexts/MenuContext';
 import { graphql, useStaticQuery } from 'gatsby';
 

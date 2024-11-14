@@ -1,4 +1,4 @@
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
 import { getUnixTime } from 'date-fns';

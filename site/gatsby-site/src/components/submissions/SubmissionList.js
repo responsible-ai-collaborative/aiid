@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Badge, Button, Select } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,
   useFilters,
