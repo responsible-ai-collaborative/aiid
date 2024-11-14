@@ -579,5 +579,9 @@
   "This is the list of taxonomies supported in AIID": "Ceci est la liste des taxonomies prises en charge dans AIID",
   "Incident {{number}}": "Incident {{number}}",
   "forms": "formes",
-  "Date": "Date"
+  "Date": "Date",
+  "Language": "Langue",
+  "Email": "E-mail",
+  "Subscribe": "S'abonner",
+  "Tags": "Étiquettes"
 }

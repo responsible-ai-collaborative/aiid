@@ -579,5 +579,9 @@
   "About Apps": "アプリについて",
   "a collection of intelligent system harms in the real world": "現実世界のインテリジェントシステムの危害のコレクション",
   "Incident {{cell}}": "インシデント {{cell}}",
-  "Please <1>log in</1> to subscribe": "購読するには <1>ログイン</1> してください"
+  "Please <1>log in</1> to subscribe": "購読するには <1>ログイン</1> してください",
+  "Database Roadmap": "データベースのロードマップ",
+  "Initial Collection Methodology": "最初の収集方法",
+  "Project and Community": "プロジェクトとコミュニティ",
+  "Submission Queue": "登録待ち一覧"
 }

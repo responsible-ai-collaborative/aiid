@@ -578,5 +578,10 @@
   "Incident {{cell}}": "Incidente {{cell}}",
   "Please <1>log in</1> to subscribe": "Por favor, <1>inicia sesión</1> para suscribirte",
   "Email": "Email",
-  "Date": "Fecha"
+  "Date": "Fecha",
+  "Database Roadmap": "Hoja de ruta de la base de datos",
+  "Initial Collection Methodology": "Metodología de recopilación inicial",
+  "Project and Community": "Proyecto y Comunidad",
+  "Submission Queue": "Cola de envío",
+  "Tags": "Etiquetas"
 }
