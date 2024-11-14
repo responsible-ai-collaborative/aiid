@@ -22,7 +22,7 @@ const Account = () => {
           <Spinner />
           <Trans>Loading...</Trans>
         </div>
-      ) : user && user.isLoggedIn && user.profile.email ? (
+      ) : user && !loading ? (
         <>
           <div className="block p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
             <h2>

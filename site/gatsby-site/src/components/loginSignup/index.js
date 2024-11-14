@@ -7,18 +7,12 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 const LoginSignup = ({ className = '', location = null }) => {
   const { user, loading } = useUserContext();
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsUserLoggedIn(!!user?.profile.email);
-  }, [user]);
-
   if (loading) return <span></span>;
 
   return (
     <>
       <div className={`flex items-center ${className || ''}`}>
-        {isUserLoggedIn ? <Subscriptions /> : <Subscribe location={location} />}
+        {user ? <Subscriptions /> : <Subscribe location={location} />}
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   faEdit,
   faPlus,
@@ -27,17 +27,11 @@ function Tools({
   isLiveData,
   setIsLiveData,
 }) {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
   const { t } = useTranslation();
 
-  const { isRole, user } = useUserContext();
-
-  useEffect(() => {
-    setIsUserLoggedIn(!!user?.profile.email);
-  }, [user]);
+  const { isRole, loading, user } = useUserContext();
 
   return (
     <Card>
@@ -95,7 +89,7 @@ function Tools({
           <Trans>Discover</Trans>
         </Button>
         <CitationFormat incidentReports={incidentReports} incident={incident} />
-        {isUserLoggedIn && isRole('incident_editor') && (
+        {!loading && user && isRole('incident_editor') && (
           <>
             <Button
               className="hover:no-underline"
@@ -134,7 +128,7 @@ function Tools({
             )}
           </>
         )}
-        {isUserLoggedIn && isRole('taxonomy_editor') && (
+        {!loading && user && isRole('taxonomy_editor') && (
           <Button
             color="gray"
             href={`/apps/csettool/${incident.incident_id}`}
@@ -149,7 +143,7 @@ function Tools({
             <Trans>CSET Annotators Table</Trans>
           </Button>
         )}
-        {isUserLoggedIn && isRole('incident_editor') && (
+        {!loading && user && isRole('incident_editor') && (
           <Button
             color="gray"
             href={`/incidents/new?incident_id=${incident.incident_id}`}
@@ -179,7 +173,7 @@ function Tools({
           />
           <Trans>View History</Trans>
         </Button>
-        {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
+        {!loading && user && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
           <div className="flex items-center">
             <ToggleSwitch
               checked={isLiveData}
