@@ -28,5 +28,11 @@
   "*Description is required": "*La description est requise",
   "*Incident Date is required": "*Date de l'incident requise",
   "*Incident Date required": "*Date de l'incident requise",
-  "*Incident ID(s) must be a number": "*L'ID de l'incident doit être un nombre"
+  "*Incident ID(s) must be a number": "*L'ID de l'incident doit être un nombre",
+  "*Text must have at least 80 characters": "*Le texte doit comporter au moins 80 caractères",
+  "*Text can’t be longer than 50000 characters": "*Le texte ne peut pas comporter plus de 50000 caractères",
+  "Please review report. Some data is missing.": "Veuillez vérifier le rapport. Certaines données manquent.",
+  "Please review submission. Some data is missing.": "Veuillez vérifier la soumission. Certaines données manquent.",
+  "Some data is missing.": "Certaines données manquent.",
+  "Please review. Some data is missing.": "Veuillez vérifier. Certaines données manquent."
 }
