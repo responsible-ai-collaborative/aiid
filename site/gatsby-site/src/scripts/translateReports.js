@@ -23,14 +23,12 @@ const reporter = { log: console.log, error: console.error, warn: console.warn };
     try {
       await mongoClient.connect();
     } catch (mongoError) {
-      console.error('Error connecting to MongoDB:', mongoError.message);
-      return;
+      throw new Error(`Error connecting to MongoDB: ${mongoError.message}`);
     }
 
     // Google Translate client setup
     if (!config.i18n.translateApikey) {
-      console.error('Error: Google Translate API key is missing.');
-      return;
+      throw new Error('Google Translate API (GOOGLE_TRANSLATE_API_KEY) key is missing.');
     }
     const translateClient = new Translate({ key: config.i18n.translateApikey });
 
