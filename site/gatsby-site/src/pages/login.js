@@ -3,41 +3,38 @@ import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
 import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import HeadContent from 'components/HeadContent';
+import { navigate } from 'gatsby';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
-  password: Yup.string().required('required'),
 });
 
-const Login = (props) => {
+const Login = () => {
   const {
     user,
     loading,
-    actions: { loginWithEmail, loginWithFacebook },
+    actions: { logIn },
   } = useUserContext();
 
-  const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
+  const addToast = useToastContext();
 
   const [redirectTo, setRedirectTo] = useState(null);
 
   const { t } = useTranslation();
-
-  const loginRedirectUri = `${props.location.origin}/logincallback`;
 
   const [{ redirectTo: redirectToParam }] = useQueryParams({
     redirectTo: withDefault(StringParam, '/'),
   });
 
   useEffect(() => {
-    if (!loading) {
-      const missingNames = !user.customData.first_name || !user.customData.last_name;
+    if (!loading && user) {
+      const missingNames = !user.first_name || !user.last_name;
 
       const isSignup = !!localStorage.getItem('signup');
 
@@ -49,14 +46,6 @@ const Login = (props) => {
     }
   }, [loading]);
 
-  const clickLoginWithFacebook = async () => {
-    setDisplayFacebookSpinner(true);
-
-    await loginWithFacebook({ loginRedirectUri, redirectTo });
-
-    setDisplayFacebookSpinner(false);
-  };
-
   return (
     <>
       {loading ? (
@@ -64,11 +53,11 @@ const Login = (props) => {
           <Spinner />
           <Trans>Loading...</Trans>
         </div>
-      ) : user && user.isLoggedIn && user.profile.email ? (
+      ) : user ? (
         <>
           <p>
             <Trans ns="login">Logged in as </Trans>
-            {user.profile.email}
+            {user.email}
           </p>
           <Link to="/logout">
             <Trans ns="login">Log out</Trans>
@@ -77,10 +66,20 @@ const Login = (props) => {
       ) : (
         <>
           <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ email: '' }}
             validationSchema={LoginSchema}
-            onSubmit={async ({ email, password }, { setSubmitting }) => {
-              await loginWithEmail({ email, password, redirectTo });
+            onSubmit={async ({ email }, { setSubmitting }) => {
+              const result = await logIn(email, redirectTo || '');
+
+              if (result.ok) {
+                navigate('/verify-request/?email=' + email);
+              } else {
+                addToast({
+                  message: t('An unknown error has occurred'),
+                  severity: SEVERITY.danger,
+                  error: result.error,
+                });
+              }
 
               setSubmitting(false);
             }}
@@ -111,27 +110,9 @@ const Login = (props) => {
                   />
                 </div>
 
-                <div className="mb-4" id="formBasicPassword">
-                  <TextInputGroup
-                    type="password"
-                    label={t('Password', { ns: 'login' })}
-                    placeholder={t('Password', { ns: 'login' })}
-                    name="password"
-                    value={values.password}
-                    handleChange={handleChange}
-                    handleBlur={handleBlur}
-                    values={values}
-                    errors={errors}
-                    touched={touched}
-                  />
-                  <Link to="/forgotpassword" className="text-sm">
-                    <Trans ns="login">Forgot password?</Trans>
-                  </Link>
-                </div>
-
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !isValid || displayFacebookSpinner}
+                  disabled={isSubmitting || !isValid}
                   className="w-full"
                   data-cy="login-btn"
                 >
@@ -147,26 +128,6 @@ const Login = (props) => {
           <div className="my-2 flex justify-center">
             <Trans>or</Trans>
           </div>
-
-          <Button
-            onClick={clickLoginWithFacebook}
-            className={'w-full'}
-            disabled={displayFacebookSpinner}
-          >
-            <div className={'flex justify-center items-center gap-2'}>
-              {displayFacebookSpinner ? (
-                <Spinner />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faFacebook}
-                  color={'#ffffff'}
-                  className={'pointer fa fa-lg'}
-                  title="Login with Facebook"
-                />
-              )}
-              <Trans ns="login">Login with Facebook</Trans>
-            </div>
-          </Button>
 
           <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}

@@ -1,6 +1,7 @@
 import { EmailParams, MailerSend, Recipient } from "mailersend"
 import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
 const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!, {
   serverApi: {
@@ -26,9 +27,6 @@ export const sendVerificationRequest = async ({ identifier: email, url }: { iden
 }
 
 export const getAuthConfig = async (): Promise<NextAuthOptions> => {
-
-  // we have to do a dynamic import here because MongoDBAdapter is ESM only
-  const { MongoDBAdapter } = await import("@auth/mongodb-adapter");
 
   return {
     providers: [
@@ -81,6 +79,12 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
           }
         )
       },
+    },
+    pages: {
+      signIn: '/login',
+      signOut: '/logout',
+      verifyRequest: '/verify-request',
+      newUser: '/account', 
     },
     debug: true,
   }

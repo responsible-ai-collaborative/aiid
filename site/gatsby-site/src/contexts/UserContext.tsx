@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
-import { signOut, useSession } from "next-auth/react";
+import { signOut, signIn, useSession, getCsrfToken, SignInResponse } from "next-auth/react";
 
 interface User {
   roles?: string[];
@@ -15,7 +15,9 @@ interface UserContextValue {
   isRole: (role: string) => boolean;
   isAdmin: boolean;
   actions: {
-    logout: () => Promise<void>;
+    logOut: () => Promise<void>;
+    logIn: (email: string, callbackUrl: string) => Promise<SignInResponse | undefined>;
+    signUp: (email: string, callbackUrl: string) => Promise<SignInResponse | undefined>;
   };
 }
 
@@ -56,27 +58,24 @@ interface UserContextProviderProps {
   children: React.ReactNode;
 }
 
-export const UserContext = React.createContext<UserContextValue>({
-  loading: true,
-  user: null,
-  isRole: () => false,
-  isAdmin: false,
-  actions: {
-    logout: async () => { },
-  },
-});
+export const UserContext = React.createContext<UserContextValue | undefined>(undefined);
 
-export const useUserContext = () => useContext(UserContext);
+export const useUserContext = () => {
+
+  const context = useContext(UserContext);
+
+  if (context === undefined) {
+    throw new Error('useUserContext must be used within a UserContextProvider');
+  }
+
+  return context;
+}
 
 export const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>({});
   const { t } = useTranslation();
-
-  const logout = async (): Promise<void> => {
-    await signOut();
-  };
 
   useEffect(() => {
     if (session === null) {
@@ -102,7 +101,21 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({ childr
     },
     isAdmin: Boolean(user?.roles?.includes('admin')),
     actions: {
-      logout,
+      logOut: async () => {
+        await signOut({ redirect: false });
+      },
+      logIn: async (email: string, callbackUrl: string) => {
+
+        const result = await signIn('http-email', { email, redirect: false, callbackUrl });
+
+        return result;
+      },
+      signUp: async (email: string, callbackUrl: string) => {
+
+        const result = await signIn('http-email', { email, redirect: false, callbackUrl });
+
+        return result;
+      },
     },
   };
 
