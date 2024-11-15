@@ -93,10 +93,6 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({ childr
     loading,
     user,
     isRole(role: string): boolean {
-      if (typeof window !== 'undefined' && window.localStorage.getItem('__CUSTOM_DATA_MOCK')) {
-        const customData: CustomDataMock = JSON.parse(window.localStorage.getItem('__CUSTOM_DATA_MOCK') || '{}');
-        return customData.roles.includes('admin') || customData.roles.includes(role);
-      }
       return Boolean(user?.roles?.includes('admin') || user?.roles?.includes(role));
     },
     isAdmin: Boolean(user?.roles?.includes('admin')),

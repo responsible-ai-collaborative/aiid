@@ -6,6 +6,7 @@ import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
 import * as memoryMongo from './memory-mongo';
+import * as crypto from 'node:crypto';
 
 declare module '@playwright/test' {
     interface Request {
@@ -22,30 +23,73 @@ type TestFixtures = {
     retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
 };
 
-const getUserIdFromLocalStorage = async (page: Page) => {
-
-    const storage = await page.context().storageState();
-
-    for (const origin of storage.origins) {
-        for (const storage of origin.localStorage) {
-            if (storage.value == 'local-userpass') {
-                const match = storage.name.match(/user\(([^)]+)\):providerType/);
-                return match?.[1];
-            }
-        }
-    }
+export function randomString(size: number) {
+    const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2)
+    const r = (a: string, i: number): string => a + i2hex(i)
+    const bytes = crypto.getRandomValues(new Uint8Array(size))
+    return Array.from(bytes).reduce(r, "")
 }
-const getAccessTokenFromLocalStorage = async (page: Page, userId: string) => {
 
-    const storage = await page.context().storageState();
+export function hashToken(token: string) {
 
-    for (const origin of storage.origins) {
-        for (const storage of origin.localStorage) {
-            if (storage.name.endsWith(`user(${userId}):accessToken`)) {
-                return storage.value;
-            }
-        }
-    }
+    return crypto.createHash("sha256")
+        .update(`${token}${process.env.NEXTAUTH_SECRET}`)
+        .digest("hex");
+}
+
+async function generateMagicLink(email: string) {
+
+    const token = randomString(32);
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await memoryMongo.execute(async (client) => {
+
+        const collection = client.db('auth').collection('verification_tokens');
+        const hashedToken = hashToken(token); // next auth stores the hashed token
+
+        await collection.insertOne({
+            identifier: email,
+            token: hashedToken,
+            expires,
+        });
+    });
+
+    const baseUrl = process.env.NEXTAUTH_URL;
+    const magicLink = `${baseUrl}/api/auth/callback/http-email?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=${token}&email=${encodeURIComponent(email)}`;
+
+    return magicLink;
+}
+
+async function getUserIdFromAuth(email: string) {
+
+    let id: string = null;
+
+    await memoryMongo.execute(async (client) => {
+
+        const collection = client.db('auth').collection('users');
+
+        const user = await collection.findOne({ email });
+
+        id = user._id.toString();
+    });
+
+    return id;
+}
+
+async function getSessionToken(email: string) {
+
+    let token: string = null;
+
+    await memoryMongo.execute(async (client) => {
+
+        const collection = client.db('auth').collection('sessions');
+
+        const session = await collection.findOne({}, { sort: { expires: -1 } });
+
+        token = session.token;
+    });
+
+    return token;
 }
 
 export const test = base.extend<TestFixtures>({
@@ -72,23 +116,18 @@ export const test = base.extend<TestFixtures>({
 
         await use(async (email, password, { customData } = {}) => {
 
+            const magicLink = await generateMagicLink(email);
+
             await page.context().clearCookies();
 
-            await loginSteps(page, email, password);
+            await page.goto(magicLink);
 
-            const userId = await getUserIdFromLocalStorage(page);
+            const userId = await getUserIdFromAuth(email);
 
-            const accessToken = await getAccessTokenFromLocalStorage(page, userId!);
+            const sessionToken = await getSessionToken(userId);
 
             if (customData) {
 
-                await page.evaluate(({ customData }) => {
-
-                    localStorage.setItem('__CUSTOM_DATA_MOCK', JSON.stringify(customData));
-
-                }, { customData });
-
-                // upsert user with custom data
                 await memoryMongo.execute(async (client) => {
 
                     const db = client.db('customData');
@@ -98,7 +137,7 @@ export const test = base.extend<TestFixtures>({
                 });
             }
 
-            return [userId!, accessToken!];
+            return [userId!, sessionToken!];
 
             // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
             // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
