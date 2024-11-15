@@ -3,7 +3,7 @@ name: Translate Reports
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * *" # Run every day at 8 AM GMT
+    - cron: "0 5 * * *" # Run every day at 5 AM GMT
 
 jobs:
   translate:
