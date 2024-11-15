@@ -17,7 +17,7 @@
   &nbsp;
   <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/staging.yml/badge.svg?branch=staging"></a>
   &nbsp;
-  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/translate.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/translate.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/translate-production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/translate-production.yml/badge.svg?branch=main"></a>
   &nbsp;
   <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/db-backup.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/db-backup.yml/badge.svg?branch=main"></a>
   &nbsp;
