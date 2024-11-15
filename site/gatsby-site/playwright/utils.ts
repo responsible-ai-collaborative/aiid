@@ -19,7 +19,7 @@ export type Options = { defaultItem: string };
 type TestFixtures = {
     skipOnEmptyEnvironment: () => Promise<void>,
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string[]>,
+    login: (options?: { email?: string, customData?: Record<string, unknown> }) => Promise<string[]>,
     retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
 };
 
@@ -114,7 +114,7 @@ export const test = base.extend<TestFixtures>({
         // TODO: this should be removed since we pass the username and password as arguments
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async (email, password, { customData } = {}) => {
+        await use(async ({ email = "test.user@incidentdatabase.ai", customData = null }) => {
 
             const magicLink = await generateMagicLink(email);
 
@@ -138,9 +138,6 @@ export const test = base.extend<TestFixtures>({
             }
 
             return [userId!, sessionToken!];
-
-            // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
-            // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
         })
     },
 

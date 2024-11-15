@@ -4,7 +4,6 @@ import { gql } from '@apollo/client';
 import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
-import { DBIncident } from '../seeds/aiidprod/incidents';
 
 test.describe('Cite pages', () => {
     const discoverUrl = '/apps/discover';
@@ -157,7 +156,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await page.goto('/cite/3');
 
@@ -393,7 +392,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -471,7 +470,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        const [userId, accessToken] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
+        const [userId, accessToken] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
 
         await page.goto('/cite/3');
 
@@ -542,7 +541,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+        await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,

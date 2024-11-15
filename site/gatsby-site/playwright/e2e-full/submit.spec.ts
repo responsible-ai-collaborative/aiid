@@ -159,7 +159,7 @@ test.describe('The Submit form', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Cesar', last_name: 'Ito', roles: ['admin'] } });
+        const [userId] = await login({ customData: { first_name: 'Cesar', last_name: 'Ito', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -315,7 +315,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
 
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await page.goto('/apps/submitted');
 
@@ -396,7 +396,7 @@ test.describe('The Submit form', () => {
 
     test('Should submit a submission and link it to the current user id', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         const values = {
             url: 'https://incidentdatabase.ai',

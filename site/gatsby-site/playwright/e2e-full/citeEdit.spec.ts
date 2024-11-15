@@ -20,7 +20,7 @@ test.describe('Edit report', () => {
 
   test('Should load and update report values', async ({ page, login }) => {
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login({ customData: { roles: ['admin'] } });
 
     // TODO: delete once we implement the new report history
     // it should be done inside the report mutation resolver
@@ -149,7 +149,7 @@ test.describe('Edit report', () => {
 
     
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login({ customData: { roles: ['admin'] } });
 
     await conditionalIntercept(
       page,
@@ -232,7 +232,7 @@ test.describe('Edit report', () => {
 
   test('Should delete incident report', async ({ page, login }) => {
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login({ customData: { roles: ['admin'] } });
 
     await page.goto(url);
 
@@ -323,7 +323,7 @@ test.describe('Edit report', () => {
 
     
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login({ customData: { roles: ['admin'] } });
 
     await conditionalIntercept(
       page,
@@ -370,7 +370,7 @@ test.describe('Edit report', () => {
 
   test('Should display the report image', async ({ page, login }) => {
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login({ customData: { roles: ['admin'] } });
     await page.goto(url);
 
     await page.locator('[data-cy="image-preview-figure"] img').waitFor();

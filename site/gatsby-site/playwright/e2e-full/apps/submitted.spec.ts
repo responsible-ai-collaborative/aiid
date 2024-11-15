@@ -76,7 +76,7 @@ test.describe('Submitted reports', () => {
     test('Promotes a submission to a new report and links it to a new incident', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -108,7 +108,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -140,7 +140,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -175,7 +175,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -205,7 +205,7 @@ test.describe('Submitted reports', () => {
 
         const submissions = await getSubmissions();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=${submissions[0]._id}`);
 
@@ -227,7 +227,7 @@ test.describe('Submitted reports', () => {
 
         const submissions = await getSubmissions();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=${submissions[0]._id}`);
 
@@ -246,7 +246,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -288,7 +288,7 @@ test.describe('Submitted reports', () => {
 
         await init({ aiidprod: { submissions } });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
 
@@ -330,7 +330,7 @@ test.describe('Submitted reports', () => {
 
         await init({ aiidprod: { submissions } });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
 
@@ -345,7 +345,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -358,7 +358,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -371,7 +371,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
@@ -398,7 +398,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -454,7 +454,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = Array.from(Array(10).keys()).map(i => {
 
@@ -509,7 +509,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -523,7 +523,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -564,7 +564,7 @@ test.describe('Submitted reports', () => {
     test('Edits a submission - links to existing incident - Incident Data should be hidden', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -580,7 +580,7 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 

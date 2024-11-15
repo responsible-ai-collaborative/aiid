@@ -25,7 +25,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
     await conditionalIntercept(
       page,
@@ -86,7 +86,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
 
     await conditionalIntercept(
       page,
