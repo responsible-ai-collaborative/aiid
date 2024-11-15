@@ -13,11 +13,11 @@ const { getLanguages } = require('../../i18n');
 const reporter = { log: console.log, error: console.error, warn: console.warn };
 
 (async () => {
+  console.log('Translating incident reports...');
+
   let mongoClient;
 
   try {
-    console.log('Translating incident reports...');
-
     // MongoDB client setup
     mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
     try {
