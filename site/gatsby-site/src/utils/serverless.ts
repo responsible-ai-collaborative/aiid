@@ -1,13 +1,13 @@
 export const createResponse = () => {
 
-    let responseHeaders = { 'Content-Type': 'application/json' }
-    let response = {}
+    let responseHeaders: Record<string, string> = { 'Content-Type': 'application/json' }
+    let response: Record<string, any> = {}
 
     const res = {
-        getHeader: (name) => {
+        getHeader: (name: any) => {
             return responseHeaders[name]
         },
-        setHeader: (name, value) => {
+        setHeader: (name: any, value: any) => {
             if (name.toLowerCase() === 'set-cookie') {
                 response.multiValueHeaders = {
                     ...response.multiValueHeaders,
@@ -18,17 +18,17 @@ export const createResponse = () => {
                 response.headers = responseHeaders
             }
         },
-        status: (statusCode) => {
+        status: (statusCode: any) => {
             response.statusCode = statusCode
             return res
         },
-        send: (body) => {
+        send: (body: any) => {
             response.body = typeof body === 'string' ? body : JSON.stringify(body)
         },
-        json: (json) => {
+        json: (json: any) => {
             response.body = JSON.stringify(json)
         },
-        redirect: (statusOrUrl, url) => {
+        redirect: (statusOrUrl: any, url: any) => {
             const statusCode = typeof statusOrUrl === 'number' ? statusOrUrl : 302
             const redirectUrl = typeof statusOrUrl === 'string' ? statusOrUrl : url
             response.statusCode = statusCode

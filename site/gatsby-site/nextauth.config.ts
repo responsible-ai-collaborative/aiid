@@ -1,7 +1,6 @@
 import { EmailParams, MailerSend, Recipient } from "mailersend"
 import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
 const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!, {
   serverApi: {
@@ -27,6 +26,8 @@ export const sendVerificationRequest = async ({ identifier: email, url }: { iden
 }
 
 export const getAuthConfig = async (): Promise<NextAuthOptions> => {
+
+  const { MongoDBAdapter } = await import("@auth/mongodb-adapter");
 
   return {
     providers: [
@@ -54,8 +55,13 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
 
         const customData = await client.db('customData').collection('users').findOne({ userId: user.id });
 
-        session.user.id = customData.userId;
-        session.user.roles = customData.roles;
+        if (session?.user && customData) {
+
+          // @ts-ignore
+          session.user.id = customData.userId;
+          // @ts-ignore
+          session.user.roles = customData.roles;
+        }
 
         return session
       },
@@ -84,7 +90,7 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
       signIn: '/login',
       signOut: '/logout',
       verifyRequest: '/verify-request',
-      newUser: '/account', 
+      newUser: '/account',
     },
     debug: true,
   }

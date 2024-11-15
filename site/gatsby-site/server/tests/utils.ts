@@ -1,6 +1,6 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { schema } from "../schema";
-import { MongoClient, ObjectId, WithId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { ApolloServer } from "@apollo/server";
 import config from '../config';
 import supertest from 'supertest';
@@ -38,16 +38,6 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
 
         return result;
     }
-}
-
-export const seedUsers = async (users: { userId: string, roles: string[] | null }[], { drop } = { drop: true }) => {
-
-    await seedCollection({
-        name: 'users',
-        database: 'customData',
-        docs: users,
-        drop,
-    });
 }
 
 export const makeRequest = async (url: string, data: { query: string, variables?: Record<string, unknown> }, headers?: Record<string, string>) => {
@@ -160,4 +150,19 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
             await seedCollection({ database, name, docs, });
         }
     }
+}
+
+export const mockSession = (userId: string) => {
+
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+
+    const db = client.db('customData');
+    const collection = db.collection('users');
+
+    jest.spyOn(context, 'verifyToken').mockImplementation(async () => {
+
+        const user = await collection.findOne<{ userId: string, roles: string[] }>({ userId: userId });
+
+        return user ? { id: user.userId, roles: user.roles } : null;
+    })
 }
