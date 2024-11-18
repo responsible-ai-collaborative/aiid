@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import createCitationPages from '../../../page-creators/createCitationPages';
 import { CreatePagesArgs } from 'gatsby';
 import { expect } from '@playwright/test';
-import { test } from '../../utils';
+import { getLanguages, test } from '../../utils';
 
 test.describe('createCitationPages', () => {
   let graphql: sinon.SinonStub;
@@ -62,40 +62,7 @@ test.describe('createCitationPages', () => {
     extensions: {},
   };
 
-  const languages = [
-    {
-      code: 'en',
-      hrefLang: 'en-US',
-      name: 'English',
-      localName: 'English',
-      langDir: 'ltr',
-      dateFormat: 'MM/DD/YYYY',
-    },
-    {
-      code: 'es',
-      hrefLang: 'es',
-      name: 'Spanish',
-      localName: 'Español',
-      langDir: 'ltr',
-      dateFormat: 'DD-MM-YYYY',
-    },
-    {
-      code: 'fr',
-      hrefLang: 'fr',
-      name: 'French',
-      localName: 'Français',
-      langDir: 'ltr',
-      dateFormat: 'DD-MM-YYYY',
-    },
-    {
-      code: 'ja',
-      hrefLang: 'ja',
-      name: 'Japanese',
-      localName: '日本語',
-      langDir: 'ltr',
-      dateFormat: 'YYYY/MM/DD',
-    },
-  ];
+  const languages = getLanguages();
 
   test.beforeEach(() => {
     graphql = sinon.stub();
