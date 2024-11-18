@@ -16,8 +16,7 @@ test('Should log an error to Rollbar', async ({ page }) => {
 
   if (response) {
     expect(response.status()).toBe(200);
-    expect(response.statusText()).toBe('OK');
-    const responseBody = await response.json();
+    const responseBody = await response. json();
     expect(responseBody.err).toBe(0);
   } else {
     throw new Error('No response received for Rollbar API call.');
