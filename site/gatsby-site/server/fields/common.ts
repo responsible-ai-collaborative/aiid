@@ -119,10 +119,13 @@ let tokenExpiration: number | null = null;
  * 
  * @returns {Promise<string>} A promise that resolves to the access token.
  */
-const getAccessToken = async () => {
+export const getAccessToken = async () => {
+
+    const refreshDate = tokenExpiration ? tokenExpiration * 1000 - 5 * 60 * 1000 : null;
 
     // Refresh the authentication token well before expiration to avoid interruptions.
-    if (cachedToken && tokenExpiration && Date.now() < tokenExpiration * 1000 + 5 * 60 * 1000) {
+
+    if ((cachedToken && refreshDate && Date.now() < refreshDate)) {
         return cachedToken;
     }
 
