@@ -1,52 +1,30 @@
-import { MongoClient, Collection, InsertManyResult } from 'mongodb';
-import { queue, QueueObject } from 'async';
-import { cloneDeep } from 'lodash';
-import remark from 'remark';
-import remarkStrip from 'strip-markdown';
+const { queue } = require('async');
 
-const keys = ['text', 'title'] as const;
-type ReportKey = (typeof keys)[number];
+const { cloneDeep } = require('lodash');
 
-interface Reporter {
-  log(message: string): void;
-  error(message: string): void;
-  warn(message: string): void;
-}
+const remark = require('remark');
 
-interface TranslateClient {
-  translate(payload: string[], options: { to: string }): Promise<[string[]]>;
-}
+const remarkStrip = require('strip-markdown');
 
-interface Language {
-  code: string;
-}
+const keys = ['text', 'title'];
 
-interface Report {
-  report_number: string;
-  date_submitted: Date;
-  language?: string;
-  text: string;
-  title: string;
-  [key: string]: any;
-}
-
-interface TranslatorOptions {
-  mongoClient: MongoClient;
-  translateClient: TranslateClient;
-  languages: Language[];
-  reporter: Reporter;
-  submissionDateStart?: string;
-  dryRun?: boolean;
-}
+/**
+ * @typedef {Object} Reporter
+ * @property {function(string):void} log
+ * @property {function(string):void} error
+ * @property {function(string):void} warn
+ */
 
 class Translator {
-  private translateClient: TranslateClient;
-  private mongoClient: MongoClient;
-  private reporter: Reporter;
-  private languages: Language[];
-  private submissionDateStart?: string;
-  private dryRun: boolean;
-
+  /**
+   * @param {Object} options
+   * @param {import('mongodb').MongoClient} options.mongoClient
+   * @param {Object} options.translateClient
+   * @param {string[]} options.languages
+   * @param {Reporter} options.reporter
+   * @param {string} [options.submissionDateStart]
+   * @param {boolean} [options.dryRun]
+   */
   constructor({
     mongoClient,
     translateClient,
@@ -54,7 +32,7 @@ class Translator {
     reporter,
     submissionDateStart = process.env.TRANSLATE_SUBMISSION_DATE_START,
     dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
-  }: TranslatorOptions) {
+  }) {
     this.translateClient = translateClient;
     this.mongoClient = mongoClient;
     this.reporter = reporter;
@@ -63,7 +41,7 @@ class Translator {
     this.dryRun = dryRun;
   }
 
-  private async translate({ payload, to }: { payload: string[]; to: string }): Promise<[string[]]> {
+  async translate({ payload, to }) {
     if (!this.dryRun) {
       return this.translateClient.translate(payload, { to });
     } else {
@@ -71,22 +49,18 @@ class Translator {
     }
   }
 
-  private async translateReportsCollection({
-    items,
-    to,
-  }: {
-    items: Report[];
-    to: string;
-  }): Promise<Report[]> {
+  async translateReportsCollection({ items, to }) {
     const concurrency = 100;
-    const translated: Report[] = [];
 
-    const q: QueueObject<{ entry: Report; to: string }> = queue(async ({ entry, to }) => {
+    const translated = [];
+
+    const q = queue(async ({ entry, to }) => {
       const translatedEntry = await this.translateReport({ entry, to });
+
       translated.push(translatedEntry);
     }, concurrency);
 
-    q.error((err: Error & { code?: string }, task) => {
+    q.error((err, task) => {
       this.reporter.error(
         `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
       );
@@ -98,7 +72,7 @@ class Translator {
     const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
 
     for (const entry of items) {
-      if (!alreadyTranslated.find((item) => item.report_number === entry.report_number)) {
+      if (!alreadyTranslated.find((item) => item.report_number == entry.report_number)) {
         q.push({ entry, to });
       }
     }
@@ -110,16 +84,10 @@ class Translator {
     return translated;
   }
 
-  private async getTranslatedReports({
-    items,
-    language,
-  }: {
-    items: Report[];
-    language: string;
-  }): Promise<Report[]> {
+  async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const reportsTranslatedCollection: Collection<Report> = this.mongoClient
+    const reportsTranslatedCollection = this.mongoClient
       .db('translations')
       .collection(`reports_${language}`);
 
@@ -135,18 +103,12 @@ class Translator {
     return translated;
   }
 
-  private async saveTranslatedReports({
-    items,
-    language,
-  }: {
-    items: Report[];
-    language: string;
-  }): Promise<InsertManyResult<Report>> {
-    const reportsTranslatedCollection: Collection<Report> = this.mongoClient
+  async saveTranslatedReports({ items, language }) {
+    const reportsTranslatedCollection = this.mongoClient
       .db('translations')
       .collection(`reports_${language}`);
 
-    const translated: Report[] = [];
+    const translated = [];
 
     for (const item of items) {
       const { report_number, text, title } = item;
@@ -159,13 +121,14 @@ class Translator {
     return reportsTranslatedCollection.insertMany(translated);
   }
 
-  private async translateReport({ entry, to }: { entry: Report; to: string }): Promise<Report> {
+  async translateReport({ entry, to }) {
     const translatedEntry = cloneDeep(entry);
 
-    const payload: string[] = [];
+    const payload = [];
 
     for (const key of keys) {
       const text = entry[key];
+
       payload.push(text);
     }
 
@@ -173,14 +136,16 @@ class Translator {
 
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
+
       const key = keys[i];
+
       translatedEntry[key] = result;
     }
 
     return translatedEntry;
   }
 
-  async run(): Promise<void> {
+  async run() {
     if (this.dryRun) {
       this.reporter.warn(
         'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
@@ -189,7 +154,7 @@ class Translator {
 
     await this.mongoClient.connect();
 
-    let reportsQuery: Record<string, any> = {};
+    let reportsQuery = {};
 
     if (this.submissionDateStart) {
       // Check if the date is valid
@@ -220,7 +185,7 @@ class Translator {
 
     const concurrency = 10;
 
-    const q: QueueObject<{ to: string }> = queue(async ({ to }, done) => {
+    const q = queue(async ({ to }, done) => {
       this.reporter.log(`Translating incident reports for [${to}]`);
 
       const items = reports.filter((r) => r.language !== to);
@@ -251,4 +216,4 @@ class Translator {
   }
 }
 
-export default Translator;
+module.exports = Translator;
