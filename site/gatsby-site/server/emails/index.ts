@@ -41,6 +41,7 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
     });
 
     assert(emails.every(email => email.to.length == 1), 'Emails must have exactly one recipient');
+    assert(emails.every(email => !email.cc), 'Should not use the "cc" field');
 
     await mailersend.email.sendBulk(emails);
 }
