@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  call-deploy:
+  call-translate:
     uses: ./.github/workflows/translate.yml
     secrets: inherit
     with:
