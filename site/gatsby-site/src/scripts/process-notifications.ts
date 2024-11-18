@@ -1,16 +1,29 @@
-import { getUserAdminData } from "../../server/fields/common";
+import { getUserAdminData, UserAdminData } from "../../server/fields/common";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
 import { MongoClient } from "mongodb";
 import { sendEmail } from "../../server/emails";
 
-const getRecipients = async (userIds: string[]) => {
+const usersCache: UserAdminData[] = [];
+
+const getAndCacheRecipients = async (userIds: string[]) => {
 
     const recipients = [];
 
     for (const userId of userIds) {
-        const user = await getUserAdminData(userId);
+
+        let user = usersCache.find((user) => user.userId === userId) ?? null;
+
+        if (!user) {
+
+            user = await getUserAdminData(userId) ?? null;
+
+            if (user) {
+
+                usersCache.push(user);
+            }
+        }
 
         if (user?.email && user?.userId) {
             recipients.push({ email: user.email, userId: user.userId });
@@ -74,7 +87,7 @@ async function notificationsToNewIncidents(context: Context) {
 
             const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-            const recipients = await getRecipients(uniqueUserIds);
+            const recipients = await getAndCacheRecipients(uniqueUserIds);
 
             const uniqueNotifications: number[] = [];
 
@@ -179,7 +192,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getRecipients(uniqueUserIds);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -270,7 +283,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getRecipients(uniqueUserIds);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -341,7 +354,7 @@ async function notificationsToNewPromotions(context: Context) {
 
         const uniqueUserIds = [...new Set(userIds)];
 
-        const recipients = await getRecipients(uniqueUserIds);
+        const recipients = await getAndCacheRecipients(uniqueUserIds);
 
         let uniqueNotifications: number[] = [];
 

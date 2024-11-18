@@ -88,27 +88,20 @@ export interface UserAdminData {
     userId?: string;
 }
 
-const usersCache: UserAdminData[] = [];
-
 export const getUserAdminData = async (userId: string) => {
 
-    let user = usersCache.find((user) => user.userId === userId);
+    const userApiResponse = await apiRequest({ path: `/users/${userId}` });
 
-    if (!user) {
+    let user: UserAdminData | null = null;
 
-        const userApiResponse = await apiRequest({ path: `/users/${userId}` });
+    if (userApiResponse.data) {
 
-        if (userApiResponse.data) {
-
-            user = {
-                email: userApiResponse.data.email,
-                creationDate: new Date(userApiResponse.creation_date * 1000),
-                lastAuthenticationDate: new Date(userApiResponse.last_authentication_date * 1000),
-                disabled: userApiResponse.disabled,
-                userId,
-            }
-
-            usersCache.push(user);
+        user = {
+            email: userApiResponse.data.email,
+            creationDate: new Date(userApiResponse.creation_date * 1000),
+            lastAuthenticationDate: new Date(userApiResponse.last_authentication_date * 1000),
+            disabled: userApiResponse.disabled,
+            userId,
         }
     }
 
