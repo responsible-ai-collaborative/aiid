@@ -27,7 +27,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Run translation script
-        run: node src/scripts/translateReports.js
+        run: npm run translate-reports
         working-directory: site/gatsby-site
         env:
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}

@@ -1,28 +1,23 @@
-require('dotenv').config();
-
-const config = require('../../config');
-
-const { MongoClient } = require('mongodb');
-
-const { Translate } = require('@google-cloud/translate').v2;
-
-const Translator = require('./Translator');
-
-const { getLanguages } = require('../../i18n');
+import 'dotenv/config';
+import config from '../../config';
+import { MongoClient } from 'mongodb';
+import { Translate } from '@google-cloud/translate/build/src/v2';
+import Translator from './Translator';
+import { getLanguages } from '../../i18n';
 
 const reporter = { log: console.log, error: console.error, warn: console.warn };
 
 (async () => {
   console.log('Translating incident reports...');
 
-  let mongoClient;
+  let mongoClient: MongoClient | null = null;
 
   try {
     // MongoDB client setup
     mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
     try {
       await mongoClient.connect();
-    } catch (mongoError) {
+    } catch (mongoError: any) {
       throw new Error(`Error connecting to MongoDB: ${mongoError.message}`);
     }
 
@@ -44,7 +39,7 @@ const reporter = { log: console.log, error: console.error, warn: console.warn };
     await translator.run();
 
     console.log('Translation completed successfully.');
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error during the translation process:', error.message);
     process.exit(1);
   } finally {
@@ -52,7 +47,7 @@ const reporter = { log: console.log, error: console.error, warn: console.warn };
       try {
         await mongoClient.close();
         console.log('MongoDB connection closed gracefully.');
-      } catch (closeError) {
+      } catch (closeError: any) {
         console.error('Error closing MongoDB connection:', closeError.message);
       }
     }
