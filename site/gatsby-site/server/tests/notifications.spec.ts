@@ -1443,6 +1443,7 @@ describe(`Notifications`, () => {
                         email: "test2@test.com",
                         userId: "user2",
                         siteUrl: "http://localhost:8000",
+                        implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
                 },
             ],
