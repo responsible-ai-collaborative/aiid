@@ -114,7 +114,7 @@ export const test = base.extend<TestFixtures>({
         // TODO: this should be removed since we pass the username and password as arguments
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async ({ email = "test.user@incidentdatabase.ai", customData = null }) => {
+        await use(async ({ email = "test.user@incidentdatabase.ai", customData = null } = {}) => {
 
             const magicLink = await generateMagicLink(email);
 
@@ -319,11 +319,12 @@ export async function fillAutoComplete(page: Page, selector: string, sequence: s
     }).toPass();
 }
 
+//TODO: This function should be removed and the languages should be fetched from the config files
 export function getLanguages() {
-  return [
-    { code: 'en', hrefLang: 'en-US', name: 'English', localName: 'English', langDir: 'ltr', dateFormat: 'MM/DD/YYYY' },
-    { code: 'es', hrefLang: 'es', name: 'Spanish', localName: 'Español', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
-    { code: 'fr', hrefLang: 'fr', name: 'French', localName: 'Français', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
-    { code: 'ja', hrefLang: 'ja', name: 'Japanese', localName: '日本語', langDir: 'ltr', dateFormat: 'YYYY/MM/DD' },
-  ];
+    return [
+        { code: 'en', hrefLang: 'en-US', name: 'English', localName: 'English', langDir: 'ltr', dateFormat: 'MM/DD/YYYY' },
+        { code: 'es', hrefLang: 'es', name: 'Spanish', localName: 'Español', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
+        { code: 'fr', hrefLang: 'fr', name: 'French', localName: 'Français', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
+        { code: 'ja', hrefLang: 'ja', name: 'Japanese', localName: '日本語', langDir: 'ltr', dateFormat: 'YYYY/MM/DD' },
+    ];
 }

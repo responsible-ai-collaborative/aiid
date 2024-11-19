@@ -1,6 +1,7 @@
 import { test } from '../utils';
 import { expect } from '@playwright/test';
 import config from '../config';
+import { init } from '../memory-mongo';
 
 test.describe('Account', () => {
   const url = '/account';
@@ -11,7 +12,9 @@ test.describe('Account', () => {
 
   test('Should display account information if the user is logged in', async ({ page, login }) => {
 
-    await login({ customData: { roles: ['admin'], first_name: 'Test', last_name: 'User' } });
+    await init();
+
+    await login();
 
     await page.goto(url);
 
@@ -25,12 +28,13 @@ test.describe('Account', () => {
     await expect(page.locator('a:text-is("Log out")')).toBeVisible();
   });
 
-  test('Should allow editing user data', async ({ page, login }) => {
+  test('Should allow editing user data if user is admin', async ({ page, login }) => {
 
-    await login({ customData: { roles: ['admin'], first_name: 'Test', last_name: 'User' } });
+    await init();
+
+    await login();
 
     await page.goto(url);
-
 
     await page.locator('button:has-text("Edit")').click();
 
@@ -46,7 +50,7 @@ test.describe('Account', () => {
 
   test('Should show edit modal if query parameter is set', async ({ page, login }) => {
 
-    await login({ customData: { roles: ['admin'], first_name: 'Test', last_name: 'User' } });
+    await login();
 
     await page.goto(url + '?askToCompleteProfile=1');
 
