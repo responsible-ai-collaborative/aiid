@@ -13,7 +13,7 @@ test('Should update translations to Algolia', async ({ page }) => {
 
   const reporter = { log: sinon.stub() };
 
-  const mongoClient = new MongoClient(config.MONGODB_TRANSLATIONS_CONNECTION_STRING);
+  const mongoClient = new MongoClient(config.MONGODB_CONNECTION_STRING);
 
   const esIndex = {
     replaceAllObjects: sinon.stub().resolves({ objectIDs: ['1', '2'] }),
