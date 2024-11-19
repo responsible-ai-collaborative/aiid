@@ -58,12 +58,12 @@ jobs:
       - name: Jest run
         run: npm run test:api:ci
         env:
-          REALM_APP_ID: ""
-          REALM_API_APP_ID: ""
-          REALM_API_GROUP_ID: ""
-          REALM_API_PUBLIC_KEY: ""
-          REALM_API_PRIVATE_KEY: ""
-          REALM_GRAPHQL_API_KEY: ""
+          REALM_APP_ID: dummy
+          REALM_API_APP_ID: dummy
+          REALM_API_GROUP_ID: dummy
+          REALM_API_PUBLIC_KEY: dummy
+          REALM_API_PRIVATE_KEY: dummy
+          REALM_GRAPHQL_API_KEY: dummy
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
           E2E_ADMIN_USERNAME: ""
           E2E_ADMIN_PASSWORD: ""
