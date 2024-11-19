@@ -7,6 +7,8 @@ import { DBEntity, DBIncident, DBNotification, DBReport, DBSubmission, DBSubscri
 import config from '../config';
 import { IncidentFilterType, IncidentInsertType, IncidentUpdateType, PromoteSubmissionToReportInput } from '../generated/graphql';
 import { ObjectId } from 'bson';
+import templates from '../emails/templates';
+import { replacePlaceholdersWithAllowedKeys } from '../fields/common';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -1214,4 +1216,223 @@ describe(`Notifications`, () => {
 
         expect(result.body.data.notifications).toMatchObject([]);
     })
+
+    it(`Should use bulk email API`, async () => {
+
+        const notifications: DBNotification[] = [
+            {
+                processed: false,
+                type: 'new-incidents',
+                incident_id: 1,
+            },
+        ]
+
+        const subscriptions: DBSubscription[] = [
+            {
+                type: 'new-incidents',
+                userId: 'user1',
+            },
+            {
+                type: 'new-incidents',
+                userId: 'user2',
+            },
+            {
+                type: 'incident',
+                userId: 'user1',
+                incident_id: 1,
+            },
+            {
+                type: 'submission-promoted',
+                userId: 'user1',
+                incident_id: 1,
+            }
+        ]
+
+        const users: DBUser[] = [
+            {
+                userId: "user1",
+                roles: ['admin'],
+            },
+            {
+                userId: "user2",
+                roles: ['subscriber'],
+            }
+        ]
+
+        const entities: DBEntity[] = [
+            {
+                entity_id: 'entity-1',
+                name: 'Entity 1',
+            },
+            {
+                entity_id: 'entity-2',
+                name: 'Entity 2',
+            }
+        ]
+
+        const incidents: DBIncident[] = [
+            {
+                incident_id: 1,
+                title: 'Incident 1',
+                description: 'Incident 1 description',
+                "Alleged deployer of AI system": ['entity-1'],
+                "Alleged developer of AI system": ['entity-1'],
+                "Alleged harmed or nearly harmed parties": ['entity-1'],
+                date: new Date().toISOString(),
+                editors: [],
+                reports: [1],
+            }
+        ]
+
+        const reports: DBReport[] = [
+            {
+                report_number: 1,
+                title: 'Report 1',
+                description: 'Report 1 description',
+                authors: [],
+                cloudinary_id: 'cloudinary_id',
+                date_downloaded: new Date().toISOString(),
+                date_modified: new Date().toISOString(),
+                date_published: new Date().toISOString(),
+                date_submitted: new Date().toISOString(),
+                epoch_date_downloaded: 1,
+                epoch_date_modified: 1,
+                epoch_date_published: 1,
+                epoch_date_submitted: 1,
+                image_url: 'image_url',
+                language: 'en',
+                plain_text: 'plain_text',
+                source_domain: 'source_domain',
+                submitters: [],
+                tags: [],
+                text: 'text',
+                url: 'url',
+                user: 'user_id',
+            }
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                notifications,
+                subscriptions,
+            },
+            aiidprod: {
+                incidents,
+                entities,
+                reports,
+            }
+        });
+
+        const mutationData = {
+            query: `
+                mutation {
+                    processNotifications
+                }
+            `,
+        };
+
+        jest.spyOn(common, 'sendEmail').mockRestore();
+        jest.spyOn(common, 'getUsersAdminData').mockResolvedValueOnce([{ userId: 'user1', email: 'test@test.com' }, { userId: 'user2', email: 'test2@test.com' }]);
+        
+        const mockMailersendBulkSend = jest.spyOn(common, 'mailersendBulkSend').mockResolvedValue();
+
+        const response = await makeRequest(url, mutationData, { ['PROCESS_NOTIFICATIONS_SECRET']: config.PROCESS_NOTIFICATIONS_SECRET });
+
+        expect(response.body.data).toMatchObject({ processNotifications: 1 });
+
+        expect(mockMailersendBulkSend.mock.calls[0][0][0]).toMatchObject({
+            from: {
+                email: config.NOTIFICATIONS_SENDER,
+                name: config.NOTIFICATIONS_SENDER_NAME,
+            },
+            to: [
+                {
+                    email: "test@test.com",
+                    name: "",
+                },
+            ],
+            cc: undefined,
+            bcc: undefined,
+            reply_to: undefined,
+            in_reply_to: undefined,
+            subject: "New Incident {{incidentId}} was created",
+            text: undefined,
+            html: replacePlaceholdersWithAllowedKeys(templates.NewIncident, {
+                deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            }, ['developers', 'deployers', 'entitiesHarmed']),
+            send_at: undefined,
+            attachments: undefined,
+            template_id: undefined,
+            tags: undefined,
+            personalization: [
+                {
+                    email: "test@test.com",
+                    data: {
+                        incidentId: "1",
+                        incidentTitle: "Incident 1",
+                        incidentUrl: "http://localhost:8000/cite/1",
+                        incidentDescription: "Incident 1 description",
+                        incidentDate: incidents[0].date,
+                        deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        email: "test@test.com",
+                        userId: "user1",
+                        siteUrl: "http://localhost:8000",
+                    },
+                },
+            ],
+            precedence_bulk: undefined,
+        })
+
+        expect(mockMailersendBulkSend.mock.calls[0][0][1]).toMatchObject({
+            from: {
+                email: config.NOTIFICATIONS_SENDER,
+                name: config.NOTIFICATIONS_SENDER_NAME,
+            },
+            to: [
+                {
+                    email: "test2@test.com",
+                    name: "",
+                },
+            ],
+            cc: undefined,
+            bcc: undefined,
+            reply_to: undefined,
+            in_reply_to: undefined,
+            subject: "New Incident {{incidentId}} was created",
+            text: undefined,
+            html: replacePlaceholdersWithAllowedKeys(templates.NewIncident, {
+                deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            }, ['developers', 'deployers', 'entitiesHarmed']),
+            send_at: undefined,
+            attachments: undefined,
+            template_id: undefined,
+            tags: undefined,
+            personalization: [
+                {
+                    email: "test2@test.com",
+                    data: {
+                        incidentId: "1",
+                        incidentTitle: "Incident 1",
+                        incidentUrl: "http://localhost:8000/cite/1",
+                        incidentDescription: "Incident 1 description",
+                        incidentDate: incidents[0].date,
+                        deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        email: "test2@test.com",
+                        userId: "user2",
+                        siteUrl: "http://localhost:8000",
+                    },
+                },
+            ],
+            precedence_bulk: undefined,
+        })
+    });
 });

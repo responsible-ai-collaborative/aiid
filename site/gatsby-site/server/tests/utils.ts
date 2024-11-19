@@ -42,12 +42,11 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
 
 export const makeRequest = async (url: string, data: { query: string, variables?: Record<string, unknown> }, headers?: Record<string, string>) => {
 
-    const request = supertest(url)
-        .post('/')
-        .set('Authorization', `Bearer dummyToken`)
+    const request = supertest(url).post('/')
 
     if (headers) {
-        request.set(headers);
+
+        request.set(headers)
     }
 
     return request.send(data);
