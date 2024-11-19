@@ -48,7 +48,6 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
-            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
