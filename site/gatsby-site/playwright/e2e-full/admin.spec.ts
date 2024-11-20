@@ -71,8 +71,8 @@ test.describe('Admin', () => {
       await page.goto(baseUrl);
 
 
-      await page.locator('[data-cy="input-filter-First Name"]').fill('John');
-      await page.locator('[data-cy="input-filter-Last Name"]').fill('Doe');
+      await page.locator('[data-cy="input-filter-First Name"]').fill('Test');
+      await page.locator('[data-cy="input-filter-Last Name"]').fill('User');
       await page.locator('[data-cy="input-filter-Roles"]').fill('admin');
 
       // TODO: find a way to mock admin api and adminData graphql field

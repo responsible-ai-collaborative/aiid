@@ -103,6 +103,6 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
       newUser: '/account',
     },
     secret: config.NEXTAUTH_SECRET!,
-    debug: config.NEXTAUTH_URL! === 'http://localhost:8000',
+    debug: config.NEXTAUTH_URL! === 'http://localhost:8000' && !process.env.CI,
   }
 }

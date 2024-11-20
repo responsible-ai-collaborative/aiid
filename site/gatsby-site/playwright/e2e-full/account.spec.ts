@@ -1,6 +1,5 @@
-import { test } from '../utils';
+import { test, testUser } from '../utils';
 import { expect } from '@playwright/test';
-import config from '../config';
 import { init } from '../memory-mongo';
 
 test.describe('Account', () => {
@@ -20,7 +19,7 @@ test.describe('Account', () => {
 
     const detailsTable = page.locator('[data-cy="details-table"]');
 
-    await expect(detailsTable.locator(`td:text-is("${config.E2E_ADMIN_USERNAME}")`)).toBeVisible();
+    await expect(detailsTable.locator(`td:text-is("${testUser.email}")`)).toBeVisible();
     await expect(detailsTable.locator('td:text-is("Test")')).toBeVisible();
     await expect(detailsTable.locator('td:text-is("User")')).toBeVisible();
     await expect(detailsTable.locator('span:text-is("admin")')).toBeVisible();

@@ -8,6 +8,8 @@ import path from 'path';
 import * as memoryMongo from './memory-mongo';
 import * as crypto from 'node:crypto';
 import { ObjectId } from 'bson';
+import users from './seeds/customData/users';
+import authUsers from './seeds/auth/users';
 
 declare module '@playwright/test' {
     interface Request {
@@ -93,6 +95,8 @@ async function getSessionToken(userId: string) {
     return token;
 }
 
+export const testUser = { ...users[0], email: authUsers.find(u => u._id.equals(new ObjectId(users[0].userId))).email };
+
 export const test = base.extend<TestFixtures>({
     skipOnEmptyEnvironment: async ({ }, use, testInfo) => {
         if (config.IS_EMPTY_ENVIRONMENT) {
@@ -115,7 +119,7 @@ export const test = base.extend<TestFixtures>({
         // TODO: this should be removed since we pass the username and password as arguments
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async ({ email = "test.user@incidentdatabase.ai", customData = null } = {}) => {
+        await use(async ({ email = testUser.email, customData = null } = {}) => {
 
             const magicLink = await generateMagicLink(email);
 
