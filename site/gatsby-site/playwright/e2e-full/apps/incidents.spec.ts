@@ -25,7 +25,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+    await login();
 
     await conditionalIntercept(
       page,

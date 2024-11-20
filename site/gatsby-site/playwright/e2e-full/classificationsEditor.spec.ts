@@ -111,7 +111,7 @@ test.describe('Classifications Editor', () => {
 
   test('Should show classifications editor on report page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+    await login();
 
     await page.goto(reportURL);
     await waitForRequest('FindClassifications');
@@ -146,7 +146,7 @@ test.describe('Classifications Editor', () => {
 
     await init();
 
-    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+    await login();
 
     await page.goto(reportURL);
     await waitForRequest('FindClassifications');
@@ -194,7 +194,7 @@ test.describe('Classifications Editor', () => {
 
       await init();
 
-      await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+      await login();
 
       await page.goto(`/cite/${incident_id}`);
 
@@ -271,7 +271,7 @@ test.describe('Classifications Editor', () => {
   }
 
   test('Should synchronize duplicate fields', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+    await login();
 
     await page.goto(incidentURL);
     await waitForRequest('FindClassifications');
