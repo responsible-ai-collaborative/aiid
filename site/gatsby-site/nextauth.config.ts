@@ -99,6 +99,6 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
       newUser: '/account',
     },
     secret: config.NEXTAUTH_SECRET!,
-    debug: true,
+    debug: config.NEXTAUTH_URL! === 'http://localhost:8000',
   }
 }
