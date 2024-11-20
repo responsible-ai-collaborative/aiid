@@ -57,9 +57,10 @@ const createEntitiesPages = async (graphql, createPage) => {
 
     const pagePath = `/entities/${id}`;
 
-    const currentEntityRelationships = entityRelationships.nodes.filter(
-      (rel) => (rel.sub === id || rel.obj === id) && rel.is_symmetric
-    );
+    const currentEntityRelationships =
+      entityRelationships.nodes.filter(
+        (rel) => (rel.sub === id || rel.obj === id) && rel.is_symmetric
+      ) || [];
 
     createPage({
       path: pagePath,

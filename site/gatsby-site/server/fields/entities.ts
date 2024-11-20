@@ -103,5 +103,6 @@ export const permissions = {
   Mutation: {
     updateEntityAndRelationships: allow,
     upsertOneEntity: allow,
+    updateOneEntity: allow
   }
 }
