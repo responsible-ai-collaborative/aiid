@@ -137,8 +137,7 @@ const FormDetails = ({
     saveInLocalStorage(values);
   }, [values]);
 
-  const isUserDetailsComplete =
-    user?.profile?.email && user.customData.first_name && user.customData.last_name;
+  const isUserDetailsComplete = user && user.first_name && user.last_name;
 
   return (
     <>

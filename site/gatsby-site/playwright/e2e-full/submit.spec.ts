@@ -1,7 +1,6 @@
 import parseNews from '../fixtures/api/parseNews.json';
 import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query, fillAutoComplete } from '../utils';
 import { expect } from '@playwright/test';
-import config from '../config';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
 

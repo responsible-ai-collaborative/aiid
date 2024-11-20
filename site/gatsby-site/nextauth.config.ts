@@ -67,6 +67,10 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
           session.user.id = customData.userId;
           // @ts-ignore
           session.user.roles = customData.roles;
+          // @ts-ignore
+          session.user.first_name = customData.first_name;
+          // @ts-ignore
+          session.user.last_name = customData.last_name;
         }
 
         return session
