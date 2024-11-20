@@ -266,7 +266,8 @@ test.describe('Cite pages', () => {
     });
 
     test('Should show the edit incident form', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        
+        await login();
 
         await page.goto(url);
 
@@ -617,7 +618,7 @@ test.describe('Cite pages', () => {
             "Alleged deployer of AI system": ["entity-1"],
             "Alleged developer of AI system": ["entity-2"],
             "Alleged harmed or nearly harmed parties": ["entity-3"],
-            editors: ["user1"],
+            editors: ["6737a6e881955aa4905ccb04"],
             reports: [1],
             editor_notes: "This is an editor note",
             flagged_dissimilar_incidents: []

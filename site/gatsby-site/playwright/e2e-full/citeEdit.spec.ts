@@ -321,8 +321,6 @@ test.describe('Edit report', () => {
 
   test('Should convert an incident report to an issue', async ({ page, login }) => {
 
-    
-
     await login();
 
     await conditionalIntercept(
