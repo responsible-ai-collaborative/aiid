@@ -19,7 +19,7 @@ test.describe('Classifications App', () => {
 
     test('Successfully edit a CSET classification', async ({ page, login }) => {
 
-        await login({ customData: { roles: ['admin'] } });
+        await login();
 
         await page.goto(url);
 

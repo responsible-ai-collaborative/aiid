@@ -78,7 +78,7 @@ test.describe('Classifications Editor', () => {
   test('Should show classifications editor on incident page and save edited values', async ({ page, login, skipOnEmptyEnvironment }) => {
     await init();
 
-    await login({ customData: { roles: ['admin'] } });
+    await login();
 
     await page.goto(incidentURL);
 

@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import * as memoryMongo from './memory-mongo';
 import * as crypto from 'node:crypto';
+import { ObjectId } from 'bson';
 
 declare module '@playwright/test' {
     interface Request {
@@ -76,7 +77,7 @@ async function getUserIdFromAuth(email: string) {
     return id;
 }
 
-async function getSessionToken(email: string) {
+async function getSessionToken(userId: string) {
 
     let token: string = null;
 
@@ -84,9 +85,9 @@ async function getSessionToken(email: string) {
 
         const collection = client.db('auth').collection('sessions');
 
-        const session = await collection.findOne({}, { sort: { expires: -1 } });
+        const session = await collection.findOne({ userId: new ObjectId(userId) }, { sort: { expires: -1 } });
 
-        token = session.token;
+        token = session.sessionToken;
     });
 
     return token;
