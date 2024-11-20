@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../../utils";
 import config from "../../config";
 
-test('Should log an error to Rollbar', async ({ page }) => {
+test('Should log an error to Rollbar', async ({ page, login }) => {
   const rollbarAPICall = page.waitForRequest('https://api.rollbar.com/api/1/item/');
 
   await page.goto('/login');
