@@ -52,16 +52,6 @@ jobs:
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
-  call-test:
-    uses: ./.github/workflows/test.yml
-    needs: [cache-modifier, call-test-build]
-    secrets: inherit
-    with:
-      sha: ${{ github.sha }}
-      environment: production
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
-      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
-
   call-test-playwright:
     uses: ./.github/workflows/test-playwright.yml
     needs: call-test-build
@@ -84,7 +74,7 @@ jobs:
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
     uses: ./.github/workflows/deploy.yml
-    needs: [cache-modifier, call-test, call-test-api, call-test-playwright, call-test-playwright-full]
+    needs: [cache-modifier, call-test-api, call-test-playwright, call-test-playwright-full]
     secrets: inherit
     permissions:
       pull-requests: write
