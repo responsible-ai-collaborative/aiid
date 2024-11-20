@@ -34,7 +34,7 @@ export function randomString(size: number) {
 export function hashToken(token: string) {
 
     return crypto.createHash("sha256")
-        .update(`${token}${process.env.NEXTAUTH_SECRET}`)
+        .update(`${token}${config.NEXTAUTH_SECRET}`)
         .digest("hex");
 }
 
@@ -55,7 +55,7 @@ async function generateMagicLink(email: string) {
         });
     });
 
-    const baseUrl = process.env.NEXTAUTH_URL;
+    const baseUrl = config.NEXTAUTH_URL;
     const magicLink = `${baseUrl}/api/auth/callback/http-email?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=${token}&email=${encodeURIComponent(email)}`;
 
     return magicLink;
