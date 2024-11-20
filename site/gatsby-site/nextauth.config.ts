@@ -1,8 +1,9 @@
 import { EmailParams, MailerSend, Recipient } from "mailersend"
 import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
+import config from './server/config'
 
-const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!, {
+const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING!, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -11,7 +12,7 @@ const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!, {
 })
 
 const mailersend = new MailerSend({
-  apiKey: process.env.MAILERSEND_API_KEY!,
+  apiKey: config.MAILERSEND_API_KEY!,
 });
 
 export const sendVerificationRequest = async ({ identifier: email, url }: { identifier: string, url: string }) => {
@@ -92,6 +93,7 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
       verifyRequest: '/verify-request',
       newUser: '/account',
     },
+    secret: config.NEXTAUTH_SECRET!,
     debug: true,
   }
 }

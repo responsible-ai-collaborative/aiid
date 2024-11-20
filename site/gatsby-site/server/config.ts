@@ -12,6 +12,8 @@ export interface Config {
     NOTIFICATIONS_SENDER: string;
     PROCESS_NOTIFICATIONS_SECRET: string;
     SITE_URL: string;
+    NEXTAUTH_URL: string,
+    NEXTAUTH_SECRET: string,
 };
 
 const config: Config = {
@@ -28,6 +30,10 @@ const config: Config = {
     NOTIFICATIONS_SENDER: process.env.NOTIFICATIONS_SENDER!,
     PROCESS_NOTIFICATIONS_SECRET: process.env.PROCESS_NOTIFICATIONS_SECRET!,
     SITE_URL: process.env.SITE_URL! || process.env.URL!,
+
+    //TODO: add these to workflow
+    NEXTAUTH_URL: 'http://localhost:8000',
+    NEXTAUTH_SECRET: '678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=',
 }
 
 Object.keys(config).forEach((key) => {
