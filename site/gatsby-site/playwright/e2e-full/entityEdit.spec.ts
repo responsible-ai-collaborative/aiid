@@ -18,7 +18,7 @@ test.describe('Edit Entity', () => {
 
     await init();
 
-    await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+    await login();
 
 
     await page.goto(url);
@@ -67,7 +67,7 @@ test.describe('Edit Entity', () => {
   test('Should display an error message when editing Entity fails',
     async ({ page, login, skipOnEmptyEnvironment }) => {
 
-      await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+      await login();
 
       await page.goto(url);
 

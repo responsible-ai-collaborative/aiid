@@ -315,7 +315,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
 
 
-        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto('/apps/submitted');
 
@@ -396,7 +396,7 @@ test.describe('The Submit form', () => {
 
     test('Should submit a submission and link it to the current user id', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         const values = {
             url: 'https://incidentdatabase.ai',

@@ -76,7 +76,7 @@ test.describe('Submitted reports', () => {
     test('Promotes a submission to a new report and links it to a new incident', async ({ page, login }) => {
         await init();
 
-        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -580,7 +580,7 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
-        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 

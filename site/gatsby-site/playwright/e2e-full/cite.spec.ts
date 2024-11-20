@@ -157,7 +157,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto('/cite/3');
 
@@ -394,7 +394,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await conditionalIntercept(
             page,
