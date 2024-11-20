@@ -121,15 +121,7 @@ export const test = base.extend<TestFixtures>({
 
         await use(async ({ email = testUser.email, customData = null } = {}) => {
 
-            const magicLink = await generateMagicLink(email);
-
-            await page.context().clearCookies();
-
-            await page.goto(magicLink);
-
             const userId = await getUserIdFromAuth(email);
-
-            const sessionToken = await getSessionToken(userId);
 
             if (customData) {
 
@@ -141,6 +133,14 @@ export const test = base.extend<TestFixtures>({
                     await collection.updateOne({ userId }, { $set: customData }, { upsert: true });
                 });
             }
+
+            const magicLink = await generateMagicLink(email);
+
+            await page.context().clearCookies();
+
+            await page.goto(magicLink);
+
+            const sessionToken = await getSessionToken(userId);
 
             return [userId!, sessionToken!];
         })

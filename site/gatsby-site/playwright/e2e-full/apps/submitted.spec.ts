@@ -3,7 +3,6 @@ import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
 import { init, seedCollection } from '../../memory-mongo';
 import { fillAutoComplete, query, setEditorText, test } from '../../utils';
-import config from '../../config';
 import { ObjectId } from 'mongodb';
 import { DBSubmission } from '../../../server/interfaces';
 
@@ -431,9 +430,13 @@ test.describe('Submitted reports', () => {
 
         await page.goto(url);
 
+        const response =  page.waitForResponse((response) => {
+            return response.request()?.postData()?.includes('UpdateSubmission')
+        });
+
         await page.getByText('Unclaim', { exact: true }).click();
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+        await response;
 
         const { data: { submissions: updated } } = await query({
             query: gql`{
