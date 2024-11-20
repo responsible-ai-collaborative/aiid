@@ -3,6 +3,11 @@ import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
 import config from './server/config'
 
+//TODO: add this to the workflow file, this  needs to be set via env variable
+// SEE: https://github.com/nextauthjs/next-auth/discussions/9785
+
+process.env.NEXTAUTH_URL = config.NEXTAUTH_URL!
+
 const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING!, {
   serverApi: {
     version: ServerApiVersion.v1,
