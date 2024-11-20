@@ -15,7 +15,7 @@ test.describe('Incidents', () => {
       }
     });
 
-    await login({ customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     await page.goto(url);
 

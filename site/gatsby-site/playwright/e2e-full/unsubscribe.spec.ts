@@ -11,7 +11,7 @@ test.describe('Unsubscribe pages', () => {
 
   test.beforeEach(async ({ page, login }) => {
     if (!userId) {
-      [userId, accessToken] = await login({ customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+      [userId, accessToken] = await login();
     }
   });
 

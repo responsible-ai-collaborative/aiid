@@ -12,7 +12,7 @@ test.describe('New Incident page', () => {
 
     await init();
 
-    await login({ customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     await page.goto(url);
 
@@ -53,7 +53,7 @@ test.describe('New Incident page', () => {
 
     await init();
 
-    await login({ customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     const newIncidentId = 4;
 
