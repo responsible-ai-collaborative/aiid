@@ -494,7 +494,7 @@ test.describe('Cite pages', () => {
             `,
             variables: { filter: { userId: { EQ: userId } } },
         },
-            { authorization: `Bearer ${accessToken}` }
+            { Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};` }
         );
 
         expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);

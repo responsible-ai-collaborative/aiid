@@ -73,7 +73,7 @@ test.describe('Unsubscribe pages', () => {
           }
       }`,
     },
-      { authorization: `Bearer ${accessToken}` }
+      { Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};` }
     );
 
     expect(subscriptionsData).toHaveLength(0);

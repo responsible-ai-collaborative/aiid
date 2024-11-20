@@ -88,7 +88,7 @@ test.describe('Subscriptions', () => {
                 }
             }`,
         },
-            { authorization: `Bearer ${accessToken}` }
+            { Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};` }
         );
 
         expect(subscriptionsData).toMatchObject([{ _id: "62f40cd14016f5858d72385e" }]);
@@ -263,7 +263,8 @@ test.describe('Subscriptions', () => {
                 }
             }`,
         }, {
-            authorization: `Bearer ${accessToken}`
+           Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};`
+
         });
 
         expect(subscriptionsData).toMatchObject([{ _id: "62f40cd14016f5858d72385e" }]);
