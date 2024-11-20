@@ -138,7 +138,8 @@
     "test:api:ci": "jest --runInBand --forceExit",
     "codegen": "graphql-codegen --config codegen.ts",
     "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts",
-    "start:memory-mongo": "node --env-file=.env -r ts-node/register playwright/memory-mongo.ts"
+    "start:memory-mongo": "node --env-file=.env -r ts-node/register playwright/memory-mongo.ts",
+    "start:memory-mongo:ci": "node -r ts-node/register playwright/memory-mongo.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
