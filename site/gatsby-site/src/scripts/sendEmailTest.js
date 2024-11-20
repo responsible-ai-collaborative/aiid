@@ -21,8 +21,14 @@ if (!email) {
       developers: 'Unknown deepfake creators',
       deployers: 'Unknown deepfake creators',
       entitiesHarmed: 'Zelda Williams , Robin Williams and Family of Robin Williams',
+      entityUrl: 'https://incidentdatabase.ai/entities/unknown-deepfake-creators/',
+      entityName: 'Unknown deepfake creators',
     },
-    templateId: 'NewIncident',
+
+    // Possible values:
+    // 'NewReportAddedToAnIncident' 'NewIncident' 'EntityIncidentUpdated'
+    // 'NewEntityIncident' 'SubmissionApproved' 'IncidentUpdate'
+    templateId: process.env.TEST_EMAIL_TEMPLATE_ID || 'NewIncident',
   };
 
   console.log(JSON.stringify(sendEmailArguments, null, 2));

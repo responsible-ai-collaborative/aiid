@@ -39,7 +39,7 @@ const getEmailTemplate = () => {
   // Wraps the main email content in header, footer, etc.
   // Template variables wrapped in {{ }} are handled per-email by MailerSend.
   // We also use regular JavaScript string templating ${} 
-  // to construct the Sendgrid template
+  // to construct the MailerSend template
   // -- the values from these don't differ per-email,
   // they're just for organizing the code.
   return insertContent(
