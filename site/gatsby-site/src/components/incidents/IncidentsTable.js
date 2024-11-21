@@ -48,7 +48,7 @@ function ListCell({ cell }) {
 export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
-  const { isLoggedIn, isRole } = useUserContext();
+  const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -134,7 +134,7 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [loading]);
 
   const table = useTable(
     {

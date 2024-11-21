@@ -51,7 +51,7 @@ test.describe('Incidents App', () => {
     await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
     await page.click('text=Edit');
 
-    await page.waitForSelector('[data-cy="incident-form"]', { timeout: 12000 });
+    await page.waitForSelector('[data-cy="incident-form"]');
     await expect(page.locator('.submission-modal h3')).toHaveText('Edit Incident 3');
 
     await page.locator(`[data-cy=title-input]`).fill('Test title');
@@ -59,7 +59,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=date-input]').fill('2023-05-04');
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
-    await fillAutoComplete(page, "#input-editors", "Joh", "John Doe");
+    await fillAutoComplete(page, "#input-editors", "Test", "Test User");
 
     await page.getByText('Update', { exact: true }).click();
 
