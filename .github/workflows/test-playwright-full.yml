@@ -48,7 +48,6 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
-            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
@@ -57,7 +56,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: start in memory mongodb
-        run: nohup node -r ts-node/register playwright/memory-mongo.ts &
+        run: nohup npm run start:memory-mongo:ci &
         working-directory: site/gatsby-site
         env:
           MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
