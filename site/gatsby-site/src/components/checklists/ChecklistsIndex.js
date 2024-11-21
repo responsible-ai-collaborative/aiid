@@ -4,7 +4,7 @@ import Card from 'elements/Card';
 import Select from 'elements/Select';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckToSlot,
@@ -33,29 +33,33 @@ const ChecklistsIndex = ({ users }) => {
 
   const addToast = useToastContext();
 
-  const { user } = useUserContext();
+  const { loading, user } = useUserContext();
 
-  const loggedIn = user?.providerType != 'anon-user';
+  const loggedIn = !loading && user;
 
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
   /************************** Get Checklists **************************/
-  const {
-    data: checklistsData,
-    loading: checklistsLoading,
-    error: checklistsErrors,
-  } = useQuery(FIND_CHECKLISTS, {
-    variables: { query: { owner_id: user?.id } },
-    skip: !user?.id,
-  });
+  const [
+    findChecklists,
+    { data: checklistsData, loading: checklistsLoading, error: checklistsErrors },
+  ] = useLazyQuery(FIND_CHECKLISTS);
 
-  if (checklistsErrors) {
-    addToast({
-      message: t('Could not fetch checklists'),
-      severity: SEVERITY.danger,
-      error: checklistsErrors,
-    });
-  }
+  useEffect(() => {
+    if (!loading && user) {
+      findChecklists({ variables: { query: { owner_id: user?.id } } });
+    }
+  }, [loading, user]);
+
+  useEffect(() => {
+    if (checklistsErrors) {
+      addToast({
+        message: t('Could not fetch checklists'),
+        severity: SEVERITY.danger,
+        error: checklistsErrors,
+      });
+    }
+  }, [checklistsErrors]);
 
   // In useState so that on deleting a checklist,
   // we can remove it from display immediately.

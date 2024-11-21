@@ -2,7 +2,6 @@ import { expect } from '@playwright/test';
 import riskSortingRisks from '../../fixtures/checklists/riskSortingChecklist.json';
 import riskSortingChecklist from '../../fixtures/checklists/riskSortingChecklist.json';
 import { conditionalIntercept, test, waitForRequest } from '../../utils';
-import config from '../../config';
 import { init } from '../../memory-mongo';
 
 test.describe('Checklists App Form', () => {
@@ -117,7 +116,7 @@ test.describe('Checklists App Form', () => {
 
         await waitForRequest('findChecklist');
 
-        await page.locator('#tags_goals_input').type('Code Generation');
+        await page.locator('#tags_goals_input').fill('Question Answering');
         await page.locator('#tags_goals').click();
 
         await waitForRequest('upsertChecklist');

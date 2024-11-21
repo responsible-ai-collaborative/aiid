@@ -1,6 +1,5 @@
-import { expect, request } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { conditionalIntercept, test, waitForRequest } from '../../utils';
-import config from '../../config';
 
 test.describe('Checklists App Index', () => {
     const url = '/apps/checklists';
@@ -123,7 +122,9 @@ test.describe('Checklists App Index', () => {
         await expect(page.locator('[data-cy="checklist-card"]:last-child button')).not.toContainText('Delete');
     });
 
-    test('Should show toast on error fetching checklists', async ({ page }) => {
+    test('Should show toast on error fetching checklists', async ({ page, login }) => {
+
+        await login();
 
         await conditionalIntercept(
             page,
