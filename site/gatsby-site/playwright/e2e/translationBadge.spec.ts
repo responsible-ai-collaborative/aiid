@@ -9,11 +9,10 @@ test.describe('Translation Badges', () => {
     await expect(page.locator('a', { hasText: 'Ver Original' })).toHaveAttribute('href', '/blog/using-ai-to-connect-ai-incidents/');
   });
 
-  test('Should be visible on Prismic blog post', async ({ page }) => {
+  test('Should not be visible on Prismic blog post without translation', async ({ page }) => {
     await page.goto('/es/blog/ai-incident-journalism-analysis');
-    await expect(page.locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
-    await expect(page.locator('a', { hasText: 'Ver Original' })).toBeVisible();
-    await expect(page.locator('a', { hasText: 'Ver Original' })).toHaveAttribute('href', '/blog/ai-incident-journalism-analysis');
+    await expect(page.locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
+    await expect(page.locator('a', { hasText: 'Ver Original' })).not.toBeVisible();
   });
 
   test('Should be visible on the discover app', async ({ page, skipOnEmptyEnvironment }) => {
