@@ -14,7 +14,7 @@ import Table, {
 } from 'components/ui/Table';
 
 export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
-  const { isLoggedIn, isRole } = useUserContext();
+  const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -145,7 +145,7 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [loading]);
 
   const table = useTable(
     {
