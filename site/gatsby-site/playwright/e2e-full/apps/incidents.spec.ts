@@ -120,7 +120,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=date-input]').fill('2023-05-04');
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
-    await fillAutoComplete(page, "#input-editors", "Joh", "John Doe");
+    await fillAutoComplete(page, "#input-editors", "Sean", "Sean McGregor");
 
     await fillAutoComplete(page, "#input-incidentSearch", "1", "1 - Incident 1");
 
