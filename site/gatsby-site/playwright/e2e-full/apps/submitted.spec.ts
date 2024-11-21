@@ -211,9 +211,11 @@ test.describe('Submitted reports', () => {
 
         page.on('dialog', dialog => dialog.accept());
 
+        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'DeleteSubmission');
+
         await page.locator('[data-cy="reject-button"]').click();
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('deleteOneSubmission'));
+        await deleteResponse;
 
         const updated = await getSubmissions();
 
@@ -374,9 +376,12 @@ test.describe('Submitted reports', () => {
 
         await page.goto(url);
 
+        const updateResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'UpdateSubmission');
+
         await page.click('[data-cy="claim-submission"]');
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+        await updateResponse;
+
 
         const { data: { submissions } } = await query({
             query: gql`{
@@ -430,9 +435,7 @@ test.describe('Submitted reports', () => {
 
         await page.goto(url);
 
-        const response =  page.waitForResponse((response) => {
-            return response.request()?.postData()?.includes('UpdateSubmission')
-        });
+        const response = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'UpdateSubmission');
 
         await page.getByText('Unclaim', { exact: true }).click();
 
