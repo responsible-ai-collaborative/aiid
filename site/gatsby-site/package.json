@@ -73,6 +73,7 @@
     "is-absolute-url": "^3.0.3",
     "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
+    "jsonwebtoken": "^9.0.2",
     "mailersend": "^2.3.0",
     "md5": "^2.3.0",
     "minimatch": "^9.0.4",
@@ -137,6 +138,8 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts",
     "start:memory-mongo": "node --env-file=.env -r ts-node/register playwright/memory-mongo.ts",
+    "process-notifications": "node --env-file=.env -r ts-node/register src/scripts/process-notifications.ts",
+    "process-notifications:ci": "node -r ts-node/register src/scripts/process-notifications.ts",
     "start:memory-mongo:ci": "node -r ts-node/register playwright/memory-mongo.ts"
   },
   "devDependencies": {
@@ -150,6 +153,7 @@
     "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.8",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.12.13",
     "@types/pluralize": "^0.0.33",
     "@types/sinon": "^17.0.3",
