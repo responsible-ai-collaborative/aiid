@@ -125,7 +125,9 @@ export const getAccessToken = async () => {
 
     // Refresh the authentication token well before expiration to avoid interruptions.
 
-    if ((cachedToken && refreshDate && Date.now() < refreshDate)) {
+    const now = Date.now();
+
+    if ((cachedToken && refreshDate && now < refreshDate)) {
         return cachedToken;
     }
 
