@@ -1,7 +1,7 @@
-import { EmailParams, MailerSend, Recipient } from "mailersend"
 import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
 import config from './server/config'
+import { sendEmail } from "./server/fields/common"
 
 //TODO: add this to the workflow file, this  needs to be set via env variable
 // SEE: https://github.com/nextauthjs/next-auth/discussions/9785
@@ -16,19 +16,14 @@ const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING!, {
   },
 })
 
-const mailersend = new MailerSend({
-  apiKey: config.MAILERSEND_API_KEY!,
-});
-
 export const sendVerificationRequest = async ({ identifier: email, url }: { identifier: string, url: string }) => {
 
-  const emailParams = new EmailParams()
-    .setFrom({ email: process.env.NOTIFICATIONS_SENDER!, name: 'something' })
-    .setTo([new Recipient(email)])
-    .setSubject('something')
-    .setText(`Please click here to authenticate - ${url}`);
-
-  await mailersend.email.send(emailParams);
+  await sendEmail({
+    recipients: [{ email }],
+    subject: 'Login link',
+    templateId: 'MagicLink',
+    dynamicData: { magicLink: url },
+  })
 }
 
 export const getAuthConfig = async (): Promise<NextAuthOptions> => {

@@ -1,5 +1,6 @@
 import EntityIncidentUpdated from './EntityIncidentUpdated';
 import IncidentUpdate from './IncidentUpdate';
+import MagicLink from './MagicLink';
 import NewEntityIncident from './NewEntityIncident';
 import NewIncident from './NewIncident';
 import NewReportAddedToAnIncident from './NewReportAddedToAnIncident';
@@ -11,7 +12,8 @@ const templates: Record<string, string> = {
     NewEntityIncident: NewEntityIncident,
     NewIncident: NewIncident,
     NewReportAddedToAnIncident: NewReportAddedToAnIncident,
-    SubmissionApproved: SubmissionApproved
+    SubmissionApproved: SubmissionApproved,
+    MagicLink: MagicLink,
 };
 
 export default templates;
