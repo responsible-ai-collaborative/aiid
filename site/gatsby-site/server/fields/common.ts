@@ -136,10 +136,10 @@ export const getUsersAdminData = async () => {
 interface SendEmailParams {
     recipients: {
         email: string;
-        userId: string;
+        userId?: string;
     }[];
     subject: string;
-    dynamicData: {
+    dynamicData?: {
         incidentId?: string;
         incidentTitle?: string;
         incidentUrl?: string;
@@ -153,6 +153,7 @@ interface SendEmailParams {
         reportAuthor?: string; // Author of the report (optional)
         entityName?: string;   // Entity name (optional)
         entityUrl?: string;    // Entity URL (optional)
+        magicLink?: string;    // URL for magic link (optional)
     };
     templateId: string; // Email template ID
 }
@@ -197,7 +198,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
             }]
 
             // We have to do this because MailerSend is escaping the placeholders containing html tags
-            const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed'])
+            const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData ?? {}, ['developers', 'deployers', 'entitiesHarmed'])
 
             const emailParams = new EmailParams()
                 .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })

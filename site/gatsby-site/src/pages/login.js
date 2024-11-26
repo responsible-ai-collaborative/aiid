@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import { Form, Formik } from 'formik';
@@ -24,27 +24,31 @@ const Login = () => {
 
   const addToast = useToastContext();
 
-  const [redirectTo, setRedirectTo] = useState(null);
-
   const { t } = useTranslation();
 
-  const [{ redirectTo: redirectToParam }] = useQueryParams({
+  const [{ redirectTo }] = useQueryParams({
     redirectTo: withDefault(StringParam, '/'),
   });
 
-  useEffect(() => {
-    if (!loading && user) {
-      const missingNames = !user.first_name || !user.last_name;
+  const handleSubmit = useCallback(
+    async ({ email }, { setSubmitting }) => {
+      const result = await logIn(email, redirectTo);
 
-      const isSignup = !!localStorage.getItem('signup');
+      if (!result.error) {
+        navigate(`/verify-request/?email=${encodeURIComponent(email)}`);
+      } else {
+        // TODO: Add more specific error messages
+        addToast({
+          message: t('An unknown error has occurred'),
+          severity: SEVERITY.danger,
+          error: result.error,
+        });
+      }
 
-      const askToCompleteProfile = missingNames && isSignup;
-
-      localStorage.removeItem('signup');
-
-      setRedirectTo(askToCompleteProfile ? '/account?askToCompleteProfile=1' : redirectToParam);
-    }
-  }, [loading]);
+      setSubmitting(false);
+    },
+    [redirectTo]
+  );
 
   return (
     <>
@@ -68,21 +72,7 @@ const Login = () => {
           <Formik
             initialValues={{ email: '' }}
             validationSchema={LoginSchema}
-            onSubmit={async ({ email }, { setSubmitting }) => {
-              const result = await logIn(email, redirectTo || '');
-
-              if (result.ok) {
-                navigate('/verify-request/?email=' + email);
-              } else {
-                addToast({
-                  message: t('An unknown error has occurred'),
-                  severity: SEVERITY.danger,
-                  error: result.error,
-                });
-              }
-
-              setSubmitting(false);
-            }}
+            onSubmit={handleSubmit}
           >
             {({
               values,
@@ -124,10 +114,6 @@ const Login = () => {
               </Form>
             )}
           </Formik>
-
-          <div className="my-2 flex justify-center">
-            <Trans>or</Trans>
-          </div>
 
           <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}

@@ -40,7 +40,7 @@ export function hashToken(token: string) {
         .digest("hex");
 }
 
-async function generateMagicLink(email: string) {
+export const generateMagicLink = async (email: string, callbackUrl = '/') => {
 
     const token = randomString(32);
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -58,7 +58,7 @@ async function generateMagicLink(email: string) {
     });
 
     const baseUrl = config.NEXTAUTH_URL;
-    const magicLink = `${baseUrl}/api/auth/callback/http-email?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=${token}&email=${encodeURIComponent(email)}`;
+    const magicLink = `${baseUrl}/api/auth/callback/http-email?callbackUrl=${encodeURIComponent(baseUrl + callbackUrl)}&token=${token}&email=${encodeURIComponent(email)}`;
 
     return magicLink;
 }

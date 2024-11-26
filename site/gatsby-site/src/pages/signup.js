@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -8,13 +8,13 @@ import Link from '../components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { StringParam, useQueryParams } from 'use-query-params';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import NewsletterSignup from 'components/landing/NewsletterSignup';
 import Card from 'elements/Card';
 import HeadContent from 'components/HeadContent';
 import { navigate } from 'gatsby';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -33,11 +33,29 @@ const SignUp = () => {
 
   const addToast = useToastContext();
 
-  let [{ redirectTo }] = useQueryParams({
-    redirectTo: StringParam,
+  const [{ redirectTo }] = useQueryParams({
+    redirectTo: withDefault(StringParam, '/'),
   });
 
-  redirectTo = redirectTo ?? '/';
+  const handleSignup = useCallback(
+    async ({ email }, { setSubmitting }) => {
+      const result = await signUp(email, '/account/?askToCompleteProfile=1');
+
+      if (!result.error) {
+        await navigate(`/verify-request/?email=${encodeURIComponent(email)}`);
+      } else {
+        // TODO: Add more specific error messages
+        addToast({
+          message: t('An unknown error has occurred'),
+          severity: SEVERITY.danger,
+          error: result.error,
+        });
+      }
+
+      setSubmitting(false);
+    },
+    [signUp]
+  );
 
   return (
     <div className="flex gap-8 flex-wrap">
@@ -75,22 +93,7 @@ const SignUp = () => {
             <Formik
               initialValues={{ email: emailValue }}
               validationSchema={SignUpSchema}
-              onSubmit={async ({ email }, { setSubmitting }) => {
-                const result = await signUp(email, redirectTo);
-
-                localStorage.setItem('signup', '1');
-
-                if (result.ok) {
-                  navigate('/verify-request/?email=' + email);
-                } else {
-                  addToast({
-                    message: t('An unknown error has occurred'),
-                    severity: SEVERITY.danger,
-                    error: result.error,
-                  });
-                }
-                setSubmitting(false);
-              }}
+              onSubmit={handleSignup}
             >
               {({
                 values,
