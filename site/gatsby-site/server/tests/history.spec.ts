@@ -1,7 +1,6 @@
-import { expect, jest, it } from '@jest/globals';
+import { expect, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
-import * as context from '../context';
+import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 import { DBIncident, DBReport } from '../interfaces';
 import { IncidentFilterType, IncidentUpdateType, ReportInsertType } from '../generated/graphql';
 
@@ -123,7 +122,7 @@ describe(`History`, () => {
         };
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
 
         const response = await makeRequest(url, mutationData);
 
@@ -247,7 +246,7 @@ describe(`History`, () => {
         };
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123')
 
         const response = await makeRequest(url, mutationData);
 
@@ -336,7 +335,7 @@ describe(`History`, () => {
             }
         };
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" });
+        mockSession('123');
 
         await makeRequest(url, mutationData);
 
@@ -405,7 +404,7 @@ describe(`History`, () => {
             }
         };
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" });
+        mockSession('123');
 
 
         await makeRequest(url, mutationData);
@@ -498,7 +497,7 @@ describe(`History`, () => {
             }
         };
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" });
+        mockSession('123');
 
         await makeRequest(url, mutationData);
 
@@ -579,7 +578,7 @@ describe(`History`, () => {
             },
         };
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" });
+        mockSession('123');
 
         await makeRequest(url, mutationData);
         
