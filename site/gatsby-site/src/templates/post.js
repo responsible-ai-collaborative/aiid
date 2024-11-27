@@ -72,7 +72,7 @@ export default function Post(props) {
           </Trans>
         </span>
       </div>
-      <div className={`prose post-styled-main-wrapper`}>
+      <div data-testid="blog-content" className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>
     </>
