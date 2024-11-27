@@ -65,13 +65,10 @@ jobs:
           REALM_API_PRIVATE_KEY: dummy
           REALM_GRAPHQL_API_KEY: dummy
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
-          E2E_ADMIN_USERNAME: ""
-          E2E_ADMIN_PASSWORD: ""
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: sarasa
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
-          PROCESS_NOTIFICATIONS_SECRET: sarasa
           SITE_URL: http://localhost:8000
 
       - name: Upload coverage reports to Codecov
