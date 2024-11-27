@@ -84,10 +84,12 @@ jobs:
       netlify-alias:
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
-  
+
   call-process-notifications:
     needs: call-deploy
     uses: ./.github/workflows/process-notifications.yml
     secrets: inherit
     with:
       environment: staging
+      # inputs from the workflow_dispatch event come as strings even if they are explicitly defined as boolean
+      force-deploy: ${{ inputs.force-deploy == 'true' }}

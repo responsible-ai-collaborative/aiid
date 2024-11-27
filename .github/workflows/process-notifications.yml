@@ -1,41 +1,50 @@
 name: Process Notifications
-
 on:
   workflow_call:
     inputs:
-        environment:
-          description: The Github environment to load secrets from
-          type: string
-          required: true
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      force-deploy:
+        description: Skip processing notifications if force deploy is true
+        type: boolean
+        required: false
+        default: false
 
 jobs:
-  execute-mutation:
+  execute-process:
+    if: ${{ inputs.force-deploy != true }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - name: Call GraphQL API
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: site/gatsby-site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site/gatsby-site
+        run: npm ci
+
+      - name: Process Notifications
+        working-directory: site/gatsby-site
         env:
+          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
+          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
+          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
+          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
+          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
+          REALM_APP_ID: ${{ vars.REALM_APP_ID }}
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN }}
+          MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
+          NOTIFICATIONS_SENDER_NAME: ${{ vars.NOTIFICATIONS_SENDER_NAME }}
+          NOTIFICATIONS_SENDER: ${{ vars.NOTIFICATIONS_SENDER }}
           SITE_URL: ${{ vars.SITE_URL }}
-          PROCESS_NOTIFICATIONS_SECRET: ${{ secrets.PROCESS_NOTIFICATIONS_SECRET }}
-        run: |
-          RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST "$SITE_URL/api/graphql" \
-            -H "Content-Type: application/json" \
-            -H "PROCESS_NOTIFICATIONS_SECRET: $PROCESS_NOTIFICATIONS_SECRET" \
-            -d '{"query":"mutation { processNotifications }"}')
-
-          HTTP_STATUS=$RESPONSE
-
-          if [ "$HTTP_STATUS" -ne 200 ]; then
-            echo "GraphQL mutation failed with HTTP status: $HTTP_STATUS"
-            cat response.json
-            exit 1
-          fi
-
-          if jq -e 'has("errors") or has("errorType")' response.json > /dev/null; then
-            echo "GraphQL mutation failed with the following response:"
-            jq '.' response.json
-            exit 1
-          fi
-
-          echo "GraphQL mutation succeeded!"
-          jq '.' response.json
+        run: npm run process-notifications:ci

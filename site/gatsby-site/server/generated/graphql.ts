@@ -2558,7 +2558,6 @@ export type Mutation = {
   linkReportsToIncidents?: Maybe<Array<Maybe<Incident>>>;
   logIncidentHistory?: Maybe<LogIncidentHistoryPayload>;
   logReportHistory?: Maybe<LogReportHistoryPayload>;
-  processNotifications?: Maybe<Scalars['Int']['output']>;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
   replaceOneChecklist?: Maybe<Checklist>;
   replaceOneHistory_incident?: Maybe<History_Incident>;
