@@ -16,6 +16,8 @@ import subscriptions from './seeds/customData/subscriptions';
 
 import authUsers from './seeds/auth/users';
 
+import reportsHistory from './seeds/history/reportsHistory';
+import incidentsHistory from './seeds/history/incidentsHistory';
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
@@ -40,6 +42,10 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         auth: {
             users: authUsers,
         },
+        history: {
+            reports: reportsHistory,
+            incidents: incidentsHistory,
+        }
     });
 
     if (extra) {

@@ -27,20 +27,6 @@ test.describe('Incidents App', () => {
 
     await login();
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName === 'logIncidentHistory',
-      {
-        data: {
-          logIncidentHistory: {
-            incident_id: 3,
-          },
-        },
-      },
-      'logIncidentHistory'
-    );
-
     await page.goto(url);
 
     await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
@@ -131,8 +117,6 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=related-byId] [data-cy=dissimilar]').click();
 
     await page.getByText('Update', { exact: true }).click();
-
-    await waitForRequest('logIncidentHistory');
 
     await expect(page.locator('[data-cy="toast"]').locator('text=Incident 3 updated successfully.')).toBeVisible();
 
@@ -284,7 +268,7 @@ test.describe('Incidents App', () => {
     await page.getByText('Reports', { exact: true }).click();
 
     await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(3);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(4);
 
     const firstCiteLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
     expect(firstCiteLink).toMatch(/^\/cite\/\d+#r\d+$/);

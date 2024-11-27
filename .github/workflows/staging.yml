@@ -91,4 +91,5 @@ jobs:
     secrets: inherit
     with:
       environment: staging
-      force-deploy: ${{ inputs.force-deploy }}
+      # inputs from the workflow_dispatch event come as strings even if they are explicitly defined as boolean
+      force-deploy: ${{ inputs.force-deploy == 'true' }}
