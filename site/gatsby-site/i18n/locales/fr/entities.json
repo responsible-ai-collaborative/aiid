@@ -27,5 +27,6 @@
     "Editing Entity": "Modification de l'entité",
     "Back to Entity: {{name}}": "Retour à l'entité: {{name}}",
     "Entity updated successfully.": "Entité mise à jour avec succès.",
-    "Error updating Entity.": "Erreur lors de la mise à jour de l'entité."
+    "Error updating Entity.": "Erreur lors de la mise à jour de l'entité.",
+    "Incident Responses": "Réponses aux incidents"
 }
