@@ -1,10 +1,8 @@
 import { MongoClient } from "mongodb";
-import templates from "../emails/templates";
 import config from "../config";
-import * as reporter from '../reporter';
 import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
-import { Recipient, EmailParams, MailerSend } from "mailersend";
+import jwt from 'jsonwebtoken';
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
@@ -87,145 +85,51 @@ export interface UserAdminData {
     creationDate?: Date;
     lastAuthenticationDate?: Date;
     disabled?: boolean;
+    userId?: string;
 }
 
 export const getUserAdminData = async (userId: string) => {
 
     const userApiResponse = await apiRequest({ path: `/users/${userId}` });
 
-    const response: UserAdminData = {};
+    let user: UserAdminData | null = null;
 
     if (userApiResponse.data) {
 
-        response.email = userApiResponse.data.email;
-        response.creationDate = new Date(userApiResponse.creation_date * 1000);
-        response.lastAuthenticationDate = new Date(userApiResponse.last_authentication_date * 1000);
-        response.disabled = userApiResponse.disabled;
-    }
-
-    return response;
-}
-
-interface SendEmailParams {
-    recipients: {
-        email: string;
-        userId: string;
-    }[];
-    subject: string;
-    dynamicData: {
-        incidentId?: string;
-        incidentTitle?: string;
-        incidentUrl?: string;
-        incidentDescription?: string;
-        incidentDate?: string;
-        developers?: string; // HTML string of developers
-        deployers?: string;   // HTML string of deployers
-        entitiesHarmed?: string; // HTML string of harmed entities
-        reportUrl?: string;   // URL for a specific report (optional)
-        reportTitle?: string; // Title of the report (optional)
-        reportAuthor?: string; // Author of the report (optional)
-        entityName?: string;   // Entity name (optional)
-        entityUrl?: string;    // Entity URL (optional)
-    };
-    templateId: string; // Email template ID
-}
-
-function buildEmailData(recipients: Record<string, string>[], subject: string, dynamicData: Record<string, string | Date>, emailTemplateBody: string) {
-
-    const personalizations = recipients.map((recipient) => {
-
-        const newDynamicData: any = {}
-
-        for (var key in dynamicData) {
-            if (dynamicData.hasOwnProperty(key)) {
-                newDynamicData[`${key}`] = dynamicData[key];
-            }
+        user = {
+            email: userApiResponse.data.email,
+            creationDate: new Date(userApiResponse.creation_date * 1000),
+            lastAuthenticationDate: new Date(userApiResponse.last_authentication_date * 1000),
+            disabled: userApiResponse.disabled,
+            userId,
         }
-
-        if (recipient.email) {
-            newDynamicData['email'] = recipient.email;
-        }
-
-        if (recipient.userId) {
-            newDynamicData['userId'] = recipient.userId;
-        }
-
-        newDynamicData.siteUrl = config.SITE_URL;
-
-        return {
-            to: { email: recipient.email },
-            subject,
-            substitutions: newDynamicData,
-        };
-    });
-
-    const emailData = {
-        from: { email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME },
-        personalizations,
-        html: emailTemplateBody,
     }
 
-    return emailData;
+    return user;
 }
 
-function replacePlaceholdersWithAllowedKeys(template: string, data: { [key: string]: string }, allowedKeys: string[]): string {
-    return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
-        return allowedKeys.includes(key) && key in data ? data[key] : match;
-    });
-}
 
-export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
-
-    const emailTemplateBody = templates[templateId];
-
-    if (!emailTemplateBody) {
-        throw new Error(`Template not found: ${templateId}`);
-    }
-
-    try {
-        const emailData = buildEmailData(recipients, subject, dynamicData, emailTemplateBody);
-
-        const mailersend = new MailerSend({
-            apiKey: config.MAILERSEND_API_KEY,
-        });
-
-        const personalizations = emailData.personalizations
-            .map((personalization) => ({ data: personalization.substitutions, email: personalization.to.email }));
-
-        const emailParams = new EmailParams()
-            .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
-            .setTo(recipients.map((recipient) => new Recipient(recipient.email)))
-            .setPersonalization(personalizations)
-            .setSubject(subject)
-            // We have to do this because MailerSend is escaping the placeholders containing html tags
-            .setHtml(replacePlaceholdersWithAllowedKeys(emailData.html, dynamicData, ['developers', 'deployers', 'entitiesHarmed']));
-        //TODO: add a text version of the email
-        // .setText("Greetings from the team, you got this message through MailerSend.");
-
-        await mailersend.email.send(emailParams);
-
-    } catch (error: any) {
-        error.message = `[Send Email]: ${error.message}`;
-        reporter.error(error);
-
-        throw error;
-    }
-}
+let cachedToken: string | null = null;
+let tokenExpiration: number | null = null;
 
 /**
- * Makes an API request to the MongoDB Atlas Admin API, supporting only GET methods.
- * This function handles authentication using a public/private API key pair and returns the response from the API.
+ * Fetches the access token for the MongoDB Atlas Admin API.
  * 
- * **Note:** Use with caution as this function has admin privileges.
+ * Note: The token is cached to speed up subsequent requests. Tokens expire after 30 minutes.
  * 
- * @param {Object} params - The parameters for the API request.
- * @param {string} params.path - The API endpoint path.
- * @param {string} [params.method='GET'] - The HTTP method for the request. Currently, only 'GET' is supported.
- * @returns {Promise<any>} - The response from the API or an error object if the request fails.
- * 
- * @throws {Error} Throws an error if an unsupported HTTP method is provided.
+ * @returns {Promise<string>} A promise that resolves to the access token.
  */
-export const apiRequest = async ({ path, method = "GET" }: { method?: string, path: string }) => {
+export const getAccessToken = async () => {
+
+    const refreshDate = tokenExpiration ? tokenExpiration * 1000 - 5 * 60 * 1000 : null;
+
+    // Refresh the authentication token well before expiration to avoid interruptions.
+
+    const now = Date.now();
+
+    if ((cachedToken && refreshDate && now < refreshDate)) {
+        return cachedToken;
+    }
 
     const loginResponse = await fetch('https://services.cloud.mongodb.com/api/admin/v3.0/auth/providers/mongodb-cloud/login', {
         method: 'POST',
@@ -241,20 +145,50 @@ export const apiRequest = async ({ path, method = "GET" }: { method?: string, pa
     const data = await loginResponse.json();
 
     if (loginResponse.status != 200) {
-        return {
-            status: loginResponse.status,
-            error: data.error
-        }
+        throw new Error(`Login failed: ${data.error}`);
     }
+
+    const decoded = jwt.decode(data.access_token) as { exp: number };
+
+    cachedToken = data.access_token;
+    tokenExpiration = decoded.exp;
+
+    return cachedToken;
+};
+
+/**
+ * Makes an API request to the MongoDB Atlas Admin API, supporting only GET methods.
+ * This function handles authentication using a public/private API key pair and returns the response from the API.
+ * 
+ * Rate limited to 100 calls / minute
+ * 
+ * **Note:** Use with caution as this function has admin privileges.
+ * 
+ * @param {Object} params - The parameters for the API request.
+ * @param {string} params.path - The API endpoint path.
+ * @param {string} [params.method='GET'] - The HTTP method for the request. Currently, only 'GET' is supported.
+ * @returns {Promise<any>} - The response from the API or an error object if the request fails.
+ * 
+ * @throws {Error} Throws an error if an unsupported HTTP method is provided.
+ */
+export const apiRequest = async ({ path, params = {}, method = "GET" }: { method?: string, params?: Record<string, string>, path: string }) => {
+
+    const accessToken = await getAccessToken();
+
+    const url = new URL(`https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`);
+
+    if (Object.keys(params).length > 0) {
+        const searchParams = new URLSearchParams(params);
+        url.search = searchParams.toString();
+    }
+
+    const headers = { "Authorization": `Bearer ${accessToken}` };
 
     let response = null;
 
-    const url = `https://services.cloud.mongodb.com/api/admin/v3.0/groups/${config.REALM_API_GROUP_ID}/apps/${config.REALM_API_APP_ID}${path}`;
-    const headers = { "Authorization": `Bearer ${data.access_token}` };
-
     if (method == 'GET') {
 
-        const result = await fetch(url, { headers });
+        const result = await fetch(url.toString(), { headers });
 
         response = await result.json();
     }

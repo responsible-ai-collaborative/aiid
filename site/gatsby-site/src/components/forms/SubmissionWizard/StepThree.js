@@ -1,4 +1,4 @@
-import { Button, Spinner } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'debounce';
 import UsersInputGroup from '../UsersInputGroup';
+import SubmissionButton from './SubmissionButton';
 
 const StepThree = (props) => {
   const [data, setData] = useState(props.data);
@@ -159,6 +160,8 @@ const FormDetails = ({
 
   const [submitCount, setSubmitCount] = useState(0);
 
+  const [entityNamesList, setEntityNamesList] = useState(entityNames);
+
   const { isRole } = useUserContext();
 
   const {
@@ -189,6 +192,26 @@ const FormDetails = ({
       resetForm();
     }
   }, [submissionFailed, submissionComplete, submissionReset]);
+
+  const handleEntityChange = (values) => {
+    // Update entityNamesList with adding values that are not in entityNamesList
+    const newEntityNamesList = values
+      .filter((value) => {
+        if (!value.label) {
+          return !entityNamesList.includes(value);
+        }
+        return !entityNamesList.includes(value?.label);
+      })
+      .map((entity) => {
+        if (entity.label) {
+          return entity.label;
+        } else {
+          return entity;
+        }
+      });
+
+    setEntityNamesList([...entityNamesList, ...newEntityNamesList]);
+  };
 
   const saveInLocalStorage = useRef(
     debounce((values) => {
@@ -264,8 +287,8 @@ const FormDetails = ({
                 placeholder={t('Who employed or was responsible for the technology?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -281,8 +304,8 @@ const FormDetails = ({
                 placeholder={t('Who created or built the technology involved in the incident?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -298,8 +321,8 @@ const FormDetails = ({
                 placeholder={t('Who experienced negative impacts?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -363,8 +386,10 @@ const FormDetails = ({
             </svg>
             <Trans>Previous</Trans>
           </Button>
-          <Button
+
+          <SubmissionButton
             type="submit"
+            data-cy="submit-step-3"
             disabled={isSubmitting}
             onClick={() => {
               setSubmitCount(submitCount + 1);
@@ -378,14 +403,7 @@ const FormDetails = ({
                 submitForm
               );
             }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
-              </div>
-            )}
-            <Trans>Submit</Trans>
-          </Button>
+          />
         </div>
       </Form>
       {!isValid && submitCount > 0 && (

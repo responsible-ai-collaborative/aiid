@@ -7,7 +7,7 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans, useTranslation } from 'react-i18next';
 
-const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
+const BibTex = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) => {
   const addToast = useToastContext();
 
   const { t } = useTranslation();
@@ -34,14 +34,16 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
       editor = {${last_name}, ${first_name}},
       journal = {AI Incident Database},
       publisher = {Responsible AI Collaborative},
-      title = {Incident Number ${incident_id}},
+      title = {Incident Number ${incident_id}: ${incidentTitle}},
       url = {https://incidentdatabase.ai/cite/${incident_id}},
       year = {${incidentDate.substring(0, 4)}},
-      urldate = {${format(new Date(), 'MMMM d, y')}}`.replace(/^ +/, '\t') +
+      urldate = {${format(new Date(), 'MMMM d, y')}},
+      note = {Retrieved ${format(new Date(), 'MMMM yyyy')} from 
+        \\url{https://incidentdatabase.ai/cite/${incident_id}}}`.replace(/^ +/, '\t') +
     '\n' +
     '}';
 
-  const jsx = <code style={{ whiteSpace: 'pre' }}>{bibTex}</code>;
+  const jsx = <code style={{ whiteSpace: 'pre-wrap' }}>{bibTex}</code>;
 
   return (
     <>

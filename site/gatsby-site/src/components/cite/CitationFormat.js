@@ -49,6 +49,7 @@ function CitationFormat({ incidentReports, incident }) {
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
+                  incidentTitle={incident.title}
                   editors={incident.editors}
                 />
               );
