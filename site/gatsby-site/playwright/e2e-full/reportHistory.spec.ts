@@ -46,7 +46,7 @@ test.describe('Report History', () => {
       await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(date);
 
       await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(
-        `Modified by: ${history.modifiedBy === 'user1' ? 'Test User' : 'Sean McGregor'}`
+        `Modified by: ${history.modifiedBy === '6737a6e881955aa4905ccb04' ? 'Test User' : 'Sean McGregor'}`
       );
     }
 

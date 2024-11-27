@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { conditionalIntercept, fillAutoComplete, query, test, waitForRequest } from '../../utils';
+import { fillAutoComplete, query, test, waitForRequest } from '../../utils';
 import { init } from '../../memory-mongo';
 import gql from 'graphql-tag';
 
@@ -73,20 +73,6 @@ test.describe('Incidents App', () => {
     await init();
 
     await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
-
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName === 'logIncidentHistory',
-      {
-        data: {
-          logIncidentHistory: {
-            incident_id: 3,
-          },
-        },
-      },
-      'logIncidentHistory'
-    );
 
     await page.goto(url);
 

@@ -16,7 +16,7 @@ const items: DBIncidentHistory[] = [
             "entity-3"
         ],
         "editors": [
-            "user1",
+            "6737a6e881955aa4905ccb04",
         ],
         "reports": [
             1
@@ -27,7 +27,7 @@ const items: DBIncidentHistory[] = [
         "editor_dissimilar_incidents": [],
         "flagged_dissimilar_incidents": [],
         "epoch_date_modified": 1730242189,
-        "modifiedBy": "user1"
+        "modifiedBy": "6737a6e881955aa4905ccb04"
     },
     {
         "incident_id": 1,
@@ -44,7 +44,7 @@ const items: DBIncidentHistory[] = [
             "entity-3"
         ],
         "editors": [
-            "user1",
+            "6737a6e881955aa4905ccb04",
             "619b47ea5eed5334edfa3bbc"
         ],
         "reports": [
@@ -73,7 +73,7 @@ const items: DBIncidentHistory[] = [
             "entity-3"
         ],
         "editors": [
-            "user1",
+            "6737a6e881955aa4905ccb04",
             "619b47ea5eed5334edfa3bbc"
         ],
         "reports": [
@@ -102,7 +102,7 @@ const items: DBIncidentHistory[] = [
             "entity-3"
         ],
         "editors": [
-            "user1",
+            "6737a6e881955aa4905ccb04",
             "619b47ea5eed5334edfa3bbc",
         ],
         "reports": [
@@ -114,7 +114,7 @@ const items: DBIncidentHistory[] = [
         "editor_dissimilar_incidents": [],
         "flagged_dissimilar_incidents": [],
         "epoch_date_modified": 1730242399,
-        "modifiedBy": "user1"
+        "modifiedBy": "6737a6e881955aa4905ccb04"
     }
 ]
 
