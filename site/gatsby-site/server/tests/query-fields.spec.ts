@@ -12,6 +12,8 @@ import submissionsFixture from './fixtures/submissions';
 import classificationsFixture from './fixtures/classifications';
 import subscriptionsFixture from './fixtures/subscriptions';
 import duplicatesFixture from './fixtures/duplicates';
+import reportsHistoryFixture from './fixtures/reportsHistory';
+import incidentsHistoryFixture from './fixtures/incidentsHistory';
 
 import * as context from '../context';
 
@@ -25,6 +27,8 @@ const fixtures = [
     classificationsFixture,
     subscriptionsFixture,
     duplicatesFixture,
+    reportsHistoryFixture,
+    incidentsHistoryFixture,
 ]
 
 fixtures.forEach((collection) => {

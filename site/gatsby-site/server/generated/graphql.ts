@@ -1143,15 +1143,15 @@ export type History_Incident = {
   editor_notes?: Maybe<Scalars['String']['output']>;
   editor_similar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
   editors: Array<Maybe<Scalars['String']['output']>>;
-  embedding?: Maybe<History_IncidentEmbedding>;
+  embedding?: Maybe<IncidentEmbedding>;
   epoch_date_modified?: Maybe<Scalars['Int']['output']>;
   flagged_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
   incident_id: Scalars['Int']['output'];
   modifiedBy?: Maybe<Scalars['String']['output']>;
-  nlp_similar_incidents?: Maybe<Array<Maybe<History_IncidentNlp_Similar_Incident>>>;
+  nlp_similar_incidents?: Maybe<Array<Maybe<IncidentNlp_Similar_Incident>>>;
   reports: Array<Maybe<Scalars['Int']['output']>>;
   title: Scalars['String']['output'];
-  tsne?: Maybe<History_IncidentTsne>;
+  tsne?: Maybe<IncidentTsne>;
 };
 
 export type History_IncidentEmbedding = {
@@ -1185,26 +1185,26 @@ export type History_IncidentEmbeddingUpdateInput = {
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type History_IncidentInsertInput = {
-  AllegedDeployerOfAISystem?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeveloperOfAISystem?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  date: Scalars['String']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
-  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editors: Array<InputMaybe<Scalars['String']['input']>>;
-  embedding?: InputMaybe<History_IncidentEmbeddingInsertInput>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  incident_id: Scalars['Int']['input'];
-  modifiedBy?: InputMaybe<Scalars['String']['input']>;
-  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentInsertInput>>>;
-  reports: Array<InputMaybe<Scalars['Int']['input']>>;
-  title: Scalars['String']['input'];
-  tsne?: InputMaybe<History_IncidentTsneInsertInput>;
+export type History_IncidentFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<History_IncidentFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<History_IncidentFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<History_IncidentFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  date?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  editor_dissimilar_incidents?: InputMaybe<IntFilter>;
+  editor_notes?: InputMaybe<StringFilter>;
+  editor_similar_incidents?: InputMaybe<IntFilter>;
+  editors?: InputMaybe<StringFilter>;
+  embedding?: InputMaybe<IncidentEmbeddingObjectFilterType>;
+  epoch_date_modified?: InputMaybe<IntFilter>;
+  flagged_dissimilar_incidents?: InputMaybe<IntFilter>;
+  incident_id?: InputMaybe<IntFilter>;
+  modifiedBy?: InputMaybe<StringFilter>;
+  nlp_similar_incidents?: InputMaybe<IncidentNlp_Similar_IncidentObjectFilterType>;
+  reports?: InputMaybe<IntFilter>;
+  title?: InputMaybe<StringFilter>;
+  tsne?: InputMaybe<IncidentTsneObjectFilterType>;
 };
 
 export type History_IncidentNlp_Similar_Incident = {
@@ -1250,123 +1250,6 @@ export type History_IncidentNlp_Similar_IncidentUpdateInput = {
   similarity_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type History_IncidentQueryInput = {
-  AND?: InputMaybe<Array<History_IncidentQueryInput>>;
-  AllegedDeployerOfAISystem?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeployerOfAISystem_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  AllegedDeployerOfAISystem_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeployerOfAISystem_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeveloperOfAISystem?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeveloperOfAISystem_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  AllegedDeveloperOfAISystem_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeveloperOfAISystem_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedHarmedOrNearlyHarmedParties_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  AllegedHarmedOrNearlyHarmedParties_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedHarmedOrNearlyHarmedParties_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  OR?: InputMaybe<Array<History_IncidentQueryInput>>;
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  date?: InputMaybe<Scalars['String']['input']>;
-  date_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_gt?: InputMaybe<Scalars['String']['input']>;
-  date_gte?: InputMaybe<Scalars['String']['input']>;
-  date_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_lt?: InputMaybe<Scalars['String']['input']>;
-  date_lte?: InputMaybe<Scalars['String']['input']>;
-  date_ne?: InputMaybe<Scalars['String']['input']>;
-  date_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  description_gt?: InputMaybe<Scalars['String']['input']>;
-  description_gte?: InputMaybe<Scalars['String']['input']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_lt?: InputMaybe<Scalars['String']['input']>;
-  description_lte?: InputMaybe<Scalars['String']['input']>;
-  description_ne?: InputMaybe<Scalars['String']['input']>;
-  description_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_notes_gt?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_gte?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editor_notes_lt?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_lte?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_ne?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_similar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_similar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_similar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editors_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editors_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editors_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  embedding?: InputMaybe<History_IncidentEmbeddingQueryInput>;
-  embedding_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_modified_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  flagged_dissimilar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  flagged_dissimilar_incidents_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  flagged_dissimilar_incidents_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_gte?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  incident_id_lt?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_lte?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_ne?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  modifiedBy?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  modifiedBy_gt?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_gte?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  modifiedBy_lt?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_lte?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_ne?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentQueryInput>>>;
-  nlp_similar_incidents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  nlp_similar_incidents_in?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentQueryInput>>>;
-  nlp_similar_incidents_nin?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentQueryInput>>>;
-  reports?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  reports_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  reports_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  reports_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  title_gt?: InputMaybe<Scalars['String']['input']>;
-  title_gte?: InputMaybe<Scalars['String']['input']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title_lt?: InputMaybe<Scalars['String']['input']>;
-  title_lte?: InputMaybe<Scalars['String']['input']>;
-  title_ne?: InputMaybe<Scalars['String']['input']>;
-  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tsne?: InputMaybe<History_IncidentTsneQueryInput>;
-  tsne_exists?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 export enum History_IncidentSortByInput {
   DateAsc = 'DATE_ASC',
   DateDesc = 'DATE_DESC',
@@ -1385,6 +1268,19 @@ export enum History_IncidentSortByInput {
   IdAsc = '_ID_ASC',
   IdDesc = '_ID_DESC'
 }
+
+export type History_IncidentSortType = {
+  _id?: InputMaybe<SortType>;
+  date?: InputMaybe<SortType>;
+  description?: InputMaybe<SortType>;
+  editor_notes?: InputMaybe<SortType>;
+  embedding?: InputMaybe<IncidentEmbeddingSortType>;
+  epoch_date_modified?: InputMaybe<SortType>;
+  incident_id?: InputMaybe<SortType>;
+  modifiedBy?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  tsne?: InputMaybe<IncidentTsneSortType>;
+};
 
 export type History_IncidentTsne = {
   __typename?: 'History_incidentTsne';
@@ -1429,80 +1325,37 @@ export type History_IncidentTsneUpdateInput = {
   y_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type History_IncidentUpdateInput = {
-  AllegedDeployerOfAISystem?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeployerOfAISystem_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  AllegedDeveloperOfAISystem?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedDeveloperOfAISystem_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  AllegedHarmedOrNearlyHarmedParties?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  AllegedHarmedOrNearlyHarmedParties_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date?: InputMaybe<Scalars['String']['input']>;
-  date_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_similar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  editor_similar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  editors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editors_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  embedding?: InputMaybe<History_IncidentEmbeddingUpdateInput>;
-  embedding_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  flagged_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  flagged_dissimilar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_inc?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  modifiedBy?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  nlp_similar_incidents?: InputMaybe<Array<InputMaybe<History_IncidentNlp_Similar_IncidentUpdateInput>>>;
-  nlp_similar_incidents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  reports?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  reports_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tsne?: InputMaybe<History_IncidentTsneUpdateInput>;
-  tsne_unset?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 export type History_Report = {
   __typename?: 'History_report';
   _id?: Maybe<Scalars['ObjectId']['output']>;
-  authors: Array<Maybe<Scalars['String']['output']>>;
-  cloudinary_id: Scalars['String']['output'];
+  authors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  cloudinary_id?: Maybe<Scalars['String']['output']>;
   date_downloaded: Scalars['DateTime']['output'];
   date_modified: Scalars['DateTime']['output'];
   date_published: Scalars['DateTime']['output'];
   date_submitted: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   editor_notes?: Maybe<Scalars['String']['output']>;
-  embedding?: Maybe<History_ReportEmbedding>;
-  epoch_date_downloaded: Scalars['Int']['output'];
-  epoch_date_modified: Scalars['Int']['output'];
-  epoch_date_published: Scalars['Int']['output'];
-  epoch_date_submitted: Scalars['Int']['output'];
+  embedding?: Maybe<ReportEmbedding>;
+  epoch_date_downloaded?: Maybe<Scalars['Int']['output']>;
+  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
+  epoch_date_published?: Maybe<Scalars['Int']['output']>;
+  epoch_date_submitted?: Maybe<Scalars['Int']['output']>;
   flag?: Maybe<Scalars['Boolean']['output']>;
-  image_url: Scalars['String']['output'];
+  image_url?: Maybe<Scalars['String']['output']>;
   inputs_outputs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   is_incident_report?: Maybe<Scalars['Boolean']['output']>;
-  language: Scalars['String']['output'];
+  language?: Maybe<Scalars['String']['output']>;
   modifiedBy?: Maybe<Scalars['String']['output']>;
-  plain_text: Scalars['String']['output'];
+  plain_text?: Maybe<Scalars['String']['output']>;
   quiet?: Maybe<Scalars['Boolean']['output']>;
-  report_number: Scalars['Int']['output'];
-  source_domain: Scalars['String']['output'];
-  submitters: Array<Maybe<Scalars['String']['output']>>;
-  tags: Array<Maybe<Scalars['String']['output']>>;
-  text: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-  url: Scalars['String']['output'];
+  report_number?: Maybe<Scalars['Int']['output']>;
+  source_domain?: Maybe<Scalars['String']['output']>;
+  submitters?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  text?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
   user?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1542,267 +1395,40 @@ export type History_ReportEmbeddingUpdateInput = {
   vector_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type History_ReportInsertInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  authors: Array<InputMaybe<Scalars['String']['input']>>;
-  cloudinary_id: Scalars['String']['input'];
-  date_downloaded: Scalars['DateTime']['input'];
-  date_modified: Scalars['DateTime']['input'];
-  date_published: Scalars['DateTime']['input'];
-  date_submitted: Scalars['DateTime']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
-  embedding?: InputMaybe<History_ReportEmbeddingInsertInput>;
-  epoch_date_downloaded: Scalars['Int']['input'];
-  epoch_date_modified: Scalars['Int']['input'];
-  epoch_date_published: Scalars['Int']['input'];
-  epoch_date_submitted: Scalars['Int']['input'];
-  flag?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url: Scalars['String']['input'];
-  inputs_outputs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
-  language: Scalars['String']['input'];
-  modifiedBy?: InputMaybe<Scalars['String']['input']>;
-  plain_text: Scalars['String']['input'];
-  quiet?: InputMaybe<Scalars['Boolean']['input']>;
-  report_number: Scalars['Int']['input'];
-  source_domain: Scalars['String']['input'];
-  submitters: Array<InputMaybe<Scalars['String']['input']>>;
-  tags: Array<InputMaybe<Scalars['String']['input']>>;
-  text: Scalars['String']['input'];
-  title: Scalars['String']['input'];
-  url: Scalars['String']['input'];
-  user?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type History_ReportQueryInput = {
-  AND?: InputMaybe<Array<History_ReportQueryInput>>;
-  OR?: InputMaybe<Array<History_ReportQueryInput>>;
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  authors_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  cloudinary_id?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  cloudinary_id_gt?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_gte?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  cloudinary_id_lt?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_lte?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_ne?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_downloaded?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_downloaded_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_downloaded_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_modified?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_modified_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_modified_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_published?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_published_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_published_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_submitted?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_submitted_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_submitted_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  description_gt?: InputMaybe<Scalars['String']['input']>;
-  description_gte?: InputMaybe<Scalars['String']['input']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_lt?: InputMaybe<Scalars['String']['input']>;
-  description_lte?: InputMaybe<Scalars['String']['input']>;
-  description_ne?: InputMaybe<Scalars['String']['input']>;
-  description_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_notes_gt?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_gte?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  editor_notes_lt?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_lte?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_ne?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  embedding?: InputMaybe<History_ReportEmbeddingQueryInput>;
-  embedding_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_downloaded?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_downloaded_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_downloaded_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_modified_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_published?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_published_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_published_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_submitted?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_submitted_gt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_gte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  epoch_date_submitted_lt?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_lte?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_ne?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  flag?: InputMaybe<Scalars['Boolean']['input']>;
-  flag_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  flag_ne?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  image_url_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url_gt?: InputMaybe<Scalars['String']['input']>;
-  image_url_gte?: InputMaybe<Scalars['String']['input']>;
-  image_url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  image_url_lt?: InputMaybe<Scalars['String']['input']>;
-  image_url_lte?: InputMaybe<Scalars['String']['input']>;
-  image_url_ne?: InputMaybe<Scalars['String']['input']>;
-  image_url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  inputs_outputs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  inputs_outputs_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  inputs_outputs_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  inputs_outputs_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
-  is_incident_report_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  is_incident_report_ne?: InputMaybe<Scalars['Boolean']['input']>;
-  language?: InputMaybe<Scalars['String']['input']>;
-  language_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  language_gt?: InputMaybe<Scalars['String']['input']>;
-  language_gte?: InputMaybe<Scalars['String']['input']>;
-  language_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  language_lt?: InputMaybe<Scalars['String']['input']>;
-  language_lte?: InputMaybe<Scalars['String']['input']>;
-  language_ne?: InputMaybe<Scalars['String']['input']>;
-  language_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  modifiedBy?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  modifiedBy_gt?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_gte?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  modifiedBy_lt?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_lte?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_ne?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  plain_text?: InputMaybe<Scalars['String']['input']>;
-  plain_text_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  plain_text_gt?: InputMaybe<Scalars['String']['input']>;
-  plain_text_gte?: InputMaybe<Scalars['String']['input']>;
-  plain_text_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  plain_text_lt?: InputMaybe<Scalars['String']['input']>;
-  plain_text_lte?: InputMaybe<Scalars['String']['input']>;
-  plain_text_ne?: InputMaybe<Scalars['String']['input']>;
-  plain_text_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  quiet?: InputMaybe<Scalars['Boolean']['input']>;
-  quiet_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  quiet_ne?: InputMaybe<Scalars['Boolean']['input']>;
-  report_number?: InputMaybe<Scalars['Int']['input']>;
-  report_number_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  report_number_gt?: InputMaybe<Scalars['Int']['input']>;
-  report_number_gte?: InputMaybe<Scalars['Int']['input']>;
-  report_number_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  report_number_lt?: InputMaybe<Scalars['Int']['input']>;
-  report_number_lte?: InputMaybe<Scalars['Int']['input']>;
-  report_number_ne?: InputMaybe<Scalars['Int']['input']>;
-  report_number_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  source_domain_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  source_domain_gt?: InputMaybe<Scalars['String']['input']>;
-  source_domain_gte?: InputMaybe<Scalars['String']['input']>;
-  source_domain_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  source_domain_lt?: InputMaybe<Scalars['String']['input']>;
-  source_domain_lte?: InputMaybe<Scalars['String']['input']>;
-  source_domain_ne?: InputMaybe<Scalars['String']['input']>;
-  source_domain_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  submitters?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  submitters_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  submitters_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  submitters_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  text_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  text_gt?: InputMaybe<Scalars['String']['input']>;
-  text_gte?: InputMaybe<Scalars['String']['input']>;
-  text_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  text_lt?: InputMaybe<Scalars['String']['input']>;
-  text_lte?: InputMaybe<Scalars['String']['input']>;
-  text_ne?: InputMaybe<Scalars['String']['input']>;
-  text_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  title_gt?: InputMaybe<Scalars['String']['input']>;
-  title_gte?: InputMaybe<Scalars['String']['input']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title_lt?: InputMaybe<Scalars['String']['input']>;
-  title_lte?: InputMaybe<Scalars['String']['input']>;
-  title_ne?: InputMaybe<Scalars['String']['input']>;
-  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  url_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  url_gt?: InputMaybe<Scalars['String']['input']>;
-  url_gte?: InputMaybe<Scalars['String']['input']>;
-  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  url_lt?: InputMaybe<Scalars['String']['input']>;
-  url_lte?: InputMaybe<Scalars['String']['input']>;
-  url_ne?: InputMaybe<Scalars['String']['input']>;
-  url_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  user?: InputMaybe<Scalars['String']['input']>;
-  user_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  user_gt?: InputMaybe<Scalars['String']['input']>;
-  user_gte?: InputMaybe<Scalars['String']['input']>;
-  user_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  user_lt?: InputMaybe<Scalars['String']['input']>;
-  user_lte?: InputMaybe<Scalars['String']['input']>;
-  user_ne?: InputMaybe<Scalars['String']['input']>;
-  user_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+export type History_ReportFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<History_ReportFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<History_ReportFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<History_ReportFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  authors?: InputMaybe<StringFilter>;
+  cloudinary_id?: InputMaybe<StringFilter>;
+  date_downloaded?: InputMaybe<DateTimeFilter>;
+  date_modified?: InputMaybe<DateTimeFilter>;
+  date_published?: InputMaybe<DateTimeFilter>;
+  date_submitted?: InputMaybe<DateTimeFilter>;
+  description?: InputMaybe<StringFilter>;
+  editor_notes?: InputMaybe<StringFilter>;
+  embedding?: InputMaybe<ReportEmbeddingObjectFilterType>;
+  epoch_date_downloaded?: InputMaybe<IntFilter>;
+  epoch_date_modified?: InputMaybe<IntFilter>;
+  epoch_date_published?: InputMaybe<IntFilter>;
+  epoch_date_submitted?: InputMaybe<IntFilter>;
+  flag?: InputMaybe<BooleanFilter>;
+  image_url?: InputMaybe<StringFilter>;
+  inputs_outputs?: InputMaybe<StringFilter>;
+  is_incident_report?: InputMaybe<BooleanFilter>;
+  language?: InputMaybe<StringFilter>;
+  modifiedBy?: InputMaybe<StringFilter>;
+  plain_text?: InputMaybe<StringFilter>;
+  quiet?: InputMaybe<BooleanFilter>;
+  report_number?: InputMaybe<IntFilter>;
+  source_domain?: InputMaybe<StringFilter>;
+  submitters?: InputMaybe<StringFilter>;
+  tags?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
 };
 
 export enum History_ReportSortByInput {
@@ -1852,72 +1478,33 @@ export enum History_ReportSortByInput {
   IdDesc = '_ID_DESC'
 }
 
-export type History_ReportUpdateInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  authors_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  cloudinary_id?: InputMaybe<Scalars['String']['input']>;
-  cloudinary_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_downloaded?: InputMaybe<Scalars['DateTime']['input']>;
-  date_downloaded_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_modified?: InputMaybe<Scalars['DateTime']['input']>;
-  date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_published?: InputMaybe<Scalars['DateTime']['input']>;
-  date_published_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_submitted?: InputMaybe<Scalars['DateTime']['input']>;
-  date_submitted_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  editor_notes?: InputMaybe<Scalars['String']['input']>;
-  editor_notes_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  embedding?: InputMaybe<History_ReportEmbeddingUpdateInput>;
-  embedding_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_downloaded?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_downloaded_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_modified_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_published?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_published_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  epoch_date_submitted?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_inc?: InputMaybe<Scalars['Int']['input']>;
-  epoch_date_submitted_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  flag?: InputMaybe<Scalars['Boolean']['input']>;
-  flag_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  image_url_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  inputs_outputs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  inputs_outputs_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
-  is_incident_report_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  language?: InputMaybe<Scalars['String']['input']>;
-  language_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  modifiedBy?: InputMaybe<Scalars['String']['input']>;
-  modifiedBy_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  plain_text?: InputMaybe<Scalars['String']['input']>;
-  plain_text_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  quiet?: InputMaybe<Scalars['Boolean']['input']>;
-  quiet_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  report_number?: InputMaybe<Scalars['Int']['input']>;
-  report_number_inc?: InputMaybe<Scalars['Int']['input']>;
-  report_number_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  source_domain?: InputMaybe<Scalars['String']['input']>;
-  source_domain_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  submitters?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  submitters_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  text_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  url_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  user?: InputMaybe<Scalars['String']['input']>;
-  user_unset?: InputMaybe<Scalars['Boolean']['input']>;
+export type History_ReportSortType = {
+  _id?: InputMaybe<SortType>;
+  cloudinary_id?: InputMaybe<SortType>;
+  date_downloaded?: InputMaybe<SortType>;
+  date_modified?: InputMaybe<SortType>;
+  date_published?: InputMaybe<SortType>;
+  date_submitted?: InputMaybe<SortType>;
+  description?: InputMaybe<SortType>;
+  editor_notes?: InputMaybe<SortType>;
+  embedding?: InputMaybe<ReportEmbeddingSortType>;
+  epoch_date_downloaded?: InputMaybe<SortType>;
+  epoch_date_modified?: InputMaybe<SortType>;
+  epoch_date_published?: InputMaybe<SortType>;
+  epoch_date_submitted?: InputMaybe<SortType>;
+  flag?: InputMaybe<SortType>;
+  image_url?: InputMaybe<SortType>;
+  is_incident_report?: InputMaybe<SortType>;
+  language?: InputMaybe<SortType>;
+  modifiedBy?: InputMaybe<SortType>;
+  plain_text?: InputMaybe<SortType>;
+  quiet?: InputMaybe<SortType>;
+  report_number?: InputMaybe<SortType>;
+  source_domain?: InputMaybe<SortType>;
+  text?: InputMaybe<SortType>;
+  title?: InputMaybe<SortType>;
+  url?: InputMaybe<SortType>;
+  user?: InputMaybe<SortType>;
 };
 
 export type Incident = {
@@ -2529,8 +2116,6 @@ export type Mutation = {
   deleteOneCandidate?: Maybe<Candidate>;
   deleteOneChecklist?: Maybe<Checklist>;
   deleteOneDuplicate?: Maybe<Duplicate>;
-  deleteOneHistory_incident?: Maybe<History_Incident>;
-  deleteOneHistory_report?: Maybe<History_Report>;
   deleteOneNotification?: Maybe<Notification>;
   deleteOneQuickadd?: Maybe<Quickadd>;
   deleteOneReport?: Maybe<Report>;
@@ -2548,8 +2133,6 @@ export type Mutation = {
   insertOneCandidate?: Maybe<Candidate>;
   insertOneChecklist?: Maybe<Checklist>;
   insertOneDuplicate?: Maybe<Duplicate>;
-  insertOneHistory_incident?: Maybe<History_Incident>;
-  insertOneHistory_report?: Maybe<History_Report>;
   insertOneIncident?: Maybe<Incident>;
   insertOneNotification?: Maybe<Notification>;
   insertOneQuickadd?: Maybe<Quickadd>;
@@ -2560,8 +2143,6 @@ export type Mutation = {
   logReportHistory?: Maybe<LogReportHistoryPayload>;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
   replaceOneChecklist?: Maybe<Checklist>;
-  replaceOneHistory_incident?: Maybe<History_Incident>;
-  replaceOneHistory_report?: Maybe<History_Report>;
   replaceOneIncident?: Maybe<Incident>;
   replaceOneNotification?: Maybe<Notification>;
   replaceOneUser?: Maybe<User>;
@@ -2577,8 +2158,6 @@ export type Mutation = {
   updateOneChecklist?: Maybe<Checklist>;
   updateOneDuplicate?: Maybe<Duplicate>;
   updateOneEntity?: Maybe<Entity>;
-  updateOneHistory_incident?: Maybe<History_Incident>;
-  updateOneHistory_report?: Maybe<History_Report>;
   updateOneIncident?: Maybe<Incident>;
   updateOneNotification?: Maybe<Notification>;
   updateOneQuickadd?: Maybe<Quickadd>;
@@ -2592,8 +2171,6 @@ export type Mutation = {
   upsertOneClassification?: Maybe<Classification>;
   upsertOneDuplicate?: Maybe<Duplicate>;
   upsertOneEntity?: Maybe<Entity>;
-  upsertOneHistory_incident?: Maybe<History_Incident>;
-  upsertOneHistory_report?: Maybe<History_Report>;
   upsertOneNotification?: Maybe<Notification>;
   upsertOneQuickadd?: Maybe<Quickadd>;
   upsertOneSubscription?: Maybe<Subscription>;
@@ -2626,16 +2203,6 @@ export type MutationDeleteManyDuplicatesArgs = {
   filter?: InputMaybe<DuplicateFilterType>;
   pagination?: InputMaybe<PaginationType>;
   sort?: InputMaybe<DuplicateSortType>;
-};
-
-
-export type MutationDeleteManyHistory_IncidentsArgs = {
-  query?: InputMaybe<History_IncidentQueryInput>;
-};
-
-
-export type MutationDeleteManyHistory_ReportsArgs = {
-  query?: InputMaybe<History_ReportQueryInput>;
 };
 
 
@@ -2674,16 +2241,6 @@ export type MutationDeleteOneDuplicateArgs = {
   filter?: InputMaybe<DuplicateFilterType>;
   pagination?: InputMaybe<PaginationType>;
   sort?: InputMaybe<DuplicateSortType>;
-};
-
-
-export type MutationDeleteOneHistory_IncidentArgs = {
-  query: History_IncidentQueryInput;
-};
-
-
-export type MutationDeleteOneHistory_ReportArgs = {
-  query: History_ReportQueryInput;
 };
 
 
@@ -2745,16 +2302,6 @@ export type MutationInsertManyDuplicatesArgs = {
 };
 
 
-export type MutationInsertManyHistory_IncidentsArgs = {
-  data: Array<History_IncidentInsertInput>;
-};
-
-
-export type MutationInsertManyHistory_ReportsArgs = {
-  data: Array<History_ReportInsertInput>;
-};
-
-
 export type MutationInsertManyNotificationsArgs = {
   data: Array<NotificationInsertInput>;
 };
@@ -2777,16 +2324,6 @@ export type MutationInsertOneChecklistArgs = {
 
 export type MutationInsertOneDuplicateArgs = {
   data: DuplicateInsertType;
-};
-
-
-export type MutationInsertOneHistory_IncidentArgs = {
-  data: History_IncidentInsertInput;
-};
-
-
-export type MutationInsertOneHistory_ReportArgs = {
-  data: History_ReportInsertInput;
 };
 
 
@@ -2820,16 +2357,6 @@ export type MutationLinkReportsToIncidentsArgs = {
 };
 
 
-export type MutationLogIncidentHistoryArgs = {
-  input?: InputMaybe<History_IncidentInsertInput>;
-};
-
-
-export type MutationLogReportHistoryArgs = {
-  input?: InputMaybe<History_ReportInsertInput>;
-};
-
-
 export type MutationPromoteSubmissionToReportArgs = {
   input: PromoteSubmissionToReportInput;
 };
@@ -2838,18 +2365,6 @@ export type MutationPromoteSubmissionToReportArgs = {
 export type MutationReplaceOneChecklistArgs = {
   data: ChecklistInsertInput;
   query?: InputMaybe<ChecklistQueryInput>;
-};
-
-
-export type MutationReplaceOneHistory_IncidentArgs = {
-  data: History_IncidentInsertInput;
-  query?: InputMaybe<History_IncidentQueryInput>;
-};
-
-
-export type MutationReplaceOneHistory_ReportArgs = {
-  data: History_ReportInsertInput;
-  query?: InputMaybe<History_ReportQueryInput>;
 };
 
 
@@ -2884,18 +2399,6 @@ export type MutationUpdateManyChecklistsArgs = {
 export type MutationUpdateManyDuplicatesArgs = {
   filter: DuplicateFilterType;
   update: DuplicateUpdateType;
-};
-
-
-export type MutationUpdateManyHistory_IncidentsArgs = {
-  query?: InputMaybe<History_IncidentQueryInput>;
-  set: History_IncidentUpdateInput;
-};
-
-
-export type MutationUpdateManyHistory_ReportsArgs = {
-  query?: InputMaybe<History_ReportQueryInput>;
-  set: History_ReportUpdateInput;
 };
 
 
@@ -2938,18 +2441,6 @@ export type MutationUpdateOneDuplicateArgs = {
 export type MutationUpdateOneEntityArgs = {
   filter: EntityFilterType;
   update: EntityUpdateType;
-};
-
-
-export type MutationUpdateOneHistory_IncidentArgs = {
-  query?: InputMaybe<History_IncidentQueryInput>;
-  set: History_IncidentUpdateInput;
-};
-
-
-export type MutationUpdateOneHistory_ReportArgs = {
-  query?: InputMaybe<History_ReportQueryInput>;
-  set: History_ReportUpdateInput;
 };
 
 
@@ -3027,18 +2518,6 @@ export type MutationUpsertOneDuplicateArgs = {
 export type MutationUpsertOneEntityArgs = {
   filter: EntityFilterType;
   update: EntityInsertType;
-};
-
-
-export type MutationUpsertOneHistory_IncidentArgs = {
-  data: History_IncidentInsertInput;
-  query?: InputMaybe<History_IncidentQueryInput>;
-};
-
-
-export type MutationUpsertOneHistory_ReportArgs = {
-  data: History_ReportInsertInput;
-  query?: InputMaybe<History_ReportQueryInput>;
 };
 
 
@@ -3289,9 +2768,9 @@ export type Query = {
   entities?: Maybe<Array<Maybe<Entity>>>;
   entity?: Maybe<Entity>;
   history_incident?: Maybe<History_Incident>;
-  history_incidents: Array<Maybe<History_Incident>>;
+  history_incidents?: Maybe<Array<Maybe<History_Incident>>>;
   history_report?: Maybe<History_Report>;
-  history_reports: Array<Maybe<History_Report>>;
+  history_reports?: Maybe<Array<Maybe<History_Report>>>;
   incident?: Maybe<Incident>;
   incidents?: Maybe<Array<Maybe<Incident>>>;
   notification?: Maybe<Notification>;
@@ -3381,26 +2860,30 @@ export type QueryEntityArgs = {
 
 
 export type QueryHistory_IncidentArgs = {
-  query?: InputMaybe<History_IncidentQueryInput>;
+  filter?: InputMaybe<History_IncidentFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<History_IncidentSortType>;
 };
 
 
 export type QueryHistory_IncidentsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<History_IncidentQueryInput>;
-  sortBy?: InputMaybe<History_IncidentSortByInput>;
+  filter?: InputMaybe<History_IncidentFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<History_IncidentSortType>;
 };
 
 
 export type QueryHistory_ReportArgs = {
-  query?: InputMaybe<History_ReportQueryInput>;
+  filter?: InputMaybe<History_ReportFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<History_ReportSortType>;
 };
 
 
 export type QueryHistory_ReportsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<History_ReportQueryInput>;
-  sortBy?: InputMaybe<History_ReportSortByInput>;
+  filter?: InputMaybe<History_ReportFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<History_ReportSortType>;
 };
 
 
@@ -5205,19 +4688,12 @@ export type FindIncidentFullQueryVariables = Exact<{
 
 export type FindIncidentFullQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, epoch_date_modified?: number | null, editors: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null>, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports?: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, authors: Array<string | null>, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null } | null };
 
-export type LogIncidentHistoryMutationVariables = Exact<{
-  input: History_IncidentInsertInput;
-}>;
-
-
-export type LogIncidentHistoryMutation = { __typename?: 'Mutation', logIncidentHistory?: { __typename?: 'LogIncidentHistoryPayload', incident_id?: number | null } | null };
-
 export type FindIncidentHistoryQueryVariables = Exact<{
-  query?: InputMaybe<History_IncidentQueryInput>;
+  filter?: InputMaybe<History_IncidentFilterType>;
 }>;
 
 
-export type FindIncidentHistoryQuery = { __typename?: 'Query', history_incidents: Array<{ __typename?: 'History_incident', incident_id: number, AllegedDeployerOfAISystem?: Array<string | null> | null, AllegedDeveloperOfAISystem?: Array<string | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<string | null> | null, _id?: any | null, date: string, description?: string | null, modifiedBy?: string | null, editor_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editor_similar_incidents?: Array<number | null> | null, editors: Array<string | null>, epoch_date_modified?: number | null, flagged_dissimilar_incidents?: Array<number | null> | null, reports: Array<number | null>, title: string, embedding?: { __typename?: 'History_incidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, nlp_similar_incidents?: Array<{ __typename?: 'History_incidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, tsne?: { __typename?: 'History_incidentTsne', x?: number | null, y?: number | null } | null } | null> };
+export type FindIncidentHistoryQuery = { __typename?: 'Query', history_incidents?: Array<{ __typename?: 'History_incident', incident_id: number, AllegedDeployerOfAISystem?: Array<string | null> | null, AllegedDeveloperOfAISystem?: Array<string | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<string | null> | null, _id?: any | null, date: string, description?: string | null, modifiedBy?: string | null, editor_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editor_similar_incidents?: Array<number | null> | null, editors: Array<string | null>, epoch_date_modified?: number | null, flagged_dissimilar_incidents?: Array<number | null> | null, reports: Array<number | null>, title: string, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null } | null> | null };
 
 export type FlagIncidentSimilarityMutationVariables = Exact<{
   incidentId: Scalars['Int']['input'];
@@ -5284,19 +4760,12 @@ export type LinkReportsToIncidentsMutationVariables = Exact<{
 
 export type LinkReportsToIncidentsMutation = { __typename?: 'Mutation', linkReportsToIncidents?: Array<{ __typename?: 'Incident', incident_id: number, reports?: Array<{ __typename?: 'Report', report_number: number } | null> | null } | null> | null };
 
-export type LogReportHistoryMutationVariables = Exact<{
-  input: History_ReportInsertInput;
-}>;
-
-
-export type LogReportHistoryMutation = { __typename?: 'Mutation', logReportHistory?: { __typename?: 'LogReportHistoryPayload', report_number?: number | null } | null };
-
 export type FindReportHistoryQueryVariables = Exact<{
-  query?: InputMaybe<History_ReportQueryInput>;
+  filter?: InputMaybe<History_ReportFilterType>;
 }>;
 
 
-export type FindReportHistoryQuery = { __typename?: 'Query', history_reports: Array<{ __typename?: 'History_report', _id?: any | null, authors: Array<string | null>, cloudinary_id: string, date_downloaded: any, date_modified: any, date_published: any, date_submitted: any, description?: string | null, editor_notes?: string | null, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, flag?: boolean | null, image_url: string, inputs_outputs?: Array<string | null> | null, is_incident_report?: boolean | null, language: string, modifiedBy?: string | null, plain_text: string, report_number: number, submitters: Array<string | null>, tags: Array<string | null>, text: string, title: string, url: string, source_domain: string, user?: string | null, quiet?: boolean | null, embedding?: { __typename?: 'History_reportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null> };
+export type FindReportHistoryQuery = { __typename?: 'Query', history_reports?: Array<{ __typename?: 'History_report', _id?: any | null, authors?: Array<string | null> | null, cloudinary_id?: string | null, date_downloaded: any, date_modified: any, date_published: any, date_submitted: any, description?: string | null, editor_notes?: string | null, epoch_date_downloaded?: number | null, epoch_date_modified?: number | null, epoch_date_published?: number | null, epoch_date_submitted?: number | null, flag?: boolean | null, image_url?: string | null, inputs_outputs?: Array<string | null> | null, is_incident_report?: boolean | null, language?: string | null, modifiedBy?: string | null, plain_text?: string | null, report_number?: number | null, submitters?: Array<string | null> | null, tags?: Array<string | null> | null, text?: string | null, title?: string | null, url?: string | null, source_domain?: string | null, user?: string | null, quiet?: boolean | null, embedding?: { __typename?: 'ReportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null> | null };
 
 export type FindReportsQueryVariables = Exact<{
   filter: ReportFilterType;
@@ -5492,8 +4961,7 @@ export const UpdateIncidentsDocument = {"kind":"Document","definitions":[{"kind"
 export const InsertIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertIncident"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneIncident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<InsertIncidentMutation, InsertIncidentMutationVariables>;
 export const FindLastIncidentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindLastIncident"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"incident_id"},"value":{"kind":"EnumValue","value":"DESC"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"ObjectField","name":{"kind":"Name","value":"skip"},"value":{"kind":"IntValue","value":"0"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<FindLastIncidentQuery, FindLastIncidentQueryVariables>;
 export const FindIncidentFullDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentFull"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IncidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"tsne"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentFullQuery, FindIncidentFullQueryVariables>;
-export const LogIncidentHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logIncidentHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"History_incidentInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logIncidentHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<LogIncidentHistoryMutation, LogIncidentHistoryMutationVariables>;
-export const FindIncidentHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_incidentQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"sortBy"},"value":{"kind":"EnumValue","value":"EPOCH_DATE_MODIFIED_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"}},{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editors"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"tsne"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentHistoryQuery, FindIncidentHistoryQueryVariables>;
+export const FindIncidentHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_incidentFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_incidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"epoch_date_modified"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeployerOfAISystem"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedDeveloperOfAISystem"}},{"kind":"Field","name":{"kind":"Name","value":"AllegedHarmedOrNearlyHarmedParties"}},{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"editor_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"editor_similar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editors"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_reports"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"nlp_similar_incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"tsne"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentHistoryQuery, FindIncidentHistoryQueryVariables>;
 export const FlagIncidentSimilarityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FlagIncidentSimilarity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"incidentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"dissimilarIds"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flagIncidentSimilarity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"incidentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"incidentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"dissimilarIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"dissimilarIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"flagged_dissimilar_incidents"}},{"kind":"Field","name":{"kind":"Name","value":"editors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]}}]} as unknown as DocumentNode<FlagIncidentSimilarityMutation, FlagIncidentSimilarityMutationVariables>;
 export const AllQuickAddDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllQuickAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"QuickaddFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"quickadds"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}}]}}]}}]} as unknown as DocumentNode<AllQuickAddQuery, AllQuickAddQueryVariables>;
 export const DeleteOneQuickAddDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneQuickAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"QuickaddFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteManyQuickadds"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedCount"}}]}}]}}]} as unknown as DocumentNode<DeleteOneQuickAddMutation, DeleteOneQuickAddMutationVariables>;
@@ -5503,8 +4971,7 @@ export const FindReportWithTranslationsDocument = {"kind":"Document","definition
 export const UpdateReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<UpdateReportMutation, UpdateReportMutationVariables>;
 export const DeleteOneReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<DeleteOneReportMutation, DeleteOneReportMutationVariables>;
 export const LinkReportsToIncidentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LinkReportsToIncidents"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LinkReportsToIncidentsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"linkReportsToIncidents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]}}]} as unknown as DocumentNode<LinkReportsToIncidentsMutation, LinkReportsToIncidentsMutationVariables>;
-export const LogReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportInsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logReportHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}}]}}]} as unknown as DocumentNode<LogReportHistoryMutation, LogReportHistoryMutationVariables>;
-export const FindReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportQueryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"sortBy"},"value":{"kind":"EnumValue","value":"EPOCH_DATE_MODIFIED_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_text_hash"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"user"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindReportHistoryQuery, FindReportHistoryQueryVariables>;
+export const FindReportHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"History_reportFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history_reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"date_modified"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"embedding"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from_text_hash"}},{"kind":"Field","name":{"kind":"Name","value":"vector"}}]}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"modifiedBy"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"user"}},{"kind":"Field","name":{"kind":"Name","value":"quiet"}}]}}]}}]} as unknown as DocumentNode<FindReportHistoryQuery, FindReportHistoryQueryVariables>;
 export const FindReportsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReports"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindReportsQuery, FindReportsQueryVariables>;
 export const FindReportsTableDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindReportsTable"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"report_number"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}},{"kind":"Field","name":{"kind":"Name","value":"editor_notes"}},{"kind":"Field","name":{"kind":"Name","value":"is_incident_report"}}]}}]}}]} as unknown as DocumentNode<FindReportsTableQuery, FindReportsTableQueryVariables>;
 export const FlagReportDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FlagReport"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"report_number"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flagReport"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"report_number"},"value":{"kind":"Variable","name":{"kind":"Name","value":"report_number"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_modified"}}]}}]}}]} as unknown as DocumentNode<FlagReportMutation, FlagReportMutationVariables>;
