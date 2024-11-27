@@ -10,7 +10,6 @@ export interface Config {
     MAILERSEND_API_KEY: string;
     NOTIFICATIONS_SENDER_NAME: string;
     NOTIFICATIONS_SENDER: string;
-    PROCESS_NOTIFICATIONS_SECRET: string;
     SITE_URL: string;
     NEXTAUTH_URL: string,
     NEXTAUTH_SECRET: string,
@@ -28,7 +27,6 @@ const config: Config = {
     MAILERSEND_API_KEY: process.env.MAILERSEND_API_KEY!,
     NOTIFICATIONS_SENDER_NAME: process.env.NOTIFICATIONS_SENDER_NAME!,
     NOTIFICATIONS_SENDER: process.env.NOTIFICATIONS_SENDER!,
-    PROCESS_NOTIFICATIONS_SECRET: process.env.PROCESS_NOTIFICATIONS_SECRET!,
     SITE_URL: process.env.SITE_URL! || process.env.URL!,
 
     //TODO: add these to workflow
@@ -37,7 +35,7 @@ const config: Config = {
 }
 
 Object.keys(config).forEach((key) => {
-    if (config[key as keyof Config] === undefined) {
+    if (config[key as keyof Config] === undefined || config[key as keyof Config] === '') {
         throw new Error(`Config property ${key} is undefined`);
     }
 });

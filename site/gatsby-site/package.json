@@ -74,6 +74,7 @@
     "is-absolute-url": "^3.0.3",
     "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
+    "jsonwebtoken": "^9.0.2",
     "mailersend": "^2.3.0",
     "md5": "^2.3.0",
     "minimatch": "^9.0.4",
@@ -141,7 +142,9 @@
     "start:memory-mongo": "npx tsx --env-file=.env playwright/memory-mongo.ts",
     "start:memory-mongo:ci": "npx tsx playwright/memory-mongo.ts",
     "clean": "gatsby clean",
-    "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
+    "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
+    "process-notifications": "node --env-file=.env -r ts-node/register src/scripts/process-notifications.ts",
+    "process-notifications:ci": "node -r ts-node/register src/scripts/process-notifications.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
@@ -154,6 +157,7 @@
     "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.8",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.12.13",
     "@types/pluralize": "^0.0.33",
     "@types/sinon": "^17.0.3",

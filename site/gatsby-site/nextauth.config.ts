@@ -1,7 +1,7 @@
 import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
 import config from './server/config'
-import { sendEmail } from "./server/fields/common"
+import { sendEmail } from "./server/emails"
 
 //TODO: add this to the workflow file, this  needs to be set via env variable
 // SEE: https://github.com/nextauthjs/next-auth/discussions/9785
