@@ -1463,6 +1463,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
