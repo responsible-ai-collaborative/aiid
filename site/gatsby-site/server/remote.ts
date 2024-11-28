@@ -98,6 +98,16 @@ const ignoreTypes = [
     'DuplicateQueryInput',
     'DuplicateUpdateInput',
     'DuplicateInsertInput',
+
+    'History_report',
+    'History_reportQueryInput',
+    'History_reportUpdateInput',
+    'History_reportInsertInput',
+
+    'History_incident',
+    'History_incidentQueryInput',
+    'History_incidentUpdateInput',
+    'History_incidentInsertInput',
 ];
 
 const ignoredQueries = [
@@ -136,6 +146,12 @@ const ignoredQueries = [
 
     'notification',
     'notifications',
+
+    'history_report',
+    'history_reports',
+
+    'history_incident',
+    'history_incidents',
 ];
 
 const ignoredMutations = [

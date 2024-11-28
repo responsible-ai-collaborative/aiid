@@ -33,7 +33,7 @@ test.describe('Navigation', () => {
     await expect(page.locator('.rightSideTitle')).toHaveText('CONTENTS');
     const sidebarElementsCount = await page.locator('.rightSideBarUL li').count();
     await expect(sidebarElementsCount).toBeGreaterThan(0);
-    await page.getByTestId('sidebar-desktop').locator('#sidebar > [data-testid="sidebar-tree"] > [data-testid="sidebar-welcome"] > [data-testid="sidebar-link"]').click();
+    await page.getByTestId('sidebar-desktop').locator('#sidebar > [data-testid="sidebar-tree"] > [data-testid="sidebar-welcome"] [data-testid="sidebar-link"]').click();
     await expect(page.locator('.rightSideTitle')).not.toBeVisible();
   });
 
