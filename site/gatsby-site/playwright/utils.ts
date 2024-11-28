@@ -10,6 +10,7 @@ import * as crypto from 'node:crypto';
 import { ObjectId } from 'bson';
 import users from './seeds/customData/users';
 import authUsers from './seeds/auth/users';
+import { algoliaMock } from './fixtures/algoliaMock';
 
 declare module '@playwright/test' {
     interface Request {
@@ -332,4 +333,32 @@ export function getLanguages() {
         { code: 'fr', hrefLang: 'fr', name: 'French', localName: 'Français', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
         { code: 'ja', hrefLang: 'ja', name: 'Japanese', localName: '日本語', langDir: 'ltr', dateFormat: 'YYYY/MM/DD' },
     ];
+}
+
+// TODO: this mock should pull from the database instead of being hardcoded
+export async function mockAlgolia(page: Page) {
+
+    await page.route('**/*.algolia.net/1/indexes/*/queries*', async route => {
+        const response = await route.fetch();
+
+        await route.fulfill({
+            status: 200,
+            json: algoliaMock,
+            headers: {
+                ...response.headers(),
+            }
+        });
+    });
+
+    await page.route('**/*.algolianet.com/1/indexes/*/queries*', async route => {
+        const response = await route.fetch();
+
+        await route.fulfill({
+            status: 200,
+            json: algoliaMock,
+            headers: {
+                ...response.headers(),
+            }
+        });
+    });
 }
