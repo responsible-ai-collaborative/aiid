@@ -48,7 +48,6 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
-            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
@@ -89,6 +88,10 @@ jobs:
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/e2e/
+          MAILERSEND_API_KEY: something
+          NOTIFICATIONS_SENDER_NAME: Test Preview
+          NOTIFICATIONS_SENDER: test@test.com
+          SITE_URL: http://localhost:8000
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

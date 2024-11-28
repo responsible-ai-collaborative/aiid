@@ -8,9 +8,23 @@ import React, { useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
-import Outline from 'components/Outline';
+import PrismicOutline from 'components/PrismicOutline';
+import { extractHeaders } from 'utils/extractHeaders';
+import { Heading1, Heading2 } from 'components/CustomHeaders';
 
 const PrismicBlogPost = ({ post, location }) => {
+  let headers = [];
+
+  const extractedHeaders = extractHeaders(post.data.content);
+
+  headers = extractedHeaders;
+
+  // Define custom components for Prismic Rich Text
+  const components = {
+    heading1: ({ children }) => <Heading1>{children}</Heading1>,
+    heading2: ({ children }) => <Heading2>{children}</Heading2>,
+  };
+
   const metaTitle = post.data.metatitle;
 
   const canonicalUrl = config.gatsby.siteUrl + location.pathname;
@@ -19,7 +33,7 @@ const PrismicBlogPost = ({ post, location }) => {
 
   const rightSidebar = (
     <>
-      <Outline location={loc} />
+      <PrismicOutline location={loc} tableOfContents={headers} />
     </>
   );
 
@@ -47,7 +61,7 @@ const PrismicBlogPost = ({ post, location }) => {
         {post.data.aitranslated && (
           <>
             <TranslationBadge className="ml-2" />
-            <Link className="ml-2" to={post.data.slug}>
+            <Link className="mx-2" to={`/blog/${post.data.slug}`}>
               <Trans>View Original</Trans>
             </Link>
           </>
@@ -60,8 +74,8 @@ const PrismicBlogPost = ({ post, location }) => {
           </Trans>
         </span>
       </div>
-      <div className="prose">
-        <PrismicRichText field={post.data.content.richText} />
+      <div className="prose" data-testid="blog-content">
+        <PrismicRichText field={post.data.content.richText} components={components} />
       </div>
     </>
   );

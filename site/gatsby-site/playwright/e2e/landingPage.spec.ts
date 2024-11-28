@@ -112,12 +112,11 @@ test.describe('The Landing page', () => {
     await expect(page.locator('[data-cy="commit-sha"]')).toBeVisible();
   });
 
-  test.skip('Should load sidebar', async ({ page }) => {
+  test('Should load sidebar', async ({ page, skipOnEmptyEnvironment }) => {
     await page.goto('/');
-    const sidebarTree = page.locator('[data-cy="sidebar-desktop"]');
-    const lis = await sidebarTree.locator('ul[data-cy="sidebar-tree"] > li').count();
+    const sidebarTree = page.locator('[data-testid="sidebar-desktop"]');
+    const lis = await sidebarTree.locator('ul[data-testid="sidebar-tree"] > li').count();
     await expect(lis).toBeGreaterThan(0);
   });
-
 
 });

@@ -8,6 +8,10 @@ const requiredServerEnvVars = {
   REALM_APP_ID: String(process.env.REALM_APP_ID),
   API_MONGODB_CONNECTION_STRING: String(process.env.API_MONGODB_CONNECTION_STRING),
   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: String(process.env.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN),
+  MAILERSEND_API_KEY: String(process.env.MAILERSEND_API_KEY),
+  NOTIFICATIONS_SENDER_NAME: String(process.env.NOTIFICATIONS_SENDER_NAME),
+  NOTIFICATIONS_SENDER: String(process.env.NOTIFICATIONS_SENDER),
+  SITE_URL: String(process.env.SITE_URL),
 };
 
 const optionalServerEnvVars = {};

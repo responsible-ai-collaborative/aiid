@@ -26,6 +26,11 @@ on:
         type: string
         required: false
         default: ""
+      site-url:
+        description: The URL of the site to deploy
+        type: string
+        default: ""
+        required: false
 
 jobs:
   netlify-deploy:
@@ -83,8 +88,6 @@ jobs:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CYPRESS_PROJECT_ID: ${{ vars.CYPRESS_PROJECT_ID }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
@@ -119,6 +122,7 @@ jobs:
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
 
       - name: Build size
         run: |

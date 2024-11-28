@@ -232,8 +232,8 @@ function CiteTemplate({
           </div>
         </div>
       </div>
-      <div className="flex mt-6">
-        <div className="shrink-1">
+      <div className="flex mt-6 justify-between">
+        <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
               <div>
@@ -350,7 +350,7 @@ function CiteTemplate({
 
             <Row className="mt-6">
               <Col>
-                <Card>
+                <Card className="max-w-3xl mx-auto">
                   <ImageCarousel nodes={sortedReports} />
                 </Card>
               </Col>

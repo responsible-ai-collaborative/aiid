@@ -32,6 +32,10 @@ let safelist = [
 for (let i = 0; i < 100; i++) {
   safelist.push(`pl-[${2 + (i || 0) * 1}rem`);
 }
+// TailwindCSS does not support dynamic classes like `mt-${i}` so we need to whitelist them manually
+for (let i = 0; i < 100; i++) {
+  safelist.push(`ml-${i}`, `mr-${i}`, `mt-${i}`, `mb-${i}`, `mx-${i}`, `my-${i}`, `m-${i}`);
+}
 
 const backfaceVisibility = plugin(function ({ addUtilities }) {
   addUtilities({

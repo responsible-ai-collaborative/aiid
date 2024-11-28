@@ -60,16 +60,6 @@ jobs:
       environment: staging
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
-  call-test:
-    uses: ./.github/workflows/test.yml
-    needs: [cache-modifier, call-test-build]
-    secrets: inherit
-    with:
-      sha: ${{ github.sha }}
-      environment: staging
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
-
   call-test-playwright-full:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright-full.yml
@@ -83,7 +73,7 @@ jobs:
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
     uses: ./.github/workflows/deploy.yml
-    needs: [cache-modifier, call-test, call-test-playwright, call-test-api]
+    needs: [cache-modifier, call-test-playwright, call-test-api]
     secrets: inherit
     permissions:
       pull-requests: write
@@ -94,3 +84,12 @@ jobs:
       netlify-alias:
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+
+  call-process-notifications:
+    needs: call-deploy
+    uses: ./.github/workflows/process-notifications.yml
+    secrets: inherit
+    with:
+      environment: staging
+      # inputs from the workflow_dispatch event come as strings even if they are explicitly defined as boolean
+      force-deploy: ${{ inputs.force-deploy == 'true' }}
