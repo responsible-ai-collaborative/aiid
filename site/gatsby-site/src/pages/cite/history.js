@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import { FIND_REPORT, FIND_REPORT_HISTORY, UPDATE_REPORT } from '../../graphql/reports';
+import { FIND_REPORT_HISTORY, UPDATE_REPORT } from '../../graphql/reports';
 import { FIND_USERS } from '../../graphql/users';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
@@ -17,13 +17,12 @@ import ReportVersionViewModal from 'components/reports/ReportVersionViewModal';
 import { Button, Spinner } from 'flowbite-react';
 import CustomButton from 'elements/Button';
 import { useUserContext } from 'contexts/userContext';
-import { useLogReportHistory } from '../../hooks/useLogReportHistory';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
 
-  const { isRole, user } = useUserContext();
+  const { isRole } = useUserContext();
 
   const addToast = useToastContext();
 
@@ -39,16 +38,7 @@ function IncidentHistoryPage() {
 
   const [reportVersionDetails, setReportVersionDetails] = useState(null);
 
-  const [report, setReport] = useState(null);
-
   const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
-
-  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
-    fetchPolicy: 'network-only',
-    variables: {
-      filter: { report_number: { EQ: reportNumber } },
-    },
-  });
 
   const {
     data: reportHistoryData,
@@ -57,23 +47,13 @@ function IncidentHistoryPage() {
   } = useQuery(FIND_REPORT_HISTORY, {
     fetchPolicy: 'network-only',
     variables: {
-      query: {
-        report_number: reportNumber,
+      filter: {
+        report_number: { EQ: reportNumber },
       },
     },
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
-
-  const { logReportHistory } = useLogReportHistory();
-
-  useEffect(() => {
-    if (reportData?.report) {
-      setReport({ ...reportData.report });
-    } else {
-      setReport(undefined);
-    }
-  }, [reportData]);
 
   useEffect(() => {
     if (reportHistoryData?.history_reports?.length > 0) {
@@ -113,7 +93,7 @@ function IncidentHistoryPage() {
     }
   }, [reportHistoryData, usersData]);
 
-  const loading = loadingReportHistory || loadingUsers || loadingReport;
+  const loading = loadingReportHistory || loadingUsers;
 
   const restoreVersion = async (version) => {
     if (confirm(t('Are you sure you want to restore this version?'))) {
@@ -128,6 +108,7 @@ function IncidentHistoryPage() {
           __typename: undefined,
           _id: undefined,
           changes: undefined,
+          date_modified: new Date(),
           epoch_date_modified: getUnixTime(new Date()),
           editor_notes: version.editor_notes ? version.editor_notes : '',
           embedding: version.embedding
@@ -141,8 +122,6 @@ function IncidentHistoryPage() {
             update: { set: updatedReport },
           },
         });
-
-        await logReportHistory(report, updatedReport, user);
 
         await refetchHistory();
 

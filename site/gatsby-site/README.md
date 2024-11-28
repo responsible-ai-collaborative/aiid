@@ -47,9 +47,9 @@ Once you have cloned the repository, to set up a local development environment f
    CLOUDFLARE_R2_SECRET_ACCESS_KEY=  # Secret access key for Cloudflare R2 storage
    CLOUDFLARE_R2_BUCKET_NAME=  # Name of the Cloudflare R2 bucket for storage
    GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=  # Public URL for accessing the Cloudflare R2 bucket from the Gatsby app
-   MAILERSEND_API_KEY= # API key for MailerSend email service or dummy value if you don't plan to send emails
-   NOTIFICATIONS_SENDER_NAME=AIID Notifications # Name of the sender for email notifications
-   NOTIFICATIONS_SENDER=notifications@incidentdatabase.ai # Email address of the sender for email notifications
+   MAILERSEND_API_KEY= # API key for MailerSend email service
+   NOTIFICATIONS_SENDER_NAME= # Name of the sender for email notifications
+   NOTIFICATIONS_SENDER= # Email address of the sender for email notifications
    SITE_URL=http://localhost:8000
    ```
 
@@ -150,6 +150,7 @@ npm run codegen
 ### Schema and API Stitching
 
 > [!IMPORTANT]
+
 The API previously relied on the MongoDB Atlas Realm GraphQL API to fetch data, [but now that it has been deprecated](https://www.mongodb.com/developer/products/atlas/deprecating-mongodb-atlas-graphql-hosting-services/), we have migrated to a new API that we implement in this codebase. During the migration from Realm to our API, we stitch two GraphQL schemas: the auto-generated one from Atlas and the one defined in this codebase. These schemas can be found in the `remote.ts` and `local.ts` files respectively. The migration process involves progressively transferring GraphQL fields and functionality from the remote schema to the local one. The final combined schema is found in `schema.ts`.
 
 ### Email notifications
