@@ -98,6 +98,11 @@ input IncidentAllegedDeveloperOfAISystemRelationInput {
   create: [EntityInsertInput]
 }
 
+input IncidentImplicatedSystemsRelationInput {
+  link: [String]
+  create: [EntityInsertInput]
+}
+
 input ClassificationAttributeInsertInput {
   short_name: String
   value_json: String
@@ -182,6 +187,7 @@ input IncidentUpdateInput {
   editor_similar_incidents_unset: Boolean
   AllegedHarmedOrNearlyHarmedParties_unset: Boolean
   AllegedDeveloperOfAISystem_unset: Boolean
+  implicated_systems: IncidentImplicatedSystemsRelationInput
 }
 
 enum IncidentSortByInput {
@@ -2824,6 +2830,7 @@ input IncidentQueryInput {
   editor_notes_lt: String
   editor_notes_ne: String
   _id_exists: Boolean
+  implicated_systems: [EntityQueryInput]
 }
 
 enum DuplicateSortByInput {
@@ -3324,6 +3331,7 @@ type Incident {
   AllegedDeployerOfAISystem: [Entity]
   AllegedDeveloperOfAISystem: [Entity]
   AllegedHarmedOrNearlyHarmedParties: [Entity]
+  implicated_systems: [Entity]
   _id: ObjectId
   date: String!
   description: String
@@ -3388,6 +3396,7 @@ input IncidentInsertInput {
   embedding: IncidentEmbeddingInsertInput
   AllegedDeployerOfAISystem: IncidentAllegedDeployerOfAISystemRelationInput
   description: String
+  implicated_systems: IncidentImplicatedSystemsRelationInput
 }
 
 type Notification {

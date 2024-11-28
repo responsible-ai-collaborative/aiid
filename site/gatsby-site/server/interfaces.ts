@@ -16,8 +16,8 @@ export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDe
   & { reports: number[] }
   & { editors: string[] }
 
-export type DBIncidentHistory = Omit<History_Incident, '__typename' | 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties'>
-    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[] };
+export type DBIncidentHistory = Omit<History_Incident, '__typename' | 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'implicated_systems'>
+    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[], implicated_systems: string[] };
 
 export type DBEntity = Entity;
 
