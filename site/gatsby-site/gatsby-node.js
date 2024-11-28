@@ -52,6 +52,11 @@ const googleMapsApiClient = new GoogleMapsAPIClient({});
 
 const LookupIndex = require('./src/utils/LookupIndex');
 
+// Check for required environment variables
+const { checkServerEnvVars } = require('./envVars');
+
+checkServerEnvVars();
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createRedirect, createPage } = actions;
 
