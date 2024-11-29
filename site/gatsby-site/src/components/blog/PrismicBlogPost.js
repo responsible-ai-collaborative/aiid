@@ -61,7 +61,7 @@ const PrismicBlogPost = ({ post, location }) => {
         {post.data.aitranslated && (
           <>
             <TranslationBadge className="ml-2" />
-            <Link className="ml-2" to={post.data.slug}>
+            <Link className="mx-2" to={`/blog/${post.data.slug}`}>
               <Trans>View Original</Trans>
             </Link>
           </>
@@ -74,7 +74,7 @@ const PrismicBlogPost = ({ post, location }) => {
           </Trans>
         </span>
       </div>
-      <div className="prose">
+      <div className="prose" data-testid="blog-content">
         <PrismicRichText field={post.data.content.richText} components={components} />
       </div>
     </>

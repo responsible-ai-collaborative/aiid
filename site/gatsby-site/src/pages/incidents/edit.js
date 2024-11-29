@@ -14,7 +14,6 @@ import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
@@ -40,8 +39,6 @@ function EditCitePage(props) {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
-
-  const { logIncidentHistory } = useLogIncidentHistory();
 
   const updateSuccessToast = ({ incidentId }) => ({
     message: (
@@ -124,16 +121,6 @@ function EditCitePage(props) {
           },
         },
       });
-
-      await logIncidentHistory(
-        {
-          ...incident,
-          ...updated,
-          reports: incident.reports,
-          embedding: incident.embedding,
-        },
-        user
-      );
 
       await updateSimilarIncidentsReciprocal(
         updated.editor_similar_incidents,

@@ -3,12 +3,7 @@ import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { Button, Spinner } from 'flowbite-react';
-import {
-  FIND_INCIDENT,
-  GET_LATEST_INCIDENT_ID,
-  INSERT_INCIDENT,
-  LOG_INCIDENT_HISTORY,
-} from '../../graphql/incidents';
+import { FIND_INCIDENT, GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -16,13 +11,9 @@ import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { useUserContext } from '../../contexts/userContext';
-import { getUnixTime } from 'date-fns';
 
 function NewIncidentPage() {
   const [incidentIdToClone] = useQueryParam('incident_id', withDefault(NumberParam, 0));
-
-  const { user } = useUserContext();
 
   const { t, i18n } = useTranslation();
 
@@ -39,8 +30,6 @@ function NewIncidentPage() {
   const loading = loadingLastIncident || loadingEntities || loadingIncidentToClone;
 
   const [insertIncident] = useMutation(INSERT_INCIDENT);
-
-  const [logIncidentHistory] = useMutation(LOG_INCIDENT_HISTORY);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -106,19 +95,6 @@ function NewIncidentPage() {
       newIncident.flagged_dissimilar_incidents = [];
 
       await insertIncident({ variables: { data: newIncident } });
-
-      // Set the user as the last modifier
-      newIncident.modifiedBy = user && user.providerType != 'anon-user' ? user.id : '';
-
-      newIncident.epoch_date_modified = getUnixTime(new Date());
-
-      newIncident.AllegedDeployerOfAISystem = newIncident.AllegedDeployerOfAISystem.link;
-      newIncident.AllegedDeveloperOfAISystem = newIncident.AllegedDeveloperOfAISystem.link;
-      newIncident.AllegedHarmedOrNearlyHarmedParties =
-        newIncident.AllegedHarmedOrNearlyHarmedParties.link;
-      newIncident.editors = newIncident.editors.link;
-
-      await logIncidentHistory({ variables: { input: { ...newIncident, reports: [] } } });
 
       addToast(insertSuccessToast({ newIncidentId }));
     } catch (error) {

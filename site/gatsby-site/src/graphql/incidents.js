@@ -275,17 +275,9 @@ export const FIND_FULL_INCIDENT = gql(`
   }
 `);
 
-export const LOG_INCIDENT_HISTORY = gql(`
-  mutation logIncidentHistory($input: History_incidentInsertInput!) {
-    logIncidentHistory(input: $input) {
-      incident_id
-    }
-  }
-`);
-
 export const FIND_INCIDENT_HISTORY = gql(`
-  query FindIncidentHistory($query: History_incidentQueryInput) {
-    history_incidents(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
+  query FindIncidentHistory($filter: History_incidentFilterType) {
+    history_incidents(filter: $filter, sort: {epoch_date_modified: DESC}) {
       incident_id
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
