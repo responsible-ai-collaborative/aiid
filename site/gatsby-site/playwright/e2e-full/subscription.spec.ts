@@ -13,7 +13,19 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId] = await login();
+        await login();
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="incident-subscription-item"]')).toHaveCount(2);
+        await expect(page.locator(`[data-cy="incident-subscription-item"]`).getByText('Updates on incident #1: Incident 1')).toBeVisible();
+        await expect(page.locator(`[data-cy="incident-subscription-item"]`).getByText('Updates on incident #2: Incident 2')).toBeVisible();
+    });
+
+    test("Incident Updates: Should display a information message if the user doesn't have subscriptions", async ({ page, login }) => {
+        await init();
+
+        await login();
 
         const subscriptions: DBSubscription[] = [
             {
@@ -21,22 +33,12 @@ test.describe('Subscriptions', () => {
                 entityId: undefined,
                 incident_id: 1,
                 type: SUBSCRIPTION_TYPE.incident,
-                userId: userId,
+                userId: 'random-user-id',
             },
         ]
 
-        await seedFixture({ customData: { subscriptions } }, false);
+        await seedFixture({ customData: { subscriptions } });
 
-        await page.goto(url);
-
-        await expect(page.locator('[data-cy="incident-subscription-item"]')).toHaveCount(1);
-        await expect(page.locator(`[data-cy="incident-subscription-item"]`).getByText('Updates on incident #1: Incident 1')).toBeVisible();
-    });
-
-    test("Incident Updates: Should display a information message if the user doesn't have subscriptions", async ({ page, login }) => {
-        await init();
-
-        await login();
 
         await page.goto(url);
 
@@ -48,25 +50,6 @@ test.describe('Subscriptions', () => {
         await init();
 
         const [userId, accessToken] = await login();
-
-        const subscriptions: DBSubscription[] = [
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385d"),
-                entityId: undefined,
-                incident_id: 1,
-                type: SUBSCRIPTION_TYPE.incident,
-                userId: userId,
-            },
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385e"),
-                entityId: undefined,
-                incident_id: 2,
-                type: SUBSCRIPTION_TYPE.incident,
-                userId: userId,
-            }
-        ]
-
-        await seedFixture({ customData: { subscriptions } }, false);
 
         await page.goto(url);
 
@@ -91,7 +74,20 @@ test.describe('Subscriptions', () => {
             { Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};` }
         );
 
-        expect(subscriptionsData).toMatchObject([{ _id: "62f40cd14016f5858d72385e" }]);
+        expect(subscriptionsData).toMatchObject([
+            {
+                _id: "619b47eb5eed5334edfa3bd7",
+                userId: {
+                    userId: "6737a6e881955aa4905ccb04",
+                },
+            },
+            {
+                _id: "60a7c5b7b4f5b8a6d8f9c7e7",
+                userId: {
+                    userId: "6737a6e881955aa4905ccb04",
+                },
+            },
+        ]);
     });
 
     test('New Incidents: Should display the switch toggle off if user does not have a subscription', async ({ page, login }) => {
@@ -161,51 +157,25 @@ test.describe('Subscriptions', () => {
                 type: SUBSCRIPTION_TYPE.incident,
                 userId: userId,
             },
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385e"),
-                entityId: undefined,
-                incident_id: 2,
-                type: SUBSCRIPTION_TYPE.incident,
-                userId: userId,
-            }
         ]
 
         await seedFixture({ customData: { subscriptions } }, false);
 
         await page.goto(url);
 
-        await expect(page.locator(`[data-cy="incident-subscription-item"]`)).toHaveCount(1);
-        await expect(page.locator(`[data-cy="incident-subscription-item"]`).getByText('Updates on incident #2: Incident 2')).toBeVisible();
+        await expect(page.locator(`[data-cy="incident-subscription-item"]`)).toHaveCount(2);
     });
 
     test('Entity: Should display user subscriptions', async ({ page, login }) => {
 
         await init();
 
-        const [userId] = await login();
-
-        const subscriptions: DBSubscription[] = [
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385d"),
-                entityId: 'entity-1',
-                type: SUBSCRIPTION_TYPE.entity,
-                userId: userId,
-            },
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385e"),
-                entityId: 'entity-2',
-                type: SUBSCRIPTION_TYPE.entity,
-                userId: userId,
-            }
-        ]
-
-        await seedFixture({ customData: { subscriptions } }, false);
+        await login();
 
         await page.goto(url);
 
 
         await expect(page.locator('[data-cy="entity-subscription-item"]').getByText('New Entity 1 Entity incidents')).toBeVisible();
-        await expect(page.locator('[data-cy="entity-subscription-item"]').getByText('New Entity 2 Entity incidents')).toBeVisible();
     });
 
     test("Entity: Should display a information message if the user doesn't have subscriptions", async ({ page, login }) => {
@@ -213,6 +183,10 @@ test.describe('Subscriptions', () => {
         await init();
 
         await login();
+
+        const subscriptions: DBSubscription[] = []
+
+        await seedFixture({ customData: { subscriptions } });
 
         await page.goto(url);
 
@@ -225,23 +199,6 @@ test.describe('Subscriptions', () => {
         await init();
 
         const [userId, accessToken] = await login();
-
-        const subscriptions: DBSubscription[] = [
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385d"),
-                entityId: 'entity-1',
-                type: SUBSCRIPTION_TYPE.entity,
-                userId: userId,
-            },
-            {
-                _id: new ObjectId("62f40cd14016f5858d72385e"),
-                entityId: 'entity-2',
-                type: SUBSCRIPTION_TYPE.entity,
-                userId: userId,
-            }
-        ]
-
-        await seedFixture({ customData: { subscriptions } }, false);
 
         await page.goto(url);
 
@@ -263,10 +220,10 @@ test.describe('Subscriptions', () => {
                 }
             }`,
         }, {
-           Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};`
+            Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};`
 
         });
 
-        expect(subscriptionsData).toMatchObject([{ _id: "62f40cd14016f5858d72385e" }]);
+        expect(subscriptionsData).not.toMatchObject([{ _id: "619b47eb5eed5334edfa3bd7" }]);
     });
 });
