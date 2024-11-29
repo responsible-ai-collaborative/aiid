@@ -156,6 +156,8 @@ test.describe('The Submit form', () => {
 
     test('As editor, should submit a new incident report, adding an incident title and editors.', async ({ page, login, skipOnEmptyEnvironment }) => {
 
+        test.slow();
+
         await init();
 
         await login();

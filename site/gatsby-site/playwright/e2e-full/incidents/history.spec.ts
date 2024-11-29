@@ -14,6 +14,8 @@ test.describe('Incidents', () => {
 
   test('Should display the Version History table data', async ({ page }) => {
 
+    await init();
+
     const { data: { history_incidents } } = await query({
       query: gql`
         query {
@@ -29,6 +31,9 @@ test.describe('Incidents', () => {
     await page.goto(url);
 
     await page.locator('h2').getByText('Version History').waitFor();
+
+    await page.locator('[data-cy="history-table"]').waitFor();
+
     const rows = await page.locator('[data-cy="history-row"]').elementHandles();
     expect(rows.length).toBe(4);
 
@@ -163,6 +168,8 @@ test.describe('Incidents', () => {
     });
 
     await page.goto(url);
+
+    await page.locator('[data-cy="history-row"]').waitFor();
 
     const rows = await page.locator('[data-cy="history-row"]');
 
