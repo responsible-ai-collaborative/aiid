@@ -70,6 +70,7 @@ const Login = () => {
       ) : (
         <>
           <Formik
+            isInitialValid={false}
             initialValues={{ email: '' }}
             validationSchema={LoginSchema}
             onSubmit={handleSubmit}
