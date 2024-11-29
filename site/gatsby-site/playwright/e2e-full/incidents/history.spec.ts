@@ -169,7 +169,7 @@ test.describe('Incidents', () => {
 
     await page.goto(url);
 
-    await page.locator('[data-cy="history-row"]').waitFor();
+    await page.locator('[data-cy="history-row"]').first().waitFor();
 
     const rows = await page.locator('[data-cy="history-row"]');
 

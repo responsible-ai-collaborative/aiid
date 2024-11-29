@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { generateMagicLink, test, testUser } from '../utils';
+import { generateMagicLink, test } from '../utils';
 import { init } from '../memory-mongo';
 
 test.describe('Login', () => {
@@ -29,7 +29,7 @@ test.describe('Login', () => {
 
     await page.getByText('Login').click();
 
-    const email = testUser.email;
+    const email = 'test.user@incidentdatabase.ai';
 
     await page.route('**/api/auth/signin/http-email', async (route) => {
 
@@ -48,9 +48,11 @@ test.describe('Login', () => {
       });
     });
 
-    await expect(page.locator('input[name=email]')).toBeVisible();
-
-    await page.locator('input[name=email]').fill(email);
+    await expect(async () => {
+      await page.locator('input[name=email]').clear();
+      await page.locator('input[name=email]').fill(email);
+      await expect(page.locator('[data-cy="login-btn"]')).toBeEnabled({ timeout: 1000 });
+    }).toPass();
 
     const signupResponse = page.waitForResponse('**/api/auth/signin/http-email');
 
@@ -65,7 +67,7 @@ test.describe('Login', () => {
     async ({ page, skipOnEmptyEnvironment, login }) => {
       const redirectTo = '/cite/1/';
 
-      const magicLink = await generateMagicLink(testUser.email, redirectTo);
+      const magicLink = await generateMagicLink('test.user@incidentdatabase.ai', redirectTo);
 
       await page.goto(magicLink);
 
