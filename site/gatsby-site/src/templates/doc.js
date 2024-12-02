@@ -44,7 +44,7 @@ export default function Doc(props) {
           </div>
         )}
       </div>
-      <div className="styled-main-wrapper prose">
+      <div className="styled-main-wrapper prose" data-testid="doc-content">
         <MDXProvider components={Components}>{children}</MDXProvider>
       </div>
     </>
