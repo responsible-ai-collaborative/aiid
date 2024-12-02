@@ -8,7 +8,23 @@ const remarkStrip = require('strip-markdown');
 
 const keys = ['text', 'title'];
 
+/**
+ * @typedef {Object} Reporter
+ * @property {function(string):void} log
+ * @property {function(string):void} error
+ * @property {function(string):void} warn
+ */
+
 class Translator {
+  /**
+   * @param {Object} options
+   * @param {import('mongodb').MongoClient} options.mongoClient
+   * @param {Object} options.translateClient
+   * @param {string[]} options.languages
+   * @param {Reporter} options.reporter
+   * @param {string} [options.submissionDateStart]
+   * @param {boolean} [options.dryRun]
+   */
   constructor({
     mongoClient,
     translateClient,
@@ -18,10 +34,6 @@ class Translator {
     dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
   }) {
     this.translateClient = translateClient;
-    /**
-     * @type {import('mongodb').MongoClient}
-     * @public
-     */
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
@@ -49,8 +61,11 @@ class Translator {
     }, concurrency);
 
     q.error((err, task) => {
-      this.reporter.log(
+      this.reporter.error(
         `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
+      );
+      throw new Error(
+        `Translation process failed for report ${task.entry.report_number}. Error: ${err.code} - ${err.message}`
       );
     });
 
@@ -72,20 +87,26 @@ class Translator {
   async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
+    const reportsTranslatedCollection = this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`);
 
     const query = {
       report_number: { $in: originalIds },
       $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
     };
 
-    const translated = await incidents.find(query, { projection: { report_number: 1 } }).toArray();
+    const translated = await reportsTranslatedCollection
+      .find(query, { projection: { report_number: 1 } })
+      .toArray();
 
     return translated;
   }
 
   async saveTranslatedReports({ items, language }) {
-    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
+    const reportsTranslatedCollection = this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`);
 
     const translated = [];
 
@@ -97,7 +118,7 @@ class Translator {
       translated.push({ report_number, text, title, plain_text });
     }
 
-    return incidents.insertMany(translated);
+    return reportsTranslatedCollection.insertMany(translated);
   }
 
   async translateReport({ entry, to }) {
@@ -125,6 +146,12 @@ class Translator {
   }
 
   async run() {
+    if (this.dryRun) {
+      this.reporter.warn(
+        'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
+      );
+    }
+
     await this.mongoClient.connect();
 
     let reportsQuery = {};
@@ -135,7 +162,7 @@ class Translator {
         const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
 
         this.reporter.error(errorMessage);
-        throw errorMessage;
+        throw new Error(errorMessage);
       }
 
       this.reporter.log(
@@ -143,7 +170,9 @@ class Translator {
       );
       reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
     } else {
-      this.reporter.log(`Translating all incident reports`);
+      this.reporter.log(
+        `Translating all incident reports. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
+      );
     }
 
     const reports = await this.mongoClient

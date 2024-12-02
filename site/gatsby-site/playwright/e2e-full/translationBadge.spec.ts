@@ -20,9 +20,14 @@ test.describe('Translation Badges', () => {
     await expect(page.locator('[data-cy="5d34b8c29ced494f010ed45c"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
   });
 
-  test('Should be visible on an incident card on the citation page', async ({ page, skipOnEmptyEnvironment }) => {
-    await page.goto('/es/cite/1#r1');
-    await expect(page.locator('#r1').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+  test('Should be visible on an report card on the citation page if it was translated', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.goto('/es/cite/3#r3');
+    await expect(page.locator('#r3').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+  });
+
+  test('Should not be visible on an report card on the citation page if it was not translated', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.goto('/es/cite/3#r4');
+    await expect(page.locator('#r4').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
   });
 
   test('Should be visible on documentation pages', async ({ page }) => {
