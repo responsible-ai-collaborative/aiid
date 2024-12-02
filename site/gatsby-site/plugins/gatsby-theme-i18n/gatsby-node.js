@@ -220,50 +220,44 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
     const [template, mdxFile] = page.component.split(`?__contentFilePath=`);
 
-    // If the mdxFile path has a language, let's strip the language from it.
-    // ex: index.de.mdx ==> index.mdx
+    // Process the mdxFile if it exists
     if (mdxFile) {
-      let thePath = path.dirname(mdxFile);
+      const directory = path.dirname(mdxFile); // Get the directory path
 
-      let fileName = path.basename(mdxFile);
+      const fileName = path.basename(mdxFile, `.mdx`); // Extract the file name without `.mdx`
 
-      let ext = path.extname(mdxFile);
+      const ext = path.extname(mdxFile); // Get the file extension
 
-      if (ext !== '.mdx') {
-        throw new Error(`Unexpected file extension in mdx path parsing: ${mdxFile}`);
+      if (ext !== `.mdx`) {
+        throw new Error(`Unexpected file extension in MDX path parsing: ${mdxFile}`);
       }
 
-      // Split the filename in three parts split by the dot. We expect two or three components.
-      let fileNamePieces = fileName.split('.');
+      // Extract the locale from the file name if present (e.g., "index.es" → "es")
+      const nameParts = fileName.split(`.`);
 
-      if (fileNamePieces.length == 2) {
-        // ex: index.mdx
-        theFilePath = mdxFile;
-      } else if (fileNamePieces.length == 3) {
-        // ex: index.es.mdx
-        // Keep everything except the language code.
-        theFilePath = `${path.join(thePath, fileNamePieces.at(0))}${ext}`;
-      } else {
-        throw new Error(`Unexpected file format in mdx path parsing: ${mdxFile}`);
+      let baseName = nameParts[0]; // Default to the base name without locale
+
+      if (nameParts.length > 1) {
+        baseName = nameParts.join(`.`); // Rejoin the remaining parts as the base name
       }
 
-      // If we use a non-default language, and the language file is on the disk, then use it.
-      if (ext === '.mdx' && locale.code !== defaultLang) {
-        // ex: /path/up/to/lang/code
-        let potentialPath = path.join(path.dirname(thePath), fileNamePieces.at(0));
+      // If it's a non-default language and the file exists, use the localized file
+      if (locale.code !== defaultLang) {
+        const localizedFile = path.join(directory, `${baseName}.${locale.code}${ext}`);
 
-        // ex: /path/up/to/lang/code.es.mdx
-        let potentialLangfile = `${potentialPath}.${locale.code}${ext}`;
-
-        if (fs.existsSync(potentialLangfile)) {
-          theFilePath = potentialLangfile;
+        if (fs.existsSync(localizedFile)) {
+          theFilePath = `${template}?__contentFilePath=${localizedFile}`;
         } else {
-          // Nothing to render if file doen't exist.
-          theFilePath = '';
+          // If no localized file exists, use the default file
+          theFilePath = `${template}?__contentFilePath=${path.join(
+            directory,
+            `${baseName}${ext}`
+          )}`;
         }
+      } else {
+        // For the default language, strip the locale from the path if present
+        theFilePath = `${template}?__contentFilePath=${path.join(directory, `${baseName}${ext}`)}`;
       }
-
-      theFilePath = `${template}?__contentFilePath=${theFilePath}`;
     }
 
     const newPage = {
@@ -293,7 +287,6 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
     // Check if the page is a localized 404
     if (newPage.path.match(/^\/[a-z]{2}\/404\/$/)) {
-      // Match all paths starting with this code (apart from other valid paths)
       newPage.matchPath = `/${locale.code}/*`;
     }
 
