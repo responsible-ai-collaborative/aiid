@@ -123,6 +123,8 @@ jobs:
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
       - name: Build size
         run: |
