@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import config from "../config";
-import { Context, DBIncident, DBNotification, DBReport } from "../interfaces";
+import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
 import jwt from 'jsonwebtoken';
 
@@ -353,4 +353,30 @@ export const createNotificationsOnUpdatedIncident = async (fullDocument: DBIncid
         };
         await notificationsCollection.updateOne(notification, { $set: notification }, { upsert: true });
     }
+}
+
+export const logReportHistory = async (updated: DBReport, context: Context) => {
+
+    const reportHistory: DBReportHistory = {
+        ...updated,
+        modifiedBy: context.user?.id ?? '',
+        _id: undefined,
+    }
+
+    const reportHistoryCollection = context.client.db('history').collection<DBReportHistory>("reports");
+
+    await reportHistoryCollection.insertOne(reportHistory);
+};
+
+export const logIncidentHistory = async (updated: DBIncident, context: Context) => {
+
+    const incidentHistory: DBIncidentHistory = {
+        ...updated,
+        modifiedBy: context.user?.id ?? '',
+        _id: undefined,
+    }
+
+    const incidentHistoryCollection = context.client.db('history').collection<DBIncidentHistory>("incidents");
+
+    await incidentHistoryCollection.insertOne(incidentHistory);
 }

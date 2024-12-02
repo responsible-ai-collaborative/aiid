@@ -92,4 +92,28 @@ export const hasHeaderSecret = (headerName: keyof Config) => rule()(
     }
 )
 
+export const notQueriesAdminData = () => rule()(
+
+    async (parent, args, context: Context, info) => {
+
+        const fieldNodes = info.fieldNodes;
+
+        for (const fieldNode of fieldNodes) {
+            if (fieldNode.selectionSet) {
+                const selections = fieldNode.selectionSet.selections;
+
+                for (const selection of selections) {
+
+                    if (selection.kind === 'Field' && selection.name.value === 'adminData') {
+
+                        return new Error('not authorized')
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+)
+
 export const isAdmin = isRole('admin');
