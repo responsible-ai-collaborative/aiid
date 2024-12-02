@@ -7,7 +7,7 @@ test.describe('Blog', () => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/blog/the-first-taxonomy-of-ai-incidents');
 
-    await expect(page.locator('h1')).toHaveText('The First Taxonomy of AI Incidents');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('The First Taxonomy of AI Incidents');
 
     const div = await page.locator("[data-testid='blog-content']");
     const textContent = await div.textContent();
@@ -19,7 +19,7 @@ test.describe('Blog', () => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/the-first-taxonomy-of-ai-incidents');
 
-    await expect(page.locator('h1')).toHaveText('La primera taxonomía de incidentes de IA');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('La primera taxonomía de incidentes de IA');
 
     const div = await page.locator("[data-testid='blog-content']");
     const textContent = await div.textContent();

@@ -237,10 +237,6 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
       let baseName = nameParts[0]; // Default to the base name without locale
 
-      if (nameParts.length > 1) {
-        baseName = nameParts.join(`.`); // Rejoin the remaining parts as the base name
-      }
-
       // If it's a non-default language and the file exists, use the localized file
       if (locale.code !== defaultLang) {
         const localizedFile = path.join(directory, `${baseName}.${locale.code}${ext}`);
