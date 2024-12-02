@@ -32,16 +32,20 @@ const Login = () => {
 
   const handleSubmit = useCallback(
     async ({ email }, { setSubmitting }) => {
-      const result = await logIn(email, redirectTo);
+      try {
+        const result = await logIn(email, redirectTo);
 
-      if (!result.error) {
-        navigate(`/verify-request/?email=${encodeURIComponent(email)}`);
-      } else {
+        if (!result.error) {
+          navigate(`/verify-request/?email=${encodeURIComponent(email)}`);
+        } else {
+          throw result?.error;
+        }
+      } catch (e) {
         // TODO: Add more specific error messages
         addToast({
           message: t('An unknown error has occurred'),
           severity: SEVERITY.danger,
-          error: result.error,
+          error: e,
         });
       }
 
