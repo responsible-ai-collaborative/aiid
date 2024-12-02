@@ -135,6 +135,8 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
           SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
 
       - name: Upload Playwright traces
         if: failure()
