@@ -104,7 +104,7 @@ test.describe('Docs', () => {
 
   test('Should include outline in Spanish About page', async ({ page, skipOnEmptyEnvironment }) => {
     await page.setViewportSize({ width: 1280, height: 1000 });
-    await page.goto('/about');
+    await page.goto('/es/about');
 
     const outlineItems = page.locator('[data-cy="outline"] > li');
     await expect(outlineItems).toHaveCount(7);
