@@ -3,11 +3,7 @@ import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import { Button, Spinner } from 'flowbite-react';
-import {
-  FIND_INCIDENT,
-  GET_LATEST_INCIDENT_ID,
-  INSERT_INCIDENT,
-} from '../../graphql/incidents';
+import { FIND_INCIDENT, GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -15,13 +11,9 @@ import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { useUserContext } from '../../contexts/userContext';
-import { getUnixTime } from 'date-fns';
 
 function NewIncidentPage() {
   const [incidentIdToClone] = useQueryParam('incident_id', withDefault(NumberParam, 0));
-
-  const { user } = useUserContext();
 
   const { t, i18n } = useTranslation();
 
