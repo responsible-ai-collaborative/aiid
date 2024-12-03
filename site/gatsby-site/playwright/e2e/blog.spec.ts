@@ -7,7 +7,7 @@ test.describe('Blog', () => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/blog/the-first-taxonomy-of-ai-incidents');
 
-    await expect(page.locator('h1')).toHaveText('The First Taxonomy of AI Incidents');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('The First Taxonomy of AI Incidents');
 
     const div = await page.locator("[data-testid='blog-content']");
     const textContent = await div.textContent();
@@ -17,13 +17,25 @@ test.describe('Blog', () => {
 
   test('Should load mdx blog post in spanish', async ({ page, skipOnEmptyEnvironment }) => {
     await page.setViewportSize({ width: 1280, height: 1000 });
-    await page.goto('/es/blog/the-first-taxonomy-of-ai-incidents');
+    await page.goto('/es/blog/representation-and-imagination');
 
-    await expect(page.locator('h1')).toHaveText('La primera taxonomía de incidentes de IA');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('Representación e imaginación para prevenir los daños de la IA');
 
     const div = await page.locator("[data-testid='blog-content']");
     const textContent = await div.textContent();
-    expect(textContent).toContain('En noviembre, Partnership on AI AI Incident Database (AIID) invitó públicamente a los usuarios a buscar al instante en miles de páginas de texto para comprender mejor las limitaciones de Productos de IA en el mundo real. Desde noviembre, decenas de miles de personas de 157 países se han conectado al AIID. El día de hoy marca el lanzamiento de la próxima etapa de la base de datos de incidentes de IA con su primera taxonomía de incidentes de IA completa.');
+    expect(textContent).toContain('La base de datos de incidentes de IA se lanzó públicamente en noviembre de 2020 por Partnership on AI como un panel de control de los daños de IA realizados en el mundo real.');
+
+  });
+
+  test('Should load mdx blog post in french', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto('/fr/blog/join-raic');
+
+    await expect(page.locator('.titleWrapper h1')).toHaveText("Rejoignez l'équipe fondatrice de Responsible AI Collaborative");
+
+    const div = await page.locator("[data-testid='blog-content']");
+    const textContent = await div.textContent();
+    expect(textContent).toContain("La base de données d'incidents d'IA lancée publiquement en novembre 2020 en tant que tableau de bord des dommages causés par l'IA dans le monde réel.");
 
   });
 
