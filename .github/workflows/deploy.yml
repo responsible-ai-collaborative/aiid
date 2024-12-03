@@ -82,6 +82,7 @@ jobs:
         run: npm install netlify-cli -g
 
       - name: Set branch context URL
+        continue-on-error: true
         run: |
           # Extract branch name from ref (removes refs/heads/ prefix)
           BRANCH_NAME=$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///')
