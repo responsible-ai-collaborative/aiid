@@ -81,6 +81,15 @@ jobs:
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
+      - name: Set branch context URL
+        run: |
+          if [[ ! -z "${{ inputs.netlify-alias }}" ]]; then
+            netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --scope functions --context "branch:${{ inputs.netlify-alias }}"
+          fi
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+
       - name: Build using Netlify
         run: netlify build --context ${{ inputs.netlify-context }} --offline
         working-directory: site/gatsby-site
