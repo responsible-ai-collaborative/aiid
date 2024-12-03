@@ -32,6 +32,6 @@
   status = 200
 
 [[redirects]]
-  from = "/api/auth"
+  from = "/api/auth/*"
   to = "/.netlify/functions/auth"
   status = 200
