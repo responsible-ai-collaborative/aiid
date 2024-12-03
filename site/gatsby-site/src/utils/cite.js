@@ -104,7 +104,14 @@ export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, 
       (t) => t.report_number === r.report_number
     );
 
-    return translation ? { ...r, text: translation.text, title: translation.title } : { ...r };
+    return translation
+      ? {
+          ...r,
+          text: translation.text,
+          title: translation.title,
+          isTranslated: true, // Mark badge to display or not
+        }
+      : { ...r };
   });
 };
 

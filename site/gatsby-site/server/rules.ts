@@ -55,7 +55,7 @@ export const isSubscriptionOwner = () => rule()(
 
         const collection = context.client.db('customData').collection('subscriptions');
         const simpleType = getSimplifiedType(SubscriptionType);
-        const filter = getMongoDbFilter(simpleType, info.variableValues.filter as GraphQLFilter);
+        const filter = getMongoDbFilter(simpleType, args.filter as GraphQLFilter);
         const subscriptions = await collection.find<DBSubscription>(filter).toArray();
 
         const { user } = context;

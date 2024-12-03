@@ -1,4 +1,4 @@
-name: Build test site
+name: Run tests
 on:
   workflow_call:
     inputs:
@@ -7,11 +7,7 @@ on:
         type: string
         required: true
       sha:
-        description: The SHA of the commit to build
-        type: string
-        required: true
-      netlify-context:
-        description: The Netlify context use when building
+        description: The commit SHA to run the tests against
         type: string
         required: true
       runner-label:
@@ -25,22 +21,27 @@ on:
 
 jobs:
   test:
-    name: Build site for testing
+    name: Run Cypress tests
     environment: ${{ inputs.environment }}
     runs-on:
       labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: site/gatsby-site
+    strategy:
+      # when one test fails, DO NOT cancel the other
+      # containers, because this will kill Cypress processes
+      # leaving the Dashboard hanging ...
+      # https://github.com/cypress-io/github-action/issues/48
+      fail-fast: false
+      matrix:
+        # run 4 copies of the current job in parallel
+        containers: [1, 2, 3, 4]
+    # stop the job if it runs over 20 minutes
+    # to prevent a hanging process from using all your CI minutes
+    timeout-minutes: 80
     steps:
-      - name: Cleanup Disk Space
-        run: |
-          echo "Before removing files:"
-          df -h
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          echo "After removing files:"
-          df -h
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -54,28 +55,51 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier}}
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        working-directory: site/gatsby-site
-        run: npm ci
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: site/gatsby-site
+          runTests: false
+          install-command: npm ci
 
-      - name: Use tests specific netlify.toml
-        run: mv tests-netlify.toml netlify.toml
-        working-directory: site/gatsby-site
-
-      - name: Install Netlify CLI
-        run: npm install netlify-cli -g
-
-      - name: Build using Netlify
-        run: netlify build --context ${{ inputs.netlify-context }} --offline
-        working-directory: site/gatsby-site
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
         env:
-          INSTRUMENT: true
-          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          cache-name: cache-build-folder
+        with:
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/netlify/functions
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+        id: extract_branch
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: site/gatsby-site
+          install: false
+          config-file: cypress.config.js
+          record: true
+          parallel: true
+          group: "Cypress e2e tests"
+          tag: ${{ steps.extract_branch.outputs.branch }}
+          start: npx -y pm2 start npm --name "web-server" -- run serve && npx pm2 logs "web-server"
+          wait-on: http://127.0.0.1:8000
+          wait-on-timeout: 60
+        env:
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_PROJECT_ID: ${{ vars.CYPRESS_PROJECT_ID }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
@@ -88,34 +112,23 @@ jobs:
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
-          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
-          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
-          NODE_OPTIONS: --dns-result-order=ipv4first
           GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
-          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          INSTRUMENT: true
+          # Since this is triggered on a pull request, we set the commit message to the pull request title
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
           GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
-          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
+          REALM_APP_ID: ${{ secrets.REALM_APP_ID }}
           REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
           REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
-          REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
           REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
-          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
-          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
-          NEXTAUTH_URL: http://localhost:8000
-          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
 
-      - name: Cache build
-        uses: actions/cache/save@v4
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
         env:
-          cache-name: cache-build-folder
-        with:
-          path: |
-            site/gatsby-site/public
-            site/gatsby-site/netlify/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

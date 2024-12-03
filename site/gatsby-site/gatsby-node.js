@@ -4,8 +4,6 @@ const fs = require('fs');
 
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
-const { Translate } = require('@google-cloud/translate').v2;
-
 const { startCase, differenceWith } = require('lodash');
 
 const config = require('./config');
@@ -37,8 +35,6 @@ const createDocPages = require('./page-creators/createDocPages');
 const createMissingTranslationsPage = require('./page-creators/createMissingTranslationsPage');
 
 const algoliasearch = require('algoliasearch');
-
-const Translator = require('./src/utils/Translator');
 
 const { MongoClient } = require('mongodb');
 
@@ -286,10 +282,11 @@ exports.onPreBootstrap = async ({ reporter }) => {
     migrationsActivity.end();
   }
 
+  // Algolia index update process
   if (process.env.CONTEXT === 'production') {
-    const translationsActivity = reporter.activityTimer(`Translations`);
+    const algoliaUpdaterActivity = reporter.activityTimer(`Algolia`);
 
-    translationsActivity.start();
+    algoliaUpdaterActivity.start();
 
     const configuredLanguages = getLanguages();
 
@@ -309,30 +306,15 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
     if (
       config.mongodb.translationsConnectionString &&
-      config.i18n.translateApikey &&
       config.i18n.availableLanguages &&
       config.header.search.algoliaAdminKey &&
       config.header.search.algoliaAppId
     ) {
-      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
-        reporter.warn(
-          'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
-        );
-      }
-
-      translationsActivity.setStatus('Translating incident reports...');
-
-      const translateClient = new Translate({ key: config.i18n.translateApikey });
-
       const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
       const languages = getLanguages();
 
-      const translator = new Translator({ mongoClient, translateClient, languages, reporter });
-
-      await translator.run();
-
-      translationsActivity.setStatus('Updating incidents indexes...');
+      algoliaUpdaterActivity.setStatus('Updating Algolia incidents indexes...');
 
       try {
         const algoliaClient = algoliasearch(
@@ -352,12 +334,12 @@ exports.onPreBootstrap = async ({ reporter }) => {
         reporter.panicOnBuild('Error updating Algolia index:', e);
       }
     } else {
-      throw `Missing environment variable, can't run translation process.`;
+      throw `Missing environment variable, can't run Algolia update process.`;
     }
 
-    translationsActivity.end();
+    algoliaUpdaterActivity.end();
   } else {
-    reporter.warn('Netlify CONTEXT is not production, skipping translations.');
+    reporter.warn('Netlify CONTEXT is not production, skipping Algolia index update process.');
   }
 };
 
