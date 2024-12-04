@@ -38,6 +38,8 @@ Object.keys(config).forEach((key) => {
     if (config[key as keyof Config] === undefined || config[key as keyof Config] === '') {
         throw new Error(`Config property ${key} is undefined`);
     }
+
+    console.log(`Config property ${key}, value: ${config[key as keyof Config]}`);
 });
 
 export default config;
