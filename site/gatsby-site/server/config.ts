@@ -28,10 +28,8 @@ const config: Config = {
     NOTIFICATIONS_SENDER_NAME: process.env.NOTIFICATIONS_SENDER_NAME!,
     NOTIFICATIONS_SENDER: process.env.NOTIFICATIONS_SENDER!,
     SITE_URL: process.env.SITE_URL! || process.env.URL!,
-
-    //TODO: add these to workflow
-    NEXTAUTH_URL: 'http://localhost:8000',
-    NEXTAUTH_SECRET: '678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=',
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
 }
 
 Object.keys(config).forEach((key) => {
