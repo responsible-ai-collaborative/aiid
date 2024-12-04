@@ -36,12 +36,11 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   const flagIncident = useCallback(async () => {
-
     const flagged_dissimilar_incidents = isFlagged
       ? parentIncident.flagged_dissimilar_incidents?.filter((e) => e != incident.incident_id)
       : parentIncident.flagged_dissimilar_incidents
-        ?.filter((e) => e != incident.incident_id)
-        .concat([incident.incident_id]);
+          ?.filter((e) => e != incident.incident_id)
+          .concat([incident.incident_id]);
 
     const editors = incidentData.incident.editors.map((e) => e.userId);
 
@@ -61,8 +60,8 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       message: isFlagged
         ? t(`Flag reverted.`)
         : t(
-          `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
-        ),
+            `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
+          ),
       severity: SEVERITY.success,
     });
     setFlagged(!isFlagged);
@@ -113,8 +112,9 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         {flaggable && incidentData && (
           <Button
             variant="link"
-            className={`p-0 hover:text-gray-500 ${isFlagged ? ' text-red-500' : 'text-dark-gray'
-              } z-3`}
+            className={`p-0 hover:text-gray-500 ${
+              isFlagged ? ' text-red-500' : 'text-dark-gray'
+            } z-3`}
             data-cy="flag-similar-incident"
             onClick={() => flagIncident()}
           >
