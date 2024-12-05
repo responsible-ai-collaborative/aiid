@@ -16,7 +16,7 @@ import Link from 'components/ui/Link';
 import ReportVersionViewModal from 'components/reports/ReportVersionViewModal';
 import { Button, Spinner } from 'flowbite-react';
 import CustomButton from 'elements/Button';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function IncidentHistoryPage() {

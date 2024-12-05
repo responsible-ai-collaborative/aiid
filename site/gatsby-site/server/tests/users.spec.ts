@@ -1,7 +1,6 @@
-import { expect, jest, it } from '@jest/globals';
+import { expect, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
-import * as context from '../context';
+import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 
 describe(`Users`, () => {
     let server: ApolloServer, url: string;
@@ -43,7 +42,7 @@ describe(`Users`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('123')
 
         const response = await makeRequest(url, mutationData);
 
@@ -97,7 +96,7 @@ describe(`Users`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('123')
 
         const response = await makeRequest(url, mutationData);
 
@@ -151,7 +150,7 @@ describe(`Users`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user2" })
+        mockSession("user2")
 
         const response = await makeRequest(url, mutationData);
 

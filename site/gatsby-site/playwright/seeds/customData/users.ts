@@ -3,7 +3,7 @@ import { DBUser } from '../../../server/interfaces';
 
 const users: DBUser[] = [
     {
-        userId: 'user1',
+        userId: '6737a6e881955aa4905ccb04',
         first_name: "Test",
         last_name: "User",
         roles: ["admin"],
