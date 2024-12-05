@@ -147,6 +147,7 @@ function IncidentHistoryPage(props) {
         updatedIncident.AllegedHarmedOrNearlyHarmedParties = {
           link: version.AllegedHarmedOrNearlyHarmedParties,
         };
+        updatedIncident.implicated_systems = { link: version.implicated_systems };
         updatedIncident.editors = { link: version.editors };
 
         // Add the current user to the list of editors

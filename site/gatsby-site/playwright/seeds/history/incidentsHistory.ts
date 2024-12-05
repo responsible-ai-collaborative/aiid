@@ -15,6 +15,7 @@ const items: DBIncidentHistory[] = [
         "Alleged harmed or nearly harmed parties": [
             "entity-3"
         ],
+        "implicated_systems": ["entity-1"],
         "editors": [
             "6737a6e881955aa4905ccb04",
         ],
@@ -43,6 +44,7 @@ const items: DBIncidentHistory[] = [
         "Alleged harmed or nearly harmed parties": [
             "entity-3"
         ],
+        "implicated_systems": ["entity-1"],
         "editors": [
             "6737a6e881955aa4905ccb04",
             "619b47ea5eed5334edfa3bbc"
@@ -72,6 +74,7 @@ const items: DBIncidentHistory[] = [
         "Alleged harmed or nearly harmed parties": [
             "entity-3"
         ],
+        "implicated_systems": ["entity-1"],
         "editors": [
             "6737a6e881955aa4905ccb04",
             "619b47ea5eed5334edfa3bbc"
@@ -101,6 +104,7 @@ const items: DBIncidentHistory[] = [
         "Alleged harmed or nearly harmed parties": [
             "entity-3"
         ],
+        "implicated_systems": ["entity-1"],
         "editors": [
             "6737a6e881955aa4905ccb04",
             "619b47ea5eed5334edfa3bbc",

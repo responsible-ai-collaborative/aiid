@@ -46,10 +46,28 @@ function PartiesList({ entities }) {
   ));
 }
 
+function ImplicatedSystemsList({ entities }) {
+  return (
+    <div className="mt-2">
+      {entities.length > 0 && (
+        <>
+          <Trans ns="entities">
+            The AI implicated system{entities.length > 1 ? 's' : ''}{' '}
+            {entities.length > 1 ? 'are' : 'is'}
+          </Trans>{' '}
+          <EntitiesList entities={entities} />.
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function AllegedEntities({ entities }) {
   const entitiesHarming = entities.filter((e) => e.harmedEntities.length > 0);
 
   const entitiesHarmed = entities.filter((e) => e.incidentsHarmedBy.length > 0);
+
+  const entitiesImplicatedSystems = entities.filter((e) => e.incidentsImplicatedSystems.length > 0);
 
   if (
     entitiesHarming.every(
@@ -57,11 +75,15 @@ export default function AllegedEntities({ entities }) {
     )
   ) {
     return (
-      <Trans ns="entities">
-        Alleged:{' '}
-        <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
-        developed and deployed an AI system, which harmed <PartiesList entities={entitiesHarmed} />.
-      </Trans>
+      <>
+        <Trans ns="entities">
+          Alleged:{' '}
+          <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
+          developed and deployed an AI system, which harmed{' '}
+          <PartiesList entities={entitiesHarmed} />.
+        </Trans>
+        <ImplicatedSystemsList entities={entitiesImplicatedSystems} />
+      </>
     );
   }
 
@@ -74,9 +96,13 @@ export default function AllegedEntities({ entities }) {
   );
 
   return (
-    <Trans ns="entities">
-      Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
-      <EntitiesList entities={deployers} />, which harmed <PartiesList entities={entitiesHarmed} />.
-    </Trans>
+    <>
+      <Trans ns="entities">
+        Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
+        <EntitiesList entities={deployers} />, which harmed{' '}
+        <PartiesList entities={entitiesHarmed} />.
+      </Trans>
+      <ImplicatedSystemsList entities={entitiesImplicatedSystems} />
+    </>
   );
 }

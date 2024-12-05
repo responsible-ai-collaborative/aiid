@@ -60,6 +60,10 @@ export const FIND_SUBMISSIONS = gql(`
         userId
       }
       quiet
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `);
@@ -112,6 +116,10 @@ export const FIND_SUBMISSION = gql(`
       editor_dissimilar_incidents
       status
       quiet
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `);
@@ -162,6 +170,10 @@ export const UPDATE_SUBMISSION = gql(`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      implicated_systems {
+        entity_id
+        name
+      }
     }
   }
 `);

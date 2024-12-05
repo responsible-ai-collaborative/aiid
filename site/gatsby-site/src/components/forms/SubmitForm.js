@@ -207,6 +207,12 @@ const SubmitForm = () => {
         createEntityMutation
       );
 
+      submission.implicated_systems = await processEntities(
+        allEntities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       await insertSubmission({ variables: { data: submission } });
 
       addToast({

@@ -16,14 +16,15 @@ interface SendEmailParams {
         incidentUrl?: string;
         incidentDescription?: string;
         incidentDate?: string;
-        developers?: string; // HTML string of developers
-        deployers?: string;   // HTML string of deployers
-        entitiesHarmed?: string; // HTML string of harmed entities
-        reportUrl?: string;   // URL for a specific report (optional)
-        reportTitle?: string; // Title of the report (optional)
-        reportAuthor?: string; // Author of the report (optional)
-        entityName?: string;   // Entity name (optional)
-        entityUrl?: string;    // Entity URL (optional)
+        developers?: string;
+        deployers?: string;
+        entitiesHarmed?: string;
+        implicatedSystems?: string;
+        reportUrl?: string;
+        reportTitle?: string;
+        reportAuthor?: string;
+        entityName?: string;
+        entityUrl?: string;
         magicLink?: string;    // URL for magic link (optional)
     };
     templateId: string; // Email template ID
@@ -70,7 +71,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
         }]
 
         // We have to do this because MailerSend is escaping the placeholders containing html tags
-        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed'])
+        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })

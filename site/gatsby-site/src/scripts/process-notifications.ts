@@ -117,6 +117,7 @@ async function notificationsToNewIncidents(context: Context) {
                                     developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
                                     deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
+                                    implicatedSystems: buildEntityList(allEntities, incident.implicated_systems),
                                 },
                                 templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
                             };
@@ -307,6 +308,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
                                     developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
                                     deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
+                                    implicatedSystems: buildEntityList(allEntities, incident.implicated_systems),
                                 },
                                 // Template value from function name sufix from "site/realm/functions/config.json"
                                 templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident'

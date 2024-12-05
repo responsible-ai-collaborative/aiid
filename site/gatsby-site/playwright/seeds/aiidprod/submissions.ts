@@ -24,6 +24,7 @@ const submissions: DBSubmission[] = [
         title: "Sample title",
         url: "http://example.com",
         user: "6737a6e881955aa4905ccb04",
+        implicated_systems: ["entity-1"],
         incident_title: "Incident title",
         incident_date: "2021-09-14",
         editor_notes: "This is an editor note",

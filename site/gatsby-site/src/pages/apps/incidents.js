@@ -69,6 +69,7 @@ const IncidentsPage = ({ data, ...props }) => {
             ),
             AllegedHarmedOrNearlyHarmedParties:
               incident.Alleged_harmed_or_nearly_harmed_parties.map((id) => entitiesHash[id]),
+            implicated_systems: incident.implicated_systems.map((id) => entitiesHash[id]),
           }));
 
           setIncidentsData(processedIncidents);
@@ -278,6 +279,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
     entities: allMongodbAiidprodEntities {
