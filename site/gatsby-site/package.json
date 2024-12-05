@@ -138,9 +138,10 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts",
     "start:memory-mongo": "node --env-file=.env -r ts-node/register playwright/memory-mongo.ts",
+    "start:memory-mongo:ci": "node -r ts-node/register playwright/memory-mongo.ts",
     "process-notifications": "node --env-file=.env -r ts-node/register src/scripts/process-notifications.ts",
     "process-notifications:ci": "node -r ts-node/register src/scripts/process-notifications.ts",
-    "start:memory-mongo:ci": "node -r ts-node/register playwright/memory-mongo.ts"
+    "translate-reports": "node src/scripts/translateReports.js"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
