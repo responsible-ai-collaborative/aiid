@@ -101,6 +101,7 @@ const incidents: DBIncident[] = [
         ],
         "Alleged developer of AI system": [],
         "Alleged harmed or nearly harmed parties": [],
+        implicated_systems: [],
         description: "Test description 4",
         title: "Test title 4",
         editors: [
