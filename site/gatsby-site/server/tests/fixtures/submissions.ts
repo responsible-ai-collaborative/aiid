@@ -37,6 +37,7 @@ const submission1 = {
     title: "Submission 1",
     url: "http://example.com",
     user: "user1",
+    implicated_systems: ["entity1"]
 }
 
 const submission2 = {
@@ -61,6 +62,7 @@ const submission2 = {
     title: "Submission 2",
     url: "http://example.com",
     user: "user1",
+    implicated_systems: ["entity1"]
 }
 
 const submission3 = {
@@ -73,7 +75,7 @@ const submission3 = {
     date_submitted: "2023-11-14T00:00:00.000Z",
     deployers: ["entity3"],
     description: "Another sample description",
-    developers: ["entity4"],
+    developers: ["entity1"],
     harmed_parties: ["entity5"],
     incident_editors: ["editor3"],
     image_url: "https://sample_image_url_4.com",
@@ -85,6 +87,7 @@ const submission3 = {
     title: "Submission 3",
     url: "http://example.com",
     user: "user1",
+    implicated_systems: ["entity1"]
 }
 
 
@@ -163,6 +166,9 @@ const fixture: Fixture<Submission, SubmissionUpdateType, SubmissionInsertType> =
         url
         user {
             userId
+        }
+        implicated_systems {
+            entity_id
         }
     `,
     seeds: {
@@ -259,6 +265,7 @@ const fixture: Fixture<Submission, SubmissionUpdateType, SubmissionInsertType> =
             title: "New Submission",
             url: "http://example.com",
             user: { link: "editor1" },
+            implicated_systems: { link: ["entity1"] }
         },
         result: {
             _id: expect.any(String),

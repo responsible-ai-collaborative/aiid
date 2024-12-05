@@ -33,6 +33,7 @@ export default function IncidentVersionViewModal({
     Alleged_deployer_of_AI_system: version.AllegedDeployerOfAISystem,
     Alleged_developer_of_AI_system: version.AllegedDeveloperOfAISystem,
     Alleged_harmed_or_nearly_harmed_parties: version.AllegedHarmedOrNearlyHarmedParties,
+    implicated_systems: version.implicated_systems,
   };
 
   const incidentEntities = computeEntities({

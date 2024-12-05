@@ -30,6 +30,7 @@ describe(`History`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
@@ -207,6 +208,7 @@ describe(`History`, () => {
                 editors: [],
                 reports: [1],
                 flagged_dissimilar_incidents: [],
+                implicated_systems: [],
             }
         ]
 
@@ -296,6 +298,7 @@ describe(`History`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 

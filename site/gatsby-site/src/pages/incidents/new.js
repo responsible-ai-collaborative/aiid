@@ -90,6 +90,12 @@ function NewIncidentPage() {
         createEntityMutation
       );
 
+      newIncident.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       newIncident.editor_similar_incidents = [];
       newIncident.editor_dissimilar_incidents = [];
       newIncident.flagged_dissimilar_incidents = [];
@@ -112,6 +118,7 @@ function NewIncidentPage() {
           AllegedDeployerOfAISystem,
           AllegedDeveloperOfAISystem,
           AllegedHarmedOrNearlyHarmedParties,
+          implicated_systems,
           editors,
           editor_notes,
         } = incidentToCloneData.incident;
@@ -125,6 +132,7 @@ function NewIncidentPage() {
           AllegedHarmedOrNearlyHarmedParties: AllegedHarmedOrNearlyHarmedParties.map(
             (entity) => entity.entity_id
           ),
+          implicated_systems: implicated_systems.map((entity) => entity.entity_id),
           editor_notes: editor_notes ?? '',
           editors: editors.map((editor) => editor.userId),
         });
@@ -133,6 +141,10 @@ function NewIncidentPage() {
       }
     }
   }, [incidentToCloneData]);
+
+  const entityNames = entitiesData?.entities
+    ? entitiesData.entities.map((node) => node.name).sort()
+    : [];
 
   return (
     <div className={'w-full'}>
@@ -150,7 +162,7 @@ function NewIncidentPage() {
         <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={initialValues}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
-              <IncidentForm />
+              <IncidentForm entityNames={entityNames} />
               <Button
                 onClick={submitForm}
                 type="submit"

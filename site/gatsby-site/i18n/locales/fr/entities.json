@@ -30,5 +30,7 @@
     "Error updating Entity.": "Erreur lors de la mise à jour de l'entité.",
     "Entity Relationships": "Relations d'entité",
     "Add or remove relationships to other entities": "Ajouter ou supprimer des relations avec d'autres entités",
-    "Loading related entities...": "Chargement des entités associées..."
+    "Loading related entities...": "Chargement des entités associées...",
+    "The AI implicated system is": "Le système d'IA impliqué est",
+    "The AI implicated systems are": "Les systèmes d'IA impliqués sont"
 }

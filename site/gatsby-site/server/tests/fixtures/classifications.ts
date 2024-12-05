@@ -72,6 +72,7 @@ const incident1 = {
     "Alleged deployer of AI system": [],
     "Alleged developer of AI system": [],
     "Alleged harmed or nearly harmed parties": [],
+    implicated_systems: [],
     description: "Test description 1",
     title: "Test Incident 1",
     editors: [

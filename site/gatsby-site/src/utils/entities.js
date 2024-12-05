@@ -36,11 +36,17 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
       property: 'Alleged_harmed_or_nearly_harmed_parties',
       key: 'incidentsHarmedBy',
     },
+    {
+      property: 'implicated_systems',
+      key: 'incidentsImplicatedSystems',
+    },
   ];
 
   const harmingProperties = ['Alleged_deployer_of_AI_system', 'Alleged_developer_of_AI_system'];
 
   const harmedProperties = ['Alleged_harmed_or_nearly_harmed_parties'];
+
+  const otherProperties = ['implicated_systems'];
 
   for (const incident of incidents) {
     const { incident_id, reports } = incident;
@@ -64,6 +70,7 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
             incidentsHarmedBy: [],
             harmedEntities: [],
             responses: [],
+            incidentsImplicatedSystems: [],
           };
         }
 
@@ -84,6 +91,12 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
         }
 
         if (harmedProperties.some((f) => f === field.property)) {
+          if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
+            entitiesHash[id][field.key].push(incident_id);
+          }
+        }
+
+        if (otherProperties.some((f) => f === field.property)) {
           if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
             entitiesHash[id][field.key].push(incident_id);
           }
@@ -123,6 +136,7 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
           ...entitiesHash[id].incidentsAsBoth,
           ...entitiesHash[id].incidentsAsDeployer,
           ...entitiesHash[id].incidentsAsDeveloper,
+          ...entitiesHash[id].incidentsImplicatedSystems,
         ].includes(incident.incident_id)
       )
       .reduce((harmed, incident) => {

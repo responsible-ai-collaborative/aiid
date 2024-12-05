@@ -31,5 +31,7 @@
     "Error updating Entity.": "組織の更新中にエラーが発生しました。",
     "Entity Relationships": "組織関係",
     "Add or remove relationships to other entities": "他の組織との関係を追加または削除",
-    "Loading related entities...": "関連する組繹を読み込み中..."
+    "Loading related entities...": "関連する組繹を読み込み中...",
+    "The AI implicated system is": "関連するAIシステムは です",
+    "The AI implicated systems are": "関連するAIシステムは です"
 }
