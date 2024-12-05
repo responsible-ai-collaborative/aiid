@@ -17,6 +17,7 @@ import subscriptions from './seeds/customData/subscriptions';
 
 import reportsHistory from './seeds/history/reportsHistory';
 import incidentsHistory from './seeds/history/incidentsHistory';
+import checklists from './seeds/aiidprod/checklists';
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
@@ -30,6 +31,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             taxa,
             candidates,
             duplicates,
+            checklists,
         },
         customData: {
             users,
