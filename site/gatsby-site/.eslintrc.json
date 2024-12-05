@@ -16,6 +16,7 @@
       "alias": {
         "map": [
           ["components", "./src/components"],
+          ["contexts", "./src/contexts"],
           ["elements", "./src/elements"],
           ["hooks", "./src/hooks"],
           ["contexts", "./src/contexts"],
@@ -27,7 +28,7 @@
           ["plugins", "./plugins"],
           ["@reach/router", "@gatsbyjs/reach-router"]
         ],
-        "extensions": [".js", ".jsx", ".ts"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
