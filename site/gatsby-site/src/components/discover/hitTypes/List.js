@@ -16,9 +16,11 @@ export default function List({ item, toggleFilterByIncidentId, viewType }) {
       <div className="w-[80%]">
         <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
       </div>
-      <div className="pl-2 pt-1 w-[20%] flex justify-end">
-        <TranslationBadge originalLanguage={item.language} />
-      </div>
+      {item.is_translated && (
+        <div className="pl-2 pt-1 w-[20%] flex justify-end">
+          <TranslationBadge originalLanguage={item.language} />
+        </div>
+      )}
     </div>
   );
 
