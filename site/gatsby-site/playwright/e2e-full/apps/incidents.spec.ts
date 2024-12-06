@@ -13,7 +13,7 @@ test.describe('Incidents App', () => {
 
   test('Should display a list of incidents', async ({ page }) => {
     await page.goto(url);
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(3);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(4);
   });
 
   test('Should display an empty list of incidents on Empty environment', async ({ page, runOnlyOnEmptyEnvironment }) => {
