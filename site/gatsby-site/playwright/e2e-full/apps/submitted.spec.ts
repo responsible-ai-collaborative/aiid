@@ -185,7 +185,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 10');
 
         const { data: { reports } } = await query({
             query: gql`{
