@@ -218,6 +218,7 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
         'Alleged deployer of AI system',
         'Alleged developer of AI system',
         'Alleged harmed or nearly harmed parties',
+        'implicated_systems'
     ];
     const entities: string[] = [];
 
@@ -273,6 +274,7 @@ export function hasRelevantUpdates(before: DBIncident, after: DBIncident): boole
         "editor_similar_incidents",
         "flagged_dissimilar_incidents",
         "nlp_similar_incidents",
+        "implicated_systems"
     ];
 
     const hasMonitoredUpdates = monitoredFields.some((field) => {
@@ -328,6 +330,7 @@ export const createNotificationsOnUpdatedIncident = async (fullDocument: DBIncid
         'Alleged deployer of AI system',
         'Alleged developer of AI system',
         'Alleged harmed or nearly harmed parties',
+        'implicated_systems'
     ];
 
     const entities: string[] = [];

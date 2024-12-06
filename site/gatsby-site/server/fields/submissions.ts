@@ -105,6 +105,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         nlp_similar_incidents: submission.nlp_similar_incidents || [],
                         editor_similar_incidents: submission.editor_similar_incidents || [],
                         editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
+                        implicated_systems: submission.implicated_systems || [],
                         editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
                     }

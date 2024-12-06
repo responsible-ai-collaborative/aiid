@@ -154,6 +154,7 @@ const incident1: DBIncident = {
     "Alleged deployer of AI system": [],
     "Alleged developer of AI system": [],
     "Alleged harmed or nearly harmed parties": [],
+    implicated_systems: [],
     description: "Test description 1",
     title: "Test Incident 1",
     editors: [
@@ -202,6 +203,7 @@ const incident2: DBIncident = {
         "entity1"
     ],
     "Alleged harmed or nearly harmed parties": [],
+    implicated_systems: [],
     description: "Test description 2",
     title: "Test Incident 2",
     editors: [
@@ -283,6 +285,7 @@ const incident3: DBIncident = {
         y: -0.6
     },
     reports: [2, 3],
+    implicated_systems: ['test system 1'],
     editor_notes: "",
 };
 
@@ -328,6 +331,9 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             user {
                 userId
             }
+        }
+        implicated_systems {
+            entity_id
         }
     `,
     seeds: {

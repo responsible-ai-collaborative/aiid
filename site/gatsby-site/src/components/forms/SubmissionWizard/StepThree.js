@@ -18,6 +18,7 @@ import {
   faStickyNote,
   faPenNib,
   faTenge,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'debounce';
 import UsersInputGroup from '../UsersInputGroup';
@@ -72,6 +73,17 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Harmed Parties can't be longer than 200 characters",
+      })
+      .nullable(),
+    implicated_systems: yup
+      .string()
+      .matches(/^.{3,}$/, {
+        excludeEmptyString: true,
+        message: 'Implicated Systems must have at least 3 characters',
+      })
+      .matches(/^.{3,200}$/, {
+        excludeEmptyString: true,
+        message: "Implicated Systems can't be longer than 200 characters",
       })
       .nullable(),
   });
@@ -323,6 +335,23 @@ const FormDetails = ({
                 schema={schema}
                 options={entityNamesList}
                 handleChange={handleEntityChange}
+                handleBlur={handleBlur}
+                touched={touched}
+                values={values}
+                errors={errors}
+              />
+            </FieldContainer>
+
+            <FieldContainer>
+              <TagsInputGroup
+                name="implicated_systems"
+                label={t('Implicated Systems')}
+                icon={faGear}
+                placeholder={t('What systems were involved in the incident?')}
+                className="mt-3"
+                schema={schema}
+                options={entityNames}
+                handleChange={handleChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
