@@ -68,7 +68,12 @@ export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
               />
             </a>
             <SourceDomainSubtitle item={item} className="mb-2 [&>div>a]:text-black" />
-            <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
+            {item.is_translated && (
+              <TranslationBadge
+                originalLanguage={item.language}
+                className="align-self-start mb-2"
+              />
+            )}
           </div>
         </div>
       </div>

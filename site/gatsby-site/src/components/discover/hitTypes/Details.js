@@ -53,7 +53,9 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">
-          <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
+          {item.is_translated && (
+            <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
+          )}
           <ReportText
             text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
             maxChars={400}
