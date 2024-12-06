@@ -85,9 +85,8 @@ jobs:
         continue-on-error: true
         run: |
           # Extract branch name from ref (removes refs/heads/ prefix)
-          BRANCH_NAME=$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///')
           if [[ ! -z "${{ inputs.netlify-alias }}" ]]; then
-            netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${BRANCH_NAME}"
+            netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
           fi
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

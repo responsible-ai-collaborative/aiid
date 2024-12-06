@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import * as memoryMongo from './memory-mongo';
 import { algoliaMock } from './fixtures/algoliaMock';
+import siteConfig from '../config';
 
 declare module '@playwright/test' {
     interface Request {
@@ -21,6 +22,8 @@ type TestFixtures = {
     runOnlyOnEmptyEnvironment: () => Promise<void>,
     login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string[]>,
     retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
+    runOnlyInProduction: () => Promise<void>,
+    runAnywhereExceptProduction: () => Promise<void>,
 };
 
 const getUserIdFromLocalStorage = async (page: Page) => {
@@ -118,6 +121,22 @@ export const test = base.extend<TestFixtures>({
 
         await use();
     }, { auto: true }],
+
+    runOnlyInProduction: async ({ }, use, testInfo) => {
+      if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+          testInfo.skip();
+      }
+
+      await use(null);
+    },
+    
+    runAnywhereExceptProduction: async ({ }, use, testInfo) => {
+        if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
+            testInfo.skip();
+        }
+
+        await use(null);
+    }
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
