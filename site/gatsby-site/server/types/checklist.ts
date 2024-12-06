@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
 import { GraphQLDateTime } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
 
@@ -50,7 +50,7 @@ export const ChecklistType = new GraphQLObjectType({
     }
 });
 
-export const RisksInputType = new GraphQLObjectType({
+export const RisksInputType = new GraphQLInputObjectType({
     name: 'RisksInput',
     fields: {
         tags: { type: new GraphQLList(GraphQLString) }

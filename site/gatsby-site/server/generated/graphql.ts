@@ -2553,7 +2553,7 @@ export type Query = {
   quickadds?: Maybe<Array<Maybe<Quickadd>>>;
   report?: Maybe<Report>;
   reports?: Maybe<Array<Maybe<Report>>>;
-  risks?: Maybe<Risks>;
+  risks?: Maybe<Array<Maybe<Risks>>>;
   submission?: Maybe<Submission>;
   submissions?: Maybe<Array<Maybe<Submission>>>;
   subscription?: Maybe<Subscription>;
@@ -2720,9 +2720,7 @@ export type QueryReportsArgs = {
 
 
 export type QueryRisksArgs = {
-  filter?: InputMaybe<RisksInputFilterType>;
-  pagination?: InputMaybe<PaginationType>;
-  sort?: InputMaybe<RisksInputSortType>;
+  input?: InputMaybe<RisksInput>;
 };
 
 
@@ -3140,18 +3138,6 @@ export type Risks = {
 
 export type RisksInput = {
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-export type RisksInputFilterType = {
-  AND?: InputMaybe<Array<InputMaybe<RisksInputFilterType>>>;
-  NOR?: InputMaybe<Array<InputMaybe<RisksInputFilterType>>>;
-  OR?: InputMaybe<Array<InputMaybe<RisksInputFilterType>>>;
-  tags?: InputMaybe<StringFilter>;
-};
-
-export type RisksInputSortType = {
-  /** IGNORE. Due to limitations of the package, objects with no sortable fields are not ommited. GraphQL input object types must have at least one field */
-  _FICTIVE_SORT?: InputMaybe<SortType>;
 };
 
 export type RisksInsertType = {

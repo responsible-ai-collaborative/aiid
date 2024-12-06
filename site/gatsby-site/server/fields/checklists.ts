@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLList } from "graphql";
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryArgs, getQueryResolver } from "../utils";
 import { ChecklistType, RisksInputType, RiskType } from "../types/checklist";
@@ -99,9 +99,11 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
     ...generateQueryFields({ collectionName: 'checklists', Type: ChecklistType }),
 
     risks: {
-        args: getQueryArgs(RisksInputType) as any,
-        type: RiskType,
-        resolve: getQueryResolver(RiskType, async (filter, projection, options, obj, args, context) => {
+        args: {
+            input: { type: RisksInputType },
+        },
+        type: new GraphQLList(RiskType),
+        resolve: async (_: unknown, { input }: { input: any }, context) => {
 
             const db = context.client.db('aiidprod');
             const incidentsCollection = db.collection('incidents');
@@ -109,7 +111,7 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
 
             const classificationsMatchingSearchTags = (
                 await classificationsCollection.find(
-                    getRiskClassificationsMongoQuery(args?.tags),
+                    getRiskClassificationsMongoQuery(input?.tags),
                 ).toArray()
             );
 
@@ -183,7 +185,7 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
             ).sort((a, b) => b.precedents.length - a.precedents.length);
 
             return risks;
-        })
+        },
     },
 }
 
