@@ -262,7 +262,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy="table-view"] button:has-text("Issue Reports")').click();
 
     await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(2);
 
     const firstRowLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
     expect(firstRowLink).toMatch(/^\/reports\/\d+$/);
