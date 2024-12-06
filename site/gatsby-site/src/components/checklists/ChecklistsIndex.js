@@ -45,7 +45,7 @@ const ChecklistsIndex = ({ users }) => {
     loading: checklistsLoading,
     error: checklistsErrors,
   } = useQuery(FIND_CHECKLISTS, {
-    variables: { query: { owner_id: user?.id } },
+    variables: { filter: { owner_id: { EQ: user?.id } } },
     skip: !user?.id,
   });
 
