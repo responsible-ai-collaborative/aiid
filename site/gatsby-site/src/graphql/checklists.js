@@ -1,7 +1,7 @@
 import { gql } from '../../server/generated';
 
 export const FIND_CHECKLISTS = gql(`
-  query FindChecklists($filter: ChecklistFilterType) {
+  query findChecklists($filter: ChecklistFilterType) {
     checklists(filter: $filter) {
       id
       owner_id

@@ -17,6 +17,7 @@ export const RiskType = new GraphQLObjectType({
     name: 'Risks',
     fields: () => ({
         id: { type: GraphQLString },
+        tag: { type: GraphQLString },
         tags: { type: new GraphQLList(GraphQLString) },
         severity: { type: GraphQLString },
         title: { type: GraphQLString },
