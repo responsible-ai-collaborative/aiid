@@ -51,11 +51,11 @@ function ImplicatedSystemsList({ entities }) {
     <div className="mt-2">
       {entities.length > 0 && (
         <>
+          <EntitiesList entities={entities} />{' '}
           <Trans ns="entities">
-            The AI implicated system{entities.length > 1 ? 's' : ''}{' '}
-            {entities.length > 1 ? 'are' : 'is'}
+            {entities.length > 1 ? 'are' : 'is'} the AI implicated system
+            {entities.length > 1 ? 's' : ''}.
           </Trans>{' '}
-          <EntitiesList entities={entities} />.
         </>
       )}
     </div>
