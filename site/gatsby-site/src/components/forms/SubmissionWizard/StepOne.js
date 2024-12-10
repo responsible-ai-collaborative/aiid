@@ -333,6 +333,7 @@ const FormDetails = ({
               position: 'relative',
               ...styles,
             }}
+            onBlur={() => setFieldTouched('text', true)}
           >
             {touched['text'] && errors['text'] && (
               <div
