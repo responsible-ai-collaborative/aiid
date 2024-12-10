@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronRight } from 'react-feather';
 import Link from '../ui/Link'; // Assuming you have this component for internal links
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,6 +19,7 @@ import {
   faTable,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from 'flowbite-react';
 
 const TreeNode = ({
   item,
@@ -50,6 +51,8 @@ const TreeNode = ({
     }
   };
 
+  const { t } = useTranslation();
+
   return (
     <li className="tree-node" data-testid={'sidebar-' + item.label}>
       <div
@@ -70,7 +73,14 @@ const TreeNode = ({
             } ${calculatedClassName}`}
             data-testid={`sidebar-link${item.current ? '-active' : ''}`}
           >
-            {icon && (isCollapsed ? <span className="tooltip">{icon}</span> : <>{icon}</>)}
+            {icon &&
+              (isCollapsed ? (
+                <Tooltip content={t(item.title)} placement="right">
+                  {icon}
+                </Tooltip>
+              ) : (
+                <>{icon}</>
+              ))}
             {!isCollapsed && (
               <span className={`ml-3 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
                 <Trans>{item.title}</Trans>
