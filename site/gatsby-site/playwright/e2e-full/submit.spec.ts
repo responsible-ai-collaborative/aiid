@@ -464,111 +464,59 @@ test.describe('The Submit form', () => {
     });
 
 
-    test.skip('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
-
-        const relatedReports = {
-            byURL: {
-                data: {
-                    reports: [
-                        {
-                            __typename: 'Report',
-                            report_number: 1501,
-                            title: 'Zillow to exit its home buying business, cut 25% of staff',
-                            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-                        },
-                    ],
-                },
-            },
-            byDatePublished: {
-                data: {
-                    reports: [
-                        {
-                            __typename: 'Report',
-                            report_number: 810,
-                            title: "Google's Nest Stops Selling Its Smart Smoke Alarm For Now Due To Faulty Feature",
-                            url: 'https://www.forbes.com/sites/aarontilley/2014/04/03/googles-nest-stops-selling-its-smart-smoke-alarm-for-now',
-                        },
-                        {
-                            __typename: 'Report',
-                            report_number: 811,
-                            title: 'Why Nest’s Smoke Detector Fail Is Actually A Win For Everyone',
-                            url: 'https://readwrite.com/2014/04/04/nest-smoke-detector-fail/',
-                        },
-                    ],
-                },
-            },
-            byAuthors: {
-                data: { reports: [] },
-            },
-            byIncidentId: {
-                data: {
-                    incidents: [
-                        {
-                            __typename: 'Incident',
-                            incident_id: 1,
-                            title: 'Google’s YouTube Kids App Presents Inappropriate Content',
-                            reports: [
-                                {
-                                    __typename: 'Report',
-                                    report_number: 10,
-                                    title: 'Google’s YouTube Kids App Presents Inappropriate Content',
-                                    url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
-        };
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+    test('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
         await page.goto(url);
 
-        await waitForRequest('findSubmissions');
+        const authors = "author1";
+        const date_published = "2014-08-14";
+        const reportUrl = 'https://www.thisisatest.nomeaning.com';
+        const dateTime = new Date(date_published).getTime() / 1000;
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.url_in,
-            relatedReports.byURL,
-            'RelatedReportsByURL'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.epoch_date_published_gt &&
-                req.postDataJSON().variables.query?.epoch_date_published_lt,
-            relatedReports.byDatePublished,
-            'RelatedReportsByPublishedDate'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.authors_in?.length,
-            relatedReports.byAuthors,
-            'RelatedReportsByAuthor'
-        );
 
         const values = {
-            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            authors: 'test author',
-            date_published: '2014-03-30',
+            url: reportUrl,
+            authors,
+            date_published,
             incident_ids: 1,
         };
+
+        const { data: { reports: reportsAuthors } } = await query({
+          query: gql`
+            query {
+              reports(filter: { authors: {IN: ["${authors}"] } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const { data: { reports: reportsPublished } } = await query({
+          query: gql`
+            query {
+              reports(filter: { epoch_date_published: {GTE: ${dateTime}, LTE: ${dateTime} } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const { data: { reports: reportsUrl } } = await query({
+          query: gql`
+            query {
+              reports(filter: { url: {IN: ["${reportUrl}"] } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const reports = {
+          byAuthors: reportsAuthors,
+          byDatePublished: reportsPublished,
+          byURL: reportsUrl,
+        }
+
 
         for (const key in values) {
             if (key == 'incident_ids') {
@@ -580,29 +528,21 @@ test.describe('The Submit form', () => {
             }
         }
 
-        await waitForRequest('RelatedReportsByAuthor');
-        await waitForRequest('RelatedReportsByURL');
-        await waitForRequest('RelatedReportsByPublishedDate');
-
-        for (const key of ['byURL', 'byDatePublished']) {
-            const reports =
-                key == 'byIncidentId'
-                    ? relatedReports[key].data.incidents[0].reports
-                    : relatedReports[key].data.reports;
+        for (const key of ['byAuthors', 'byDatePublished']) {
 
             const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
             await expect(async () => {
-                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports.length);
+                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports[key].length);
             }).toPass();
 
-            for (const report of reports) {
+            for (const report of reports[key]) {
                 await expect(parentLocator.locator('[data-cy="result"]', { hasText: report.title })).toBeVisible();
             }
 
         }
 
-        await expect(page.locator(`[data-cy="related-byAuthors"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+        await expect(page.locator(`[data-cy="related-byURL"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
     }
     );
 
