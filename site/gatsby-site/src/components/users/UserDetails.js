@@ -42,7 +42,10 @@ export default function UserDetails({ userId }) {
         data-cy="details-table"
       >
         <tbody>
-          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <tr
+            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            data-cy="user-email"
+          >
             <th
               scope="row"
               className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -51,7 +54,10 @@ export default function UserDetails({ userId }) {
             </th>
             <td className="py-4">{data.user.adminData.email}</td>
           </tr>
-          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <tr
+            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            data-cy="user-first-name"
+          >
             <th
               scope="row"
               className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -60,7 +66,7 @@ export default function UserDetails({ userId }) {
             </th>
             <td className="py-4">{data.user.first_name}</td>
           </tr>
-          <tr className="bg-white dark:bg-gray-800">
+          <tr className="bg-white dark:bg-gray-800" data-cy="user-last-name">
             <th
               scope="row"
               className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -69,7 +75,7 @@ export default function UserDetails({ userId }) {
             </th>
             <td className="py-4">{data.user.last_name}</td>
           </tr>
-          <tr className="bg-white dark:bg-gray-800">
+          <tr className="bg-white dark:bg-gray-800" data-cy="user-role">
             <th
               scope="row"
               className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"

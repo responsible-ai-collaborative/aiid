@@ -51,7 +51,8 @@ export const SubmissionType = new GraphQLObjectType({
         url: { type: new GraphQLNonNull(GraphQLString) },
         user: getRelationshipConfig(UserType, GraphQLString, 'user', 'userId', 'users', 'customData'),
         status: { type: GraphQLString },
-        quiet: { type: GraphQLBoolean }
+        quiet: { type: GraphQLBoolean },
+        implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),
     })
 });
 
@@ -65,3 +66,5 @@ SubmissionType.getFields().harmed_parties.dependencies = ['harmed_parties']
 SubmissionType.getFields().incident_editors.dependencies = ['incident_editors']
 //@ts-ignore
 SubmissionType.getFields().user.dependencies = ['user']
+//@ts-ignore
+SubmissionType.getFields().implicated_systems.dependencies = ['implicated_systems']

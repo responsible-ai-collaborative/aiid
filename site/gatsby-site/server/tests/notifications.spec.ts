@@ -101,6 +101,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
@@ -171,6 +172,7 @@ describe(`Notifications`, () => {
                 developers: "",
                 deployers: "",
                 entitiesHarmed: "",
+                implicatedSystems: "",
             },
             templateId: "NewIncident",
         }));
@@ -227,6 +229,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
@@ -298,6 +301,7 @@ describe(`Notifications`, () => {
                 developers: "",
                 deployers: "",
                 entitiesHarmed: "",
+                implicatedSystems: "",
             },
             templateId: "NewEntityIncident",
         }));
@@ -353,6 +357,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
@@ -471,6 +476,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
@@ -591,6 +597,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 
@@ -786,6 +793,7 @@ describe(`Notifications`, () => {
                 text: 'text',
                 url: 'url',
                 user: 'user_id',
+                implicated_systems: [],
             },
         ]
 
@@ -929,6 +937,7 @@ describe(`Notifications`, () => {
                 },
                 reports: [1],
                 editor_notes: "Sample editor notes",
+                implicated_systems: [],
             },
 
         ]
@@ -1124,6 +1133,7 @@ describe(`Notifications`, () => {
                 },
                 reports: [],
                 editor_notes: "Sample editor notes",
+                implicated_systems: [],
             },
 
         ]
@@ -1240,6 +1250,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: ['entity-1'],
             }
         ]
 
@@ -1322,7 +1333,8 @@ describe(`Notifications`, () => {
                 deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                 developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                 entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-            }, ['developers', 'deployers', 'entitiesHarmed']),
+                implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            }, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems']),
             send_at: undefined,
             attachments: undefined,
             template_id: undefined,
@@ -1342,6 +1354,7 @@ describe(`Notifications`, () => {
                         email: "test@test.com",
                         userId: "user1",
                         siteUrl: "http://localhost:8000",
+                        implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
                 },
             ],
@@ -1369,7 +1382,8 @@ describe(`Notifications`, () => {
                 deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                 developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                 entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-            }, ['developers', 'deployers', 'entitiesHarmed']),
+                implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            }, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems']),
             send_at: undefined,
             attachments: undefined,
             template_id: undefined,
@@ -1389,6 +1403,7 @@ describe(`Notifications`, () => {
                         email: "test2@test.com",
                         userId: "user2",
                         siteUrl: "http://localhost:8000",
+                        implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
                 },
             ],
@@ -1448,6 +1463,7 @@ describe(`Notifications`, () => {
                 date: new Date().toISOString(),
                 editors: [],
                 reports: [1],
+                implicated_systems: [],
             }
         ]
 

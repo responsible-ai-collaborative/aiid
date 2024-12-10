@@ -32,6 +32,8 @@ test.describe('New Incident page', () => {
     await page.keyboard.press('Enter');
     await page.locator('[data-cy="alleged-harmed-or-nearly-harmed-parties-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
+    await page.locator('[data-cy="implicated-systems-input"] input').first().fill('children');
+    await page.keyboard.press('Enter');
 
     await fillAutoComplete(page, '#input-editors', 'Joh', 'John Doe');
 

@@ -6,6 +6,8 @@ import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
 import * as memoryMongo from './memory-mongo';
+import { algoliaMock } from './fixtures/algoliaMock';
+import siteConfig from '../config';
 
 declare module '@playwright/test' {
     interface Request {
@@ -20,6 +22,8 @@ type TestFixtures = {
     runOnlyOnEmptyEnvironment: () => Promise<void>,
     login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string[]>,
     retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
+    runOnlyInProduction: () => Promise<void>,
+    runAnywhereExceptProduction: () => Promise<void>,
 };
 
 const getUserIdFromLocalStorage = async (page: Page) => {
@@ -117,6 +121,22 @@ export const test = base.extend<TestFixtures>({
 
         await use();
     }, { auto: true }],
+
+    runOnlyInProduction: async ({ }, use, testInfo) => {
+      if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+          testInfo.skip();
+      }
+
+      await use(null);
+    },
+    
+    runAnywhereExceptProduction: async ({ }, use, testInfo) => {
+        if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
+            testInfo.skip();
+        }
+
+        await use(null);
+    }
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
@@ -290,4 +310,32 @@ export function getLanguages() {
     { code: 'fr', hrefLang: 'fr', name: 'French', localName: 'Français', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
     { code: 'ja', hrefLang: 'ja', name: 'Japanese', localName: '日本語', langDir: 'ltr', dateFormat: 'YYYY/MM/DD' },
   ];
+}
+
+// TODO: this mock should pull from the database instead of being hardcoded
+export async function mockAlgolia(page: Page) {
+
+    await page.route('**/*.algolia.net/1/indexes/*/queries*', async route => {
+        const response = await route.fetch();
+
+        await route.fulfill({
+            status: 200,
+            json: algoliaMock,
+            headers: {
+                ...response.headers(),
+            }
+        });
+    });
+
+    await page.route('**/*.algolianet.com/1/indexes/*/queries*', async route => {
+        const response = await route.fetch();
+
+        await route.fulfill({
+            status: 200,
+            json: algoliaMock,
+            headers: {
+                ...response.headers(),
+            }
+        });
+    });
 }

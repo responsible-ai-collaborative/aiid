@@ -9,6 +9,7 @@ export const IncidentHistoryType = new GraphQLObjectType({
         AllegedDeployerOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged deployer of AI system'] },
         AllegedDeveloperOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged developer of AI system'] },
         AllegedHarmedOrNearlyHarmedParties: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged harmed or nearly harmed parties'] },
+        implicated_systems: { type: new GraphQLList(GraphQLString) },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         modifiedBy: { type: GraphQLString },
@@ -38,3 +39,6 @@ IncidentHistoryType.getFields().AllegedDeveloperOfAISystem.dependencies = ['Alle
 
 //@ts-ignore 
 IncidentHistoryType.getFields().AllegedHarmedOrNearlyHarmedParties.dependencies = ['Alleged harmed or nearly harmed parties'];
+
+//@ts-ignore
+IncidentHistoryType.getFields().implicated_systems.dependencies = ['implicated_systems'];
