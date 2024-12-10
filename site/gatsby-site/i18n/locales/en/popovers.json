@@ -79,6 +79,14 @@
         "title": "Quiet",
         "text": "Quiet reports are those that will not be published in the 'Latest Reports' section of the homepage. Quiet reports are used for reports that are useful for internal data but do not need to be promoted. If you are unsure, leave this field blank."
     },
+    "relatedEntities": {
+        "title": "Related Entities",
+        "text": "Other entities that are related to the same incident. For example, if the developer of an incident is this entity but the deployer is another entity, they are marked as related entities."
+    },
+    "entityRelationships": {
+        "title": "Entity Relationships",
+        "text": "To what other entities this entity has a direct relationship. For example, 'Amazon' and 'Amazon Workers' could be linked entities."
+    },
     "implicated_systems": {
         "title": "Implicated Systems",
         "text": "The AI systems involved in the incident. If multiple, press “enter” to begin a new item."

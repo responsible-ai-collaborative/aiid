@@ -1,6 +1,8 @@
 import { expect } from '@playwright/test';
 import config from '../config';
-import { test } from '../utils';
+import { query, test } from '../utils';
+import { gql } from '@apollo/client';
+import { init } from '../memory-mongo';
 
 test.describe('Entities page', () => {
   const url = '/entities';
@@ -11,50 +13,64 @@ test.describe('Entities page', () => {
   });
 
   test('Displays a list of entities', async ({ page, skipOnEmptyEnvironment }) => {
+    await init();
     await page.goto(url);
+    const { data: { entities } } = await query({
+      query: gql`
+        query {
+          entities {
+            entity_id
+          }
+        }
+      `,
+    });
     await page.locator('[data-cy="entities"]').isVisible();
     await page.locator('[data-cy="entities"] tr').count().then(count => {
-      expect(count).toBeGreaterThanOrEqual(10);
+      expect(count).toBeGreaterThanOrEqual(entities.length);
     });
   });
 
   test('Filter entities by name', async ({ page, skipOnEmptyEnvironment }) => {
+    await init();
     await page.goto(url);
-    await page.locator('[data-cy="input-filter-Entity"]').fill('Amazon');
+    await page.locator('[data-cy="input-filter-Entity"]').fill('Entity 1');
     await page.locator('[data-cy="entities"] tr').count().then(count => {
-      expect(count).toBeGreaterThanOrEqual(11);
+      expect(count).toBeGreaterThanOrEqual(1);
     });
   });
 
   test('Filter entities by incident title', async ({ page, skipOnEmptyEnvironment }) => {
+    await init();
     await page.goto(url);
-    await page.locator('[data-cy="input-filter-As Deployer and Developer"]').fill('taxi');
+    await page.locator('[data-cy="input-filter-As Deployer"]').fill('incid');
     await page.locator('[data-cy="entities"] tr').count().then(count => {
       expect(count).toBeGreaterThanOrEqual(1);
     });
-    await page.locator('[data-cy="row"]:has-text("Cruise")').isVisible();
+    await page.locator('[data-cy="row"]:has-text("Entity 1")').isVisible();
   });
 
   test('Entities row should be expandable', async ({ page, skipOnEmptyEnvironment }) => {
+    await init();
     await page.goto(url);
-    await page.locator('[data-cy="input-filter-Entity"]').fill('Amazon');
-    const row = await page.locator('[data-cy="row"]').filter({ hasText: 'Amazon' }).first();
+    await page.locator('[data-cy="input-filter-Entity"]').fill('Entity 1');
+    const row = await page.locator('[data-cy="row"]').filter({ hasText: 'Entity 1' }).first();
     await row.locator('[title="Toggle Row Expanded"]').first().click();
-    const cell = await row.locator('[data-cy="cell-incidentsAsBoth"]');
+    const cell = await row.locator('[data-cy="cell-incidentsAsDeployer"]');
     await cell.locator('ul').isVisible();
     await cell.locator('ul > li').count().then(count => {
-      expect(count).toBeGreaterThanOrEqual(14);
+      expect(count).toBeGreaterThanOrEqual(2);
     });
   });
 
   test('Should display Entity responses', async ({ page, skipOnEmptyEnvironment }) => {
+    await init();
     await page.goto(url);
     await expect(page.locator('[data-cy="header-responses"]')).toBeVisible();
     await page.locator('[data-cy="cell-responses"]').count().then(count => {
-      expect(count).toBeGreaterThanOrEqual(10);
+      expect(count).toBeGreaterThanOrEqual(1);
     });
-    await page.locator('[data-cy="input-filter-Entity"]').fill('microsoft');
-    await expect(page.locator('[data-cy="cell-responses"]').first()).toHaveText('3 Incident responses');
+    await page.locator('[data-cy="input-filter-Entity"]').fill('Entity 1');
+    await expect(page.locator('[data-cy="cell-responses"]').first()).toHaveText('1 Incident responses');
   });
 
   test('Should be able to sort', async ({ page, skipOnEmptyEnvironment }) => {
@@ -67,7 +83,6 @@ test.describe('Entities page', () => {
     expect(await page.locator('[data-cy="edit-entity-btn"]').count()).toBe(0);
 
     await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await page.goto(url);
     const editButton = page.locator('[data-cy="edit-entity-btn"]').first();
     expect(await editButton.getAttribute('href')).toBe('/entities/edit?entity_id=facebook');
     await editButton.click();

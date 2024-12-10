@@ -23,13 +23,23 @@ test.describe('/api/lookupbyurl endpoint', () => {
                             title: "Kronos shift scheduling software a grind for Starbucks worker",
                             url: "https://searchhrsoftware.techtarget.com/news/4500252451/Kronos-shift-scheduling-software-a-grind-for-Starbucks-worker",
                         },
+                        {
+                            report_number: 9,
+                            title: "Response Issue Report 9",
+                            url: "https://searchhrsoftware.techtarget.com/news/4500252451/Kronos-shift-scheduling-software-a-grind-for-Starbucks-worker",
+                        },
                     ],
                     incidents: [
-                        {
-                            incident_id: 3,
-                            title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
-                            url: "https://incidentdatabase.ai/cite/3",
-                        },
+                      {
+                          incident_id: 3,
+                          title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
+                          url: "https://incidentdatabase.ai/cite/3",
+                      },
+                      {
+                          incident_id: 4,
+                          title: "Test title 4",
+                          url: "https://incidentdatabase.ai/cite/4",
+                      },
                     ],
                 },
                 {
