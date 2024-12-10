@@ -473,7 +473,6 @@ test.describe('The Submit form', () => {
         const reportUrl = 'https://www.thisisatest.nomeaning.com';
         const dateTime = new Date(date_published).getTime() / 1000;
 
-
         const values = {
             url: reportUrl,
             authors,
@@ -516,7 +515,6 @@ test.describe('The Submit form', () => {
           byDatePublished: reportsPublished,
           byURL: reportsUrl,
         }
-
 
         for (const key in values) {
             if (key == 'incident_ids') {
