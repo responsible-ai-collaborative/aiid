@@ -52,20 +52,20 @@ test.describe('The Landing page', () => {
   });
 
 
-  test.skip('Should redirect to the account page when logged in',
+  test('Should redirect to the account page when logged in',
     async ({ page, skipOnEmptyEnvironment, login }) => {
       await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
 
       await expect(page).toHaveURL('/');
-      await page.locator('[data-cy="sidebar-desktop"]').locator('[data-cy="sidebar-user"]').click();
+      await page.locator('[data-testid="sidebar-desktop"]').locator('[data-testid="sidebar-user"]').click();
       await expect(page).toHaveURL(/\/account\//);
     }
   );
 
-  test.skip('Should redirect to the signup page when logged out', async ({ page }) => {
+  test('Should redirect to the signup page when logged out', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 }); // Set a larger viewport size
     await page.goto('/');
-    await page.locator('[data-cy="sidebar-desktop"]').locator('[data-cy="sidebar-user"]').click();
+    await page.locator('[data-testid="sidebar-desktop"]').locator('[data-testid="sidebar-user"]').click();
     await expect(page).toHaveURL(/\/signup\//);
   });
 
