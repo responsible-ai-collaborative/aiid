@@ -1,7 +1,8 @@
 import { GraphQLFieldConfigMap, GraphQLList } from "graphql";
-import { allow } from "graphql-shield";
+import { allow, or } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryArgs, getQueryResolver } from "../utils";
 import { ChecklistType, RisksInputType, RiskType } from "../types/checklist";
+import { isAdmin, isChecklistsOwner, isSubscriber } from "../rules";
 
 const getRiskClassificationsMongoQuery = (tagStrings: any) => {
 
@@ -190,9 +191,8 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
 }
 
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
-    ...generateMutationFields({ collectionName: 'checklists', Type: ChecklistType, generateFields: ['updateOne', 'deleteOne', 'insertOne', 'upsertOne'] }),
+    ...generateMutationFields({ collectionName: 'checklists', Type: ChecklistType, generateFields: ['deleteOne', 'insertOne', 'upsertOne'] }),
 }
-
 
 export const permissions = {
     Query: {
@@ -201,10 +201,8 @@ export const permissions = {
         risks: allow,
     },
     Mutation: {
-        updateOneChecklist: allow,
-        deleteOneChecklist: allow,
-        insertOneChecklist: allow,
-        upsertOneChecklist: allow,
+        insertOneChecklist: allow, // TODO: anonymous users can create checklists, this may break with the Next Auth implementation
+        deleteOneChecklist: or(isAdmin, isChecklistsOwner()),
+        upsertOneChecklist: or(isAdmin, isChecklistsOwner()),
     },
 }
-

@@ -369,20 +369,6 @@ export type ChecklistRiskPrecedent = {
   title?: Maybe<Scalars['String']['output']>;
 };
 
-export type ChecklistSetType = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  about?: InputMaybe<Scalars['String']['input']>;
-  date_created?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  owner_id?: InputMaybe<Scalars['String']['input']>;
-  risks?: InputMaybe<Array<InputMaybe<RisksSetListObjectType>>>;
-  tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
 export enum ChecklistSortByInput {
   AboutAsc = 'ABOUT_ASC',
   AboutDesc = 'ABOUT_DESC',
@@ -410,10 +396,6 @@ export type ChecklistSortType = {
   id?: InputMaybe<SortType>;
   name?: InputMaybe<SortType>;
   owner_id?: InputMaybe<SortType>;
-};
-
-export type ChecklistUpdateType = {
-  set?: InputMaybe<ChecklistSetType>;
 };
 
 export type Classification = {
@@ -1915,7 +1897,6 @@ export type Mutation = {
   updateManyNotifications?: Maybe<UpdateManyPayload>;
   updateManyQuickadds?: Maybe<UpdateManyPayload>;
   updateOneCandidate?: Maybe<Candidate>;
-  updateOneChecklist?: Maybe<Checklist>;
   updateOneDuplicate?: Maybe<Duplicate>;
   updateOneEntity?: Maybe<Entity>;
   updateOneIncident?: Maybe<Incident>;
@@ -2163,12 +2144,6 @@ export type MutationUpdateManyQuickaddsArgs = {
 export type MutationUpdateOneCandidateArgs = {
   filter: CandidateFilterType;
   update: CandidateUpdateType;
-};
-
-
-export type MutationUpdateOneChecklistArgs = {
-  filter: ChecklistFilterType;
-  update: ChecklistUpdateType;
 };
 
 
@@ -2505,14 +2480,6 @@ export type PrecedentsObjectFilterType = {
   opr?: InputMaybe<OprExists>;
   tags?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
-};
-
-export type PrecedentsSetListObjectType = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type PromoteSubmissionToReportInput = {
@@ -3218,20 +3185,6 @@ export type RisksPayloadPrecedentTsne = {
   __typename?: 'RisksPayloadPrecedentTsne';
   x?: Maybe<Scalars['Float']['output']>;
   y?: Maybe<Scalars['Float']['output']>;
-};
-
-export type RisksSetListObjectType = {
-  generated?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  likelihood?: InputMaybe<Scalars['String']['input']>;
-  precedents?: InputMaybe<Array<InputMaybe<PrecedentsSetListObjectType>>>;
-  risk_notes?: InputMaybe<Scalars['String']['input']>;
-  risk_status?: InputMaybe<Scalars['String']['input']>;
-  severity?: InputMaybe<Scalars['String']['input']>;
-  tag?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  touched?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export enum SortType {

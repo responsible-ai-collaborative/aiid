@@ -1,10 +1,10 @@
 import { ObjectId } from 'bson';
 import { Fixture } from "../utils";
-import { Checklist, ChecklistInsertType, ChecklistUpdateType } from "../../generated/graphql";
+import { Checklist, ChecklistInsertType } from "../../generated/graphql";
 
 const checklist1 = {
     _id: new ObjectId("6537e59e9208f3f75b2db1f7"),
-    owner_id: "63601cdc29e6840df23ad3e5",
+    owner_id: "60a7c5b7b4f5b8a6d8f9c7e6",
     tags_methods: ["GMF:Known AI Technology:Language Modeling"],
     tags_goals: ["GMF:Known AI Goal:Chatbot"],
     about: "",
@@ -50,7 +50,7 @@ const checklist2 = {
         }
     ],
     tags_other: ["CSETv1:Entertainment Industry:yes"],
-    id: "849bd303-261f-4abe-8746-77dad5841dbe",
+    id: "849bd303-261f-4abe-8746-77dad5841daa",
     name: "Test Checklist 2"
 }
 
@@ -59,7 +59,7 @@ const subscriber = {
     first_name: 'Subscriber',
     last_name: 'One',
     roles: ['subscriber'],
-    userId: 'subscriber1',
+    userId: '60a7c5b7b4f5b8a6d8f9c7e6',
 }
 
 const admin = {
@@ -78,7 +78,7 @@ const anonymous = {
     userId: 'anon',
 }
 
-const fixture: Fixture<Checklist, ChecklistUpdateType, ChecklistInsertType> = {
+const fixture: Fixture<Checklist, any, ChecklistInsertType> = {
     name: 'checklists',
     query: `
         _id
@@ -153,11 +153,43 @@ const fixture: Fixture<Checklist, ChecklistUpdateType, ChecklistInsertType> = {
     },
     testUpdateOne: null,
     testUpdateMany: null,
-    testInsertOne: null,
+    testInsertOne: {
+        allowed: [subscriber, admin, anonymous],
+        denied: [],
+        insert: {
+            about: "Test Insert",
+        },
+        result: {
+            _id: expect.any(String),
+            about: "Test Insert",
+        }
+    },
     testInsertMany: null,
-    testDeleteOne: null,
+    testDeleteOne: {
+        allowed: [admin, subscriber],
+        denied: [anonymous],
+        filter: { _id: { EQ: new ObjectId("6537e59e9208f3f75b2db1f7") } },
+        result: {
+            _id: "6537e59e9208f3f75b2db1f7",
+        }
+    },
     testDeleteMany: null,
-    testUpsertOne: null,
+    testUpsertOne: {
+        shouldUpdate: {
+            allowed: [admin, subscriber],
+            denied: [anonymous],
+            filter: { id: { EQ: "849bd303-261f-4abe-8746-77dad5841dbe" } },
+            update: { name: 'Updated name' },
+            result: { name: 'Updated name', _id: '6537e59e9208f3f75b2db1f7' }
+        },
+        shouldInsert: {
+            allowed: [subscriber, admin, anonymous],
+            denied: [],
+            filter: { id: { EQ: "test" } },
+            update: { name: 'New checklist', id: "test" },
+            result: { name: 'New checklist', id: "test", _id: expect.any(String) }
+        },
+    },
 }
 
 export default fixture;
