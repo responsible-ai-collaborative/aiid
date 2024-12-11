@@ -11,6 +11,7 @@ import { ObjectId } from 'bson';
 import users from './seeds/customData/users';
 import authUsers from './seeds/auth/users';
 import { algoliaMock } from './fixtures/algoliaMock';
+import siteConfig from '../config';
 
 declare module '@playwright/test' {
     interface Request {
@@ -25,6 +26,8 @@ type TestFixtures = {
     runOnlyOnEmptyEnvironment: () => Promise<void>,
     login: (options?: { email?: string, customData?: Record<string, unknown> }) => Promise<string[]>,
     retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
+    runOnlyInProduction: () => Promise<void>,
+    runAnywhereExceptProduction: () => Promise<void>,
 };
 
 export function randomString(size: number) {
@@ -159,6 +162,22 @@ export const test = base.extend<TestFixtures>({
 
         await use();
     }, { auto: true }],
+
+    runOnlyInProduction: async ({ }, use, testInfo) => {
+      if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+          testInfo.skip();
+      }
+
+      await use(null);
+    },
+    
+    runAnywhereExceptProduction: async ({ }, use, testInfo) => {
+        if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
+            testInfo.skip();
+        }
+
+        await use(null);
+    }
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request

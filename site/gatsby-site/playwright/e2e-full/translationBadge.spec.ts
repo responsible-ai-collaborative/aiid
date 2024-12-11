@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../utils';
+import { mockAlgolia, test } from '../utils';
 
 test.describe('Translation Badges', () => {
   test('Should be visible on blog post', async ({ page }) => {
@@ -15,9 +15,18 @@ test.describe('Translation Badges', () => {
     await expect(page.locator('a', { hasText: 'Ver Original' })).not.toBeVisible();
   });
 
-  test('Should be visible on the discover app', async ({ page, skipOnEmptyEnvironment }) => {
-    await page.goto('/es/apps/discover?display=details&incident_id=1&page=1&source_domain=today.com');
-    await expect(page.locator('[data-cy="5d34b8c29ced494f010ed45c"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+  test('Should be visible on the discover app if the item has a translation available', async ({ page, skipOnEmptyEnvironment }) => {
+    await mockAlgolia(page);
+
+    await page.goto('/es/apps/discover');
+    await expect(page.locator('[data-cy="6243a9eedf8b4b62d982817e"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+  });
+
+  test('Should not be visible on the discover app if the item does not have a translation available', async ({ page, skipOnEmptyEnvironment }) => {
+    await mockAlgolia(page);
+
+    await page.goto('/es/apps/discover');
+    await expect(page.locator('[data-cy="5d34b8c29ced494f010ed470"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
   });
 
   test('Should be visible on an report card on the citation page if it was translated', async ({ page, skipOnEmptyEnvironment }) => {
