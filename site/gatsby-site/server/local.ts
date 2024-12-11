@@ -83,6 +83,12 @@ import {
     permissions as incidentsHistoryPermissions,
 } from './fields/incidentsHistory';
 
+import {
+    queryFields as checklistsQueryFields,
+    mutationFields as checklistsMutationFields,
+    permissions as checklistsPermissions
+} from './fields/checklists';
+
 
 export const getSchema = () => {
 
@@ -107,6 +113,7 @@ export const getSchema = () => {
             ...notificationsQueryFields,
             ...reportsHistoryQueryFields,
             ...incidentsHistoryQueryFields,
+            ...checklistsQueryFields,
         }
     });
 
@@ -123,6 +130,7 @@ export const getSchema = () => {
             ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
+            ...checklistsMutationFields,
         }
     });
 
@@ -163,6 +171,7 @@ export const getSchema = () => {
                 ...notificationsPermissions.Query,
                 ...reportsHistoryPermissions.Query,
                 ...incidentsHistoryPermissions.Query,
+                ...checklistsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -176,6 +185,7 @@ export const getSchema = () => {
                 ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
+                ...checklistsPermissions.Mutation
             },
         },
         {
