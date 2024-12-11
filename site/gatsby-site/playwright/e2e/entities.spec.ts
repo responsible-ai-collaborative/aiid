@@ -61,16 +61,4 @@ test.describe('Entities page', () => {
     await page.goto(url);
     await page.locator('[data-cy="row"]').first().locator('a:has-text("Facebook")').isVisible();
   });
-
-  test.skip('Should display Edit button only for Admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await page.goto(url);
-    expect(await page.locator('[data-cy="edit-entity-btn"]').count()).toBe(0);
-
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-    await page.goto(url);
-    const editButton = page.locator('[data-cy="edit-entity-btn"]').first();
-    expect(await editButton.getAttribute('href')).toBe('/entities/edit?entity_id=facebook');
-    await editButton.click();
-    await page.waitForURL(url => !url.toString().includes('/entities/edit?entity_id=facebook'));
-  });
 });
