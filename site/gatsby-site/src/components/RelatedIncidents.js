@@ -94,7 +94,7 @@ const allSearchColumns = {
       const epoch_date_published_lt = getUnixTime(addWeeks(datePublished, 2));
 
       return {
-        epoch_date_published: { GTE: epoch_date_published_gt, LTE: epoch_date_published_lt },
+        epoch_date_published: { GT: epoch_date_published_gt, LT: epoch_date_published_lt },
       };
     },
   },

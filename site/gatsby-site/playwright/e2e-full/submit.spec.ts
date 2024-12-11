@@ -4,6 +4,7 @@ import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
+import { addWeeks, getUnixTime, subWeeks } from 'date-fns';
 
 
 test.describe('The Submit form', () => {
@@ -480,6 +481,10 @@ test.describe('The Submit form', () => {
             incident_ids: 1,
         };
 
+        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+
+        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+
         const { data: { reports: reportsAuthors } } = await query({
           query: gql`
             query {
@@ -493,7 +498,7 @@ test.describe('The Submit form', () => {
         const { data: { reports: reportsPublished } } = await query({
           query: gql`
             query {
-              reports(filter: { epoch_date_published: {GTE: ${dateTime}, LTE: ${dateTime} } }) {
+              reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
                 report_number
               }
             }
