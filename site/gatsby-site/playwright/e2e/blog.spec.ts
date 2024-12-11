@@ -84,7 +84,7 @@ test.describe('Blog', () => {
   });
 
   test('Should include outline in Spanish blog post', async ({ page, skipOnEmptyEnvironment }) => {
-    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.setViewportSize({ width: 1300, height: 1000 });
     await page.goto('/es/blog/multilingual-incident-reporting');
 
     const outlineItemsCount = await page.locator('[data-cy="outline"] > li').count();
