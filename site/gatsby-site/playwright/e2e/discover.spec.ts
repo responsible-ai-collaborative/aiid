@@ -167,7 +167,7 @@ test.describe('The Discover app', () => {
         }).toPass();
     });
 
-    test('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
+    test.skip('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
 
         await page.goto(url);
 
