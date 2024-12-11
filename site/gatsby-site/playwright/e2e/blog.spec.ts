@@ -67,6 +67,7 @@ test.describe('Blog', () => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/blog/the-first-taxonomy-of-ai-incidents');
 
+    await expect(page.locator('[data-cy="outline"]')).toBeVisible();
     const outlineItems = page.locator('[data-cy="outline"] > li');
     await expect(outlineItems).toHaveCount(5);
 
@@ -84,9 +85,10 @@ test.describe('Blog', () => {
   });
 
   test('Should include outline in Spanish blog post', async ({ page, skipOnEmptyEnvironment }) => {
-    await page.setViewportSize({ width: 1300, height: 1000 });
+    await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/multilingual-incident-reporting');
 
+    await expect(page.locator('[data-cy="outline"]')).toBeVisible();
     const outlineItemsCount = await page.locator('[data-cy="outline"] > li').count();
     await expect(outlineItemsCount).toBeGreaterThanOrEqual(3);
 
