@@ -12,12 +12,16 @@ export default function List({ item, toggleFilterByIncidentId, viewType }) {
   item.text = viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text;
 
   const reportTitle = (
-    <>
-      <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
-      <div>
-        <TranslationBadge originalLanguage={item.language} />
+    <div className="flex justify-between w-full">
+      <div className="w-[80%]">
+        <HeaderTitle item={item} viewType={viewType} className="text-xl hover:text-blue-500" />
       </div>
-    </>
+      {item.is_translated && (
+        <div className="pl-2 pt-1 w-[20%] flex justify-end">
+          <TranslationBadge originalLanguage={item.language} />
+        </div>
+      )}
+    </div>
   );
 
   return <ReportCard item={item} actions={actions} reportTitle={reportTitle} />;
