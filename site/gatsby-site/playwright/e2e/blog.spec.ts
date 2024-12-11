@@ -89,8 +89,8 @@ test.describe('Blog', () => {
     await page.goto('/es/blog/multilingual-incident-reporting');
 
     await expect(page.locator('[data-cy="outline"]')).toBeVisible();
-    const outlineItemsCount = await page.locator('[data-cy="outline"] > li').count();
-    await expect(outlineItemsCount).toBeGreaterThanOrEqual(3);
+    const outlineItems = page.locator('[data-cy="outline"] > li');
+    await expect(outlineItems).toHaveCount(4);
 
     await expect(page.locator('[data-cy="outline"]:has-text("¿Como funciona?")')).toBeVisible();
     await expect(page.locator('[data-cy="outline"]:has-text("Llamado a la acción")')).toBeVisible();
