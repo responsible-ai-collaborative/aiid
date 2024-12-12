@@ -20,7 +20,7 @@ test.describe('Checklists App Form', () => {
         tags_other: [],
     };
 
-    test.skip('Should have read-only access for non-logged-in users', async ({ page }) => {
+    test('Should have read-only access for non-logged-in users', async ({ page }) => {
         await conditionalIntercept(
             page,
             '**/graphql',
@@ -30,6 +30,8 @@ test.describe('Checklists App Form', () => {
         );
 
         await page.goto(url);
+
+        await waitForRequest('findChecklist');
 
         await expect(page.locator('[data-cy="checklist-form"] textarea:not([disabled])')).not.toBeVisible();
         await expect(page.locator('[data-cy="checklist-form"] input:not([disabled]):not([readonly])')).not.toBeVisible();
