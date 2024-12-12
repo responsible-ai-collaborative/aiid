@@ -63,9 +63,7 @@ const BASE_SORTING_LIST = [
   },
 ];
 
-const SORTING_LIST = [];
-
-BASE_SORTING_LIST.forEach((item) => {
+const SORTING_LIST = BASE_SORTING_LIST.map((item) => {
   const newItem = {
     ...item,
     value: `instant_search-en${item.instantKey == 'featured' ? '-' : '_'}${item.instantKey}`,
@@ -80,7 +78,7 @@ BASE_SORTING_LIST.forEach((item) => {
   // remove auxiliary field
   delete newItem.instantKey;
 
-  SORTING_LIST.push(newItem);
+  return newItem;
 });
 
 export default SORTING_LIST;
