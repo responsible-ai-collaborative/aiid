@@ -39,7 +39,29 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
         name: "Email",
         type: "email",
         maxAge: 60 * 60 * 24, // Email link will expire in 24 hours
-        sendVerificationRequest,
+        async sendVerificationRequest({ identifier: email, url }: { identifier: string, url: string }) {
+
+          const user = await client.db('auth').collection('users').findOne({ email });
+
+          if (user) {
+
+            await sendEmail({
+              recipients: [{ email }],
+              subject: 'Login link',
+              templateId: 'Login',
+              dynamicData: { magicLink: url },
+            })
+          }
+          else {
+
+            await sendEmail({
+              recipients: [{ email }],
+              subject: 'Signup link',
+              templateId: 'Signup',
+              dynamicData: { magicLink: url },
+            })
+          }
+        }
       }
     ],
     theme: {
