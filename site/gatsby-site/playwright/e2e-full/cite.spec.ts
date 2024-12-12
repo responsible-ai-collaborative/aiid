@@ -452,7 +452,7 @@ test.describe('Cite pages', () => {
     test('Should show proper entities card text', async ({ page }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
-            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.'
+            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Implicated AI system: Entity 1'
         );
     });
 

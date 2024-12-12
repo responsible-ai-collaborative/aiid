@@ -62,5 +62,7 @@
   "Submit a new incident report to the Artificial Intelligence Incident Database": "Enviar un nuevo informe de incidente a la Base de Datos de Incidentes de Inteligencia Artificial",
   "Draft saved": "Borrador guardado",
   "Saving as draft...": "Guardando como borrador...",
+  "Implicated Systems": "Sistemas Implicados",
+  "What systems were involved in the incident?": "¿Qué sistemas estuvieron involucrados en el incidente?",
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación."
 }
