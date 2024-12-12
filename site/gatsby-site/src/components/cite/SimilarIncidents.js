@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { formatISO, format, parse, getUnixTime } from 'date-fns';
+import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
@@ -9,7 +9,6 @@ import { FIND_FULL_INCIDENT, FLAG_INCIDENT_SIMILARITY } from '../../graphql/inci
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -36,11 +35,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const addToast = useToastContext();
 
-  const { logIncidentHistory } = useLogIncidentHistory();
-
   const flagIncident = useCallback(async () => {
-    const now = new Date();
-
     const flagged_dissimilar_incidents = isFlagged
       ? parentIncident.flagged_dissimilar_incidents?.filter((e) => e != incident.incident_id)
       : parentIncident.flagged_dissimilar_incidents
@@ -60,16 +55,6 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         dissimilarIds: flagged_dissimilar_incidents,
       },
     });
-
-    await logIncidentHistory(
-      {
-        ...incidentData.incident,
-        flagged_dissimilar_incidents,
-        epoch_date_modified: getUnixTime(now),
-        editors: { link: editors },
-      },
-      user
-    );
 
     addToast({
       message: isFlagged

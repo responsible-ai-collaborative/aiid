@@ -82,5 +82,3 @@ const getEmailTemplate = () => {
 };
 
 export default getEmailTemplate();
-
-

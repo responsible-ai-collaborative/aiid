@@ -24,6 +24,10 @@ export const FIND_INCIDENT = gql(`
         entity_id
         name
       }
+      implicated_systems {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -67,6 +71,10 @@ export const FIND_INCIDENTS_TABLE = gql(`
         entity_id
         name
       }
+      implicated_systems {
+        entity_id
+        name
+      }
       reports {
         report_number
       }
@@ -87,6 +95,10 @@ export const FIND_INCIDENT_ENTITIES = gql(`
         name
       }
       AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      implicated_systems {
         entity_id
         name
       }
@@ -115,6 +127,10 @@ export const FIND_INCIDENTS = gql(`
         name
       }
       AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      implicated_systems {
         entity_id
         name
       }
@@ -166,6 +182,10 @@ export const UPDATE_INCIDENT = gql(`
         name
       }
       AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      implicated_systems {
         entity_id
         name
       }
@@ -237,6 +257,10 @@ export const FIND_FULL_INCIDENT = gql(`
         entity_id
         name
       }
+      implicated_systems {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -275,21 +299,14 @@ export const FIND_FULL_INCIDENT = gql(`
   }
 `);
 
-export const LOG_INCIDENT_HISTORY = gql(`
-  mutation logIncidentHistory($input: History_incidentInsertInput!) {
-    logIncidentHistory(input: $input) {
-      incident_id
-    }
-  }
-`);
-
 export const FIND_INCIDENT_HISTORY = gql(`
-  query FindIncidentHistory($query: History_incidentQueryInput) {
-    history_incidents(query: $query, sortBy: EPOCH_DATE_MODIFIED_DESC) {
+  query FindIncidentHistory($filter: History_incidentFilterType) {
+    history_incidents(filter: $filter, sort: {epoch_date_modified: DESC}) {
       incident_id
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
       AllegedHarmedOrNearlyHarmedParties
+      implicated_systems
       _id
       date
       description

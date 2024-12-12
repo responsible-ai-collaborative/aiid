@@ -58,21 +58,20 @@ jobs:
       - name: Jest run
         run: npm run test:api:ci
         env:
-          REALM_APP_ID: ""
-          REALM_API_APP_ID: ""
-          REALM_API_GROUP_ID: ""
-          REALM_API_PUBLIC_KEY: ""
-          REALM_API_PRIVATE_KEY: ""
-          REALM_GRAPHQL_API_KEY: ""
+          REALM_APP_ID: dummy
+          REALM_API_APP_ID: dummy
+          REALM_API_GROUP_ID: dummy
+          REALM_API_PUBLIC_KEY: dummy
+          REALM_API_PRIVATE_KEY: dummy
+          REALM_GRAPHQL_API_KEY: dummy
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
-          E2E_ADMIN_USERNAME: ""
-          E2E_ADMIN_PASSWORD: ""
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: sarasa
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
-          PROCESS_NOTIFICATIONS_SECRET: sarasa
           SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: dummy
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4

@@ -85,6 +85,10 @@ const ignoreTypes = [
     'TaxaUpdateInput',
     'TaxaInsertInput',
 
+    'Candidate',
+    'CandidateQueryInput',
+    'CandidateUpdateInput',
+    'CandidateInsertInput',
     'Subscription',
     'SubscriptionQueryInput',
     'SubscriptionUpdateInput',
@@ -94,6 +98,16 @@ const ignoreTypes = [
     'DuplicateQueryInput',
     'DuplicateUpdateInput',
     'DuplicateInsertInput',
+
+    'History_report',
+    'History_reportQueryInput',
+    'History_reportUpdateInput',
+    'History_reportInsertInput',
+
+    'History_incident',
+    'History_incidentQueryInput',
+    'History_incidentUpdateInput',
+    'History_incidentInsertInput',
 ];
 
 const ignoredQueries = [
@@ -120,6 +134,9 @@ const ignoredQueries = [
 
     'taxa',
     'taxas',
+  
+    'candidate',
+    'candidates',
 
     'subscription',
     'subscriptions',
@@ -129,6 +146,12 @@ const ignoredQueries = [
 
     'notification',
     'notifications',
+
+    'history_report',
+    'history_reports',
+
+    'history_incident',
+    'history_incidents',
 ];
 
 const ignoredMutations = [
@@ -212,6 +235,16 @@ const ignoredMutations = [
     'updateOneTaxa',
     'updateManyTaxas',
     'upsertOneTaxa',
+    'upsertManyTaxas',
+
+    'deleteOneCandidates',
+    'deleteManyCandidates',
+    'insertOneCandidate',
+    'insertManyCandidates',
+    'updateOneCandidate',
+    'updateManyCandidates',
+    'upsertOneCandidate',
+    'upsertManyCandidates',
 
     'deleteOneSubscription',
     'deleteManySubscriptions',

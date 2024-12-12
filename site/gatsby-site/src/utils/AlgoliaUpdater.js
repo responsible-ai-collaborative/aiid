@@ -135,6 +135,7 @@ const reportToEntry = ({ incident = null, report, classifications = [{ list: [],
     featured: featuredValue,
     flag: report.flag,
     is_incident_report: report.is_incident_report,
+    is_translated: report.is_translated,
     namespaces: classifications.map((c) => {
       return Object.keys(c.tree)[0];
     }),
@@ -300,8 +301,13 @@ class AlgoliaUpdater {
       .toArray();
 
     const fullReports = reports.map((r) => {
-      let report = { ...r };
+      // by default, use the report as is
+      let report = {
+        ...r,
+        is_translated: false,
+      };
 
+      // If the report has a translation, use it
       if (translations.some((t) => t.report_number === r.report_number)) {
         const { title, plain_text } =
           translations.find((t) => t.report_number === r.report_number) || {};
@@ -310,6 +316,7 @@ class AlgoliaUpdater {
           ...r,
           title,
           plain_text,
+          is_translated: true,
         };
       }
       return report;

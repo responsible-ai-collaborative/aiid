@@ -9,11 +9,14 @@ import entities from './seeds/aiidprod/entities';
 import reports_es from './seeds/translations/reports_es';
 import classifications from './seeds/aiidprod/classifications';
 import taxa from './seeds/aiidprod/taxa';
+import candidates from './seeds/aiidprod/candidates';
 import duplicates from './seeds/aiidprod/duplicates';
 
 import users from './seeds/customData/users';
 import subscriptions from './seeds/customData/subscriptions';
 
+import reportsHistory from './seeds/history/reportsHistory';
+import incidentsHistory from './seeds/history/incidentsHistory';
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
@@ -25,6 +28,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             entities,
             classifications,
             taxa,
+            candidates,
             duplicates,
         },
         customData: {
@@ -34,6 +38,10 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         translations: {
             reports_es,
         },
+        history: {
+            reports: reportsHistory,
+            incidents: incidentsHistory,
+        }
     });
 
     if (extra) {

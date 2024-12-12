@@ -51,6 +51,12 @@ import {
 } from './fields/taxa';
 
 import {
+    queryFields as candidatesQueryFields,
+    mutationFields as candidatesMutationFields,
+    permissions as candidatesPermissions
+} from './fields/candidates';
+
+import {
     queryFields as subscriptionsQueryFields,
     mutationFields as subscriptionsMutationFields,
     permissions as subscriptionsPermissions
@@ -64,9 +70,18 @@ import {
 
 import {
     queryFields as notificationsQueryFields,
-    mutationFields as notificationsMutationFields,
     permissions as notificationsPermissions
 } from './fields/notifications';
+
+import {
+    queryFields as reportsHistoryQueryFields,
+    permissions as reportsHistoryPermissions
+} from './fields/reportsHistory';
+
+import {
+    queryFields as incidentsHistoryQueryFields,
+    permissions as incidentsHistoryPermissions,
+} from './fields/incidentsHistory';
 
 
 export const getSchema = () => {
@@ -86,9 +101,12 @@ export const getSchema = () => {
             ...submissionsQueryFields,
             ...classificationsQueryFields,
             ...taxaQueryFields,
+            ...candidatesQueryFields,
             ...subscriptionsQueryFields,
             ...duplicatesQueryFields,
             ...notificationsQueryFields,
+            ...reportsHistoryQueryFields,
+            ...incidentsHistoryQueryFields,
         }
     });
 
@@ -102,9 +120,9 @@ export const getSchema = () => {
             ...usersMutationFields,
             ...submissionsMutationFields,
             ...classificationsMutationFields,
+            ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
-            ...notificationsMutationFields,
         }
     });
 
@@ -139,9 +157,12 @@ export const getSchema = () => {
                 ...submissionsPermissions.Query,
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
+                ...candidatesPermissions.Query,
                 ...subscriptionsPermissions.Query,
                 ...duplicatesPermissions.Query,
                 ...notificationsPermissions.Query,
+                ...reportsHistoryPermissions.Query,
+                ...incidentsHistoryPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -152,9 +173,9 @@ export const getSchema = () => {
                 ...usersPermissions.Mutation,
                 ...submissionsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
+                ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
-                ...notificationsPermissions.Mutation,
             },
         },
         {

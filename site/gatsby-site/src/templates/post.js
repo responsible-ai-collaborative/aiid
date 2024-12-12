@@ -59,7 +59,7 @@ export default function Post(props) {
         {mdx.frontmatter.aiTranslated && (
           <>
             <TranslationBadge className="ml-2" />
-            <Link className="ml-2" to={mdx.frontmatter.slug}>
+            <Link className="mx-2" to={mdx.frontmatter.slug}>
               <Trans>View Original</Trans>
             </Link>
           </>
@@ -72,7 +72,7 @@ export default function Post(props) {
           </Trans>
         </span>
       </div>
-      <div className={`prose post-styled-main-wrapper`}>
+      <div data-testid="blog-content" className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>
     </>

@@ -1,0 +1,38 @@
+name: Translate Reports
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+
+jobs:
+  translate:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install NPM dependencies
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Run translation script
+        run: npm run translate-reports
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          TRANSLATE_SUBMISSION_DATE_START: ${{ vars.TRANSLATE_SUBMISSION_DATE_START }}
+          TRANSLATE_DRY_RUN: ${{ vars.TRANSLATE_DRY_RUN }}
+

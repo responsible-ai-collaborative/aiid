@@ -29,7 +29,7 @@ export const UserType = new GraphQLObjectType({
 
                 if (user!.id === source.userId || user!.roles.includes('admin')) {
 
-                    response = await getUserAdminData(source.userId)
+                    response = await getUserAdminData(source.userId) ?? {};
                 }
 
                 return response;

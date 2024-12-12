@@ -31,7 +31,7 @@ export const isSelf = () => rule()(
 
         const collection = context.client.db('customData').collection('users');
         const simpleType = getSimplifiedType(UserType);
-        const filter = getMongoDbFilter(simpleType, info.variableValues.filter as GraphQLFilter);
+        const filter = getMongoDbFilter(simpleType, args.filter as GraphQLFilter);
         const users = await collection.find<DBUser>(filter).toArray();
 
         const { user } = context;
@@ -39,7 +39,6 @@ export const isSelf = () => rule()(
         const meetsOwnership = users.every(s => s.userId === user?.id);
 
         const meetsAdmin = user?.roles.includes('admin');
-
 
         if (meetsAdmin || meetsOwnership) {
 
@@ -55,7 +54,7 @@ export const isSubscriptionOwner = () => rule()(
 
         const collection = context.client.db('customData').collection('subscriptions');
         const simpleType = getSimplifiedType(SubscriptionType);
-        const filter = getMongoDbFilter(simpleType, info.variableValues.filter as GraphQLFilter);
+        const filter = getMongoDbFilter(simpleType, args.filter as GraphQLFilter);
         const subscriptions = await collection.find<DBSubscription>(filter).toArray();
 
         const { user } = context;
@@ -63,7 +62,6 @@ export const isSubscriptionOwner = () => rule()(
         const meetsOwnership = subscriptions.every(s => s.userId === user?.id);
 
         const meetsAdmin = user?.roles.includes('admin');
-
 
         if (meetsAdmin || meetsOwnership) {
 
@@ -86,6 +84,30 @@ export const hasHeaderSecret = (headerName: keyof Config) => rule()(
         if (!headerValue || !configValue || (configValue && headerValue && configValue != headerValue)) {
 
             return new Error('not authorized')
+        }
+
+        return true;
+    }
+)
+
+export const notQueriesAdminData = () => rule()(
+
+    async (parent, args, context: Context, info) => {
+
+        const fieldNodes = info.fieldNodes;
+
+        for (const fieldNode of fieldNodes) {
+            if (fieldNode.selectionSet) {
+                const selections = fieldNode.selectionSet.selections;
+
+                for (const selection of selections) {
+
+                    if (selection.kind === 'Field' && selection.name.value === 'adminData') {
+
+                        return new Error('not authorized')
+                    }
+                }
+            }
         }
 
         return true;

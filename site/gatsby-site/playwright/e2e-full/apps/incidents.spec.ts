@@ -27,20 +27,6 @@ test.describe('Incidents App', () => {
 
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName === 'logIncidentHistory',
-      {
-        data: {
-          logIncidentHistory: {
-            incident_id: 3,
-          },
-        },
-      },
-      'logIncidentHistory'
-    );
-
     await page.goto(url);
 
     await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
@@ -63,8 +49,6 @@ test.describe('Incidents App', () => {
 
     await page.getByText('Update', { exact: true }).click();
 
-    await waitForRequest('logIncidentHistory');
-
     await expect(page.locator('[data-cy="toast"]').locator('text=Incident 3 updated successfully.')).toBeVisible();
 
     const result = await query({
@@ -82,25 +66,74 @@ test.describe('Incidents App', () => {
     });
   });
 
+  test('Entities should link to entities page', async ({ page }) => {
+
+    await init();
+    await page.goto(url);
+
+    await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
+    await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
+
+    const { data: { incidents } } = await query({
+      query: gql`{
+          incidents {
+            incident_id
+            title
+            description
+            date
+            AllegedDeployerOfAISystem {
+              entity_id
+              name
+            }
+            AllegedDeveloperOfAISystem {
+              entity_id
+              name
+            }
+            AllegedHarmedOrNearlyHarmedParties {
+              entity_id
+              name
+            }
+            implicated_systems {
+              entity_id
+              name
+            }
+          }
+        }`
+    });
+
+    const rowLocator = page.locator('[data-cy="row"]').first();
+    const firstIncident = incidents[0];
+
+    for (const [index, deployer] of firstIncident.AllegedDeployerOfAISystem.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(4).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${deployer.entity_id}`);
+    }
+
+    for (const [index, developer] of firstIncident.AllegedDeveloperOfAISystem.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(5).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${developer.entity_id}`);
+    }
+
+    for (const [index, harmed] of firstIncident.AllegedHarmedOrNearlyHarmedParties.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(6).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${harmed.entity_id}`);
+    }
+
+    for (const [index, implicated_system] of firstIncident.implicated_systems.entries()) {
+
+      const link = await rowLocator.locator('[data-cy="cell"]').nth(7).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
+      expect(link).toContain(`/entities/${implicated_system.entity_id}`);
+    }
+  });
+
   test('Successfully assigns similar/dissimilar incidents to incident 3', async ({ page, login }) => {
 
     await init();
 
     await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
-
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName === 'logIncidentHistory',
-      {
-        data: {
-          logIncidentHistory: {
-            incident_id: 3,
-          },
-        },
-      },
-      'logIncidentHistory'
-    );
 
     await page.goto(url);
 
@@ -132,8 +165,6 @@ test.describe('Incidents App', () => {
 
     await page.getByText('Update', { exact: true }).click();
 
-    await waitForRequest('logIncidentHistory');
-
     await expect(page.locator('[data-cy="toast"]').locator('text=Incident 3 updated successfully.')).toBeVisible();
 
     const result = await query({
@@ -153,56 +184,6 @@ test.describe('Incidents App', () => {
       editor_similar_incidents: [1],
       editor_dissimilar_incidents: [2],
     });
-  });
-
-  test('Entities should link to entities page', async ({ page }) => {
-
-    await page.goto(url);
-
-    await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
-    await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
-
-    const incidents = await query({
-      query: gql`{
-            incidents {
-              title
-              description
-              editor_dissimilar_incidents
-              editor_similar_incidents
-              AllegedDeployerOfAISystem {
-                entity_id
-              }
-              AllegedDeveloperOfAISystem {
-                entity_id
-              }
-              AllegedHarmedOrNearlyHarmedParties {
-                entity_id
-              }
-            }
-          }`
-    });
-
-    const firstIncident = incidents.data.incidents[0];
-    const firstRow = page.locator('[data-cy="row"]').first();
-
-    // AllegedDeployerOfAISystem
-    for (const [index, deployer] of firstIncident.AllegedDeployerOfAISystem.entries()) {
-      const link = await firstRow.locator('[data-cy=cell]').nth(4).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-      expect(link).toContain(`/entities/${deployer.entity_id}/`);
-    }
-
-    // AllegedDeveloperOfAISystem
-    for (const [index, developer] of firstIncident.AllegedDeveloperOfAISystem.entries()) {
-      const link = await firstRow.locator('[data-cy=cell]').nth(5).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-      expect(link).toContain(`/entities/${developer.entity_id}/`);
-    }
-
-    // AllegedHarmedOrNearlyHarmedParties
-    for (const [index, harmed] of firstIncident.AllegedHarmedOrNearlyHarmedParties.entries()) {
-      const link = await firstRow.locator('[data-cy=cell]').nth(6).locator('[data-cy="cell-entity-link"]').nth(index).getAttribute('href');
-      expect(link).toContain(`/entities/${harmed.entity_id}/`);
-    }
-
   });
 
   test('Should display a list of live incidents', async ({ page }) => {
@@ -231,6 +212,9 @@ test.describe('Incidents App', () => {
                 AllegedHarmedOrNearlyHarmedParties {
                   name
                 }
+                implicated_systems {
+                  name
+                }
               }
             }`
     });
@@ -243,17 +227,19 @@ test.describe('Incidents App', () => {
     const rowLocator = page.locator('[data-cy="row"]').first();
     const firstIncident = incidents[0];
 
-    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(7, { timeout: 10000 });
+    await expect(rowLocator.locator('[data-cy="cell"]')).toHaveCount(8);
 
     await expect(rowLocator.locator('[data-cy="cell"]').nth(0)).toHaveText(`Incident ${firstIncident.incident_id}`);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(1)).toHaveText(firstIncident.title);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(2)).toHaveText(firstIncident.description);
 
-    await expect(rowLocator.locator('[data-cy="cell"]').nth(3)).toHaveText(firstIncident.date);
+    // TODO: fix these
 
+    await expect(rowLocator.locator('[data-cy="cell"]').nth(3)).toHaveText(firstIncident.date);
     await expect(rowLocator.locator('[data-cy="cell"]').nth(4)).toHaveText(firstIncident.AllegedDeployerOfAISystem.map((i: any) => i.name).join(', '));
     await expect(rowLocator.locator('[data-cy="cell"]').nth(5)).toHaveText(firstIncident.AllegedDeveloperOfAISystem.map((i: any) => i.name).join(', '));
     await expect(rowLocator.locator('[data-cy="cell"]').nth(6)).toHaveText(firstIncident.AllegedHarmedOrNearlyHarmedParties.map((i: any) => i.name).join(', '));
+    await expect(rowLocator.locator('[data-cy="cell"]').nth(7)).toHaveText(firstIncident.implicated_systems.map((i: any) => i.name).join(', '));
   });
 
   test('Should navigate to the last page, and the first page', async ({ page }) => {
@@ -284,7 +270,7 @@ test.describe('Incidents App', () => {
     await page.getByText('Reports', { exact: true }).click();
 
     await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(3);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(4);
 
     const firstCiteLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
     expect(firstCiteLink).toMatch(/^\/cite\/\d+#r\d+$/);

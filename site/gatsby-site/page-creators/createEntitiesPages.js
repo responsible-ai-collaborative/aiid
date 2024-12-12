@@ -14,6 +14,7 @@ const createEntitiesPages = async (graphql, createPage) => {
           Alleged_deployer_of_AI_system
           Alleged_developer_of_AI_system
           Alleged_harmed_or_nearly_harmed_parties
+          implicated_systems
           reports {
             report_number
           }
@@ -55,6 +56,7 @@ const createEntitiesPages = async (graphql, createPage) => {
         incidentsAsDeveloper: entity.incidentsAsDeveloper,
         incidentsAsBoth: entity.incidentsAsBoth,
         incidentsHarmedBy: entity.incidentsHarmedBy,
+        incidentsImplicatedSystems: entity.incidentsImplicatedSystems,
         relatedEntities: entity.relatedEntities,
         responses: entity.responses,
       },

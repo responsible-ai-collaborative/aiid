@@ -18,6 +18,7 @@ import {
   faStickyNote,
   faPenNib,
   faTenge,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'debounce';
 import UsersInputGroup from '../UsersInputGroup';
@@ -72,6 +73,17 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Harmed Parties can't be longer than 200 characters",
+      })
+      .nullable(),
+    implicated_systems: yup
+      .string()
+      .matches(/^.{3,}$/, {
+        excludeEmptyString: true,
+        message: 'Implicated Systems must have at least 3 characters',
+      })
+      .matches(/^.{3,200}$/, {
+        excludeEmptyString: true,
+        message: "Implicated Systems can't be longer than 200 characters",
       })
       .nullable(),
   });
@@ -160,6 +172,8 @@ const FormDetails = ({
 
   const [submitCount, setSubmitCount] = useState(0);
 
+  const [entityNamesList, setEntityNamesList] = useState(entityNames);
+
   const { isRole } = useUserContext();
 
   const {
@@ -190,6 +204,26 @@ const FormDetails = ({
       resetForm();
     }
   }, [submissionFailed, submissionComplete, submissionReset]);
+
+  const handleEntityChange = (values) => {
+    // Update entityNamesList with adding values that are not in entityNamesList
+    const newEntityNamesList = values
+      .filter((value) => {
+        if (!value.label) {
+          return !entityNamesList.includes(value);
+        }
+        return !entityNamesList.includes(value?.label);
+      })
+      .map((entity) => {
+        if (entity.label) {
+          return entity.label;
+        } else {
+          return entity;
+        }
+      });
+
+    setEntityNamesList([...entityNamesList, ...newEntityNamesList]);
+  };
 
   const saveInLocalStorage = useRef(
     debounce((values) => {
@@ -265,8 +299,8 @@ const FormDetails = ({
                 placeholder={t('Who employed or was responsible for the technology?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -282,8 +316,8 @@ const FormDetails = ({
                 placeholder={t('Who created or built the technology involved in the incident?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
@@ -297,6 +331,23 @@ const FormDetails = ({
                 label={t('Alleged harmed or nearly harmed parties')}
                 icon={faBolt}
                 placeholder={t('Who experienced negative impacts?')}
+                className="mt-3"
+                schema={schema}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
+                handleBlur={handleBlur}
+                touched={touched}
+                values={values}
+                errors={errors}
+              />
+            </FieldContainer>
+
+            <FieldContainer>
+              <TagsInputGroup
+                name="implicated_systems"
+                label={t('Implicated Systems')}
+                icon={faGear}
+                placeholder={t('What systems were involved in the incident?')}
                 className="mt-3"
                 schema={schema}
                 options={entityNames}

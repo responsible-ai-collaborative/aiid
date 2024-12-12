@@ -173,7 +173,9 @@ const ReportCard = ({
             {actions && !readOnly && <>{actions}</>}
           </div>
           <div className="mt-1 flex w-fit">
-            <TranslationBadge className="mx-2" originalLanguage={item.language} />
+            {item.isTranslated && (
+              <TranslationBadge className="mx-2" originalLanguage={item.language} />
+            )}
             {item.tags && item.tags.includes(RESPONSE_TAG) && (
               <div className="flex-1">
                 <Badge color={'success'}>
