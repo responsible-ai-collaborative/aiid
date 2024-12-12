@@ -51,28 +51,26 @@ test.describe('Cite pages', () => {
     });
 
 
-    test.skip(
-        'Should scroll to report when coming from the discover app',
-        async ({ page, skipOnEmptyEnvironment }) => {
+    test.skip('Should scroll to report when coming from the discover app', async ({ page, skipOnEmptyEnvironment }) => {
 
-            await page.goto(discoverUrl);
-            await page.click('[data-cy="collapse-button"]:visible');
+          await page.goto(discoverUrl);
+          await page.click('[data-cy="collapse-button"]:visible');
 
-            await page.click('text="Show Details on Incident #10"');
+          await page.click('text="Show Details on Incident #10"');
 
-            await expect(async () => {
-                expect(page.url()).toContain('/cite/10/#r23');
-            }).toPass();
+          await expect(async () => {
+              expect(page.url()).toContain('/cite/10/#r23');
+          }).toPass();
 
-            await expect(async () => {
+          await expect(async () => {
 
-                await page.waitForSelector('h5:has-text("Is Starbucks shortchanging its baristas?")', { timeout: 8000 });
-                const incidentReportCard = await page.$('[data-cy="incident-report-card"]');
-                const boundingBox = await incidentReportCard.boundingBox();
-                expect(boundingBox.y).toBeLessThanOrEqual(20);
-            }).toPass();
-        },
-        { retries: 4 }
+              await page.waitForSelector('h5:has-text("Is Starbucks shortchanging its baristas?")', { timeout: 8000 });
+              const incidentReportCard = await page.$('[data-cy="incident-report-card"]');
+              const boundingBox = await incidentReportCard.boundingBox();
+              expect(boundingBox.y).toBeLessThanOrEqual(20);
+          }).toPass();
+      }
+      ,{ retries: 4 }
     );
 
     test.skip('Should scroll to report when clicking on a report in the timeline', async ({ page, skipOnEmptyEnvironment }) => {
