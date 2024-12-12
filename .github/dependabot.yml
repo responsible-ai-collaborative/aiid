@@ -1,0 +1,9 @@
+# Configure Dependabot to target the staging branch of this repository.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "staging"
+    schedule:
+      interval: "weekly"
