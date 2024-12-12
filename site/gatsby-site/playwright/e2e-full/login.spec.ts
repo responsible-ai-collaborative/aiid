@@ -9,13 +9,13 @@ test.describe('Login', () => {
   test('Should redirect to the account page if the signup storage key is set',
     async ({ page, skipOnEmptyEnvironment, login }) => {
 
+      await init();
+
       await page.goto('/');
       await page.evaluate(() => window.localStorage.setItem('signup', '1'));
-
-      const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
       
-      await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
-
+      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+      
       await expect(page).toHaveURL('/account/?askToCompleteProfile=1');
 
       await expect(page.getByTestId('edit-user-modal')).toBeVisible({ timeout: 30000 });
