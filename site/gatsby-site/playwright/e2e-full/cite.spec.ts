@@ -15,11 +15,7 @@ test.describe('Cite pages', () => {
 
     let lastIncidentId: number;
 
-    test.beforeAll(async ({ request }) => {
-        // Skip all tests if the environment is empty since /cite/{incident_id} is not available
-        if (config.IS_EMPTY_ENVIRONMENT) {
-            test.skip();
-        }
+    test.beforeAll(async ({ request, skipOnEmptyEnvironment }) => {
 
         const response = await query({
             query: gql`
@@ -34,11 +30,11 @@ test.describe('Cite pages', () => {
         lastIncidentId = response.data.incidents[0].incident_id;
     });
 
-    test('Successfully loads', async ({ page }) => {
+    test('Successfully loads', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
     });
 
-    test('Should show an edit link to users with the appropriate role', async ({ page, login }) => {
+    test('Should show an edit link to users with the appropriate role', async ({ page, login, skipOnEmptyEnvironment }) => {
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         const id = 'r1';
@@ -57,7 +53,7 @@ test.describe('Cite pages', () => {
 
     test.skip(
         'Should scroll to report when coming from the discover app',
-        async ({ page }) => {
+        async ({ page, skipOnEmptyEnvironment }) => {
 
             await page.goto(discoverUrl);
             await page.click('[data-cy="collapse-button"]:visible');
@@ -79,7 +75,7 @@ test.describe('Cite pages', () => {
         { retries: 4 }
     );
 
-    test.skip('Should scroll to report when clicking on a report in the timeline', async ({ page }) => {
+    test.skip('Should scroll to report when clicking on a report in the timeline', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.waitForSelector('text=For some Starbucks workers, job leaves bitter taste');
@@ -92,18 +88,18 @@ test.describe('Cite pages', () => {
         }).toPass();
     });
 
-    test('Should show the incident stats table', async ({ page }) => {
+    test('Should show the incident stats table', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
         await expect(page.locator('[data-cy=incident-stats]')).toBeVisible();
     });
 
-    test('Should show editors in the stats table', async ({ page }) => {
+    test('Should show editors in the stats table', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
         const incidentStats = await page.locator('[data-cy=incident-stats] > * > *:has-text("Editors")');
         await expect(incidentStats.locator('text=Sean McGregor')).toBeVisible();
     });
 
-    test('Should flag an incident', async ({ page }) => {
+    test('Should flag an incident', async ({ page, skipOnEmptyEnvironment }) => {
         const _id = '3';
 
         await init();
@@ -135,7 +131,7 @@ test.describe('Cite pages', () => {
         expect(data.report.flag).toBe(true);
     });
 
-    test('Should remove duplicate', async ({ page, login }) => {
+    test('Should remove duplicate', async ({ page, login, skipOnEmptyEnvironment }) => {
 
         test.slow();
 
@@ -182,7 +178,7 @@ test.describe('Cite pages', () => {
         expect(data.incident_classifications_2).toHaveLength(3);
     });
 
-    test('Should pre-fill submit report form', async ({ page }) => {
+    test('Should pre-fill submit report form', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('a:has-text("New Report")').click();
@@ -191,7 +187,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('.incident-ids-field [data-cy="token"]:has-text("3")')).toBeVisible();
     });
 
-    test('Should pre-fill submit report response form', async ({ page }) => {
+    test('Should pre-fill submit report response form', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await page.locator('a:has-text("New Response")').click();
@@ -200,7 +196,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('.incident-ids-field [data-cy="token"]:has-text("3")')).toBeVisible();
     });
 
-    test('Should render Next and Previous incident buttons', async ({ page }) => {
+    test('Should render Next and Previous incident buttons', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/2');
 
         await expect(page.locator('a:has-text("Next Incident")')).toBeVisible();
@@ -210,7 +206,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/1');
     });
 
-    test('Should render duplicate page', async ({ page }) => {
+    test('Should render duplicate page', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/5');
 
         await expect(page.getByText('This incident is a duplicate of Incident 3. All new reports and citations should be directed to incident 3. The reports previously found on this page have been migrated to the previously existing incident.')).toBeVisible();
@@ -223,7 +219,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/3');
     });
 
-    test('Should render the header next/previous buttons', async ({ page }) => {
+    test('Should render the header next/previous buttons', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/2');
 
         await expect(page.locator('[data-cy="header-previous-incident-link"]')).toBeVisible();
@@ -233,7 +229,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="header-next-incident-link"]')).toHaveAttribute('href', '/cite/3');
     });
 
-    test('Should disable Previous and Next incident buttons in header on first and last incidents', async ({ page }) => {
+    test('Should disable Previous and Next incident buttons in header on first and last incidents', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/1');
 
         await expect(page.locator('[data-cy="header-previous-incident-link"]')).not.toHaveAttribute('href');
@@ -249,7 +245,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="header-previous-incident-link"]')).toHaveAttribute('href', `/cite/${lastIncidentId - 1}`);
     });
 
-    test('Should show the edit incident form', async ({ page, login }) => {
+    test('Should show the edit incident form', async ({ page, login, skipOnEmptyEnvironment }) => {
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await page.goto(url);
@@ -261,7 +257,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="incident-form"]')).toBeVisible();
     });
 
-    test('Should display correct BibTex Citation', async ({ page }) => {
+    test('Should display correct BibTex Citation', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         const date = format(new Date(), 'MMMMd,y');
@@ -279,7 +275,7 @@ test.describe('Cite pages', () => {
       );
     });
 
-    test('Should display similar incidents', async ({ page }) => {
+    test('Should display similar incidents', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/3');
 
         await expect(async () => {
@@ -288,7 +284,7 @@ test.describe('Cite pages', () => {
         }).toPass();
     });
 
-    test('Should display similar incidents with localized links', async ({ page }) => {
+    test('Should display similar incidents with localized links', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/es/cite/3');
 
         await expect(async () => {
@@ -306,7 +302,7 @@ test.describe('Cite pages', () => {
         }).toPass();
     });
 
-    test('Should not display duplicate similar incidents', async ({ page }) => {
+    test('Should not display duplicate similar incidents', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/9');
 
         await expect(async () => {
@@ -322,13 +318,13 @@ test.describe('Cite pages', () => {
         }).toPass();
     });
 
-    test('Should not display edit link when not logged in', async ({ page }) => {
+    test('Should not display edit link when not logged in', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/3');
 
         await expect(page.locator('[data-cy="edit-similar-incidents"]')).not.toBeVisible();
     });
 
-    test('Should display edit link when logged in as editor', async ({ page, login }) => {
+    test('Should display edit link when logged in as editor', async ({ page, login, skipOnEmptyEnvironment }) => {
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
 
         await page.goto('/cite/3');
@@ -336,7 +332,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="edit-similar-incidents"]').nth(1)).toBeVisible();
     });
 
-    test('Should flag an incident as not related (not authenticated)', async ({ page }) => {
+    test('Should flag an incident as not related (not authenticated)', async ({ page, skipOnEmptyEnvironment }) => {
 
         await init();
 
@@ -357,7 +353,7 @@ test.describe('Cite pages', () => {
         expect(data.incident.flagged_dissimilar_incidents).toContain(1);
     });
 
-    test('Should flag an incident as not related (authenticated)', async ({ page, login }) => {
+    test('Should flag an incident as not related (authenticated)', async ({ page, login, skipOnEmptyEnvironment }) => {
 
         await init();
 
@@ -381,7 +377,7 @@ test.describe('Cite pages', () => {
         expect(data.incident.flagged_dissimilar_incidents).toContain(1);
     });
 
-    test('Should have OpenGraph meta tags', async ({ page }) => {
+    test('Should have OpenGraph meta tags', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         const response = await query({
@@ -417,7 +413,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('head meta[property="twitter:image"]')).toHaveAttribute('content');
     });
 
-    test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
+    test('Should subscribe to incident updates (user authenticated)', async ({ page, login, skipOnEmptyEnvironment }) => {
 
         await init();
 
@@ -449,14 +445,14 @@ test.describe('Cite pages', () => {
         expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
     });
 
-    test('Should show proper entities card text', async ({ page }) => {
+    test('Should show proper entities card text', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
             'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Implicated AI system: Entity 1'
         );
     });
 
-    test('Should not display response in timeline or in badge', async ({ page }) => {
+    test('Should not display response in timeline or in badge', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto('/cite/1');
 
         await expect(page.locator('[data-cy="responded-badge"]')).not.toBeVisible();
@@ -465,7 +461,7 @@ test.describe('Cite pages', () => {
     });
 
     // the incident contains reports missing images so it will never pass
-    test.skip('There should not be image errors (400)', async ({ page }) => {
+    test.skip('There should not be image errors (400)', async ({ page, skipOnEmptyEnvironment }) => {
         page.on('console', (msg) => {
             if (msg.type() === 'error') {
                 expect(msg.text()).not.toContain('the server responded with a status of 400');
@@ -478,7 +474,7 @@ test.describe('Cite pages', () => {
         await page.waitForTimeout(5000);
     });
 
-    test('Should open incident from the discover app', async ({ page }) => {
+    test('Should open incident from the discover app', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(discoverUrl);
 
         await page.locator('[data-cy="collapse-button"]:visible').click();
@@ -488,7 +484,7 @@ test.describe('Cite pages', () => {
         await expect(page).toHaveURL(new RegExp('/cite/1'));
     });
 
-    test('Should link similar incidents', async ({ page, login }) => {
+    test('Should link similar incidents', async ({ page, login, skipOnEmptyEnvironment }) => {
 
         await init();
 
@@ -536,7 +532,7 @@ test.describe('Cite pages', () => {
         expect(data.incident_3).toMatchObject({ editor_dissimilar_incidents: [2], editor_similar_incidents: [1] });
     });
 
-    test('Should load incident data not yet in build', async ({ page }) => {
+    test('Should load incident data not yet in build', async ({ page, skipOnEmptyEnvironment }) => {
 
         await init();
 
