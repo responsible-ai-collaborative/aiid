@@ -104,13 +104,13 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({ childr
       },
       logIn: async (email: string, callbackUrl: string) => {
 
-        const result = await signIn('http-email', { email, redirect: false, callbackUrl });
+        const result = await signIn('http-email', { email, redirect: false, callbackUrl }, { operation: 'signin' });
 
         return result;
       },
       signUp: async (email: string, callbackUrl: string) => {
 
-        const result = await signIn('http-email', { email, redirect: false, callbackUrl });
+        const result = await signIn('http-email', { email, redirect: false, callbackUrl }, { operation: 'signup' });
 
         return result;
       },

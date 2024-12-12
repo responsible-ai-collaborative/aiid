@@ -84,9 +84,9 @@ export const handler = async (event, context) => {
 
     try {
 
-        const authConfig = await getAuthConfig();
+        const authConfig = await getAuthConfig(req);
 
-        await NextAuth(req, res, authConfig)
+        await NextAuth(req as any, res as any, authConfig)
 
 
         const response = res.getResponse();

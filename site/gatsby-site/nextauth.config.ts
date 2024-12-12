@@ -2,6 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb"
 import { NextAuthOptions } from "next-auth"
 import config from './server/config'
 import { sendEmail } from "./server/emails"
+import { AdapterUser } from "next-auth/adapters"
 
 //TODO: add this to the workflow file, this  needs to be set via env variable
 // SEE: https://github.com/nextauthjs/next-auth/discussions/9785
@@ -26,7 +27,7 @@ export const sendVerificationRequest = async ({ identifier: email, url }: { iden
   })
 }
 
-export const getAuthConfig = async (): Promise<NextAuthOptions> => {
+export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
 
   const { MongoDBAdapter } = await import("@auth/mongodb-adapter");
 
@@ -52,7 +53,38 @@ export const getAuthConfig = async (): Promise<NextAuthOptions> => {
       updateAge: 24 * 60 * 60 // 24 hours
     },
     callbacks: {
-      async session({ session, token, user, newSession }) {
+      /**
+      * Custom sign-in callback for NextAuth
+      * 
+      * NextAuth doesn't natively differentiate between signup and signin operations.
+      * To handle this, we:
+      * 1. Pass an 'operation' parameter from the client side signin call
+      * 2. Check if the user's email is verified when they attempt to sign in
+      * 3. If unverified and operation='signin', return a URL string that stops the signin flow
+      *    but appears identical to a successful flow (for security)
+      * 
+      * The URL return value is treated by NextAuth as a redirect, which prevents the
+      * signin flow from completing while maintaining consistent behavior whether the
+      * email is verified or not. This avoids leaking information about email verification
+      * status through different error flows.
+      * 
+      * @param {Object} params - NextAuth signIn callback parameters
+      * @param {User} params.user - The user attempting to sign in
+      * @returns {Promise<string | boolean>} 
+      *   - Returns true to allow sign in
+      *   - Returns URL string to gracefully stop signin while appearing successful
+      */
+      async signIn({ user }) {
+
+        if (!(user as AdapterUser).emailVerified && req?.query?.operation == 'signin') {
+
+          return config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email'
+        }
+
+        return true;
+      },
+
+      async session({ session, token, user, newSession, }) {
 
         const customData = await client.db('customData').collection('users').findOne({ userId: user.id });
 
