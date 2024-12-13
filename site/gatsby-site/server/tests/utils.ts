@@ -165,3 +165,11 @@ export const mockSession = (userId: string) => {
         return user ? { id: user.userId, roles: user.roles } : null;
     })
 }
+
+export const getCollection = (databaseName: string, collectionName: string) => {
+
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+    const collection = client.db(databaseName).collection(collectionName);
+
+    return collection;
+}
