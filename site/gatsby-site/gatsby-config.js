@@ -11,6 +11,12 @@ cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
 const adapter = require('gatsby-adapter-netlify').default;
 
+let googleTrackingIds = [];
+
+if (process.env.SITE_URL === config.gatsby.siteUrl) {
+  googleTrackingIds.push(config.gatsby.gaTrackingId);
+}
+
 const plugins = [
   'layout',
   {
@@ -65,7 +71,7 @@ const plugins = [
   {
     resolve: `gatsby-plugin-google-gtag`,
     options: {
-      trackingIds: [config.gatsby.gaTrackingId],
+      trackingIds: googleTrackingIds,
     },
   },
   {

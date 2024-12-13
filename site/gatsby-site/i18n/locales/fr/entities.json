@@ -32,5 +32,7 @@
     "Add or remove relationships to other entities": "Ajouter ou supprimer des relations avec d'autres entités",
     "Loading related entities...": "Chargement des entités associées...",
     "The AI implicated system is": "Le système d'IA impliqué est",
-    "The AI implicated systems are": "Les systèmes d'IA impliqués sont"
+    "The AI implicated systems are": "Les systèmes d'IA impliqués sont",
+    "Implicated AI system:": "Système de l'IA impliqué:",
+    "Implicated AI systems:": "Systèmes de l'IA impliqués:"
 }
