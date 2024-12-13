@@ -7,7 +7,7 @@ import { createResponse } from '../src/utils/serverless'
 
 export const verifyToken = async (req: IncomingMessage) => {
 
-    const authConfig = await getAuthConfig();
+    const authConfig = await getAuthConfig(req);
     const res = createResponse();
     const session = await getServerSession<any, { user: { id: string, roles: string[] } | null }>(req as any, res as any, authConfig as any);
 
