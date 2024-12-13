@@ -471,8 +471,7 @@ test.describe('The Submit form', () => {
 
         const authors = "author1";
         const date_published = "2014-08-14";
-        const reportUrl = 'https://www.thisisatest.nomeaning.com';
-        const dateTime = new Date(date_published).getTime() / 1000;
+        const reportUrl = 'http://example.com';
 
         const values = {
             url: reportUrl,
@@ -531,7 +530,7 @@ test.describe('The Submit form', () => {
             }
         }
 
-        for (const key of ['byAuthors', 'byDatePublished']) {
+        for (const key of Object.keys(reports)) {
 
             const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
@@ -545,9 +544,88 @@ test.describe('The Submit form', () => {
 
         }
 
-        await expect(page.locator(`[data-cy="related-byURL"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+        // await expect(page.locator(`[data-cy="related-byURL"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
     }
     );
+
+
+
+    test('Should not show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
+
+      await page.goto(url);
+
+      const authors = "this is a new non existing author";
+      const date_published = "2034-01-01";
+      const reportUrl = 'http://nonExistingUrlForReport.com';
+
+      const values = {
+          url: reportUrl,
+          authors,
+          date_published,
+      };
+
+      const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+
+      const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+
+      const { data: { reports: reportsAuthors } } = await query({
+        query: gql`
+          query {
+            reports(filter: { authors: {IN: ["${authors}"] } }) {
+              report_number
+            }
+          }
+        `,
+      });
+
+      const { data: { reports: reportsPublished } } = await query({
+        query: gql`
+          query {
+            reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+              report_number
+            }
+          }
+        `,
+      });
+
+      const { data: { reports: reportsUrl } } = await query({
+        query: gql`
+          query {
+            reports(filter: { url: {IN: ["${reportUrl}"] } }) {
+              report_number
+            }
+          }
+        `,
+      });
+
+      const reports = {
+        byAuthors: reportsAuthors,
+        byDatePublished: reportsPublished,
+        byURL: reportsUrl,
+      }
+
+      for (const key in values) {
+          if (key == 'incident_ids') {
+              await page.locator(`input[name="${key}"]`).fill(values[key].toString());
+              await page.waitForSelector(`[role="option"]`);
+              await page.locator(`[role="option"]`).first().click();
+          } else {
+              await page.locator(`input[name="${key}"]`).fill(values[key]);
+          }
+      }
+
+      for (const key of Object.keys(reports)) {
+
+          const parentLocator = page.locator(`[data-cy="related-${key}"]`);
+
+          await expect(async () => {
+              await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(0);
+          }).toPass();
+          
+          await expect(page.locator(`[data-cy="related-${key}"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+      }
+  }
+  );
 
     test.skip('Should show a preliminary checks message', async ({ page }) => {
         const relatedReports = {
