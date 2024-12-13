@@ -543,14 +543,12 @@ test.describe('The Submit form', () => {
             }
 
         }
-
-        // await expect(page.locator(`[data-cy="related-byURL"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
     }
     );
 
 
 
-    test('Should not show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
+    test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
       await page.goto(url);
 
@@ -1109,23 +1107,16 @@ test.describe('The Submit form', () => {
         await page.locator('button[type="submit"]').click();
     });
 
-    test.skip('Should show related reports based on author', async ({ page }) => {
+    test('Should show related reports based on author and add as similar', async ({ page }) => {
 
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+        await init();
 
         await page.goto(url);
-
-        await waitForRequest('findSubmissions');
 
         const values = {
             url: 'https://incidentdatabase.ai',
             title: 'test title',
-            authors: 'BBC News',
+            authors: 'author1',
             incident_date: '2022-01-01',
             date_published: '2021-01-02',
             date_downloaded: '2021-01-03',
@@ -1138,11 +1129,68 @@ test.describe('The Submit form', () => {
         await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
 
         await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="unspecified"]').first().click();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(1).locator('[data-cy="dissimilar"]').first().click();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(2).locator('[data-cy="similar"]').first().click();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="similar"]').first().click();
 
         await page.locator('button[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        const { data } = await query({
+          query: gql`
+            query {
+              submission(sort: { date_submitted:DESC }){
+                editor_similar_incidents
+              }
+            }
+          `,
+      });
+
+      expect(data.submission).toMatchObject({
+          editor_similar_incidents: [1],
+      });
+    });
+
+    test('Should show related reports based on author and add as dissimilar', async ({ page }) => {
+
+        await init();
+
+        await page.goto(url);
+
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'author1',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+        };
+
+        for (const key in values) {
+            await page.locator(`[name="${key}"]`).fill(values[key]);
+        }
+
+        await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
+
+        await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="dissimilar"]').first().click();
+
+        await page.locator('button[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        const { data } = await query({
+          query: gql`
+            query {
+              submission(sort: { date_submitted:DESC }){
+                editor_dissimilar_incidents
+              }
+            }
+          `,
+      });
+
+      expect(data.submission).toMatchObject({
+        editor_dissimilar_incidents: [1],
+      });
     });
 
     test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {
