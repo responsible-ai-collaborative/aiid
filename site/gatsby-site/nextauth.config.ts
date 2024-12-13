@@ -18,16 +18,6 @@ const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING!, {
   },
 })
 
-export const sendVerificationRequest = async ({ identifier: email, url }: { identifier: string, url: string }) => {
-
-  await sendEmail({
-    recipients: [{ email }],
-    subject: 'Login link',
-    templateId: 'MagicLink',
-    dynamicData: { magicLink: url },
-  })
-}
-
 export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
 
   return {
