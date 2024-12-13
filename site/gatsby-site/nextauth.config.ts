@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth"
 import config from './server/config'
 import { sendEmail } from "./server/emails"
 import { AdapterUser } from "next-auth/adapters"
+import { MongoDBAdapter } from "./server/MongoDBAdapter"
 
 //TODO: add this to the workflow file, this  needs to be set via env variable
 // SEE: https://github.com/nextauthjs/next-auth/discussions/9785
@@ -28,8 +29,6 @@ export const sendVerificationRequest = async ({ identifier: email, url }: { iden
 }
 
 export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
-
-  const { MongoDBAdapter } = await import("@auth/mongodb-adapter");
 
   return {
     providers: [
