@@ -8,7 +8,6 @@
     "@apollo/client": "^3.7.8",
     "@apollo/server": "^4.10.2",
     "@as-integrations/aws-lambda": "^3.1.0",
-    "@auth/mongodb-adapter": "^3.7.3",
     "@aws-sdk/client-s3": "^3.633.0",
     "@billboard.js/react": "^1.0.1",
     "@bytemd/react": "^1.15.0",
