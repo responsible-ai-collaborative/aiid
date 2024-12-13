@@ -31,6 +31,7 @@ const TagsControl = ({
           handleChange(value);
         }
       }}
+      onBlur={() => setTouched(true)}
       {...{
         name,
         disabled,
