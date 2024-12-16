@@ -28,6 +28,6 @@
     "Back to Entity: {{name}}": "Retour à l'entité: {{name}}",
     "Entity updated successfully.": "Entité mise à jour avec succès.",
     "Error updating Entity.": "Erreur lors de la mise à jour de l'entité.",
-    "Alleged implicated AI system:": "Présumé : système de l'IA impliqué:",
-    "Alleged implicated AI systems:": "Présumé : systèmes de l'IA impliqués:"
+    "Alleged implicated AI system:": "Systèmes d'IA présumés impliqués:",
+    "Alleged implicated AI systems:": "Systèmes d'IA présumés impliqués:"
 }
