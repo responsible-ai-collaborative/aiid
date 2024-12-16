@@ -17,25 +17,6 @@ test.describe('Login', () => {
     }
   );
 
-  test.skip('Should redirect to the account page if the signup storage key is set', 
-    async ({ page, skipOnEmptyEnvironment, login }) => {
-
-      await page.goto('/');
-
-      await page.evaluate(() => window.localStorage.setItem('signup', '1'));
-
-      await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
-
-      await expect(page).toHaveURL('/account/?askToCompleteProfile=1');
-
-      await expect(page.getByTestId('edit-user-modal')).toBeVisible({ timeout: 30000 });
-
-      const localStorage = await page.evaluate(() => window.localStorage);
-
-      expect(localStorage.signup).toBeUndefined();
-    }
-  );
-
   test('Should redirect to specific page after login if redirectTo is provided', 
     async ({ page, skipOnEmptyEnvironment, login }) => {
       const redirectTo = '/cite/10/';
