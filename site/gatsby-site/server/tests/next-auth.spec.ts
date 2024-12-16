@@ -28,7 +28,7 @@ function mockAuthEvent(operation: string, email: string, callbackUrl: string): P
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:134.0) Gecko/20100101 Firefox/134.0",
             host: "localhost:8000",
         },
-        body: `email=${encodedEmail}&redirect=false&callbackUrl=${callbackUrl}&csrfToken=3fc5b5ba3bb4457090ea32b335e69294637dca5a9473dcc669a4ed00cdadf199&json=true`,
+        body: `email=${encodedEmail}&redirect=false&callbackUrl=${encodedCallbackUrl}&csrfToken=3fc5b5ba3bb4457090ea32b335e69294637dca5a9473dcc669a4ed00cdadf199&json=true`,
     }
 }
 
@@ -152,7 +152,7 @@ describe('Auth', () => {
 
     describe('Signup', () => {
 
-        test('Should send a Sig nup link email to unregistered users', async () => {
+        test('Should send a Sign nup link email to unregistered users', async () => {
 
             const email = "test.user@incidentdatabase.ai";
 
@@ -197,7 +197,7 @@ describe('Auth', () => {
             expect(tokens).toMatchObject([{ identifier: email, }]);
         });
 
-        test('Should send a Sig in link email to registered users', async () => {
+        test('Should send a Sign in link email to registered users', async () => {
 
             const email = "test.user@incidentdatabase.ai";
 
