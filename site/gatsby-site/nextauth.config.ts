@@ -87,7 +87,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
       */
       async signIn({ user }) {
 
-        if (!(user as AdapterUser).emailVerified && req?.query?.operation == 'signin') {
+        if (!(user as AdapterUser).emailVerified && req?.query?.operation == 'login') {
 
           return config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email'
         }

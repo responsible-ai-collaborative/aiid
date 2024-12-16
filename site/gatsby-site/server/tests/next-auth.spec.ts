@@ -34,83 +34,243 @@ function mockAuthEvent(operation: string, email: string, callbackUrl: string): P
 
 describe('Auth', () => {
 
-    test('Should not send an magic link email to unregistered users on sign in ', async () => {
+    describe('Login', () => {
 
-        await seedFixture({
-            auth: {
-                users: [],
-            },
+        test('Should not send an magic link email to unregistered users and to add them to the database', async () => {
+
+            await seedFixture({
+                auth: {
+                    users: [],
+                },
+            });
+
+
+            const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+
+            const event = mockAuthEvent('login', 'test.user@incidentdatabase.ai', '/');
+
+            const response = await handler(event as HandlerEvent, {} as HandlerContext);
+
+            expect(sendEmailMock).not.toHaveBeenCalled();
+            expect(response).toMatchObject({
+                statusCode: 200,
+                headers: {
+                    'Cache-Control': 'no-store, max-age=0',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email' }),
+            });
+
+            const users = await getCollection('auth', 'users').find({}).toArray();
+
+            expect(users).toHaveLength(0);
         });
 
+        test('Should send an magic link email to registered users', async () => {
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+            const email = "test.user@incidentdatabase.ai";
 
-        const event = mockAuthEvent('signin', 'test.user@incidentdatabase.ai', '/');
+            await seedFixture({
+                auth: {
+                    users: [
+                        { email, emailVerified: new Date().toString() }
+                    ],
+                },
+            });
 
-        const response = await handler(event as HandlerEvent, {} as HandlerContext);
+            const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+            const event = mockAuthEvent('login', email, '/');
 
-        expect(sendEmailMock).not.toHaveBeenCalled();
-        expect(response).toMatchObject({
-            statusCode: 200,
-            headers: {
-                'Cache-Control': 'no-store, max-age=0',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email' }),
-        });
+            const response = await handler(event as HandlerEvent, {} as HandlerContext);
 
-        const users = await getCollection('auth', 'users').find({}).toArray();
-
-        expect(users).toHaveLength(0);
-    });
-
-    test('Should send an magic link email to registered users on sign in ', async () => {
-
-        const email = "test.user@incidentdatabase.ai";
-
-        await seedFixture({
-            auth: {
-                users: [
-                    { email, emailVerified: new Date().toString() }
+            expect(sendEmailMock).toHaveBeenCalledWith({
+                dynamicData: {
+                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
+                },
+                recipients: [
+                    {
+                        email: "test.user@incidentdatabase.ai",
+                    },
                 ],
-            },
-        });
+                subject: "Login link",
+                templateId: "Login",
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
-        const event = mockAuthEvent('signin', email, '/');
+            });
 
-        const response = await handler(event as HandlerEvent, {} as HandlerContext);
+            expect(response).toMatchObject({
+                statusCode: 200,
+                headers: {
+                    'Cache-Control': 'no-store, max-age=0',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email' }),
+            });
 
-        expect(sendEmailMock).toHaveBeenCalledWith({
-            dynamicData: {
-                magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
-            },
-            recipients: [
+            const users = await getCollection('auth', 'users').find({}).toArray();
+
+            expect(users).toMatchObject([
                 {
                     email: "test.user@incidentdatabase.ai",
+                    emailVerified: expect.any(String),
+                }
+            ]);
+        });
+
+        test('Should forward callbackUrl', async () => {
+
+            const email = "test.user@incidentdatabase.ai";
+            const callbackUrl = '/some-path/some-page';
+
+            await seedFixture({
+                auth: {
+                    users: [
+                        { email, emailVerified: new Date().toString() }
+                    ],
                 },
-            ],
-            subject: "Login link",
-            templateId: "Login",
+            });
 
+            const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+            const event = mockAuthEvent('login', email, callbackUrl);
+
+            await handler(event as HandlerEvent, {} as HandlerContext);
+
+            expect(sendEmailMock).toHaveBeenCalledWith({
+                dynamicData: {
+                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2Fsome-path%2Fsome-page&token=.+&email=test.user%40incidentdatabase.ai$/),
+                },
+                recipients: [
+                    {
+                        email: "test.user@incidentdatabase.ai",
+                    },
+                ],
+                subject: "Login link",
+                templateId: "Login",
+
+            });
+        });
+    });
+
+    describe('Signup', () => {
+
+        test('Should send a Sig nup link email to unregistered users', async () => {
+
+            const email = "test.user@incidentdatabase.ai";
+
+            await seedFixture({
+                auth: {
+                    users: [],
+                    verification_tokens: [],
+                },
+            });
+
+            const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+            const event = mockAuthEvent('signup', email, '/');
+
+            const response = await handler(event as HandlerEvent, {} as HandlerContext);
+
+            expect(sendEmailMock).toHaveBeenCalledWith({
+                dynamicData: {
+                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
+                },
+                recipients: [
+                    {
+                        email: "test.user@incidentdatabase.ai",
+                    },
+                ],
+                subject: "Signup link",
+                templateId: "Signup",
+            });
+
+            expect(response).toMatchObject({
+                statusCode: 200,
+                headers: {
+                    'Cache-Control': 'no-store, max-age=0',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email' }),
+            });
+
+            const users = await getCollection('auth', 'users').find({}).toArray();
+            expect(users).toMatchObject([]);
+
+            const tokens = await getCollection('auth', 'verification_tokens').find({}).toArray();
+            expect(tokens).toMatchObject([{ identifier: email, }]);
         });
 
-        expect(response).toMatchObject({
-            statusCode: 200,
-            headers: {
-                'Cache-Control': 'no-store, max-age=0',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email' }),
+        test('Should send a Sig in link email to registered users', async () => {
+
+            const email = "test.user@incidentdatabase.ai";
+
+            await seedFixture({
+                auth: {
+                    users: [
+                        { email, emailVerified: new Date().toString() }
+                    ],
+                    verification_tokens: [],
+                },
+            });
+
+            const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+            const event = mockAuthEvent('signup', email, '/');
+
+            const response = await handler(event as HandlerEvent, {} as HandlerContext);
+
+            expect(sendEmailMock).toHaveBeenCalledWith({
+                dynamicData: {
+                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
+                },
+                recipients: [
+                    {
+                        email: "test.user@incidentdatabase.ai",
+                    },
+                ],
+                subject: "Login link",
+                templateId: "Login",
+            });
+
+            expect(response).toMatchObject({
+                statusCode: 200,
+                headers: {
+                    'Cache-Control': 'no-store, max-age=0',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email' }),
+            });
+
+            const tokens = await getCollection('auth', 'verification_tokens').find({}).toArray();
+            expect(tokens).toMatchObject([{ identifier: email, }]);
         });
 
-        const users = await getCollection('auth', 'users').find({}).toArray();
+        test('Should forward callbackUrl', async () => {
 
-        expect(users).toMatchObject([
-            {
-                email: "test.user@incidentdatabase.ai",
-                emailVerified: expect.any(String),
-            }
-        ]);
+            const email = "test.user@incidentdatabase.ai";
+            const callbackUrl = '/some-path/some-page';
+
+            await seedFixture({
+                auth: {
+                    users: [
+                    ],
+                },
+            });
+
+            const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+            const event = mockAuthEvent('signup', email, callbackUrl);
+
+            await handler(event as HandlerEvent, {} as HandlerContext);
+
+            expect(sendEmailMock).toHaveBeenCalledWith({
+                dynamicData: {
+                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2Fsome-path%2Fsome-page&token=.+&email=test.user%40incidentdatabase.ai$/),
+                },
+                recipients: [
+                    {
+                        email: "test.user@incidentdatabase.ai",
+                    },
+                ],
+                subject: "Signup link",
+                templateId: "Signup",
+            });
+        });
+
     });
 });
