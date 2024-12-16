@@ -226,7 +226,7 @@ test.describe('Edit report', () => {
       }`
     });
 
-    expect(result.data.reports).toHaveLength(7);
+    expect(result.data.reports).toHaveLength(8);
     expect(result.data.reports).not.toContainEqual({ report_number: 3 });
     expect(result.data.incident.reports).not.toContainEqual({ report_number: 3 });
   });

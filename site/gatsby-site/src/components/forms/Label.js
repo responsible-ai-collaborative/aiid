@@ -6,14 +6,16 @@ import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import { Tooltip } from 'flowbite-react';
 
-const Label = ({ popover, label = '', required = false, showPopover = true }) => {
+const Label = ({ popover, label = '', required = false, showPopover = true, className = '' }) => {
   const [show, setShow] = useState(false);
 
   const { i18n } = useTranslation(['popovers']);
 
   if (!i18n.exists(popover, { ns: 'popovers' })) {
     return (
-      <label className="text-sm font-medium text-gray-900 dark:text-gray-300 relative">
+      <label
+        className={`text-sm font-medium text-gray-900 dark:text-gray-300 relative ${className}`}
+      >
         {required && <>* </>}
         {label}
       </label>
@@ -40,7 +42,11 @@ const Label = ({ popover, label = '', required = false, showPopover = true }) =>
     <Tooltip content={TooltipContent} className="form-tooltip">
       <label
         data-cy={`label-${popover}`}
-        className="text-sm font-medium text-gray-900 dark:text-gray-300 relative whitespace-nowrap"
+        className={`${
+          className
+            ? className
+            : 'text-sm font-medium text-gray-900 dark:text-gray-300 relative whitespace-nowrap'
+        }`}
       >
         {required && <>* </>}
         <span className="whitespace-normal mr-1">{label}</span>
