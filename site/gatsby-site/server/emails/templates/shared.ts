@@ -47,7 +47,7 @@ const insertContent= (content: string, variables: any): string  => {
 // These styles will be used across multiple email templates,
 // so they get defined outside the getTemplate function.
 const bodyStyle: string = ignoreWhitespace(`
-  font-family: karla; 
+  font-family: karla, sans-serif; 
   padding: 16px;
 `);
 
