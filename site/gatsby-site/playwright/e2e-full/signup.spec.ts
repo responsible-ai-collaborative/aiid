@@ -45,7 +45,7 @@ test.describe('Signup', () => {
   test('Should display the error toast message if any other sign up error occurs', async ({ page }) => {
     await page.goto(url);
 
-    await page.route('**/api/auth/signin/http-email', async (route) => {
+    await page.route('**/api/auth/signin/http-email*', async (route) => {
 
       await route.fulfill({
         status: 200,
@@ -62,11 +62,9 @@ test.describe('Signup', () => {
       });
     });
 
-    await page.locator('[data-cy="signup-btn"]').click();
-
     await page.locator('input[name=email]').fill('test@test.com');
 
-    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email');
+    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email*');
 
     await page.locator('[data-cy="signup-btn"]').click();
 
