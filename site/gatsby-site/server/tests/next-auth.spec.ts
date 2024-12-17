@@ -32,6 +32,30 @@ function mockAuthEvent(operation: string, email: string, callbackUrl: string): P
     }
 }
 
+function mockMagicLinkEvent(email: string, token: string, callbackUrl: string): Partial<HandlerEvent> {
+
+    return {
+        path: "/api/auth/callback/http-email",
+        httpMethod: "GET",
+        queryStringParameters: {
+            callbackUrl,
+            token,
+            email,
+        },
+        headers: {
+            cookie: "",
+            connection: "close",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.5",
+            accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:134.0) Gecko/20100101 Firefox/134.0",
+            host: "localhost:8000",
+        },
+        body: undefined,
+    }
+}
+
+
 describe('Auth', () => {
 
     describe('Login', () => {
@@ -272,5 +296,52 @@ describe('Auth', () => {
             });
         });
 
+    });
+
+    describe('Callback', () => {
+
+        test('Should verify the email and create a user with the appropriate userId', async () => {
+
+            const email = "test.user@incidentdatabase.ai";
+            // hashed token gets sent in the magic link email
+            const hashedToken = '4456ea1edd2d80807c5722de9fa3584ba7b2f9c4b12984ae00f500ddb41d378e';
+            // token stored in the database
+            const token = 'afffee2a9c99aacb855bf822fbddc770dd455448111ca75adc0727f7dd81c0c8';
+
+            await seedFixture({
+                auth: {
+                    users: [],
+                    verification_tokens: [
+                        { identifier: email, token, expires: new Date(new Date().getTime() + 1000 * 60 * 60).toString() }
+                    ],
+                },
+                customData: {
+                    users: [],
+                }
+            });
+
+            const event = mockMagicLinkEvent(email, hashedToken, '/');
+
+            const response = await handler(event as HandlerEvent, {} as HandlerContext);
+
+            expect(response).toMatchObject({
+                statusCode: 302,
+                headers: {
+                    Location: '/account?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F',
+                },
+            });
+
+            const users = await getCollection('auth', 'users').find({}).toArray();
+
+            expect(users).toMatchObject([{ email }]);
+
+
+            const customDataUsers = await getCollection('customData', 'users').find({}).toArray();
+
+            expect(customDataUsers).toMatchObject([{
+                userId: users[0]._id.toString(),
+                roles: ['subscriber'],
+            }]);
+        });
     });
 });
