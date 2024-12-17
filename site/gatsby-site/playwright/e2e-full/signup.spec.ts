@@ -13,7 +13,7 @@ test.describe('Signup', () => {
 
     const email = 'new.user@test.com';
 
-    await page.route('**/api/auth/signin/http-email', async (route) => {
+    await page.route('**/api/auth/signin/http-email*', async (route) => {
 
       const formData = new URLSearchParams(await route.request().postData() || '');
       expect(formData.get('email')).toBe(email);
@@ -33,7 +33,7 @@ test.describe('Signup', () => {
 
     await page.locator('input[name=email]').fill(email);
 
-    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email');
+    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email*');
 
     await page.locator('[data-cy="signup-btn"]').click();
 

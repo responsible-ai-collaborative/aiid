@@ -17,7 +17,7 @@ test.describe('Rollbar', () => {
       });
     });
 
-    await page.route('**/api/auth/signin/http-email', async (route) => {
+    await page.route('**/api/auth/signin/http-email*', async (route) => {
       await route.fulfill({
         status: 200,
         body: JSON.stringify({

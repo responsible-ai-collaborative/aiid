@@ -31,7 +31,7 @@ test.describe('Login', () => {
 
     const email = 'test.user@incidentdatabase.ai';
 
-    await page.route('**/api/auth/signin/http-email', async (route) => {
+    await page.route('**/api/auth/signin/http-email*', async (route) => {
 
       const formData = new URLSearchParams(await route.request().postData());
 
@@ -54,7 +54,7 @@ test.describe('Login', () => {
       await expect(page.locator('[data-cy="login-btn"]')).toBeEnabled({ timeout: 1000 });
     }).toPass();
 
-    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email');
+    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email*');
 
     await page.locator('[data-cy="login-btn"]').click();
 
