@@ -35,7 +35,7 @@ const insertContent= (content: string, variables: any): string  => {
 						AI INCIDENT DATABASE
 					</div>
 				</div>
-				<div style="padding: 32px;">
+				<div style="padding: 32px 8px;">
           ${content}
 				</div>
 			</div>
