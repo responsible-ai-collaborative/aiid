@@ -39,7 +39,7 @@ exports.handler = async function (event) {
 // Runs first with { cookies: false },
 // then on error recurses with { cookies: true } as a fallback.
 const getArticle = async (url, config) => {
-  const TIMEOUT_DURATION = 10000; // Timeout after 10 seconds
+  const TIMEOUT_DURATION = 5000; // Timeout after 10 seconds
 
   const timeoutPromise = new Promise((_, reject) =>
     setTimeout(() => reject(new Error('Parser.parse timed out')), TIMEOUT_DURATION)
