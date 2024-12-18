@@ -86,6 +86,7 @@ const getHtmlWithCookies = async (url) => {
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
+      console.log('Intercepted error', error.message, error.response);
       if (error.response && [301, 302].includes(error.response.status)) {
         const redirectUrl = error.response.headers.location;
 
