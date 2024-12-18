@@ -51,6 +51,7 @@ function Tools({
           subscribing={subscribing}
           onClick={subscribeToNewReports}
           subscribed={isSubscribed}
+          userLoggedIn={isUserLoggedIn}
         />
         <Button
           color="gray"

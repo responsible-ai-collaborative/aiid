@@ -5,13 +5,13 @@ import { Button, Spinner } from 'flowbite-react';
 
 const { useTranslation, Trans } = require('react-i18next');
 
-function NotifyButton({ subscribing, onClick, subscribed }) {
+function NotifyButton({ subscribing, onClick, subscribed, userLoggedIn }) {
   const { t } = useTranslation();
 
   return (
     <Button color="gray" onClick={onClick}>
       <div className="flex gap-2 items-center">
-        {subscribing || subscribed == undefined ? (
+        {userLoggedIn && (subscribing || subscribed == undefined) ? (
           <div>
             <Spinner size="sm" />
           </div>
