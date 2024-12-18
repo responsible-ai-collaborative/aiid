@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification, History_Report, History_Incident } from './generated/graphql';
+import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification, History_Report, History_Incident, Checklist } from './generated/graphql';
 import { IncomingMessage } from 'http';
 
 export interface Context {
@@ -17,7 +17,7 @@ export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDe
   & { editors: string[] }
 
 export type DBIncidentHistory = Omit<History_Incident, '__typename' | 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'implicated_systems'>
-    & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[], implicated_systems: string[] };
+  & { "Alleged deployer of AI system": string[], "Alleged developer of AI system": string[], "Alleged harmed or nearly harmed parties": string[], implicated_systems: string[] };
 
 export type DBEntity = Entity;
 
@@ -51,3 +51,5 @@ export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'us
 export type NotificationTypes = 'new-report-incident' | 'incident-updated' | 'entity' | 'new-incidents' | 'submission-promoted'
 
 export type DBNotification = Omit<Notification, 'userId'> & { userId?: string, type: NotificationTypes }
+
+export type DBChecklist = Checklist;
