@@ -72,6 +72,7 @@ function CiteDynamicTemplate({
       );
       incidentTemp.Alleged_harmed_or_nearly_harmed_parties =
         incidentTemp.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
+      incidentTemp.implicated_systems = incidentTemp.implicated_systems.map((e) => e.entity_id);
 
       const entities = computeEntities({
         incidents: [incidentTemp],

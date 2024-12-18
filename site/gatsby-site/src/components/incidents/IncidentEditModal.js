@@ -11,7 +11,6 @@ import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();
@@ -31,8 +30,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
-
-  const { logIncidentHistory } = useLogIncidentHistory();
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -93,6 +90,12 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         createEntityMutation
       );
 
+      updated.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       updated.epoch_date_modified = getUnixTime(new Date());
 
       // Add the current user to the list of editors
@@ -113,16 +116,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         },
       });
 
-      await logIncidentHistory(
-        {
-          ...incident,
-          ...updated,
-          reports: incident.reports,
-          embedding: incident.embedding,
-        },
-        user
-      );
-
       addToast(updateSuccessToast({ incidentId }));
 
       onClose();
@@ -134,6 +127,10 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   if (!show) {
     return null;
   }
+
+  const entityNames = entitiesData?.entities
+    ? entitiesData.entities.map((node) => node.name).sort()
+    : [];
 
   return (
     <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
@@ -168,13 +165,17 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
               incident.AllegedHarmedOrNearlyHarmedParties === null
                 ? []
                 : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+            implicated_systems:
+              incident.implicated_systems === null
+                ? []
+                : incident.implicated_systems.map((item) => item.name),
             editors: incident.editors.map((editor) => editor.userId),
           }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
               <Modal.Body>
-                <IncidentForm />
+                <IncidentForm entityNames={entityNames} />
               </Modal.Body>
               <Modal.Footer>
                 <Button color="gray" onClick={onClose}>

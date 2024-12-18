@@ -61,5 +61,7 @@
   "Saving changes...": "変更を保存中...",
   "Draft saved": "下書きが保存されました",
   "Saving as draft...": "下書きとして保存中...",
+  "Implicated Systems": "関連システム",
+  "What systems were involved in the incident?": "このインシデントに関わるシステムは何ですか？",
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません"
 }

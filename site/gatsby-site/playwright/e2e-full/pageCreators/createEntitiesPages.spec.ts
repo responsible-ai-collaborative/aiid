@@ -19,6 +19,7 @@ test.describe('createEntitiesPages', () => {
             Alleged_developer_of_AI_system: ['ai-developer-1'],
             Alleged_harmed_or_nearly_harmed_parties: ['party-1'],
             reports: [{ report_number: 1 }, { report_number: 2 }],
+            implicated_systems: ['ai-deployer-1'],
           },
           {
             incident_id: 2,
@@ -27,6 +28,7 @@ test.describe('createEntitiesPages', () => {
             Alleged_developer_of_AI_system: ['ai-developer-1'],
             Alleged_harmed_or_nearly_harmed_parties: ['party-1', 'party-2'],
             reports: [{ report_number: 3 }],
+            implicated_systems: ['ai-deployer-1'],
           },
           {
             incident_id: 3,
@@ -35,6 +37,7 @@ test.describe('createEntitiesPages', () => {
             Alleged_developer_of_AI_system: ['ai-developer-2'],
             Alleged_harmed_or_nearly_harmed_parties: ['party-2'],
             reports: [{ report_number: 4 }, { report_number: 5 }],
+            implicated_systems: ['ai-deployer-1'],
           },
           {
             incident_id: 4,
@@ -43,6 +46,7 @@ test.describe('createEntitiesPages', () => {
             Alleged_developer_of_AI_system: ['ai-developer-1', 'ai-developer-2'],
             Alleged_harmed_or_nearly_harmed_parties: ['party-3'],
             reports: [{ report_number: 6 }, { report_number: 7 }, { report_number: 8 }],
+            implicated_systems: ['ai-deployer-1'],
           },
         ],
       },

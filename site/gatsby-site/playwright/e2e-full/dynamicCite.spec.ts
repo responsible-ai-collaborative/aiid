@@ -34,7 +34,7 @@ test.describe('Dynamic Cite pages', () => {
     await expect(page.getByText(`Kronos’s scheduling algorithm and its use by Starbucks managers allegedly negatively impacted financial and scheduling stability for Starbucks employees, which disadvantaged wage workers.`)).toBeVisible();
 
     await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
-      'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.'
+      'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Implicated AI system: Entity 1'
     );
 
     await expect(page.locator('[data-cy="citation"]').getByText("Report Count", { exact: true }).locator('xpath=following-sibling::div[1]')).toHaveText('2');

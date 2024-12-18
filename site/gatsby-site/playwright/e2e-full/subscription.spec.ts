@@ -13,7 +13,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         const subscriptions: DBSubscription[] = [
             {
@@ -36,7 +36,7 @@ test.describe('Subscriptions', () => {
     test("Incident Updates: Should display a information message if the user doesn't have subscriptions", async ({ page, login }) => {
         await init();
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
 
@@ -47,7 +47,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId, accessToken] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        const [userId, accessToken] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         const subscriptions: DBSubscription[] = [
             {
@@ -96,7 +96,7 @@ test.describe('Subscriptions', () => {
 
     test('New Incidents: Should display the switch toggle off if user does not have a subscription', async ({ page, login }) => {
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
 
@@ -109,7 +109,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         const subscriptions: DBSubscription[] = [
             {
@@ -152,7 +152,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         const subscriptions: DBSubscription[] = [
             {
@@ -182,7 +182,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         const subscriptions: DBSubscription[] = [
             {
@@ -212,7 +212,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
 
@@ -224,7 +224,7 @@ test.describe('Subscriptions', () => {
 
         await init();
 
-        const [userId, accessToken] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+        const [userId, accessToken] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         const subscriptions: DBSubscription[] = [
             {

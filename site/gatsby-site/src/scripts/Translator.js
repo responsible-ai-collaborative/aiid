@@ -1,0 +1,219 @@
+const { queue } = require('async');
+
+const { cloneDeep } = require('lodash');
+
+const remark = require('remark');
+
+const remarkStrip = require('strip-markdown');
+
+const keys = ['text', 'title'];
+
+/**
+ * @typedef {Object} Reporter
+ * @property {function(string):void} log
+ * @property {function(string):void} error
+ * @property {function(string):void} warn
+ */
+
+class Translator {
+  /**
+   * @param {Object} options
+   * @param {import('mongodb').MongoClient} options.mongoClient
+   * @param {Object} options.translateClient
+   * @param {string[]} options.languages
+   * @param {Reporter} options.reporter
+   * @param {string} [options.submissionDateStart]
+   * @param {boolean} [options.dryRun]
+   */
+  constructor({
+    mongoClient,
+    translateClient,
+    languages,
+    reporter,
+    submissionDateStart = process.env.TRANSLATE_SUBMISSION_DATE_START,
+    dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
+  }) {
+    this.translateClient = translateClient;
+    this.mongoClient = mongoClient;
+    this.reporter = reporter;
+    this.languages = languages;
+    this.submissionDateStart = submissionDateStart;
+    this.dryRun = dryRun;
+  }
+
+  async translate({ payload, to }) {
+    if (!this.dryRun) {
+      return this.translateClient.translate(payload, { to });
+    } else {
+      return [payload.map((p) => `translated-${to}-${p}`)];
+    }
+  }
+
+  async translateReportsCollection({ items, to }) {
+    const concurrency = 100;
+
+    const translated = [];
+
+    const q = queue(async ({ entry, to }) => {
+      const translatedEntry = await this.translateReport({ entry, to });
+
+      translated.push(translatedEntry);
+    }, concurrency);
+
+    q.error((err, task) => {
+      this.reporter.error(
+        `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
+      );
+      throw new Error(
+        `Translation process failed for report ${task.entry.report_number}. Error: ${err.code} - ${err.message}`
+      );
+    });
+
+    const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
+
+    for (const entry of items) {
+      if (!alreadyTranslated.find((item) => item.report_number == entry.report_number)) {
+        q.push({ entry, to });
+      }
+    }
+
+    if (q.length() > 0) {
+      await q.drain();
+    }
+
+    return translated;
+  }
+
+  async getTranslatedReports({ items, language }) {
+    const originalIds = items.map((item) => item.report_number);
+
+    const reportsTranslatedCollection = this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`);
+
+    const query = {
+      report_number: { $in: originalIds },
+      $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
+    };
+
+    const translated = await reportsTranslatedCollection
+      .find(query, { projection: { report_number: 1 } })
+      .toArray();
+
+    return translated;
+  }
+
+  async saveTranslatedReports({ items, language }) {
+    const reportsTranslatedCollection = this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`);
+
+    const translated = [];
+
+    for (const item of items) {
+      const { report_number, text, title } = item;
+
+      const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
+
+      translated.push({ report_number, text, title, plain_text });
+    }
+
+    return reportsTranslatedCollection.insertMany(translated);
+  }
+
+  async translateReport({ entry, to }) {
+    const translatedEntry = cloneDeep(entry);
+
+    const payload = [];
+
+    for (const key of keys) {
+      const text = entry[key];
+
+      payload.push(text);
+    }
+
+    const [results] = await this.translate({ payload, to });
+
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+
+      const key = keys[i];
+
+      translatedEntry[key] = result;
+    }
+
+    return translatedEntry;
+  }
+
+  async run() {
+    if (this.dryRun) {
+      this.reporter.warn(
+        'Please set `TRANSLATE_DRY_RUN=false` to disable dry running of translation process.'
+      );
+    }
+
+    await this.mongoClient.connect();
+
+    let reportsQuery = {};
+
+    if (this.submissionDateStart) {
+      // Check if the date is valid
+      if (isNaN(Date.parse(this.submissionDateStart))) {
+        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
+
+        this.reporter.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      this.reporter.log(
+        `Translating incident reports submitted after [${this.submissionDateStart}]`
+      );
+      reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
+    } else {
+      this.reporter.log(
+        `Translating all incident reports. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
+      );
+    }
+
+    const reports = await this.mongoClient
+      .db('aiidprod')
+      .collection(`reports`)
+      .find(reportsQuery)
+      .toArray();
+
+    this.reporter.log(`Processing translation of ${reports.length} incident reports`);
+
+    const concurrency = 10;
+
+    const q = queue(async ({ to }, done) => {
+      this.reporter.log(`Translating incident reports for [${to}]`);
+
+      const items = reports.filter((r) => r.language !== to);
+
+      const translated = await this.translateReportsCollection({ items, to });
+
+      if (translated.length > 0) {
+        this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
+
+        const result = await this.saveTranslatedReports({ items: translated, language: to });
+
+        this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
+      } else {
+        this.reporter.log(`No new incident reports needed translation to [${to}]`);
+      }
+
+      done();
+    }, concurrency);
+
+    for (const { code: to } of this.languages) {
+      q.push({ to });
+    }
+
+    if (q.length() > 0) {
+      await q.drain();
+    }
+    await this.mongoClient.close();
+  }
+}
+
+module.exports = Translator;

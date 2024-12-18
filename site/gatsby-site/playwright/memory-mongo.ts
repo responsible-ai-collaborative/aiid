@@ -15,6 +15,8 @@ import duplicates from './seeds/aiidprod/duplicates';
 import users from './seeds/customData/users';
 import subscriptions from './seeds/customData/subscriptions';
 
+import reportsHistory from './seeds/history/reportsHistory';
+import incidentsHistory from './seeds/history/incidentsHistory';
 
 export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
@@ -36,6 +38,10 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         translations: {
             reports_es,
         },
+        history: {
+            reports: reportsHistory,
+            incidents: incidentsHistory,
+        }
     });
 
     if (extra) {

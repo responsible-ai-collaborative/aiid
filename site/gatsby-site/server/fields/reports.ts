@@ -2,7 +2,7 @@ import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLI
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { isRole } from "../rules";
-import { linkReportsToIncidents } from "./common";
+import { linkReportsToIncidents, logReportHistory } from "./common";
 import { ReportType } from "../types/report";
 
 
@@ -84,7 +84,22 @@ const CreateVariantInput = new GraphQLInputObjectType({
 
 export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
-    ...generateMutationFields({ collectionName: 'reports', Type: ReportType, generateFields: ['updateOne', 'deleteOne', 'insertOne'] }),
+    ...generateMutationFields({
+        collectionName: 'reports',
+        Type: ReportType,
+        generateFields: ['updateOne', 'deleteOne', 'insertOne'],
+        onResolve: async (operation, context, params) => {
+
+            const { result } = params!;
+
+            if (operation === 'updateOne' || operation === 'insertOne') {
+
+                await logReportHistory(result, context)
+            }
+
+            return result;
+        },
+    }),
 
     flagReport: {
         type: ReportType,
