@@ -77,6 +77,7 @@ const getArticle = async (url, config) => {
 };
 
 const getHtmlWithCookies = async (url) => {
+  console.log('Fetching HTML with cookies', url);
   const axiosInstance = axios.create({
     timeout: 10000, // 10 seconds timeout
     maxRedirects: 0, // Prevent automatic redirects
@@ -109,6 +110,7 @@ const getHtmlWithCookies = async (url) => {
     const response = await axiosInstance.get(url);
     return response.data;
   } catch (error) {
+    console.error('Failed to fetch HTML with cookies', error.message, error.code);
     if (error.code === 'ECONNABORTED') {
       console.error('Request timed out', error.message);
     } else {
