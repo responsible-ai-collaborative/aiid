@@ -77,17 +77,21 @@ const getArticle = async (url, config) => {
 };
 
 const getHtmlWithCookies = async (url) => {
-  const axiosInstance = axios.create();
-
-  axiosInstance.defaults.maxRedirects = 0;
-  axiosInstance.defaults.withCredentials = true;
-  axiosInstance.defaults.credentials = 'same-origin';
+  const axiosInstance = axios.create({
+    timeout: 10000, // 10 seconds timeout
+    maxRedirects: 0, // Prevent automatic redirects
+    withCredentials: true, // Send cookies with request
+  });
 
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.log('Intercepted error', error.message, error.response);
+      console.log('Intercepted error', error.message);
+
+      // Handle HTTP 3xx Redirects with Cookies
       if (error.response && [301, 302].includes(error.response.status)) {
+        console.log('Handling redirect', error.response.status);
+
         const redirectUrl = error.response.headers.location;
 
         const Cookie = error.response.headers['set-cookie']
@@ -96,11 +100,20 @@ const getHtmlWithCookies = async (url) => {
 
         return axiosInstance.get(redirectUrl, { headers: { Cookie } });
       }
+
       return Promise.reject(error);
     }
   );
 
-  const response = await axiosInstance.get(url);
-
-  return response.data;
+  try {
+    const response = await axiosInstance.get(url);
+    return response.data;
+  } catch (error) {
+    if (error.code === 'ECONNABORTED') {
+      console.error('Request timed out', error.message);
+    } else {
+      console.error('Request failed', error.message);
+    }
+    throw error;
+  }
 };
