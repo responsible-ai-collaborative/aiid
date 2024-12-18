@@ -6,7 +6,7 @@
         // to avoid clashing with Jest types
         "types": [
             "jest"
-        ]
+        ],
     },
     "include": [
         "../node_modules/jest",

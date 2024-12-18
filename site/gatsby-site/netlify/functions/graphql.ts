@@ -4,6 +4,7 @@ import { ApolloServer } from '@apollo/server';
 import config from '../../server/config';
 import { MongoClient } from 'mongodb';
 import { startServerAndCreateLambdaHandler, handlers } from '@as-integrations/aws-lambda';
+import cookie from 'cookie';
 
 const server = new ApolloServer({
     schema,
@@ -28,6 +29,11 @@ export const handler = startServerAndCreateLambdaHandler(
                 if (!event.rawQuery) {
                     event.rawQueryString = event.rawQuery;
                 }
+
+                // next auth expects the `req` object to be Express-like
+
+                event.method = event.httpMethod;
+                event.cookies = cookie.parse(event.headers.cookie || '');
 
                 return (result) => result;
             },

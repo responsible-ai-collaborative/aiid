@@ -32,7 +32,7 @@ test.describe('News Digest', () => {
 
   test('Should dismiss and restore items', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-    const userId = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    const userId = await login();
     await init({ customData: { users: [{ userId, first_name: 'Test', last_name: 'User', roles: ['admin'] }] } }, { drop: true });
 
     await page.goto(url);
