@@ -77,17 +77,16 @@ const getArticle = async (url, config) => {
 };
 
 const getHtmlWithCookies = async (url) => {
-  console.log('Fetching HTML with cookies', url);
   const axiosInstance = axios.create({
-    timeout: 10000, // 10 seconds timeout
-    maxRedirects: 0, // Prevent automatic redirects
-    withCredentials: true, // Send cookies with request
+    maxRedirects: 0,
+    withCredentials: true,
+    timeout: 10000, // Keep default timeout (10 seconds here, adjust if needed)
   });
 
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.log('Intercepted error', error.message);
+      console.log('Intercepted error in interceptor:', error.message);
 
       // Handle HTTP 3xx Redirects with Cookies
       if (error.response && [301, 302].includes(error.response.status)) {
@@ -102,20 +101,33 @@ const getHtmlWithCookies = async (url) => {
         return axiosInstance.get(redirectUrl, { headers: { Cookie } });
       }
 
+      // Re-throw non-redirect errors
       return Promise.reject(error);
     }
   );
 
   try {
     const response = await axiosInstance.get(url);
+    console.log('Response received:', response.status);
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch HTML with cookies', error.message, error.code);
+    // Log and handle Axios errors
+    console.error('Caught error:', error.message, error.code);
+
     if (error.code === 'ECONNABORTED') {
-      console.error('Request timed out', error.message);
+      console.error('Request timed out:', error.message);
+    } else if (error.response) {
+      console.error(
+        'Request failed with status:',
+        error.response.status,
+        error.response.data
+      );
     } else {
-      console.error('Request failed', error.message);
+      console.error('Network or other error:', error.message);
     }
+
+    // Re-throw the error for further handling
     throw error;
   }
 };
+
