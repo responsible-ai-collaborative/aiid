@@ -1517,6 +1517,7 @@ export type Incident = {
   AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Entity>>>;
   AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Entity>>>;
   _id?: Maybe<Scalars['ObjectId']['output']>;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
   date: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
@@ -1624,6 +1625,7 @@ export type IncidentFilterType = {
   NOR?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
   OR?: InputMaybe<Array<InputMaybe<IncidentFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
   date?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
   editor_dissimilar_incidents?: InputMaybe<IntFilter>;
@@ -1654,6 +1656,7 @@ export type IncidentInsertType = {
   AllegedDeveloperOfAISystem?: InputMaybe<IncidentAllegeddeveloperofaisystemRelationInput>;
   AllegedHarmedOrNearlyHarmedParties?: InputMaybe<IncidentAllegedharmedornearlyharmedpartiesRelationInput>;
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
@@ -1835,6 +1838,7 @@ export type IncidentSetType = {
   AllegedDeveloperOfAISystem?: InputMaybe<IncidentAllegeddeveloperofaisystemRelationInput>;
   AllegedHarmedOrNearlyHarmedParties?: InputMaybe<IncidentAllegedharmedornearlyharmedpartiesRelationInput>;
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
@@ -1871,6 +1875,7 @@ export enum IncidentSortByInput {
 
 export type IncidentSortType = {
   _id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
   date?: InputMaybe<SortType>;
   description?: InputMaybe<SortType>;
   editor_notes?: InputMaybe<SortType>;

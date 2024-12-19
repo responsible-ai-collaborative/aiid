@@ -108,6 +108,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         implicated_systems: submission.implicated_systems || [],
                         editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
+                        created_at: new Date(),
                     }
                     if (submission.embedding) {
                         newIncident.embedding = {
