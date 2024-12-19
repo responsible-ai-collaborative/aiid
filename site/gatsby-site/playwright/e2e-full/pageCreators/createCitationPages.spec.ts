@@ -81,7 +81,7 @@ test.describe('createCitationPages', () => {
     expect(createPage.callCount).toEqual(languages.length);
 
     languages.forEach((language) => {
-      // Assert each panguage page
+      // Assert each language has a page created
       expect(createPage.calledWithMatch({
         path: language.code === 'en' ? '/cite/1/' : `/${language.code}/cite/1/`,
         context: {
