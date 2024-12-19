@@ -108,7 +108,7 @@ test.describe('Variants pages', () => {
 
     test('Should Approve Variant - Incident Editor user', async ({ page, login }) => {
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
@@ -135,7 +135,7 @@ test.describe('Variants pages', () => {
 
     test('Should Reject Variant - Incident Editor user', async ({ page, login }) => {
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
@@ -161,7 +161,7 @@ test.describe('Variants pages', () => {
 
     test('Should Save Variant - Incident Editor user', async ({ page, login }) => {
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
@@ -187,7 +187,7 @@ test.describe('Variants pages', () => {
 
     test('Should Delete Variant - Incident Editor user', async ({ page, login }) => {
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
