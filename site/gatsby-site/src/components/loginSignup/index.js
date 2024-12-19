@@ -1,24 +1,18 @@
-import { useUserContext } from 'contexts/userContext';
 import { Button } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { useUserContext } from 'contexts/UserContext';
 
 const LoginSignup = ({ className = '', location = null }) => {
   const { user, loading } = useUserContext();
-
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsUserLoggedIn(!!user?.profile.email);
-  }, [user]);
 
   if (loading) return <span></span>;
 
   return (
     <>
       <div className={`flex items-center ${className || ''}`}>
-        {isUserLoggedIn ? <Subscriptions /> : <Subscribe location={location} />}
+        {user ? <Subscriptions /> : <Subscribe location={location} />}
       </div>
     </>
   );
