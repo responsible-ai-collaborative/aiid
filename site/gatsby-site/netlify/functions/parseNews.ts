@@ -80,9 +80,10 @@ const getHtmlWithCookies = async (url) => {
   const axiosInstance = axios.create({
     maxRedirects: 0,
     withCredentials: true,
-    timeout: 10000, // Keep default timeout (10 seconds here, adjust if needed)
+    timeout: 5000, // Keep default timeout (10 seconds here, adjust if needed)
   });
 
+  console.log('Fetching URL with cookies:', url);
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -107,6 +108,7 @@ const getHtmlWithCookies = async (url) => {
   );
 
   try {
+    console.log('Fetching URL:', url);
     const response = await axiosInstance.get(url);
     console.log('Response received:', response.status);
     return response.data;
