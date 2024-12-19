@@ -71,7 +71,7 @@ jobs:
           NOTIFICATIONS_SENDER: test@test.com
           SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
-          NEXTAUTH_SECRET: dummy
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
