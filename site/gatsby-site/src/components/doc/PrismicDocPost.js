@@ -64,7 +64,7 @@ const PrismicDocPost = ({ doc, location }) => {
       {doc.data.content.map((content, index) => (
         <>
           {content.markdown?.richText.length > 0 && (
-            <div className="prose">
+            <div className="prose" data-testid="markdown-content">
               {(() => {
                 const rawMarkdown = RichText.asText(content.markdown.richText);
 
@@ -77,7 +77,7 @@ const PrismicDocPost = ({ doc, location }) => {
             </div>
           )}
           {content.text && (
-            <div className="prose">
+            <div className="prose" data-testid="richtext-content">
               <PrismicRichText key={index} field={content.text.richText} components={components} />
             </div>
           )}

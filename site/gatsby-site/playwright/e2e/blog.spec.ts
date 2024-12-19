@@ -3,10 +3,71 @@ import { expect } from '@playwright/test';
 
 test.describe('Blog', () => {
 
+  test('Should load mdx blog post', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto('/blog/the-first-taxonomy-of-ai-incidents');
+
+    await expect(page.locator('.titleWrapper h1')).toHaveText('The First Taxonomy of AI Incidents');
+
+    const div = await page.locator("[data-testid='blog-content']");
+    const textContent = await div.textContent();
+    expect(textContent).toContain('In November the Partnership on AI AI Incident Database (AIID) publicly invited users to instantly search through thousands of pages of text to better understand the limitations of AI products within the real world. Since November, tens of thousands of people from 157 countries have connected to the AIID. Today marks the launch of the next stage of AI Incident Database with its first complete AI incident taxonomy.');
+
+  });
+
+  test('Should load mdx blog post in spanish', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto('/es/blog/representation-and-imagination');
+
+    await expect(page.locator('.titleWrapper h1')).toHaveText('Representación e imaginación para prevenir los daños de la IA');
+
+    const div = await page.locator("[data-testid='blog-content']");
+    const textContent = await div.textContent();
+    expect(textContent).toContain('La base de datos de incidentes de IA se lanzó públicamente en noviembre de 2020 por Partnership on AI como un panel de control de los daños de IA realizados en el mundo real.');
+
+  });
+
+  test('Should load mdx blog post in french', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto('/fr/blog/join-raic');
+
+    await expect(page.locator('.titleWrapper h1')).toHaveText("Rejoignez l'équipe fondatrice de Responsible AI Collaborative");
+
+    const div = await page.locator("[data-testid='blog-content']");
+    const textContent = await div.textContent();
+    expect(textContent).toContain("La base de données d'incidents d'IA lancée publiquement en novembre 2020 en tant que tableau de bord des dommages causés par l'IA dans le monde réel.");
+
+  });
+
+  test('Should load prismic blog post', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto('/blog/incident-report-2024-january');
+
+    await expect(page.locator('h1')).toHaveText('AI Incident Roundup – January ‘24');
+
+    const div = await page.locator("[data-testid='blog-content']");
+    const textContent = await div.textContent();
+    expect(textContent).toContain('Read our month-in-review newsletter recapping new incidents in the AI Incident Database and looking at the trends.');
+
+  });
+
+  test('Should load prismic blog post in spanish', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto('/es/blog/incident-report-2024-january');
+
+    await expect(page.locator('h1')).toHaveText('Resumen de incidentes de IA: 24 de enero');
+
+    const div = await page.locator("[data-testid='blog-content']");
+    const textContent = await div.textContent();
+    expect(textContent).toContain('Lea nuestro boletín informativo mensual que resume los nuevos incidentes en la base de datos de incidentes de IA y analiza las tendencias.');
+
+  });
+
   test('Should include outline in blog post', async ({ page, skipOnEmptyEnvironment }) => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/blog/the-first-taxonomy-of-ai-incidents');
 
+    await expect(page.locator('[data-cy="outline"]')).toBeVisible();
     const outlineItems = page.locator('[data-cy="outline"] > li');
     await expect(outlineItems).toHaveCount(5);
 
@@ -27,8 +88,9 @@ test.describe('Blog', () => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/multilingual-incident-reporting');
 
-    const outlineItemsCount = await page.locator('[data-cy="outline"] > li').count();
-    await expect(outlineItemsCount).toBeGreaterThanOrEqual(3);
+    await expect(page.locator('[data-cy="outline"]')).toBeVisible();
+    const outlineItems = page.locator('[data-cy="outline"] > li');
+    await expect(outlineItems).toHaveCount(4);
 
     await expect(page.locator('[data-cy="outline"]:has-text("¿Como funciona?")')).toBeVisible();
     await expect(page.locator('[data-cy="outline"]:has-text("Llamado a la acción")')).toBeVisible();

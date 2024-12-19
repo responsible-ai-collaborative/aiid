@@ -48,7 +48,6 @@ jobs:
         with:
           path: |
             site/gatsby-site/node_modules
-            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
@@ -92,8 +91,9 @@ jobs:
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
-          PROCESS_NOTIFICATIONS_SECRET: sarasa
           SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

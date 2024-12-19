@@ -32,19 +32,12 @@ test.describe('New Incident page', () => {
     await page.keyboard.press('Enter');
     await page.locator('[data-cy="alleged-harmed-or-nearly-harmed-parties-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
+    await page.locator('[data-cy="implicated-systems-input"] input').first().fill('children');
+    await page.keyboard.press('Enter');
 
     await fillAutoComplete(page, '#input-editors', 'Joh', 'John Doe');
 
-    await conditionalIntercept(page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'logIncidentHistory',
-      { data: { logIncidentHistory: { incident_id: 4 } } },
-      'logIncidentHistory'
-    );
-
     await page.getByText('Save').click();
-
-    await waitForRequest('logIncidentHistory');
 
     await page.getByText(`You have successfully create Incident 4. View incident`).waitFor();
   });
@@ -59,19 +52,9 @@ test.describe('New Incident page', () => {
 
     await page.goto(`${url}/?incident_id=3`);
 
-    await conditionalIntercept(
-      page,
-      '**/graphql',
-      (req) => req.postDataJSON().operationName == 'logIncidentHistory',
-      { data: { logIncidentHistory: { incident_id: newIncidentId } } },
-      'logIncidentHistory'
-    );
-
     await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
 
     await page.getByText('Save').click();
-
-    await waitForRequest('logIncidentHistory');
 
     await page.getByText(`You have successfully create Incident ${newIncidentId}. View incident`).waitFor();
   });

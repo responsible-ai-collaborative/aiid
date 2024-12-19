@@ -50,16 +50,6 @@ jobs:
       netlify-context: branch-deploy
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
-  call-test:
-    if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test.yml
-    needs: call-test-build
-    secrets: inherit
-    with:
-      sha: ${{ github.event.pull_request.head.sha }}
-      environment: staging
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
-
   call-test-playwright:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright.yml

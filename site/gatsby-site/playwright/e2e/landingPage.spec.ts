@@ -101,23 +101,48 @@ test.describe('The Landing page', () => {
   );
 
   test('Loads the random incidents carousel', async ({ page, skipOnEmptyEnvironment }) => {
-      await page.goto('/');
-      await page.locator('[data-cy="random-incidents-carousel"]').scrollIntoViewIfNeeded();
-      await expect(page.locator('[data-cy="random-incidents-carousel"]')).toBeVisible();
-      await expect(page.locator('[data-cy="random-incidents-carousel-item"]')).toHaveCount(5);
-    });
+    await page.goto('/');
+    await page.locator('[data-cy="random-incidents-carousel"]').scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-cy="random-incidents-carousel"]')).toBeVisible();
+    await expect(page.locator('[data-cy="random-incidents-carousel-item"]')).toHaveCount(5);
+  });
 
   test('Renders commit sha in the footer', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('[data-cy="commit-sha"]')).toBeVisible();
   });
 
-  test.skip('Should load sidebar', async ({ page }) => {
+  test('Should load sidebar', async ({ page, skipOnEmptyEnvironment }) => {
     await page.goto('/');
-    const sidebarTree = page.locator('[data-cy="sidebar-desktop"]');
-    const lis = await sidebarTree.locator('ul[data-cy="sidebar-tree"] > li').count();
+    const sidebarTree = page.locator('[data-testid="sidebar-desktop"]');
+    const lis = await sidebarTree.locator('ul[data-testid="sidebar-tree"] > li').count();
     await expect(lis).toBeGreaterThan(0);
   });
 
+  test('Should collapse sidebar', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.goto('/');
+    const sidebarTree = page.locator('[data-testid="sidebar-desktop"]');
+    await sidebarTree.locator('[data-cy="collapse-button"]').click();
+    const sidebar = await page.locator('[id="sidebar"]').first();
+    let hasClass = await sidebar.evaluate((el, className) => {
+      return el.classList.contains(className);
+    }, 'collapsed');
+    expect(hasClass).toBe(true);
+    await sidebarTree.locator('[data-cy="collapse-button"]').click();
+    hasClass = await sidebar.evaluate((el, className) => {
+      return el.classList.contains(className);
+    }, 'collapsed');
+    expect(hasClass).toBe(false);
+  });
 
+  test('Should display sidebar tooltip when collapsed', async ({ page, skipOnEmptyEnvironment }) => {
+    await page.goto('/');
+    const sidebarTree = page.locator('[data-testid="sidebar-desktop"]');
+    await sidebarTree.locator('[data-cy="collapse-button"]').click();
+    // Hovers over a sidebar item
+    await page.getByTestId('sidebar-desktop').getByTestId("sidebar-welcome").hover();
+    await expect(page.getByTestId('sidebar-desktop').locator('[data-testid="flowbite-tooltip"]', { hasText: 'Welcome to the AIID' }))
+      .toBeVisible();
+
+  });
 });

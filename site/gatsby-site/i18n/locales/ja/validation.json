@@ -34,5 +34,7 @@
   "*Description is required": "*説明は必須です",
   "*Incident Date is required": "*インシデント日は必須です",
   "*Incident Date required": "*インシデント日は必須です",
-  "*Incident ID(s) must be a number": "*インシデントIDは数字でなければいけません"
+  "*Incident ID(s) must be a number": "*インシデントIDは数字でなければいけません",
+  "Implicated Systems must have at least 3 characters": "関連システムは3文字以上でなければいけません",
+  "Implicated Systems can't be longer than 200 characters": "関連システムは200文字を超えることはできません"
 }
