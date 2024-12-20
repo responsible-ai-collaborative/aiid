@@ -108,6 +108,8 @@ class Translator {
       .db('translations')
       .collection(`reports_${language}`);
 
+    const reportsTranslationsCollection = this.mongoClient.db('translations').collection('reports');
+
     const translated = [];
 
     for (const item of items) {
@@ -118,7 +120,13 @@ class Translator {
       translated.push({ report_number, text, title, plain_text });
     }
 
-    return reportsTranslatedCollection.insertMany(translated);
+    // TODO: remove this line when the "reports_xx" collections are no longer needed
+    await reportsTranslatedCollection.insertMany(translated);
+
+    // Insert the translated reports into the reports collection with the language field
+    const reportsTranslated = translated.map((t) => ({ ...t, language }));
+
+    return reportsTranslationsCollection.insertMany(reportsTranslated);
   }
 
   async translateReport({ entry, to }) {
