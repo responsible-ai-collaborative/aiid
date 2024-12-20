@@ -6,5 +6,12 @@
     "About You": "À propos de vous",
     "Roles": "Rôles",
     "completeInfoAlertTitle": "Gestion de l'identité de l'utilisateur dans le signalement d'incidents",
-    "completeInfoAlertMessage": "Lorsque vous apportez des modifications ou soumettez de nouveaux incidents, ces actions seront associées à votre compte d'utilisateur et au nom que vous entrez ici. Si vous souhaitez rester anonyme à tout moment, vous pouvez ouvrir le site Web dans une session de navigateur anonyme"
+    "completeInfoAlertMessage": "Lorsque vous apportez des modifications ou soumettez de nouveaux incidents, ces actions seront associées à votre compte d'utilisateur et au nom que vous entrez ici. Si vous souhaitez rester anonyme à tout moment, vous pouvez ouvrir le site Web dans une session de navigateur anonyme",
+    "Account Details": "Détails du compte",
+    "Subscriptions": "Abonnements",
+    "You don't have active subscriptions to Incident updates": "Vous n'avez pas d'abonnements actifs aux mises à jour d'incident",
+    "You don't have active subscriptions to Entities": "Vous n'avez pas d'abonnements actifs aux entités",
+    "Do you want to delete this subscription?": "Voulez-vous supprimer cet abonnement?",
+    "Updates on incident ": "Mises à jour sur l'incident ",
+    "Email": "E-mail"  
 }

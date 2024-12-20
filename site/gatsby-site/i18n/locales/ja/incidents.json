@@ -1,1 +1,8 @@
-{}
+{
+    "Incident List": "インシデントリスト",
+    "This is a simple numeric listing of all incidents and their reports within the database. If you would like to explore the contents of the reports, you should work through the<1> Discover app</1>.": "これは、データベース内のすべてのインシデントとそのレポートの単純な数値リストです。レポートの内容を調べたい場合は、<1> Discoverアプリ</1>を使用する必要があります。",
+    "Sort by incident ID": "インシデントIDでソート",
+    "ascending": "昇順",
+    "descending": "降順",
+    "Summary of all the incidents present in the database": "データベースに存在するすべてのインシデントの概要"
+}

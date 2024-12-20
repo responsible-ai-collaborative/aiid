@@ -45,17 +45,19 @@ test.describe('Navigation', () => {
     const aboutLink = await page.locator('#main-footer .tw-footer-link').filter({ hasText: /^About$/ });
     if (await aboutLink.count() > 0) {
       await aboutLink.click();
-      
+
       await page.locator('.rightSideTitle:has-text("CONTENTS")').waitFor({ state: 'visible' });
       const listItems = await page.locator('.rightSideBarUL li');
       expect(await listItems.count()).toBeGreaterThanOrEqual(1);
 
       await listItems.nth(1).click();
-      await page.waitForTimeout(700);
 
-      const subject = await page.locator('h2:has-text(\'Why "AI Incidents"?\')');
-      const boundingBox = await subject.boundingBox();
-      expect(boundingBox?.y).toBeCloseTo(0, 30);
+      await expect(async () => {
+
+        const subject = await page.locator('h2:has-text(\'Why "AI Incidents"?\')');
+        const boundingBox = await subject.boundingBox();
+        expect(boundingBox?.y).toBeCloseTo(0, 30);
+      }).toPass();
     }
   });
 
@@ -73,11 +75,12 @@ test.describe('Navigation', () => {
       expect(await listItems.count()).toBeGreaterThanOrEqual(1);
 
       await listItems.nth(1).click();
-      await page.waitForTimeout(700);
 
-      const subject = await page.locator('h2:has-text("🗄 Trending in the AIID")');
-      const boundingBox = await subject.boundingBox();
-      expect(boundingBox?.y).toBeCloseTo(0, 30);
+      await expect(async () => {
+        const subject = await page.locator('h2:has-text("🗄 Trending in the AIID")');
+        const boundingBox = await subject.boundingBox();
+        expect(boundingBox?.y).toBeCloseTo(0, 30);
+      }).toPass();
     }
   });
 });

@@ -93,7 +93,9 @@ const allSearchColumns = {
 
       const epoch_date_published_lt = getUnixTime(addWeeks(datePublished, 2));
 
-      return { epoch_date_published_gt, epoch_date_published_lt };
+      return {
+        epoch_date_published: { GT: epoch_date_published_gt, LT: epoch_date_published_lt },
+      };
     },
   },
 
@@ -136,7 +138,7 @@ const allSearchColumns = {
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
-      authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
+      authors: { IN: isArray(incident.authors) ? incident.authors : incident.authors.split(',') },
     }),
   },
 
@@ -155,7 +157,7 @@ const allSearchColumns = {
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.url,
-    getQueryVariables: (incident) => ({ url_in: [incident.url] }),
+    getQueryVariables: (incident) => ({ url: { IN: [incident.url] } }),
     editSimilar: false,
   },
 };
@@ -208,7 +210,7 @@ const RelatedIncidents = ({
         if (key != 'byText') {
           setLoading((loading) => ({ ...loading, [key]: true }));
         }
-        const variables = { query: queryVariables[key] };
+        const variables = { filter: queryVariables[key] };
 
         const query = column.query;
 
