@@ -74,5 +74,17 @@
     "similarIncidentSearch": {
         "title": "Rechercher des incidents similaires",
         "text": "Recherchez un incident similaire ou différent en saisissant un ID d'incident. Si l'incident qui en résulte est similaire, cliquez sur « Oui », s'il est différent, cliquez sur « Non ». Si vous n'êtes pas sûr, cliquez sur « Pas sûr ». Une fois sélectionné, l'incident sera ajouté à la section « Incidents similaires et différents sélectionnés manuellement » du formulaire. Une fois ajouté, si vous souhaitez le supprimer, cliquez sur le bouton « Pas sûr »."
+    },
+    "harmed_parties": {
+        "title": "Parties prétendument lésées ou presque lésées",
+        "text": "S'il y en a plusieurs, appuyez sur “enter” pour commencer un nouvel élément"
+    },
+    "deployers": {
+        "title": "Déployeur présumé du système d'IA",
+        "text": "S'il y en a plusieurs, appuyez sur “enter” pour commencer un nouvel élément"
+    },
+    "developers": {
+        "title": "Développeur présumé du système d'IA",
+        "text": "S'il y en a plusieurs, appuyez sur “enter” pour commencer un nouvel élément"
     }
 }
