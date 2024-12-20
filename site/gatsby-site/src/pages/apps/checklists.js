@@ -11,7 +11,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import CheckListForm from 'components/checklists/CheckListForm';
 import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { checkedRiskStatus } from 'utils/checklists';
-import { FIND_CHECKLIST, UPDATE_CHECKLIST } from '../../graphql/checklists';
+import { FIND_CHECKLIST, UPSERT_CHECKLIST } from '../../graphql/checklists';
 import HeadContent from 'components/HeadContent';
 
 const ChecklistsPage = (props) => {
@@ -38,12 +38,12 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
   useEffect(() => setHydrated(true), []);
 
   const { data: savedChecklistData, loading: savedChecklistLoading } = useQuery(FIND_CHECKLIST, {
-    variables: { query: { id: query.id } },
+    variables: { filter: { id: { EQ: query.id } } },
   });
 
   const savedChecklist = savedChecklistData?.checklist && savedChecklistData.checklist;
 
-  const [saveChecklist] = useMutation(UPDATE_CHECKLIST);
+  const [saveChecklist] = useMutation(UPSERT_CHECKLIST);
 
   const debouncedSaveChecklist = useRef(debounce(saveChecklist, 3000)).current;
 
@@ -55,7 +55,7 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
 
     const save = {
       variables: {
-        query: { id: query.id },
+        filter: { id: { EQ: query.id } },
         checklist: {
           ...values,
           id: query.id,

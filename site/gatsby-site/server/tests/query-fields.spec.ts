@@ -14,6 +14,7 @@ import subscriptionsFixture from './fixtures/subscriptions';
 import duplicatesFixture from './fixtures/duplicates';
 import reportsHistoryFixture from './fixtures/reportsHistory';
 import incidentsHistoryFixture from './fixtures/incidentsHistory';
+import checklistsFixture from './fixtures/checklists';
 
 import * as context from '../context';
 
@@ -29,6 +30,7 @@ const fixtures = [
     duplicatesFixture,
     reportsHistoryFixture,
     incidentsHistoryFixture,
+    checklistsFixture,
 ]
 
 fixtures.forEach((collection) => {
