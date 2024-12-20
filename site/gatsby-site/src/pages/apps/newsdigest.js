@@ -14,7 +14,7 @@ import {
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
 import HeadContent from 'components/HeadContent';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';

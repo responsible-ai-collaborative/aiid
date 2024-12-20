@@ -1,6 +1,5 @@
-import { expect, request } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { conditionalIntercept, test, waitForRequest } from '../../utils';
-import config from '../../config';
 
 test.describe('Checklists App Index', () => {
     const url = '/apps/checklists';
@@ -8,7 +7,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should sort checklists', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await conditionalIntercept(
             page,
@@ -72,7 +71,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should display New Checklist button as logged-in user', async ({ page, login }) => {
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url);
         await expect(page.locator(newChecklistButtonSelector)).toBeVisible();
@@ -80,7 +79,7 @@ test.describe('Checklists App Index', () => {
 
     test.skip('Should show delete buttons only for owned checklists', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await conditionalIntercept(
             page,
@@ -123,7 +122,9 @@ test.describe('Checklists App Index', () => {
         await expect(page.locator('[data-cy="checklist-card"]:last-child button')).not.toContainText('Delete');
     });
 
-    test('Should show toast on error fetching checklists', async ({ page }) => {
+    test('Should show toast on error fetching checklists', async ({ page, login }) => {
+
+        await login();
 
         await conditionalIntercept(
             page,
@@ -142,7 +143,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should show toast on error fetching risks', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await conditionalIntercept(
             page,
@@ -195,7 +196,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should show toast on error creating checklist', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await conditionalIntercept(
             page,
