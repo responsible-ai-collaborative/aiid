@@ -326,6 +326,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
