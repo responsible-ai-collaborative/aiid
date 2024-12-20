@@ -31,5 +31,7 @@
   "*Incident ID(s) must be a number": "*L'ID de l'incident doit être un nombre",
   "Alleged implicated AI Systems must have at least 3 characters": "Les systèmes impliqués doivent avoir au moins 3 caractères",
   "Alleged implicated AI Systems can't be longer than 200 characters": "Les systèmes impliqués ne peuvent pas comporter plus de 200 caractères",
-  "*Alleged Implicated AI Systems is required": "Les systèmes d'IA présumés impliqués sont requis"
+  "*Alleged Implicated AI Systems is required": "Les systèmes d'IA présumés impliqués sont requis",
+  "Implicated AI systems must have at least 3 characters": "Les systèmes de l'IA impliqués doivent avoir au moins 3 caractères",
+  "Implicated AI systems can't be longer than 200 characters": "Les systèmes de l'IA impliqués ne peuvent pas comporter plus de 200 caractères"
 }

@@ -19,5 +19,7 @@
   "*Alleged Implicated AI Systems is required": "関連システムは必須です",
   "*Alleged developers is required": "開発者は必須です",
   "*Alleged deployers is required": "デプロイヤーは必須です",
-  "*Alleged Harmed Parties is required": "被害を受けたとされる当事者は必須です"
+  "*Alleged Harmed Parties is required": "被害を受けたとされる当事者は必須です",
+  "Implicated AI systems must have at least 3 characters": "関連AIシステムは3文字以上でなければいけません",
+  "Implicated AI systems can't be longer than 200 characters": "関連AIシステムは200文字を超えることはできません"
 }
