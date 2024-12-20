@@ -84,7 +84,16 @@ const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) 
         <Button
           color={'gray'}
           onClick={() => {
-            navigator.clipboard.writeText(text);
+            const copyListener = (e) => {
+              e.clipboardData.setData('text/html', text);
+              e.clipboardData.setData('text/plain', text.replace(/<[/]?[A-Za-z]>/g, ''));
+              e.preventDefault();
+            };
+
+            document.addEventListener('copy', copyListener);
+            document.execCommand('copy');
+            document.removeEventListener('copy', copyListener);
+
             addToast({
               message: 'Citation format copied to clipboard',
               severity: SEVERITY.success,
