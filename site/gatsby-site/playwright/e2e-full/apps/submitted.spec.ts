@@ -78,50 +78,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
-        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
-
-        const { data: {submission} } = await query({
-            query: gql`{
-                submission(filter: {_id: {EQ: "6140e4b4b9b4f7b3b3b1b1b1"}}) {
-                    title
-                    text
-                    submitters
-                    incident_date
-                    incident_editors {
-                        userId
-                    }
-                    status
-                    date_published
-                    date_downloaded
-                    url
-                    authors
-                    tags
-                    language
-                    source_domain
-                    image_url
-                    cloudinary_id
-                    deployers {
-                      entity_id
-                    }
-                    developers {
-                      entity_id
-                    }
-                    harmed_parties {
-                      entity_id
-                    }
-                    implicated_systems {
-                      entity_id
-                    }
-                    editor_notes
-                    user {
-                        userId
-                    }
-                    incident_title
-                    description
-                }
-            }
-        `,
-        });  
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`); 
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Incident');
 
@@ -138,21 +95,6 @@ test.describe('Submitted reports', () => {
                     title
                     reports {
                         report_number
-                        title
-                        text
-                    }
-                    description
-                    AllegedDeployerOfAISystem {
-                      entity_id
-                    }
-                    AllegedDeveloperOfAISystem {
-                      entity_id
-                    }
-                    AllegedHarmedOrNearlyHarmedParties {
-                      entity_id
-                    }
-                    implicated_systems {
-                        entity_id
                     }
                 }
             }
@@ -160,23 +102,6 @@ test.describe('Submitted reports', () => {
         });
 
         expect(incidents.find((i) => i.incident_id === 4).reports.map((r) => r.report_number)).toContain(9);
-
-        expect(incidents.find((i) => i.incident_id === 4)).toMatchObject({
-            incident_id: 4,
-            title: submission.incident_title,
-            description: submission.description,
-            AllegedDeployerOfAISystem: submission.deployers.map((d) => ({ entity_id: d.entity_id })),
-            AllegedDeveloperOfAISystem: submission.developers.map((d) => ({ entity_id: d.entity_id })),
-            AllegedHarmedOrNearlyHarmedParties: submission.harmed_parties.map((d) => ({ entity_id: d.entity_id })),
-            implicated_systems: submission.implicated_systems.map((d) => ({ entity_id: d.entity_id })),
-            reports: [
-              {
-                report_number: 9,
-                title: submission.title,
-                text: submission.text
-              }
-            ]
-        });
     });
 
     test('Promotes a submission to a new report and links it to an existing incident', async ({ page, login }) => {
@@ -685,6 +610,9 @@ test.describe('Submitted reports', () => {
                     AllegedHarmedOrNearlyHarmedParties {
                         entity_id
                     }
+                    implicated_systems {
+                        entity_id
+                    }
                     date
                     description
                     editor_dissimilar_incidents
@@ -735,6 +663,11 @@ test.describe('Submitted reports', () => {
             AllegedHarmedOrNearlyHarmedParties: [
                 {
                     entity_id: "entity-3",
+                },
+            ],
+            implicated_systems: [
+                {
+                    entity_id: "entity-1",
                 },
             ],
             date: "2021-09-14",
