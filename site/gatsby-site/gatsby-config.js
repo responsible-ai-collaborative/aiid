@@ -94,6 +94,7 @@ const plugins = [
       },
     },
   },
+  // TODO: Remove the following source once all reports are migrated to the new schema
   {
     resolve: 'gatsby-source-mongodb',
     options: {
@@ -105,6 +106,17 @@ const plugins = [
         ],
         []
       ),
+      connectionString: config.mongodb.connectionString,
+      extraParams: {
+        replicaSet: config.mongodb.replicaSet,
+      },
+    },
+  },
+  {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'translations',
+      collection: ['reports'],
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
