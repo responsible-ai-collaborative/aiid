@@ -434,7 +434,7 @@ const SubmissionForm = ({ onChange = null }) => {
 
             <TagsInputGroup
               name="implicated_systems"
-              label={t('Implicated AI systems')}
+              label={t('Alleged implicated AI systems')}
               icon={faGear}
               placeholder={t('Which AI systems were involved?')}
               className="mt-3"

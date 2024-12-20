@@ -79,11 +79,11 @@ const StepThree = (props) => {
       .string()
       .matches(/^.{3,}$/, {
         excludeEmptyString: true,
-        message: 'Implicated Systems must have at least 3 characters',
+        message: 'Alleged implicated AI Systems must have at least 3 characters',
       })
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
-        message: "Implicated Systems can't be longer than 200 characters",
+        message: "Alleged implicated AI Systems can't be longer than 200 characters",
       })
       .nullable(),
   });

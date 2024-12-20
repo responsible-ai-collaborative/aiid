@@ -29,6 +29,6 @@
     "Back to Entity: {{name}}": "組織に戻る: {{name}}",
     "Entity updated successfully.": "組織が正常に更新されました。",
     "Error updating Entity.": "組織の更新中にエラーが発生しました。",
-    "Implicated AI system:": "AI関連システム:",
-    "Implicated AI systems:": "AI関連システム:"
+    "Alleged implicated AI system:": "関与が疑われるAIシステム:",
+    "Alleged implicated AI systems:": "関与が疑われるAIシステム:"
 }

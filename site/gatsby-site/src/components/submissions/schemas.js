@@ -76,6 +76,11 @@ export const schema = yup.object().shape({
     then: yup.string().required('*Alleged Harmed Parties is required'),
     otherwise: yup.string().nullable(),
   }),
+  implicated_systems: yup.string().when('incident_ids', {
+    is: (incident_ids) => !incident_ids || incident_ids.length == 0,
+    then: yup.string().required('*Alleged Implicated AI Systems is required'),
+    otherwise: yup.string().nullable(),
+  }),
   authors: yup
     .array(
       yup
