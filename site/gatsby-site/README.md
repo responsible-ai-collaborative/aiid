@@ -11,8 +11,7 @@
  Artificial Intelligence Incident Database
 </h1>
 
-
-## Setting Up a Local Development Environment
+## Setting Up a basic Local Development Environment
 
 Once you have cloned the repository, to set up a local development environment for the AIID project, follow these steps:
 
@@ -114,13 +113,68 @@ SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip dur
    npm run start
    ```
 
-Follow these steps to get your local environment up and running for development with the AIID project. Make sure to replace the placeholder values in the `.env` file with your actual credentials to ensure proper functionality.
+Follow these steps to get your local environment up and running for development with the AIID project. Make sure to replace the placeholder values in the `.env` file with your actual credentials to ensure proper functionality. You can start from the included .env.example file.
 
-## AIID API 
+
+## Frontend
+
+### Tailwind CSS & Flowbite
+
+This project uses [Tailwind CSS](https://tailwindcss.com/) framework with its class syntax. 
+More specifically, we base our components on [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS.
+
+### Steps for developing
+
+In order to keep styling consistency on the site, we follow a set of steps when developing. This is also to make the development process more agile and simple.
+
+1. Develop your component using [Flowbite React components](https://flowbite-react.com/)
+2. If your components is not fully contemplated by Flowbite react, check [Flowbite components](https://flowbite.com/#components) and use the provided HTMLs.
+3. If you need to improve styling, use only Tailwind CSS classes.
+
+**Examples**
+If you want to place a new [Flowbite React button](https://flowbite-react.com/buttons):
+
+```javascript
+import { Button } from 'flowbite-react';
+
+const YourComponent = () => {
+    return <Button color='success'>New button</Button>
+}
+
+```
+
+If you want to customize a [Flowbite button](https://flowbite.com/docs/components/buttons/):
+
+```javascript
+const YourComponent = () => {
+    return <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Default</button>
+}
+```
+
+### Running Tests
+
+To run Playwright end to end tests locally:
+
+```sh
+npm run test:e2e
+```
+
+It is recommended to install the Jest extension for VS Code to enhance the testing experience.
+
+
+
+
+
+
+
+
+
+
+## API 
 
 ### Overview
 
-The AIID API is built to facilitate interactions with the AI Incident Database. It is implemented as a collection of serverless functions that are composed ("stitched") into a singular GraphQL endpoint.
+The AIID API is built to facilitate interactions with the AI Incident Database.
 
 1. **Access the Apollo Explorer**
 
@@ -154,7 +208,7 @@ The query should return a response similar to this:
 }
 ```
 
-### Project Structure
+### Structure
 
 #### Folders
 
@@ -167,20 +221,8 @@ The API is contained within the `server` directory. The following folders are pr
 
 #### Important Files
 
-- **`remote.ts`**: Handles the auto-generated MongoDB Atlas schema, ignoring fields that have migrated to the local GraphQL schema.  
-- **`local.ts`**: Handles the local GraphQL schema, where migrated fields from the remote schema are added. These fields are ignored in `remote.ts`.  
-- **`schema.ts`**: Combines the remote and local schemas into the final schema using **schema stitching** from GraphQL Tools.
+- **`schema.ts`**: Exposes the graphql schema.
 - **`netlify/functions/graphql.ts`**: Sets up the **GraphQL server** and exposes it as a **Netlify function**, loading the schema from `schema.ts`.
-- 
-### Running Tests
-
-To run Jest tests locally:
-
-```sh
-npm run test:api
-```
-
-It is recommended to install the Jest extension for VS Code to enhance the testing experience.
 
 ### Running Code Generation
 
@@ -293,3 +335,19 @@ And finally, as part of the site build process, we processed all pending notific
         "processed": false
     }
     ```
+
+
+### Running Tests
+
+To run Jest tests locally:
+
+```sh
+npm run test:api
+```
+
+It is recommended to install the Jest extension for VS Code to enhance the testing experience.
+
+
+## Deployment
+
+For a detailed guide on deploying the project, refer to the [Deployment Guide](site/docs/DEPLOYMENT.md).

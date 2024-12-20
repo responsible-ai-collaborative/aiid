@@ -11,7 +11,6 @@
  Artificial Intelligence Incident Database
 </h1>
 
-
 <p align="center">
   <a href="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml"><img src="https://github.com/responsible-ai-collaborative/aiid/actions/workflows/production.yml/badge.svg?branch=main"></a>
   &nbsp;
@@ -28,15 +27,16 @@
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
+<!-- we should expand on this -->
+
 1. Contribute **changes** to the current AI Incident Database.
 2. Contribute a **new summary** to the AI Incident Database. A "summary" is a programmatically generated summary of the database contents. Examples are available [here](https://incidentdatabase.ai/summaries).
 3. Contribute a **new taxonomy** to the AI Incident Database. Details on taxonomies are available in the arXiv paper.
-4. Contribute a **new application** facilitating a new use case for the database. 
+4. Contribute a **new application** facilitating a new use case for the database.
 
 ## Project Communications
 
 In most cases unless you are contributing quick fixes, we recommend opening an issue before contributing to the project. You can also [Contact](https://incidentdatabase.ai/contact) us for an invitation to the project's Slack installation. Lurking is encouraged. Finally, for major announcements you can join the [announcements-only mailing list](https://groups.google.com/g/incidentsdb).
-
 
 ## AIID Engineering Process
 
@@ -51,11 +51,11 @@ Labels help streamline the process and ensure issues do not get lost or neglecte
 
 1. Consider if the issue is an Initiative, Epic, or Story. All engineering issues aside from Bugs should fall in one of these categories and be assigned a label. Other types of issues (ex: Data Editor-related) may not have this label.
 
-  ![](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
+![](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
 
 2. Apply a descriptor label (when applicable):
 
-  ![](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
+![](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
 
 ### Assign Issue
 
@@ -70,7 +70,8 @@ Once the issue has a deliverable output(s), use the Pull Request process to have
 The person opening the PR should create it in a draft status until the work is finished, then they should click on "Ready for review" button and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
 
 #### Assigning a reviewer
-In general, PR reviews can be assigned to any member of the [@responsible-ai-collaboraite/aiid-dev](https://github.com/orgs/responsible-ai-collaborative/teams/aiid-dev ) team, or to the team alias itself.
+
+In general, PR reviews can be assigned to any member of the [@responsible-ai-collaboraite/aiid-dev](https://github.com/orgs/responsible-ai-collaborative/teams/aiid-dev) team, or to the team alias itself.
 **Don't be shy!** Above all, contributors and reviewers should assume good intentions. As such, reviewers are also encouraged to re-assign PR reviews based on familiarity and time constraints.
 
 When something is mergeable, then someone else with maintainer permissions (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
@@ -79,11 +80,28 @@ After merging to staging, the code quality is everyone’s responsibility.
 
 For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
 
+## Contributing Changes
+
+Anyone can contribute code to the project. The system is being built as a "do-ocracy", meaning those who "do" have influence over the development of the code.
+
+The steps for contributing changes are the following,
+
+1. Create a fork of the repository.
+2. Clone the fork to your local environment.
+3. Open a feature branch from whichever branch you would like to change. This is typically the `staging` branch, so you can do `git checkout staging` then `git checkout -b feature-cool-new-thing`.
+4. Make your changes, commit them, then push them remote.
+5. Open a pull request to the `staging` branch.
+6. Update the pull request based on the review.
+7. See the pull request get pulled. :)
+
+Please make sure your code is well organized and commented before opening the pull request.
+
 ## Site Architecture
 
 The site architecture consists of these main components:
 
 1. **Deployment Pipeline**:
+
    - Hosted in a GitHub repository
    - Automated through GitHub Actions workflows that handle building, testing, and deploying the application
    - Ensures code quality and successful deployment through automated checks
@@ -108,9 +126,11 @@ This architecture maintains a serverless approach, with no need for a traditiona
 More details are available in the Main App [README](site/gatsby-site/README.md).
 
 ## Public GraphQL endpoint
+
 The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
 
 ### Accessing the endpoint
+
 You can check the endpoint [https://incidentdatabase.ai/api/graphql](https://incidentdatabase.ai/api/graphql)
 
 ### Sample request
@@ -139,4 +159,3 @@ The endpoint can be queried using any GraphQL client, but for example, if using 
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
- 
