@@ -14,6 +14,10 @@
   "Please review submission. Some data is missing.": "投稿を確認してください。足りない情報があります",
   "Some data is missing.": "足りない情報があります",
   "Please review. Some data is missing.": "確認してください。足りない情報があります",
-  "Implicated Systems must have at least 3 characters": "関連システムは3文字以上でなければいけません",
-  "Implicated Systems can't be longer than 200 characters": "関連システムは200文字を超えることはできません"
+  "Alleged implicated AI Systems must have at least 3 characters": "関連システムは3文字以上でなければいけません",
+  "Alleged implicated AI Systems can't be longer than 200 characters": "関連システムは200文字を超えることはできません",
+  "*Alleged Implicated AI Systems is required": "関連システムは必須です",
+  "*Alleged developers is required": "開発者は必須です",
+  "*Alleged deployers is required": "デプロイヤーは必須です",
+  "*Alleged Harmed Parties is required": "被害を受けたとされる当事者は必須です"
 }
