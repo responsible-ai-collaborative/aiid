@@ -1139,6 +1139,7 @@ export type History_Incident = {
   AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   _id?: Maybe<Scalars['ObjectId']['output']>;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
   date: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
@@ -1193,6 +1194,7 @@ export type History_IncidentFilterType = {
   NOR?: InputMaybe<Array<InputMaybe<History_IncidentFilterType>>>;
   OR?: InputMaybe<Array<InputMaybe<History_IncidentFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
   date?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
   editor_dissimilar_incidents?: InputMaybe<IntFilter>;
@@ -1275,6 +1277,7 @@ export enum History_IncidentSortByInput {
 
 export type History_IncidentSortType = {
   _id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
   date?: InputMaybe<SortType>;
   description?: InputMaybe<SortType>;
   editor_notes?: InputMaybe<SortType>;
@@ -1334,6 +1337,7 @@ export type History_Report = {
   _id?: Maybe<Scalars['ObjectId']['output']>;
   authors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   cloudinary_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
   date_downloaded: Scalars['DateTime']['output'];
   date_modified: Scalars['DateTime']['output'];
   date_published: Scalars['DateTime']['output'];
@@ -1406,6 +1410,7 @@ export type History_ReportFilterType = {
   _id?: InputMaybe<ObjectIdFilter>;
   authors?: InputMaybe<StringFilter>;
   cloudinary_id?: InputMaybe<StringFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
   date_downloaded?: InputMaybe<DateTimeFilter>;
   date_modified?: InputMaybe<DateTimeFilter>;
   date_published?: InputMaybe<DateTimeFilter>;
@@ -1485,6 +1490,7 @@ export enum History_ReportSortByInput {
 export type History_ReportSortType = {
   _id?: InputMaybe<SortType>;
   cloudinary_id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
   date_downloaded?: InputMaybe<SortType>;
   date_modified?: InputMaybe<SortType>;
   date_published?: InputMaybe<SortType>;
@@ -2562,6 +2568,7 @@ export type MutationUpsertOneSubscriptionArgs = {
 export type Notification = {
   __typename?: 'Notification';
   _id?: Maybe<Scalars['ObjectId']['output']>;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
   entity_id?: Maybe<Scalars['String']['output']>;
   incident_id?: Maybe<Scalars['Int']['output']>;
   isUpdate?: Maybe<Scalars['Boolean']['output']>;
@@ -2577,6 +2584,7 @@ export type NotificationFilterType = {
   NOR?: InputMaybe<Array<InputMaybe<NotificationFilterType>>>;
   OR?: InputMaybe<Array<InputMaybe<NotificationFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
   entity_id?: InputMaybe<StringFilter>;
   incident_id?: InputMaybe<IntFilter>;
   isUpdate?: InputMaybe<BooleanFilter>;
@@ -2657,6 +2665,7 @@ export enum NotificationSortByInput {
 
 export type NotificationSortType = {
   _id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
   entity_id?: InputMaybe<SortType>;
   incident_id?: InputMaybe<SortType>;
   isUpdate?: InputMaybe<SortType>;
@@ -3090,6 +3099,7 @@ export type Report = {
   _id?: Maybe<Scalars['ObjectId']['output']>;
   authors: Array<Maybe<Scalars['String']['output']>>;
   cloudinary_id: Scalars['String']['output'];
+  created_at?: Maybe<Scalars['DateTime']['output']>;
   date_downloaded: Scalars['DateTime']['output'];
   date_modified: Scalars['DateTime']['output'];
   date_published: Scalars['DateTime']['output'];
@@ -3189,6 +3199,7 @@ export type ReportFilterType = {
   _id?: InputMaybe<ObjectIdFilter>;
   authors?: InputMaybe<StringFilter>;
   cloudinary_id?: InputMaybe<StringFilter>;
+  created_at?: InputMaybe<DateTimeFilter>;
   date_downloaded?: InputMaybe<DateTimeFilter>;
   date_modified?: InputMaybe<DateTimeFilter>;
   date_published?: InputMaybe<DateTimeFilter>;
@@ -3221,6 +3232,7 @@ export type ReportInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   authors: Array<InputMaybe<Scalars['String']['input']>>;
   cloudinary_id: Scalars['String']['input'];
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date_downloaded: Scalars['DateTime']['input'];
   date_modified: Scalars['DateTime']['input'];
   date_published: Scalars['DateTime']['input'];
@@ -3253,6 +3265,7 @@ export type ReportSetType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   cloudinary_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date_downloaded?: InputMaybe<Scalars['DateTime']['input']>;
   date_modified?: InputMaybe<Scalars['DateTime']['input']>;
   date_published?: InputMaybe<Scalars['DateTime']['input']>;
@@ -3329,6 +3342,7 @@ export enum ReportSortByInput {
 export type ReportSortType = {
   _id?: InputMaybe<SortType>;
   cloudinary_id?: InputMaybe<SortType>;
+  created_at?: InputMaybe<SortType>;
   date_downloaded?: InputMaybe<SortType>;
   date_modified?: InputMaybe<SortType>;
   date_published?: InputMaybe<SortType>;

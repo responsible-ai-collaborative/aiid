@@ -16,5 +16,6 @@ export const NotificationType = new GraphQLObjectType({
         sentDate: { type: GraphQLDateTime },
         type: { type: GraphQLString },
         userId: getRelationshipConfig(UserType, GraphQLString, 'userId', 'userId', 'users', 'customData'),
+        created_at: { type: GraphQLDateTime },
     }),
 });
