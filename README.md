@@ -123,7 +123,7 @@ Additional services integrated into the architecture include:
 
 This architecture maintains a serverless approach, with no need for a traditional dynamic backend server, while leveraging specialized services for specific functionalities. The deployment process is fully automated through GitHub Actions, ensuring consistent and reliable deployments with proper testing and validation steps.
 
-More details are available in the Main App [README](site/gatsby-site/README.md).
+More details are available on our [documentation](site/docs/README.md).
 
 ## Public GraphQL endpoint
 

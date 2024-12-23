@@ -2,7 +2,7 @@
 
 ## Core Documentation
 
-### [Application Development Guide](../site/gatsby-site/README.md)
+### [Application Development Guide](../gatsby-site/README.md)
 
 Local development setup, frontend development guide, API documentation, and testing procedures
 

@@ -350,4 +350,4 @@ It is recommended to install the Jest extension for VS Code to enhance the testi
 
 ## Deployment
 
-For a detailed guide on deploying the project, refer to the [Deployment Guide](site/docs/DEPLOYMENT.md).
+For a detailed guide on deploying the project, refer to the [Deployment Guide](../docs/DEPLOYMENT.md).
