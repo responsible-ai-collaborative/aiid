@@ -2,10 +2,6 @@
 
 ## Core Documentation
 
-### [Project Overview](../README.md)
-
-Project introduction, contribution guidelines, engineering process, and high-level architecture
-
 ### [Application Development Guide](../site/gatsby-site/README.md)
 
 Local development setup, frontend development guide, API documentation, and testing procedures
