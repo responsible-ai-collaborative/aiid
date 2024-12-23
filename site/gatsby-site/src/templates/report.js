@@ -13,8 +13,13 @@ import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
 function ReportPage(props) {
   const {
-    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications, incident },
-    data,
+    data: {
+      report,
+      allMongodbAiidprodTaxa,
+      allMongodbAiidprodClassifications,
+      incident,
+      allMongodbTranslationsReports,
+    },
   } = props;
 
   const incidentId = incident?.incident_id;
@@ -25,9 +30,11 @@ function ReportPage(props) {
 
   const { loading, isRole } = useUserContext();
 
-  if (report.language !== locale && data[locale]) {
-    report.title = data[locale].title;
-    report.text = data[locale].text;
+  if (report.language !== locale && allMongodbTranslationsReports.nodes?.length > 0) {
+    const reportTranslation = allMongodbTranslationsReports.nodes[0];
+
+    report.title = reportTranslation.title;
+    report.text = reportTranslation.text;
   }
 
   const defaultTitle = t('Report {{report_number}}', { ...report });
@@ -117,13 +124,7 @@ export const Head = (props) => {
 };
 
 export const query = graphql`
-  query ReportPageQuery(
-    $report_number: Int
-    $translate_es: Boolean!
-    $translate_fr: Boolean!
-    $translate_ja: Boolean!
-    $translate_en: Boolean!
-  ) {
+  query ReportPageQuery($report_number: Int, $locale: String!) {
     report: mongodbAiidprodReports(report_number: { eq: $report_number }) {
       submitters
       date_published
@@ -140,29 +141,14 @@ export const query = graphql`
       language
       description
     }
-    es: mongodbTranslationsReportsEs(report_number: { eq: $report_number })
-      @include(if: $translate_es) {
-      title
-      text
-      report_number
-    }
-    fr: mongodbTranslationsReportsFr(report_number: { eq: $report_number })
-      @include(if: $translate_fr) {
-      title
-      text
-      report_number
-    }
-    ja: mongodbTranslationsReportsJa(report_number: { eq: $report_number })
-      @include(if: $translate_ja) {
-      title
-      text
-      report_number
-    }
-    en: mongodbTranslationsReportsEn(report_number: { eq: $report_number })
-      @include(if: $translate_en) {
-      title
-      text
-      report_number
+    allMongodbTranslationsReports(
+      filter: { report_number: { eq: $report_number }, language: { eq: $locale } }
+    ) {
+      nodes {
+        title
+        text
+        report_number
+      }
     }
     allMongodbAiidprodTaxa {
       nodes {
