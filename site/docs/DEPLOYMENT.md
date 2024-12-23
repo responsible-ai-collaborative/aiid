@@ -209,20 +209,16 @@ Restart Gatsby, and you should have a complete working environment!
 
 ## MongoDB setup
 
-If the feature you are working on includes structural changes to the MongoDB database or Realm functions, you'll need to create your own project by going to https://cloud.mongodb.com and following these steps:
 - Create a new MongoDB project (the free tier will be enough)
 - Create a new Atlas cluster with the name: `AIIDDev`
     - Choose "Username and Password" as authentication method.
     - Choose "My Local Environment" as network access and add your current IP address.
     - If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
-- Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
-- Once created, go to `App Settings` and update app region to `Global`
-- Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
 Download the latest database backup from https://incidentdatabase.ai/research/snapshots.
 
-Extract the archive, then from the `mongodump` directory, run `mongorestore` (included in [MongoDB tools](https://www.mongodb.com/docs/database-tools/installation/installation)) using the admin user created in the step above to upload the database backup:
+Extract the archive, then from the `mongodump` directory, run `mongorestore` (included in [MongoDB tools](https://www.mongodb.com/docs/database-tools/installation/installation)) to upload the database backup:
 
 ```
 mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidprod aiidprod
