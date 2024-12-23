@@ -203,6 +203,13 @@ const typeDefs = `
         report_number: Int
     }
 
+    type mongodbTranslationsReports implements Node {
+        title: String
+        text: String
+        report_number: Int
+        language: String
+    }
+
     type mongodbAiidprodDuplicates implements Node {
         duplicate_incident_number: Int
         true_incident_number: Int
