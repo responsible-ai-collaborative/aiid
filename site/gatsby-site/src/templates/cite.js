@@ -23,10 +23,7 @@ function CitePage(props) {
       allMongodbAiidprodTaxa,
       allMongodbAiidprodClassifications,
       allMongodbAiidprodReports,
-      allMongodbTranslationsReportsEs,
-      allMongodbTranslationsReportsEn,
-      allMongodbTranslationsReportsFr,
-      allMongodbTranslationsReportsJa,
+      allMongodbTranslationsReports,
       incident,
       entities: entitiesData,
       responses,
@@ -43,12 +40,7 @@ function CitePage(props) {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: {
-      en: allMongodbTranslationsReportsEn,
-      es: allMongodbTranslationsReportsEs,
-      fr: allMongodbTranslationsReportsFr,
-      ja: allMongodbTranslationsReportsJa,
-    },
+    translations: { [locale]: allMongodbTranslationsReports },
     locale,
   });
 
@@ -121,13 +113,7 @@ function CitePage(props) {
 export const Head = (props) => {
   const {
     location: { pathname: path },
-    data: {
-      allMongodbAiidprodReports,
-      allMongodbTranslationsReportsEs,
-      allMongodbTranslationsReportsEn,
-      allMongodbTranslationsReportsFr,
-      incident,
-    },
+    data: { allMongodbAiidprodReports, allMongodbTranslationsReports, incident },
   } = props;
 
   const { locale } = useLocalization();
@@ -138,11 +124,7 @@ export const Head = (props) => {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: {
-      en: allMongodbTranslationsReportsEn,
-      es: allMongodbTranslationsReportsEs,
-      fr: allMongodbTranslationsReportsFr,
-    },
+    translations: { [locale]: allMongodbTranslationsReports },
     locale,
   });
 
@@ -162,14 +144,7 @@ export const Head = (props) => {
 };
 
 export const query = graphql`
-  query CitationPageQuery(
-    $incident_id: Int
-    $report_numbers: [Int]
-    $translate_es: Boolean!
-    $translate_fr: Boolean!
-    $translate_ja: Boolean!
-    $translate_en: Boolean!
-  ) {
+  query CitationPageQuery($incident_id: Int, $report_numbers: [Int], $locale: String!) {
     allMongodbAiidprodClassifications(
       filter: { incidents: { elemMatch: { incident_id: { eq: $incident_id } } } }
     ) {
@@ -262,32 +237,9 @@ export const query = graphql`
         inputs_outputs
       }
     }
-    allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_es) {
-      nodes {
-        title
-        text
-        report_number
-      }
-    }
-    allMongodbTranslationsReportsFr(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_fr) {
-      nodes {
-        title
-        text
-        report_number
-      }
-    }
-    allMongodbTranslationsReportsJa(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_ja) {
-      nodes {
-        title
-        text
-        report_number
-      }
-    }
-    allMongodbTranslationsReportsEn(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_en) {
+    allMongodbTranslationsReports(
+      filter: { report_number: { in: $report_numbers }, language: { eq: $locale } }
+    ) {
       nodes {
         title
         text
