@@ -36,7 +36,7 @@ const Login = () => {
         const result = await logIn(email, redirectTo);
 
         if (!result.error) {
-          navigate(`/verify-request/?email=${encodeURIComponent(email)}`);
+          navigate(`/verify-request`, { state: { email, operation: 'login' } });
         } else {
           throw result?.error;
         }
