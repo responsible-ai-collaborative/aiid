@@ -35,5 +35,7 @@
     "The AI implicated system is": "関連するAIシステムは です",
     "The AI implicated systems are": "関連するAIシステムは です",
     "Implicated AI system:": "AI関連システム:",
-    "Implicated AI systems:": "AI関連システム:"
+    "Implicated AI systems:": "AI関連システム:",
+    "Alleged implicated AI system:": "関与が疑われるAIシステム:",
+    "Alleged implicated AI systems:": "関与が疑われるAIシステム:"
 }
