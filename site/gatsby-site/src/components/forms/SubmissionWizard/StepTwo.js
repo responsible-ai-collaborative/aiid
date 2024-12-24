@@ -12,7 +12,7 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { debounce } from 'debounce';
 import SubmissionButton from './SubmissionButton';
 
@@ -137,8 +137,7 @@ const FormDetails = ({
     saveInLocalStorage(values);
   }, [values]);
 
-  const isUserDetailsComplete =
-    user?.profile?.email && user.customData.first_name && user.customData.last_name;
+  const isUserDetailsComplete = user && user.first_name && user.last_name;
 
   return (
     <>
