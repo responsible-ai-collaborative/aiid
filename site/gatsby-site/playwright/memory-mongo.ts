@@ -111,7 +111,7 @@ export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
 
 // command line support
 
-let instance: MongoMemoryServer = null;
+let instance: MongoMemoryServer |  null = null;
 
 async function start() {
 
