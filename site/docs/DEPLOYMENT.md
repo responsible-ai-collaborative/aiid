@@ -195,16 +195,16 @@ ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
 Algolia index settings are uploaded on build time, so they will take effect after running:
 
 ```
-gatsby build
+npm run build
 ```
 
 Alternatively, you can update the settings without rebuilding if from `site/gatsby-site` you run:
 
 ```
-node src/scripts/algolia-update.js
+npm run algolia:push
 ```
 
-Restart Gatsby, and you should have a complete working environment!
+Restart the development server to see the changes.
 
 
 ## MongoDB setup
