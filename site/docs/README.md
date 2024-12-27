@@ -30,6 +30,14 @@ Additional features including geocoding, user roles, error logging, and build op
 
 Guide for implementing and managing taxonomies in the system
 
+## [Frontend Documentation](FRONTEND.md)
+
+Details about the frontend development process, including the use of Tailwind CSS and Flowbite.
+
+## [API Documentation](API.md)
+
+Details about the AIID API, including how to access and interact with it, and information on email notifications.
+
 ## Getting Help
 
 - Open issues on [GitHub](https://github.com/responsible-ai-collaborative/aiid/issues)
