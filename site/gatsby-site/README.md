@@ -11,7 +11,7 @@
  Artificial Intelligence Incident Database
 </h1>
 
-## Setting Up a basic Development Environment
+## Setting Up a Basic Development Environment
 
 Once you have cloned the repository, to set up a local development environment for the AIID project, follow these steps:
 
@@ -31,7 +31,7 @@ Once you have cloned the repository, to set up a local development environment f
    npm install
    ```
 
-3. **Configure Environment Variables**
+3. **Configure the Environment Variables**
 
    Create a `.env` file in the root of the `gatsby-site` directory. Add the following environment variables to the file, replacing the placeholders with your actual credentials:
 
@@ -97,7 +97,7 @@ SITE_URL=http://localhost:8000 # URL
 SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip during build
 ```
 
-4. **Start a Memory Mongo Instance**
+4. **Start a Memory MongoDB Instance**
 
    To start a memory MongoDB instance, run the following command:
 
@@ -105,9 +105,9 @@ SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip dur
    npm run start:memory-mongo
    ```
 
-   This command will start a MongoDB instance in memory, which is useful for local development and testing. The instance will be available at `mongodb://localhost:4110`. This is an ephemeral instance that will be destroyed when the process is terminated. It is seeded with some initial data to facilitate development. Seed data is stored in the `playwright/seeds` directory.
+   This command will start a MongoDB instance in memory, which is useful for local development and testing. The instance will be available at `mongodb://localhost:4110`. This is an ephemeral instance that will be destroyed when the process is terminated. It is seeded with some initial data to facilitate development. The seed data is stored in the `playwright/seeds` directory.
 
-5. **Start Gatsby and Netlify Development Server**
+5. **Start the Gatsby and Netlify Development Server**
 
    Finally, start the Gatsby development server along with Netlify dev using:
 
@@ -115,26 +115,26 @@ SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip dur
    npm run start
    ```
 
-The project is now running locally and can be accessed at `http://localhost:8000`, the api is available at `http://localhost:8000/api/graphql`.
+The project is now running locally and can be accessed at `http://localhost:8000`, and the API is available at `http://localhost:8000/api/graphql`.
 
-6. **Implementing a new feature!**
+6. **Implementing a New Feature**
 
 Both the Gatsby frontend and the API are running in development mode, allowing you to make changes and see them reflected in real-time.
 
-## Setting Up a Development Environment with production data
+## Setting Up a Development Environment with Production Data
 
 To set up a local development environment with production data, follow the steps from the previous section, but instead of using the memory MongoDB instance with seed data, you will need to import a recent backup of the production database into it or use an existing MongoDB instance with the production data.
 
-1. Download a recent backup of the production database from the Cloudflare R2 bucket. The backup file should be named `aiid-backup-<timestamp>.tar.gz` and can be found in https://incidentdatabase.ai/research/snapshots/
+1. Download a recent backup of the production database from the Cloudflare R2 bucket. The backup file should be named `aiid-backup-<timestamp>.tar.gz` and can be found at https://incidentdatabase.ai/research/snapshots/
 
-2. Extract the backup file and import the data into your MongoDB instance, in this example we'll use the memory MongoDB instance:
+2. Extract the backup file and import the data into your MongoDB instance. In this example, we'll use the memory MongoDB instance:
 
    ```bash
    mongorestore mongodb://127.0.0.1:4110/aiidprod ./aiidprod/ --noOptionsRestore --drop
    mongorestore mongodb://127.0.0.1:4110/translations ./translations/ --noOptionsRestore --drop
    ```
 
-3. Start the Gatsby and Netlify development server:
+3. Start the Gatsby and Netlify Development Server:
 
    ```bash
    npm run start
@@ -142,7 +142,7 @@ To set up a local development environment with production data, follow the steps
 
 The project is now running locally with production data and can be accessed at `http://localhost:8000`.
 
-4. (optional) Push to your own Algolia index
+4. (Optional) Push to Your Own Algolia Index
 
 If the feature you are developing requires changes to the Algolia index, you can push the changes to your own Algolia index by setting the `ALGOLIA_ADMIN_KEY` environment variable to your own Algolia admin key and running the following command:
 
@@ -150,32 +150,32 @@ If the feature you are developing requires changes to the Algolia index, you can
 npm run algolia:push
 ```
 
-5. (optional) Pushing to your own Cloudflare R2 bucket, Prismic, and other services
+5. (Optional) Pushing to Your Own Cloudflare R2 Bucket, Prismic, and Other Services
 
-please refer to the [Deployment Guide](../docs/DEPLOYMENT.md) for more information on how to set up these services.
+Please refer to the [Deployment Guide](../docs/DEPLOYMENT.md) for more information on how to set up these services.
 
 ## Running Tests
 
-### Playwrigth End to End Tests
+### Playwright End to End Tests
 
-To run Playwright end to end tests locally:
+To run Playwright end-to-end tests locally:
 
 ```sh
 npm run test:e2e
 ```
 
-It is recommended to use the Playwright extension for VS Code to enhance the testing experience.
+It is recommended to use the Playwright extension for VS Code to enhance your testing experience.
 
 
 ### Jest API Tests
 
-To run Jest tests locally:
+To run Jest API tests locally:
 
 ```sh
 npm run test:api
 ```
 
-It is recommended to install the Jest extension for VS Code to enhance the testing experience.
+It is recommended to install the Jest extension for VS Code to enhance your testing experience.
 
 
 ## Running Code Generation
@@ -186,12 +186,12 @@ To run the GraphQL code generation CLI to generate TypeScript typings from the s
 npm run codegen
 ```
 
-Running this command is necessary after making changes to the GraphQL schema or queries.
+Running this command is only necessary after making changes to the GraphQL schema or queries.
 
 
 ## Further Reading
 
-For more information on the project structure, how to deploy the project, and other useful information, refer to the [Project Documentation](../docs/README.md).
+For more information on the project structure, how to deploy the project, and other useful information, refer to the [Project Documentation](../docs/README.md), [Frontend Documentation](../docs/FRONTEND.md), and [API Documentation](../docs/API.md).
 
 ## Deployment
 
