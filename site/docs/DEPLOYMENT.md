@@ -5,7 +5,7 @@ This guide is intended to assist in setting up continuous integration using GitH
 
 ## Fork the repository
 
-To get started, fork the repository to your GitHub account. 
+To get started, fork the repository to your GitHub account.
 
 ## Netlify
 
@@ -182,6 +182,43 @@ Additionally, set the following environment variables:
 NOTIFICATIONS_SENDER= # The email address from which the emails will be sent
 NOTIFICATIONS_SENDER_NAME= # The name of the sender
 ```
+
+## Google APIs
+
+### Google Maps
+
+There is a visualization of the location of incidents on the map. To enable this feature, you need to create a Google Maps API key.
+
+```
+GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
+```
+
+## Google Translate
+
+The system uses Google Translate to translate the content of the site. To enable this feature, you need to create a Google Translate API key.
+
+```
+GOOGLE_TRANSLATE_API_KEY=XXXXXXXXXXXX
+```
+
+Read more about the translation process in the [Internationalization Guide](i18N.md).
+
+## Rollbar
+
+This project uses [Rollbar](https://rollbar.com) for error logging for the whole site, including background processes.
+
+The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item
+
+And set two environment variables:
+
+```
+GATSBY_ROLLBAR_TOKEN
+ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN
+```
+
+> [!WARNING]  
+> The `GATSBY_ROLLBAR_TOKEN` is used in the client-side code, while the `ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN` is used in the server-side code. We recommend using different tokens for each.
+
 
 ## GitHub
 

@@ -188,6 +188,31 @@ npm run codegen
 
 Running this command is only necessary after making changes to the GraphQL schema or queries.
 
+## Additional Configuration
+
+When building the site, some steps can take a while to run. This can be inconvenient when you are working on a feature unrelated to the steps taking the most time in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/main/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
+
+```bash
+SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitiationPages npm run start
+```
+
+In general, skipping the TSNE visualization has the most significant reduction in build time.
+
+### Restoring Production database to Staging
+
+There is a GitHub Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
+Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow`
+
+To enable this workflow these [GitHub secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
+
+```
+DB_PRODUCTION_CONNECTION_STRING=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+
+NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
+```
+
+
 
 ## Further Reading
 
