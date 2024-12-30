@@ -111,6 +111,34 @@ test.describe('Checklists App Index', () => {
         // await expect(page.locator('[data-cy="checklist-card"]:last-child button')).not.toContainText('Delete');
     });
 
+    test('Should allow deleting checklists', async ({ page, login }) => {
+
+        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+
+        await init({
+            aiidprod: {
+                checklists: [
+                    {
+                        about: '',
+                        id: 'fakeChecklist1',
+                        name: 'My Checklist',
+                        owner_id: userId,
+                        risks: [],
+                        tags_goals: [],
+                        tags_methods: [],
+                        tags_other: [],
+                    }
+                ],
+            },
+        }, { drop: true });
+
+        await page.goto(url);
+
+        await page.locator('[data-cy="checklist-card"]:first-child [data-testid="delete-risk"]').click();
+
+        await expect(page.getByText('You haven’t made any checklists')).toBeVisible();
+    });
+
     test('Should show toast on error fetching checklists', async ({ page }) => {
 
         await page.route('**/graphql', async (route) => {
