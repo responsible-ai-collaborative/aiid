@@ -130,6 +130,15 @@ See [mongo.md](mongo.md)
 
 [Algolia](https://www.algolia.com) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently updated manually when new incident reports are ingested into the database.
 
+The Algolia index updates are done through a script that runs on Gatsby's `onPreBootstrap` event. The script is located at [site/gatsby-site/src/utils/AlgoliaUpdater.js](site/gatsby-site/src/utils/AlgoliaUpdater.js).
+
+This script reads data from the MongoDB database, generates an Algolia index for each translated collection, and uploads them to Algolia.
+Each index has the following naming format:
+```
+instant_search-{language code}
+```
+Algolia indexes are replaced every time the process runs.
+
 ### Cloudinary
 
 [Cloudinary](https://www.cloudinary.com) is what we use to host and manage report images.
@@ -274,35 +283,7 @@ Restart Gatsby, and you should have a complete working environment!
 
 ### Translation Process
 
-The translation process runs on Gatsby's `postBuild` event and consists of 3 steps:
-
-1. Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
-```
-GATSBY_AVAILABLE_LANGUAGES=en,es,fr,ja
-```
-2. Translate each incident report into every language and store the translated reports in a `translations` database within a `reports` collection:
-```
-translations 
-    |-- reports
-    |   |-- { title, text, report_number, language }
-    |   |-- { title, text, report_number, language }
-```
-To access this database, a user with read/write permissions needs to be provided through the following environment variable:
-
-```
-MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
-```
-
-You can use the same value defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
-
-3. Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
-```
-instant_search-{language code}
-```
-After the first run, the following applies for subsequent runs:
-Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
-Algolia indexes are replaced every time the process runs.
-
+Please refer to this [README](site/gatsby-site/src/scripts/README.md) for more information on the translation process.
 
 #### UI Translations
 
@@ -310,30 +291,6 @@ Https://react.i18next.com handles UI translations. To find missing keys enable d
 
 ```
 GATSBY_I18N_DEBUG=true
-```
-
-### Cost
-
-The translate API charges ~20USD per million characters and can translate to 111 languages.
-
-At the time of writing, there are 1336 Incident Reports, each report consisting of ~4000 characters, with a total sum of ~5 million characters.
-
-Considering the pricing above, translating all ingested reports to one language will cost `(5 million / 1 million) * $20 = ~$100`, and translating all incident reports to all languages `$100 * 111= ~$11k`.
-
-The translation process defaults to a **dry run** mode that prepends a string to every translated text instead of hitting Google's API.
-
-Therefore, Translated texts in this mode will look like: `translated-{language}-YouTube to crack down on inappropriate content masked as kids’ cartoons`
-
-The dry run is disabled through an environment variable as follows:
-
-```
-TRANSLATE_DRY_RUN=false
-```
-
-In addition to the Dry Run mode, you can also limit the number of reports to translate by setting the following environment variable. This variable sets the date from which the reports will be translated (using the `date_submitted` report field):
-
-```
-TRANSLATE_SUBMISSION_DATE_START=2024-01-01
 ```
 
 ### Geocoding
