@@ -20,7 +20,6 @@ export const FIND_CHECKLISTS = gql(`
         severity
         likelihood
         touched
-        generated
         tags
         precedents {
           tags
@@ -53,7 +52,6 @@ export const FIND_CHECKLIST = gql(`
         severity
         likelihood
         touched
-        generated
         tags
         precedents {
           tags
@@ -89,7 +87,6 @@ export const UPSERT_CHECKLIST = gql(`
         severity
         likelihood
         touched
-        generated
         tags
         precedents {
           tags
@@ -122,7 +119,6 @@ export const INSERT_CHECKLIST = gql(`
         severity
         likelihood
         touched
-        generated
         tags
         precedents {
           tags

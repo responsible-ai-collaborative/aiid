@@ -21,7 +21,6 @@ export const RiskType = new GraphQLObjectType({
         tags: { type: new GraphQLList(GraphQLString) },
         severity: { type: GraphQLString },
         title: { type: GraphQLString },
-        generated: { type: GraphQLBoolean },
         risk_status: { type: GraphQLString },
         likelihood: { type: GraphQLString },
         touched: { type: GraphQLBoolean },

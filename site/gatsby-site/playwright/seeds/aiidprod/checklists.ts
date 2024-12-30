@@ -19,7 +19,6 @@ const checklists = [
                 ],
                 severity: "",
                 title: "Unsafe Exposure or Access",
-                generated: false,
                 risk_status: "Not Mitigated",
                 likelihood: "",
                 touched: false,
