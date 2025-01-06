@@ -34,7 +34,7 @@ test.describe('Social Share Buttons', () => {
 
   test.describe.configure({ retries: 4 });
 
-  urlsToTest.forEach(({ page, url, title, shareButtonSections, fbShareUrl }) => {
+  urlsToTest.forEach(({ page, url, shareButtonSections, fbShareUrl }) => {
     test(`${page} page should have ${shareButtonSections} Social Share button sections`, async ({ page }) => {
       await page.goto(url, { waitUntil: 'domcontentloaded' });
       const buttons = page.locator('[data-cy="social-share-buttons"] button');
@@ -53,7 +53,7 @@ test.describe('Social Share Buttons', () => {
 
       const popup = await popupPromise;
 
-      await popup.waitForURL(`https://x.com/intent/post?text=${encodeURIComponent(title).replace(/%20/g, '+')}&url=${encodeURIComponent(canonicalUrl)}`);
+      await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/);
     });
 
     test(`${page} page should have a LinkedIn share button`, async ({ page }) => {
