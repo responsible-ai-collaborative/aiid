@@ -9,10 +9,10 @@ function NotifyButton({ subscribing, onClick, subscribed, userLoggedIn }) {
   const { t } = useTranslation();
 
   return (
-    <Button color="gray" onClick={onClick}>
+    <Button color="gray" onClick={onClick} data-cy="notify-button">
       <div className="flex gap-2 items-center">
         {userLoggedIn && (subscribing || subscribed == undefined) ? (
-          <div>
+          <div data-cy="spinner">
             <Spinner size="sm" />
           </div>
         ) : (
