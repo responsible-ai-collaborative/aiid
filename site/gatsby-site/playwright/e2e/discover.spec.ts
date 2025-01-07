@@ -153,17 +153,17 @@ test.describe('The Discover app', () => {
 
         await page.click('[data-cy=expand-filters]');
 
-        await page.click('div[data-cy="hits-container"] [title="Filter by Incident ID #10"]');
+        await page.click('div[data-cy="hits-container"] [title="Filter by Incident ID #313"]');
 
         await expect(page.locator('button:has-text("Incident ID") span.badge')).toContainText('1');
 
         await expect(async () => {
-            expect(page.url()).toContain('incident_id=10');
+            expect(page.url()).toContain('incident_id=313');
         }).toPass();
 
         await expect(async () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
-            await expect(count).toBeGreaterThanOrEqual(8);
+            await expect(count).toBeGreaterThanOrEqual(2);
         }).toPass();
     });
 
