@@ -247,7 +247,9 @@ test.describe('The Discover app', () => {
         await expect(modal).not.toBeVisible();
     });
 
-    test.skip('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
+    test('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
+
+        test.slow();
 
         await page.goto(url);
 

@@ -78,7 +78,7 @@ test.describe('Submitted reports', () => {
 
         await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
-        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`); 
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Incident');
 
@@ -284,6 +284,7 @@ test.describe('Submitted reports', () => {
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
@@ -326,6 +327,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
@@ -425,6 +427,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
+            implicated_systems: []
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
@@ -482,6 +485,7 @@ test.describe('Submitted reports', () => {
                 editor_notes: "",
                 description: 'Sarasa',
                 title: "Submission " + i,
+                implicated_systems: []
             }
         })
 
@@ -550,6 +554,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
+            implicated_systems: []
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
@@ -605,6 +610,9 @@ test.describe('Submitted reports', () => {
                     AllegedHarmedOrNearlyHarmedParties {
                         entity_id
                     }
+                    implicated_systems {
+                        entity_id
+                    }
                     date
                     description
                     editor_dissimilar_incidents
@@ -655,6 +663,11 @@ test.describe('Submitted reports', () => {
             AllegedHarmedOrNearlyHarmedParties: [
                 {
                     entity_id: "entity-3",
+                },
+            ],
+            implicated_systems: [
+                {
+                    entity_id: "entity-1",
                 },
             ],
             date: "2021-09-14",

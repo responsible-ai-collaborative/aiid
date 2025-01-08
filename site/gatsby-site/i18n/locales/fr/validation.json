@@ -29,6 +29,17 @@
   "*Incident Date is required": "*Date de l'incident requise",
   "*Incident Date required": "*Date de l'incident requise",
   "*Incident ID(s) must be a number": "*L'ID de l'incident doit être un nombre",
+  "Alleged implicated AI Systems must have at least 3 characters": "Les systèmes impliqués doivent avoir au moins 3 caractères",
+  "Alleged implicated AI Systems can't be longer than 200 characters": "Les systèmes impliqués ne peuvent pas comporter plus de 200 caractères",
+  "*Alleged Implicated AI Systems is required": "Les systèmes d'IA présumés impliqués sont requis",
+  "Implicated AI systems must have at least 3 characters": "Les systèmes de l'IA impliqués doivent avoir au moins 3 caractères",
+  "Implicated AI systems can't be longer than 200 characters": "Les systèmes de l'IA impliqués ne peuvent pas comporter plus de 200 caractères",
+  "*Text must have at least 80 characters": "*Le texte doit comporter au moins 80 caractères",
+  "*Text can’t be longer than 50000 characters": "*Le texte ne peut pas comporter plus de 50000 caractères",
+  "Please review report. Some data is missing.": "Veuillez vérifier le rapport. Certaines données manquent.",
+  "Please review submission. Some data is missing.": "Veuillez vérifier la soumission. Certaines données manquent.",
+  "Some data is missing.": "Certaines données manquent.",
+  "Please review. Some data is missing.": "Veuillez vérifier. Certaines données manquent.",
   "Implicated Systems must have at least 3 characters": "Les systèmes impliqués doivent comporter au moins 3 caractères",
   "Implicated Systems can't be longer than 200 characters": "Les systèmes impliqués ne peuvent pas comporter plus de 200 caractères"
 }
