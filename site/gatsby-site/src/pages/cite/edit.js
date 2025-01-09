@@ -60,6 +60,8 @@ const reportFields = [
 function EditCitePage(props) {
   const { t, i18n } = useTranslation();
 
+  const { config: availableLanguages } = useLocalization();
+
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const [incidentId] = useQueryParam('incident_id');
@@ -69,7 +71,10 @@ function EditCitePage(props) {
     loading: loadingReport,
     refetch: refetchReport,
   } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
-    variables: { filter: { report_number: { EQ: reportNumber } } },
+    variables: {
+      filter: { report_number: { EQ: reportNumber } },
+      translationLanguages: availableLanguages.map((c) => c.code),
+    },
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
@@ -97,8 +102,6 @@ function EditCitePage(props) {
   const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
   const addToast = useToastContext();
-
-  const { config } = useLocalization();
 
   const updateSuccessToast = ({ reportNumber, incidentId }) => ({
     message: (
@@ -196,7 +199,7 @@ function EditCitePage(props) {
         },
       });
 
-      for (const { code } of config.filter((c) => c.code !== values.language)) {
+      for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
         const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
 
         await updateReportTranslations({
