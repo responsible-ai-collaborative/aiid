@@ -1,7 +1,6 @@
 import { format, fromUnixTime } from 'date-fns';
 import { test, query } from '../../utils';
 import { expect } from '@playwright/test';
-import config from '../../config';
 import { init } from '../../memory-mongo';
 const { gql } = require('@apollo/client');
 
@@ -14,6 +13,8 @@ test.describe('Incidents', () => {
   });
 
   test('Should display the Version History table data', async ({ page }) => {
+
+    await init();
 
     const { data: { history_incidents } } = await query({
       query: gql`
@@ -30,6 +31,9 @@ test.describe('Incidents', () => {
     await page.goto(url);
 
     await page.locator('h2').getByText('Version History').waitFor();
+
+    await page.locator('[data-cy="history-table"]').waitFor();
+
     const rows = await page.locator('[data-cy="history-row"]').elementHandles();
     expect(rows.length).toBe(4);
 
@@ -94,7 +98,7 @@ test.describe('Incidents', () => {
       `
     });
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login();
 
     await page.goto(url);
 
@@ -164,6 +168,8 @@ test.describe('Incidents', () => {
     });
 
     await page.goto(url);
+
+    await page.locator('[data-cy="history-row"]').first().waitFor();
 
     const rows = await page.locator('[data-cy="history-row"]');
 

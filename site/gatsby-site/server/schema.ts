@@ -15,6 +15,9 @@ const gatewaySchema = stitchSchemas({
             ['Incident.editors']: {
                 validationLevel: ValidationLevel.Off,
             },
+            ['CandidateEmbedding.vector']: {
+                validationLevel: ValidationLevel.Off,
+            },
         }
     }
 });
