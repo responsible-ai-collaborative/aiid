@@ -562,4 +562,13 @@ test.describe('Cite pages', () => {
         await expect(page.getByText('Incident 4 description')).toBeVisible();
         await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
     });
+
+    test('Should not show Annotator taxonomies', async ({ page, login }) => {
+
+        await page.goto('/cite/1');
+
+        await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1"]`)).toHaveCount(1);
+        await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1_Annotator"]`)).toHaveCount(0);
+
+    });
 });
