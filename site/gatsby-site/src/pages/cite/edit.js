@@ -109,7 +109,6 @@ function EditCitePage(props) {
 
   useEffect(() => {
     if (reportData?.report?.translations) {
-      // convert reportData.report.translations to an object with keys as language codes
       const translations = reportData.report.translations.reduce((acc, translation) => {
         acc[`translations_${translation.language}`] = pick(translation, translationsFields);
         return acc;
