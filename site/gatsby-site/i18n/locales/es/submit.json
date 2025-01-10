@@ -62,7 +62,12 @@
   "Submit a new incident report to the Artificial Intelligence Incident Database": "Enviar un nuevo informe de incidente a la Base de Datos de Incidentes de Inteligencia Artificial",
   "Draft saved": "Borrador guardado",
   "Saving as draft...": "Guardando como borrador...",
+  "Report successfully added to review queue. It will appear on the <2>review queue page</2> within an hour.": "Informe agregado exitosamente a la cola de revisión. Aparecerá en la <2>página de la cola de revisión</2> dentro de una hora.",
+  "Submit a new incident report to the Artificial Intelligence Incident Database.": "Enviar un nuevo informe de incidente a la Artificial Intelligence Incident Database.",
+  "Incident IDs": "IDs de Incidentes",
   "Implicated Systems": "Sistemas Implicados",
   "What systems were involved in the incident?": "¿Qué sistemas estuvieron involucrados en el incidente?",
-  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación."
+  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.",
+  "Alleged implicated AI systems": "Sistemas de IA presuntamente implicados",
+  "Which AI systems were involved?": "¿Qué sistemas de IA estuvieron involucrados?"
 }

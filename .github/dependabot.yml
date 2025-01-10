@@ -1,0 +1,11 @@
+# Configure Dependabot to target the staging branch of this repository.
+# See configuration options:
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "staging"
+    schedule:
+      interval: "weekly"

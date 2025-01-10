@@ -50,7 +50,7 @@ export default function MissingTranslations({ pageContext }) {
     }
   }
 
-  const keysWithFileDisrepencies = allKeys.filter((key) => {
+  const keysWithFileDiscrepancies = allKeys.filter((key) => {
     // e.g. [ 'es', 'fr', 'jp']
     const localesForKey = getKeys(klft[key]);
 
@@ -113,12 +113,12 @@ export default function MissingTranslations({ pageContext }) {
           </div>
         ))}
       </div>
-      <h2>Disrepencies</h2>
-      Found <strong>{keysWithFileDisrepencies.size}</strong> disrepencies. These are cases where a
+      <h2>Discrepancies</h2>
+      Found <strong>{keysWithFileDiscrepancies.size}</strong> discrepancies. These are cases where a
       key is translated in every locale, but the files where the translations appear differ by
       locale.
       <div className="flex flex-wrap gap-2">
-        {keysWithFileDisrepencies.map((key) => (
+        {keysWithFileDiscrepancies.map((key) => (
           <div key={key} className="p-4 flex items-center justify-center">
             <div>
               <table>

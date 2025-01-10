@@ -61,7 +61,13 @@
   "Saving changes...": "変更を保存中...",
   "Draft saved": "下書きが保存されました",
   "Saving as draft...": "下書きとして保存中...",
+  "Submit a new incident report to the Artificial Intelligence Incident Database": "新しいインシデントレポートをAIインシデントデータベースに送信",
+  "Report successfully added to review queue. It will appear on the <2>review queue page</2> within an hour.": "レポートはレビューキューに追加されました。1時間以内に<2>レビューキューページ</2>に表示されます",
+  "Submit a new incident report to the Artificial Intelligence Incident Database.": "新しいインシデントレポートをAIインシデントデータベースに送信",
+  "Incident ID": "インシデントID",
   "Implicated Systems": "関連システム",
   "What systems were involved in the incident?": "このインシデントに関わるシステムは何ですか？",
-  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません"
+  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません",
+  "Alleged implicated AI systems": "推定される関連AIシステム",
+  "Which AI systems were involved?": "どのAIシステムが関わっていましたか？"
 }
