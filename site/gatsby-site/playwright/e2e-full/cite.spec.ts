@@ -565,7 +565,7 @@ test.describe('Cite pages', () => {
 
     test('Should not show Annotator taxonomies', async ({ page, login }) => {
 
-        await page.goto('/cite/1');
+        await page.goto('/cite/3');
 
         await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1"]`)).toHaveCount(1);
         await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1_Annotator"]`)).toHaveCount(0);
