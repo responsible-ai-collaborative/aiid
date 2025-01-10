@@ -179,7 +179,7 @@ test.describe('Cite pages', () => {
 
         expect(data.duplicates).toEqual([{ true_incident_number: 2 }]);
         expect(data.incident_classifications_3).toHaveLength(0);
-        expect(data.incident_classifications_2).toHaveLength(3);
+        expect(data.incident_classifications_2).toHaveLength(4);
     });
 
     test('Should pre-fill submit report form', async ({ page }) => {
