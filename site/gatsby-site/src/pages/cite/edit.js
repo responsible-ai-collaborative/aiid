@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -57,6 +57,8 @@ const reportFields = [
   'quiet',
 ];
 
+const translationsFields = ['title', 'text'];
+
 function EditCitePage(props) {
   const { t, i18n } = useTranslation();
 
@@ -76,6 +78,8 @@ function EditCitePage(props) {
       translationLanguages: availableLanguages.map((c) => c.code),
     },
   });
+
+  const [reportTranslations, setReportTranslations] = useState(null);
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
@@ -102,6 +106,18 @@ function EditCitePage(props) {
   const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
   const addToast = useToastContext();
+
+  useEffect(() => {
+    if (reportData?.report?.translations) {
+      // convert reportData.report.translations to an object with keys as language codes
+      const translations = reportData.report.translations.reduce((acc, translation) => {
+        acc[`translations_${translation.language}`] = pick(translation, translationsFields);
+        return acc;
+      }, {});
+
+      setReportTranslations(translations);
+    }
+  }, [reportData]);
 
   const updateSuccessToast = ({ reportNumber, incidentId }) => ({
     message: (
@@ -200,7 +216,7 @@ function EditCitePage(props) {
       });
 
       for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
-        const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
+        const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
 
         await updateReportTranslations({
           variables: {
@@ -310,6 +326,7 @@ function EditCitePage(props) {
                 initialValues={{
                   ...reportData.report,
                   incident_ids,
+                  ...reportTranslations,
                 }}
               >
                 {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (

@@ -447,11 +447,6 @@ const IncidentReportForm = () => {
           .map((c) => {
             const name = `translations_${c.code}`;
 
-            const reportTranslation = values.translations.find((t) => t.language === c.code) ?? {
-              text: '',
-              title: '',
-            };
-
             return (
               <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
                 <h5>{c.name}</h5>
@@ -468,7 +463,7 @@ const IncidentReportForm = () => {
                   </div>
                   <input
                     type="text"
-                    value={reportTranslation?.title}
+                    value={values[name]?.title}
                     onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
                     className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
                       errors && touched && touched[`${name}.title`] && errors[`${name}.title`]
@@ -489,7 +484,7 @@ const IncidentReportForm = () => {
                     <Label label={t('Text')} />
                   </div>
                   <Editor
-                    value={reportTranslation?.text}
+                    value={values[name]?.text}
                     onChange={(value) => setFieldValue(`${name}.text`, value)}
                   />
                 </div>
