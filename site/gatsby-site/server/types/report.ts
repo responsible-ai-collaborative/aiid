@@ -60,13 +60,22 @@ export const ReportType = new GraphQLObjectType({
                     report_number: source.report_number,
                     language: { $in: args.languages }
                 }).toArray();
-
-                return translations.map(translation => ({
-                    text: translation.text || "",
-                    title: translation.title || "",
-                    plain_text: translation.plain_text || "",
-                    language: translation.language,
-                }));
+            
+                return args.languages.map((language: string) => {
+                    const translation = translations.find(t => t.language === language);
+                
+                    return translation ? {
+                        text: translation.text || "",
+                        title: translation.title || "",
+                        plain_text: translation.plain_text || "",
+                        language: language,
+                    } : {
+                        text: '',
+                        title: '',
+                        plain_text: '',
+                        language: language,
+                    };
+              });
             },
         }
     }
