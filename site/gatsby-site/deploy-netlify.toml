@@ -5,9 +5,6 @@
 [[plugins]]
   package = "@netlify/plugin-gatsby"
 
-[[plugins]]
-  package = "/plugins/netlify-plugin-create-admin-user"
-
 [build.processing.html]
   pretty_urls = false
 
