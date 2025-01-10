@@ -260,7 +260,7 @@ const items: DBClassification[] = [
         // created_at: new Date( "1722269831340")
     },
     {
-        _id: new ObjectId("63f3d58c26ab981f33b3f9c7"),
+        _id: new ObjectId("66f3d58c26ab981f33b3f9c7"),
         publish: true,
         reports: [],
         attributes: [
@@ -516,7 +516,6 @@ const items: DBClassification[] = [
         // TODO: not in graphql schema but present on db
         // created_at: new Date( "1722269831340")
     },
-
     {
         _id: new ObjectId("63f3d58c26ab981f33b3f9c8"),
         publish: true,
