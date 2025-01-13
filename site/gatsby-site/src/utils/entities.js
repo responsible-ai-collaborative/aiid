@@ -56,7 +56,10 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
     });
 
     for (const field of entityFields) {
-      for (const id of incident[field.property]) {
+      const ids = incident[field.property];
+
+      if (!ids) continue;
+      for (const id of ids) {
         const name = getName(entities, id);
 
         if (!entitiesHash[id]) {
@@ -120,7 +123,10 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
       .filter((incident) => entityFields.some((field) => incident[field.property].includes(id)))
       .reduce((related, incident) => {
         for (const field of entityFields) {
-          for (const relatedId of incident[field.property]) {
+          const ids = incident[field.property];
+
+          if (!ids) continue;
+          for (const relatedId of ids) {
             if (relatedId !== id && !related.some((r) => r == relatedId)) {
               related.push(relatedId);
             }
