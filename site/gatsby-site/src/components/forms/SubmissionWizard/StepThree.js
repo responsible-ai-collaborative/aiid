@@ -43,48 +43,40 @@ const StepThree = (props) => {
       })
       .nullable(),
     developers: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Alleged Developer must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Alleged Developers can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup
+          .string()
+          .min(3, 'Each alleged Developer must have at least 3 characters')
+          .max(200, "Each alleged Developer can't be longer than 200 characters")
+      )
       .nullable(),
     deployers: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Alleged Deployers must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Alleged Deployers can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup
+          .string()
+          .min(3, 'Each alleged Deployer must have at least 3 characters')
+          .max(200, "Each alleged Deployer can't be longer than 200 characters")
+      )
       .nullable(),
     harmed_parties: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Harmed Parties must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Harmed Parties can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup
+          .string()
+          .min(3, 'Each alleged Harmed party must have at least 3 characters')
+          .max(200, "Each alleged Harmed party can't be longer than 200 characters")
+      )
       .nullable(),
     implicated_systems: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Alleged implicated AI Systems must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Alleged implicated AI Systems can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup
+          .string()
+          .min(3, 'Each allaged Implicated system must have at least 3 characters')
+          .max(200, "Each allaged Implicated system can't be longer than 200 characters")
+      )
       .nullable(),
   });
 
