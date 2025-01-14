@@ -45,37 +45,74 @@ const StepThree = (props) => {
     developers: yup
       .array()
       .of(
-        yup
-          .string()
-          .min(3, 'Each alleged Developer must have at least 3 characters')
-          .max(200, "Each alleged Developer can't be longer than 200 characters")
+        yup.mixed().test({
+          name: 'string-or-object',
+          message: 'Each alleged developer must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return typeof value.label === 'string' && value.label.length >= 3;
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
       )
       .nullable(),
     deployers: yup
       .array()
       .of(
-        yup
-          .string()
-          .min(3, 'Each alleged Deployer must have at least 3 characters')
-          .max(200, "Each alleged Deployer can't be longer than 200 characters")
+        yup.mixed().test({
+          name: 'string-or-object',
+          message: 'Each alleged deployer must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return typeof value.label === 'string' && value.label.length >= 3;
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
       )
       .nullable(),
     harmed_parties: yup
       .array()
       .of(
-        yup
-          .string()
-          .min(3, 'Each alleged Harmed party must have at least 3 characters')
-          .max(200, "Each alleged Harmed party can't be longer than 200 characters")
+        yup.mixed().test({
+          name: 'string-or-object',
+          message: 'Each alleged Harmed parties must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return typeof value.label === 'string' && value.label.length >= 3;
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
       )
       .nullable(),
     implicated_systems: yup
       .array()
       .of(
-        yup
-          .string()
-          .min(3, 'Each allaged Implicated system must have at least 3 characters')
-          .max(200, "Each allaged Implicated system can't be longer than 200 characters")
+        yup.mixed().test({
+          name: 'string-or-object',
+          message:
+            'Each alleged Implicated system must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return typeof value.label === 'string' && value.label.length >= 3;
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
       )
       .nullable(),
   });
@@ -124,7 +161,13 @@ const StepThree = (props) => {
   return (
     <StepContainer name={props.name} childClassName="p-6">
       <Formik
-        initialValues={data}
+        initialValues={{
+          ...data,
+          developers: data.developers || [],
+          deployers: data.deployers || [],
+          harmed_parties: data.harmed_parties || [],
+          implicated_systems: data.implicated_systems || [],
+        }}
         onSubmit={() => {}}
         validationSchema={stepThreeValidationSchema}
         enableReinitialize
@@ -283,7 +326,7 @@ const FormDetails = ({
               </FieldContainer>
             )}
 
-            <FieldContainer>
+            <FieldContainer data-testid="deployers-input">
               <TagsInputGroup
                 name="deployers"
                 label={t('Alleged deployer of AI system')}
@@ -300,7 +343,7 @@ const FormDetails = ({
               />
             </FieldContainer>
 
-            <FieldContainer>
+            <FieldContainer data-testid="developers-input">
               <TagsInputGroup
                 name="developers"
                 label={t('Alleged developer of AI system')}
@@ -317,7 +360,7 @@ const FormDetails = ({
               />
             </FieldContainer>
 
-            <FieldContainer>
+            <FieldContainer data-testid="harmed_parties-input">
               <TagsInputGroup
                 name="harmed_parties"
                 label={t('Alleged harmed or nearly harmed parties')}
@@ -334,7 +377,7 @@ const FormDetails = ({
               />
             </FieldContainer>
 
-            <FieldContainer>
+            <FieldContainer data-testid="implicated_systems-input">
               <TagsInputGroup
                 name="implicated_systems"
                 label={t('Implicated Systems')}
@@ -342,8 +385,8 @@ const FormDetails = ({
                 placeholder={t('What systems were involved in the incident?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
