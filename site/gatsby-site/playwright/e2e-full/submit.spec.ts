@@ -1591,12 +1591,12 @@ test.describe('The Submit form', () => {
 
     await page.locator('input[name="implicated_systems"]').fill('gh');
     await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Implicated system must have at least 3 characters and less than 200')).toBeVisible();
+    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
     await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
 
     await page.locator('input[name="implicated_systems"]').fill('NewSystem');
     await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Implicated system must have at least 3 characters and less than 200')).not.toBeVisible();
+    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
 
     // Check for "New selection" behavior
     await page.locator('input[name="developers"]').fill('xy');

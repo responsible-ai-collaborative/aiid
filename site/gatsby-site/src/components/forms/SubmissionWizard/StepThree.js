@@ -102,7 +102,7 @@ const StepThree = (props) => {
         yup.mixed().test({
           name: 'string-or-object',
           message:
-            'Each alleged Implicated system must have at least 3 characters and less than 200',
+            'Each alleged Implicated AI system must have at least 3 characters and less than 200',
           test(value) {
             if (typeof value === 'string') {
               return value.length >= 3;
