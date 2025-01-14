@@ -17,8 +17,30 @@ import subscriptions from './seeds/customData/subscriptions';
 
 import reportsHistory from './seeds/history/reportsHistory';
 import incidentsHistory from './seeds/history/incidentsHistory';
+import checklists from './seeds/aiidprod/checklists';
 
-export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
+/**
+ * Initializes a MongoDB database with predefined and optional custom seed data.
+ * 
+ * @param {Record<string, Record<string, Record<string, unknown>[]>>} [seed] - Optional additional seed data
+ *        organized as database -> collection -> documents structure.
+ *        Example: { database1: { collection1: [ doc1, doc2 ] } }
+ * @param {Object} [options={ drop: false }] - Configuration options
+ * @param {boolean} [options.drop=false] - Whether to drop existing collections before seeding
+ * @returns {Promise<void>} A promise that resolves when seeding is complete
+ * 
+ * @example
+ * // Initialize with default data only
+ * await init();
+ * 
+ * // Initialize with default data and deletes whats in myCollection
+ * await init({
+ *   myDatabase: {
+ *     myCollection: [{ field: 'value' }]
+ *   }
+ * }, { drop: true });
+ */
+export const init = async (seed?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
     await seedFixture({
         aiidprod: {
@@ -30,6 +52,7 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             taxa,
             candidates,
             duplicates,
+            checklists,
         },
         customData: {
             users,
@@ -44,9 +67,9 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
         }
     });
 
-    if (extra) {
+    if (seed) {
 
-        await seedFixture(extra, drop);
+        await seedFixture(seed, drop);
     }
 
     console.log('Memory Mongo initialized');

@@ -321,149 +321,44 @@ export type Checklist = {
   about?: Maybe<Scalars['String']['output']>;
   date_created?: Maybe<Scalars['DateTime']['output']>;
   date_updated?: Maybe<Scalars['DateTime']['output']>;
-  entity_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   owner_id?: Maybe<Scalars['String']['output']>;
-  risks?: Maybe<Array<Maybe<ChecklistRisk>>>;
+  risks?: Maybe<Array<Maybe<Risks>>>;
   tags_goals?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   tags_methods?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   tags_other?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
-export type ChecklistInsertInput = {
+export type ChecklistFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<ChecklistFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  about?: InputMaybe<StringFilter>;
+  date_created?: InputMaybe<DateTimeFilter>;
+  date_updated?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+  owner_id?: InputMaybe<StringFilter>;
+  risks?: InputMaybe<RisksObjectFilterType>;
+  tags_goals?: InputMaybe<StringFilter>;
+  tags_methods?: InputMaybe<StringFilter>;
+  tags_other?: InputMaybe<StringFilter>;
+};
+
+export type ChecklistInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   about?: InputMaybe<Scalars['String']['input']>;
   date_created?: InputMaybe<Scalars['DateTime']['input']>;
   date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  entity_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   owner_id?: InputMaybe<Scalars['String']['input']>;
-  risks?: InputMaybe<Array<InputMaybe<ChecklistRiskInsertInput>>>;
+  risks?: InputMaybe<Array<InputMaybe<RisksInsertType>>>;
   tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-export type ChecklistQueryInput = {
-  AND?: InputMaybe<Array<ChecklistQueryInput>>;
-  OR?: InputMaybe<Array<ChecklistQueryInput>>;
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  _id_gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  _id_lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_ne?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  about?: InputMaybe<Scalars['String']['input']>;
-  about_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  about_gt?: InputMaybe<Scalars['String']['input']>;
-  about_gte?: InputMaybe<Scalars['String']['input']>;
-  about_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  about_lt?: InputMaybe<Scalars['String']['input']>;
-  about_lte?: InputMaybe<Scalars['String']['input']>;
-  about_ne?: InputMaybe<Scalars['String']['input']>;
-  about_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  date_created?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_created_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_created_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  date_updated_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  date_updated_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_ne?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  entity_id?: InputMaybe<Scalars['String']['input']>;
-  entity_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  entity_id_gt?: InputMaybe<Scalars['String']['input']>;
-  entity_id_gte?: InputMaybe<Scalars['String']['input']>;
-  entity_id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  entity_id_lt?: InputMaybe<Scalars['String']['input']>;
-  entity_id_lte?: InputMaybe<Scalars['String']['input']>;
-  entity_id_ne?: InputMaybe<Scalars['String']['input']>;
-  entity_id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_ne?: InputMaybe<Scalars['String']['input']>;
-  id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  name_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_ne?: InputMaybe<Scalars['String']['input']>;
-  name_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  owner_id?: InputMaybe<Scalars['String']['input']>;
-  owner_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  owner_id_gt?: InputMaybe<Scalars['String']['input']>;
-  owner_id_gte?: InputMaybe<Scalars['String']['input']>;
-  owner_id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  owner_id_lt?: InputMaybe<Scalars['String']['input']>;
-  owner_id_lte?: InputMaybe<Scalars['String']['input']>;
-  owner_id_ne?: InputMaybe<Scalars['String']['input']>;
-  owner_id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  risks?: InputMaybe<Array<InputMaybe<ChecklistRiskQueryInput>>>;
-  risks_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  risks_in?: InputMaybe<Array<InputMaybe<ChecklistRiskQueryInput>>>;
-  risks_nin?: InputMaybe<Array<InputMaybe<ChecklistRiskQueryInput>>>;
-  tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_goals_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_goals_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_goals_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_methods_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_other_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-export type ChecklistRisk = {
-  __typename?: 'ChecklistRisk';
-  generated?: Maybe<Scalars['Boolean']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  likelihood?: Maybe<Scalars['String']['output']>;
-  precedents?: Maybe<Array<Maybe<ChecklistRiskPrecedent>>>;
-  risk_notes?: Maybe<Scalars['String']['output']>;
-  risk_status?: Maybe<Scalars['String']['output']>;
-  severity?: Maybe<Scalars['String']['output']>;
-  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  title?: Maybe<Scalars['String']['output']>;
-  touched?: Maybe<Scalars['Boolean']['output']>;
-};
-
-export type ChecklistRiskInsertInput = {
-  generated?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  likelihood?: InputMaybe<Scalars['String']['input']>;
-  precedents?: InputMaybe<Array<InputMaybe<ChecklistRiskPrecedentInsertInput>>>;
-  risk_notes?: InputMaybe<Scalars['String']['input']>;
-  risk_status?: InputMaybe<Scalars['String']['input']>;
-  severity?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  touched?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type ChecklistRiskPrecedent = {
@@ -472,157 +367,6 @@ export type ChecklistRiskPrecedent = {
   incident_id?: Maybe<Scalars['Int']['output']>;
   tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   title?: Maybe<Scalars['String']['output']>;
-};
-
-export type ChecklistRiskPrecedentInsertInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ChecklistRiskPrecedentQueryInput = {
-  AND?: InputMaybe<Array<ChecklistRiskPrecedentQueryInput>>;
-  OR?: InputMaybe<Array<ChecklistRiskPrecedentQueryInput>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  description_gt?: InputMaybe<Scalars['String']['input']>;
-  description_gte?: InputMaybe<Scalars['String']['input']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_lt?: InputMaybe<Scalars['String']['input']>;
-  description_lte?: InputMaybe<Scalars['String']['input']>;
-  description_ne?: InputMaybe<Scalars['String']['input']>;
-  description_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_id_gt?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_gte?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  incident_id_lt?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_lte?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_ne?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  title_gt?: InputMaybe<Scalars['String']['input']>;
-  title_gte?: InputMaybe<Scalars['String']['input']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title_lt?: InputMaybe<Scalars['String']['input']>;
-  title_lte?: InputMaybe<Scalars['String']['input']>;
-  title_ne?: InputMaybe<Scalars['String']['input']>;
-  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-export type ChecklistRiskPrecedentUpdateInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  incident_id?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_inc?: InputMaybe<Scalars['Int']['input']>;
-  incident_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_unset?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type ChecklistRiskQueryInput = {
-  AND?: InputMaybe<Array<ChecklistRiskQueryInput>>;
-  OR?: InputMaybe<Array<ChecklistRiskQueryInput>>;
-  generated?: InputMaybe<Scalars['Boolean']['input']>;
-  generated_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  generated_ne?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  id_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_ne?: InputMaybe<Scalars['String']['input']>;
-  id_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  likelihood?: InputMaybe<Scalars['String']['input']>;
-  likelihood_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  likelihood_gt?: InputMaybe<Scalars['String']['input']>;
-  likelihood_gte?: InputMaybe<Scalars['String']['input']>;
-  likelihood_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  likelihood_lt?: InputMaybe<Scalars['String']['input']>;
-  likelihood_lte?: InputMaybe<Scalars['String']['input']>;
-  likelihood_ne?: InputMaybe<Scalars['String']['input']>;
-  likelihood_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  precedents?: InputMaybe<Array<InputMaybe<ChecklistRiskPrecedentQueryInput>>>;
-  precedents_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  precedents_in?: InputMaybe<Array<InputMaybe<ChecklistRiskPrecedentQueryInput>>>;
-  precedents_nin?: InputMaybe<Array<InputMaybe<ChecklistRiskPrecedentQueryInput>>>;
-  risk_notes?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  risk_notes_gt?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_gte?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  risk_notes_lt?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_lte?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_ne?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  risk_status?: InputMaybe<Scalars['String']['input']>;
-  risk_status_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  risk_status_gt?: InputMaybe<Scalars['String']['input']>;
-  risk_status_gte?: InputMaybe<Scalars['String']['input']>;
-  risk_status_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  risk_status_lt?: InputMaybe<Scalars['String']['input']>;
-  risk_status_lte?: InputMaybe<Scalars['String']['input']>;
-  risk_status_ne?: InputMaybe<Scalars['String']['input']>;
-  risk_status_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  severity?: InputMaybe<Scalars['String']['input']>;
-  severity_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  severity_gt?: InputMaybe<Scalars['String']['input']>;
-  severity_gte?: InputMaybe<Scalars['String']['input']>;
-  severity_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  severity_lt?: InputMaybe<Scalars['String']['input']>;
-  severity_lte?: InputMaybe<Scalars['String']['input']>;
-  severity_ne?: InputMaybe<Scalars['String']['input']>;
-  severity_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  title_gt?: InputMaybe<Scalars['String']['input']>;
-  title_gte?: InputMaybe<Scalars['String']['input']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  title_lt?: InputMaybe<Scalars['String']['input']>;
-  title_lte?: InputMaybe<Scalars['String']['input']>;
-  title_ne?: InputMaybe<Scalars['String']['input']>;
-  title_nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  touched?: InputMaybe<Scalars['Boolean']['input']>;
-  touched_exists?: InputMaybe<Scalars['Boolean']['input']>;
-  touched_ne?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type ChecklistRiskUpdateInput = {
-  generated?: InputMaybe<Scalars['Boolean']['input']>;
-  generated_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  likelihood?: InputMaybe<Scalars['String']['input']>;
-  likelihood_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  precedents?: InputMaybe<Array<InputMaybe<ChecklistRiskPrecedentUpdateInput>>>;
-  precedents_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  risk_notes?: InputMaybe<Scalars['String']['input']>;
-  risk_notes_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  risk_status?: InputMaybe<Scalars['String']['input']>;
-  risk_status_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  severity?: InputMaybe<Scalars['String']['input']>;
-  severity_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  title_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  touched?: InputMaybe<Scalars['Boolean']['input']>;
-  touched_unset?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export enum ChecklistSortByInput {
@@ -644,31 +388,14 @@ export enum ChecklistSortByInput {
   IdDesc = '_ID_DESC'
 }
 
-export type ChecklistUpdateInput = {
-  _id?: InputMaybe<Scalars['ObjectId']['input']>;
-  _id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  about?: InputMaybe<Scalars['String']['input']>;
-  about_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_created?: InputMaybe<Scalars['DateTime']['input']>;
-  date_created_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  date_updated?: InputMaybe<Scalars['DateTime']['input']>;
-  date_updated_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  entity_id?: InputMaybe<Scalars['String']['input']>;
-  entity_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  name_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  owner_id?: InputMaybe<Scalars['String']['input']>;
-  owner_id_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  risks?: InputMaybe<Array<InputMaybe<ChecklistRiskUpdateInput>>>;
-  risks_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_goals?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_goals_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_methods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_methods_unset?: InputMaybe<Scalars['Boolean']['input']>;
-  tags_other?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  tags_other_unset?: InputMaybe<Scalars['Boolean']['input']>;
+export type ChecklistSortType = {
+  _id?: InputMaybe<SortType>;
+  about?: InputMaybe<SortType>;
+  date_created?: InputMaybe<SortType>;
+  date_updated?: InputMaybe<SortType>;
+  id?: InputMaybe<SortType>;
+  name?: InputMaybe<SortType>;
+  owner_id?: InputMaybe<SortType>;
 };
 
 export type Classification = {
@@ -2158,7 +1885,6 @@ export type Mutation = {
   logIncidentHistory?: Maybe<LogIncidentHistoryPayload>;
   logReportHistory?: Maybe<LogReportHistoryPayload>;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
-  replaceOneChecklist?: Maybe<Checklist>;
   replaceOneIncident?: Maybe<Incident>;
   replaceOneNotification?: Maybe<Notification>;
   replaceOneUser?: Maybe<User>;
@@ -2171,7 +1897,6 @@ export type Mutation = {
   updateManyNotifications?: Maybe<UpdateManyPayload>;
   updateManyQuickadds?: Maybe<UpdateManyPayload>;
   updateOneCandidate?: Maybe<Candidate>;
-  updateOneChecklist?: Maybe<Checklist>;
   updateOneDuplicate?: Maybe<Duplicate>;
   updateOneEntity?: Maybe<Entity>;
   updateOneIncident?: Maybe<Incident>;
@@ -2210,11 +1935,6 @@ export type MutationDeleteManyCandidatesArgs = {
 };
 
 
-export type MutationDeleteManyChecklistsArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
-};
-
-
 export type MutationDeleteManyDuplicatesArgs = {
   filter?: InputMaybe<DuplicateFilterType>;
   pagination?: InputMaybe<PaginationType>;
@@ -2249,7 +1969,9 @@ export type MutationDeleteOneCandidateArgs = {
 
 
 export type MutationDeleteOneChecklistArgs = {
-  query: ChecklistQueryInput;
+  filter?: InputMaybe<ChecklistFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ChecklistSortType>;
 };
 
 
@@ -2308,11 +2030,6 @@ export type MutationInsertManyCandidatesArgs = {
 };
 
 
-export type MutationInsertManyChecklistsArgs = {
-  data: Array<ChecklistInsertInput>;
-};
-
-
 export type MutationInsertManyDuplicatesArgs = {
   data: Array<InputMaybe<DuplicateInsertType>>;
 };
@@ -2334,7 +2051,7 @@ export type MutationInsertOneCandidateArgs = {
 
 
 export type MutationInsertOneChecklistArgs = {
-  data: ChecklistInsertInput;
+  data: ChecklistInsertType;
 };
 
 
@@ -2378,12 +2095,6 @@ export type MutationPromoteSubmissionToReportArgs = {
 };
 
 
-export type MutationReplaceOneChecklistArgs = {
-  data: ChecklistInsertInput;
-  query?: InputMaybe<ChecklistQueryInput>;
-};
-
-
 export type MutationReplaceOneIncidentArgs = {
   query?: InputMaybe<IncidentQueryInput>;
 };
@@ -2403,12 +2114,6 @@ export type MutationReplaceOneUserArgs = {
 export type MutationUpdateManyCandidatesArgs = {
   filter: CandidateFilterType;
   update: CandidateUpdateType;
-};
-
-
-export type MutationUpdateManyChecklistsArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
-  set: ChecklistUpdateInput;
 };
 
 
@@ -2439,12 +2144,6 @@ export type MutationUpdateManyQuickaddsArgs = {
 export type MutationUpdateOneCandidateArgs = {
   filter: CandidateFilterType;
   update: CandidateUpdateType;
-};
-
-
-export type MutationUpdateOneChecklistArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
-  set: ChecklistUpdateInput;
 };
 
 
@@ -2514,8 +2213,8 @@ export type MutationUpsertOneCandidateArgs = {
 
 
 export type MutationUpsertOneChecklistArgs = {
-  data: ChecklistInsertInput;
-  query?: InputMaybe<ChecklistQueryInput>;
+  filter: ChecklistFilterType;
+  update: ChecklistInsertType;
 };
 
 
@@ -2757,6 +2456,32 @@ export type PaginationType = {
   skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Precedents = {
+  __typename?: 'Precedents';
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  incident_id?: Maybe<Scalars['Int']['output']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type PrecedentsInsertType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  incident_id?: InputMaybe<Scalars['Int']['input']>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PrecedentsObjectFilterType = {
+  description?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  incident_id?: InputMaybe<IntFilter>;
+  opr?: InputMaybe<OprExists>;
+  tags?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+};
+
 export type PromoteSubmissionToReportInput = {
   incident_ids: Array<InputMaybe<Scalars['Int']['input']>>;
   is_incident_report?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2776,7 +2501,7 @@ export type Query = {
   candidate?: Maybe<Candidate>;
   candidates?: Maybe<Array<Maybe<Candidate>>>;
   checklist?: Maybe<Checklist>;
-  checklists: Array<Maybe<Checklist>>;
+  checklists?: Maybe<Array<Maybe<Checklist>>>;
   classification?: Maybe<Classification>;
   classifications?: Maybe<Array<Maybe<Classification>>>;
   duplicate?: Maybe<Duplicate>;
@@ -2795,7 +2520,7 @@ export type Query = {
   quickadds?: Maybe<Array<Maybe<Quickadd>>>;
   report?: Maybe<Report>;
   reports?: Maybe<Array<Maybe<Report>>>;
-  risks?: Maybe<Array<Maybe<RisksPayloadItem>>>;
+  risks?: Maybe<Array<Maybe<Risks>>>;
   submission?: Maybe<Submission>;
   submissions?: Maybe<Array<Maybe<Submission>>>;
   subscription?: Maybe<Subscription>;
@@ -2822,14 +2547,16 @@ export type QueryCandidatesArgs = {
 
 
 export type QueryChecklistArgs = {
-  query?: InputMaybe<ChecklistQueryInput>;
+  filter?: InputMaybe<ChecklistFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ChecklistSortType>;
 };
 
 
 export type QueryChecklistsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  query?: InputMaybe<ChecklistQueryInput>;
-  sortBy?: InputMaybe<ChecklistSortByInput>;
+  filter?: InputMaybe<ChecklistFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ChecklistSortType>;
 };
 
 
@@ -3362,8 +3089,49 @@ export type ReportUserRelationInput = {
   link?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Risks = {
+  __typename?: 'Risks';
+  id?: Maybe<Scalars['String']['output']>;
+  likelihood?: Maybe<Scalars['String']['output']>;
+  precedents?: Maybe<Array<Maybe<Precedents>>>;
+  risk_notes?: Maybe<Scalars['String']['output']>;
+  risk_status?: Maybe<Scalars['String']['output']>;
+  severity?: Maybe<Scalars['String']['output']>;
+  tag?: Maybe<Scalars['String']['output']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Scalars['String']['output']>;
+  touched?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type RisksInput = {
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type RisksInsertType = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  likelihood?: InputMaybe<Scalars['String']['input']>;
+  precedents?: InputMaybe<Array<InputMaybe<PrecedentsInsertType>>>;
+  risk_notes?: InputMaybe<Scalars['String']['input']>;
+  risk_status?: InputMaybe<Scalars['String']['input']>;
+  severity?: InputMaybe<Scalars['String']['input']>;
+  tag?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  touched?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type RisksObjectFilterType = {
+  id?: InputMaybe<StringFilter>;
+  likelihood?: InputMaybe<StringFilter>;
+  opr?: InputMaybe<OprExists>;
+  precedents?: InputMaybe<PrecedentsObjectFilterType>;
+  risk_notes?: InputMaybe<StringFilter>;
+  risk_status?: InputMaybe<StringFilter>;
+  severity?: InputMaybe<StringFilter>;
+  tag?: InputMaybe<StringFilter>;
+  tags?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  touched?: InputMaybe<BooleanFilter>;
 };
 
 export type RisksPayloadItem = {
@@ -4587,6 +4355,42 @@ export type UserUpdateType = {
   set?: InputMaybe<UserSetType>;
 };
 
+export type FindChecklistsQueryVariables = Exact<{
+  filter?: InputMaybe<ChecklistFilterType>;
+}>;
+
+
+export type FindChecklistsQuery = { __typename?: 'Query', checklists?: Array<{ __typename?: 'Checklist', id?: string | null, owner_id?: string | null, date_created?: any | null, date_updated?: any | null, name?: string | null, about?: string | null, tags_goals?: Array<string | null> | null, tags_methods?: Array<string | null> | null, tags_other?: Array<string | null> | null, risks?: Array<{ __typename?: 'Risks', id?: string | null, title?: string | null, risk_status?: string | null, risk_notes?: string | null, severity?: string | null, likelihood?: string | null, touched?: boolean | null, tags?: Array<string | null> | null, precedents?: Array<{ __typename?: 'Precedents', tags?: Array<string | null> | null, incident_id?: number | null, description?: string | null, title?: string | null } | null> | null } | null> | null } | null> | null };
+
+export type FindChecklistQueryVariables = Exact<{
+  filter?: InputMaybe<ChecklistFilterType>;
+}>;
+
+
+export type FindChecklistQuery = { __typename?: 'Query', checklist?: { __typename?: 'Checklist', id?: string | null, owner_id?: string | null, date_created?: any | null, date_updated?: any | null, name?: string | null, about?: string | null, tags_goals?: Array<string | null> | null, tags_methods?: Array<string | null> | null, tags_other?: Array<string | null> | null, risks?: Array<{ __typename?: 'Risks', id?: string | null, title?: string | null, risk_status?: string | null, risk_notes?: string | null, severity?: string | null, likelihood?: string | null, touched?: boolean | null, tags?: Array<string | null> | null, precedents?: Array<{ __typename?: 'Precedents', tags?: Array<string | null> | null, incident_id?: number | null, description?: string | null, title?: string | null } | null> | null } | null> | null } | null };
+
+export type UpsertChecklistMutationVariables = Exact<{
+  filter: ChecklistFilterType;
+  checklist: ChecklistInsertType;
+}>;
+
+
+export type UpsertChecklistMutation = { __typename?: 'Mutation', upsertOneChecklist?: { __typename?: 'Checklist', id?: string | null, owner_id?: string | null, date_created?: any | null, date_updated?: any | null, name?: string | null, about?: string | null, tags_goals?: Array<string | null> | null, tags_methods?: Array<string | null> | null, tags_other?: Array<string | null> | null, risks?: Array<{ __typename?: 'Risks', id?: string | null, title?: string | null, risk_status?: string | null, risk_notes?: string | null, severity?: string | null, likelihood?: string | null, touched?: boolean | null, tags?: Array<string | null> | null, precedents?: Array<{ __typename?: 'Precedents', tags?: Array<string | null> | null, incident_id?: number | null, description?: string | null, title?: string | null } | null> | null } | null> | null } | null };
+
+export type InsertChecklistMutationVariables = Exact<{
+  checklist: ChecklistInsertType;
+}>;
+
+
+export type InsertChecklistMutation = { __typename?: 'Mutation', insertOneChecklist?: { __typename?: 'Checklist', id?: string | null, owner_id?: string | null, date_created?: any | null, date_updated?: any | null, name?: string | null, about?: string | null, tags_goals?: Array<string | null> | null, tags_methods?: Array<string | null> | null, tags_other?: Array<string | null> | null, risks?: Array<{ __typename?: 'Risks', id?: string | null, title?: string | null, risk_status?: string | null, risk_notes?: string | null, severity?: string | null, likelihood?: string | null, touched?: boolean | null, tags?: Array<string | null> | null, precedents?: Array<{ __typename?: 'Precedents', tags?: Array<string | null> | null, incident_id?: number | null, description?: string | null, title?: string | null } | null> | null } | null> | null } | null };
+
+export type DeleteOneChecklistMutationVariables = Exact<{
+  filter: ChecklistFilterType;
+}>;
+
+
+export type DeleteOneChecklistMutation = { __typename?: 'Mutation', deleteOneChecklist?: { __typename?: 'Checklist', id?: string | null } | null };
+
 export type FindClassificationsQueryVariables = Exact<{
   filter?: InputMaybe<ClassificationFilterType>;
 }>;
@@ -4963,6 +4767,11 @@ export type DeleteOneVariantMutationVariables = Exact<{
 export type DeleteOneVariantMutation = { __typename?: 'Mutation', deleteOneReport?: { __typename?: 'Report', report_number: number } | null };
 
 
+export const FindChecklistsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"findChecklists"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checklists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FindChecklistsQuery, FindChecklistsQueryVariables>;
+export const FindChecklistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"findChecklist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checklist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FindChecklistQuery, FindChecklistQueryVariables>;
+export const UpsertChecklistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"upsertChecklist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"checklist"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneChecklist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"checklist"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<UpsertChecklistMutation, UpsertChecklistMutationVariables>;
+export const InsertChecklistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"insertChecklist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"checklist"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneChecklist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"checklist"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<InsertChecklistMutation, InsertChecklistMutationVariables>;
+export const DeleteOneChecklistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteOneChecklist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneChecklist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteOneChecklistMutation, DeleteOneChecklistMutationVariables>;
 export const FindClassificationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindClassifications"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"classifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"namespace"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short_name"}},{"kind":"Field","name":{"kind":"Name","value":"value_json"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish"}}]}}]}}]} as unknown as DocumentNode<FindClassificationsQuery, FindClassificationsQueryVariables>;
 export const UpsertClassificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertClassification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ClassificationInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneClassification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incidents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}},{"kind":"Field","name":{"kind":"Name","value":"namespace"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short_name"}},{"kind":"Field","name":{"kind":"Name","value":"value_json"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish"}}]}}]}}]} as unknown as DocumentNode<UpsertClassificationMutation, UpsertClassificationMutationVariables>;
 export const InsertDuplicateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertDuplicate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DuplicateInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertOneDuplicate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"duplicate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"duplicate_incident_number"}},{"kind":"Field","name":{"kind":"Name","value":"true_incident_number"}}]}}]}}]} as unknown as DocumentNode<InsertDuplicateMutation, InsertDuplicateMutationVariables>;
