@@ -20,13 +20,12 @@ const TagsInputGroup = ({
 }) => {
   const [optional, setOptional] = useState(true);
 
+  // this causes an unnecessary re render, I'm hotfixing to get it working with react 18
   useEffect(() => {
-    if (schema?.fields[name]) {
-      schema.fields[name].isValid(undefined).then((result) => setOptional(result));
-    }
-  }, [schema, name]);
+    schema?.fields[name]?.isValid(undefined).then((result) => setOptional(result));
+  }, []);
 
-  const isInvalid = touched[name] && errors[name];
+  const isInvalid = errors[name] && touched[name];
 
   return (
     <FieldContainer>
