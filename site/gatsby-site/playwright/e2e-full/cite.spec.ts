@@ -449,6 +449,16 @@ test.describe('Cite pages', () => {
         expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
     });
 
+    test('Should not show a spinner on notify button when not logged in', async ({ page, login }) => {
+
+        const id = 'r1';
+
+        await page.goto('/cite/1#' + id);
+
+        await expect(page.locator('[data-cy="notify-button"] [data-cy="spinner"]')).toHaveCount(0);
+
+    });
+
     test('Should show proper entities card text', async ({ page }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
@@ -561,7 +571,7 @@ test.describe('Cite pages', () => {
         await expect(page.getByText('Incident 4 description')).toBeVisible();
         await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
     });
-
+  
     test('Should not show Annotator taxonomies', async ({ page, login }) => {
 
         await page.goto('/cite/3');

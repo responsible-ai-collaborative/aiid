@@ -45,7 +45,7 @@ const ChecklistsIndex = ({ users }) => {
     loading: checklistsLoading,
     error: checklistsErrors,
   } = useQuery(FIND_CHECKLISTS, {
-    variables: { query: { owner_id: user?.id } },
+    variables: { filter: { owner_id: { EQ: user?.id } } },
     skip: !user?.id,
   });
 
@@ -327,7 +327,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
               type="button"
               onClick={async () => {
                 try {
-                  await deleteChecklist({ variables: { query: { id: checklist.id } } });
+                  await deleteChecklist({ variables: { filter: { id: { EQ: checklist.id } } } });
                   setChecklists((checklists) => checklists.filter((c) => c.id != checklist.id));
                 } catch (error) {
                   addToast({
