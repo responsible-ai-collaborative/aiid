@@ -652,7 +652,7 @@ test.describe('The Submit form', () => {
             .not.toBeVisible();
     });
 
-    test.skip('Should show fallback preview image on initial load', async ({ page }) => {
+    test('Should show fallback preview image on initial load', async ({ page }) => {
         const values = {
             url: 'https://incidentdatabase.ai',
             title: 'test title',
