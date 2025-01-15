@@ -18,13 +18,13 @@ const entitiesFields = ['relatedEntities'];
 const EntitiesPage = ({ pageContext, data, ...props }) => {
   const { t } = useTranslation(['entities']);
 
-  const { entities } = pageContext;
+  const { entities, entityRelationships } = pageContext;
 
   const { incidents } = data;
 
   const incidentsHash = useMemo(() => makeIncidentsHash(incidents.nodes), [incidents.nodes]);
 
-  const entitiesHash = useMemo(() => makeEntitiesHash(entities), [entities]);
+  const entitiesHash = useMemo(() => makeEntitiesHash(entities, entityRelationships), [entities]);
 
   const entitiesData = useMemo(
     () =>
