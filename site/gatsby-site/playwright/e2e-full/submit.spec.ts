@@ -4,6 +4,7 @@ import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
+import { addWeeks, getUnixTime, subWeeks } from 'date-fns';
 
 
 test.describe('The Submit form', () => {
@@ -464,111 +465,60 @@ test.describe('The Submit form', () => {
     });
 
 
-    test.skip('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
-
-        const relatedReports = {
-            byURL: {
-                data: {
-                    reports: [
-                        {
-                            __typename: 'Report',
-                            report_number: 1501,
-                            title: 'Zillow to exit its home buying business, cut 25% of staff',
-                            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-                        },
-                    ],
-                },
-            },
-            byDatePublished: {
-                data: {
-                    reports: [
-                        {
-                            __typename: 'Report',
-                            report_number: 810,
-                            title: "Google's Nest Stops Selling Its Smart Smoke Alarm For Now Due To Faulty Feature",
-                            url: 'https://www.forbes.com/sites/aarontilley/2014/04/03/googles-nest-stops-selling-its-smart-smoke-alarm-for-now',
-                        },
-                        {
-                            __typename: 'Report',
-                            report_number: 811,
-                            title: 'Why Nest’s Smoke Detector Fail Is Actually A Win For Everyone',
-                            url: 'https://readwrite.com/2014/04/04/nest-smoke-detector-fail/',
-                        },
-                    ],
-                },
-            },
-            byAuthors: {
-                data: { reports: [] },
-            },
-            byIncidentId: {
-                data: {
-                    incidents: [
-                        {
-                            __typename: 'Incident',
-                            incident_id: 1,
-                            title: 'Google’s YouTube Kids App Presents Inappropriate Content',
-                            reports: [
-                                {
-                                    __typename: 'Report',
-                                    report_number: 10,
-                                    title: 'Google’s YouTube Kids App Presents Inappropriate Content',
-                                    url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
-        };
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+    test('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
         await page.goto(url);
 
-        await waitForRequest('findSubmissions');
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.url_in,
-            relatedReports.byURL,
-            'RelatedReportsByURL'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.epoch_date_published_gt &&
-                req.postDataJSON().variables.query?.epoch_date_published_lt,
-            relatedReports.byDatePublished,
-            'RelatedReportsByPublishedDate'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.authors_in?.length,
-            relatedReports.byAuthors,
-            'RelatedReportsByAuthor'
-        );
+        const authors = "author1";
+        const date_published = "2014-08-14";
+        const reportUrl = 'http://example.com';
 
         const values = {
-            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            authors: 'test author',
-            date_published: '2014-03-30',
+            url: reportUrl,
+            authors,
+            date_published,
             incident_ids: 1,
         };
+
+        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+
+        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+
+        const { data: { reports: reportsAuthors } } = await query({
+          query: gql`
+            query {
+              reports(filter: { authors: {IN: ["${authors}"] } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const { data: { reports: reportsPublished } } = await query({
+          query: gql`
+            query {
+              reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const { data: { reports: reportsUrl } } = await query({
+          query: gql`
+            query {
+              reports(filter: { url: {IN: ["${reportUrl}"] } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const reports = {
+          byAuthors: reportsAuthors,
+          byDatePublished: reportsPublished,
+          byURL: reportsUrl,
+        }
 
         for (const key in values) {
             if (key == 'incident_ids') {
@@ -580,124 +530,100 @@ test.describe('The Submit form', () => {
             }
         }
 
-        await waitForRequest('RelatedReportsByAuthor');
-        await waitForRequest('RelatedReportsByURL');
-        await waitForRequest('RelatedReportsByPublishedDate');
-
-        for (const key of ['byURL', 'byDatePublished']) {
-            const reports =
-                key == 'byIncidentId'
-                    ? relatedReports[key].data.incidents[0].reports
-                    : relatedReports[key].data.reports;
+        for (const key of Object.keys(reports)) {
 
             const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
             await expect(async () => {
-                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports.length);
+                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports[key].length);
             }).toPass();
 
-            for (const report of reports) {
+            for (const report of reports[key]) {
                 await expect(parentLocator.locator('[data-cy="result"]', { hasText: report.title })).toBeVisible();
             }
 
         }
-
-        await expect(page.locator(`[data-cy="related-byAuthors"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
     }
     );
 
-    test.skip('Should show a preliminary checks message', async ({ page }) => {
-        const relatedReports = {
-            byURL: {
-                data: {
-                    reports: [],
-                },
-            },
-            byDatePublished: {
-                data: {
-                    reports: [],
-                },
-            },
-            byAuthors: {
-                data: { reports: [] },
-            },
-            byIncidentId: {
-                data: {
-                    incidents: [],
-                },
-            },
-        };
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.url_in?.[0] ==
-                'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            relatedReports.byURL,
-            'RelatedReportsByURL'
-        );
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.epoch_date_published_gt == 1608346800 &&
-                req.postDataJSON().variables.query?.epoch_date_published_lt == 1610766000,
-            relatedReports.byDatePublished,
-            'RelatedReportsByPublishedDate'
-        );
+    test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.authors_in?.[0] == 'test author',
-            relatedReports.byAuthors,
-            'RelatedReportsByAuthor'
-        );
+      await page.goto(url);
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            { data: { submissions: [] } },
-            'findSubmissions'
-        );
+      const authors = "this is a new non existing author";
+      const date_published = "2034-01-01";
+      const reportUrl = 'http://nonExistingUrlForReport.com';
 
-        await page.goto(url);
+      const values = {
+          url: reportUrl,
+          authors,
+          date_published,
+      };
 
-        await waitForRequest('findSubmissions');
+      const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
 
-        const values = {
-            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            authors: 'test author',
-            date_published: '2021-01-02',
-            incident_ids: '1',
-        };
+      const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
 
-        for (const key in values) {
-            if (key == 'incident_ids') {
-                await page.locator(`input[name="${key}"]`).fill(values[key]);
-                await page.waitForSelector(`[role="option"]`);
-                await page.locator(`[role="option"]`).first().click();
-            } else {
-                await page.locator(`input[name="${key}"]`).fill(values[key]);
+      const { data: { reports: reportsAuthors } } = await query({
+        query: gql`
+          query {
+            reports(filter: { authors: {IN: ["${authors}"] } }) {
+              report_number
             }
-        }
+          }
+        `,
+      });
 
+      const { data: { reports: reportsPublished } } = await query({
+        query: gql`
+          query {
+            reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+              report_number
+            }
+          }
+        `,
+      });
 
-        await waitForRequest('RelatedReportsByAuthor')
-        await waitForRequest('RelatedReportsByURL')
-        await waitForRequest('RelatedReportsByPublishedDate')
+      const { data: { reports: reportsUrl } } = await query({
+        query: gql`
+          query {
+            reports(filter: { url: {IN: ["${reportUrl}"] } }) {
+              report_number
+            }
+          }
+        `,
+      });
 
-        await expect(page.locator('[data-cy="no-related-reports"]').first()).toBeVisible();
+      const reports = {
+        byAuthors: reportsAuthors,
+        byDatePublished: reportsPublished,
+        byURL: reportsUrl,
+      }
 
-        await expect(page.locator('[data-cy="result"]')).not.toBeVisible();
-    });
+      for (const key in values) {
+          if (key == 'incident_ids') {
+              await page.locator(`input[name="${key}"]`).fill(values[key].toString());
+              await page.waitForSelector(`[role="option"]`);
+              await page.locator(`[role="option"]`).first().click();
+          } else {
+              await page.locator(`input[name="${key}"]`).fill(values[key]);
+          }
+      }
+
+      for (const key of Object.keys(reports)) {
+
+          const parentLocator = page.locator(`[data-cy="related-${key}"]`);
+
+          await expect(async () => {
+              await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(0);
+          }).toPass();
+          
+          await expect(page.locator(`[data-cy="related-${key}"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+      }
+  }
+  );
 
     test('Should *not* show semantically related reports when the text is under 256 non-space characters', async ({ page }) => {
 
@@ -1088,23 +1014,16 @@ test.describe('The Submit form', () => {
         await page.locator('button[type="submit"]').click();
     });
 
-    test.skip('Should show related reports based on author', async ({ page }) => {
+    test('Should show related reports based on author and add as similar', async ({ page }) => {
 
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+        await init();
 
         await page.goto(url);
-
-        await waitForRequest('findSubmissions');
 
         const values = {
             url: 'https://incidentdatabase.ai',
             title: 'test title',
-            authors: 'BBC News',
+            authors: 'author1',
             incident_date: '2022-01-01',
             date_published: '2021-01-02',
             date_downloaded: '2021-01-03',
@@ -1117,11 +1036,68 @@ test.describe('The Submit form', () => {
         await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
 
         await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="unspecified"]').first().click();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(1).locator('[data-cy="dissimilar"]').first().click();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(2).locator('[data-cy="similar"]').first().click();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="similar"]').first().click();
 
         await page.locator('button[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        const { data } = await query({
+          query: gql`
+            query {
+              submission(sort: { date_submitted:DESC }){
+                editor_similar_incidents
+              }
+            }
+          `,
+      });
+
+      expect(data.submission).toMatchObject({
+          editor_similar_incidents: [1],
+      });
+    });
+
+    test('Should show related reports based on author and add as dissimilar', async ({ page }) => {
+
+        await init();
+
+        await page.goto(url);
+
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'author1',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+        };
+
+        for (const key in values) {
+            await page.locator(`[name="${key}"]`).fill(values[key]);
+        }
+
+        await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
+
+        await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="dissimilar"]').first().click();
+
+        await page.locator('button[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        const { data } = await query({
+          query: gql`
+            query {
+              submission(sort: { date_submitted:DESC }){
+                editor_dissimilar_incidents
+              }
+            }
+          `,
+      });
+
+      expect(data.submission).toMatchObject({
+        editor_dissimilar_incidents: [1],
+      });
     });
 
     test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {

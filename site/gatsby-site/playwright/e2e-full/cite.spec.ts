@@ -104,8 +104,8 @@ test.describe('Cite pages', () => {
 
         await page.goto(url + '#' + _id);
 
-        await page.click(`[id="r${_id}"] [data-cy="expand-report-button"]`);
-        await page.click(`[id="r${_id}"] [data-cy="flag-button"]`);
+        await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
+        await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
 
         const modal = page.locator('[data-cy="flag-report-3"]');
         await expect(modal).toBeVisible();
@@ -114,7 +114,7 @@ test.describe('Cite pages', () => {
 
         await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
 
-        await page.click('[aria-label="Close"]');
+        await page.locator('[aria-label="Close"]').click();
 
         await expect(modal).not.toBeVisible();
 
@@ -443,10 +443,20 @@ test.describe('Cite pages', () => {
         expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
     });
 
-    test('Should show proper entities card text', async ({ page, skipOnEmptyEnvironment }) => {
+    test('Should not show a spinner on notify button when not logged in', async ({ page, login }) => {
+
+        const id = 'r1';
+
+        await page.goto('/cite/1#' + id);
+
+        await expect(page.locator('[data-cy="notify-button"] [data-cy="spinner"]')).toHaveCount(0);
+
+    });
+
+    test('Should show proper entities card text', async ({ page }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
-            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Implicated AI system: Entity 1'
+            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Alleged implicated AI system: Entity 1'
         );
     });
 
@@ -458,8 +468,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="timeline-text-response"]')).not.toBeVisible();
     });
 
-    // the incident contains reports missing images so it will never pass
-    test.skip('There should not be image errors (400)', async ({ page, skipOnEmptyEnvironment }) => {
+    test('There should not be image errors (400)', async ({ page }) => {
         page.on('console', (msg) => {
             if (msg.type() === 'error') {
                 expect(msg.text()).not.toContain('the server responded with a status of 400');
