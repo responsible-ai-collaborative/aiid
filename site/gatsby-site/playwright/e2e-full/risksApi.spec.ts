@@ -1,13 +1,13 @@
 
 import { gql } from '@apollo/client';
-import { query, test } from '../../utils';
+import { query, test } from '../utils';
 import { expect } from '@playwright/test';
 
 test('Should retrieve a risk by query tag', async () => {
   const result = await query({
     query: gql`
       {
-        risks(input: { tags: ["GMF:Known AI Technology:Content-based Filtering"] }) {
+        risks(input: { tags: ["GMF:Known AI Technical Failure:Distributional Bias"] }) {
           tag
           precedents {
             title
@@ -20,7 +20,7 @@ test('Should retrieve a risk by query tag', async () => {
   });
 
   const { risks } = result.data;
-  const failureTag = 'GMF:Known AI Technical Failure:Adversarial Data';
+  const failureTag = 'GMF:Known AI Technical Failure:Distributional Bias';
   const risk = risks.find((r) => r.tag === failureTag);
   const precedent = risk.precedents.find((p) => p.incident_id === 1);
 
@@ -46,7 +46,7 @@ test('Should retrieve risks with no tag provided.', async () => {
   });
 
   const { risks } = result.data;
-  const queryTag = 'GMF:Known AI Technical Failure:Adversarial Data';
+  const queryTag = 'GMF:Known AI Technical Failure:Distributional Bias';
   const risk = risks.find((r) => r.tag === queryTag);
   const precedent = risk.precedents.find((p) => p.incident_id === 1);
 
