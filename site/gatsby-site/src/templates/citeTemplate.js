@@ -69,6 +69,12 @@ function CiteTemplate({
     },
   });
 
+  const visibleClassifications = {
+    nodes: allMongodbAiidprodClassifications.nodes.filter(
+      (classification) => !classification.namespace.includes('_Annotator')
+    ),
+  };
+
   // meta tags
 
   const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
@@ -297,13 +303,10 @@ function CiteTemplate({
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
                       taxonomiesWithClassifications: Array.from(
-                        allMongodbAiidprodClassifications.nodes.reduce(
-                          (namespaces, classification) => {
-                            namespaces.add(classification.namespace);
-                            return namespaces;
-                          },
-                          new Set()
-                        )
+                        visibleClassifications.nodes.reduce((namespaces, classification) => {
+                          namespaces.add(classification.namespace);
+                          return namespaces;
+                        }, new Set())
                       ),
                       editors: incident.editors
                         .filter((editor) => editor && editor.first_name && editor.last_name)
@@ -324,7 +327,7 @@ function CiteTemplate({
                   />
                 )}
                 <ClassificationsDisplay
-                  classifications={allMongodbAiidprodClassifications}
+                  classifications={visibleClassifications}
                   taxa={allMongodbAiidprodTaxa}
                 />
               </Col>
