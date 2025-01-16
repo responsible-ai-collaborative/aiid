@@ -44,10 +44,6 @@ const createReportPages = async (graphql, createPage, { languages }) => {
           originalPath: pagePath,
           locale: language.code,
           hrefLang: language.hrefLang,
-          translate_es: context.language !== 'es',
-          translate_fr: context.language !== 'fr',
-          translate_en: context.language !== 'en',
-          translate_ja: context.language !== 'ja',
         },
       });
     }
