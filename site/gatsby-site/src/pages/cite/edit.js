@@ -101,7 +101,7 @@ function EditCitePage(props) {
 
   const incident_ids = incidentsData?.incidents.map((incident) => incident.incident_id);
 
-  const loading = loadingIncident || loadingReport;
+  const loading = loadingIncident || loadingReport || reportTranslations === null;
 
   const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
