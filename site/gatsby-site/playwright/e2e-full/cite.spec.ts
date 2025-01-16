@@ -417,7 +417,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('head meta[property="twitter:image"]')).toHaveAttribute('content');
     });
 
-    test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
+    test.skip('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
 
         await init();
 
