@@ -76,15 +76,15 @@ describe(`Reports`, () => {
             query: `
                mutation (
                     $input: UpdateOneReportTranslationInput!
-                    $language: String!
+                    $languages: [String!]!
                 ) {
                 updateOneReportTranslation(input: $input) {
-                        translations(input: $language) {
+                    translations(languages: $languages) {
                         title
                         text
-                        }
                     }
-                }`,
+                }
+            }`,
             variables: {
                 input: {
                     language: "es",
@@ -93,7 +93,7 @@ describe(`Reports`, () => {
                     text: "this is the text",
                     title: "this is the title"
                 },
-                language: "es"
+                languages: ["es"]
             }
         };
 
@@ -124,10 +124,12 @@ describe(`Reports`, () => {
 
         expect(response.body.data).toMatchObject({
             updateOneReportTranslation: {
-                translations: {
-                    title: "this is the title",
-                    text: "this is the text"
-                }
+                translations: [
+                    {
+                        title: "this is the title",
+                        text: "this is the text"
+                    }
+                ]
             }
         })
     });
