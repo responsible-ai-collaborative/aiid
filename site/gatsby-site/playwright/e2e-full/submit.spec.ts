@@ -547,6 +547,18 @@ test.describe('The Submit form', () => {
     );
 
 
+    test('Should **not** show a list of related reports if no data entered', async ({ page, skipOnEmptyEnvironment }) => {
+
+      await page.goto(url);
+
+      const parentLocator = page.locator(`[data-cy="related-reports"]`);
+
+      const childrenCount = await parentLocator.locator('> *').count();
+
+      await expect(childrenCount).toBe(0);
+
+  }
+  );
 
     test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 

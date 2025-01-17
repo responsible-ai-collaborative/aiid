@@ -69,6 +69,16 @@ test.describe('createEntitiesPages', () => {
           { report_number: 5 },
         ],
       },
+      entityRelationships: {
+        nodes: [
+          {
+            sub: 'entity-2',
+            "obj": 'entity-3',
+            "is_symmetric": true,
+            pred: 'related',
+          }
+        ],
+      }
     },
   };
 

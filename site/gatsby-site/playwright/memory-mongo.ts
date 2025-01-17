@@ -13,6 +13,7 @@ import candidates from './seeds/aiidprod/candidates';
 import duplicates from './seeds/aiidprod/duplicates';
 
 import users from './seeds/customData/users';
+import entity_relationships from './seeds/aiidprod/entity_relationships';
 import subscriptions from './seeds/customData/subscriptions';
 
 import reportsHistory from './seeds/history/reportsHistory';
@@ -50,6 +51,7 @@ export const init = async (seed?: Record<string, Record<string, Record<string, u
             entities,
             classifications,
             taxa,
+            entity_relationships,
             candidates,
             duplicates,
             checklists,

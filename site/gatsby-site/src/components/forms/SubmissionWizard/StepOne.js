@@ -245,7 +245,12 @@ const FormDetails = ({
             btnDisabled={!!errors.url || !touched.url || parsingNews}
             btnText={t('Fetch info')}
           />
-          <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+          <RelatedIncidents
+            incident={values}
+            setFieldValue={setFieldValue}
+            columns={['byURL']}
+            triggerSearch={values['url'].length}
+          />
         </FieldContainer>
 
         <FieldContainer>
@@ -279,6 +284,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byAuthors']}
+            triggerSearch={values['authors'].length}
           />
         </FieldContainer>
 
@@ -301,6 +307,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byDatePublished']}
+            triggerSearch={values['date_published'].length}
           />
         </FieldContainer>
 

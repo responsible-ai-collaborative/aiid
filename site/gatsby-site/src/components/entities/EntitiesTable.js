@@ -131,7 +131,7 @@ const incidentFilter = (rows, [field], value) =>
   rows.filter((row) => {
     return row.values[field].some((incident) =>
       ['incident_id', 'title'].some((field) =>
-        incident[field].toString().toLowerCase().includes(value)
+        incident[field].toString().toLowerCase().includes(value.toLowerCase())
       )
     );
   });
@@ -261,6 +261,13 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       {
         title: t('Related Entities'),
         accessor: 'relatedEntities',
+        Cell: EntitiesCell,
+        filter: entitiesFilter,
+        sortType: sortByCount,
+      },
+      {
+        title: t('Entity Relationships'),
+        accessor: 'entityRelationships',
         Cell: EntitiesCell,
         filter: entitiesFilter,
         sortType: sortByCount,
