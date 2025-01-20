@@ -8,7 +8,7 @@ import {
     GraphQLInputObjectType
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
-import { Context, DBIncident, DBSubmission } from '../interfaces';
+import { Context, DBIncident, DBNotification, DBSubmission } from '../interfaces';
 import { allow } from 'graphql-shield';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
@@ -62,7 +62,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             // TODO: Strictly type these collections using the DB* types
             const reports = context.client.db('aiidprod').collection("reports");
-            const notificationsCollection = context.client.db('customData').collection("notifications");
+            const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
             const incidentsHistory = context.client.db('history').collection("incidents");
             const reportsHistory = context.client.db('history').collection("reports");
 
@@ -108,6 +108,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         implicated_systems: submission.implicated_systems || [],
                         editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
+                        created_at: new Date(),
                     }
                     if (submission.embedding) {
                         newIncident.embedding = {
@@ -115,11 +116,11 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                             from_reports: [report_number]
                         }
                     }
-                    if(submission.epoch_date_modified) {
+                    if (submission.epoch_date_modified) {
                         newIncident.epoch_date_modified = submission.epoch_date_modified;
                     }
 
-                    await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id });
+                    await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id, created_at: new Date() });
 
 
                     await createNotificationsOnNewIncident(newIncident, context);
@@ -131,7 +132,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                             type: 'submission-promoted',
                             incident_id: newIncident.incident_id,
                             processed: false,
-                            userId: submission.user
+                            userId: submission.user,
+                            created_at: new Date(),
                         });
                     }
 
@@ -139,6 +141,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         ...newIncident,
                         reports: [report_number],
                         incident_id: newIncident.incident_id,
+                        created_at: new Date(),
                     };
 
                     if (submission.user) {
@@ -204,6 +207,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                             ...incidentValues,
                             reports: [...incidentValues.reports!, report_number],
                             embedding,
+                            created_at: new Date(),
                         }
 
                         if (submission.user) {
@@ -245,11 +249,11 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 newReport.user = submission.user;
             }
 
-            if(submission.epoch_date_modified) {
+            if (submission.epoch_date_modified) {
                 newReport.epoch_date_modified = submission.epoch_date_modified;
             }
 
-            await reports.insertOne({ ...newReport, report_number: newReport.report_number });
+            await reports.insertOne({ ...newReport, report_number: newReport.report_number, created_at: new Date() });
 
             const incident_ids: number[] = parentIncidents.map(incident => incident.incident_id!);
             const report_numbers: number[] = [newReport.report_number];

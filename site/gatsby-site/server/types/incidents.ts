@@ -5,6 +5,7 @@ import { getListRelationshipConfig, getListRelationshipExtension, getListRelatio
 import { UserType } from "./user";
 import { IncidentEmbeddingType, NlpSimilarIncidentType, TsneType } from "./types";
 import { ReportType } from "./report";
+import { GraphQLDateTime } from "graphql-scalars";
 
 export const IncidentType = new GraphQLObjectType({
     name: 'Incident',
@@ -49,6 +50,7 @@ export const IncidentType = new GraphQLObjectType({
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
         tsne: { type: TsneType },
+        created_at: { type: GraphQLDateTime },
     },
 });
 
