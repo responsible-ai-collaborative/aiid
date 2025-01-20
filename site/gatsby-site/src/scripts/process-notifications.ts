@@ -412,6 +412,8 @@ async function notificationsToNewPromotions(context: Context) {
 
 export const processNotifications = async () => {
 
+    usersCache.length = 0;
+
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
     const context: Context = { client, user: null, req: {} as any };
