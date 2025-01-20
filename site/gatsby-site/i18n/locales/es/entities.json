@@ -30,5 +30,8 @@
     "Editing Entity": "Editando Entidad",
     "Back to Entity: {{name}}": "Volver a Entidad: {{name}}",
     "Entity updated successfully.": "Entidad actualizada con éxito.",
-    "Error updating Entity.": "Error al actualizar la Entidad."
+    "Error updating Entity.": "Error al actualizar la Entidad.",
+    "Entity Relationships": "Relaciones de Entidad",
+    "Add or remove relationships to other entities": "Agregar o eliminar relaciones con otras entidades",
+    "Loading related entities...": "Cargando entidades relacionadas..."
 }

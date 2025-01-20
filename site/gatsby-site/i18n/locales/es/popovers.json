@@ -79,6 +79,14 @@
         "title": "¿Es un informe silencioso?",
         "text": "Los informes silenciosos son aquellos que no se publicarán en la sección 'Últimos informes' de la página de inicio. Los informes silenciosos se utilizan para informes que son útiles para datos internos pero que no necesitan promocionarse. Si no está seguro, deje este campo en blanco."
     },
+    "relatedEntities": {
+      "title": "Entidades relacionadas",
+      "text": "Otras entidades que están relacionadas con el mismo incidente. Por ejemplo, si el desarrollador de un incidente es esta entidad pero el implementador es otra entidad, se marcan como entidades relacionadas."
+    },
+    "entityRelationships": {
+      "title": "Relaciones de entidades",
+      "text": "¿Con qué otras entidades tiene esta entidad una relación directa? Por ejemplo, 'Amazon' y 'Trabajadores de Amazon' podrían ser entidades vinculadas."
+    },
     "implicated_systems": {
         "title": "Sistemas implicados",
         "text": "Los sistemas de IA involucrados en el incidente. Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo."
