@@ -50,10 +50,14 @@ const StepThree = (props) => {
           message: 'Each alleged developer must have at least 3 characters and less than 200',
           test(value) {
             if (typeof value === 'string') {
-              return value.length >= 3;
+              return value.length >= 3 && value.length < 200;
             }
             if (typeof value === 'object' && value !== null && 'label' in value) {
-              return typeof value.label === 'string' && value.label.length >= 3;
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
             }
             return false; // Invalid if neither condition is met
           },
@@ -68,10 +72,14 @@ const StepThree = (props) => {
           message: 'Each alleged deployer must have at least 3 characters and less than 200',
           test(value) {
             if (typeof value === 'string') {
-              return value.length >= 3;
+              return value.length >= 3 && value.length < 200;
             }
             if (typeof value === 'object' && value !== null && 'label' in value) {
-              return typeof value.label === 'string' && value.label.length >= 3;
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
             }
             return false; // Invalid if neither condition is met
           },
@@ -86,10 +94,14 @@ const StepThree = (props) => {
           message: 'Each alleged Harmed parties must have at least 3 characters and less than 200',
           test(value) {
             if (typeof value === 'string') {
-              return value.length >= 3;
+              return value.length >= 3 && value.length < 200;
             }
             if (typeof value === 'object' && value !== null && 'label' in value) {
-              return typeof value.label === 'string' && value.label.length >= 3;
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
             }
             return false; // Invalid if neither condition is met
           },
@@ -105,10 +117,14 @@ const StepThree = (props) => {
             'Each alleged Implicated AI system must have at least 3 characters and less than 200',
           test(value) {
             if (typeof value === 'string') {
-              return value.length >= 3;
+              return value.length >= 3 && value.length < 200;
             }
             if (typeof value === 'object' && value !== null && 'label' in value) {
-              return typeof value.label === 'string' && value.label.length >= 3;
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
             }
             return false; // Invalid if neither condition is met
           },
@@ -245,9 +261,13 @@ const FormDetails = ({
     const newEntityNamesList = values
       .filter((value) => {
         if (!value.label) {
-          return !entityNamesList.includes(value);
+          return !entityNamesList.includes(value) && value.length > 2 && value.length < 200;
         }
-        return !entityNamesList.includes(value?.label);
+        return (
+          !entityNamesList.includes(value?.label) &&
+          value?.label.length > 2 &&
+          value?.label.length < 200
+        );
       })
       .map((entity) => {
         if (entity.label) {
