@@ -1540,4 +1540,138 @@ describe(`Notifications`, () => {
             },
         ]);
     });
+
+    it('Should not crash if no recipients found', async () => {
+
+        const notifications: DBNotification[] = [
+            {
+                processed: false,
+                type: 'new-incidents',
+                incident_id: 1,
+            },
+        ]
+
+        const subscriptions: DBSubscription[] = [
+            {
+                type: 'new-incidents',
+                userId: '123',
+            },
+            {
+                type: 'incident',
+                userId: '123',
+                incident_id: 1,
+            },
+            {
+                type: 'submission-promoted',
+                userId: '123',
+                incident_id: 1,
+            }
+        ]
+
+        const users: DBUser[] = [
+            {
+                userId: "123",
+                roles: ['admin'],
+            }
+        ]
+
+        const entities: DBEntity[] = [
+            {
+                entity_id: 'entity-1',
+                name: 'Entity 1',
+            }
+        ]
+
+        const incidents: DBIncident[] = [
+            {
+                incident_id: 1,
+                title: 'Incident 1',
+                description: 'Incident 1 description',
+                "Alleged deployer of AI system": [],
+                "Alleged developer of AI system": [],
+                "Alleged harmed or nearly harmed parties": [],
+                date: new Date().toISOString(),
+                editors: [],
+                reports: [1],
+                implicated_systems: [],
+            }
+        ]
+
+        const reports: DBReport[] = [
+            {
+                report_number: 1,
+                title: 'Report 1',
+                description: 'Report 1 description',
+                authors: [],
+                cloudinary_id: 'cloudinary_id',
+                date_downloaded: new Date().toISOString(),
+                date_modified: new Date().toISOString(),
+                date_published: new Date().toISOString(),
+                date_submitted: new Date().toISOString(),
+                epoch_date_downloaded: 1,
+                epoch_date_modified: 1,
+                epoch_date_published: 1,
+                epoch_date_submitted: 1,
+                image_url: 'image_url',
+                language: 'en',
+                plain_text: 'plain_text',
+                source_domain: 'source_domain',
+                submitters: [],
+                tags: [],
+                text: 'text',
+                url: 'url',
+                user: 'user_id',
+            }
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                notifications,
+                subscriptions,
+            },
+            aiidprod: {
+                incidents,
+                entities,
+                reports,
+            }
+        });
+
+
+        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+
+        // No recipients
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
+
+        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockImplementation(() => {
+            throw new Error('Failed to send email');
+        });
+
+
+        await processNotifications();
+
+        expect(sendEmailMock).not.toHaveBeenCalled();
+
+        const result = await makeRequest(url, {
+            query: `
+            query {
+                notifications {
+                    type
+                    incident_id
+                    processed
+                    entity_id
+                }
+            }
+            `});
+
+        // notifications should be marked as processed
+        expect(result.body.data.notifications).toMatchObject([
+            {
+                type: 'new-incidents',
+                incident_id: 1,
+                processed: true,
+                entity_id: null,
+            },
+        ]);
+    });
 });
