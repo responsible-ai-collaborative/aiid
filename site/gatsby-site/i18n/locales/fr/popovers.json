@@ -67,6 +67,14 @@
         "title": "Est-ce un rapport silencieux ?",
         "text": "Les rapports silencieux sont ceux qui ne seront pas publiés dans la section « Derniers rapports » de la page d'accueil. Les rapports silencieux sont utilisés pour les rapports utiles pour les données internes mais qui n'ont pas besoin d'être promus. Si vous n'êtes pas sûr, laissez ce champ vide."
     },
+    "relatedEntities": {
+        "title": "Entités liées",
+        "text": "Autres entités liées au même incident. Par exemple, si le développeur d'un incident est cette entité mais que le responsable de la mise en œuvre est une autre entité, ils sont marqués comme entités liées."
+    },
+    "entityRelationships": {
+        "title": "Relations d'entité",
+        "text": "Avec quelles autres entités cette entité entretient-elle une relation directe ? Par exemple, « Amazon » et « Amazon Workers » pourraient être des entités liées."
+    },
     "implicated_systems": {
         "title": "Systèmes d'IA impliqués dans l'incident",
         "text": "Si plusieurs, appuyez sur « entrée » pour commencer un nouvel élément"

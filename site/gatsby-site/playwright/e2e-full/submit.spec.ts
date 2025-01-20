@@ -547,6 +547,18 @@ test.describe('The Submit form', () => {
     );
 
 
+    test('Should **not** show a list of related reports if no data entered', async ({ page, skipOnEmptyEnvironment }) => {
+
+      await page.goto(url);
+
+      const parentLocator = page.locator(`[data-cy="related-reports"]`);
+
+      const childrenCount = await parentLocator.locator('> *').count();
+
+      await expect(childrenCount).toBe(0);
+
+  }
+  );
 
     test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
@@ -624,99 +636,6 @@ test.describe('The Submit form', () => {
       }
   }
   );
-
-    test.skip('Should show a preliminary checks message', async ({ page }) => {
-        const relatedReports = {
-            byURL: {
-                data: {
-                    reports: [],
-                },
-            },
-            byDatePublished: {
-                data: {
-                    reports: [],
-                },
-            },
-            byAuthors: {
-                data: { reports: [] },
-            },
-            byIncidentId: {
-                data: {
-                    incidents: [],
-                },
-            },
-        };
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.url_in?.[0] ==
-                'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            relatedReports.byURL,
-            'RelatedReportsByURL'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.epoch_date_published_gt == 1608346800 &&
-                req.postDataJSON().variables.query?.epoch_date_published_lt == 1610766000,
-            relatedReports.byDatePublished,
-            'RelatedReportsByPublishedDate'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.authors_in?.[0] == 'test author',
-            relatedReports.byAuthors,
-            'RelatedReportsByAuthor'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            { data: { submissions: [] } },
-            'findSubmissions'
-        );
-
-        await page.goto(url);
-
-        await waitForRequest('findSubmissions');
-
-        const values = {
-            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            authors: 'test author',
-            date_published: '2021-01-02',
-            incident_ids: '1',
-        };
-
-        for (const key in values) {
-            if (key == 'incident_ids') {
-                await page.locator(`input[name="${key}"]`).fill(values[key]);
-                await page.waitForSelector(`[role="option"]`);
-                await page.locator(`[role="option"]`).first().click();
-            } else {
-                await page.locator(`input[name="${key}"]`).fill(values[key]);
-            }
-        }
-
-
-        await waitForRequest('RelatedReportsByAuthor')
-        await waitForRequest('RelatedReportsByURL')
-        await waitForRequest('RelatedReportsByPublishedDate')
-
-        await expect(page.locator('[data-cy="no-related-reports"]').first()).toBeVisible();
-
-        await expect(page.locator('[data-cy="result"]')).not.toBeVisible();
-    });
 
     test('Should *not* show semantically related reports when the text is under 256 non-space characters', async ({ page }) => {
 

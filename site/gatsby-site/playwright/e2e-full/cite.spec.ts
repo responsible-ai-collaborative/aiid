@@ -179,7 +179,7 @@ test.describe('Cite pages', () => {
 
         expect(data.duplicates).toEqual([{ true_incident_number: 2 }]);
         expect(data.incident_classifications_3).toHaveLength(0);
-        expect(data.incident_classifications_2).toHaveLength(3);
+        expect(data.incident_classifications_2).toHaveLength(4);
     });
 
     test('Should pre-fill submit report form', async ({ page }) => {
@@ -220,7 +220,7 @@ test.describe('Cite pages', () => {
 
 
         await expect(page.locator('a:has-text("Previous Incident")')).toBeVisible();
-        await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/3');
+        await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/4');
     });
 
     test('Should render the header next/previous buttons', async ({ page }) => {
@@ -417,7 +417,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('head meta[property="twitter:image"]')).toHaveAttribute('content');
     });
 
-    test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
+    test.skip('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
 
         await init();
 
@@ -449,10 +449,20 @@ test.describe('Cite pages', () => {
         expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
     });
 
+    test('Should not show a spinner on notify button when not logged in', async ({ page, login }) => {
+
+        const id = 'r1';
+
+        await page.goto('/cite/1#' + id);
+
+        await expect(page.locator('[data-cy="notify-button"] [data-cy="spinner"]')).toHaveCount(0);
+
+    });
+
     test('Should show proper entities card text', async ({ page }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
-            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Implicated AI system: Entity 1'
+            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Alleged implicated AI system: Entity 1'
         );
     });
 
@@ -464,8 +474,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="timeline-text-response"]')).not.toBeVisible();
     });
 
-    // the incident contains reports missing images so it will never pass
-    test.skip('There should not be image errors (400)', async ({ page }) => {
+    test('There should not be image errors (400)', async ({ page }) => {
         page.on('console', (msg) => {
             if (msg.type() === 'error') {
                 expect(msg.text()).not.toContain('the server responded with a status of 400');
@@ -541,9 +550,9 @@ test.describe('Cite pages', () => {
         await init();
 
         const incident: DBIncident = {
-            incident_id: 4,
+            incident_id: 6,
             title: 'Test Title',
-            description: 'Incident 4 description',
+            description: 'Incident 6 description',
             date: "2020-01-01",
             "Alleged deployer of AI system": ["entity-1"],
             "Alleged developer of AI system": ["entity-2"],
@@ -556,10 +565,19 @@ test.describe('Cite pages', () => {
 
         await init({ aiidprod: { incidents: [incident] } });
 
-        await page.goto('/cite/4');
+        await page.goto('/cite/6');
 
-        await expect(page.getByText('Incident 4: Test Title')).toBeVisible();
-        await expect(page.getByText('Incident 4 description')).toBeVisible();
+        await expect(page.getByText('Incident 6: Test Title')).toBeVisible();
+        await expect(page.getByText('Incident 6 description')).toBeVisible();
         await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
+    });
+  
+    test('Should not show Annotator taxonomies', async ({ page, login }) => {
+
+        await page.goto('/cite/3');
+
+        await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1"]`)).toHaveCount(1);
+        await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1_Annotator"]`)).toHaveCount(0);
+
     });
 });

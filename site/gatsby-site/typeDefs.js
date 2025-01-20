@@ -207,6 +207,14 @@ const typeDefs = `
         duplicate_incident_number: Int
         true_incident_number: Int
     }
+
+    type mongodbAiidprodEntityRelationships implements Node {
+        is_symmetric: Boolean
+        sub: [String]
+        obj: [String]
+        created_at: Date
+        pred: String
+    }
 `;
 
 module.exports = typeDefs;
