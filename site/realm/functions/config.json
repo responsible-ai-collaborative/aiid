@@ -12,26 +12,6 @@
         "private": false
     },
     {
-        "name": "onNewEntryFunction_aiidprod",
-        "private": true
-    },
-    {
-        "name": "onNewEntryFunction_customData",
-        "private": true
-    },
-    {
-        "name": "onNewEntryFunction_history",
-        "private": true
-    },
-    {
-        "name": "onNewEntryFunction_translations",
-        "private": true
-    },
-    {
-        "name": "setCreatedAtField",
-        "private": true
-    },
-    {
         "name": "sendEmail",
         "private": false
     },
