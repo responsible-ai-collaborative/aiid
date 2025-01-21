@@ -82,6 +82,8 @@ def main(args):
                 print(obj["Key"], "size:", obj["Size"])
 
     elif args.operation == "upload":
+        print("-----------------------------")
+        print(f"cloudflare_client.upload_file: [{args.file_path}], [{args.bucket_name}], [{args.object_key}]")
         cloudflare_client.upload_file(
             args.file_path,
             args.bucket_name,
