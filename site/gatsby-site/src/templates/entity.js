@@ -115,7 +115,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
       const entity = entitiesData?.nodes?.find((entity) => entity.entity_id === relatedId);
 
-      return entity;
+      return { ...entity, id: relatedId };
     });
 
   const [subscribeToEntityMutation, { loading: subscribing }] = useMutation(UPSERT_SUBSCRIPTION);
