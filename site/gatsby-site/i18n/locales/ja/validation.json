@@ -41,5 +41,9 @@
   "*Incident Date required": "*インシデント日は必須です",
   "*Incident ID(s) must be a number": "*インシデントIDは数字でなければいけません",
   "Implicated Systems must have at least 3 characters": "関連システムは3文字以上でなければいけません",
-  "Implicated Systems can't be longer than 200 characters": "関連システムは200文字を超えることはできません"
+  "Implicated Systems can't be longer than 200 characters": "関連システムは200文字を超えることはできません",
+  "Each alleged Developer must have at least 3 characters and less than 200": "推定される開発者は3文字以上200文字以下でなければいけません",
+  "Each alleged Deployer must have at least 3 characters and less than 200": "推定されるデプロイヤーは3文字以上200文字以下でなければいけません",
+  "Each alleged Harmed parties must have at least 3 characters and less than 200": "推定される被害グループは3文字以上200文字以下でなければいけません",
+  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "推定される関連AIシステムは3文字以上200文字以下でなければいけません"
 }

@@ -675,7 +675,7 @@ export function generateMutationFields({
                     const db = context.client.db(databaseName);
                     const collection = db.collection(collectionName);
 
-                    const result = await collection.insertOne(insert);
+                    const result = await collection.insertOne({ ...insert, created_at: new Date() });
 
                     const inserted = await collection.findOne({ _id: result.insertedId });
 
@@ -822,7 +822,7 @@ export function generateMutationFields({
                     let update: any = await parseRelationshipFields(Type, args.update, mongoUpdate, context);
                     update = await parseDBMappings(Type, update);
 
-                    await collection.updateOne(filter, { $set: update }, { ...projection, upsert: true });
+                    await collection.updateOne(filter, { $set: update, $setOnInsert: { created_at: new Date() } }, { ...projection, upsert: true });
 
                     const updated = await collection.findOne(filter);
 
