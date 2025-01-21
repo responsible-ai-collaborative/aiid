@@ -4,6 +4,7 @@ import sys
 
 import argparse
 import boto3
+from botocore.config import Config
 
 
 def parse_arguments():
@@ -59,12 +60,24 @@ def parse_arguments():
 
 def create_cloudflare_client(account_id, access_key, secret_key, region="auto"):
     endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
+    
+    config = Config(
+        s3={
+            'payload_signing_enabled': False,
+            'use_accelerate_endpoint': False
+        },
+        signature_version='s3v4',
+        request_checksum_calculation=False,
+        response_checksum_validation=False
+    )
+    
     cloudflare_client = boto3.client(
         service_name="s3",
         endpoint_url=endpoint_url,
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
         region_name=region,
+        config=config
     )
     return cloudflare_client
 
