@@ -4,6 +4,7 @@ import sys
 
 import argparse
 import boto3
+from botocore.config import Config
 
 
 def parse_arguments():
@@ -61,7 +62,7 @@ def create_cloudflare_client(account_id, access_key, secret_key, region="auto"):
     endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
     
     # Disabling checksums
-    config = boto3.Config(
+    config = Config(
         s3={'payload_signing_enabled': False},
         signature_version='s3v4'
     )
