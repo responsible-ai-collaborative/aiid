@@ -113,13 +113,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     .map((rel) => {
       const relatedId = rel.sub === id ? rel.obj : rel.sub;
 
-      const entity = { ...entitiesHash[relatedId] };
-
-      for (const field of incidentFields) {
-        entity[field] = entity[field]
-          .map((id) => incidentsHash[id])
-          .sort((a, b) => b.reports.length - a.reports.length);
-      }
+      const entity = entitiesData?.nodes?.find((entity) => entity.entity_id === relatedId);
 
       return entity;
     });
