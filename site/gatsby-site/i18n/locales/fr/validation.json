@@ -41,5 +41,9 @@
   "Some data is missing.": "Certaines données manquent.",
   "Please review. Some data is missing.": "Veuillez vérifier. Certaines données manquent.",
   "Implicated Systems must have at least 3 characters": "Les systèmes impliqués doivent comporter au moins 3 caractères",
-  "Implicated Systems can't be longer than 200 characters": "Les systèmes impliqués ne peuvent pas comporter plus de 200 caractères"
+  "Implicated Systems can't be longer than 200 characters": "Les systèmes impliqués ne peuvent pas comporter plus de 200 caractères",
+  "Each alleged Developer must have at least 3 characters and less than 200": "Chaque développeur présumé doit comporter au moins 3 caractères et moins de 200",
+  "Each alleged Deployer must have at least 3 characters and less than 200": "Chaque implémenteur présumé doit comporter au moins 3 caractères et moins de 200",
+  "Each alleged Harmed parties must have at least 3 characters and less than 200": "Chaque partie lésée présumée doit comporter au moins 3 caractères et moins de 200",
+  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "Chaque système d'IA impliqué présumé doit comporter au moins 3 caractères et moins de 200"
 }

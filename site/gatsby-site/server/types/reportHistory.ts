@@ -1,5 +1,5 @@
 import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { DateTimeResolver } from "graphql-scalars";
+import { DateTimeResolver, GraphQLDateTime } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
 import { EmbeddingType } from "./types";
 
@@ -9,6 +9,7 @@ export const ReportHistoryType = new GraphQLObjectType({
         _id: { type: ObjectIdScalar },
         authors: { type: new GraphQLList(GraphQLString) },
         cloudinary_id: { type: GraphQLString },
+        created_at: { type: GraphQLDateTime },
         date_downloaded: { type: new GraphQLNonNull(DateTimeResolver) },
         date_modified: { type: new GraphQLNonNull(DateTimeResolver) },
         date_published: { type: new GraphQLNonNull(DateTimeResolver) },
