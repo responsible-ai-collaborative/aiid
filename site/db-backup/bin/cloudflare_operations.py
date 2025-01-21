@@ -67,8 +67,8 @@ def create_cloudflare_client(account_id, access_key, secret_key, region="auto"):
             'use_accelerate_endpoint': False
         },
         signature_version='s3v4',
-        request_checksum_calculation=False,
-        response_checksum_validation=False
+        request_checksum_calculation='when_supported',
+        response_checksum_validation='when_supported'
     )
     
     cloudflare_client = boto3.client(
