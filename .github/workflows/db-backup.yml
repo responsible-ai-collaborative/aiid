@@ -48,7 +48,7 @@ jobs:
         run: |
           python3 -m venv venv
           source venv/bin/activate
-          pip install boto3
+          pip install boto3==1.35.97
           ./bin/backup.sh
           ./bin/prune.sh
           ./bin/list.sh
