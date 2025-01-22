@@ -72,6 +72,7 @@ describe(`Reports`, () => {
 
     it(`Update reports translations`, async () => {
 
+        // This mutation updates the Spanish translation of a report and returns the Spanish and French translations
         const mutationData = {
             query: `
                mutation (
@@ -82,18 +83,19 @@ describe(`Reports`, () => {
                     translations(languages: $languages) {
                         title
                         text
+                        language
                     }
                 }
             }`,
             variables: {
                 input: {
                     language: "es",
-                    plain_text: "this is plain text",
+                    plain_text: "this is plain text in spanish",
                     report_number: 1,
-                    text: "this is the text",
-                    title: "this is the title"
+                    text: "this is the text in spanish",
+                    title: "this is the title in spanish"
                 },
-                languages: ["es"]
+                languages: ["es", "fr"]
             }
         };
 
@@ -126,8 +128,14 @@ describe(`Reports`, () => {
             updateOneReportTranslation: {
                 translations: [
                     {
-                        title: "this is the title",
-                        text: "this is the text"
+                        language: "es",
+                        title: "this is the title in spanish",
+                        text: "this is the text in spanish",
+                    },
+                    {
+                        language: "fr",
+                        title: "",
+                        text: "",
                     }
                 ]
             }
