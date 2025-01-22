@@ -5,6 +5,7 @@ import sys
 import argparse
 import boto3
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Simple client for uploading, deleting, listing, and checking objects in Cloudlfare R2 buckets."
@@ -58,7 +59,6 @@ def parse_arguments():
 
 def create_cloudflare_client(account_id, access_key, secret_key, region="auto"):
     endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
-    
     cloudflare_client = boto3.client(
         service_name="s3",
         endpoint_url=endpoint_url,
