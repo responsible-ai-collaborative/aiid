@@ -39,6 +39,7 @@ exports.handler = async (event) => {
           cache_modifier: "default",
           environment: GITHUB_BRANCH,
         },
+        ref: "feature/prismic-webhook",
       },
       {
         headers: {
