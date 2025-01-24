@@ -1,0 +1,20 @@
+name: Prismic Deploy Trigger
+
+on:
+  repository_dispatch:
+    types:
+      - prismic-webhook
+
+jobs:
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: ${{ github.event.client_payload.environment || 'staging' }}
+      sha: ${{ github.event.client_payload.sha || github.sha }}
+      netlify-context: production
+      netlify-alias: ${{ github.event.client_payload.netlify_alias || '' }}
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      cache-modifier: ${{ github.event.client_payload.cache_modifier || 'default' }}
