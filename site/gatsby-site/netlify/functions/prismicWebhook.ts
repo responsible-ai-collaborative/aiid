@@ -27,6 +27,8 @@ exports.handler = async (event) => {
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
     const GITHUB_BRANCH = process.env.GITHUB_BRANCH;
 
+    console.log("Triggering GitHub Action...");
+
     // Trigger GitHub repository_dispatch
     await axios.post(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/dispatches`,
