@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
 import reports from '../seeds/aiidprod/reports';
-import reports_es from '../seeds/translations/reports_es';
+import reportsTranslations from '../seeds/translations/reports';
 import gql from 'graphql-tag';
 
 test.describe('Edit report', () => {
@@ -51,7 +51,7 @@ test.describe('Edit report', () => {
 
     await expect(page.locator('.submit-report-tags [option="Test Tag"]')).toHaveCount(1);
 
-    const report_es = reports_es.find((r) => r.report_number === 3);
+    const report_es = reportsTranslations.find((r) => r.report_number === 3 && r.language === 'es');
 
     await expect(page.locator('[data-cy="translation-es"] [type="text"]')).toHaveValue(report_es.title);
 
