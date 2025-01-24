@@ -31,7 +31,7 @@ exports.handler = async (event) => {
 
     // Trigger GitHub repository_dispatch
     await axios.post(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/dispatches`,
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/prismic-deploy.yml/dispatches`,
       {
         event_type: `prismic-deploy`,
         client_payload: {

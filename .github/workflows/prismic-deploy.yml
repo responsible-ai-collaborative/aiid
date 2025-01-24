@@ -1,6 +1,22 @@
 name: Prismic Deploy Trigger
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy (e.g., staging or production)"
+        required: true
+        default: "staging"
+      sha:
+        description: "Commit SHA to deploy"
+        required: false
+      netlify-alias:
+        description: "Netlify alias"
+        required: false
+      cache-modifier:
+        description: "Cache modifier"
+        required: false
+
   repository_dispatch:
     types:
       - prismic-webhook
