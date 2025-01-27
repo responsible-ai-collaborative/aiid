@@ -25,28 +25,30 @@ exports.handler = async (event) => {
     const GITHUB_OWNER = process.env.GITHUB_OWNER;
     const GITHUB_REPO = process.env.GITHUB_REPO;
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const GITHUB_BRANCH = process.env.GITHUB_BRANCH;
+    const branches = ["main", "staging"];
 
     console.log("Triggering GitHub Action...");
 
-    // Trigger GitHub repository_dispatch
-    await axios.post(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/prismic-deploy.yml/dispatches`,
-      {
-        inputs: {
-          "netlify-alias": `prismic-${GITHUB_BRANCH}-deploy`,
-          environment: GITHUB_BRANCH,
-          "skip-cache": true,
+    // Trigger GitHub repository_dispatch for each branch
+    for (const branch of branches) {
+      await axios.post(
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/prismic-deploy.yml/dispatches`,
+        {
+          inputs: {
+            "netlify-alias": `prismic-${branch}-deploy`,
+            environment: branch,
+            "skip-cache": true,
+          },
+          ref: branch,
         },
-        ref: "main",
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${GITHUB_TOKEN}`,
-          Accept: "application/vnd.github.everest-preview+json",
-        },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
+            Accept: "application/vnd.github.everest-preview+json",
+          },
+        }
+      );
+    }
 
     return {
       statusCode: 200,
