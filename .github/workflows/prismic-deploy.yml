@@ -1,0 +1,47 @@
+name: Prismic Deploy Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip-cache:
+        description: "Skip Cache"
+        required: true
+        default: true
+        type: boolean
+      environment:
+        description: "Environment to deploy (e.g., staging or production)"
+        required: true
+        default: "staging"
+      sha:
+        description: "Commit SHA to deploy"
+        required: false
+      netlify-alias:
+        description: "Netlify alias for the deployment"
+        required: false
+      cache-modifier:
+        description: "Cache modifier for build"
+        required: false
+
+  repository_dispatch:
+    types:
+      - prismic-webhook
+
+jobs:
+  cache-modifier:
+    uses: ./.github/workflows/cache-modifier.yml
+    with:
+      skip-cache: ${{ github.event.inputs.skip-cache }}
+  
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    needs: [cache-modifier]
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: ${{ github.event.inputs.environment || github.event.client_payload.environment || 'staging' }}
+      sha: ${{ github.event.inputs.sha || github.event.client_payload.sha || github.sha }}
+      netlify-context: production
+      netlify-alias: ${{ github.event.inputs.netlify_alias || github.event.client_payload.netlify_alias || '' }}
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
