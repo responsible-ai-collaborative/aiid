@@ -6,7 +6,7 @@ The following environment variables are required for the proper functioning of t
 
 | Variable         | Description                                   | Example                           |
 |-------------------|-----------------------------------------------|-----------------------------------|
-| `GITHUB_OWNER`   | The GitHub username or organization name.     | `clari182`                       |
+| `GITHUB_OWNER`   | The GitHub username or organization name.     | `responsible-ai-collaborative`                       |
 | `GITHUB_REPO`    | The name of the GitHub repository.            | `aiid`                           |
 | `GITHUB_TOKEN`   | A GitHub Personal Access Token (PAT) with `workflow` and `repo` scopes. | `ghp_XXXXXXXXXXXXXXXXXXXXXX`     |
 | `PRISMIC_SECRET` | The secret shared with Prismic for webhook authentication. | `prismic_webhook_secret_123`     |
@@ -18,14 +18,14 @@ The following environment variables are required for the proper functioning of t
 ### **1. `GITHUB_OWNER`**
 This is your GitHub username or the name of your organization.
 
-- **Example**: If your repository is `https://github.com/clari182/aiid`, your `GITHUB_OWNER` is `clari182`.
+- **Example**: If your repository is `https://github.com/responsible-ai-collaborative/aiid`, your `GITHUB_OWNER` is `responsible-ai-collaborative`.
 
 ---
 
 ### **2. `GITHUB_REPO`**
 This is the name of your GitHub repository.
 
-- **Example**: If your repository is `https://github.com/clari182/aiid`, your `GITHUB_REPO` is `aiid`.
+- **Example**: If your repository is `https://github.com/responsible-ai-collaborative/aiid`, your `GITHUB_REPO` is `aiid`.
 
 ---
 
