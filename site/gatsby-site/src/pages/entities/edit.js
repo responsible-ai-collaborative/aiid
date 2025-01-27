@@ -3,7 +3,7 @@ import TextInputGroup from '../../components/forms/TextInputGroup';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
+import { FIND_ENTITIES, FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Form, Formik } from 'formik';
 import { useTranslation, Trans } from 'react-i18next';
@@ -11,6 +11,9 @@ import { Link } from 'gatsby';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import Label from '../../components/forms/Label';
+import { FIND_ENTITY_RELATIONSHIPS } from '../../graphql/entity_relationships';
 
 const schema = Yup.object().shape({
   name: Yup.string().required(),
@@ -21,7 +24,15 @@ function EditEntityPage(props) {
 
   const [entity, setEntity] = useState(null);
 
+  const [entities, setEntities] = useState([]);
+
   const [entityId] = useQueryParam('entity_id', withDefault(StringParam, ''));
+
+  const [entityRelationships, setEntityRelationships] = useState([]);
+
+  const [updatedEntityRelationships, setUpdatedEntityRelationships] = useState([]);
+
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
   const {
     data: entityData,
@@ -35,6 +46,56 @@ function EditEntityPage(props) {
 
   const [updateEntityMutation] = useMutation(UPDATE_ENTITY);
 
+  const {
+    data: entityRelationshipsData,
+    refetch: refetchEntityRelationships,
+    loading: loadingEntityRelationships,
+  } = useQuery(FIND_ENTITY_RELATIONSHIPS, {
+    variables: {
+      filter: {
+        OR: [{ sub: { EQ: entityId } }, { obj: { EQ: entityId }, is_symmetric: { EQ: true } }],
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (!loadingEntities && entitiesData?.entities) {
+      let entitiesOptions = entitiesData.entities.map((entity) => {
+        return {
+          id: entity.entity_id,
+          label: entity.name,
+        };
+      });
+
+      let options = [];
+
+      if (!loadingEntityRelationships && entityRelationshipsData?.entity_relationships) {
+        options = entityRelationshipsData.entity_relationships.map((entityRelationship) => {
+          if (entityRelationship.sub.entity_id === entityId) {
+            return {
+              id: entityRelationship.obj.entity_id,
+              label: entitiesData.entities.find(
+                (entity) => entity.entity_id === entityRelationship.obj.entity_id
+              ).name,
+            };
+          } else {
+            return {
+              id: entityRelationship.sub.entity_id,
+              label: entitiesData.entities.find(
+                (entity) => entity.entity_id === entityRelationship.sub.entity_id
+              ).name,
+            };
+          }
+        });
+      }
+      setEntityRelationships(options);
+      setUpdatedEntityRelationships(options);
+
+      entitiesOptions = entitiesOptions.filter((entity) => entity.id !== entityId);
+      setEntities(entitiesOptions);
+    }
+  }, [loadingEntities, entitiesData, entityRelationshipsData, loadingEntityRelationships]);
+
   const addToast = useToastContext();
 
   useEffect(() => {
@@ -47,21 +108,30 @@ function EditEntityPage(props) {
 
   const handleSubmit = async (values) => {
     try {
+      // Process the updated relationships and perform necessary updates in the database
+      const relationshipsToAdd = updatedEntityRelationships.filter(
+        (rel) => !entityRelationships.some((er) => er.id === rel.id)
+      );
+
+      const relationshipsToRemove = entityRelationships.filter(
+        (er) => !updatedEntityRelationships.some((rel) => rel.id === er.id)
+      );
+
       await updateEntityMutation({
         variables: {
-          filter: {
-            entity_id: { EQ: entityId },
-          },
-          update: {
-            set: {
-              name: values.name,
-              date_modified: new Date().toISOString(),
-            },
+          input: {
+            entity_id: entityId,
+            created_at: values.created_at,
+            name: values.name,
+            date_modified: new Date().toISOString(),
+            entity_relationships_to_add: relationshipsToAdd,
+            entity_relationships_to_remove: relationshipsToRemove,
           },
         },
       });
 
       refetch();
+      refetchEntityRelationships();
 
       addToast({
         message: t('Entity updated successfully.'),
@@ -152,6 +222,31 @@ function EditEntityPage(props) {
                           : undefined
                       }
                       disabled={true}
+                    />
+
+                    <Label
+                      label={t('Entity Relationships', { ns: 'entities' })}
+                      popover="entityRelationships"
+                    />
+                    <Typeahead
+                      id="ta-entity-relationships"
+                      inputProps={{ 'data-cy': 'entity-relationships' }}
+                      className={`Typeahead`}
+                      onKeyDown={(e) => {
+                        if (e.key === ',') {
+                          e.preventDefault();
+                        }
+                      }}
+                      multiple
+                      onChange={(selected) => setUpdatedEntityRelationships(selected)}
+                      options={entities}
+                      selected={updatedEntityRelationships}
+                      placeholder={
+                        loadingEntityRelationships
+                          ? t('Loading related entities...', { ns: 'entities' })
+                          : t('Add or remove relationships to other entities', { ns: 'entities' })
+                      }
+                      loading={loadingEntityRelationships}
                     />
                   </div>
                 </Form>

@@ -547,6 +547,18 @@ test.describe('The Submit form', () => {
     );
 
 
+    test('Should **not** show a list of related reports if no data entered', async ({ page, skipOnEmptyEnvironment }) => {
+
+      await page.goto(url);
+
+      const parentLocator = page.locator(`[data-cy="related-reports"]`);
+
+      const childrenCount = await parentLocator.locator('> *').count();
+
+      await expect(childrenCount).toBe(0);
+
+  }
+  );
 
     test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
@@ -1523,4 +1535,187 @@ test.describe('The Submit form', () => {
       await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
       await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
   });
+
+  test('Should show an error for inputs with two or fewer characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+    await conditionalIntercept(
+      page,
+      '**/parseNews**',
+      () => true,
+      parseNews,
+      'parseNews'
+  );
+
+    await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+    );
+
+    await page.goto(url);
+
+    await waitForRequest('findSubmissions');
+
+    await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    await page.locator('button:has-text("Fetch info")').click();
+
+    await waitForRequest('parseNews');
+
+    await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+    await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+    await page.locator('[data-cy="to-step-2"]').click();
+
+    await page.locator('[data-cy="to-step-3"]').click();
+
+    await page.locator('input[name="developers"]').fill('ab');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="developers-input"] .rbt-close').click();
+
+    await page.locator('input[name="developers"]').fill('NewDev');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Check for deployers field
+    await page.locator('input[name="deployers"]').fill('cd');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="deployers-input"] .rbt-close').click();
+
+    await page.locator('input[name="deployers"]').fill('NewDep');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Check for harmed_parties field
+    await page.locator('input[name="harmed_parties"]').fill('ef');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
+
+    await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    await page.locator('input[name="implicated_systems"]').fill('gh');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
+
+    await page.locator('input[name="implicated_systems"]').fill('NewSystem');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Check for "New selection" behavior
+    await page.locator('input[name="developers"]').fill('xy');
+    await page.locator('#developers-tags .dropdown-item:has-text("New selection: xy")').click();
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('div').filter({ hasText: /^xy×Remove$/ }).getByLabel('Remove').click();
+
+    await page.locator('input[name="developers"]').fill('ValidDev');
+    await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Submit to ensure the form does not proceed with errors
+    await page.locator('button[type="submit"]').click();
+    await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+    await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+  });
+
+  test('Should show an error for inputs with 200 or more characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+    await init();
+    await conditionalIntercept(
+      page,
+      '**/parseNews**',
+      () => true,
+      parseNews,
+      'parseNews'
+  );
+
+    await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+    );
+
+    await page.goto(url);
+
+    await waitForRequest('findSubmissions');
+
+    await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    await page.locator('button:has-text("Fetch info")').click();
+
+    await waitForRequest('parseNews');
+
+    await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+    await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+    await page.locator('[data-cy="to-step-2"]').click();
+
+    await page.locator('[data-cy="to-step-3"]').click();
+
+    await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="developers-input"] .rbt-close').click();
+
+    await page.locator('input[name="developers"]').fill('NewDev');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Check for deployers field
+    await page.locator('input[name="deployers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="deployers-input"] .rbt-close').click();
+
+    await page.locator('input[name="deployers"]').fill('NewDep');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Check for harmed_parties field
+    await page.locator('input[name="harmed_parties"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
+
+    await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    await page.locator('input[name="implicated_systems"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
+
+    await page.locator('input[name="implicated_systems"]').fill('NewSystem');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Check for "New selection" behavior
+    await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+    await page.locator('#developers-tags .dropdown-item:has-text("New selection: This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error")').click();
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+    await page.locator('div').filter({ hasText: /^This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error×Remove$/ }).getByLabel('Remove').click();
+
+    await page.locator('input[name="developers"]').fill('ValidDev');
+    await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
+    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+    // Submit to ensure the form does not proceed with errors
+    await page.locator('button[type="submit"]').click();
+    await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+    await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+  });
+
+  
 });
