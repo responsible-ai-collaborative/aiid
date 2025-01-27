@@ -33,13 +33,12 @@ exports.handler = async (event) => {
     await axios.post(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/prismic-deploy.yml/dispatches`,
       {
-        event_type: `prismic-deploy`,
-        client_payload: {
-          netlify_alias: `prismic-${GITHUB_BRANCH}-deploy`,
-          cache_modifier: "default",
+        inputs: {
+          "netlify-alias": `prismic-${GITHUB_BRANCH}-deploy`,
           environment: GITHUB_BRANCH,
+          "skip-cache": true,
         },
-        ref: "feature/prismic-webhook",
+        ref: "main",
       },
       {
         headers: {
