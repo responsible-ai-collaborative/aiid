@@ -1629,8 +1629,7 @@ describe(`Notifications`, () => {
             }
         });
 
-
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
 
         // No recipients
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
