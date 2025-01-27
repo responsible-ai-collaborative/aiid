@@ -78,15 +78,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
 
   return (
     <div className="flex flex-wrap">
-      <WebArchiveLink
-        url={item.url}
-        date={item.date_submitted}
-        className="btn btn-link px-1"
-        title={t('Authors')}
-        datePublished={item.epoch_date_published}
-        incidentDate={item.epoch_incident_date}
-        dateSubmitted={item.epoch_date_submitted}
-      >
+      <WebArchiveLink url={item.url} className="btn btn-link px-1">
         <FontAwesomeIcon
           titleId="report-source"
           icon={faNewspaper}
