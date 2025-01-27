@@ -90,6 +90,49 @@ const incidents: DBIncident[] = [
         // "created_at": 1407974400000
         implicated_systems: ["entity-1"],
     },
+    {
+        incident_id: 4,
+        date: "2014-08-14",
+        reports: [
+            9
+        ],
+        "Alleged deployer of AI system": [
+            "entity-1"
+        ],
+        "Alleged developer of AI system": [],
+        "Alleged harmed or nearly harmed parties": [],
+        implicated_systems: [],
+        description: "Test description 4",
+        title: "Test title 4",
+        editors: [
+            "619b47ea5eed5334edfa3bbc"
+        ],
+        nlp_similar_incidents: [
+            {
+                incident_id: 1,
+                similarity: 0.9988328814506531
+            },
+        ],
+        editor_similar_incidents: [],
+        editor_dissimilar_incidents: [],
+        flagged_dissimilar_incidents: [],
+        embedding: {
+            vector: [
+                -0.06841292232275009,
+                0.08255906403064728
+            ],
+            from_reports: [
+                16,
+                17
+            ]
+        },
+        tsne: {
+            x: 0.0487331398239335,
+            y: 0.38604577108881916
+        },
+        // this field is currently present in the database but not mapped to any graphql fueld
+        // "created_at": 1407974400000
+    },
 ]
 
 export default incidents;

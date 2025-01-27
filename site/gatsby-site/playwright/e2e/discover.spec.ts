@@ -249,6 +249,8 @@ test.describe('The Discover app', () => {
 
     test.skip('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
 
+        test.slow();
+
         await page.goto(url);
 
         await page.locator('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();

@@ -1,11 +1,12 @@
 import { rule } from "graphql-shield";
-import { Context, DBSubscription, DBUser } from "./interfaces";
+import { Context, DBChecklist, DBSubscription, DBUser } from "./interfaces";
 import { getMongoDbFilter } from "graphql-to-mongodb";
 import { SubscriptionType } from "./types/subscription";
 import { getSimplifiedType } from "./utils";
 import { GraphQLFilter } from "graphql-to-mongodb/lib/src/mongoDbFilter";
 import { UserType } from "./types/user";
 import config, { Config } from "./config";
+import { ChecklistType } from "./types/checklist";
 
 export const isRole = (role: string) => rule()(
     async (parent, args, context: Context, info) => {
@@ -115,3 +116,26 @@ export const notQueriesAdminData = () => rule()(
 )
 
 export const isAdmin = isRole('admin');
+
+export const isSubscriber = isRole('subscriber');
+
+export const isChecklistsOwner = () => rule()(
+    async (parent, args, context: Context, info) => {
+
+        const collection = context.client.db('aiidprod').collection('checklists');
+        const simpleType = getSimplifiedType(ChecklistType);
+        const filter = getMongoDbFilter(simpleType, args.filter as GraphQLFilter);
+        const checklists = await collection.find<DBChecklist>(filter).toArray();
+
+        const { user } = context;
+
+        const meetsOwnership = checklists.every(c => c.owner_id === user?.id);
+
+        if (!meetsOwnership) {
+
+            return new Error('not authorized');
+        }
+
+        return true;
+    },
+)

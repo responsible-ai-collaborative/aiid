@@ -48,7 +48,7 @@ export default function CheckListForm({
   const confirmDeleteChecklist = async (id) => {
     if (window.confirm('Delete this checklist?')) {
       try {
-        await deleteChecklist({ variables: { query: { id } } });
+        await deleteChecklist({ variables: { filter: { id: { EQ: id } } } });
         window.location = '/apps/checklists/';
       } catch (error) {
         addToast({

@@ -103,7 +103,7 @@ async function notificationsToNewIncidents(context: Context) {
                     try {
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
-                        if (incident) {
+                        if (incident && recipients.length > 0) {
                             //Send email notification
                             const sendEmailParams = {
                                 recipients,
@@ -201,7 +201,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const newReport = newReportNumber ? await reportsCollection.findOne({ report_number: newReportNumber }) : null;
 
-                        if (incident) {
+                        if (incident && recipients.length > 0) {
 
                             const sendEmailParams = {
                                 recipients,
@@ -292,7 +292,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const isIncidentUpdate = pendingNotification.isUpdate;
 
-                        if (incident && entity) {
+                        if (incident && entity && recipients.length > 0) {
 
                             const sendEmailParams = {
                                 recipients,
@@ -371,7 +371,7 @@ async function notificationsToNewPromotions(context: Context) {
                 try {
                     const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
-                    if (incident) {
+                    if (incident && recipients.length > 0) {
 
                         //Send email notification
                         const sendEmailParams = {
@@ -411,6 +411,8 @@ async function notificationsToNewPromotions(context: Context) {
 }
 
 export const processNotifications = async () => {
+
+    usersCache.length = 0;
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 

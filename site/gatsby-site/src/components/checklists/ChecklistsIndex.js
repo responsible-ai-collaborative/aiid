@@ -4,7 +4,7 @@ import Card from 'elements/Card';
 import Select from 'elements/Select';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckToSlot,
@@ -40,16 +40,14 @@ const ChecklistsIndex = ({ users }) => {
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
   /************************** Get Checklists **************************/
-  const [
-    findChecklists,
-    { data: checklistsData, loading: checklistsLoading, error: checklistsErrors },
-  ] = useLazyQuery(FIND_CHECKLISTS);
-
-  useEffect(() => {
-    if (!loading && user) {
-      findChecklists({ variables: { query: { owner_id: user?.id } } });
-    }
-  }, [loading, user]);
+  const {
+    data: checklistsData,
+    loading: checklistsLoading,
+    error: checklistsErrors,
+  } = useQuery(FIND_CHECKLISTS, {
+    variables: { filter: { owner_id: { EQ: user?.id } } },
+    skip: !user?.id,
+  });
 
   useEffect(() => {
     if (checklistsErrors) {
@@ -331,7 +329,7 @@ const CheckListCard = ({ checklist, setChecklists, owner }) => {
               type="button"
               onClick={async () => {
                 try {
-                  await deleteChecklist({ variables: { query: { id: checklist.id } } });
+                  await deleteChecklist({ variables: { filter: { id: { EQ: checklist.id } } } });
                   setChecklists((checklists) => checklists.filter((c) => c.id != checklist.id));
                 } catch (error) {
                   addToast({
