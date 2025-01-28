@@ -53,7 +53,7 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
     await mailersend.email.sendBulk(emails);
 
-    bulkLimiter.removeTokens(1);
+    await bulkLimiter.removeTokens(1);
 }
 
 export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
