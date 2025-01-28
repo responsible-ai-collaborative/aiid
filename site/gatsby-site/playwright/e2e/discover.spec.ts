@@ -247,7 +247,7 @@ test.describe('The Discover app', () => {
         await expect(modal).not.toBeVisible();
     });
 
-    test.skip('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
+    test('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
 
         test.slow();
 
@@ -278,9 +278,13 @@ test.describe('The Discover app', () => {
         await expect(waybackMachineLink).toBeVisible();
         await waybackMachineLink.click();
 
+        const response = await (await fetch('https://archive.org/wayback/available?url=https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/')).json();
+
+        const expectedTimestamp = response.archived_snapshots.closest.timestamp;
+
         await expect(async () => {
             await expect(popup).toBeTruthy();
-            await expect(popup).toHaveURL('https://web.archive.org/web/20240404174436/https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/');
+            await expect(popup).toHaveURL(`https://web.archive.org/web/${expectedTimestamp}/https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/`);
         }).toPass();
     });
 
