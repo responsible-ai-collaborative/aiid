@@ -39,9 +39,9 @@ jobs:
     permissions:
       pull-requests: write
     with:
-      environment: ${{ github.event.inputs.environment || github.event.client_payload.environment || 'staging' }}
-      sha: ${{ github.event.inputs.sha || github.event.client_payload.sha || github.sha }}
+      environment: ${{ github.event.inputs.environment || 'staging' }}
+      sha: ${{ github.event.inputs.sha || github.sha }}
       netlify-context: production
-      netlify-alias: ${{ github.event.inputs.netlify_alias || github.event.client_payload.netlify_alias || '' }}
+      netlify-alias: ${{ github.event.inputs.netlify_alias || '' }}
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
