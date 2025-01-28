@@ -35,7 +35,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
           if (user) {
 
             await sendEmail({
-              recipients: [{ email }],
+              recipient: { email },
               subject: 'Login link',
               templateId: 'Login',
               dynamicData: { magicLink: url },
@@ -44,7 +44,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
           else {
 
             await sendEmail({
-              recipients: [{ email }],
+              recipient: { email },
               subject: 'Signup link',
               templateId: 'Signup',
               dynamicData: { magicLink: url },
