@@ -3,6 +3,7 @@ import config from "../config";
 import templates from "./templates";
 import * as reporter from '../reporter';
 import assert from "assert";
+import { RateLimiter } from "limiter";
 
 interface SendEmailParams {
     recipients: {
@@ -35,6 +36,12 @@ export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [ke
     });
 }
 
+const bulkLimiter = new RateLimiter({
+    tokensPerInterval: 10,
+    interval: "minute",
+    fireImmediately: true
+});
+
 export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
     const mailersend = new MailerSend({
@@ -45,6 +52,8 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
     assert(emails.every(email => !email.cc), 'Should not use the "cc" field');
 
     await mailersend.email.sendBulk(emails);
+
+    bulkLimiter.removeTokens(1);
 }
 
 export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
