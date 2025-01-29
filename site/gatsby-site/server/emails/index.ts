@@ -36,11 +36,14 @@ export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [ke
     });
 }
 
-const bulkLimiter = new RateLimiter({
+let bulkLimiter = new RateLimiter({
     tokensPerInterval: 10,
-    interval: "minute",
-    fireImmediately: true
+    interval: "second",
 });
+
+export const setLimiter = (limiter: RateLimiter) => {
+    bulkLimiter = limiter;
+}
 
 export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
@@ -51,9 +54,9 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
     assert(emails.every(email => email.to.length == 1), 'Emails must have exactly one recipient');
     assert(emails.every(email => !email.cc), 'Should not use the "cc" field');
 
-    await mailersend.email.sendBulk(emails);
-
     await bulkLimiter.removeTokens(1);
+
+    await mailersend.email.sendBulk(emails);
 }
 
 export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
