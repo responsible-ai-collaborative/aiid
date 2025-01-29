@@ -25,21 +25,21 @@ exports.handler = async (event) => {
     const GITHUB_OWNER = process.env.GITHUB_OWNER;
     const GITHUB_REPO = process.env.GITHUB_REPO;
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const branches = ["main", "staging"];
+    const environments = [{ name: "production", branch: "main" }, { name: "staging", branch: "staging" }];
 
     console.log("Triggering GitHub Action...");
 
-    // Trigger GitHub repository_dispatch for each branch
-    for (const branch of branches) {
+    // Trigger GitHub repository_dispatch for each environnment
+    for (const environment of environments) {
       await axios.post(
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/prismic-deploy.yml/dispatches`,
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${environment.name}.yml/dispatches`,
         {
           inputs: {
-            "netlify-alias": `prismic-${branch}-deploy`,
-            environment: branch,
+            "netlify-alias": `prismic-${environment.name}-deploy`,
+            environment: environment.name,
             "skip-cache": true,
           },
-          ref: branch,
+          ref: environment.branch,
         },
         {
           headers: {
