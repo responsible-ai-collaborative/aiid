@@ -95,7 +95,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
         return true;
       },
 
-      async session({ session, token, user, newSession, }) {
+      async session({ session, user }) {
 
         const customData = await client.db('customData').collection('users').findOne({ userId: user.id });
 
