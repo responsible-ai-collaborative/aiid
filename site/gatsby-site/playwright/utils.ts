@@ -261,15 +261,6 @@ export const getApolloClient = () => {
     const client = new ApolloClient({
         link: new HttpLink({
             uri: `http://localhost:8000/api/graphql`,
-
-            fetch: async (uri, options) => {
-                // @ts-ignore
-                options.headers.email = config.E2E_ADMIN_USERNAME!;
-                // @ts-ignore
-                options.headers.password = config.E2E_ADMIN_PASSWORD!;
-
-                return fetch(uri, options);
-            },
         }),
         cache: new InMemoryCache({
             addTypename: false,
