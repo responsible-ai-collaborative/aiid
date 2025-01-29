@@ -35,8 +35,6 @@ exports.handler = async (event) => {
         `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${environment.name}.yml/dispatches`,
         {
           inputs: {
-            "netlify-alias": `prismic-${environment.name}-deploy`,
-            environment: environment.name,
             "skip-cache": true,
           },
           ref: environment.branch,
