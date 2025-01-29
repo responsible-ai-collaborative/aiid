@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { test } from '../../utils';
-import config from '../../config';
 import { init } from '../../memory-mongo';
 
 test.describe('Checklists App Index', () => {
@@ -113,7 +112,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should allow deleting checklists', async ({ page, login }) => {
 
-        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await init({
             aiidprod: {
