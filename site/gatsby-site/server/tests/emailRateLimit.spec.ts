@@ -42,8 +42,8 @@ describe("mailersendBulkSend with rate limiter", () => {
 
         const elapsed = Date.now() - initial;
 
-        expect(elapsed).toBeGreaterThanOrEqual(2000);
-
+        expect(elapsed).toBeCloseTo(2000, -2);
+        
         expect(sendBulkMock).toHaveBeenCalledTimes(11);
     });
 });
