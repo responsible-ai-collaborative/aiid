@@ -30,6 +30,11 @@ type TestFixtures = {
     runAnywhereExceptProduction: () => Promise<void>,
 };
 
+/**
+* Random hex string generator from next-auth/core/lib/utils/web.ts.
+* Must match original implementation for auth flow compatibility.
+* @param size Bytes to generate (output length = size * 2)
+*/
 export function randomString(size: number) {
     const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2)
     const r = (a: string, i: number): string => a + i2hex(i)
@@ -164,13 +169,13 @@ export const test = base.extend<TestFixtures>({
     }, { auto: true }],
 
     runOnlyInProduction: async ({ }, use, testInfo) => {
-      if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
-          testInfo.skip();
-      }
+        if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+            testInfo.skip();
+        }
 
-      await use(null);
+        await use(null);
     },
-    
+
     runAnywhereExceptProduction: async ({ }, use, testInfo) => {
         if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
             testInfo.skip();
