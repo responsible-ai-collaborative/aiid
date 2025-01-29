@@ -24,7 +24,7 @@ export default function Tags({
     let splitTags = [];
 
     if (splitChar) {
-      tag.split(splitChar).map((tag) => tag.trim());
+      splitTags = tag.split(splitChar).map((tag) => tag.trim());
     } else {
       splitTags = [tag.trim()];
     }
