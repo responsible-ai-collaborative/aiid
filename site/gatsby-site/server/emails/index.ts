@@ -41,10 +41,37 @@ let bulkLimiter = new RateLimiter({
     interval: "second",
 });
 
+/**
+ * Sets a custom rate limiter, primarily used in tests to override the default 
+ * rate limiting behavior and avoid waiting for the standard 1-minute delay.
+ * 
+ * @param limiter - The custom rate limiter instance to use
+ * @example
+ * // In tests, you can set a mock limiter with no delay
+ * setLimiter(new MockRateLimiter({ delay: 0 }));
+ */
 export const setLimiter = (limiter: RateLimiter) => {
     bulkLimiter = limiter;
 }
 
+/**
+ * Sends multiple emails using MailerSend's bulk email API.
+ * 
+ * Note: While MailerSend's bulk API allows up to 15 calls per minute,
+ * we implement a more conservative rate limit for stability.
+ * 
+ * @param emails - Array of email parameters. Each email must have exactly one recipient
+ * and should not use the CC field.
+ * @throws {AssertionError} If any email has multiple recipients or uses CC field
+ * @example
+ * await mailersendBulkSend([
+ *   {
+ *     to: ['user@example.com'],
+ *     subject: 'Hello',
+ *     text: 'Message content'
+ *   }
+ * ]);
+ */
 export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
     const mailersend = new MailerSend({
