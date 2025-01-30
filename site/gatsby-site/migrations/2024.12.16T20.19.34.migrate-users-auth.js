@@ -93,6 +93,14 @@ const apiRequest = async ({ path, params = {}, method = 'GET' }) => {
   return response;
 };
 
+const getDate = (timestamp) => {
+  if (timestamp && Number.isInteger(timestamp)) {
+    return new Date(timestamp * 1000);
+  }
+
+  return new Date();
+};
+
 // atlas admin api has a 100 requests per minute limit, so we need to limit the requests
 const limiter = new RateLimiter({
   tokensPerInterval: 50,
@@ -127,7 +135,7 @@ exports.up = async ({ context: { client } }) => {
     migratedUsers.push({
       _id: ObjectId.createFromHexString(user.userId),
       email: response.data.email,
-      emailVerified: new Date(),
+      emailVerified: getDate(response.last_authentication_date),
     });
 
     console.log(`Fetched user ${user.userId} (${migratedUsers.length}/${users.length})`);
