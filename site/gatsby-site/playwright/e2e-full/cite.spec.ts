@@ -100,7 +100,7 @@ test.describe('Cite pages', () => {
     test('Should show editors in the stats table', async ({ page }) => {
         await page.goto(url);
         const incidentStats = await page.locator('[data-cy=incident-stats] > * > *:has-text("Editors")');
-        await expect(incidentStats.locator('text=Sean McGregor')).toBeVisible();
+        await expect(incidentStats.locator('text=John Doe')).toBeVisible();
     });
 
     test('Should flag an incident', async ({ page }) => {
@@ -276,7 +276,7 @@ test.describe('Cite pages', () => {
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
 
         expect(bibText).toBe(
-            `@article{aiid:3,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:KronosSchedulingAlgorithmAllegedlyCausedFinancialIssuesforStarbucksEmployees},url={https://incidentdatabase.ai/cite/3},year={2014},urldate={${date}},note={Retrieved${retrievedDate}from\\url{https://incidentdatabase.ai/cite/3}}}`
+            `@article{aiid:3,author={Olsson,Catherine},editor={John,Doe},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:KronosSchedulingAlgorithmAllegedlyCausedFinancialIssuesforStarbucksEmployees},url={https://incidentdatabase.ai/cite/3},year={2014},urldate={${date}},note={Retrieved${retrievedDate}from\\url{https://incidentdatabase.ai/cite/3}}}`
         );
     });
 

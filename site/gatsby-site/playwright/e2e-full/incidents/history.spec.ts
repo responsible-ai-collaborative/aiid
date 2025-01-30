@@ -40,7 +40,7 @@ test.describe('Incidents', () => {
     for (let [index, history] of history_incidents.entries()) {
       const row = rows[index];
       await row.evaluate((node, epoch_date_modified) => node.textContent.includes(`${new Date(epoch_date_modified * 1000).toISOString().slice(0, 16).replace('T', ' ')}`), history.epoch_date_modified);
-      await row.evaluate((node, history) => node.textContent.includes(`Modified by: ${history.modifiedBy === '1' ? 'Sean McGregor' : 'Test User'}`), history);
+      await row.evaluate((node, history) => node.textContent.includes(`Modified by: ${history.modifiedBy === '1' ? 'John Doe' : 'Test User'}`), history);
     }
 
     const lastRowIndex = history_incidents.length - 1;
@@ -191,7 +191,7 @@ test.describe('Incidents', () => {
     await modal.locator('[data-cy="citation"]').getByTestId('Incident ID').getByText(`${version1.incident_id}`).waitFor();
     await modal.locator('[data-cy="citation"]').getByTestId('Report Count').getByText(`${version1.reports.length}`, { exact: true }).waitFor();
     await modal.locator('[data-cy="citation"]').getByTestId('Incident Date').getByText(`${version1.date}`).waitFor();
-    await modal.locator('[data-cy="citation"]').getByTestId('Editors').getByText('Test User, Sean McGregor').waitFor();
+    await modal.locator('[data-cy="citation"]').getByTestId('Editors').getByText('Test User, John Doe').waitFor();
     await modal.locator('button').getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
   });
