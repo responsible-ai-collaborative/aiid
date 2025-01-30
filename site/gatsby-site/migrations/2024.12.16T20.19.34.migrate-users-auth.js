@@ -2,6 +2,8 @@ const { ObjectId } = require('bson');
 
 const jwt = require('jsonwebtoken');
 
+const { RateLimiter } = require('limiter');
+
 for (const key of [
   'REALM_API_PUBLIC_KEY',
   'REALM_API_PRIVATE_KEY',
@@ -91,6 +93,12 @@ const apiRequest = async ({ path, params = {}, method = 'GET' }) => {
   return response;
 };
 
+// atlas admin api has a 100 requests per minute limit, so we need to limit the requests
+const limiter = new RateLimiter({
+  tokensPerInterval: 50,
+  interval: 'minute',
+});
+
 /**
  *
  * @param {{context: {client: import('mongodb').MongoClient}}} context
@@ -98,28 +106,37 @@ const apiRequest = async ({ path, params = {}, method = 'GET' }) => {
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  const users = await client.db('customData').collection('users').find().toArray();
+  const customDataDb = client.db('customData');
+
+  const authDb = client.db('auth');
+
+  const users = await customDataDb.collection('users').find().toArray();
+
+  const migratedUsers = [];
 
   for (const user of users) {
+    await limiter.removeTokens(1);
+
     const response = await apiRequest({ path: `/users/${user.userId}` });
 
-    if (response?.data?.email) {
-      try {
-        await client
-          .db('auth')
-          .collection('users')
-          .insertOne({
-            _id: ObjectId.createFromHexString(user.userId),
-            email: response?.data?.email,
-            emailVerified: new Date(),
-          });
-
-        console.log(`Migrated user ${user.userId}`);
-      } catch (e) {
-        console.error(`Failed to migrate user ${user.userId}: ${e}`);
-      }
-    } else {
-      console.error(`User ${user.userId} not found`);
+    if (!response?.data?.email) {
+      console.error(`User ${user.userId} not found or missing email`);
+      continue;
     }
+
+    migratedUsers.push({
+      _id: ObjectId.createFromHexString(user.userId),
+      email: response.data.email,
+      emailVerified: new Date(),
+    });
+
+    console.log(`Fetched user ${user.userId} (${migratedUsers.length}/${users.length})`);
+  }
+
+  if (migratedUsers.length > 0) {
+    await authDb.collection('users').insertMany(migratedUsers, { ordered: false });
+    console.log(`Successfully migrated ${migratedUsers.length} users`);
+  } else {
+    console.log('No valid users found for migration');
   }
 };
