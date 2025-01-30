@@ -135,7 +135,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+    await login({ customData: { first_name: 'Mock', last_name: 'User', roles: ['incident_editor'] } });
 
     await page.goto(url);
 
@@ -155,7 +155,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=date-input]').fill('2023-05-04');
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
-    await fillAutoComplete(page, "#input-editors", "Sean", "Sean McGregor");
+    await fillAutoComplete(page, "#input-editors", "John", "John Doe");
 
     await fillAutoComplete(page, "#input-incidentSearch", "1", "1 - Incident 1");
 

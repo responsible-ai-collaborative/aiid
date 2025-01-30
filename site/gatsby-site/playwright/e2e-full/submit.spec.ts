@@ -203,7 +203,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('[name="description"]').fill('Description');
 
-        await fillAutoComplete(page, "#input-incident_editors", 'Sean', 'Sean McGregor');
+        await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
 
         await page.locator('[name="tags"]').fill('New Tag');
         await page.keyboard.press('Enter');
