@@ -22,11 +22,47 @@ declare module '@playwright/test' {
 export type Options = { defaultItem: string };
 
 type TestFixtures = {
+    /** 
+     * Skips the test when running in an empty environment
+     */
     skipOnEmptyEnvironment: () => Promise<void>,
+
+    /**
+     * Runs the test only when in an empty environment
+     */
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (options?: { email?: string, customData?: Record<string, unknown> }) => Promise<string[]>,
-    retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
+
+    /**
+     * Logs in a user with optional configuration
+     * @param options - Optional configuration for the login
+     * @param options.email - Optional email to use for login
+     * @param options.customData - Optional data to customize the seed user's properties like name and roles
+     * @returns Promise resolving to a tuple where:
+     *   - First element is the userId, useful for mocking collections to reflect ownership
+     *   - Second element is the session token, useful for performing GraphQL queries on behalf of the user
+     */
+    login: (options?: {
+        email?: string,
+        customData?: Record<string, unknown>
+    }) => Promise<[string, string]>,
+
+    /**
+     * Adds an increasing delay after a test failure before retrying
+     * The delay increases with each retry attempt
+     */
+    retryDelay?: [
+        ({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>,
+        { auto: true }
+    ],
+
+    /**
+     * Runs the test only in production environment
+     */
     runOnlyInProduction: () => Promise<void>,
+
+    /**
+     * Runs the test in any environment except production
+     */
     runAnywhereExceptProduction: () => Promise<void>,
 };
 
