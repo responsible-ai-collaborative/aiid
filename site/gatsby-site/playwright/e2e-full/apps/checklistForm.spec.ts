@@ -85,7 +85,7 @@ test.describe('Checklists App Form', () => {
 
         const response = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName === 'upsertChecklist');
 
-        await page.locator('#tags_goals_input').fill('Code Generation');
+        await page.locator('#tags_goals_input').fill('Question Answering');
         await page.locator('#tags_goals').click();
 
         await response;
