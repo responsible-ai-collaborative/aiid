@@ -8,10 +8,6 @@
         "private": true
     },
     {
-        "name": "logReportHistory",
-        "private": false
-    },
-    {
         "name": "sendEmail",
         "private": false
     },
@@ -35,9 +31,5 @@
     {
         "name": "confirmUser",
         "private": true
-    },
-    {
-        "name": "logIncidentHistory",
-        "private": false
     }
 ]

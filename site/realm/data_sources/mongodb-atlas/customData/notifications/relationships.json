@@ -1,8 +1,0 @@
-{
-    "userId": {
-        "ref": "#/relationship/mongodb-atlas/customData/users",
-        "source_key": "userId",
-        "foreign_key": "userId",
-        "is_list": false
-    }
-}
