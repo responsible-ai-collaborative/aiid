@@ -113,7 +113,7 @@ test.describe('Report History', () => {
       `
     });
 
-    const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    const [userId] = await login({ customData: { roles: ['admin'] } });
 
     await page.goto(url);
 
