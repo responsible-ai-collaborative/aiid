@@ -13,7 +13,7 @@ test.describe('Incidents App', () => {
 
   test('Should display a list of incidents', async ({ page }) => {
     await page.goto(url);
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(3);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(4);
   });
 
   test('Should display an empty list of incidents on Empty environment', async ({ page, runOnlyOnEmptyEnvironment }) => {
@@ -135,7 +135,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login({ customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+    await login({ customData: { first_name: 'Mock', last_name: 'User', roles: ['incident_editor'] } });
 
     await page.goto(url);
 
@@ -155,7 +155,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=date-input]').fill('2023-05-04');
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
-    await fillAutoComplete(page, "#input-editors", "Sean", "Sean McGregor");
+    await fillAutoComplete(page, "#input-editors", "John", "John Doe");
 
     await fillAutoComplete(page, "#input-incidentSearch", "1", "1 - Incident 1");
 
@@ -264,7 +264,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy="table-view"] button:has-text("Issue Reports")').click();
 
     await page.waitForSelector('[data-cy="row"]');
-    await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(2);
 
     const firstRowLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
     expect(firstRowLink).toMatch(/^\/reports\/\d+$/);

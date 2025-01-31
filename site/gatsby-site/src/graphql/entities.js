@@ -30,8 +30,8 @@ export const FIND_ENTITY = gql(`
 `);
 
 export const UPDATE_ENTITY = gql(`
-  mutation UpdateEntity($filter: EntityFilterType!, $update: EntityUpdateType!) {
-    updateOneEntity(filter: $filter, update: $update) {
+  mutation UpdateEntity($input: UpdateOneEntityInput!) {
+    updateEntityAndRelationships(input: $input) {
       entity_id
     }
   }

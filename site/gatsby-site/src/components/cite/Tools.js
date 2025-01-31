@@ -33,6 +33,8 @@ function Tools({
 
   const { isRole, loading, user } = useUserContext();
 
+  const isUserLoggedIn = user && !loading;
+
   return (
     <Card>
       <Card.Header>
@@ -45,6 +47,7 @@ function Tools({
           subscribing={subscribing}
           onClick={subscribeToNewReports}
           subscribed={isSubscribed}
+          userLoggedIn={isUserLoggedIn}
         />
         <Button
           color="gray"

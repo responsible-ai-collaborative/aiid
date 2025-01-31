@@ -74,6 +74,7 @@
     "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
     "jsonwebtoken": "^9.0.2",
+    "limiter": "^3.0.0",
     "mailersend": "^2.3.0",
     "md5": "^2.3.0",
     "minimatch": "^9.0.4",
@@ -144,8 +145,7 @@
     "process-notifications": "npx tsx --env-file=.env src/scripts/process-notifications.ts",
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
     "translate-reports": "node src/scripts/translateReports.js",
-    "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
-    "algolia:push": "npx tsx --env-file=.env src/scripts/algolia-update.js"
+    "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",

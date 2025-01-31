@@ -46,7 +46,7 @@ test.describe('Report History', () => {
       await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(date);
 
       await expect(page.locator('[data-cy="history-row"]').nth(index)).toContainText(
-        `Modified by: ${history.modifiedBy === '6737a6e881955aa4905ccb04' ? 'Test User' : 'Sean McGregor'}`
+        `Modified by: ${history.modifiedBy === '6737a6e881955aa4905ccb04' ? 'Test User' : 'John Doe'}`
       );
     }
 
@@ -113,7 +113,7 @@ test.describe('Report History', () => {
       `
     });
 
-    const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    const [userId] = await login({ customData: { roles: ['admin'] } });
 
     await page.goto(url);
 
@@ -201,7 +201,7 @@ test.describe('Report History', () => {
 
     await expect(page.getByText('Version details')).toBeVisible();
     await expect(page.getByText(`Modified on: ${format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`)).toBeVisible();
-    await expect(page.locator('[data-cy="version-view-modal"] div').filter({ hasText: 'Modified by: Sean McGregor' }).first()).toBeVisible();
+    await expect(page.locator('[data-cy="version-view-modal"] div').filter({ hasText: 'Modified by: John Doe' }).first()).toBeVisible();
 
 
     const fields = [

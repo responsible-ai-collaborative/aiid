@@ -77,7 +77,7 @@ test.describe('Submitted reports', () => {
 
         await login();
 
-        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`); 
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Incident');
 
@@ -85,7 +85,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 4 and Report 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 5 and Report 10');
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -117,7 +117,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-to-report-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]')).toContainText('Successfully promoted submission to Incident 1 and Report 9');
+        await expect(page.locator('[data-cy="toast"]')).toContainText('Successfully promoted submission to Incident 1 and Report 10');
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -132,7 +132,7 @@ test.describe('Submitted reports', () => {
         `,
         });
 
-        expect(incidents.find((i) => i.incident_id === 1).reports.map((r) => r.report_number)).toContain(9);
+        expect(incidents.find((i) => i.incident_id === 1).reports.map((r) => r.report_number)).toContain(10);
     });
 
     test('Promotes a submission to a new report and links it to multiple incidents', async ({ page, login }) => {
@@ -150,8 +150,8 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-to-report-button"]').click();
 
-        await expect(page.getByText('Successfully promoted submission to Incident 2 and Report 9')).toBeVisible();
-        await expect(page.getByText('Successfully promoted submission to Incident 3 and Report 9')).toBeVisible();
+        await expect(page.getByText('Successfully promoted submission to Incident 2 and Report 10')).toBeVisible();
+        await expect(page.getByText('Successfully promoted submission to Incident 3 and Report 10')).toBeVisible();
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -166,8 +166,8 @@ test.describe('Submitted reports', () => {
         `,
         });
 
-        expect(incidents.find((i) => i.incident_id === 2).reports.map((r) => r.report_number)).toContain(9);
-        expect(incidents.find((i) => i.incident_id === 3).reports.map((r) => r.report_number)).toContain(9);
+        expect(incidents.find((i) => i.incident_id === 2).reports.map((r) => r.report_number)).toContain(10);
+        expect(incidents.find((i) => i.incident_id === 3).reports.map((r) => r.report_number)).toContain(10);
     });
 
     test('Promotes a submission to a new issue', async ({ page, login }) => {
@@ -184,7 +184,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 10');
 
         const { data: { reports } } = await query({
             query: gql`{
@@ -285,6 +285,7 @@ test.describe('Submitted reports', () => {
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
@@ -327,6 +328,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
@@ -429,6 +431,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
+            implicated_systems: []
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
@@ -488,6 +491,7 @@ test.describe('Submitted reports', () => {
                 editor_notes: "",
                 description: 'Sarasa',
                 title: "Submission " + i,
+                implicated_systems: []
             }
         })
 
@@ -556,6 +560,7 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
+            implicated_systems: []
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
@@ -596,7 +601,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 4 and Report 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 5 and Report 10');
 
         const { data: { incident } } = await query({
             query: gql`{
@@ -609,6 +614,9 @@ test.describe('Submitted reports', () => {
                         entity_id
                     }
                     AllegedHarmedOrNearlyHarmedParties {
+                        entity_id
+                    }
+                    implicated_systems {
                         entity_id
                     }
                     date
@@ -663,6 +671,11 @@ test.describe('Submitted reports', () => {
                     entity_id: "entity-3",
                 },
             ],
+            implicated_systems: [
+                {
+                    entity_id: "entity-1",
+                },
+            ],
             date: "2021-09-14",
             description: "Sample description",
             editor_dissimilar_incidents: [],
@@ -672,13 +685,13 @@ test.describe('Submitted reports', () => {
             embedding: null,
             epoch_date_modified: null,
             flagged_dissimilar_incidents: [],
-            incident_id: 4,
+            incident_id: 5,
             nlp_similar_incidents: [],
             title: "Incident title",
             tsne: null,
             reports: [
                 {
-                    report_number: 9,
+                    report_number: 10,
                     user: {
                         userId: "6737a6e881955aa4905ccb04",
                     },

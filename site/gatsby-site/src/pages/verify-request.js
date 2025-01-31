@@ -1,14 +1,11 @@
 import React from 'react';
 import { useUserContext } from 'contexts/UserContext';
 import { Trans, useTranslation } from 'react-i18next';
-import { StringParam, useQueryParams } from 'use-query-params';
 import HeadContent from 'components/HeadContent';
 import { Spinner } from 'flowbite-react';
 
-const VerifyRequest = () => {
+const VerifyRequest = ({ location: { state } }) => {
   const { user, loading } = useUserContext();
-
-  const [{ email }] = useQueryParams({ email: StringParam });
 
   if (loading) {
     return (
@@ -26,16 +23,33 @@ const VerifyRequest = () => {
     );
   }
 
-  return (
-    <>
-      <h1>
-        <Trans>Check your email</Trans>
-      </h1>
-      <p>
-        <Trans>A sign in link has been sent to {email}</Trans>
-      </p>
-    </>
-  );
+  if (state?.operation == 'login') {
+    return (
+      <>
+        <h1>
+          <Trans>Check your email</Trans>
+        </h1>
+        <p>
+          <Trans>A sign in link has been sent to {state.email}</Trans>
+        </p>
+      </>
+    );
+  }
+
+  if (state?.operation == 'signup') {
+    return (
+      <>
+        <h1>
+          <Trans>Check your email</Trans>
+        </h1>
+        <p>
+          <Trans>A sign up link has been sent to {state.email}</Trans>
+        </p>
+      </>
+    );
+  }
+
+  return null;
 };
 
 export const Head = (props) => {

@@ -20,6 +20,7 @@ import {
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import Label from '../components/forms/Label';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -32,7 +33,7 @@ const incidentFields = [
 ];
 
 const EntityPage = ({ pageContext, data, ...props }) => {
-  const { id, name, relatedEntities } = pageContext;
+  const { id, name, relatedEntities, entityRelationships } = pageContext;
 
   const { isRole, user } = useUserContext();
 
@@ -106,6 +107,16 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
     return entity;
   });
+
+  const entityRelationshipsData = entityRelationships
+    .filter((rel) => rel.sub === id || rel.obj === id)
+    .map((rel) => {
+      const relatedId = rel.sub === id ? rel.obj : rel.sub;
+
+      const entity = entitiesData?.nodes?.find((entity) => entity.entity_id === relatedId);
+
+      return { ...entity, id: relatedId };
+    });
 
   const [subscribeToEntityMutation, { loading: subscribing }] = useMutation(UPSERT_SUBSCRIPTION);
 
@@ -300,11 +311,28 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       {relatedEntitiesData.length > 0 && (
         <>
           <h2 className="mt-24">
-            <Trans ns="entities">Related Entities</Trans>
+            <Label popover="relatedEntities" label={t('Related Entities')} className="text-2xl" />
           </h2>
           <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
             {relatedEntitiesData.map((entity) => (
               <EntityCard key={entity.id} entity={entity} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {entityRelationshipsData && entityRelationshipsData?.length > 0 && (
+        <>
+          <h2 className="mt-24">
+            <Label
+              popover="entityRelationships"
+              label={t('Entity Relationships')}
+              className="text-2xl"
+            />
+          </h2>
+          <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
+            {entityRelationshipsData.map((entity) => (
+              <EntityCard key={entity.entity_id} entity={entity} />
             ))}
           </div>
         </>

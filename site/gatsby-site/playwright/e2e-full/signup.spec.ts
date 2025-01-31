@@ -39,7 +39,7 @@ test.describe('Signup', () => {
 
     await signupResponse;
 
-    await expect(page.getByText('A sign in link has been sent to new.user@test.com')).toBeVisible();
+    await expect(page.getByText('A sign up link has been sent to new.user@test.com')).toBeVisible();
   });
 
   test('Should display the error toast message if any other sign up error occurs', async ({ page }) => {

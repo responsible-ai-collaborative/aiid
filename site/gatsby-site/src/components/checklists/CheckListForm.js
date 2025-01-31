@@ -35,7 +35,7 @@ export default function CheckListForm({
 }) {
   const { user } = useUserContext();
 
-  const userIsOwner = values.owner_id == user.id;
+  const userIsOwner = values.owner_id == user?.id;
 
   const owner = users.find((u) => u.userId == values.owner_id);
 
@@ -48,7 +48,7 @@ export default function CheckListForm({
   const confirmDeleteChecklist = async (id) => {
     if (window.confirm('Delete this checklist?')) {
       try {
-        await deleteChecklist({ variables: { query: { id } } });
+        await deleteChecklist({ variables: { filter: { id: { EQ: id } } } });
         window.location = '/apps/checklists/';
       } catch (error) {
         addToast({

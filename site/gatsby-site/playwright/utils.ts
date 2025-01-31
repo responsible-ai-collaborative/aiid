@@ -22,14 +22,55 @@ declare module '@playwright/test' {
 export type Options = { defaultItem: string };
 
 type TestFixtures = {
+    /** 
+     * Skips the test when running in an empty environment
+     */
     skipOnEmptyEnvironment: () => Promise<void>,
+
+    /**
+     * Runs the test only when in an empty environment
+     */
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (options?: { email?: string, customData?: Record<string, unknown> }) => Promise<string[]>,
-    retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
+
+    /**
+     * Logs in a user with optional configuration
+     * @param options - Optional configuration for the login
+     * @param options.email - Optional email to use for login
+     * @param options.customData - Optional data to customize the seed user's properties like name and roles
+     * @returns Promise resolving to a tuple where:
+     *   - First element is the userId, useful for mocking collections to reflect ownership
+     *   - Second element is the session token, useful for performing GraphQL queries on behalf of the user
+     */
+    login: (options?: {
+        email?: string,
+        customData?: Record<string, unknown>
+    }) => Promise<[string, string]>,
+
+    /**
+     * Adds an increasing delay after a test failure before retrying
+     * The delay increases with each retry attempt
+     */
+    retryDelay?: [
+        ({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>,
+        { auto: true }
+    ],
+
+    /**
+     * Runs the test only in production environment
+     */
     runOnlyInProduction: () => Promise<void>,
+
+    /**
+     * Runs the test in any environment except production
+     */
     runAnywhereExceptProduction: () => Promise<void>,
 };
 
+/**
+* Random hex string generator from next-auth/core/lib/utils/web.ts.
+* Must match original implementation for auth flow compatibility.
+* @param size Bytes to generate (output length = size * 2)
+*/
 export function randomString(size: number) {
     const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2)
     const r = (a: string, i: number): string => a + i2hex(i)
@@ -164,13 +205,13 @@ export const test = base.extend<TestFixtures>({
     }, { auto: true }],
 
     runOnlyInProduction: async ({ }, use, testInfo) => {
-      if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
-          testInfo.skip();
-      }
+        if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+            testInfo.skip();
+        }
 
-      await use(null);
+        await use(null);
     },
-    
+
     runAnywhereExceptProduction: async ({ }, use, testInfo) => {
         if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
             testInfo.skip();
@@ -261,13 +302,6 @@ export const getApolloClient = () => {
     const client = new ApolloClient({
         link: new HttpLink({
             uri: `http://localhost:8000/api/graphql`,
-
-            fetch: async (uri, options) => {
-                options.headers.email = config.E2E_ADMIN_USERNAME!;
-                options.headers.password = config.E2E_ADMIN_PASSWORD!;
-
-                return fetch(uri, options);
-            },
         }),
         cache: new InMemoryCache({
             addTypename: false,

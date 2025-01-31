@@ -42,7 +42,7 @@ const SignUp = () => {
       const result = await signUp(email, '/account/?askToCompleteProfile=1');
 
       if (!result.error) {
-        await navigate(`/verify-request/?email=${encodeURIComponent(email)}`);
+        await navigate(`/verify-request`, { state: { email, operation: 'signup' } });
       } else {
         // TODO: Add more specific error messages
         addToast({

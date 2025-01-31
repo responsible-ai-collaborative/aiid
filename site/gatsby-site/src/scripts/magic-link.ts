@@ -1,7 +1,16 @@
+/**
+ * @fileoverview Development utility to generate magic login links without requiring MailerSend setup.
+ * Useful for local testing and debugging authentication flows.
+ * 
+ * @example npm run magic-link user@example.com [callbackUrl]
+ * 
+ * @note For development use only.
+ */
+
 import { generateMagicLink } from "../../playwright/utils";
 
 function displayHelp(): void {
-    console.log(`
+  console.log(`
   Usage: npm run magic-link <email> [callbackUrl]
   
   Arguments:
@@ -16,24 +25,24 @@ function displayHelp(): void {
 
 async function start() {
 
-    const args = process.argv.slice(2);
+  const args = process.argv.slice(2);
 
-    if (args.length === 0) {
-        console.error('Error: Email is required');
-        displayHelp();
-        process.exit(1);
-    }
+  if (args.length === 0) {
+    console.error('Error: Email is required');
+    displayHelp();
+    process.exit(1);
+  }
 
-    const email = args[0];
-    const callbackUrl = args[1];
+  const email = args[0];
+  const callbackUrl = args[1];
 
-    const magicLink = await generateMagicLink(email, callbackUrl);
+  const magicLink = await generateMagicLink(email, callbackUrl);
 
-    console.log(`\nMagic link: ${magicLink}\n\n`);
+  console.log(`\nMagic link: ${magicLink}\n\n`);
 }
 
 
 if (require.main === module) {
-    start();
+  start();
 }
 

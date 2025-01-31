@@ -10,7 +10,13 @@ test.describe('New Incident page', () => {
 
   test('Should successfully create a new incident', async ({ page, login }) => {
 
-    await init();
+    await init({
+      customData: {
+        users: [
+          { userId: 'mocked', first_name: 'Mock', last_name: 'User', roles: ['admin'] },
+        ]
+      }
+    });
 
     await login();
 
@@ -35,11 +41,11 @@ test.describe('New Incident page', () => {
     await page.locator('[data-cy="implicated-systems-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
 
-    await fillAutoComplete(page, '#input-editors', 'Sean', 'Sean McGregor');
+    await fillAutoComplete(page, '#input-editors', 'John', 'John Doe');
 
     await page.getByText('Save').click();
 
-    await page.getByText(`You have successfully create Incident 4. View incident`).waitFor();
+    await page.getByText(`You have successfully create Incident 5. View incident`).waitFor();
   });
 
   test('Should clone an incident', async ({ page, login }) => {
@@ -48,7 +54,7 @@ test.describe('New Incident page', () => {
 
     await login();
 
-    const newIncidentId = 4;
+    const newIncidentId = 5;
 
     await page.goto(`${url}/?incident_id=3`);
 

@@ -3,6 +3,7 @@ import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest
 import { expect } from '@playwright/test';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
+import { addWeeks, getUnixTime, subWeeks } from 'date-fns';
 
 
 test.describe('The Submit form', () => {
@@ -202,7 +203,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('[name="description"]').fill('Description');
 
-        await fillAutoComplete(page, "#input-incident_editors", 'Sean', 'Sean McGregor');
+        await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
 
         await page.locator('[name="tags"]').fill('New Tag');
         await page.keyboard.press('Enter');
@@ -455,111 +456,60 @@ test.describe('The Submit form', () => {
     });
 
 
-    test.skip('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
-
-        const relatedReports = {
-            byURL: {
-                data: {
-                    reports: [
-                        {
-                            __typename: 'Report',
-                            report_number: 1501,
-                            title: 'Zillow to exit its home buying business, cut 25% of staff',
-                            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-                        },
-                    ],
-                },
-            },
-            byDatePublished: {
-                data: {
-                    reports: [
-                        {
-                            __typename: 'Report',
-                            report_number: 810,
-                            title: "Google's Nest Stops Selling Its Smart Smoke Alarm For Now Due To Faulty Feature",
-                            url: 'https://www.forbes.com/sites/aarontilley/2014/04/03/googles-nest-stops-selling-its-smart-smoke-alarm-for-now',
-                        },
-                        {
-                            __typename: 'Report',
-                            report_number: 811,
-                            title: 'Why Nest’s Smoke Detector Fail Is Actually A Win For Everyone',
-                            url: 'https://readwrite.com/2014/04/04/nest-smoke-detector-fail/',
-                        },
-                    ],
-                },
-            },
-            byAuthors: {
-                data: { reports: [] },
-            },
-            byIncidentId: {
-                data: {
-                    incidents: [
-                        {
-                            __typename: 'Incident',
-                            incident_id: 1,
-                            title: 'Google’s YouTube Kids App Presents Inappropriate Content',
-                            reports: [
-                                {
-                                    __typename: 'Report',
-                                    report_number: 10,
-                                    title: 'Google’s YouTube Kids App Presents Inappropriate Content',
-                                    url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
-        };
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+    test('Should show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
         await page.goto(url);
 
-        await waitForRequest('findSubmissions');
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.url_in,
-            relatedReports.byURL,
-            'RelatedReportsByURL'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.epoch_date_published_gt &&
-                req.postDataJSON().variables.query?.epoch_date_published_lt,
-            relatedReports.byDatePublished,
-            'RelatedReportsByPublishedDate'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.authors_in?.length,
-            relatedReports.byAuthors,
-            'RelatedReportsByAuthor'
-        );
+        const authors = "author1";
+        const date_published = "2014-08-14";
+        const reportUrl = 'http://example.com';
 
         const values = {
-            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            authors: 'test author',
-            date_published: '2014-03-30',
+            url: reportUrl,
+            authors,
+            date_published,
             incident_ids: 1,
         };
+
+        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+
+        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+
+        const { data: { reports: reportsAuthors } } = await query({
+            query: gql`
+            query {
+              reports(filter: { authors: {IN: ["${authors}"] } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const { data: { reports: reportsPublished } } = await query({
+            query: gql`
+            query {
+              reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const { data: { reports: reportsUrl } } = await query({
+            query: gql`
+            query {
+              reports(filter: { url: {IN: ["${reportUrl}"] } }) {
+                report_number
+              }
+            }
+          `,
+        });
+
+        const reports = {
+            byAuthors: reportsAuthors,
+            byDatePublished: reportsPublished,
+            byURL: reportsUrl,
+        }
 
         for (const key in values) {
             if (key == 'incident_ids') {
@@ -571,108 +521,93 @@ test.describe('The Submit form', () => {
             }
         }
 
-        await waitForRequest('RelatedReportsByAuthor');
-        await waitForRequest('RelatedReportsByURL');
-        await waitForRequest('RelatedReportsByPublishedDate');
-
-        for (const key of ['byURL', 'byDatePublished']) {
-            const reports =
-                key == 'byIncidentId'
-                    ? relatedReports[key].data.incidents[0].reports
-                    : relatedReports[key].data.reports;
+        for (const key of Object.keys(reports)) {
 
             const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
             await expect(async () => {
-                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports.length);
+                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(reports[key].length);
             }).toPass();
 
-            for (const report of reports) {
+            for (const report of reports[key]) {
                 await expect(parentLocator.locator('[data-cy="result"]', { hasText: report.title })).toBeVisible();
             }
 
         }
-
-        await expect(page.locator(`[data-cy="related-byAuthors"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
     }
     );
 
-    test.skip('Should show a preliminary checks message', async ({ page }) => {
-        const relatedReports = {
-            byURL: {
-                data: {
-                    reports: [],
-                },
-            },
-            byDatePublished: {
-                data: {
-                    reports: [],
-                },
-            },
-            byAuthors: {
-                data: { reports: [] },
-            },
-            byIncidentId: {
-                data: {
-                    incidents: [],
-                },
-            },
-        };
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.url_in?.[0] ==
-                'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            relatedReports.byURL,
-            'RelatedReportsByURL'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.epoch_date_published_gt == 1608346800 &&
-                req.postDataJSON().variables.query?.epoch_date_published_lt == 1610766000,
-            relatedReports.byDatePublished,
-            'RelatedReportsByPublishedDate'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) =>
-                req.postDataJSON().operationName == 'ProbablyRelatedReports' &&
-                req.postDataJSON().variables.query?.authors_in?.[0] == 'test author',
-            relatedReports.byAuthors,
-            'RelatedReportsByAuthor'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            { data: { submissions: [] } },
-            'findSubmissions'
-        );
+    test('Should **not** show a list of related reports if no data entered', async ({ page, skipOnEmptyEnvironment }) => {
 
         await page.goto(url);
 
-        await waitForRequest('findSubmissions');
+        const parentLocator = page.locator(`[data-cy="related-reports"]`);
+
+        const childrenCount = await parentLocator.locator('> *').count();
+
+        await expect(childrenCount).toBe(0);
+
+    }
+    );
+
+    test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
+
+        await page.goto(url);
+
+        const authors = "this is a new non existing author";
+        const date_published = "2034-01-01";
+        const reportUrl = 'http://nonExistingUrlForReport.com';
 
         const values = {
-            url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-            authors: 'test author',
-            date_published: '2021-01-02',
-            incident_ids: '1',
+            url: reportUrl,
+            authors,
+            date_published,
         };
+
+        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+
+        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+
+        const { data: { reports: reportsAuthors } } = await query({
+            query: gql`
+          query {
+            reports(filter: { authors: {IN: ["${authors}"] } }) {
+              report_number
+            }
+          }
+        `,
+        });
+
+        const { data: { reports: reportsPublished } } = await query({
+            query: gql`
+          query {
+            reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+              report_number
+            }
+          }
+        `,
+        });
+
+        const { data: { reports: reportsUrl } } = await query({
+            query: gql`
+          query {
+            reports(filter: { url: {IN: ["${reportUrl}"] } }) {
+              report_number
+            }
+          }
+        `,
+        });
+
+        const reports = {
+            byAuthors: reportsAuthors,
+            byDatePublished: reportsPublished,
+            byURL: reportsUrl,
+        }
 
         for (const key in values) {
             if (key == 'incident_ids') {
-                await page.locator(`input[name="${key}"]`).fill(values[key]);
+                await page.locator(`input[name="${key}"]`).fill(values[key].toString());
                 await page.waitForSelector(`[role="option"]`);
                 await page.locator(`[role="option"]`).first().click();
             } else {
@@ -680,15 +615,18 @@ test.describe('The Submit form', () => {
             }
         }
 
+        for (const key of Object.keys(reports)) {
 
-        await waitForRequest('RelatedReportsByAuthor')
-        await waitForRequest('RelatedReportsByURL')
-        await waitForRequest('RelatedReportsByPublishedDate')
+            const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
-        await expect(page.locator('[data-cy="no-related-reports"]').first()).toBeVisible();
+            await expect(async () => {
+                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(0);
+            }).toPass();
 
-        await expect(page.locator('[data-cy="result"]')).not.toBeVisible();
-    });
+            await expect(page.locator(`[data-cy="related-${key}"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+        }
+    }
+    );
 
     test('Should *not* show semantically related reports when the text is under 256 non-space characters', async ({ page }) => {
 
@@ -1079,23 +1017,16 @@ test.describe('The Submit form', () => {
         await page.locator('button[type="submit"]').click();
     });
 
-    test.skip('Should show related reports based on author', async ({ page }) => {
+    test('Should show related reports based on author and add as similar', async ({ page }) => {
 
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+        await init();
 
         await page.goto(url);
-
-        await waitForRequest('findSubmissions');
 
         const values = {
             url: 'https://incidentdatabase.ai',
             title: 'test title',
-            authors: 'BBC News',
+            authors: 'author1',
             incident_date: '2022-01-01',
             date_published: '2021-01-02',
             date_downloaded: '2021-01-03',
@@ -1108,11 +1039,68 @@ test.describe('The Submit form', () => {
         await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
 
         await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="unspecified"]').first().click();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(1).locator('[data-cy="dissimilar"]').first().click();
-        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(2).locator('[data-cy="similar"]').first().click();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="similar"]').first().click();
 
         await page.locator('button[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        const { data } = await query({
+            query: gql`
+            query {
+              submission(sort: { date_submitted:DESC }){
+                editor_similar_incidents
+              }
+            }
+          `,
+        });
+
+        expect(data.submission).toMatchObject({
+            editor_similar_incidents: [1],
+        });
+    });
+
+    test('Should show related reports based on author and add as dissimilar', async ({ page }) => {
+
+        await init();
+
+        await page.goto(url);
+
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'author1',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+        };
+
+        for (const key in values) {
+            await page.locator(`[name="${key}"]`).fill(values[key]);
+        }
+
+        await setEditorText(page, 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease');
+
+        await expect(page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').first()).toBeVisible();
+        await page.locator('[data-cy="related-byAuthors"] [data-cy="result"]').nth(0).locator('[data-cy="dissimilar"]').first().click();
+
+        await page.locator('button[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        const { data } = await query({
+            query: gql`
+            query {
+              submission(sort: { date_submitted:DESC }){
+                editor_dissimilar_incidents
+              }
+            }
+          `,
+        });
+
+        expect(data.submission).toMatchObject({
+            editor_dissimilar_incidents: [1],
+        });
     });
 
     test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {
@@ -1535,6 +1523,187 @@ test.describe('The Submit form', () => {
 
         await page.locator('button[type="submit"]').click();
 
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
+
+    test('Should show an error for inputs with two or fewer characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await page.locator('input[name="developers"]').fill('ab');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="developers-input"] .rbt-close').click();
+
+        await page.locator('input[name="developers"]').fill('NewDev');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Check for deployers field
+        await page.locator('input[name="deployers"]').fill('cd');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="deployers-input"] .rbt-close').click();
+
+        await page.locator('input[name="deployers"]').fill('NewDep');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Check for harmed_parties field
+        await page.locator('input[name="harmed_parties"]').fill('ef');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
+
+        await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        await page.locator('input[name="implicated_systems"]').fill('gh');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
+
+        await page.locator('input[name="implicated_systems"]').fill('NewSystem');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Check for "New selection" behavior
+        await page.locator('input[name="developers"]').fill('xy');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: xy")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('div').filter({ hasText: /^xy×Remove$/ }).getByLabel('Remove').click();
+
+        await page.locator('input[name="developers"]').fill('ValidDev');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Submit to ensure the form does not proceed with errors
+        await page.locator('button[type="submit"]').click();
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
+
+    test('Should show an error for inputs with 200 or more characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+        await init();
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="developers-input"] .rbt-close').click();
+
+        await page.locator('input[name="developers"]').fill('NewDev');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Check for deployers field
+        await page.locator('input[name="deployers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="deployers-input"] .rbt-close').click();
+
+        await page.locator('input[name="deployers"]').fill('NewDep');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Check for harmed_parties field
+        await page.locator('input[name="harmed_parties"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
+
+        await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        await page.locator('input[name="implicated_systems"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
+
+        await page.locator('input[name="implicated_systems"]').fill('NewSystem');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Check for "New selection" behavior
+        await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('div').filter({ hasText: /^This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error×Remove$/ }).getByLabel('Remove').click();
+
+        await page.locator('input[name="developers"]').fill('ValidDev');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+        // Submit to ensure the form does not proceed with errors
+        await page.locator('button[type="submit"]').click();
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
