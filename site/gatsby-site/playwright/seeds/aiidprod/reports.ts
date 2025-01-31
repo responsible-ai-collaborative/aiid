@@ -23,7 +23,7 @@ const items: DBReport[] = [
         submitters: ["submitter1"],
         tags: ["tag1"],
         url: "https://report1.com",
-        user: "user1",
+        user: "6737a6e881955aa4905ccb04",
         is_incident_report: true,
         editor_notes: null,
         flag: null,
@@ -55,7 +55,7 @@ const items: DBReport[] = [
         submitters: ["submitter1"],
         tags: ["tag1"],
         url: "https://report2.com",
-        user: "user1",
+        user: "6737a6e881955aa4905ccb04",
     },
     {
         _id: "5d34b8c29ced494f010ed469",
@@ -93,7 +93,7 @@ const items: DBReport[] = [
         is_incident_report: true,
 
         // TODO: this report (16) has no user in the database but is the user field  is required by the schema
-        user: 'user1',
+        user: '6737a6e881955aa4905ccb04',
 
         // TODO: field is present in the db but not mapped to any graphql field
         // created_at: 1559347200000
@@ -135,7 +135,7 @@ const items: DBReport[] = [
         is_incident_report: true,
 
         // TODO: ditto
-        user: 'user1',
+        user: '6737a6e881955aa4905ccb04',
 
         // TODO: ditto
         // created_at: 1559347200000
@@ -177,7 +177,7 @@ const items: DBReport[] = [
         is_incident_report: false,
 
         // TODO: ditto
-        user: 'user1',
+        user: '6737a6e881955aa4905ccb04',
 
         // TODO: ditto
         // created_at: 1559347200000

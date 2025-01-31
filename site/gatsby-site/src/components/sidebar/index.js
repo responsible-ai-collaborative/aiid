@@ -7,7 +7,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { useMenuContext } from 'contexts/MenuContext';
 import { graphql, useStaticQuery } from 'gatsby';
 
@@ -95,13 +95,13 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
 
   const { t } = useTranslation();
 
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
 
   const { isCollapsed, collapseMenu, manual, setManual } = useMenuContext();
 
   const [isMobile, setIsMobile] = useState(false);
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+  const isUserLoggedIn = user && !loading;
 
   const [redirectTo, setRedirectTo] = useState('/');
 
@@ -168,10 +168,6 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    setIsUserLoggedIn(!!user?.profile.email);
-  }, [user]);
 
   // We want the bottom edge of the sidebar
   // to rest at bottom edge of the viewport.

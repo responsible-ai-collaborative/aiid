@@ -9,7 +9,7 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import lodash from 'lodash';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 const supportedRoles = [
   { name: 'admin', description: 'All permissions' },
@@ -54,7 +54,7 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
     variables: { filter: { userId: { EQ: userId } } },
   });
 
-  const { user, isRole } = useUserContext();
+  const { isRole } = useUserContext();
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
 
@@ -75,8 +75,6 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
           last_name: values.last_name,
         },
       });
-
-      await user.refreshCustomData();
 
       addToast({
         message: <>User updated.</>,
