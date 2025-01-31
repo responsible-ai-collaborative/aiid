@@ -59,7 +59,15 @@
   "Submit a new incident report to the Artificial Intelligence Incident Database.": "Soumettre un nouveau rapport d'incident à la base de données des incidents d'intelligence artificielle.",
   "Draft saved": "Brouillon enregistré",
   "Saving as draft...": "Enregistrement en tant que brouillon...",
+  "It will appear on the <2>review queue page</2> within an hour.": "Il apparaîtra sur la <2>page de la file d'attente d'examen</2> dans l'heure qui suit.",
+  "Report Description": "Description du rapport",
+  "Tell us more...": "Dites-nous en plus...",
+  "Submit a new incident report to the Artificial Intelligence Incident Database": "Soumettre un nouveau rapport d'incident à la base de données des incidents d'intelligence artificielle",
+  "Incident IDs": "IDs d'incident",
+  "Fetching...": "Chargement...",
   "Implicated Systems": "Systèmes impliqués",
   "What systems were involved in the incident?": "Quels systèmes étaient impliqués dans l'incident ?",
-  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission."
+  "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.",
+  "Alleged implicated AI systems": "Systèmes IA impliqués présumés",
+  "Which AI systems were involved?": "Quels systèmes IA étaient impliqués ?"
 }

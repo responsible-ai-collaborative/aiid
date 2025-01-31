@@ -18,7 +18,7 @@ test.describe('Admin', () => {
     'Should display a list of users, their roles and allow edition',
     async ({ page, login, skipOnEmptyEnvironment }) => {
 
-      const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+      const [userId] = await login();
       const users = [{ userId, first_name: 'John', last_name: 'Doe', roles: ['admin'] }];
 
       await page.goto(baseUrl);
@@ -52,7 +52,7 @@ test.describe('Admin', () => {
     'Should display New Incident button',
     async ({ page, login, skipOnEmptyEnvironment }) => {
 
-      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+      await login();
 
       await page.goto(baseUrl);
 
@@ -66,13 +66,13 @@ test.describe('Admin', () => {
     'Should filter results',
     async ({ page, login, skipOnEmptyEnvironment }) => {
 
-      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+      await login();
 
       await page.goto(baseUrl);
 
 
-      await page.locator('[data-cy="input-filter-First Name"]').fill('John');
-      await page.locator('[data-cy="input-filter-Last Name"]').fill('Doe');
+      await page.locator('[data-cy="input-filter-First Name"]').fill('Test');
+      await page.locator('[data-cy="input-filter-Last Name"]').fill('User');
       await page.locator('[data-cy="input-filter-Roles"]').fill('admin');
 
       // TODO: find a way to mock admin api and adminData graphql field

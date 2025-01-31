@@ -45,7 +45,7 @@ export default function EntityCard({ entity, ...props }) {
 
       <div>
         {sections
-          .filter((section) => entity[section.key].length)
+          .filter((section) => entity[section.key]?.length)
           .map((section) => {
             const [open, setOpen] = useState(false);
 

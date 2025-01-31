@@ -3,7 +3,6 @@ import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
 import { init, seedCollection } from '../../memory-mongo';
 import { fillAutoComplete, query, setEditorText, test } from '../../utils';
-import config from '../../config';
 import { ObjectId } from 'mongodb';
 import { DBSubmission } from '../../../server/interfaces';
 
@@ -76,9 +75,9 @@ test.describe('Submitted reports', () => {
     test('Promotes a submission to a new report and links it to a new incident', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
-        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`); 
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Incident');
 
@@ -86,7 +85,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 4 and Report 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 5 and Report 10');
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -108,7 +107,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -118,7 +117,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-to-report-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]')).toContainText('Successfully promoted submission to Incident 1 and Report 9');
+        await expect(page.locator('[data-cy="toast"]')).toContainText('Successfully promoted submission to Incident 1 and Report 10');
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -133,14 +132,14 @@ test.describe('Submitted reports', () => {
         `,
         });
 
-        expect(incidents.find((i) => i.incident_id === 1).reports.map((r) => r.report_number)).toContain(9);
+        expect(incidents.find((i) => i.incident_id === 1).reports.map((r) => r.report_number)).toContain(10);
     });
 
     test('Promotes a submission to a new report and links it to multiple incidents', async ({ page, login }) => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -151,8 +150,8 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-to-report-button"]').click();
 
-        await expect(page.getByText('Successfully promoted submission to Incident 2 and Report 9')).toBeVisible();
-        await expect(page.getByText('Successfully promoted submission to Incident 3 and Report 9')).toBeVisible();
+        await expect(page.getByText('Successfully promoted submission to Incident 2 and Report 10')).toBeVisible();
+        await expect(page.getByText('Successfully promoted submission to Incident 3 and Report 10')).toBeVisible();
 
         const { data: { incidents } } = await query({
             query: gql`{
@@ -167,15 +166,15 @@ test.describe('Submitted reports', () => {
         `,
         });
 
-        expect(incidents.find((i) => i.incident_id === 2).reports.map((r) => r.report_number)).toContain(9);
-        expect(incidents.find((i) => i.incident_id === 3).reports.map((r) => r.report_number)).toContain(9);
+        expect(incidents.find((i) => i.incident_id === 2).reports.map((r) => r.report_number)).toContain(10);
+        expect(incidents.find((i) => i.incident_id === 3).reports.map((r) => r.report_number)).toContain(10);
     });
 
     test('Promotes a submission to a new issue', async ({ page, login }) => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -185,7 +184,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 10');
 
         const { data: { reports } } = await query({
             query: gql`{
@@ -205,16 +204,18 @@ test.describe('Submitted reports', () => {
 
         const submissions = await getSubmissions();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=${submissions[0]._id}`);
 
 
         page.on('dialog', dialog => dialog.accept());
 
+        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'DeleteSubmission');
+
         await page.locator('[data-cy="reject-button"]').click();
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('deleteOneSubmission'));
+        await deleteResponse;
 
         const updated = await getSubmissions();
 
@@ -227,7 +228,7 @@ test.describe('Submitted reports', () => {
 
         const submissions = await getSubmissions();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=${submissions[0]._id}`);
 
@@ -246,7 +247,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -280,15 +281,16 @@ test.describe('Submitted reports', () => {
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             title: "Sample title",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
 
@@ -320,17 +322,18 @@ test.describe('Submitted reports', () => {
             tags: ["tag1", "tag2"],
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
             description: 'Sarasa',
             title: "",
+            implicated_systems: ["entity-1"],
         }]
 
         await init({ aiidprod: { submissions } });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
 
@@ -345,7 +348,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -358,7 +361,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -371,13 +374,16 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
+        const updateResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'UpdateSubmission');
+
         await page.click('[data-cy="claim-submission"]');
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+        await updateResponse;
+
 
         const { data: { submissions } } = await query({
             query: gql`{
@@ -398,7 +404,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -419,21 +425,24 @@ test.describe('Submitted reports', () => {
             tags: ["tag1", "tag2"],
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
+            implicated_systems: []
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
 
         await page.goto(url);
 
+        const response = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'UpdateSubmission');
+
         await page.getByText('Unclaim', { exact: true }).click();
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+        await response;
 
         const { data: { submissions: updated } } = await query({
             query: gql`{
@@ -454,7 +463,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = Array.from(Array(10).keys()).map(i => {
 
@@ -476,12 +485,13 @@ test.describe('Submitted reports', () => {
                 tags: ["tag1", "tag2"],
                 text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
                 url: "http://example.com",
-                user: "user1",
+                user: "6737a6e881955aa4905ccb04",
                 incident_title: "Incident title",
                 incident_date: "2021-09-14",
                 editor_notes: "",
                 description: 'Sarasa',
                 title: "Submission " + i,
+                implicated_systems: []
             }
         })
 
@@ -509,7 +519,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -523,7 +533,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -544,12 +554,13 @@ test.describe('Submitted reports', () => {
             tags: ["tag1", "tag2"],
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
+            implicated_systems: []
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
@@ -564,7 +575,7 @@ test.describe('Submitted reports', () => {
     test('Edits a submission - links to existing incident - Incident Data should be hidden', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -580,7 +591,7 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -590,7 +601,7 @@ test.describe('Submitted reports', () => {
 
         await page.locator('[data-cy="promote-button"]').click();
 
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 4 and Report 9');
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Incident 5 and Report 10');
 
         const { data: { incident } } = await query({
             query: gql`{
@@ -603,6 +614,9 @@ test.describe('Submitted reports', () => {
                         entity_id
                     }
                     AllegedHarmedOrNearlyHarmedParties {
+                        entity_id
+                    }
+                    implicated_systems {
                         entity_id
                     }
                     date
@@ -657,6 +671,11 @@ test.describe('Submitted reports', () => {
                     entity_id: "entity-3",
                 },
             ],
+            implicated_systems: [
+                {
+                    entity_id: "entity-1",
+                },
+            ],
             date: "2021-09-14",
             description: "Sample description",
             editor_dissimilar_incidents: [],
@@ -666,15 +685,15 @@ test.describe('Submitted reports', () => {
             embedding: null,
             epoch_date_modified: null,
             flagged_dissimilar_incidents: [],
-            incident_id: 4,
+            incident_id: 5,
             nlp_similar_incidents: [],
             title: "Incident title",
             tsne: null,
             reports: [
                 {
-                    report_number: 9,
+                    report_number: 10,
                     user: {
-                        userId: "user1",
+                        userId: "6737a6e881955aa4905ccb04",
                     },
                 },
             ],
