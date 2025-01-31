@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { test } from '../../utils';
-import config from '../../config';
 import { init } from '../../memory-mongo';
 
 test.describe('Checklists App Index', () => {
@@ -9,7 +8,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should sort checklists', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await init({
             aiidprod: {
@@ -66,7 +65,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should display New Checklist button as logged-in user', async ({ page, login }) => {
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url);
         await expect(page.locator(newChecklistButtonSelector)).toBeVisible();
@@ -74,7 +73,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should show delete buttons only for owned checklists', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await init({
             aiidprod: {
@@ -113,7 +112,7 @@ test.describe('Checklists App Index', () => {
 
     test('Should allow deleting checklists', async ({ page, login }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         await init({
             aiidprod: {
@@ -139,7 +138,9 @@ test.describe('Checklists App Index', () => {
         await expect(page.getByText('You haven’t made any checklists')).toBeVisible();
     });
 
-    test('Should show toast on error fetching checklists', async ({ page }) => {
+    test('Should show toast on error fetching checklists', async ({ page, login }) => {
+
+        await login();
 
         await page.route('**/graphql', async (route) => {
             const request = route.request();
@@ -171,7 +172,7 @@ test.describe('Checklists App Index', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, {
+        await login({
             customData: {
                 first_name: 'Test',
                 last_name: 'User',
@@ -205,7 +206,7 @@ test.describe('Checklists App Index', () => {
     });
 
     test('Should show toast on error creating checklist', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, {
+        await login({
             customData: {
                 first_name: 'Test',
                 last_name: 'User',
@@ -217,26 +218,26 @@ test.describe('Checklists App Index', () => {
             const request = route.request();
             const postData = JSON.parse(await request.postData()!);
 
-            if (postData.operationName === 'insertChecklist') {
-                await route.fulfill({
-                    status: 200,
-                    body: JSON.stringify({
-                        errors: [{ message: 'Test error', locations: [{ line: 1, column: 1 }] }]
-                    })
-                });
-                return;
-            }
-            await route.continue();
-        });
-
-        await page.goto(url);
-
-        const response = page.waitForResponse(res => res?.request()?.postDataJSON()?.operationName === 'insertChecklist');
-
-        await page.click(newChecklistButtonSelector);
-
-        await response;
-
-        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Could not create checklist.');
+        if (postData.operationName === 'insertChecklist') {
+            await route.fulfill({
+                status: 200,
+                body: JSON.stringify({
+                    errors: [{ message: 'Test error', locations: [{ line: 1, column: 1 }] }]
+                })
+            });
+            return;
+        }
+        await route.continue();
     });
+
+    await page.goto(url);
+
+    const response = page.waitForResponse(res => res?.request()?.postDataJSON()?.operationName === 'insertChecklist');
+
+    await page.click(newChecklistButtonSelector);
+
+    await response;
+
+    await expect(page.locator('[data-cy="toast"]').first()).toContainText('Could not create checklist.');
+});
 });

@@ -1,5 +1,5 @@
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
+import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 import { pluralize, singularize } from "../utils";
 import capitalize from 'lodash/capitalize';
 
@@ -74,7 +74,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -86,7 +86,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -117,7 +117,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -130,7 +130,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -163,7 +163,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -175,7 +175,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -207,7 +207,7 @@ fixtures.forEach((collection) => {
                 for (const user of testData.allowed) {
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 
@@ -221,7 +221,7 @@ fixtures.forEach((collection) => {
 
                     await seedFixture(collection.seeds);
 
-                    jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: user.userId })
+                    mockSession(user.userId);
 
                     const response = await makeRequest(url, queryData);
 

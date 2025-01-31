@@ -27,3 +27,8 @@
   from = "/api/lookupbyurl"
   to = "/.netlify/functions/lookupbyurl"
   status = 200
+
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth"
+  status = 200

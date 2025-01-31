@@ -16,7 +16,7 @@ import gql from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 
 import CardSkeleton from 'elements/Skeletons/Card';
-import { useUserContext } from '../../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import {
   DeleteButton,
@@ -33,9 +33,9 @@ const ChecklistsIndex = ({ users }) => {
 
   const addToast = useToastContext();
 
-  const { user } = useUserContext();
+  const { loading, user } = useUserContext();
 
-  const loggedIn = user?.providerType != 'anon-user';
+  const loggedIn = !loading && user;
 
   const [insertChecklist] = useMutation(INSERT_CHECKLIST);
 
@@ -49,13 +49,15 @@ const ChecklistsIndex = ({ users }) => {
     skip: !user?.id,
   });
 
-  if (checklistsErrors) {
-    addToast({
-      message: t('Could not fetch checklists'),
-      severity: SEVERITY.danger,
-      error: checklistsErrors,
-    });
-  }
+  useEffect(() => {
+    if (checklistsErrors) {
+      addToast({
+        message: t('Could not fetch checklists'),
+        severity: SEVERITY.danger,
+        error: checklistsErrors,
+      });
+    }
+  }, [checklistsErrors]);
 
   // In useState so that on deleting a checklist,
   // we can remove it from display immediately.

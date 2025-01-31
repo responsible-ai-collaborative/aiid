@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { conditionalIntercept, fillAutoComplete, query, test, waitForRequest } from '../../utils';
+import { fillAutoComplete, query, test, waitForRequest } from '../../utils';
 import { init } from '../../memory-mongo';
 import gql from 'graphql-tag';
 
@@ -25,7 +25,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+    await login();
 
     await page.goto(url);
 
@@ -37,7 +37,7 @@ test.describe('Incidents App', () => {
     await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
     await page.click('text=Edit');
 
-    await page.waitForSelector('[data-cy="incident-form"]', { timeout: 12000 });
+    await page.waitForSelector('[data-cy="incident-form"]');
     await expect(page.locator('.submission-modal h3')).toHaveText('Edit Incident 3');
 
     await page.locator(`[data-cy=title-input]`).fill('Test title');
@@ -45,9 +45,11 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=date-input]').fill('2023-05-04');
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
-    await fillAutoComplete(page, "#input-editors", "Joh", "John Doe");
+    await fillAutoComplete(page, "#input-editors", "Test", "Test User");
 
     await page.getByText('Update', { exact: true }).click();
+
+    await waitForRequest('logIncidentHistory');
 
     await expect(page.locator('[data-cy="toast"]').locator('text=Incident 3 updated successfully.')).toBeVisible();
 
@@ -133,7 +135,7 @@ test.describe('Incidents App', () => {
 
     await init();
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['incident_editor'] } });
+    await login({ customData: { first_name: 'Mock', last_name: 'User', roles: ['incident_editor'] } });
 
     await page.goto(url);
 
@@ -153,7 +155,7 @@ test.describe('Incidents App', () => {
     await page.locator('[data-cy=date-input]').fill('2023-05-04');
     await page.locator('[data-cy=alleged-deployer-of-ai-system-input] input').first().fill('Test Deployer{enter}');
 
-    await fillAutoComplete(page, "#input-editors", "Joh", "John Doe");
+    await fillAutoComplete(page, "#input-editors", "John", "John Doe");
 
     await fillAutoComplete(page, "#input-incidentSearch", "1", "1 - Incident 1");
 

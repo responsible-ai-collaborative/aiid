@@ -9,7 +9,7 @@ const incidents: DBIncident[] = [
         "Alleged deployer of AI system": ["entity-1"],
         "Alleged developer of AI system": ["entity-2"],
         "Alleged harmed or nearly harmed parties": ["entity-3"],
-        editors: ["user1"],
+        editors: ["6737a6e881955aa4905ccb04"],
         reports: [1],
         implicated_systems: ["entity-1"],
 
@@ -27,7 +27,7 @@ const incidents: DBIncident[] = [
         "Alleged deployer of AI system": ["entity-1"],
         "Alleged developer of AI system": ["entity-2"],
         "Alleged harmed or nearly harmed parties": ["entity-3"],
-        editors: ["user1"],
+        editors: ["6737a6e881955aa4905ccb04"],
         reports: [2],
         implicated_systems: ["entity-1"],
 

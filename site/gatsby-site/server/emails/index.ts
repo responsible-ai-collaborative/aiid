@@ -8,10 +8,10 @@ import { RateLimiter } from "limiter";
 interface SendEmailParams {
     recipients: {
         email: string;
-        userId: string;
+        userId?: string;
     }[];
     subject: string;
-    dynamicData: {
+    dynamicData?: {
         incidentId?: string;
         incidentTitle?: string;
         incidentUrl?: string;
@@ -26,11 +26,12 @@ interface SendEmailParams {
         reportAuthor?: string;
         entityName?: string;
         entityUrl?: string;
+        magicLink?: string;    // URL for magic link (optional)
     };
-    templateId: string;
+    templateId: string; // Email template ID
 }
 
-export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string }, allowedKeys: string[]): string => {
+export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string } = {}, allowedKeys: string[]): string => {
     return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
         return allowedKeys.includes(key) && key in data ? data[key] : match;
     });
@@ -113,7 +114,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
-            .setTo([new Recipient(recipient.email, '')])
+            .setTo([new Recipient(recipient.email)])
             .setPersonalization(personalizations)
             .setSubject(subject)
             .setHtml(html);

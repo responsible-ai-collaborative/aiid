@@ -10,7 +10,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { getUnixTime } from 'date-fns';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();
