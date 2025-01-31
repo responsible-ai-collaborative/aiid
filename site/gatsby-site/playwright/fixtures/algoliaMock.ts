@@ -7706,3 +7706,4 @@ export const algoliaMock = {
     },
   ],
 };
+
