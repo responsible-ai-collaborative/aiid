@@ -132,6 +132,8 @@ exports.up = async ({ context: { client } }) => {
       continue;
     }
 
+    // From Atlas documentation and our own testing, we know that users found in the custom_data collection have confirmed their email address and logged in at least once
+
     migratedUsers.push({
       _id: ObjectId.createFromHexString(user.userId),
       email: response.data.email,
