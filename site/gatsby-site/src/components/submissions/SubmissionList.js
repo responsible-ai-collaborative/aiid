@@ -18,7 +18,7 @@ import Table, {
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
 import { useMutation } from '@apollo/client';
-import { UPDATE_SUBMISSION } from '../../graphql/submissions';
+import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const SubmissionList = ({ data }) => {
@@ -33,6 +33,18 @@ const SubmissionList = ({ data }) => {
   const [reviewing, setReviewing] = useState({ submissionId: null, value: false });
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
+
+  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
+    update: (cache, { data }) => {
+      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
+      cache.evict({
+        id: cache.identify({
+          __typename: data.deleteOneSubmission.__typename,
+          id: data.deleteOneSubmission._id,
+        }),
+      });
+    },
+  });
 
   const addToast = useToastContext();
 
@@ -201,6 +213,74 @@ const SubmissionList = ({ data }) => {
       </div>
     );
   }
+
+  const [selectedAction, setSelectedAction] = useState('claim');
+
+  const [performingAction, setPerformingAction] = useState(false);
+
+  const bulkActions = async () => {
+    setPerformingAction(true);
+    try {
+      const selectedSubmissions = Object.keys(selectedRows).filter(
+        (sr) => selectedRows[sr] === true
+      );
+
+      if (selectedSubmissions.length > 0) {
+        if (selectedAction === 'claim') {
+          if (
+            !confirm(
+              t(
+                'Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.'
+              )
+            )
+          ) {
+            return;
+          }
+          const promises = selectedSubmissions.map((submissionId) => claimSubmission(submissionId));
+
+          await Promise.all(promises);
+        } else if (selectedAction === 'unclaim') {
+          if (
+            !confirm(
+              t(
+                'Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.'
+              )
+            )
+          ) {
+            return;
+          }
+          const promises = selectedSubmissions.map((submissionId) =>
+            unclaimSubmission(submissionId)
+          );
+
+          await Promise.all(promises);
+        } else if (selectedAction === 'reject') {
+          if (
+            !confirm(
+              t(
+                'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+              )
+            )
+          ) {
+            return;
+          }
+          const promises = selectedSubmissions.map((submissionId) =>
+            deleteSubmission({ variables: { _id: submissionId } })
+          );
+
+          await Promise.all(promises);
+        }
+        setPerformingAction(false);
+        setSelectedRows({});
+      }
+    } catch (error) {
+      setPerformingAction(false);
+      addToast({
+        message: t(`There was an error performing this action. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+    }
+  };
 
   const columns = React.useMemo(() => {
     const columns = [
@@ -590,18 +670,24 @@ const SubmissionList = ({ data }) => {
 
   return (
     <div className="">
+      {performingAction && 'Loading...'}
       {/* Actions */}
       {selectedRows && Object.values(selectedRows).filter((sr) => sr === true).length > 0 && (
         <div className="flex justify-between items-center mb-5">
           <div className="flex gap-2">
-            <Select className="w-40" placeholder={t('Bulk Actions')}>
-              <option>{t('Claim')}</option>
-              <option>{t('Reject')}</option>
+            <Select
+              className="w-40"
+              placeholder={t('Bulk Actions')}
+              onChange={(e) => setSelectedAction(e.target.value)}
+            >
+              <option value="claim">{t('Claim')}</option>
+              <option value="unclaim">{t('Unclaim')}</option>
+              <option value="reject">{t('Reject')}</option>
             </Select>
             <Button
               color="gray"
               onClick={() => {
-                // TODO: Implement bulk actions
+                bulkActions();
               }}
             >
               {t('Apply')}
