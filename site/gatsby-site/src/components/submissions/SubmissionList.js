@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, Select } from 'flowbite-react';
+import { Badge, Button, Checkbox, Select } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import {
   useBlockLayout,
@@ -35,6 +35,33 @@ const SubmissionList = ({ data }) => {
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
   const addToast = useToastContext();
+
+  const [selectedRows, setSelectedRows] = useState({});
+
+  // Function to toggle individual row selection
+  const toggleRowSelection = (id) => {
+    setSelectedRows((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  // Function to toggle "Select All"
+  const toggleSelectAll = (isChecked) => {
+    const newSelection = {};
+
+    if (isChecked) {
+      tableData.forEach((item) => {
+        newSelection[item._id] = true;
+      });
+    }
+    setSelectedRows(newSelection);
+  };
+
+  // Function to check if all rows are selected
+  const allSelected =
+    Object.values(selectedRows).filter((sr) => sr === true).length === tableData.length &&
+    tableData.length > 0;
 
   useEffect(() => {
     if (data) {
@@ -177,6 +204,32 @@ const SubmissionList = ({ data }) => {
 
   const columns = React.useMemo(() => {
     const columns = [
+      {
+        title: (
+          <div className="flex items-center mb-4">
+            <Checkbox
+              checked={allSelected}
+              onChange={(e) => toggleSelectAll(e.target.checked)}
+              className="mr-2"
+            />
+            <span>{t('Select All')}</span>
+          </div>
+        ),
+        accessor: 'select',
+        className: 'min-w-[50px]',
+        width: 50,
+        disableFilters: true,
+        disableSortBy: true,
+        disableResizing: true,
+        Cell: ({ row }) => {
+          return (
+            <Checkbox
+              checked={selectedRows[row.original._id] || false}
+              onChange={() => toggleRowSelection(row.original._id)}
+            />
+          );
+        },
+      },
       {
         className: 'min-w-[300px]',
         title: t('Title'),
@@ -415,7 +468,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [isLoggedIn, claiming, reviewing, dateFilter]);
+  }, [isLoggedIn, claiming, reviewing, dateFilter, selectedRows, allSelected]);
 
   const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
 
@@ -537,6 +590,25 @@ const SubmissionList = ({ data }) => {
 
   return (
     <div className="">
+      {/* Actions */}
+      {selectedRows && Object.values(selectedRows).filter((sr) => sr === true).length > 0 && (
+        <div className="flex justify-between items-center mb-5">
+          <div className="flex gap-2">
+            <Select className="w-40" placeholder={t('Bulk Actions')}>
+              <option>{t('Claim')}</option>
+              <option>{t('Reject')}</option>
+            </Select>
+            <Button
+              color="gray"
+              onClick={() => {
+                // TODO: Implement bulk actions
+              }}
+            >
+              {t('Apply')}
+            </Button>
+          </div>
+        </div>
+      )}
       <Table
         table={table}
         data-cy="submissions"
