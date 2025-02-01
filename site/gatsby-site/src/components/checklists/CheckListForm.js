@@ -35,7 +35,7 @@ export default function CheckListForm({
 }) {
   const { user } = useUserContext();
 
-  const userIsOwner = values.owner_id == user.id;
+  const userIsOwner = values.owner_id == user?.id;
 
   const owner = users.find((u) => u.userId == values.owner_id);
 

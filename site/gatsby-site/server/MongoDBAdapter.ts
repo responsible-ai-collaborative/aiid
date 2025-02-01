@@ -1,4 +1,14 @@
 /**
+ * @fileoverview MongoDB adapter from @auth/mongodb-adapter package.
+ * This file is copied directly from the @auth/mongodb-adapter package rather than importing it
+ * because it's an ESM-only package that wasn't compatible with Gatsby's Babel configuration.
+ * Since it's a single file adapter, it was simpler to copy the source than to resolve the 
+ * ESM/CommonJS interoperability issues.
+ * 
+ * Original source: https://authjs.dev/getting-started/adapters/mongodb?framework=next-js
+ */
+
+/**
  * <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: 16}}>
  *  <p>Official <a href="https://www.mongodb.com">MongoDB</a> adapter for Auth.js / NextAuth.js.</p>
  *  <a href="https://www.mongodb.com">

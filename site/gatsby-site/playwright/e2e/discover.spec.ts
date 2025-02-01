@@ -247,9 +247,35 @@ test.describe('The Discover app', () => {
         await expect(modal).not.toBeVisible();
     });
 
-    test.skip('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
+    test('Opens an archive link', async ({ page, skipOnEmptyEnvironment }) => {
 
         test.slow();
+
+        const reportUrl = 'https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/';
+
+        // Define the mock response from the Wayback Machine API
+        const mockedTimestamp = '20250117132643X';
+
+        const mockResponse = {
+            url: reportUrl,
+            archived_snapshots: {
+              closest: {
+                status: '200',
+                available: true,
+                url: `http://web.archive.org/web/${mockedTimestamp}/${reportUrl}`,
+                timestamp: mockedTimestamp,
+              }
+            }
+          };
+
+        // Intercept the request to the Wayback Machine API
+        await page.route(`https://archive.org/wayback/available?url=${reportUrl}`, async (route) => {
+            await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(mockResponse)
+            });
+        });
 
         await page.goto(url);
 
@@ -265,7 +291,7 @@ test.describe('The Discover app', () => {
 
         await expect(async () => {
             await expect(popup).toBeTruthy();
-            await expect(popup).toHaveURL('https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/');
+            await expect(popup).toHaveURL(reportUrl);
         }).toPass();
 
         popup = null;
@@ -280,8 +306,8 @@ test.describe('The Discover app', () => {
 
         await expect(async () => {
             await expect(popup).toBeTruthy();
-            await expect(popup).toHaveURL('https://web.archive.org/web/20240404174436/https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/');
-        }).toPass();
+            await expect(popup).toHaveURL(mockResponse.archived_snapshots.closest.url.replace('http:', 'https:'));
+        }).toPass({ timeout: 10000 });
     });
 
     test('Lets you filter by type', async ({ page }) => {

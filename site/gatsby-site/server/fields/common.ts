@@ -88,16 +88,14 @@ export interface UserAdminData {
     userId?: string;
 }
 
-export const getUserAdminData = async (userId: string, context: Context) => {
+export const getUserAdminData = async (userId: string, context: Context): Promise<UserAdminData | null> => {
 
     const authUsersCollection = context.client.db('auth').collection("users");
     const authUser = await authUsersCollection.findOne({ _id: new ObjectId(userId) });
 
-    let user: UserAdminData | null = null;
-
     if (authUser) {
 
-        user = {
+        return {
             email: authUser.email,
             creationDate: new Date(), //TODO: find a way to get this data
             lastAuthenticationDate: new Date(), //TODO: find a way to get this data
@@ -105,7 +103,7 @@ export const getUserAdminData = async (userId: string, context: Context) => {
         }
     }
 
-    return user;
+    return null;
 }
 
 

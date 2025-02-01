@@ -74,6 +74,7 @@
     "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
     "jsonwebtoken": "^9.0.2",
+    "limiter": "^3.0.0",
     "mailersend": "^2.3.0",
     "md5": "^2.3.0",
     "minimatch": "^9.0.4",

@@ -13,7 +13,7 @@ test.describe('New Incident page', () => {
     await init({
       customData: {
         users: [
-          { userId: 'johndoe', first_name: 'John', last_name: 'Doe', roles: ['admin'] },
+          { userId: 'mocked', first_name: 'Mock', last_name: 'User', roles: ['admin'] },
         ]
       }
     });
@@ -41,7 +41,7 @@ test.describe('New Incident page', () => {
     await page.locator('[data-cy="implicated-systems-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
 
-    await fillAutoComplete(page, '#input-editors', 'Sean', 'Sean McGregor');
+    await fillAutoComplete(page, '#input-editors', 'John', 'John Doe');
 
     await page.getByText('Save').click();
 

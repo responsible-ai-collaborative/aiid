@@ -35,8 +35,8 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
           if (user) {
 
             await sendEmail({
-              recipient: { email },
-              subject: 'Login link',
+              recipients: [{ email }],
+              subject: 'Secure link to log in to AIID',
               templateId: 'Login',
               dynamicData: { magicLink: url },
             })
@@ -44,8 +44,8 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
           else {
 
             await sendEmail({
-              recipient: { email },
-              subject: 'Signup link',
+              recipients: [{ email }],
+              subject: 'Secure link to create your AIID account',
               templateId: 'Signup',
               dynamicData: { magicLink: url },
             })
@@ -95,7 +95,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
         return true;
       },
 
-      async session({ session, token, user, newSession, }) {
+      async session({ session, user }) {
 
         const customData = await client.db('customData').collection('users').findOne({ userId: user.id });
 

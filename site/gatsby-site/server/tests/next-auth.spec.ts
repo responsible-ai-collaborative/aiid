@@ -143,7 +143,7 @@ describe('Auth', () => {
                         email: "test.user@incidentdatabase.ai",
                     },
                 ],
-                subject: "Login link",
+                subject: "Secure link to log in to AIID",
                 templateId: "Login",
 
             });
@@ -194,7 +194,7 @@ describe('Auth', () => {
                         email: "test.user@incidentdatabase.ai",
                     },
                 ],
-                subject: "Login link",
+                subject: "Secure link to log in to AIID",
                 templateId: "Login",
 
             });
@@ -228,7 +228,7 @@ describe('Auth', () => {
                         email: "test.user@incidentdatabase.ai",
                     },
                 ],
-                subject: "Signup link",
+                subject: "Secure link to create your AIID account",
                 templateId: "Signup",
             });
 
@@ -275,7 +275,7 @@ describe('Auth', () => {
                         email: "test.user@incidentdatabase.ai",
                     },
                 ],
-                subject: "Login link",
+                subject: "Secure link to log in to AIID",
                 templateId: "Login",
             });
 
@@ -318,7 +318,7 @@ describe('Auth', () => {
                         email: "test.user@incidentdatabase.ai",
                     },
                 ],
-                subject: "Signup link",
+                subject: "Secure link to create your AIID account",
                 templateId: "Signup",
             });
         });

@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Utility functions to adapt Next-Auth to work within Netlify Functions environment.
+ * Next-Auth expects an Express-like environment with specific request/response semantics,
+ * while Netlify Functions use AWS Lambda-style event handling. These utilities
+ * bridge that gap by transforming Netlify Function events into Next-Auth compatible formats.
+ * 
+ * This code is primarily used in netlify/functions/auth to handle authentication requests.
+ */
+
 import config from "../../server/config"
 import { HandlerEvent } from '@netlify/functions'
 
