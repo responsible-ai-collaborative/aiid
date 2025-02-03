@@ -1,10 +1,11 @@
 import React from 'react';
 import { navigate } from 'gatsby';
 import { QueryParamProvider } from 'use-query-params';
-import { UserContextProvider } from 'contexts/userContext';
+import { UserContextProvider } from 'contexts/UserContext';
 import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from 'contexts/ToastContext';
 import { Script } from 'gatsby';
+import { SessionProvider } from 'next-auth/react';
 
 export const wrapPageElement = ({ element }) => {
   const history = {
@@ -19,11 +20,13 @@ export const wrapPageElement = ({ element }) => {
   const location = typeof window == 'undefined' ? {} : window.location;
 
   return (
-    <QueryParamProvider history={history} location={location}>
-      <MenuContextProvider>
-        <UserContextProvider>{element}</UserContextProvider>
-      </MenuContextProvider>
-    </QueryParamProvider>
+    <SessionProvider>
+      <QueryParamProvider history={history} location={location}>
+        <MenuContextProvider>
+          <UserContextProvider>{element}</UserContextProvider>
+        </MenuContextProvider>
+      </QueryParamProvider>
+    </SessionProvider>
   );
 };
 

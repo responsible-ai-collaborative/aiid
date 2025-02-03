@@ -1,4 +1,4 @@
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import React, { useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
@@ -48,7 +48,7 @@ function ListCell({ cell }) {
 export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
-  const { isLoggedIn, isRole } = useUserContext();
+  const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -140,7 +140,7 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [loading]);
 
   const table = useTable(
     {

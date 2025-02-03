@@ -7,7 +7,7 @@ import { sendEmail } from "../../server/emails";
 
 const usersCache: UserAdminData[] = [];
 
-const getAndCacheRecipients = async (userIds: string[]) => {
+const getAndCacheRecipients = async (userIds: string[], context: Context) => {
 
     const recipients = [];
 
@@ -17,7 +17,7 @@ const getAndCacheRecipients = async (userIds: string[]) => {
 
         if (!user) {
 
-            user = await getUserAdminData(userId) ?? null;
+            user = await getUserAdminData(userId, context) ?? null;
 
             if (user) {
 
@@ -87,7 +87,7 @@ async function notificationsToNewIncidents(context: Context) {
 
             const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-            const recipients = await getAndCacheRecipients(uniqueUserIds);
+            const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
             const uniqueNotifications: number[] = [];
 
@@ -193,7 +193,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -284,7 +284,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -356,7 +356,7 @@ async function notificationsToNewPromotions(context: Context) {
 
         const uniqueUserIds = [...new Set(userIds)];
 
-        const recipients = await getAndCacheRecipients(uniqueUserIds);
+        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
         let uniqueNotifications: number[] = [];
 
