@@ -249,7 +249,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byURL']}
-            triggerSearch={values['url'].length}
+            triggerSearch={values['url']?.length}
           />
         </FieldContainer>
 
@@ -284,7 +284,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byAuthors']}
-            triggerSearch={values['authors'].length}
+            triggerSearch={values['authors']?.length}
           />
         </FieldContainer>
 
@@ -307,7 +307,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byDatePublished']}
-            triggerSearch={values['date_published'].length}
+            triggerSearch={values['date_published']?.length}
           />
         </FieldContainer>
 
