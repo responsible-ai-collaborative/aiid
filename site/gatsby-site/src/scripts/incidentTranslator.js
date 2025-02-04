@@ -186,7 +186,7 @@ class IncidentTranslator {
     const q = queue(async ({ to }, done) => {
       this.reporter.log(`Translating incidents for [${to}]`);
 
-      const translated = await this.translateIncidentsCollection({ incidents, to });
+      const translated = await this.translateIncidentsCollection({ items: incidents, to });
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new incidents to [${to}]`);
