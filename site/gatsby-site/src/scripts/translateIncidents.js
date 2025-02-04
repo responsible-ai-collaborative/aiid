@@ -36,7 +36,7 @@ const reporter = { log: console.log, error: console.error, warn: console.warn };
     const translator = new IncidentTranslator({
       mongoClient,
       translateClient,
-      languages: getLanguages(),
+      languages: getLanguages().filter((language) => language !== 'en'), // Don't translate incidents to English. English is the source language.
       reporter,
     });
 
