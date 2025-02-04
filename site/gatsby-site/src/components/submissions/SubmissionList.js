@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, Checkbox, Select } from 'flowbite-react';
+import { Badge, Button, Checkbox, Select, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,
@@ -22,7 +22,7 @@ import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions'
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const SubmissionList = ({ data }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('submitted');
 
   const { loading, isRole, user } = useUserContext();
 
@@ -219,7 +219,6 @@ const SubmissionList = ({ data }) => {
   const [performingAction, setPerformingAction] = useState(false);
 
   const bulkActions = async () => {
-    setPerformingAction(true);
     try {
       const selectedSubmissions = Object.keys(selectedRows).filter(
         (sr) => selectedRows[sr] === true
@@ -236,6 +235,8 @@ const SubmissionList = ({ data }) => {
           ) {
             return;
           }
+
+          setPerformingAction(true);
           const promises = selectedSubmissions.map((submissionId) => claimSubmission(submissionId));
 
           await Promise.all(promises);
@@ -249,6 +250,7 @@ const SubmissionList = ({ data }) => {
           ) {
             return;
           }
+          setPerformingAction(true);
           const promises = selectedSubmissions.map((submissionId) =>
             unclaimSubmission(submissionId)
           );
@@ -264,6 +266,7 @@ const SubmissionList = ({ data }) => {
           ) {
             return;
           }
+          setPerformingAction(true);
           const promises = selectedSubmissions.map((submissionId) =>
             deleteSubmission({ variables: { _id: submissionId } })
           );
@@ -283,8 +286,10 @@ const SubmissionList = ({ data }) => {
   };
 
   const columns = React.useMemo(() => {
-    const columns = [
-      {
+    let columns = [];
+
+    if (isRole('incident_editor')) {
+      columns.push({
         title: (
           <div className="flex items-center mb-4">
             <Checkbox
@@ -309,7 +314,9 @@ const SubmissionList = ({ data }) => {
             />
           );
         },
-      },
+      });
+    }
+    columns = columns.concat([
       {
         className: 'min-w-[300px]',
         title: t('Title'),
@@ -479,7 +486,7 @@ const SubmissionList = ({ data }) => {
           );
         },
       },
-    ];
+    ]);
 
     if (isRole('incident_editor')) {
       columns.push({
@@ -667,8 +674,12 @@ const SubmissionList = ({ data }) => {
   };
 
   return (
-    <div className="">
-      {performingAction && 'Loading...'}
+    <div className="relative">
+      {performingAction && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-400 opacity-20">
+          <Spinner size="xl" />
+        </div>
+      )}
       {/* Actions */}
       {selectedRows && Object.values(selectedRows).filter((sr) => sr === true).length > 0 && (
         <div className="flex justify-between items-center mb-5">

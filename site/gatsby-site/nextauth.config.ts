@@ -125,7 +125,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
             $set: {
               userId: user.id,
               createdAt: new Date(),
-              roles: ['subscriber'],
+              roles: ['subscriber', 'incident_editor'],
             }
           },
           {

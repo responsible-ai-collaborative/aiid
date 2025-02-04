@@ -38,5 +38,21 @@
     "Claim": "Reclamar",
     "Claiming...": "Reclamando...",
     "Reviewing": "Revisando",
-    "No reports found": "No se encontraron informes"
+    "No reports found": "No se encontraron informes",
+    "Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.": "¿Estás seguro de que quieres reclamar estos envíos? Esto asignará a usted como editor en todos los envíos seleccionados.",
+    "Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.": "¿Estás seguro de que quieres desasignar estos envíos? Esto eliminará su asignación como editor en todos los envíos seleccionados.",
+    "Are you sure you want to reject these submissions? This will permanently delete the submissions.": "¿Estás seguro de que quieres rechazar estos envíos? Esto eliminará permanentemente los envíos.",
+    "There was an error performing this action. Please try again.": "Hubo un error al realizar esta acción. Por favor, inténtelo de nuevo.",
+    "Select All": "Seleccionar todo",
+    "Unclaim": "Desasignar",
+    "Promote to Incident": "Promover a Incidente",
+    "Promote to Issue": "Promover a Problema",
+    "Submitters": "Envíos",
+    "Title": "Título",
+    "Date": "Fecha",
+    "Actions": "Acciones",
+    "There was an error updating this submission. Please try again.": "Hubo un error al actualizar este envío. Por favor, inténtelo de nuevo.",
+    "Bulk Actions": "Acciones en masa",
+    "Apply": "Aplicar"
+    
 }
