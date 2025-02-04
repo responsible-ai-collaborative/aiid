@@ -2,11 +2,7 @@ const { queue } = require('async');
 
 const { cloneDeep } = require('lodash');
 
-const remark = require('remark');
-
-const remarkStrip = require('strip-markdown');
-
-const keys = ['text', 'title'];
+const keys = ['title', 'description'];
 
 /**
  * @typedef {Object} Reporter
@@ -15,7 +11,7 @@ const keys = ['text', 'title'];
  * @property {function(string):void} warn
  */
 
-class Translator {
+class IncidentTranslator {
   /**
    * @param {Object} options
    * @param {import('mongodb').MongoClient} options.mongoClient
@@ -49,30 +45,30 @@ class Translator {
     }
   }
 
-  async translateReportsCollection({ items, to }) {
+  async translateIncidentsCollection({ items, to }) {
     const concurrency = 100;
 
     const translated = [];
 
     const q = queue(async ({ entry, to }) => {
-      const translatedEntry = await this.translateReport({ entry, to });
+      const translatedEntry = await this.translateIncident({ entry, to });
 
       translated.push(translatedEntry);
     }, concurrency);
 
     q.error((err, task) => {
       this.reporter.error(
-        `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
+        `Error translating incident ${task.entry.incident_id}, ${err.code} ${err.message}`
       );
       throw new Error(
-        `Translation process failed for report ${task.entry.report_number}. Error: ${err.code} - ${err.message}`
+        `Translation process failed for incident ${task.entry.incident_id}. Error: ${err.code} - ${err.message}`
       );
     });
 
-    const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
+    const alreadyTranslated = await this.getTranslatedIncidents({ items, language: to });
 
     for (const entry of items) {
-      if (!alreadyTranslated.find((item) => item.report_number == entry.report_number)) {
+      if (!alreadyTranslated.find((item) => item.incident_id == entry.incident_id)) {
         q.push({ entry, to });
       }
     }
@@ -84,44 +80,39 @@ class Translator {
     return translated;
   }
 
-  async getTranslatedReports({ items, language }) {
-    const originalIds = items.map((item) => item.report_number);
+  async getTranslatedIncidents({ items, language }) {
+    const originalIds = items.map((item) => item.incident_id);
 
-    const reportsTranslatedCollection = this.mongoClient
+    const incidentsTranslatedCollection = this.mongoClient
       .db('translations')
-      .collection(`reports_${language}`);
+      .collection('incidents');
 
     const query = {
-      report_number: { $in: originalIds },
-      $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
+      incident_id: { $in: originalIds },
+      $and: [{ language: language }].concat(keys.map((key) => ({ [key]: { $exists: true } }))),
     };
 
-    const translated = await reportsTranslatedCollection
-      .find(query, { projection: { report_number: 1 } })
+    console.log('--- query', query);
+
+    const translated = await incidentsTranslatedCollection
+      .find(query, { projection: { incident_id: 1 } })
       .toArray();
 
     return translated;
   }
 
-  async saveTranslatedReports({ items, language }) {
-    const reportsTranslatedCollection = this.mongoClient
+  async saveTranslatedIncidents({ items, language }) {
+    const incidentsTranslationsCollection = this.mongoClient
       .db('translations')
-      .collection(`reports_${language}`);
+      .collection('incidents');
 
-    const translated = [];
+    // Insert the translated incident into the incidents collection with the language field
+    const incidentsTranslated = items.map((t) => ({ ...t, language }));
 
-    for (const item of items) {
-      const { report_number, text, title } = item;
-
-      const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
-
-      translated.push({ report_number, text, title, plain_text });
-    }
-
-    return reportsTranslatedCollection.insertMany(translated);
+    return incidentsTranslationsCollection.insertMany(incidentsTranslated);
   }
 
-  async translateReport({ entry, to }) {
+  async translateIncident({ entry, to }) {
     const translatedEntry = cloneDeep(entry);
 
     const payload = [];
@@ -154,7 +145,7 @@ class Translator {
 
     await this.mongoClient.connect();
 
-    let reportsQuery = {};
+    let incidentsQuery = {};
 
     if (this.submissionDateStart) {
       // Check if the date is valid
@@ -165,41 +156,39 @@ class Translator {
         throw new Error(errorMessage);
       }
 
-      this.reporter.log(
-        `Translating incident reports submitted after [${this.submissionDateStart}]`
-      );
-      reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
+      this.reporter.log(`Translating incidents created after [${this.submissionDateStart}]`);
+      incidentsQuery = { created_at: { $gte: new Date(this.submissionDateStart) } };
     } else {
       this.reporter.log(
-        `Translating all incident reports. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
+        `Translating all incidents. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
       );
     }
 
-    const reports = await this.mongoClient
+    const incidents = await this.mongoClient
       .db('aiidprod')
-      .collection(`reports`)
-      .find(reportsQuery)
+      .collection(`incidents`)
+      .find(incidentsQuery)
       .toArray();
 
-    this.reporter.log(`Processing translation of ${reports.length} incident reports`);
+    this.reporter.log(`Processing translation of ${incidents.length} incidents`);
 
     const concurrency = 10;
 
     const q = queue(async ({ to }, done) => {
-      this.reporter.log(`Translating incident reports for [${to}]`);
+      this.reporter.log(`Translating incidents for [${to}]`);
 
-      const items = reports.filter((r) => r.language !== to);
+      const items = incidents.filter((r) => r.language !== to);
 
-      const translated = await this.translateReportsCollection({ items, to });
+      const translated = await this.translateIncidentsCollection({ items, to });
 
       if (translated.length > 0) {
-        this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
+        this.reporter.log(`Translated [${translated.length}] new incidents to [${to}]`);
 
-        const result = await this.saveTranslatedReports({ items: translated, language: to });
+        const result = await this.saveTranslatedIncidents({ items: translated, language: to });
 
-        this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
+        this.reporter.log(`Stored [${result.insertedCount}] new incidents to [${to}]`);
       } else {
-        this.reporter.log(`No new incident reports needed translation to [${to}]`);
+        this.reporter.log(`No new incidents needed translation to [${to}]`);
       }
 
       done();
@@ -216,4 +205,4 @@ class Translator {
   }
 }
 
-module.exports = Translator;
+module.exports = IncidentTranslator;
