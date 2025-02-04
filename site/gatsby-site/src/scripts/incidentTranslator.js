@@ -92,8 +92,6 @@ class IncidentTranslator {
       $and: [{ language: language }].concat(keys.map((key) => ({ [key]: { $exists: true } }))),
     };
 
-    console.log('--- query', query);
-
     const translated = await incidentsTranslatedCollection
       .find(query, { projection: { incident_id: 1 } })
       .toArray();
@@ -107,7 +105,18 @@ class IncidentTranslator {
       .collection('incidents');
 
     // Insert the translated incident into the incidents collection with the language field
-    const incidentsTranslated = items.map((t) => ({ ...t, language }));
+    const incidentsTranslated = items.map((t) => {
+      const translated = {
+        incident_id: t.incident_id,
+        language,
+      };
+
+      for (const key of keys) {
+        translated[key] = t[key];
+      }
+
+      return translated;
+    });
 
     return incidentsTranslationsCollection.insertMany(incidentsTranslated);
   }
