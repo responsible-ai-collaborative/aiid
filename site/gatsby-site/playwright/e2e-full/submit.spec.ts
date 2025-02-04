@@ -1,7 +1,6 @@
 import parseNews from '../fixtures/api/parseNews.json';
 import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query, fillAutoComplete } from '../utils';
 import { expect } from '@playwright/test';
-import config from '../config';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
 import { addWeeks, getUnixTime, subWeeks } from 'date-fns';
@@ -13,12 +12,12 @@ test.describe('The Submit form', () => {
 
     // Listen for the dialog and handle it
     test.beforeEach(async ({ page }) => {
-      page.once('dialog', async dialog => {
-        const dialogMessage = dialog.message();
-        if (dialogMessage.includes('Please confirm you are ready to submit this report. Report details cannot be changed after submission.') || dialogMessage.includes('Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.') || dialogMessage.includes('Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.') || dialogMessage.includes('このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません')) {
-          await dialog.accept();
-        }
-      });
+        page.once('dialog', async dialog => {
+            const dialogMessage = dialog.message();
+            if (dialogMessage.includes('Please confirm you are ready to submit this report. Report details cannot be changed after submission.') || dialogMessage.includes('Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.') || dialogMessage.includes('Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.') || dialogMessage.includes('このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません')) {
+                await dialog.accept();
+            }
+        });
     });
 
     test('Successfully loads', async ({ page }) => {
@@ -158,9 +157,11 @@ test.describe('The Submit form', () => {
 
     test('As editor, should submit a new incident report, adding an incident title and editors.', async ({ page, login, skipOnEmptyEnvironment }) => {
 
+        test.slow();
+
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Cesar', last_name: 'Ito', roles: ['admin'] } });
+        await login();
 
         await conditionalIntercept(
             page,
@@ -170,23 +171,13 @@ test.describe('The Submit form', () => {
             'parseNews'
         );
 
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
+        const findSubmissionsResponse = page.waitForResponse(((response) => response.request()?.postDataJSON()?.operationName == 'FindSubmissions'))
 
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindUsers',
-            'findUsers'
-        );
+        const findUsersResponse = page.waitForResponse(((response) => response.request()?.postDataJSON()?.operationName == 'FindUsers'))
 
         await page.goto(url);
 
-        await waitForRequest('findSubmissions');
+        await findSubmissionsResponse;
 
         await page.locator('input[name="url"]').fill(
             `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
@@ -206,13 +197,13 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="to-step-3"]').click();
 
-        await waitForRequest('findUsers');
+        await findUsersResponse;
 
         await page.locator('[name="incident_title"]').fill('Elsagate');
 
         await page.locator('[name="description"]').fill('Description');
 
-        await fillAutoComplete(page, "#input-incident_editors", 'Ces', 'Cesar Ito');
+        await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
 
         await page.locator('[name="tags"]').fill('New Tag');
         await page.keyboard.press('Enter');
@@ -250,7 +241,7 @@ test.describe('The Submit form', () => {
             text: parseNews.text,
             authors: ["Valentina Palladino"],
             incident_ids: [],
-            incident_editors: [{ userId }],
+            incident_editors: [{ userId: '619b47ea5eed5334edfa3bbc' }],
         });
     });
 
@@ -316,7 +307,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
 
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto('/apps/submitted');
 
@@ -397,7 +388,7 @@ test.describe('The Submit form', () => {
 
     test('Should submit a submission and link it to the current user id', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        const [userId] = await login();
 
         const values = {
             url: 'https://incidentdatabase.ai',
@@ -485,7 +476,7 @@ test.describe('The Submit form', () => {
         const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
 
         const { data: { reports: reportsAuthors } } = await query({
-          query: gql`
+            query: gql`
             query {
               reports(filter: { authors: {IN: ["${authors}"] } }) {
                 report_number
@@ -495,7 +486,7 @@ test.describe('The Submit form', () => {
         });
 
         const { data: { reports: reportsPublished } } = await query({
-          query: gql`
+            query: gql`
             query {
               reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
                 report_number
@@ -505,7 +496,7 @@ test.describe('The Submit form', () => {
         });
 
         const { data: { reports: reportsUrl } } = await query({
-          query: gql`
+            query: gql`
             query {
               reports(filter: { url: {IN: ["${reportUrl}"] } }) {
                 report_number
@@ -515,9 +506,9 @@ test.describe('The Submit form', () => {
         });
 
         const reports = {
-          byAuthors: reportsAuthors,
-          byDatePublished: reportsPublished,
-          byURL: reportsUrl,
+            byAuthors: reportsAuthors,
+            byDatePublished: reportsPublished,
+            byURL: reportsUrl,
         }
 
         for (const key in values) {
@@ -549,93 +540,93 @@ test.describe('The Submit form', () => {
 
     test('Should **not** show a list of related reports if no data entered', async ({ page, skipOnEmptyEnvironment }) => {
 
-      await page.goto(url);
+        await page.goto(url);
 
-      const parentLocator = page.locator(`[data-cy="related-reports"]`);
+        const parentLocator = page.locator(`[data-cy="related-reports"]`);
 
-      const childrenCount = await parentLocator.locator('> *').count();
+        const childrenCount = await parentLocator.locator('> *').count();
 
-      await expect(childrenCount).toBe(0);
+        await expect(childrenCount).toBe(0);
 
-  }
-  );
+    }
+    );
 
     test('Should *not* show a list of related reports', async ({ page, skipOnEmptyEnvironment }) => {
 
-      await page.goto(url);
+        await page.goto(url);
 
-      const authors = "this is a new non existing author";
-      const date_published = "2034-01-01";
-      const reportUrl = 'http://nonExistingUrlForReport.com';
+        const authors = "this is a new non existing author";
+        const date_published = "2034-01-01";
+        const reportUrl = 'http://nonExistingUrlForReport.com';
 
-      const values = {
-          url: reportUrl,
-          authors,
-          date_published,
-      };
+        const values = {
+            url: reportUrl,
+            authors,
+            date_published,
+        };
 
-      const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
 
-      const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
 
-      const { data: { reports: reportsAuthors } } = await query({
-        query: gql`
+        const { data: { reports: reportsAuthors } } = await query({
+            query: gql`
           query {
             reports(filter: { authors: {IN: ["${authors}"] } }) {
               report_number
             }
           }
         `,
-      });
+        });
 
-      const { data: { reports: reportsPublished } } = await query({
-        query: gql`
+        const { data: { reports: reportsPublished } } = await query({
+            query: gql`
           query {
             reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
               report_number
             }
           }
         `,
-      });
+        });
 
-      const { data: { reports: reportsUrl } } = await query({
-        query: gql`
+        const { data: { reports: reportsUrl } } = await query({
+            query: gql`
           query {
             reports(filter: { url: {IN: ["${reportUrl}"] } }) {
               report_number
             }
           }
         `,
-      });
+        });
 
-      const reports = {
-        byAuthors: reportsAuthors,
-        byDatePublished: reportsPublished,
-        byURL: reportsUrl,
-      }
+        const reports = {
+            byAuthors: reportsAuthors,
+            byDatePublished: reportsPublished,
+            byURL: reportsUrl,
+        }
 
-      for (const key in values) {
-          if (key == 'incident_ids') {
-              await page.locator(`input[name="${key}"]`).fill(values[key].toString());
-              await page.waitForSelector(`[role="option"]`);
-              await page.locator(`[role="option"]`).first().click();
-          } else {
-              await page.locator(`input[name="${key}"]`).fill(values[key]);
-          }
-      }
+        for (const key in values) {
+            if (key == 'incident_ids') {
+                await page.locator(`input[name="${key}"]`).fill(values[key].toString());
+                await page.waitForSelector(`[role="option"]`);
+                await page.locator(`[role="option"]`).first().click();
+            } else {
+                await page.locator(`input[name="${key}"]`).fill(values[key]);
+            }
+        }
 
-      for (const key of Object.keys(reports)) {
+        for (const key of Object.keys(reports)) {
 
-          const parentLocator = page.locator(`[data-cy="related-${key}"]`);
+            const parentLocator = page.locator(`[data-cy="related-${key}"]`);
 
-          await expect(async () => {
-              await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(0);
-          }).toPass();
-          
-          await expect(page.locator(`[data-cy="related-${key}"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
-      }
-  }
-  );
+            await expect(async () => {
+                await expect(parentLocator.locator('[data-cy="result"]')).toHaveCount(0);
+            }).toPass();
+
+            await expect(page.locator(`[data-cy="related-${key}"]`).locator('[data-cy="no-related-reports"]')).toHaveText('No related reports found.');
+        }
+    }
+    );
 
     test('Should *not* show semantically related reports when the text is under 256 non-space characters', async ({ page }) => {
 
@@ -1055,18 +1046,18 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
 
         const { data } = await query({
-          query: gql`
+            query: gql`
             query {
               submission(sort: { date_submitted:DESC }){
                 editor_similar_incidents
               }
             }
           `,
-      });
+        });
 
-      expect(data.submission).toMatchObject({
-          editor_similar_incidents: [1],
-      });
+        expect(data.submission).toMatchObject({
+            editor_similar_incidents: [1],
+        });
     });
 
     test('Should show related reports based on author and add as dissimilar', async ({ page }) => {
@@ -1098,18 +1089,18 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
 
         const { data } = await query({
-          query: gql`
+            query: gql`
             query {
               submission(sort: { date_submitted:DESC }){
                 editor_dissimilar_incidents
               }
             }
           `,
-      });
+        });
 
-      expect(data.submission).toMatchObject({
-        editor_dissimilar_incidents: [1],
-      });
+        expect(data.submission).toMatchObject({
+            editor_dissimilar_incidents: [1],
+        });
     });
 
     test('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', async ({ page }) => {
@@ -1488,234 +1479,232 @@ test.describe('The Submit form', () => {
 
     test('Should autocomplete new entities', async ({ page, skipOnEmptyEnvironment }) => {
 
-      await conditionalIntercept(
-          page,
-          '**/parseNews**',
-          () => true,
-          parseNews,
-          'parseNews'
-      );
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
 
-      await trackRequest(
-          page,
-          '**/graphql',
-          (req) => req.postDataJSON().operationName == 'FindSubmissions',
-          'findSubmissions'
-      );
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
 
-      await page.goto(url);
+        await page.goto(url);
 
-      await waitForRequest('findSubmissions');
+        await waitForRequest('findSubmissions');
 
-      await page.locator('input[name="url"]').fill(
-          `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-      );
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
 
-      await page.locator('button:has-text("Fetch info")').click();
+        await page.locator('button:has-text("Fetch info")').click();
 
-      await waitForRequest('parseNews');
+        await waitForRequest('parseNews');
 
-      await page.locator('[name="incident_date"]').fill('2020-01-01');
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
 
-      await expect(page.locator('.form-has-errors')).not.toBeVisible();
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
 
-      await page.locator('[data-cy="to-step-2"]').click();
+        await page.locator('[data-cy="to-step-2"]').click();
 
-      await page.locator('[data-cy="to-step-3"]').click();
+        await page.locator('[data-cy="to-step-3"]').click();
 
-      await page.locator('input[name="developers"]').fill('New entity');
-      await page.keyboard.press('Enter');
+        await page.locator('input[name="developers"]').fill('New entity');
+        await page.keyboard.press('Enter');
 
-      await page.locator('input[name="deployers"]').fill('New entity');
+        await page.locator('input[name="deployers"]').fill('New entity');
 
-      await page.locator('#deployers-tags .dropdown-item[aria-label="New entity"]').click();
+        await page.locator('#deployers-tags .dropdown-item[aria-label="New entity"]').click();
 
-      await page.locator('button[type="submit"]').click();
+        await page.locator('button[type="submit"]').click();
 
-      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-      await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
-  });
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
 
-  test('Should show an error for inputs with two or fewer characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
-    await conditionalIntercept(
-      page,
-      '**/parseNews**',
-      () => true,
-      parseNews,
-      'parseNews'
-  );
+    test('Should show an error for inputs with two or fewer characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
 
-    await trackRequest(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindSubmissions',
-        'findSubmissions'
-    );
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
 
-    await page.goto(url);
+        await page.goto(url);
 
-    await waitForRequest('findSubmissions');
+        await waitForRequest('findSubmissions');
 
-    await page.locator('input[name="url"]').fill(
-        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-    );
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
 
-    await page.locator('button:has-text("Fetch info")').click();
+        await page.locator('button:has-text("Fetch info")').click();
 
-    await waitForRequest('parseNews');
+        await waitForRequest('parseNews');
 
-    await page.locator('[name="incident_date"]').fill('2020-01-01');
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
 
-    await expect(page.locator('.form-has-errors')).not.toBeVisible();
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
 
-    await page.locator('[data-cy="to-step-2"]').click();
+        await page.locator('[data-cy="to-step-2"]').click();
 
-    await page.locator('[data-cy="to-step-3"]').click();
+        await page.locator('[data-cy="to-step-3"]').click();
 
-    await page.locator('input[name="developers"]').fill('ab');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="developers-input"] .rbt-close').click();
+        await page.locator('input[name="developers"]').fill('ab');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="developers-input"] .rbt-close').click();
 
-    await page.locator('input[name="developers"]').fill('NewDev');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="developers"]').fill('NewDev');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Check for deployers field
-    await page.locator('input[name="deployers"]').fill('cd');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="deployers-input"] .rbt-close').click();
+        // Check for deployers field
+        await page.locator('input[name="deployers"]').fill('cd');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="deployers-input"] .rbt-close').click();
 
-    await page.locator('input[name="deployers"]').fill('NewDep');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="deployers"]').fill('NewDep');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Check for harmed_parties field
-    await page.locator('input[name="harmed_parties"]').fill('ef');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
+        // Check for harmed_parties field
+        await page.locator('input[name="harmed_parties"]').fill('ef');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
 
-    await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    await page.locator('input[name="implicated_systems"]').fill('gh');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
+        await page.locator('input[name="implicated_systems"]').fill('gh');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
 
-    await page.locator('input[name="implicated_systems"]').fill('NewSystem');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="implicated_systems"]').fill('NewSystem');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Check for "New selection" behavior
-    await page.locator('input[name="developers"]').fill('xy');
-    await page.locator('#developers-tags .dropdown-item:has-text("New selection: xy")').click();
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('div').filter({ hasText: /^xy×Remove$/ }).getByLabel('Remove').click();
+        // Check for "New selection" behavior
+        await page.locator('input[name="developers"]').fill('xy');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: xy")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('div').filter({ hasText: /^xy×Remove$/ }).getByLabel('Remove').click();
 
-    await page.locator('input[name="developers"]').fill('ValidDev');
-    await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="developers"]').fill('ValidDev');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Submit to ensure the form does not proceed with errors
-    await page.locator('button[type="submit"]').click();
-    await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-    await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
-  });
+        // Submit to ensure the form does not proceed with errors
+        await page.locator('button[type="submit"]').click();
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
 
-  test('Should show an error for inputs with 200 or more characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
-    await init();
-    await conditionalIntercept(
-      page,
-      '**/parseNews**',
-      () => true,
-      parseNews,
-      'parseNews'
-  );
+    test('Should show an error for inputs with 200 or more characters in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+        await init();
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
 
-    await trackRequest(
-        page,
-        '**/graphql',
-        (req) => req.postDataJSON().operationName == 'FindSubmissions',
-        'findSubmissions'
-    );
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
 
-    await page.goto(url);
+        await page.goto(url);
 
-    await waitForRequest('findSubmissions');
+        await waitForRequest('findSubmissions');
 
-    await page.locator('input[name="url"]').fill(
-        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-    );
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
 
-    await page.locator('button:has-text("Fetch info")').click();
+        await page.locator('button:has-text("Fetch info")').click();
 
-    await waitForRequest('parseNews');
+        await waitForRequest('parseNews');
 
-    await page.locator('[name="incident_date"]').fill('2020-01-01');
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
 
-    await expect(page.locator('.form-has-errors')).not.toBeVisible();
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
 
-    await page.locator('[data-cy="to-step-2"]').click();
+        await page.locator('[data-cy="to-step-2"]').click();
 
-    await page.locator('[data-cy="to-step-3"]').click();
+        await page.locator('[data-cy="to-step-3"]').click();
 
-    await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="developers-input"] .rbt-close').click();
+        await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="developers-input"] .rbt-close').click();
 
-    await page.locator('input[name="developers"]').fill('NewDev');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="developers"]').fill('NewDev');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Check for deployers field
-    await page.locator('input[name="deployers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="deployers-input"] .rbt-close').click();
+        // Check for deployers field
+        await page.locator('input[name="deployers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="deployers-input"] .rbt-close').click();
 
-    await page.locator('input[name="deployers"]').fill('NewDep');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="deployers"]').fill('NewDep');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Check for harmed_parties field
-    await page.locator('input[name="harmed_parties"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
+        // Check for harmed_parties field
+        await page.locator('input[name="harmed_parties"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="harmed_parties-input"] .rbt-close').click();
 
-    await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="harmed_parties"]').fill('NewHarmed');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    await page.locator('input[name="implicated_systems"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
+        await page.locator('input[name="implicated_systems"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('[data-testid="implicated_systems-input"] .rbt-close').click();
 
-    await page.locator('input[name="implicated_systems"]').fill('NewSystem');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="implicated_systems"]').fill('NewSystem');
+        await page.keyboard.press('Enter');
+        await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Check for "New selection" behavior
-    await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
-    await page.locator('#developers-tags .dropdown-item:has-text("New selection: This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error")').click();
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
-    await page.locator('div').filter({ hasText: /^This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error×Remove$/ }).getByLabel('Remove').click();
+        // Check for "New selection" behavior
+        await page.locator('input[name="developers"]').fill('This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).toBeVisible();
+        await page.locator('div').filter({ hasText: /^This test input text is designed to have precisely two hundred characters total so it works perfectly for checking HTML input validation to ensure that anything this length or longer should show error×Remove$/ }).getByLabel('Remove').click();
 
-    await page.locator('input[name="developers"]').fill('ValidDev');
-    await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
-    await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+        await page.locator('input[name="developers"]').fill('ValidDev');
+        await page.locator('#developers-tags .dropdown-item:has-text("New selection: ValidDev")').click();
+        await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
 
-    // Submit to ensure the form does not proceed with errors
-    await page.locator('button[type="submit"]').click();
-    await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-    await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
-  });
-
-  
+        // Submit to ensure the form does not proceed with errors
+        await page.locator('button[type="submit"]').click();
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
 });

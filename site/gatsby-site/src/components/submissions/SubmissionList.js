@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Badge, Button, Checkbox, Select } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,
   useFilters,
@@ -24,7 +24,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 const SubmissionList = ({ data }) => {
   const { t } = useTranslation();
 
-  const { isLoggedIn, isRole, user } = useUserContext();
+  const { loading, isRole, user } = useUserContext();
 
   const [tableData, setTableData] = useState([]);
 
@@ -492,7 +492,7 @@ const SubmissionList = ({ data }) => {
         disableResizing: true,
         Cell: ({ row: { values } }) => {
           const isAlreadyEditor = values?.incident_editors?.find(
-            (editor) => editor.userId === user.customData.userId
+            (editor) => editor.userId === user.id
           );
 
           return (
@@ -548,7 +548,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [isLoggedIn, claiming, reviewing, dateFilter, selectedRows, allSelected]);
+  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
 
   const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
 
@@ -586,11 +586,11 @@ const SubmissionList = ({ data }) => {
       const incidentEditors = [...submission.incident_editors];
 
       const isAlreadyEditor = submission.incident_editors.find(
-        (editor) => editor.userId === user.customData.userId
+        (editor) => editor.userId === user.id
       );
 
       if (!isAlreadyEditor) {
-        incidentEditors.push(user.customData.userId);
+        incidentEditors.push(user.id);
 
         await updateSubmission({
           variables: {
@@ -619,12 +619,10 @@ const SubmissionList = ({ data }) => {
 
     const incidentEditors = [...submission.incident_editors];
 
-    const isAlreadyEditor = submission.incident_editors.find(
-      (editor) => editor.userId === user.customData.userId
-    );
+    const isAlreadyEditor = submission.incident_editors.find((editor) => editor.userId === user.id);
 
     if (isAlreadyEditor) {
-      const index = incidentEditors.findIndex((editor) => editor.userId === user.customData.userId);
+      const index = incidentEditors.findIndex((editor) => editor.userId === user.id);
 
       incidentEditors.splice(index, 1);
 
