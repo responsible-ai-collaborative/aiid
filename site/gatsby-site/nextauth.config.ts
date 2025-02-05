@@ -139,6 +139,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
       signOut: '/logout',
       verifyRequest: '/verify-request',
       newUser: '/account',
+      error: '/auth-error',
     },
     secret: config.NEXTAUTH_SECRET!,
     debug: config.NEXTAUTH_URL! === 'http://localhost:8000' && !process.env.CI,
