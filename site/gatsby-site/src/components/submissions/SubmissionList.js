@@ -291,14 +291,7 @@ const SubmissionList = ({ data }) => {
     if (isRole('incident_editor')) {
       columns.push({
         title: (
-          <div className="flex items-center mb-4">
-            <Checkbox
-              checked={allSelected}
-              onChange={(e) => toggleSelectAll(e.target.checked)}
-              className="mr-2"
-            />
-            <span>{t('Select All')}</span>
-          </div>
+          <Checkbox checked={allSelected} onChange={(e) => toggleSelectAll(e.target.checked)} />
         ),
         accessor: 'select',
         className: 'min-w-[50px]',
