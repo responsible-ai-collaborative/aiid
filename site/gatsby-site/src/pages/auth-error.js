@@ -13,7 +13,7 @@ const AuthError = () => {
   return (
     <>
       <h1>
-        <Trans>There was an error with your request</Trans>
+        <Trans ns="auth">There was an error with your request</Trans>
       </h1>
       <p>
         <Trans ns="auth" i18nKey={errorCode} />
