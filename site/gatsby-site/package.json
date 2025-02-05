@@ -27,6 +27,7 @@
     "@mdx-js/react": "^2.3.0",
     "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
+    "@sentry/aws-serverless": "^8.54.0",
     "algoliasearch": "^4.20.0",
     "async": "^3.2.2",
     "billboard.js": "^3.7.4",
