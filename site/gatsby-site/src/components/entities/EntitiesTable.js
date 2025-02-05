@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans, useTranslation } from 'react-i18next';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 import { Button } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function IncidentsCell({ cell }) {

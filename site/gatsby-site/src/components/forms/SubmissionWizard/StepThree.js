@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import FieldContainer from './FieldContainer';
 import {
   faHandPointRight,

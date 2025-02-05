@@ -6,6 +6,10 @@ import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
 import * as memoryMongo from './memory-mongo';
+import * as crypto from 'node:crypto';
+import { ObjectId } from 'bson';
+import users from './seeds/customData/users';
+import authUsers from './seeds/auth/users';
 import { algoliaMock } from './fixtures/algoliaMock';
 import siteConfig from '../config';
 
@@ -18,39 +22,125 @@ declare module '@playwright/test' {
 export type Options = { defaultItem: string };
 
 type TestFixtures = {
+    /** 
+     * Skips the test when running in an empty environment
+     */
     skipOnEmptyEnvironment: () => Promise<void>,
+
+    /**
+     * Runs the test only when in an empty environment
+     */
     runOnlyOnEmptyEnvironment: () => Promise<void>,
-    login: (username: string, password: string, options?: { customData?: Record<string, unknown> }) => Promise<string[]>,
-    retryDelay?: [({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>, { auto: true }],
+
+    /**
+     * Logs in a user with optional configuration
+     * @param options - Optional configuration for the login
+     * @param options.email - Optional email to use for login
+     * @param options.customData - Optional data to customize the seed user's properties like name and roles
+     * @returns Promise resolving to a tuple where:
+     *   - First element is the userId, useful for mocking collections to reflect ownership
+     *   - Second element is the session token, useful for performing GraphQL queries on behalf of the user
+     */
+    login: (options?: {
+        email?: string,
+        customData?: Record<string, unknown>
+    }) => Promise<[string, string]>,
+
+    /**
+     * Adds an increasing delay after a test failure before retrying
+     * The delay increases with each retry attempt
+     */
+    retryDelay?: [
+        ({ }: {}, use: () => Promise<void>, testInfo: { retry: number }) => Promise<void>,
+        { auto: true }
+    ],
+
+    /**
+     * Runs the test only in production environment
+     */
     runOnlyInProduction: () => Promise<void>,
+
+    /**
+     * Runs the test in any environment except production
+     */
     runAnywhereExceptProduction: () => Promise<void>,
 };
 
-const getUserIdFromLocalStorage = async (page: Page) => {
-
-    const storage = await page.context().storageState();
-
-    for (const origin of storage.origins) {
-        for (const storage of origin.localStorage) {
-            if (storage.value == 'local-userpass') {
-                const match = storage.name.match(/user\(([^)]+)\):providerType/);
-                return match?.[1];
-            }
-        }
-    }
+/**
+* Random hex string generator from next-auth/core/lib/utils/web.ts.
+* Must match original implementation for auth flow compatibility.
+* @param size Bytes to generate (output length = size * 2)
+*/
+export function randomString(size: number) {
+    const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2)
+    const r = (a: string, i: number): string => a + i2hex(i)
+    const bytes = crypto.getRandomValues(new Uint8Array(size))
+    return Array.from(bytes).reduce(r, "")
 }
-const getAccessTokenFromLocalStorage = async (page: Page, userId: string) => {
 
-    const storage = await page.context().storageState();
+export function hashToken(token: string) {
 
-    for (const origin of storage.origins) {
-        for (const storage of origin.localStorage) {
-            if (storage.name.endsWith(`user(${userId}):accessToken`)) {
-                return storage.value;
-            }
-        }
-    }
+    return crypto.createHash("sha256")
+        .update(`${token}${config.NEXTAUTH_SECRET}`)
+        .digest("hex");
 }
+
+export const generateMagicLink = async (email: string, callbackUrl = '/') => {
+
+    const token = randomString(32);
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await memoryMongo.execute(async (client) => {
+
+        const collection = client.db('auth').collection('verification_tokens');
+        const hashedToken = hashToken(token); // next auth stores the hashed token
+
+        await collection.insertOne({
+            identifier: email,
+            token: hashedToken,
+            expires,
+        });
+    });
+
+    const baseUrl = config.NEXTAUTH_URL;
+    const magicLink = `${baseUrl}/api/auth/callback/http-email?callbackUrl=${encodeURIComponent(baseUrl + callbackUrl)}&token=${token}&email=${encodeURIComponent(email)}`;
+
+    return magicLink;
+}
+
+async function getUserIdFromAuth(email: string) {
+
+    let id: string = null;
+
+    await memoryMongo.execute(async (client) => {
+
+        const collection = client.db('auth').collection('users');
+
+        const user = await collection.findOne({ email });
+
+        id = user._id.toString();
+    });
+
+    return id;
+}
+
+async function getSessionToken(userId: string) {
+
+    let token: string = null;
+
+    await memoryMongo.execute(async (client) => {
+
+        const collection = client.db('auth').collection('sessions');
+
+        const session = await collection.findOne({ userId: new ObjectId(userId) }, { sort: { expires: -1 } });
+
+        token = session.sessionToken;
+    });
+
+    return token;
+}
+
+export const testUser = { ...users[0], email: authUsers.find(u => u._id.equals(new ObjectId(users[0].userId))).email };
 
 export const test = base.extend<TestFixtures>({
     skipOnEmptyEnvironment: async ({ }, use, testInfo) => {
@@ -74,25 +164,12 @@ export const test = base.extend<TestFixtures>({
         // TODO: this should be removed since we pass the username and password as arguments
         testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
 
-        await use(async (email, password, { customData } = {}) => {
+        await use(async ({ email = testUser.email, customData = null } = {}) => {
 
-            await page.context().clearCookies();
-
-            await loginSteps(page, email, password);
-
-            const userId = await getUserIdFromLocalStorage(page);
-
-            const accessToken = await getAccessTokenFromLocalStorage(page, userId!);
+            const userId = await getUserIdFromAuth(email);
 
             if (customData) {
 
-                await page.evaluate(({ customData }) => {
-
-                    localStorage.setItem('__CUSTOM_DATA_MOCK', JSON.stringify(customData));
-
-                }, { customData });
-
-                // upsert user with custom data
                 await memoryMongo.execute(async (client) => {
 
                     const db = client.db('customData');
@@ -102,10 +179,15 @@ export const test = base.extend<TestFixtures>({
                 });
             }
 
-            return [userId!, accessToken!];
+            const magicLink = await generateMagicLink(email);
 
-            // to be able to restore session state, we'll need to refactor when we perform the login call, but that's for another PR
-            // https://playwright.dev/docs/auth#avoid-authentication-in-some-tests
+            await page.context().clearCookies();
+
+            await page.goto(magicLink);
+
+            const sessionToken = await getSessionToken(userId);
+
+            return [userId!, sessionToken!];
         })
     },
 
@@ -123,13 +205,13 @@ export const test = base.extend<TestFixtures>({
     }, { auto: true }],
 
     runOnlyInProduction: async ({ }, use, testInfo) => {
-      if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
-          testInfo.skip();
-      }
+        if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+            testInfo.skip();
+        }
 
-      await use(null);
+        await use(null);
     },
-    
+
     runAnywhereExceptProduction: async ({ }, use, testInfo) => {
         if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
             testInfo.skip();
@@ -220,13 +302,6 @@ export const getApolloClient = () => {
     const client = new ApolloClient({
         link: new HttpLink({
             uri: `http://localhost:8000/api/graphql`,
-
-            fetch: async (uri, options) => {
-                options.headers.email = config.E2E_ADMIN_USERNAME!;
-                options.headers.password = config.E2E_ADMIN_PASSWORD!;
-
-                return fetch(uri, options);
-            },
         }),
         cache: new InMemoryCache({
             addTypename: false,
@@ -303,13 +378,14 @@ export async function fillAutoComplete(page: Page, selector: string, sequence: s
     }).toPass();
 }
 
+//TODO: This function should be removed and the languages should be fetched from the config files
 export function getLanguages() {
-  return [
-    { code: 'en', hrefLang: 'en-US', name: 'English', localName: 'English', langDir: 'ltr', dateFormat: 'MM/DD/YYYY' },
-    { code: 'es', hrefLang: 'es', name: 'Spanish', localName: 'Español', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
-    { code: 'fr', hrefLang: 'fr', name: 'French', localName: 'Français', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
-    { code: 'ja', hrefLang: 'ja', name: 'Japanese', localName: '日本語', langDir: 'ltr', dateFormat: 'YYYY/MM/DD' },
-  ];
+    return [
+        { code: 'en', hrefLang: 'en-US', name: 'English', localName: 'English', langDir: 'ltr', dateFormat: 'MM/DD/YYYY' },
+        { code: 'es', hrefLang: 'es', name: 'Spanish', localName: 'Español', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
+        { code: 'fr', hrefLang: 'fr', name: 'French', localName: 'Français', langDir: 'ltr', dateFormat: 'DD-MM-YYYY' },
+        { code: 'ja', hrefLang: 'ja', name: 'Japanese', localName: '日本語', langDir: 'ltr', dateFormat: 'YYYY/MM/DD' },
+    ];
 }
 
 // TODO: this mock should pull from the database instead of being hardcoded

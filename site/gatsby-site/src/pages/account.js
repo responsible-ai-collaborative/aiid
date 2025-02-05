@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spinner } from 'flowbite-react';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import UserSubscriptions from 'components/UserSubscriptions';
@@ -22,7 +22,7 @@ const Account = () => {
           <Spinner />
           <Trans>Loading...</Trans>
         </div>
-      ) : user && user.isLoggedIn && user.profile.email ? (
+      ) : user && !loading ? (
         <>
           <div className="block p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
             <h2>
