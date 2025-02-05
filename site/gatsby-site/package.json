@@ -145,7 +145,7 @@
     "process-notifications": "npx tsx --env-file=.env src/scripts/process-notifications.ts",
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
     "translate-reports": "node src/scripts/translateReports.js",
-    "translate-incidents": "node src/scripts/translateIncidents.js",
+    "translate-incidents": "node src/scripts/translateIncidents.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
   },
   "devDependencies": {
