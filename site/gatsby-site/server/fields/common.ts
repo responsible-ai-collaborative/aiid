@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import config from "../config";
 import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
@@ -88,25 +88,24 @@ export interface UserAdminData {
     userId?: string;
 }
 
-export const getUserAdminData = async (userId: string) => {
+export const getUserAdminData = async (userId: string, context: Context): Promise<UserAdminData | null> => {
 
-    const userApiResponse = await apiRequest({ path: `/users/${userId}` });
+    const authUsersCollection = context.client.db('auth').collection("users");
+    const authUser = await authUsersCollection.findOne({ _id: new ObjectId(userId) });
 
-    let user: UserAdminData | null = null;
+    if (authUser) {
 
-    if (userApiResponse.data) {
-
-        user = {
-            email: userApiResponse.data.email,
-            creationDate: new Date(userApiResponse.creation_date * 1000),
-            lastAuthenticationDate: new Date(userApiResponse.last_authentication_date * 1000),
-            disabled: userApiResponse.disabled,
-            userId,
+        return {
+            email: authUser.email,
+            creationDate: new Date(), //TODO: find a way to get this data
+            lastAuthenticationDate: new Date(), //TODO: find a way to get this data
+            disabled: false,
         }
     }
 
-    return user;
+    return null;
 }
+
 
 
 let cachedToken: string | null = null;
@@ -212,6 +211,7 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
         type: 'new-incidents',
         incident_id: incidentId,
         processed: false,
+        created_at: new Date(),
     });
 
     const entityFields: (keyof DBIncident)[] = [
@@ -239,6 +239,7 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
             incident_id: incidentId,
             entity_id: entityId,
             processed: false,
+            created_at: new Date(),
         });
     }
 }
@@ -363,6 +364,7 @@ export const logReportHistory = async (updated: DBReport, context: Context) => {
     const reportHistory: DBReportHistory = {
         ...updated,
         modifiedBy: context.user?.id ?? '',
+        created_at: new Date(),
         _id: undefined,
     }
 
@@ -376,6 +378,7 @@ export const logIncidentHistory = async (updated: DBIncident, context: Context) 
     const incidentHistory: DBIncidentHistory = {
         ...updated,
         modifiedBy: context.user?.id ?? '',
+        created_at: new Date(),
         _id: undefined,
     }
 

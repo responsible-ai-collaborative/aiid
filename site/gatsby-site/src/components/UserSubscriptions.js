@@ -9,7 +9,7 @@ import {
 } from '../graphql/subscriptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import Link from 'components/ui/Link';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 

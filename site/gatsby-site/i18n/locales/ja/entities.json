@@ -29,6 +29,13 @@
     "Back to Entity: {{name}}": "組織に戻る: {{name}}",
     "Entity updated successfully.": "組織が正常に更新されました。",
     "Error updating Entity.": "組織の更新中にエラーが発生しました。",
+    "Entity Relationships": "組織関係",
+    "Add or remove relationships to other entities": "他の組織との関係を追加または削除",
+    "Loading related entities...": "関連する組繹を読み込み中...",
+    "The AI implicated system is": "関連するAIシステムは です",
+    "The AI implicated systems are": "関連するAIシステムは です",
+    "Implicated AI system:": "AI関連システム:",
+    "Implicated AI systems:": "AI関連システム:",
     "Alleged implicated AI system:": "関与が疑われるAIシステム:",
     "Alleged implicated AI systems:": "関与が疑われるAIシステム:"
 }

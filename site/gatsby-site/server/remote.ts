@@ -108,6 +108,25 @@ const ignoreTypes = [
     'History_incidentQueryInput',
     'History_incidentUpdateInput',
     'History_incidentInsertInput',
+
+    'ChecklistRisk',
+    'ChecklistRiskQueryInput',
+    'ChecklistRiskUpdateInput',
+    'ChecklistRiskInsertInput',
+
+    'Checklist',
+    'ChecklistQueryInput',
+    'ChecklistUpdateInput',
+    'ChecklistInsertInput',
+
+    'ChecklistRiskPrecedentQueryInput',
+    'ChecklistRiskPrecedentUpdateInput',
+    'ChecklistRiskPrecedentInsertInput',
+
+    'Risk',
+    'RiskQueryInput',
+    'RiskUpdateInput',
+    'RiskInsertInput',
 ];
 
 const ignoredQueries = [
@@ -152,6 +171,11 @@ const ignoredQueries = [
 
     'history_incident',
     'history_incidents',
+
+    'checklist',
+    'checklists',
+
+    'risks',
 ];
 
 const ignoredMutations = [
@@ -263,6 +287,11 @@ const ignoredMutations = [
     'upsertOneDuplicate',
 
     'processNotifications',
+
+    'deleteOneChecklist',
+    'insertOneChecklist',
+    'updateOneChecklist',
+    'upsertOneChecklist',
 ]
 
 /**

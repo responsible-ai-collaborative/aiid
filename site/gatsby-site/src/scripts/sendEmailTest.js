@@ -1,4 +1,4 @@
-import { sendEmail } from '../../server/emails';
+import { sendBulkEmails } from '../../server/emails';
 
 // from site/gatsby-site, run with
 // TEST_EMAIL_TO_ADDRESS=<address> dotenv run <path to>/npx ts-node src/scripts/sendEmailTest.js
@@ -33,5 +33,5 @@ if (!email) {
 
   console.log(JSON.stringify(sendEmailArguments, null, 2));
 
-  sendEmail(sendEmailArguments);
+  sendBulkEmails(sendEmailArguments);
 }

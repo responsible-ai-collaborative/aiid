@@ -5,9 +5,6 @@
 [[plugins]]
   package = "@netlify/plugin-gatsby"
 
-[[plugins]]
-  package = "/plugins/netlify-plugin-create-admin-user"
-
 [build.processing.html]
   pretty_urls = false
 
@@ -29,4 +26,9 @@
 [[redirects]]
   from = "/api/lookupbyurl"
   to = "/.netlify/functions/lookupbyurl"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth"
   status = 200

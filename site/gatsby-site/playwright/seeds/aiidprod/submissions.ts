@@ -23,7 +23,7 @@ const submissions: DBSubmission[] = [
         text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
         title: "Sample title",
         url: "http://example.com",
-        user: "user1",
+        user: "6737a6e881955aa4905ccb04",
         implicated_systems: ["entity-1"],
         incident_title: "Incident title",
         incident_date: "2021-09-14",

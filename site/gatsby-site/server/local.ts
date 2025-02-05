@@ -34,10 +34,16 @@ import {
 } from './fields/incidents';
 
 import {
-    queryFields as submissionsQueryFields,
-    mutationFields as submissionsMutationFields,
-    permissions as submissionsPermissions
+  queryFields as submissionsQueryFields,
+  mutationFields as submissionsMutationFields,
+  permissions as submissionsPermissions
 } from './fields/submissions';
+
+import {
+  queryFields as entity_relationshipsQueryFields,
+  mutationFields as entity_relationshipsMutationFields,
+  permissions as entity_relationshipsPermissions
+} from './fields/entity_relationships';
 
 import {
     queryFields as classificationsQueryFields,
@@ -83,6 +89,12 @@ import {
     permissions as incidentsHistoryPermissions,
 } from './fields/incidentsHistory';
 
+import {
+    queryFields as checklistsQueryFields,
+    mutationFields as checklistsMutationFields,
+    permissions as checklistsPermissions
+} from './fields/checklists';
+
 
 export const getSchema = () => {
 
@@ -99,6 +111,7 @@ export const getSchema = () => {
             ...entitiesQueryFields,
             ...usersQueryFields,
             ...submissionsQueryFields,
+            ...entity_relationshipsQueryFields,
             ...classificationsQueryFields,
             ...taxaQueryFields,
             ...candidatesQueryFields,
@@ -107,6 +120,7 @@ export const getSchema = () => {
             ...notificationsQueryFields,
             ...reportsHistoryQueryFields,
             ...incidentsHistoryQueryFields,
+            ...checklistsQueryFields,
         }
     });
 
@@ -119,10 +133,12 @@ export const getSchema = () => {
             ...entitiesMutationFields,
             ...usersMutationFields,
             ...submissionsMutationFields,
+            ...entity_relationshipsMutationFields,
             ...classificationsMutationFields,
             ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
+            ...checklistsMutationFields,
         }
     });
 
@@ -155,6 +171,7 @@ export const getSchema = () => {
                 ...entitiesPermissions.Query,
                 ...usersPermissions.Query,
                 ...submissionsPermissions.Query,
+                ...entity_relationshipsPermissions.Query,
                 ...classificationsPermissions.Query,
                 ...taxaPermissions.Query,
                 ...candidatesPermissions.Query,
@@ -163,6 +180,7 @@ export const getSchema = () => {
                 ...notificationsPermissions.Query,
                 ...reportsHistoryPermissions.Query,
                 ...incidentsHistoryPermissions.Query,
+                ...checklistsPermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -172,10 +190,12 @@ export const getSchema = () => {
                 ...entitiesPermissions.Mutation,
                 ...usersPermissions.Mutation,
                 ...submissionsPermissions.Mutation,
+                ...entity_relationshipsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
                 ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,
+                ...checklistsPermissions.Mutation
             },
         },
         {
