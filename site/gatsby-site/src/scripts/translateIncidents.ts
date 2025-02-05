@@ -1,4 +1,3 @@
-//import 'dotenv/config'; // Alternatively: import dotenv from 'dotenv'; dotenv.config();
 import config from '../../config';
 
 import { MongoClient } from 'mongodb';

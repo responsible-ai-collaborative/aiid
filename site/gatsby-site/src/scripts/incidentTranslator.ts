@@ -80,7 +80,7 @@ export default class IncidentTranslator {
 
     const translated: Document[] = [];
 
-    // Create a queue for processing incident translations with concurrency=100
+    // Create a queue for processing incident translations
     const q = queue(async (task: { entry: Document; to: string }) => {
       const translatedEntry = await this.translateIncident({
         entry: task.entry,
@@ -90,7 +90,6 @@ export default class IncidentTranslator {
       translated.push(translatedEntry);
     }, concurrency);
 
-    // Handle errors during queue processing
     q.error((err, task) => {
       this.reporter.error(`Error translating incident ${task.entry.incident_id}, ${err.message}`);
       throw new Error(
