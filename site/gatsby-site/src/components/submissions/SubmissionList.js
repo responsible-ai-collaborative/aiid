@@ -224,8 +224,6 @@ const SubmissionList = ({ data }) => {
         (sr) => selectedRows[sr] === true
       );
 
-      console.log('selectedSubmissions', selectedSubmissions);
-      console.log('selectedAction', selectedAction);
       if (selectedSubmissions.length > 0) {
         if (selectedAction === 'claim') {
           if (
@@ -327,7 +325,6 @@ const SubmissionList = ({ data }) => {
             data-testid="select-all-submissions"
             checked={allSelected}
             onChange={(e) => {
-              console.log('allSelected', allSelected);
               return toggleSelectAll(e.target.checked);
             }}
           />
