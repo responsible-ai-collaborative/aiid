@@ -35,67 +35,67 @@ Once you have cloned the repository, to set up a local development environment f
 
    Create a `.env` file in the root of the `gatsby-site` directory. Add the following environment variables to the file, replacing the placeholders with your actual credentials:
 
-```env
-# Mongo database
+   ```env
+   # Mongo database
 
-API_MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
-MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
-MONGODB_REPLICA_SET= # Name of the MongoDB replica set for high availability
-MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string for the translations database
-MONGODB_MIGRATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110
+   API_MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
+   MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
+   MONGODB_REPLICA_SET= # Name of the MongoDB replica set for high availability
+   MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string for the translations database
+   MONGODB_MIGRATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110
 
-# Rollbar
+   # Rollbar
 
-ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=dummy  # Token for sending error reports to Rollbar from the server
-GATSBY_ROLLBAR_TOKEN=dummy  # Token for Rollbar error tracking in the Gatsby frontend
-
-
-# Algolia
-
-GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS  # Application ID for Algolia search integration in the Gatsby app
-GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c  # Public search key for Algolia, used in the Gatsby frontend
-ALGOLIA_ADMIN_KEY=  # Admin key for managing the Algolia index
+   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=dummy  # Token for sending error reports to Rollbar from the server
+   GATSBY_ROLLBAR_TOKEN=dummy  # Token for Rollbar error tracking in the Gatsby frontend
 
 
-# Translations
+   # Algolia
 
-GATSBY_AVAILABLE_LANGUAGES=en,es  # List of languages available for the Gatsby app (e.g., en, es, fr)
-GOOGLE_TRANSLATE_API_KEY=  # API key for accessing Google Translate services
-
-
-# Cloudflare R2 storage
-
-CLOUDFLARE_R2_ACCOUNT_ID=  # Account ID for Cloudflare R2 storage service
-CLOUDFLARE_R2_ACCESS_KEY_ID=  # Access key ID for Cloudflare R2 storage
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=  # Secret access key for Cloudflare R2 storage
-CLOUDFLARE_R2_BUCKET_NAME=  # Name of the Cloudflare R2 bucket for storage
-GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=  # Public URL for accessing the Cloudflare R2 bucket from the Gatsby app
+   GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS  # Application ID for Algolia search integration in the Gatsby app
+   GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c  # Public search key for Algolia, used in the Gatsby frontend
+   ALGOLIA_ADMIN_KEY=  # Admin key for managing the Algolia index
 
 
-# Email notifications
+   # Translations
 
-MAILERSEND_API_KEY=dummy # API key for MailerSend email service or dummy value if you don't plan to send emails
-NOTIFICATIONS_SENDER_NAME=AIID Notifications # Name of the sender for email notifications
-NOTIFICATIONS_SENDER=notifications@incidentdatabase.ai # Email address of the sender for email notifications
-
-# Prismic
-
-PRISMIC_ACCESS_TOKEN=MC5aSjFfa0JFQUFDQUFiOURr.77-977-977-977-977-977-9NgI8PU7vv70rKu-_ve-_ve-_ve-_ve-_ve-_vUlN77-9Q2fvv71O77-977-9Y--_ve-_vQ # Access token for Prismic API
-GATSBY_PRISMIC_REPO_NAME=aiidstaging # Name of the Prismic repository
+   GATSBY_AVAILABLE_LANGUAGES=en,es  # List of languages available for the Gatsby app (e.g., en, es, fr)
+   GOOGLE_TRANSLATE_API_KEY=  # API key for accessing Google Translate services
 
 
-# Auth
+   # Cloudflare R2 storage
 
-NEXTAUTH_URL=http://localhost:8000
-NEXTAUTH_SECRET=678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
+   CLOUDFLARE_R2_ACCOUNT_ID=  # Account ID for Cloudflare R2 storage service
+   CLOUDFLARE_R2_ACCESS_KEY_ID=  # Access key ID for Cloudflare R2 storage
+   CLOUDFLARE_R2_SECRET_ACCESS_KEY=  # Secret access key for Cloudflare R2 storage
+   CLOUDFLARE_R2_BUCKET_NAME=  # Name of the Cloudflare R2 bucket for storage
+   GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=  # Public URL for accessing the Cloudflare R2 bucket from the Gatsby app
 
 
-# Other
+   # Email notifications
 
-GOOGLE_MAPS_API_KEY=  # API key for accessing Google Maps services
-SITE_URL=http://localhost:8000 # URL
-SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip during build
-```
+   MAILERSEND_API_KEY=dummy # API key for MailerSend email service or dummy value if you don't plan to send emails
+   NOTIFICATIONS_SENDER_NAME=AIID Notifications # Name of the sender for email notifications
+   NOTIFICATIONS_SENDER=notifications@incidentdatabase.ai # Email address of the sender for email notifications
+
+   # Prismic
+
+   PRISMIC_ACCESS_TOKEN=MC5aSjFfa0JFQUFDQUFiOURr.77-977-977-977-977-977-9NgI8PU7vv70rKu-_ve-_ve-_ve-_ve-_ve-_vUlN77-9Q2fvv71O77-977-9Y--_ve-_vQ # Access token for Prismic API
+   GATSBY_PRISMIC_REPO_NAME=aiidstaging # Name of the Prismic repository
+
+
+   # Auth
+
+   NEXTAUTH_URL=http://localhost:8000
+   NEXTAUTH_SECRET=678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
+
+
+   # Other
+
+   GOOGLE_MAPS_API_KEY=  # API key for accessing Google Maps services
+   SITE_URL=http://localhost:8000 # URL
+   SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip during build
+   ```
 
 4. **Start a Memory MongoDB Instance**
 
@@ -190,13 +190,43 @@ Running this command is only necessary after making changes to the GraphQL schem
 
 ## Additional Configuration
 
+### Using Magic Links for Local Authentication
+
+During local development, you can use the magic links utility script to simulate the authentication flow without setting up email services. This is particularly useful for testing and debugging authentication features.
+
+The script generates magic login links that would normally be sent via email.
+
+Usage:
+
+```bash
+npm run magic-link <email> [callbackUrl] 
+```
+
+Examples:
+
+```
+# Generate a magic link that redirects to homepage after login
+npm run magic-link user@example.com /
+
+# Generate a magic link that redirects to incidents page
+npm run magic-link user@example.com /apps/discover
+
+# Generate a magic link for admin testing
+npm run magic-link admin@example.com /admin/dashboard
+```
+
+### Faster Development Builds
+
 When building the site, some steps can take a while to run. This can be inconvenient when you are working on a feature unrelated to the steps taking the most time in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/main/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
+
+Example:
 
 ```bash
 SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitiationPages npm run start
 ```
 
 In general, skipping the TSNE visualization has the most significant reduction in build time.
+
 
 ### Restoring Production database to Staging
 
