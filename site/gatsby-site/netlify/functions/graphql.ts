@@ -5,6 +5,7 @@ import config from '../../server/config';
 import { MongoClient } from 'mongodb';
 import { startServerAndCreateLambdaHandler, handlers } from '@as-integrations/aws-lambda';
 import cookie from 'cookie';
+import { wrapHandler } from '../../sentry-instrumentation';
 
 const server = new ApolloServer({
     schema,
@@ -12,7 +13,7 @@ const server = new ApolloServer({
 
 const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
-export const handler = startServerAndCreateLambdaHandler(
+const handler = startServerAndCreateLambdaHandler(
     server,
     handlers.createAPIGatewayProxyEventV2RequestHandler(),
     {
@@ -40,3 +41,5 @@ export const handler = startServerAndCreateLambdaHandler(
         ],
     }
 );
+
+module.exports = { handler: wrapHandler(handler) };

@@ -1,4 +1,4 @@
-import { handler } from '../../netlify/functions/auth';
+const { handler } = require('../../netlify/functions/auth');
 import { HandlerEvent, HandlerContext } from '@netlify/functions'
 import * as emails from '../emails';
 import { getCollection, seedFixture } from './utils';

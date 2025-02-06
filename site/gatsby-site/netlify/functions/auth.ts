@@ -2,8 +2,9 @@ import NextAuth from "next-auth";
 import { getAuthConfig } from "../../nextauth.config";
 import { createResponse, recreateRequest } from '../../src/utils/serverless'
 import { Handler } from '@netlify/functions'
+import { wrapHandler } from "../../sentry-instrumentation";
 
-export const handler: Handler = async (event) => {
+const handler: Handler = async (event) => {
 
     const req = recreateRequest(event);
     const res = createResponse();
@@ -39,3 +40,5 @@ export const handler: Handler = async (event) => {
         }
     }
 }
+
+module.exports = { handler: wrapHandler(handler) };

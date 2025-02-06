@@ -1,6 +1,8 @@
+import { wrapHandler } from "../../sentry-instrumentation";
+
 const axios = require('axios');
 
-exports.handler = async function (event) {
+const handler = async function (event) {
   const { text, max_retries, num, includeSimilar = true } = JSON.parse(event.body);
 
   // Example result
@@ -92,3 +94,5 @@ exports.handler = async function (event) {
     body: JSON.stringify({ error: error?.message || 'Unknown error occurred' }),
   };
 };
+
+module.exports = { handler: wrapHandler(handler) };
