@@ -224,6 +224,8 @@ const SubmissionList = ({ data }) => {
         (sr) => selectedRows[sr] === true
       );
 
+      console.log('selectedSubmissions', selectedSubmissions);
+      console.log('selectedAction', selectedAction);
       if (selectedSubmissions.length > 0) {
         if (selectedAction === 'claim') {
           if (
@@ -240,6 +242,16 @@ const SubmissionList = ({ data }) => {
           const promises = selectedSubmissions.map((submissionId) => claimSubmission(submissionId));
 
           await Promise.all(promises);
+
+          addToast({
+            message: t(
+              `Successfully claimed {{count}} submission${
+                selectedSubmissions.length === 1 ? '' : 's'
+              }`,
+              { count: selectedSubmissions.length }
+            ),
+            severity: SEVERITY.success,
+          });
         } else if (selectedAction === 'unclaim') {
           if (
             !confirm(
@@ -256,6 +268,16 @@ const SubmissionList = ({ data }) => {
           );
 
           await Promise.all(promises);
+
+          addToast({
+            message: t(
+              `Successfully unclaimed {{count}} submission${
+                selectedSubmissions.length === 1 ? '' : 's'
+              }`,
+              { count: selectedSubmissions.length }
+            ),
+            severity: SEVERITY.success,
+          });
         } else if (selectedAction === 'reject') {
           if (
             !confirm(
@@ -272,6 +294,16 @@ const SubmissionList = ({ data }) => {
           );
 
           await Promise.all(promises);
+
+          addToast({
+            message: t(
+              `Successfully rejected {{count}} submission${
+                selectedSubmissions.length === 1 ? '' : 's'
+              }`,
+              { count: selectedSubmissions.length }
+            ),
+            severity: SEVERITY.success,
+          });
         }
         setPerformingAction(false);
         setSelectedRows({});
@@ -291,7 +323,14 @@ const SubmissionList = ({ data }) => {
     if (isRole('incident_editor')) {
       columns.push({
         title: (
-          <Checkbox checked={allSelected} onChange={(e) => toggleSelectAll(e.target.checked)} />
+          <Checkbox
+            data-testid="select-all-submissions"
+            checked={allSelected}
+            onChange={(e) => {
+              console.log('allSelected', allSelected);
+              return toggleSelectAll(e.target.checked);
+            }}
+          />
         ),
         accessor: 'select',
         className: 'min-w-[50px]',
@@ -304,6 +343,7 @@ const SubmissionList = ({ data }) => {
             <Checkbox
               checked={selectedRows[row.original._id] || false}
               onChange={() => toggleRowSelection(row.original._id)}
+              data-testid={`select-submission-${row.original._id}`}
             />
           );
         },
@@ -681,6 +721,7 @@ const SubmissionList = ({ data }) => {
               className="w-40"
               placeholder={t('Bulk Actions')}
               onChange={(e) => setSelectedAction(e.target.value)}
+              data-testid="bulk-action-select"
             >
               <option value="claim">{t('Claim')}</option>
               <option value="unclaim">{t('Unclaim')}</option>
@@ -691,6 +732,7 @@ const SubmissionList = ({ data }) => {
               onClick={() => {
                 bulkActions();
               }}
+              data-testid="bulk-action-button"
             >
               {t('Apply')}
             </Button>

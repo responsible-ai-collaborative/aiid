@@ -53,5 +53,11 @@
     "Actions": "アクション",
     "There was an error updating this submission. Please try again.": "この投稿の更新中にエラーが発生しました。もう一度お試しください。",
     "Bulk Actions": "一括操作",
-    "Apply": "適用"
+    "Apply": "適用",
+    "Successfully claimed {{count}} submission": "{{count}} 投稿を成功裡に再投稿しました",
+    "Successfully unclaimed {{count}} submission": "{{count}} 投稿を成功裡に担当を外しました",
+    "Successfully rejected {{count}} submission": "{{count}} 投稿を成功裡に却下しました",
+    "Successfully claimed {{count}} submissions": "{{count}} 投稿を成功裡に再投稿しました",
+    "Successfully unclaimed {{count}} submissions": "{{count}} 投稿を成功裡に担当を外しました",
+    "Successfully rejected {{count}} submissions": "{{count}} 投稿を成功裡に却下しました"
 }

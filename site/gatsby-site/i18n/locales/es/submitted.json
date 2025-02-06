@@ -53,6 +53,12 @@
     "Actions": "Acciones",
     "There was an error updating this submission. Please try again.": "Hubo un error al actualizar este envío. Por favor, inténtelo de nuevo.",
     "Bulk Actions": "Acciones en masa",
-    "Apply": "Aplicar"
+    "Apply": "Aplicar",
+    "Successfully claimed {{count}} submissions": "{{count}} envíos reclamados exitosamente ",
+    "Successfully unclaimed {{count}} submissions": "{{count}} envíos desasignados exitosamente",
+    "Successfully rejected {{count}} submissions": "{{count}} envíos rechazados exitosamente",
+    "Successfully claimed {{count}} submission": "{{count}} envío reclamado exitosamente ",
+    "Successfully unclaimed {{count}} submission": "{{count}} envío desasignado exitosamente",
+    "Successfully rejected {{count}} submission": "{{count}} envío rechazado exitosamente"
     
 }

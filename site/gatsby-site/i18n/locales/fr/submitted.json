@@ -53,5 +53,12 @@
     "Actions": "Actions",
     "There was an error updating this submission. Please try again.": "Une erreur s'est produite lors de la mise à jour de cette soumission. Veuillez réessayer.",
     "Bulk Actions": "Actions groupées",
-    "Apply": "Appliquer"
+    "Apply": "Appliquer",
+    "Successfully claimed {{count}} submission": "{{count}} soumission réclamée avec succès",
+    "Successfully unclaimed {{count}} submission": "{{count}} soumission désassignée avec succès",
+    "Successfully rejected {{count}} submission": "{{count}} soumission rejetée avec succès",
+    "Successfully claimed {{count}} submissions": "{{count}} soumissions réclamées avec succès",
+    "Successfully unclaimed {{count}} submissions": "{{count}} soumissions désassignées avec succès",
+    "Successfully rejected {{count}} submissions": "{{count}} soumissions rejetées avec succès"
+
 }
