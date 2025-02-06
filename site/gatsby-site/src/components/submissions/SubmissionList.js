@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, Select } from 'flowbite-react';
+import { Badge, Button, Checkbox, Select, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,
@@ -18,11 +18,11 @@ import Table, {
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
 import { useMutation } from '@apollo/client';
-import { UPDATE_SUBMISSION } from '../../graphql/submissions';
+import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const SubmissionList = ({ data }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('submitted');
 
   const { loading, isRole, user } = useUserContext();
 
@@ -34,7 +34,46 @@ const SubmissionList = ({ data }) => {
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
+  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
+    update: (cache, { data }) => {
+      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
+      cache.evict({
+        id: cache.identify({
+          __typename: data.deleteOneSubmission.__typename,
+          id: data.deleteOneSubmission._id,
+        }),
+      });
+    },
+  });
+
   const addToast = useToastContext();
+
+  const [selectedRows, setSelectedRows] = useState({});
+
+  // Function to toggle individual row selection
+  const toggleRowSelection = (id) => {
+    setSelectedRows((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  // Function to toggle "Select All"
+  const toggleSelectAll = (isChecked) => {
+    const newSelection = {};
+
+    if (isChecked) {
+      tableData.forEach((item) => {
+        newSelection[item._id] = true;
+      });
+    }
+    setSelectedRows(newSelection);
+  };
+
+  // Function to check if all rows are selected
+  const allSelected =
+    Object.values(selectedRows).filter((sr) => sr === true).length === tableData.length &&
+    tableData.length > 0;
 
   useEffect(() => {
     if (data) {
@@ -175,8 +214,139 @@ const SubmissionList = ({ data }) => {
     );
   }
 
+  const [selectedAction, setSelectedAction] = useState('claim');
+
+  const [performingAction, setPerformingAction] = useState(false);
+
+  const bulkActions = async () => {
+    try {
+      const selectedSubmissions = Object.keys(selectedRows).filter(
+        (sr) => selectedRows[sr] === true
+      );
+
+      if (selectedSubmissions.length > 0) {
+        if (selectedAction === 'claim') {
+          if (
+            !confirm(
+              t(
+                'Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.'
+              )
+            )
+          ) {
+            return;
+          }
+
+          setPerformingAction(true);
+          const promises = selectedSubmissions.map((submissionId) => claimSubmission(submissionId));
+
+          await Promise.all(promises);
+
+          addToast({
+            message: t(
+              `Successfully claimed {{count}} submission${
+                selectedSubmissions.length === 1 ? '' : 's'
+              }`,
+              { count: selectedSubmissions.length }
+            ),
+            severity: SEVERITY.success,
+          });
+        } else if (selectedAction === 'unclaim') {
+          if (
+            !confirm(
+              t(
+                'Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.'
+              )
+            )
+          ) {
+            return;
+          }
+          setPerformingAction(true);
+          const promises = selectedSubmissions.map((submissionId) =>
+            unclaimSubmission(submissionId)
+          );
+
+          await Promise.all(promises);
+
+          addToast({
+            message: t(
+              `Successfully unclaimed {{count}} submission${
+                selectedSubmissions.length === 1 ? '' : 's'
+              }`,
+              { count: selectedSubmissions.length }
+            ),
+            severity: SEVERITY.success,
+          });
+        } else if (selectedAction === 'reject') {
+          if (
+            !confirm(
+              t(
+                'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+              )
+            )
+          ) {
+            return;
+          }
+          setPerformingAction(true);
+          const promises = selectedSubmissions.map((submissionId) =>
+            deleteSubmission({ variables: { _id: submissionId } })
+          );
+
+          await Promise.all(promises);
+
+          addToast({
+            message: t(
+              `Successfully rejected {{count}} submission${
+                selectedSubmissions.length === 1 ? '' : 's'
+              }`,
+              { count: selectedSubmissions.length }
+            ),
+            severity: SEVERITY.success,
+          });
+        }
+        setPerformingAction(false);
+        setSelectedRows({});
+      }
+    } catch (error) {
+      setPerformingAction(false);
+      addToast({
+        message: t(`There was an error performing this action. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+    }
+  };
+
   const columns = React.useMemo(() => {
-    const columns = [
+    let columns = [];
+
+    if (isRole('incident_editor')) {
+      columns.push({
+        title: (
+          <Checkbox
+            data-testid="select-all-submissions"
+            checked={allSelected}
+            onChange={(e) => {
+              return toggleSelectAll(e.target.checked);
+            }}
+          />
+        ),
+        accessor: 'select',
+        className: 'min-w-[50px]',
+        width: 50,
+        disableFilters: true,
+        disableSortBy: true,
+        disableResizing: true,
+        Cell: ({ row }) => {
+          return (
+            <Checkbox
+              checked={selectedRows[row.original._id] || false}
+              onChange={() => toggleRowSelection(row.original._id)}
+              data-testid={`select-submission-${row.original._id}`}
+            />
+          );
+        },
+      });
+    }
+    columns = columns.concat([
       {
         className: 'min-w-[300px]',
         title: t('Title'),
@@ -346,7 +516,7 @@ const SubmissionList = ({ data }) => {
           );
         },
       },
-    ];
+    ]);
 
     if (isRole('incident_editor')) {
       columns.push({
@@ -415,7 +585,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [loading, user, claiming, reviewing, dateFilter]);
+  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
 
   const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
 
@@ -534,7 +704,38 @@ const SubmissionList = ({ data }) => {
   };
 
   return (
-    <div className="">
+    <div className="relative">
+      {performingAction && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-400 opacity-20">
+          <Spinner size="xl" />
+        </div>
+      )}
+      {/* Actions */}
+      {selectedRows && Object.values(selectedRows).filter((sr) => sr === true).length > 0 && (
+        <div className="flex justify-between items-center mb-5">
+          <div className="flex gap-2">
+            <Select
+              className="w-40"
+              placeholder={t('Bulk Actions')}
+              onChange={(e) => setSelectedAction(e.target.value)}
+              data-testid="bulk-action-select"
+            >
+              <option value="claim">{t('Claim')}</option>
+              <option value="unclaim">{t('Unclaim')}</option>
+              <option value="reject">{t('Reject')}</option>
+            </Select>
+            <Button
+              color="gray"
+              onClick={() => {
+                bulkActions();
+              }}
+              data-testid="bulk-action-button"
+            >
+              {t('Apply')}
+            </Button>
+          </div>
+        </div>
+      )}
       <Table
         table={table}
         data-cy="submissions"
