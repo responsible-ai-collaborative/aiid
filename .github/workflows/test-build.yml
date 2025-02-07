@@ -109,6 +109,9 @@ jobs:
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+          MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
 
       - name: Cache build
         uses: actions/cache/save@v4
