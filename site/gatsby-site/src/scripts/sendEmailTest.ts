@@ -1,7 +1,7 @@
 import { sendBulkEmails } from '../../server/emails';
 
 // from site/gatsby-site, run with
-// TEST_EMAIL_TO_ADDRESS=<address> dotenv run <path to>/npx ts-node src/scripts/sendEmailTest.js
+// TEST_EMAIL_TO_ADDRESS=<email> npx tsx --env-file=.env src/scripts/sendEmailTest.ts
 
 const email = process.env.TEST_EMAIL_TO_ADDRESS;
 
