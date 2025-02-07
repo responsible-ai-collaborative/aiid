@@ -129,7 +129,7 @@
   "main": "n/a",
   "scripts": {
     "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
-    "build": "netlify build --offline --context=${npm_config_context:-branch-deploy}",
+    "build": "npm run codegen && netlify build --offline --context=${npm_config_context:-branch-deploy}",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
