@@ -129,7 +129,7 @@
   "main": "n/a",
   "scripts": {
     "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
-    "build": "netlify build --offline --context=${npm_config_context:-branch-deploy}",
+    "build": "npm run codegen && netlify build --offline --context=${npm_config_context:-branch-deploy}",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
@@ -138,7 +138,6 @@
     "test:api": "jest --setupFiles dotenv/config --runInBand --forceExit",
     "test:api:ci": "jest --runInBand --forceExit",
     "codegen": "graphql-codegen --config codegen.ts",
-    "start:api": "node --env-file=.env --watch -r ts-node/register server/index.ts",
     "start:memory-mongo": "npx tsx --env-file=.env playwright/memory-mongo.ts",
     "start:memory-mongo:ci": "npx tsx playwright/memory-mongo.ts",
     "clean": "gatsby clean",
@@ -186,7 +185,7 @@
     "supertest": "^6.3.4",
     "tailwindcss": "^3.3.2",
     "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "browser": {
