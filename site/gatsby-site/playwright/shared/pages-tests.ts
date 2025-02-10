@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { switchLocalizedPath } from '../../i18n/';
+import { switchLocalizedPath } from '../../i18n';
 import config from '../../config';
 import isString from 'lodash/isString';
 import { test } from '../utils';
