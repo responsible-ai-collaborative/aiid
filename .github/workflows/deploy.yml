@@ -133,8 +133,8 @@ jobs:
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
+          NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
+          MAILERSEND_API_KEY: dummy 
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
 
