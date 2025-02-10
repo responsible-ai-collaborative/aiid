@@ -48,32 +48,32 @@ const SubmissionList = ({ data }) => {
 
   const addToast = useToastContext();
 
-  const [selectedRows, setSelectedRows] = useState({});
+  const [selectedRows, setSelectedRows] = useState([]);
 
   // Function to toggle individual row selection
   const toggleRowSelection = (id) => {
-    setSelectedRows((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setSelectedRows((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+      return [...prev, id];
+    });
   };
 
   // Function to toggle "Select All"
   const toggleSelectAll = (isChecked) => {
-    const newSelection = {};
+    const newSelection = [];
 
     if (isChecked) {
       tableData.forEach((item) => {
-        newSelection[item._id] = true;
+        newSelection.push(item._id);
       });
     }
     setSelectedRows(newSelection);
   };
 
   // Function to check if all rows are selected
-  const allSelected =
-    Object.values(selectedRows).filter((sr) => sr === true).length === tableData.length &&
-    tableData.length > 0;
+  const allSelected = selectedRows.length === tableData.length && tableData.length > 0;
 
   useEffect(() => {
     if (data) {
@@ -220,94 +220,77 @@ const SubmissionList = ({ data }) => {
 
   const bulkActions = async () => {
     try {
-      const selectedSubmissions = Object.keys(selectedRows).filter(
-        (sr) => selectedRows[sr] === true
-      );
-
-      if (selectedSubmissions.length > 0) {
-        if (selectedAction === 'claim') {
-          if (
-            !confirm(
-              t(
-                'Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.'
-              )
-            )
-          ) {
-            return;
-          }
-
-          setPerformingAction(true);
-          const promises = selectedSubmissions.map((submissionId) => claimSubmission(submissionId));
-
-          await Promise.all(promises);
-
-          addToast({
-            message: t(
-              `Successfully claimed {{count}} submission${
-                selectedSubmissions.length === 1 ? '' : 's'
-              }`,
-              { count: selectedSubmissions.length }
-            ),
-            severity: SEVERITY.success,
-          });
-        } else if (selectedAction === 'unclaim') {
-          if (
-            !confirm(
-              t(
-                'Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.'
-              )
-            )
-          ) {
-            return;
-          }
-          setPerformingAction(true);
-          const promises = selectedSubmissions.map((submissionId) =>
-            unclaimSubmission(submissionId)
-          );
-
-          await Promise.all(promises);
-
-          addToast({
-            message: t(
-              `Successfully unclaimed {{count}} submission${
-                selectedSubmissions.length === 1 ? '' : 's'
-              }`,
-              { count: selectedSubmissions.length }
-            ),
-            severity: SEVERITY.success,
-          });
-        } else if (selectedAction === 'reject') {
-          if (
-            !confirm(
-              t(
-                'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
-              )
-            )
-          ) {
-            return;
-          }
-          setPerformingAction(true);
-          const promises = selectedSubmissions.map((submissionId) =>
-            deleteSubmission({ variables: { _id: submissionId } })
-          );
-
-          await Promise.all(promises);
-
-          addToast({
-            message: t(
-              `Successfully rejected {{count}} submission${
-                selectedSubmissions.length === 1 ? '' : 's'
-              }`,
-              { count: selectedSubmissions.length }
-            ),
-            severity: SEVERITY.success,
-          });
-        }
-        setPerformingAction(false);
-        setSelectedRows({});
+      if (selectedRows.length > 0) {
+        await bulkAction(selectedAction);
       }
     } catch (error) {
+      addToast({
+        message: t(`There was an error performing this action. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+    } finally {
       setPerformingAction(false);
+      setSelectedRows([]);
+    }
+  };
+
+  const bulkAction = async (selectedAction) => {
+    const actions = {
+      claim: {
+        confirmMessage: t(
+          'Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.'
+        ),
+        execute: (submissionId) => claimSubmission(submissionId),
+        successMessage: t(
+          `Successfully claimed {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+      unclaim: {
+        confirmMessage: t(
+          'Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.'
+        ),
+        execute: (submissionId) => unclaimSubmission(submissionId),
+        successMessage: t(
+          `Successfully unclaimed {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+      reject: {
+        confirmMessage: t(
+          'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+        ),
+        execute: (submissionId) => deleteSubmission({ variables: { _id: submissionId } }),
+        successMessage: t(
+          `Successfully rejected {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+    };
+
+    const actionConfig = actions[selectedAction];
+
+    if (actionConfig) {
+      await executeBulkAction(actionConfig);
+    }
+  };
+
+  const executeBulkAction = async ({ confirmMessage, execute, successMessage }) => {
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setPerformingAction(true);
+    try {
+      const promises = selectedRows.map((submissionId) => execute(submissionId));
+
+      await Promise.all(promises);
+
+      addToast({
+        message: successMessage,
+        severity: SEVERITY.success,
+      });
+    } catch (error) {
       addToast({
         message: t(`There was an error performing this action. Please try again.`),
         severity: SEVERITY.danger,
@@ -338,7 +321,7 @@ const SubmissionList = ({ data }) => {
         Cell: ({ row }) => {
           return (
             <Checkbox
-              checked={selectedRows[row.original._id] || false}
+              checked={selectedRows.includes(row.original._id)}
               onChange={() => toggleRowSelection(row.original._id)}
               data-testid={`select-submission-${row.original._id}`}
             />
@@ -346,7 +329,7 @@ const SubmissionList = ({ data }) => {
         },
       });
     }
-    columns = columns.concat([
+    columns.push(
       {
         className: 'min-w-[300px]',
         title: t('Title'),
@@ -515,8 +498,8 @@ const SubmissionList = ({ data }) => {
             </div>
           );
         },
-      },
-    ]);
+      }
+    );
 
     if (isRole('incident_editor')) {
       columns.push({
@@ -711,7 +694,7 @@ const SubmissionList = ({ data }) => {
         </div>
       )}
       {/* Actions */}
-      {selectedRows && Object.values(selectedRows).filter((sr) => sr === true).length > 0 && (
+      {selectedRows && selectedRows.length > 0 && (
         <div className="flex justify-between items-center mb-5">
           <div className="flex gap-2">
             <Select
