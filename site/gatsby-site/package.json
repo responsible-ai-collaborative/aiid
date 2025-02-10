@@ -25,6 +25,7 @@
     "@graphql-tools/utils": "^10.1.2",
     "@graphql-tools/wrap": "^10.0.5",
     "@mdx-js/react": "^2.3.0",
+    "@netlify/functions": "^3.0.0",
     "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
     "@sentry/aws-serverless": "^8.54.0",

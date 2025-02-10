@@ -1,10 +1,10 @@
 import NextAuth from "next-auth";
 import { getAuthConfig } from "../../nextauth.config";
 import { createResponse, recreateRequest } from '../../src/utils/serverless'
-import { Handler } from '@netlify/functions'
+import { HandlerEvent, Handler } from '@netlify/functions'
 import { wrapHandler } from "../../sentry-instrumentation";
 
-const handler: Handler = async (event) => {
+const handler: Handler = async (event: HandlerEvent) => {
 
     const req = recreateRequest(event);
     const res = createResponse();
