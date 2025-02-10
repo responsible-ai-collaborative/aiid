@@ -1,5 +1,5 @@
 import * as  Sentry from '@sentry/aws-serverless'
-import type { Context, HandlerEvent } from "@netlify/functions";
+import type { Context, Handler, HandlerContext, HandlerEvent, HandlerResponse } from "@netlify/functions";
 import cookie from 'cookie';
 
 const environment = process.env.SENTRY_ENVIRONMENT || 'development';
@@ -15,7 +15,11 @@ if (process.env.SENTRY_DSN) {
     });
 }
 
-export const wrapHandler = (handler: HandlerEvent): HandlerEvent => {
+interface ExtendedHandlerEvent extends HandlerEvent {
+    [key: string]: unknown;
+}
+
+export const wrapHandler = (handler: Handler): Handler => {
 
     if (!process.env.SENTRY_DSN) {
         return handler;
@@ -23,24 +27,27 @@ export const wrapHandler = (handler: HandlerEvent): HandlerEvent => {
 
     const sentryWrappedHandler = Sentry.wrapHandler(handler);
 
-    return async (event: HandlerEvent, context: Context) => {
+    return async (event: HandlerEvent, context: HandlerContext): Promise<HandlerResponse> => {
 
-        if (!event.requestContext) {
-            event.requestContext = { http: { method: event.httpMethod } };
+        const extendedEvent = event as ExtendedHandlerEvent;
+
+        if (!extendedEvent.requestContext) {
+            extendedEvent.requestContext = { http: { method: event.httpMethod } };
         }
 
-        if (!event.rawQuery) {
-            event.rawQueryString = event.rawQuery;
+        if (!extendedEvent.rawQuery) {
+            extendedEvent.rawQueryString = event.rawQuery;
         }
 
-        if (!event.method) {
-            event.method = event.httpMethod;
+        if (!extendedEvent.method) {
+            extendedEvent.method = event.httpMethod;
         }
 
-        if (!event.cookies) {
-            event.cookies = cookie.parse(event.headers.cookie || '');
+        if (!extendedEvent.cookies) {
+            extendedEvent.cookies = cookie.parse(event.headers.cookie || '');
         }
 
-        return sentryWrappedHandler(event, context);
+        // @ts-ignore
+        return sentryWrappedHandler(extendedEvent, context)!;
     };
 };

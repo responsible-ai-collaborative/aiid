@@ -6,6 +6,7 @@ import { MongoClient } from 'mongodb';
 import { startServerAndCreateLambdaHandler, handlers } from '@as-integrations/aws-lambda';
 import cookie from 'cookie';
 import { wrapHandler } from '../../sentry-instrumentation';
+import { Handler } from '@netlify/functions';
 
 const server = new ApolloServer({
     schema,
@@ -18,4 +19,5 @@ const handler = startServerAndCreateLambdaHandler(
     handlers.createAPIGatewayProxyEventV2RequestHandler(), { context: ({ event }) => context({ req: event as any, client }) }
 );
 
+// @ts-ignore
 module.exports = { handler: wrapHandler(handler) };
