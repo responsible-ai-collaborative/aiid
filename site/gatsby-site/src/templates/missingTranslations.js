@@ -7,8 +7,33 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons';
 
 const bgByLocale = { es: 'bg-yellow-100', fr: 'bg-blue-100', ja: 'bg-green-100', en: 'bg-red-100' };
 
+const normalize = (transString) => {
+  return transString
+    .replace(/{{\s\s*/g, '{{')
+    .replace(/\s\s*}}/g, '}}')
+    .replace(/<\d>/g, '<d>')
+    .replace(/<\/\d>/g, '<\/d>')
+    .replace(/\s\s*/g, ' ')
+}
+
 export default function MissingTranslations({ pageContext }) {
-  const { translationEntries, allLocales } = pageContext;
+
+  const { translationEntries, allLocales, scannerEntries } = pageContext;
+
+  console.log(`scannerEntries`, scannerEntries);
+
+  for (const entry of translationEntries) {
+    entry.normalizedKey = normalize(entry.key);
+  }
+
+  for (const entry of scannerEntries) {
+    if (entry.key) {
+      entry.normalizedKey = normalize(entry.key);
+    } else {
+      entry.normalizedKey = normalize(entry.defaultValue);
+    }
+  }
+
 
   const nonEnglishLocales = new FunctionalSet(pageContext.allLocales).filter(
     (locale) => locale != 'en'
@@ -19,6 +44,16 @@ export default function MissingTranslations({ pageContext }) {
 
   // e.g. { Hello: { fr: { "translation.json": "Bonjour" } } }
   const klft = recursiveMap(translationEntries, ['key', 'locale', 'file', 'translation'], true);
+
+  const noMatches = scannerEntries.filter(e => (
+      e.normalizedKey && 
+      klft[e.key] == undefined &&
+      klft[e.defaultValue] == undefined &&
+      !translationEntries.some(translationEntry => normalize(translationEntry.key) == e.normalizedKey)
+    )
+  );
+
+  console.log(`noMatches`, noMatches);
 
   const allKeys = getKeys(klft);
 
@@ -49,6 +84,14 @@ export default function MissingTranslations({ pageContext }) {
       }
     }
   }
+
+//  for (const scannerEntry of noMatches) {
+//    const key = scannerEntry.key || scannerEntry.defaultValue 
+//    for (const locale of nonEnglishLocales) {
+//      localeSlashFileToMissingKeysMap[locale + '/translation.json'] ||= new FunctionalSet();
+//      localeSlashFileToMissingKeysMap[locale + '/translation.json'].add(key);
+//    }
+//  }
 
   const keysWithFileDiscrepancies = allKeys.filter((key) => {
     // e.g. [ 'es', 'fr', 'jp']
@@ -228,6 +271,21 @@ export default function MissingTranslations({ pageContext }) {
             )}
         </table>
       ))}
+
+      <h2>Keys not translated anywhere</h2>
+      <table>
+        {noMatches.map((scannerEntry) => (
+          <tr>
+            <td className="p-2 border-1">
+              {scannerEntry.file}
+            </td>
+            <td className="p-2 border-1">
+              <Copyable text={scannerEntry.key || scannerEntry.defaultValue}></Copyable>
+            </td>
+          </tr>
+        ))}
+      </table>
+
     </div>
   );
 }
