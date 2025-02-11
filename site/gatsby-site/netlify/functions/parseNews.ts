@@ -1,7 +1,7 @@
+import { wrapHandler } from "../../sentry-instrumentation";
 import Parser from '@postlight/parser';
 import { format, parseISO } from 'date-fns';
 import axios from 'axios';
-import { wrapHandler } from "../../sentry-instrumentation";
 
 const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
 

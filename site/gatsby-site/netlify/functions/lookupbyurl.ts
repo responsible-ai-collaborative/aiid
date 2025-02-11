@@ -1,9 +1,8 @@
-import Rollbar from 'rollbar';
+import { wrapHandler } from '../../sentry-instrumentation';
 import siteConfig from '../../config';
 import OpenAPIRequestValidator from 'openapi-request-validator';
 import spec from '../../static/spec.json';
 import normalizeRequest from '../../src/utils/normalizeRequest';
-import { wrapHandler } from '../../sentry-instrumentation';
 
 const requestValidator = new OpenAPIRequestValidator({
   parameters: spec.paths['/api/lookupbyurl'].get.parameters,

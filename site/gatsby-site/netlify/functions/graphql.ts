@@ -1,10 +1,10 @@
+import { wrapHandler } from '../../sentry-instrumentation';
 import { schema } from '../../server/schema';
 import { context } from '../../server/context';
 import { ApolloServer } from '@apollo/server';
 import config from '../../server/config';
 import { MongoClient } from 'mongodb';
 import { startServerAndCreateLambdaHandler, handlers } from '@as-integrations/aws-lambda';
-import { wrapHandler } from '../../sentry-instrumentation';
 import { netlifyEventToLambdaEvent } from '../../src/utils/serverless';
 
 const server = new ApolloServer({
