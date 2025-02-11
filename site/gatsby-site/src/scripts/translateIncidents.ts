@@ -1,5 +1,4 @@
 import config from '../../config';
-import * as reporter from '../../server/reporter';
 import { MongoClient } from 'mongodb';
 import { Translate } from '@google-cloud/translate/build/src/v2';
 import IncidentTranslator from './incidentTranslator';
@@ -54,7 +53,6 @@ export const run = async () => {
     process.exit(0);
   } catch (error: any) {
     console.error(error);
-    reporter.error(error);
     process.exit(1);
   }
 };
