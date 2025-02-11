@@ -13,7 +13,7 @@ import {
 } from 'utils/variants';
 import { sortIncidentsByDatePublished } from 'utils/cite';
 import VariantForm, { schema } from 'components/variants/VariantForm';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import VariantEditModal from './VariantEditModal';
 import { Formik } from 'formik';
 import { useLazyQuery, useMutation } from '@apollo/client';

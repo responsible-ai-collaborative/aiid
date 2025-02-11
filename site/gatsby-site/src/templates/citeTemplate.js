@@ -7,7 +7,7 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
 import ReportCard from '../components/reports/ReportCard';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
 import Card from '../elements/Card';
 import Container from '../elements/Container';

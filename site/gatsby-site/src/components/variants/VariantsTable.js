@@ -1,4 +1,4 @@
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
 import { getUnixTime } from 'date-fns';
@@ -24,7 +24,7 @@ import { Button } from 'flowbite-react';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 export default function VariantsTable({ data, refetch, setLoading }) {
-  const { isLoggedIn, isRole } = useUserContext();
+  const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation(['variants']);
 
@@ -266,7 +266,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [loading]);
 
   const table = useTable(
     {

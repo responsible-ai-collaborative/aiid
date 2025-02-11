@@ -5,3 +5,4 @@
 /api/parseNews /.netlify/functions/parseNews 200
 /api/semanticallyRelated /.netlify/functions/semanticallyRelated 200
 /api/lookupbyurl /.netlify/functions/lookupbyurl 200
+/api/auth/* /.netlify/functions/auth 200

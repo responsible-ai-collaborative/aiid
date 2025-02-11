@@ -21,7 +21,7 @@ import EditableLabel from 'components/checklists/EditableLabel';
 import ExportDropdown from 'components/checklists/ExportDropdown';
 import RiskSections from 'components/checklists/RiskSections';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { useUserContext } from '../../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 export default function CheckListForm({
   values,
@@ -35,7 +35,7 @@ export default function CheckListForm({
 }) {
   const { user } = useUserContext();
 
-  const userIsOwner = values.owner_id == user.id;
+  const userIsOwner = values.owner_id == user?.id;
 
   const owner = users.find((u) => u.userId == values.owner_id);
 
