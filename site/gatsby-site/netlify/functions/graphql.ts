@@ -1,4 +1,4 @@
-import { wrapHandler } from '../../sentry-instrumentation';
+import { withSentry, wrapHandler } from '../../sentry-instrumentation';
 import { schema } from '../../server/schema';
 import { context } from '../../server/context';
 import { ApolloServer } from '@apollo/server';
@@ -26,4 +26,4 @@ const handler = startServerAndCreateLambdaHandler(
 });
 
 // @ts-ignore
-module.exports = { handler: wrapHandler(handler) };
+module.exports = { handler: withSentry(handler) };
