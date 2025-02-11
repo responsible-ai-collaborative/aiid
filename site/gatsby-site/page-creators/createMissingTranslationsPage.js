@@ -8,25 +8,23 @@ const readFile = util.promisify(fs.readFile);
 
 const readdir = util.promisify(fs.readdir);
 
-const vfs = require('vinyl-fs');
-
 const Parser = require('i18next-scanner').Parser;
 
 const createMissingTranslationsPage = async (graphql, createPage) => {
-
+  // Find translation keys with i18next-scanner
   const parser = new Parser();
 
   const files = await readdir('src', { recursive: true });
 
-  const jsFiles = [...files].filter(f => f.endsWith('.js'));
+  const jsFiles = [...files].filter((f) => f.endsWith('.js'));
 
   const scannerEntries = [];
 
   for (const file of jsFiles) {
     try {
       const handler = (key, { defaultValue, fallbackKey, ns }) => {
-        scannerEntries.push({key, defaultValue, fallbackKey, ns, file})
-      }
+        scannerEntries.push({ key, defaultValue, fallbackKey, ns, file });
+      };
 
       const content = fs.readFileSync('src' + path.sep + file, 'utf-8');
 
@@ -35,16 +33,12 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
 
       // Parse Trans component
       parser.parseTransFromString(content, handler); // use default options and handler
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
 
-
-
-
-
-
+  // Find the translations in our localization files
   let allLocales = [];
 
   const locales = await readdir('./i18n/locales/');

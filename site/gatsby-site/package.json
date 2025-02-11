@@ -70,6 +70,7 @@
     "graphql-tag": "^2.12.6",
     "graphql-to-mongodb": "^1.6.5",
     "i18next": "^20.6.1",
+    "i18next-scanner": "^4.6.0",
     "is-absolute-url": "^3.0.3",
     "json-bigint-patch": "^0.0.8",
     "json-diff-ts": "^1.2.6",
