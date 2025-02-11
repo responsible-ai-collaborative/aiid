@@ -16,12 +16,13 @@ const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 const handler = startServerAndCreateLambdaHandler(
     server,
     handlers.createAPIGatewayProxyEventV2RequestHandler(), {
-    context: ({ event }) => {
-
-        const extendedEvent = netlifyEventToLambdaEvent(event as any);
-
-        return context({ req: extendedEvent as any, client })
-    }
+    context: ({ event }) => context({ req: event as any, client }),
+    middleware: [
+        async (event) => {
+            netlifyEventToLambdaEvent(event as any);
+            return;
+        }
+    ]
 });
 
 // @ts-ignore
