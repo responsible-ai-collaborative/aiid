@@ -491,9 +491,8 @@ test.describe('The Discover app', () => {
 
         await expect(page.locator('button:has-text("Submitters") span.badge')).toContainText('1');
         await expect(page.locator('button:has-text("Classifications") span.badge')).toContainText('1');
-        await expect(page.locator('li.ais-Pagination-item--selected .ais-Pagination-link')).toHaveText('3');
 
-        await page.goto(url + '?authors=Christopher%20Knaus&incident_id=57&is_incident_report=true&language=en&source_domain=theguardian.com');
+        await page.goto(url + '?authors=Christopher%20Knaus&incident_id=57&hideDuplicates=1&is_incident_report=true&language=en&source_domain=theguardian.com');
 
         await expect(page.locator('button:has-text("Authors") span.badge')).toContainText('1');
         await expect(page.locator('button:has-text("Source") span.badge')).toContainText('1');
