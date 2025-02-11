@@ -42,10 +42,7 @@ export default function MissingTranslations({ pageContext }) {
       klft[e.key] == undefined &&
       klft[e.defaultValue] == undefined &&
       !normalizedTranslatedKeys.has(e.normalizedKey)
-      //!translationEntries.some(translationEntry => normalize(translationEntry.key) == e.normalizedKey)
   );
-
-  console.log(`scannerEntriesWithoutTranslations`, scannerEntriesWithoutTranslations);
 
   const allKeys = getKeys(klft);
 
