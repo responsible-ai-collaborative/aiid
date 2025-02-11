@@ -1,6 +1,6 @@
 import * as  Sentry from '@sentry/aws-serverless'
-import type { Context, Handler, HandlerContext, HandlerEvent, HandlerResponse } from "@netlify/functions";
-import cookie from 'cookie';
+import type { Handler, HandlerContext, HandlerEvent, HandlerResponse } from "@netlify/functions";
+import { netlifyEventToLambdaEvent } from './src/utils/serverless';
 
 const environment = process.env.SENTRY_ENVIRONMENT || 'development';
 
@@ -15,37 +15,17 @@ if (process.env.SENTRY_DSN) {
     });
 }
 
-interface ExtendedHandlerEvent extends HandlerEvent {
-    [key: string]: unknown;
-}
-
 export const wrapHandler = (handler: Handler): Handler => {
 
     if (!process.env.SENTRY_DSN) {
+
         return handler;
     }
 
-    const sentryWrappedHandler = Sentry.wrapHandler(handler);
-
     return async (event: HandlerEvent, context: HandlerContext): Promise<HandlerResponse> => {
 
-        const extendedEvent = event as ExtendedHandlerEvent;
-
-        if (!extendedEvent.requestContext) {
-            extendedEvent.requestContext = { http: { method: event.httpMethod } };
-        }
-
-        if (!extendedEvent.rawQuery) {
-            extendedEvent.rawQueryString = event.rawQuery;
-        }
-
-        if (!extendedEvent.method) {
-            extendedEvent.method = event.httpMethod;
-        }
-
-        if (!extendedEvent.cookies) {
-            extendedEvent.cookies = cookie.parse(event.headers.cookie || '');
-        }
+        const sentryWrappedHandler = Sentry.wrapHandler(handler);
+        const extendedEvent = netlifyEventToLambdaEvent(event);
 
         // @ts-ignore
         return sentryWrappedHandler(extendedEvent, context)!;
