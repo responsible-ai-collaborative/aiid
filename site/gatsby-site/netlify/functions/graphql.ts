@@ -1,21 +1,23 @@
 import { withSentry } from '../../sentry-instrumentation';
 import { schema } from '../../server/schema';
 import { context } from '../../server/context';
-import { ApolloServer } from '@apollo/server';
+import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
 import config from '../../server/config';
 import { MongoClient } from 'mongodb';
 import { startServerAndCreateLambdaHandler, handlers } from '@as-integrations/aws-lambda';
 import { netlifyEventToLambdaEvent } from '../../src/utils/serverless';
 import * as Sentry from '@sentry/aws-serverless';
 import { HandlerContext, HandlerEvent } from '@netlify/functions';
+import { Context } from '../../server/interfaces';
 
-const sentryPlugin = {
-    async requestDidStart(requestContext: any) {
+const sentryPlugin: ApolloServerPlugin<Context> = {
+    async requestDidStart(requestContext) {
 
         const activeSpan = Sentry.getActiveSpan();
 
         if (activeSpan) {
 
+            activeSpan.setAttribute('graphql.user.id', requestContext.contextValue?.user?.id);
             activeSpan.setAttribute('graphql.operation', requestContext.request.operationName || 'anonymous');
             activeSpan.setAttribute('graphql.query', requestContext.request.query);
             activeSpan.setAttribute('graphql.variables', JSON.stringify(requestContext.request.variables));
