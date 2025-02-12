@@ -14,16 +14,17 @@ if (process.env.SENTRY_DSN) {
     });
 }
 
-/**
- * A Sentry wrapper that instruments a Netlify function using the new tracing APIs.
- *
- * This example uses Sentry.startSpan() with forceTransaction:true so that the span
- * appears as a transaction in Sentry’s UI. The span automatically becomes active
- * for the callback and is ended automatically when the callback completes.
- */
 export const withSentry = (handler: Handler): Handler => {
-
     return async (event: HandlerEvent, netlifyContext: HandlerContext): Promise<HandlerResponse> => {
+
+        Sentry.withScope((scope) => {
+            scope.setContext("request", {
+                method: event.httpMethod,
+                url: event.rawUrl,
+                headers: event.headers,
+            });
+            scope.setTag("environment", environment);
+        });
 
         const url = new URL(event.rawUrl);
         const transactionName = `${event.httpMethod} ${url.pathname}`;
@@ -40,42 +41,31 @@ export const withSentry = (handler: Handler): Handler => {
                 },
             },
             async (span) => {
-
-                Sentry.withScope((scope) => {
-                    scope.setTransactionName(transactionName);
-                    scope.setContext("netlify", { ...netlifyContext });
-                    scope.setTag("environment", environment);
-                    scope.setTag("server_name", url.hostname);
-                });
-
                 try {
 
                     const response = await handler(event, netlifyContext)!;
 
                     span.setAttribute("http.status_code", response?.statusCode);
 
-                    if (response?.statusCode && response?.statusCode >= 200 && response?.statusCode < 300) {
-
-                        span.setStatus({ code: 1, message: "ok" });
-                    } else {
-
-                        span.setStatus({ code: 2, message: "error" });
-                    }
+                    span.setStatus(
+                        response?.statusCode && response.statusCode >= 200 && response.statusCode < 300
+                            ? { code: 1, message: "ok" }
+                            : { code: 2, message: "error" }
+                    );
 
                     return response;
 
-                } catch (error: any) {
+                } catch (error) {
 
-                    span.setStatus({ code: 2, message: error.message });
+                    span.setStatus({ code: 2, message: (error as Error).message });
                     Sentry.captureException(error);
 
                     return {
                         statusCode: 500,
-                        body: JSON.stringify({ error: error.message }),
+                        body: JSON.stringify({ error: (error as Error).message }),
                     };
 
                 } finally {
-
                     await Sentry.flush(2000);
                 }
             }
