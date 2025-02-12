@@ -1,4 +1,4 @@
-import { wrapHandler } from '../../sentry-instrumentation';
+import { withSentry } from '../../sentry-instrumentation';
 import siteConfig from '../../config';
 import OpenAPIRequestValidator from 'openapi-request-validator';
 import spec from '../../static/spec.json';
@@ -93,4 +93,4 @@ async function handler(event) {
   };
 }
 
-module.exports = { handler: wrapHandler(handler) };
+module.exports = { handler: withSentry(handler) };

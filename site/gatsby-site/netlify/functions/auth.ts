@@ -1,4 +1,4 @@
-import { wrapHandler } from "../../sentry-instrumentation";
+import { withSentry } from "../../sentry-instrumentation";
 import NextAuth from "next-auth";
 import { getAuthConfig } from "../../nextauth.config";
 import { createResponse, recreateRequest } from '../../src/utils/serverless'
@@ -41,4 +41,4 @@ const handler: Handler = async (event: HandlerEvent) => {
     }
 }
 
-module.exports = { handler: wrapHandler(handler) };
+module.exports = { handler: withSentry(handler) };

@@ -1,4 +1,4 @@
-import { wrapHandler } from "../../sentry-instrumentation";
+import { withSentry } from "../../sentry-instrumentation";
 
 const axios = require('axios');
 
@@ -95,4 +95,4 @@ const handler = async function (event) {
   };
 };
 
-module.exports = { handler: wrapHandler(handler) };
+module.exports = { handler: withSentry(handler) };

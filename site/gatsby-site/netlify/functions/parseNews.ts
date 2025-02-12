@@ -1,4 +1,4 @@
-import { wrapHandler } from "../../sentry-instrumentation";
+import { withSentry } from "../../sentry-instrumentation";
 import Parser from '@postlight/parser';
 import { format, parseISO } from 'date-fns';
 import axios from 'axios';
@@ -87,4 +87,4 @@ const getHtmlWithCookies = async (url) => {
   return response.data;
 };
 
-module.exports = { handler: wrapHandler(handler) };
+module.exports = { handler: withSentry(handler) };

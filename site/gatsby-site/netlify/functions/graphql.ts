@@ -1,4 +1,4 @@
-import { withSentry, wrapHandler } from '../../sentry-instrumentation';
+import { withSentry } from '../../sentry-instrumentation';
 import { schema } from '../../server/schema';
 import { context } from '../../server/context';
 import { ApolloServer } from '@apollo/server';
