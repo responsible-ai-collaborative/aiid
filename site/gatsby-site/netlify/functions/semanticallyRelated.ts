@@ -1,4 +1,5 @@
 import { withSentry } from "../../sentry-instrumentation";
+import * as Sentry from "@sentry/aws-serverless";
 
 const axios = require('axios');
 
@@ -33,14 +34,24 @@ const handler = async function (event) {
   ) {
     error = null;
     try {
-      // Request to the text-to-embed endpoint
-      embeddingResponse = await axios({
-        url: awsRoot + '/text-to-embed',
-        method: 'POST',
-        data: {
-          text: text,
-        },
+      await Sentry.startSpan((span) => {
+        span.setDescription("Request to the text-to-embed endpoint");
+        span.setData("text", text);
+        span.setTag("max_retries", max_retries);
+        span.setTag("num", num);
+        span.setTag("includeSimilar", includeSimilar);
+      }, async () => {
+
+        // Request to the text-to-embed endpoint
+        embeddingResponse = await axios({
+          url: awsRoot + '/text-to-embed',
+          method: 'POST',
+          data: {
+            text: text,
+          },
+        });
       });
+
 
       if (embeddingResponse?.status === 200) {
         const embedding = embeddingResponse.data.body.embedding;
@@ -48,14 +59,22 @@ const handler = async function (event) {
         const embeddingString = JSON.stringify(embedding.vector);
 
         if (includeSimilar) {
-          // Request to the embed-to-db-similar endpoint
-          similarResponse = await axios({
-            url: awsRoot + '/embed-to-db-similar',
-            method: 'POST',
-            data: {
-              num: String(num || 3),
-              embed: embeddingString,
-            },
+
+          await Sentry.startSpan((span) => {
+            span.setDescription("Request to the embed-to-db-similar endpoint");
+            span.setData("num", num);
+            span.setData("embeddingString", embeddingString);
+          }, async () => {
+
+            // Request to the embed-to-db-similar endpoint
+            similarResponse = await axios({
+              url: awsRoot + '/embed-to-db-similar',
+              method: 'POST',
+              data: {
+                num: String(num || 3),
+                embed: embeddingString,
+              },
+            });
           });
 
           if (similarResponse?.status === 200) {
