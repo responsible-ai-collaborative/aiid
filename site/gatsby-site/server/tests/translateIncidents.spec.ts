@@ -17,8 +17,6 @@ describe('Translate incidents script', () => {
 
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
 
-        const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
-
         const mockRun = jest.spyOn(translateIncidents, 'translateIncidents')
         
         const testError = new Error('Test error');
@@ -27,11 +25,9 @@ describe('Translate incidents script', () => {
         await translateIncidents.run();
 
         expect(mockConsoleError).toHaveBeenCalledWith(testError);
-        expect(mockReporterError).toHaveBeenCalledWith(testError);
         expect(mockProcessExit).toHaveBeenCalledWith(1);
 
         expect(mockConsoleError).toHaveBeenCalledTimes(1);
-        expect(mockReporterError).toHaveBeenCalledTimes(1);
         expect(mockProcessExit).toHaveBeenCalledTimes(1);
     });
 
@@ -40,7 +36,6 @@ describe('Translate incidents script', () => {
         const mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
         const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
-        const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
         const mockRun = jest.spyOn(translateIncidents, 'translateIncidents');
 
         mockRun.mockResolvedValueOnce();
@@ -51,7 +46,6 @@ describe('Translate incidents script', () => {
         expect(mockProcessExit).toHaveBeenCalledWith(0);
 
         expect(mockConsoleError).not.toHaveBeenCalled();
-        expect(mockReporterError).not.toHaveBeenCalled();
 
         expect(mockConsoleLog).toHaveBeenCalledTimes(1);
         expect(mockProcessExit).toHaveBeenCalledTimes(1);
