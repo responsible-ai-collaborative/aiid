@@ -59,5 +59,7 @@
     "Successfully rejected {{count}} submission": "{{count}} 投稿を成功裡に却下しました",
     "Successfully claimed {{count}} submissions": "{{count}} 投稿を成功裡に再投稿しました",
     "Successfully unclaimed {{count}} submissions": "{{count}} 投稿を成功裡に担当を外しました",
-    "Successfully rejected {{count}} submissions": "{{count}} 投稿を成功裡に却下しました"
+    "Successfully rejected {{count}} submissions": "{{count}} 投稿を成功裡に却下しました",
+    "Review": "レビュー",
+    "Unclaiming...": "担当を外しています..."
 }

@@ -493,7 +493,9 @@ const SubmissionList = ({ data }) => {
           return (
             <div className="flex justify-center">
               <Badge className={`mr-2 ${color}`}>
-                <Trans>{STATUS[values.status]?.text || STATUS.pendingReview.text}</Trans>
+                <Trans ns="submitted">
+                  {STATUS[values.status]?.text || STATUS.pendingReview.text}
+                </Trans>
               </Badge>
             </div>
           );
@@ -528,9 +530,9 @@ const SubmissionList = ({ data }) => {
                 disabled={reviewing.value}
               >
                 {reviewing.value && values._id === reviewing.submissionId ? (
-                  <Trans>Reviewing...</Trans>
+                  <Trans ns="submitted">Reviewing...</Trans>
                 ) : (
-                  <Trans>Review</Trans>
+                  <Trans ns="submitted">Review</Trans>
                 )}
               </Button>
               {!values.editor && (
@@ -545,17 +547,17 @@ const SubmissionList = ({ data }) => {
                   {isAlreadyEditor ? (
                     <>
                       {claiming.value && values._id === claiming.submissionId ? (
-                        <Trans>Unclaiming...</Trans>
+                        <Trans ns="submitted">Unclaiming...</Trans>
                       ) : (
-                        <Trans>Unclaim</Trans>
+                        <Trans ns="submitted">Unclaim</Trans>
                       )}
                     </>
                   ) : (
                     <>
                       {claiming.value && values._id === claiming.submissionId ? (
-                        <Trans>Claiming...</Trans>
+                        <Trans ns="submitted">Claiming...</Trans>
                       ) : (
-                        <Trans>Claim</Trans>
+                        <Trans ns="submitted">Claim</Trans>
                       )}
                     </>
                   )}
