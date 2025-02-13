@@ -90,9 +90,9 @@ const plugins = [
         'entity_relationships',
       ],
       connectionString: config.mongodb.connectionString,
-      extraParams: {
-        replicaSet: config.mongodb.replicaSet,
-      },
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
     },
   },
   {
@@ -107,9 +107,9 @@ const plugins = [
         []
       ),
       connectionString: config.mongodb.connectionString,
-      extraParams: {
-        replicaSet: config.mongodb.replicaSet,
-      },
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
     },
   },
   {
@@ -312,6 +312,6 @@ module.exports = {
   }),
   trailingSlash: `always`,
   flags: {
-    DEV_SSR: true,
+    // DEV_SSR: true,
   },
 };
