@@ -1,7 +1,6 @@
 import { format, fromUnixTime } from 'date-fns';
 import { test, query } from '../../utils';
 import { expect } from '@playwright/test';
-import config from '../../config';
 import { init } from '../../memory-mongo';
 const { gql } = require('@apollo/client');
 
@@ -14,6 +13,8 @@ test.describe('Incidents', () => {
   });
 
   test('Should display the Version History table data', async ({ page }) => {
+
+    await init();
 
     const { data: { history_incidents } } = await query({
       query: gql`
@@ -30,13 +31,16 @@ test.describe('Incidents', () => {
     await page.goto(url);
 
     await page.locator('h2').getByText('Version History').waitFor();
+
+    await page.locator('[data-cy="history-table"]').waitFor();
+
     const rows = await page.locator('[data-cy="history-row"]').elementHandles();
     expect(rows.length).toBe(4);
 
     for (let [index, history] of history_incidents.entries()) {
       const row = rows[index];
       await row.evaluate((node, epoch_date_modified) => node.textContent.includes(`${new Date(epoch_date_modified * 1000).toISOString().slice(0, 16).replace('T', ' ')}`), history.epoch_date_modified);
-      await row.evaluate((node, history) => node.textContent.includes(`Modified by: ${history.modifiedBy === '1' ? 'Sean McGregor' : 'Test User'}`), history);
+      await row.evaluate((node, history) => node.textContent.includes(`Modified by: ${history.modifiedBy === '1' ? 'John Doe' : 'Test User'}`), history);
     }
 
     const lastRowIndex = history_incidents.length - 1;
@@ -94,7 +98,7 @@ test.describe('Incidents', () => {
       `
     });
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login();
 
     await page.goto(url);
 
@@ -165,6 +169,8 @@ test.describe('Incidents', () => {
 
     await page.goto(url);
 
+    await page.locator('[data-cy="history-row"]').first().waitFor();
+
     const rows = await page.locator('[data-cy="history-row"]');
 
     await rows.nth(0).locator('[data-cy="view-full-version-button"]').click();
@@ -185,7 +191,7 @@ test.describe('Incidents', () => {
     await modal.locator('[data-cy="citation"]').getByTestId('Incident ID').getByText(`${version1.incident_id}`).waitFor();
     await modal.locator('[data-cy="citation"]').getByTestId('Report Count').getByText(`${version1.reports.length}`, { exact: true }).waitFor();
     await modal.locator('[data-cy="citation"]').getByTestId('Incident Date').getByText(`${version1.date}`).waitFor();
-    await modal.locator('[data-cy="citation"]').getByTestId('Editors').getByText('Test User, Sean McGregor').waitFor();
+    await modal.locator('[data-cy="citation"]').getByTestId('Editors').getByText('Test User, John Doe').waitFor();
     await modal.locator('button').getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
   });

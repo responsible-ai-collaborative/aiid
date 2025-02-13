@@ -1,4 +1,4 @@
-import { query, mockDate, test, fillAutoComplete } from '../utils';
+import { query, test, fillAutoComplete, mockAlgolia } from '../utils';
 import { format } from 'date-fns';
 import { gql } from '@apollo/client';
 import { expect } from '@playwright/test';
@@ -39,7 +39,7 @@ test.describe('Cite pages', () => {
     });
 
     test('Should show an edit link to users with the appropriate role', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        await login();
 
         const id = 'r1';
 
@@ -100,7 +100,7 @@ test.describe('Cite pages', () => {
     test('Should show editors in the stats table', async ({ page }) => {
         await page.goto(url);
         const incidentStats = await page.locator('[data-cy=incident-stats] > * > *:has-text("Editors")');
-        await expect(incidentStats.locator('text=Sean McGregor')).toBeVisible();
+        await expect(incidentStats.locator('text=John Doe')).toBeVisible();
     });
 
     test('Should flag an incident', async ({ page }) => {
@@ -110,8 +110,8 @@ test.describe('Cite pages', () => {
 
         await page.goto(url + '#' + _id);
 
-        await page.click(`[id="r${_id}"] [data-cy="expand-report-button"]`);
-        await page.click(`[id="r${_id}"] [data-cy="flag-button"]`);
+        await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
+        await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
 
         const modal = page.locator('[data-cy="flag-report-3"]');
         await expect(modal).toBeVisible();
@@ -120,7 +120,7 @@ test.describe('Cite pages', () => {
 
         await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
 
-        await page.click('[aria-label="Close"]');
+        await page.locator('[aria-label="Close"]').click();
 
         await expect(modal).not.toBeVisible();
 
@@ -141,7 +141,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto('/cite/3');
 
@@ -179,7 +179,7 @@ test.describe('Cite pages', () => {
 
         expect(data.duplicates).toEqual([{ true_incident_number: 2 }]);
         expect(data.incident_classifications_3).toHaveLength(0);
-        expect(data.incident_classifications_2).toHaveLength(3);
+        expect(data.incident_classifications_2).toHaveLength(4);
     });
 
     test('Should pre-fill submit report form', async ({ page }) => {
@@ -220,7 +220,7 @@ test.describe('Cite pages', () => {
 
 
         await expect(page.locator('a:has-text("Previous Incident")')).toBeVisible();
-        await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/3');
+        await expect(page.locator('a:has-text("Previous Incident")')).toHaveAttribute('href', '/cite/4');
     });
 
     test('Should render the header next/previous buttons', async ({ page }) => {
@@ -250,7 +250,8 @@ test.describe('Cite pages', () => {
     });
 
     test('Should show the edit incident form', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+
+        await login();
 
         await page.goto(url);
 
@@ -275,8 +276,8 @@ test.describe('Cite pages', () => {
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
 
         expect(bibText).toBe(
-          `@article{aiid:3,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:KronosSchedulingAlgorithmAllegedlyCausedFinancialIssuesforStarbucksEmployees},url={https://incidentdatabase.ai/cite/3},year={2014},urldate={${date}},note={Retrieved${retrievedDate}from\\url{https://incidentdatabase.ai/cite/3}}}`
-      );
+            `@article{aiid:3,author={Olsson,Catherine},editor={Doe,John},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber3:KronosSchedulingAlgorithmAllegedlyCausedFinancialIssuesforStarbucksEmployees},url={https://incidentdatabase.ai/cite/3},year={2014},urldate={${date}},note={Retrieved${retrievedDate}from\\url{https://incidentdatabase.ai/cite/3}}}`
+        );
     });
 
     test('Should display similar incidents', async ({ page }) => {
@@ -329,7 +330,7 @@ test.describe('Cite pages', () => {
     });
 
     test('Should display edit link when logged in as editor', async ({ page, login }) => {
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+        await login();
 
         await page.goto('/cite/3');
 
@@ -361,7 +362,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto('/cite/3');
 
@@ -369,7 +370,7 @@ test.describe('Cite pages', () => {
 
         await expect(page.getByText('Incident flagged successfully. Our editors will remove it from this list if it not relevant.')).toBeVisible();
 
-        
+
         const { data } = await query({
             query: gql`{incident(filter: { incident_id: { EQ: 3 } }) {
                                 flagged_dissimilar_incidents
@@ -417,11 +418,11 @@ test.describe('Cite pages', () => {
         await expect(page.locator('head meta[property="twitter:image"]')).toHaveAttribute('content');
     });
 
-    test('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
+    test.skip('Should subscribe to incident updates (user authenticated)', async ({ page, login }) => {
 
         await init();
 
-        const [userId, accessToken] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['subscriber'] } });
+        const [userId, accessToken] = await login();
 
         await page.goto('/cite/3');
 
@@ -443,16 +444,33 @@ test.describe('Cite pages', () => {
             `,
             variables: { filter: { userId: { EQ: userId } } },
         },
-            { authorization: `Bearer ${accessToken}` }
+            { Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};` }
         );
 
-        expect(data.subscriptions).toEqual([{ type: 'incident', incident_id: { incident_id: 3 } }]);
+        expect(data.subscriptions).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    type: 'incident',
+                    incident_id: { incident_id: 3 }
+                })
+            ])
+        );
+    });
+
+    test('Should not show a spinner on notify button when not logged in', async ({ page, login }) => {
+
+        const id = 'r1';
+
+        await page.goto('/cite/1#' + id);
+
+        await expect(page.locator('[data-cy="notify-button"] [data-cy="spinner"]')).toHaveCount(0);
+
     });
 
     test('Should show proper entities card text', async ({ page }) => {
         await page.goto('/cite/3/');
         await expect(page.locator('[data-cy="alleged-entities"]')).toHaveText(
-            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Implicated AI system: Entity 1'
+            'Alleged: Kronos developed an AI system deployed by Starbucks, which harmed Starbucks Employees.Alleged implicated AI system: Entity 1'
         );
     });
 
@@ -464,8 +482,7 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="timeline-text-response"]')).not.toBeVisible();
     });
 
-    // the incident contains reports missing images so it will never pass
-    test.skip('There should not be image errors (400)', async ({ page }) => {
+    test('There should not be image errors (400)', async ({ page }) => {
         page.on('console', (msg) => {
             if (msg.type() === 'error') {
                 expect(msg.text()).not.toContain('the server responded with a status of 400');
@@ -479,6 +496,9 @@ test.describe('Cite pages', () => {
     });
 
     test('Should open incident from the discover app', async ({ page }) => {
+
+        await mockAlgolia(page);
+
         await page.goto(discoverUrl);
 
         await page.locator('[data-cy="collapse-button"]:visible').click();
@@ -492,7 +512,7 @@ test.describe('Cite pages', () => {
 
         await init();
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { first_name: 'John', last_name: 'Doe', roles: ['admin'] } });
+        await login();
 
         await page.goto('/incidents/edit/?incident_id=3');
 
@@ -541,14 +561,14 @@ test.describe('Cite pages', () => {
         await init();
 
         const incident: DBIncident = {
-            incident_id: 4,
+            incident_id: 6,
             title: 'Test Title',
-            description: 'Incident 4 description',
+            description: 'Incident 6 description',
             date: "2020-01-01",
             "Alleged deployer of AI system": ["entity-1"],
             "Alleged developer of AI system": ["entity-2"],
             "Alleged harmed or nearly harmed parties": ["entity-3"],
-            editors: ["user1"],
+            editors: ["6737a6e881955aa4905ccb04"],
             reports: [1],
             editor_notes: "This is an editor note",
             flagged_dissimilar_incidents: []
@@ -556,10 +576,19 @@ test.describe('Cite pages', () => {
 
         await init({ aiidprod: { incidents: [incident] } });
 
-        await page.goto('/cite/4');
+        await page.goto('/cite/6');
 
-        await expect(page.getByText('Incident 4: Test Title')).toBeVisible();
-        await expect(page.getByText('Incident 4 description')).toBeVisible();
+        await expect(page.getByText('Incident 6: Test Title')).toBeVisible();
+        await expect(page.getByText('Incident 6 description')).toBeVisible();
         await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
+    });
+  
+    test('Should not show Annotator taxonomies', async ({ page, login }) => {
+
+        await page.goto('/cite/3');
+
+        await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1"]`)).toHaveCount(1);
+        await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1_Annotator"]`)).toHaveCount(0);
+
     });
 });

@@ -83,6 +83,7 @@ const IncidentStatsCard = ({
                     <>
                       {i > 0 && ', '}
                       <a
+                        data-cy={`taxonomy-tag-${t}`}
                         href={`#${t}-classifications`}
                         className={`
                         inline-block  px-2.5 py-0.5 rounded

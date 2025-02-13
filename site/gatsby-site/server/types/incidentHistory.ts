@@ -1,6 +1,7 @@
 import { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { ObjectIdScalar } from "../scalars";
 import { IncidentEmbeddingType, NlpSimilarIncidentType, TsneType } from "./types";
+import { GraphQLDateTime } from "graphql-scalars";
 
 export const IncidentHistoryType = new GraphQLObjectType({
     name: 'History_incident',
@@ -9,6 +10,7 @@ export const IncidentHistoryType = new GraphQLObjectType({
         AllegedDeployerOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged deployer of AI system'] },
         AllegedDeveloperOfAISystem: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged developer of AI system'] },
         AllegedHarmedOrNearlyHarmedParties: { type: new GraphQLList(GraphQLString), resolve: (source) => source['Alleged harmed or nearly harmed parties'] },
+        created_at: { type: GraphQLDateTime },
         implicated_systems: { type: new GraphQLList(GraphQLString) },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },

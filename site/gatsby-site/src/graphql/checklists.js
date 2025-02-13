@@ -1,73 +1,140 @@
-import gql from 'graphql-tag';
+import { gql } from '../../server/generated';
 
-const allChecklistFields = `
-  id
-  owner_id
-  date_created
-  date_updated
-  name
-  about
-  tags_goals
-  tags_methods
-  tags_other
-  risks {
-    id
-    title
-    risk_status
-    risk_notes
-    severity
-    likelihood
-    touched
-    generated
-    tags
-    precedents {
-      tags
-      incident_id
-      description
-      title
+export const FIND_CHECKLISTS = gql(`
+  query findChecklists($filter: ChecklistFilterType) {
+    checklists(filter: $filter) {
+      id
+      owner_id
+      date_created
+      date_updated
+      name
+      about
+      tags_goals
+      tags_methods
+      tags_other
+      risks {
+        id
+        title
+        risk_status
+        risk_notes
+        severity
+        likelihood
+        touched
+        tags
+        precedents {
+          tags
+          incident_id
+          description
+          title
+        }
+      }
     }
   }
-`;
+`);
 
-export const FIND_CHECKLISTS = gql`
-  query findChecklists($query: ChecklistQueryInput) {
-    checklists(query: $query) {
-      ${allChecklistFields}
+export const FIND_CHECKLIST = gql(`
+  query findChecklist($filter: ChecklistFilterType) {
+    checklist(filter: $filter) {
+      id
+      owner_id
+      date_created
+      date_updated
+      name
+      about
+      tags_goals
+      tags_methods
+      tags_other
+      risks {
+        id
+        title
+        risk_status
+        risk_notes
+        severity
+        likelihood
+        touched
+        tags
+        precedents {
+          tags
+          incident_id
+          description
+          title
+        }
+      }
     }
   }
-`;
+`);
 
-export const FIND_CHECKLIST = gql`
-  query findChecklist($query: ChecklistQueryInput) {
-    checklist(query: $query) {
-      ${allChecklistFields}
-    }
-  }
-`;
-
-export const UPDATE_CHECKLIST = gql`
+export const UPSERT_CHECKLIST = gql(`
   mutation upsertChecklist(
-    $query: ChecklistQueryInput,
-    $checklist: ChecklistInsertInput!
+    $filter: ChecklistFilterType!,
+    $checklist: ChecklistInsertType!
   ) {
-    upsertOneChecklist(query: $query, data: $checklist) {
-      ${allChecklistFields}
+    upsertOneChecklist(filter: $filter, update: $checklist) {
+      id
+      owner_id
+      date_created
+      date_updated
+      name
+      about
+      tags_goals
+      tags_methods
+      tags_other
+      risks {
+        id
+        title
+        risk_status
+        risk_notes
+        severity
+        likelihood
+        touched
+        tags
+        precedents {
+          tags
+          incident_id
+          description
+          title
+        }
+      }
     }
   }
-`;
+`);
 
-export const INSERT_CHECKLIST = gql`
-  mutation insertChecklist($checklist: ChecklistInsertInput!) {
+export const INSERT_CHECKLIST = gql(`
+  mutation insertChecklist($checklist: ChecklistInsertType!) {
     insertOneChecklist(data: $checklist) {
-      ${allChecklistFields}
+      id
+      owner_id
+      date_created
+      date_updated
+      name
+      about
+      tags_goals
+      tags_methods
+      tags_other
+      risks {
+        id
+        title
+        risk_status
+        risk_notes
+        severity
+        likelihood
+        touched
+        tags
+        precedents {
+          tags
+          incident_id
+          description
+          title
+        }
+      }
     }
   }
-`;
+`);
 
-export const DELETE_CHECKLIST = gql`
-  mutation DeleteOneChecklist($query: ChecklistQueryInput!) {
-    deleteOneChecklist(query: $query) {
+export const DELETE_CHECKLIST = gql(`
+  mutation DeleteOneChecklist($filter: ChecklistFilterType!) {
+    deleteOneChecklist(filter: $filter) {
       id
     }
   }
-`;
+`);

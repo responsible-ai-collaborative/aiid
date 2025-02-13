@@ -45,10 +45,12 @@ jobs:
           sudo apt install -y mongodb-database-tools
 
       - name: Generate public backup
+        # TODO: Unfix the version of boto3 and use the latest version
+        #   - Github issue related: https://github.com/boto/boto3/issues/4400#issuecomment-2605715606  
         run: |
           python3 -m venv venv
           source venv/bin/activate
-          pip install boto3
+          pip install boto3==1.35.97
           ./bin/backup.sh
           ./bin/prune.sh
           ./bin/list.sh
