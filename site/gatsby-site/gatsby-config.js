@@ -252,6 +252,7 @@ const plugins = [
           'footer',
           'sponsors',
           'incidents',
+          'auth',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
