@@ -1,15 +1,12 @@
-import Rollbar from 'rollbar';
+import { withSentry } from '../../sentry-instrumentation';
 import siteConfig from '../../config';
 import OpenAPIRequestValidator from 'openapi-request-validator';
-import Cors from 'cors';
 import spec from '../../static/spec.json';
 import normalizeRequest from '../../src/utils/normalizeRequest';
 
 const requestValidator = new OpenAPIRequestValidator({
   parameters: spec.paths['/api/lookupbyurl'].get.parameters,
 });
-
-const cors = Cors();
 
 const isValidURL = (string) => {
   try {
@@ -27,7 +24,6 @@ async function handler(event) {
 
   if (errors) {
     console.warn(req.query, errors);
-    rollbar.warning(req.query, errors);
 
     return {
       statusCode: 400,
@@ -97,25 +93,4 @@ async function handler(event) {
   };
 }
 
-const rollbar = new Rollbar({
-  accessToken: siteConfig.rollbar.token,
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-  payload: {
-    code_version: '1.0.0',
-  },
-});
-
-exports.handler = async function (event) {
-  try {
-    return await handler(event);
-  } catch (error) {
-    console.error(error);
-    rollbar.error(error);
-
-    return {
-      statusCode: 500,
-      body: 'An error occurred',
-    };
-  }
-};
+module.exports = { handler: withSentry(handler) };

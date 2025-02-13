@@ -1,9 +1,11 @@
+import { withSentry } from "../../sentry-instrumentation";
 import NextAuth from "next-auth";
 import { getAuthConfig } from "../../nextauth.config";
 import { createResponse, recreateRequest } from '../../src/utils/serverless'
-import { Handler } from '@netlify/functions'
+import { HandlerEvent, Handler } from '@netlify/functions'
+import * as Sentry from '@sentry/aws-serverless';
 
-export const handler: Handler = async (event) => {
+const handler: Handler = async (event: HandlerEvent) => {
 
     const req = recreateRequest(event);
     const res = createResponse();
@@ -12,9 +14,13 @@ export const handler: Handler = async (event) => {
 
         const authConfig = await getAuthConfig(req);
 
-        // @ts-ignore
-        await NextAuth(req, res, authConfig)
-
+        await Sentry.startSpan({
+            op: 'nextauth.call',
+            name: 'NextAuth',
+        }, async () => {
+            // @ts-ignore
+            await NextAuth(req, res, authConfig)
+        });
 
         const response = res.getResponse();
         const responseHeaders = res.getResponseHeaders();
@@ -39,3 +45,5 @@ export const handler: Handler = async (event) => {
         }
     }
 }
+
+module.exports = { handler: withSentry(handler) };
