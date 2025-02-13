@@ -3,7 +3,7 @@ import { getTaxonomies } from 'utils/cite';
 import Row from '../../elements/Row';
 import Col from '../../elements/Col';
 import Taxonomy from './Taxonomy';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Button, Dropdown, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';

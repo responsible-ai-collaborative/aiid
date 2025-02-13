@@ -11,6 +11,8 @@ export interface Config {
     NOTIFICATIONS_SENDER_NAME: string;
     NOTIFICATIONS_SENDER: string;
     SITE_URL: string;
+    NEXTAUTH_URL: string,
+    NEXTAUTH_SECRET: string,
 };
 
 const config: Config = {
@@ -26,6 +28,8 @@ const config: Config = {
     NOTIFICATIONS_SENDER_NAME: process.env.NOTIFICATIONS_SENDER_NAME!,
     NOTIFICATIONS_SENDER: process.env.NOTIFICATIONS_SENDER!,
     SITE_URL: process.env.SITE_URL! || process.env.URL!,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
 }
 
 Object.keys(config).forEach((key) => {

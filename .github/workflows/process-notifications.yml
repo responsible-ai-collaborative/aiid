@@ -47,4 +47,6 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: ${{ vars.NOTIFICATIONS_SENDER_NAME }}
           NOTIFICATIONS_SENDER: ${{ vars.NOTIFICATIONS_SENDER }}
           SITE_URL: ${{ vars.SITE_URL }}
+          NEXTAUTH_URL: ${{ vars.SITE_URL }} # next auth requires this variables to be set
+          NEXTAUTH_SECRET: dummy # unless we want to send emails with the magic link from this workflow, we don't need the actual secret
         run: npm run process-notifications:ci

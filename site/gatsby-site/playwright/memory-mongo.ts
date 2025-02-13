@@ -1,7 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient } from 'mongodb';
 import assert from 'node:assert';
-
 import incidents from './seeds/aiidprod/incidents';
 import reports from './seeds/aiidprod/reports';
 import submissions from './seeds/aiidprod/submissions';
@@ -17,6 +16,8 @@ import duplicates from './seeds/aiidprod/duplicates';
 import users from './seeds/customData/users';
 import entity_relationships from './seeds/aiidprod/entity_relationships';
 import subscriptions from './seeds/customData/subscriptions';
+
+import authUsers from './seeds/auth/users';
 
 import reportsHistory from './seeds/history/reportsHistory';
 import incidentsHistory from './seeds/history/incidentsHistory';
@@ -66,6 +67,9 @@ export const init = async (seed?: Record<string, Record<string, Record<string, u
             // TODO: Delete "reports_es" when all translations are moved to "reports"
             reports_es,
             reports: reportsTranslations,
+        },
+        auth: {
+            users: authUsers,
         },
         history: {
             reports: reportsHistory,
@@ -117,7 +121,7 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
 
 export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
 
-    assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), 'Seeding is only allowed on localhost');
+    assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), `Seeding is only allowed on localhost [${process.env.MONGODB_CONNECTION_STRING}]`);
 
     const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
 
@@ -136,7 +140,7 @@ export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
 
 // command line support
 
-let instance: MongoMemoryServer | null = null;
+let instance: MongoMemoryServer |  null = null;
 
 async function start() {
 
