@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import TagsControl from 'components/forms/TagsControl';
 import { Label, TextInput } from 'flowbite-react';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 // Schema for yup
 export const schema = yup.object().shape({

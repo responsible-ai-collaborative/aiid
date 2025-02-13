@@ -14,7 +14,7 @@ test.describe('CSET tool', () => {
 
         await init();
 
-        await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+        await login();
 
         await page.goto(url);
         await page.waitForSelector('[data-cy="column-Incident Number"]');

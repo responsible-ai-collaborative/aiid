@@ -94,7 +94,7 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
 
       - name: Build using Netlify
-        run: netlify build --context ${{ inputs.netlify-context }} --offline
+        run: npm run build --context=${{ inputs.netlify-context }}
         working-directory: site/gatsby-site
         env:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
@@ -133,7 +133,10 @@ jobs:
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
+          MAILERSEND_API_KEY: dummy 
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
 
       - name: Build size
         run: |
