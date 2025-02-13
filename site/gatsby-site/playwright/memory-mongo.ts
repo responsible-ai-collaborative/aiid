@@ -1,7 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient } from 'mongodb';
 import assert from 'node:assert';
-
 import incidents from './seeds/aiidprod/incidents';
 import reports from './seeds/aiidprod/reports';
 import submissions from './seeds/aiidprod/submissions';
@@ -15,12 +14,37 @@ import candidates from './seeds/aiidprod/candidates';
 import duplicates from './seeds/aiidprod/duplicates';
 
 import users from './seeds/customData/users';
+import entity_relationships from './seeds/aiidprod/entity_relationships';
 import subscriptions from './seeds/customData/subscriptions';
+
+import authUsers from './seeds/auth/users';
 
 import reportsHistory from './seeds/history/reportsHistory';
 import incidentsHistory from './seeds/history/incidentsHistory';
+import checklists from './seeds/aiidprod/checklists';
 
-export const init = async (extra?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
+/**
+ * Initializes a MongoDB database with predefined and optional custom seed data.
+ * 
+ * @param {Record<string, Record<string, Record<string, unknown>[]>>} [seed] - Optional additional seed data
+ *        organized as database -> collection -> documents structure.
+ *        Example: { database1: { collection1: [ doc1, doc2 ] } }
+ * @param {Object} [options={ drop: false }] - Configuration options
+ * @param {boolean} [options.drop=false] - Whether to drop existing collections before seeding
+ * @returns {Promise<void>} A promise that resolves when seeding is complete
+ * 
+ * @example
+ * // Initialize with default data only
+ * await init();
+ * 
+ * // Initialize with default data and deletes whats in myCollection
+ * await init({
+ *   myDatabase: {
+ *     myCollection: [{ field: 'value' }]
+ *   }
+ * }, { drop: true });
+ */
+export const init = async (seed?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
 
     await seedFixture({
         aiidprod: {
@@ -30,8 +54,10 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             entities,
             classifications,
             taxa,
+            entity_relationships,
             candidates,
             duplicates,
+            checklists,
         },
         customData: {
             users,
@@ -42,15 +68,18 @@ export const init = async (extra?: Record<string, Record<string, Record<string, 
             reports_es,
             reports: reportsTranslations,
         },
+        auth: {
+            users: authUsers,
+        },
         history: {
             reports: reportsHistory,
             incidents: incidentsHistory,
         }
     });
 
-    if (extra) {
+    if (seed) {
 
-        await seedFixture(extra, drop);
+        await seedFixture(seed, drop);
     }
 
     console.log('Memory Mongo initialized');
@@ -92,7 +121,7 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
 
 export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
 
-    assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), 'Seeding is only allowed on localhost');
+    assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), `Seeding is only allowed on localhost [${process.env.MONGODB_CONNECTION_STRING}]`);
 
     const client = new MongoClient(process.env.MONGODB_CONNECTION_STRING!);
 
@@ -111,7 +140,7 @@ export const execute = async (fn: (client: MongoClient) => Promise<void>) => {
 
 // command line support
 
-let instance: MongoMemoryServer | null = null;
+let instance: MongoMemoryServer |  null = null;
 
 async function start() {
 

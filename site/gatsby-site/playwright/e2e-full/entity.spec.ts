@@ -21,7 +21,7 @@ test.describe('Individual Entity page', () => {
 
   test('Should subscribe to new Entity incidents (authenticated user)', async ({ page, login }) => {
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     await page.goto(url);
 
@@ -34,7 +34,7 @@ test.describe('Individual Entity page', () => {
 
     await init();
 
-    const [userId] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    const [userId] = await login();
 
     const subscriptions: DBSubscription[] = [
       {
@@ -69,7 +69,7 @@ test.describe('Individual Entity page', () => {
 
   test('Should display Edit button for Admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
     
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     await page.goto(url);
     await expect(page.locator('[data-cy="edit-entity-btn"]')).toHaveAttribute('href', `/entities/edit?entity_id=${entity.entity_id}`);
@@ -81,7 +81,7 @@ test.describe('Individual Entity page', () => {
 
   test('Should not display Edit button for non-admin users', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
+    await login({ customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
     await page.goto(url);
     await expect(page.locator('[data-cy="edit-entity-btn"]')).not.toBeVisible();

@@ -199,7 +199,12 @@ const SubmissionForm = ({ onChange = null }) => {
           btnDisabled={!!errors.url || !touched.url || parsingNews}
           btnText={t('Fetch info')}
         />
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byURL']}
+          triggerSearch={values['url']?.length}
+        />
 
         <TextInputGroup
           name="title"
@@ -219,7 +224,12 @@ const SubmissionForm = ({ onChange = null }) => {
           {...TextInputGroupProps}
         />
 
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byAuthors']}
+          triggerSearch={values['authors']?.length}
+        />
 
         <TagsInputGroup
           name="submitters"
@@ -244,6 +254,7 @@ const SubmissionForm = ({ onChange = null }) => {
           incident={values}
           setFieldValue={setFieldValue}
           columns={['byDatePublished']}
+          triggerSearch={values['date_published']?.length}
         />
 
         <TextInputGroup
@@ -354,6 +365,7 @@ const SubmissionForm = ({ onChange = null }) => {
           incident={values}
           setFieldValue={setFieldValue}
           columns={['byIncidentId']}
+          triggerSearch={values['incident_ids']?.length}
         />
 
         <div className="mt-3">

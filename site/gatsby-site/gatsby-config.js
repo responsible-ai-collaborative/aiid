@@ -87,6 +87,7 @@ const plugins = [
         'classifications',
         'reports',
         'entities',
+        'entity_relationships',
       ],
       connectionString: config.mongodb.connectionString,
       extraParams: {
@@ -263,6 +264,7 @@ const plugins = [
           'footer',
           'sponsors',
           'incidents',
+          'auth',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,

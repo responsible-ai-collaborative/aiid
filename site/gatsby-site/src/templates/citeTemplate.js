@@ -7,7 +7,7 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
 import ReportCard from '../components/reports/ReportCard';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
 import Card from '../elements/Card';
 import Container from '../elements/Container';
@@ -68,6 +68,12 @@ function CiteTemplate({
       filter: { userId: { EQ: user?.id }, incident_id: { EQ: incident.incident_id } },
     },
   });
+
+  const visibleClassifications = {
+    nodes: allMongodbAiidprodClassifications.nodes.filter(
+      (classification) => !classification.namespace.includes('_Annotator')
+    ),
+  };
 
   // meta tags
 
@@ -297,13 +303,10 @@ function CiteTemplate({
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
                       taxonomiesWithClassifications: Array.from(
-                        allMongodbAiidprodClassifications.nodes.reduce(
-                          (namespaces, classification) => {
-                            namespaces.add(classification.namespace);
-                            return namespaces;
-                          },
-                          new Set()
-                        )
+                        visibleClassifications.nodes.reduce((namespaces, classification) => {
+                          namespaces.add(classification.namespace);
+                          return namespaces;
+                        }, new Set())
                       ),
                       editors: incident.editors
                         .filter((editor) => editor && editor.first_name && editor.last_name)
@@ -324,7 +327,7 @@ function CiteTemplate({
                   />
                 )}
                 <ClassificationsDisplay
-                  classifications={allMongodbAiidprodClassifications}
+                  classifications={visibleClassifications}
                   taxa={allMongodbAiidprodTaxa}
                 />
               </Col>

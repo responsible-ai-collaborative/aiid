@@ -1,10 +1,11 @@
+import { withSentry } from "../../sentry-instrumentation";
 import Parser from '@postlight/parser';
 import { format, parseISO } from 'date-fns';
 import axios from 'axios';
 
 const stripImages = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
 
-exports.handler = async function (event) {
+const handler = async function (event) {
   try {
     const url = event.queryStringParameters.url;
 
@@ -85,3 +86,5 @@ const getHtmlWithCookies = async (url) => {
 
   return response.data;
 };
+
+module.exports = { handler: withSentry(handler) };

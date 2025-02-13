@@ -39,5 +39,9 @@
   "Alleged implicated AI Systems can't be longer than 200 characters": "Los sistemas implicados no pueden tener más de 200 caracteres",
   "*Alleged Implicated AI Systems is required": "Se requieren los sistemas de IA presuntamente implicados",
   "Implicated AI systems must have at least 3 characters": "Los sistemas de IA implicados deben tener al menos 3 caracteres",
-  "Implicated AI systems can't be longer than 200 characters": "Los sistemas de IA implicados no pueden tener más de 200 caracteres"
+  "Implicated AI systems can't be longer than 200 characters": "Los sistemas de IA implicados no pueden tener más de 200 caracteres",
+  "Each alleged Developer must have at least 3 characters and less than 200": "Cada desarrollador presunto debe tener al menos 3 caracteres y menos de 200",
+  "Each alleged Deployer must have at least 3 characters and less than 200": "Cada implementador presunto debe tener al menos 3 caracteres y menos de 200",
+  "Each alleged Harmed parties must have at least 3 characters and less than 200": "Cada parte perjudicada presunta debe tener al menos 3 caracteres y menos de 200",
+  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "Cada sistema de IA implicado presunto debe tener al menos 3 caracteres y menos de 200"
 }
