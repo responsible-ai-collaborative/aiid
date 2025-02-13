@@ -15,7 +15,7 @@ test.describe('Incidents', () => {
       }
     });
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     await page.goto(url);
 
@@ -33,7 +33,7 @@ test.describe('Incidents', () => {
     await page.locator('[data-cy="alleged-deployer-of-ai-system-input"] input').first().fill('Test Deployer');
     await page.keyboard.press('Enter');
 
-    await expect(await page.locator('[title="Sean McGregor"]')).toBeVisible();
+    await expect(await page.locator('[title="John Doe"]')).toBeVisible();
 
     await fillAutoComplete(page, '#input-editors', 'Pab', 'Pablo Costa');
 

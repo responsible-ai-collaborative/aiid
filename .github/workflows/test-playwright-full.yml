@@ -106,6 +106,12 @@ jobs:
           REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms
+          MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps

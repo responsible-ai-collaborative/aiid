@@ -11,7 +11,7 @@ test.describe('Unsubscribe pages', () => {
 
   test.beforeEach(async ({ page, login }) => {
     if (!userId) {
-      [userId, accessToken] = await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+      [userId, accessToken] = await login();
     }
   });
 
@@ -73,7 +73,7 @@ test.describe('Unsubscribe pages', () => {
           }
       }`,
     },
-      { authorization: `Bearer ${accessToken}` }
+      { Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};` }
     );
 
     expect(subscriptionsData).toHaveLength(0);

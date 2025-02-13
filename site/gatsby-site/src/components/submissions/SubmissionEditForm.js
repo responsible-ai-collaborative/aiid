@@ -19,7 +19,7 @@ import {
 import { debounce } from 'debounce';
 import { STATUS } from 'utils/submissions';
 import StepContainer from 'components/forms/SubmissionWizard/StepContainer';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import isEmpty from 'lodash/isEmpty';

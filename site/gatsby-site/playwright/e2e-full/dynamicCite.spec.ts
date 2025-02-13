@@ -18,7 +18,7 @@ test.describe('Dynamic Cite pages', () => {
 
   test('Should load dynamic Incident data', async ({ page, login, skipOnEmptyEnvironment }) => {
 
-    const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    const [userId] = await login();
     await init();
 
     await seedCollection({ name: 'users', docs: [{ userId: userId, roles: ['admin'], first_name: 'John', last_name: 'Doe' }], drop: false });
@@ -38,13 +38,13 @@ test.describe('Dynamic Cite pages', () => {
     );
 
     await expect(page.locator('[data-cy="citation"]').getByText("Report Count", { exact: true }).locator('xpath=following-sibling::div[1]')).toHaveText('2');
-    await expect(page.locator('[data-cy="citation"]').getByText("Editors", { exact: true }).locator('xpath=following-sibling::div[1]')).toHaveText('Sean McGregor');
+    await expect(page.locator('[data-cy="citation"]').getByText("Editors", { exact: true }).locator('xpath=following-sibling::div[1]')).toHaveText('John Doe');
     
     await expect(page.locator('[data-cy="variant-card"]')).toHaveCount(3);
   });
 
   test('Should display a new Variant if live mode is turned on', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    await login();
     await page.goto(url);
 
     const new_date_published = '2000-01-01';
@@ -74,7 +74,7 @@ test.describe('Dynamic Cite pages', () => {
   });
 
   test('There should not be image errors (400)', async ({ page, login, skipOnEmptyEnvironment }) => {
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    await login();
     await page.goto(url);
     await page.addInitScript(() => {
       window.console.error = (...args) => {

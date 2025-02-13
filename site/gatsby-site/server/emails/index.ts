@@ -5,13 +5,13 @@ import * as reporter from '../reporter';
 import assert from "assert";
 import { RateLimiter } from "limiter";
 
-interface SendEmailParams {
+export interface SendBulkEmailParams {
     recipients: {
         email: string;
-        userId: string;
+        userId?: string;
     }[];
     subject: string;
-    dynamicData: {
+    dynamicData?: {
         incidentId?: string;
         incidentTitle?: string;
         incidentUrl?: string;
@@ -26,11 +26,12 @@ interface SendEmailParams {
         reportAuthor?: string;
         entityName?: string;
         entityUrl?: string;
+        magicLink?: string;    // URL for magic link (optional)
     };
-    templateId: string;
+    templateId: string; // Email template ID
 }
 
-export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string }, allowedKeys: string[]): string => {
+export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string } = {}, allowedKeys: string[]): string => {
     return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
         return allowedKeys.includes(key) && key in data ? data[key] : match;
     });
@@ -86,7 +87,7 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
     await mailersend.email.sendBulk(emails);
 }
 
-export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
+export const sendBulkEmails = async ({ recipients, subject, dynamicData, templateId }: SendBulkEmailParams) => {
 
     const emailTemplateBody = templates[templateId];
 
@@ -113,7 +114,7 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
-            .setTo([new Recipient(recipient.email, '')])
+            .setTo([new Recipient(recipient.email)])
             .setPersonalization(personalizations)
             .setSubject(subject)
             .setHtml(html);
@@ -126,6 +127,69 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
     try {
 
         await mailersendBulkSend(bulk);
+
+    } catch (error: any) {
+        error.message = `[Send Email]: ${error.message}`;
+        reporter.error(error);
+
+        throw error;
+    }
+}
+
+export const mailersendSingleSend = async (email: EmailParams) => {
+
+    const mailersend = new MailerSend({
+        apiKey: config.MAILERSEND_API_KEY,
+    });
+
+    assert(email.to.length == 1, 'Email must have exactly one recipient');
+    assert(!email.cc, 'Should not use the "cc" field');
+
+    await mailersend.email.send(email);
+}
+
+export interface SendEmailParams {
+    recipient: {
+        email: string;
+        userId?: string;
+    };
+    subject: string;
+    dynamicData?: {
+        magicLink?: string;
+    };
+    templateId: string;
+}
+
+export const sendEmail = async ({ recipient, subject, dynamicData, templateId }: SendEmailParams) => {
+
+    const emailTemplateBody = templates[templateId];
+
+    if (!emailTemplateBody) {
+        throw new Error(`Template not found: ${templateId}`);
+    }
+
+    const personalization = {
+        email: recipient.email,
+        data: {
+            ...dynamicData,
+            email: recipient.email,
+            userId: recipient.userId,
+            siteUrl: config.SITE_URL,
+        }
+    }
+
+    const emailParams = new EmailParams()
+        .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
+        .setTo([new Recipient(recipient.email)])
+        .setPersonalization([personalization])
+        .setSubject(subject)
+        .setHtml(emailTemplateBody);
+    //TODO: add a text version of the email
+    // .setText("Greetings from the team, you got this message through MailerSend.");
+
+    try {
+
+        await mailersendSingleSend(emailParams);
 
     } catch (error: any) {
         error.message = `[Send Email]: ${error.message}`;

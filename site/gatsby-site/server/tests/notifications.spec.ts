@@ -1,6 +1,6 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
+import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
 import * as common from '../fields/common';
 import * as emails from '../emails';
@@ -42,7 +42,8 @@ describe(`Notifications`, () => {
         });
 
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        mockSession('123');
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         await processNotifications();
 
@@ -145,10 +146,10 @@ describe(`Notifications`, () => {
             }
         });
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
 
         const result = await processNotifications();
@@ -274,10 +275,9 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -401,9 +401,9 @@ describe(`Notifications`, () => {
             }
         });
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -521,9 +521,9 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -642,9 +642,9 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -697,7 +697,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
 
         const newIncident: IncidentInsertType = {
@@ -811,7 +811,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
         const mutationData: { query: string, variables: { input: PromoteSubmissionToReportInput } } = {
             query: `
@@ -1029,7 +1029,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
         const mutationData: { query: string, variables: { filter: IncidentFilterType, update: IncidentUpdateType } } = {
             query: `
@@ -1149,7 +1149,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
         const mutationData: { query: string, variables: { filter: IncidentFilterType, update: IncidentUpdateType } } = {
             query: `
@@ -1294,15 +1294,7 @@ describe(`Notifications`, () => {
             }
         });
 
-        const mutationData = {
-            query: `
-                mutation {
-                    processNotifications
-                }
-            `,
-        };
-
-        jest.spyOn(emails, 'sendEmail').mockRestore();
+        jest.spyOn(emails, 'sendBulkEmails').mockRestore();
         jest.spyOn(common, 'getUserAdminData').mockResolvedValueOnce({ userId: 'user1', email: 'test@test.com' })
         jest.spyOn(common, 'getUserAdminData').mockResolvedValueOnce({ userId: 'user2', email: 'test2@test.com' });
 
@@ -1320,7 +1312,7 @@ describe(`Notifications`, () => {
             to: [
                 {
                     email: "test@test.com",
-                    name: "",
+                    name: undefined,
                 },
             ],
             cc: undefined,
@@ -1369,7 +1361,7 @@ describe(`Notifications`, () => {
             to: [
                 {
                     email: "test2@test.com",
-                    name: "",
+                    name: undefined,
                 },
             ],
             cc: undefined,
@@ -1508,10 +1500,10 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockImplementation(() => {
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
             throw new Error('Failed to send email');
         });
 
@@ -1637,13 +1629,12 @@ describe(`Notifications`, () => {
             }
         });
 
-
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
 
         // No recipients
         jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockImplementation(() => {
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
             throw new Error('Failed to send email');
         });
 
