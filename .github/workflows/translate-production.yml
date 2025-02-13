@@ -1,4 +1,5 @@
-name: Translate Reports - Production
+name: Translate - Production
+description: Workflow for automated translation of Production reports and incidents using Google Translate API
 
 on:
   schedule:
