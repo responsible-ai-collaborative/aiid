@@ -58,12 +58,6 @@ jobs:
       - name: Jest run
         run: npm run test:api:ci
         env:
-          REALM_APP_ID: dummy
-          REALM_API_APP_ID: dummy
-          REALM_API_GROUP_ID: dummy
-          REALM_API_PUBLIC_KEY: dummy
-          REALM_API_PRIVATE_KEY: dummy
-          REALM_GRAPHQL_API_KEY: dummy
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: sarasa
           MAILERSEND_API_KEY: something
