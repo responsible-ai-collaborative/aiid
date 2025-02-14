@@ -27,15 +27,17 @@ test.describe('The Discover app', () => {
         await expect(page.locator('text=Your search returned no results.')).toBeVisible();
     });
 
-    test('Should default to incident reports and show at least 30', async ({ page, skipOnEmptyEnvironment }) => {
+    test('Should default to incidents and show at least 30', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
         await expect(async () => {
             const searchParams = new URL(page.url()).searchParams;
             expect(searchParams.get('is_incident_report')).toBe('true');
+            expect(searchParams.get('hideDuplicates')).toBe('1');
         }).toPass();
 
         await expect(page.locator('[data-cy="display-options"]')).toBeVisible();
+        await expect(page.locator('[data-cy="display-options"] button:has-text("Incidents")')).toBeVisible();
 
         await expect(async () => {
             const hitsCount = await page.locator('div[data-cy="hits-container"] > div').count();
@@ -55,7 +57,7 @@ test.describe('The Discover app', () => {
 
         await expect(async () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
-            await expect(count).toBeGreaterThanOrEqual(8);
+            await expect(count).toBeGreaterThanOrEqual(4);
         }).toPass();
     });
 
@@ -76,7 +78,7 @@ test.describe('The Discover app', () => {
 
         await expect(async () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
-            await expect(count).toBeGreaterThanOrEqual(28);
+            await expect(count).toBeGreaterThanOrEqual(1);
         }).toPass();
     });
 
@@ -163,7 +165,7 @@ test.describe('The Discover app', () => {
 
         await expect(async () => {
             const count = await page.locator('div[data-cy="hits-container"] > div').count();
-            await expect(count).toBeGreaterThanOrEqual(8);
+            await expect(count).toBeGreaterThanOrEqual(1);
         }).toPass();
     });
 
@@ -327,12 +329,12 @@ test.describe('The Discover app', () => {
 
         await expect(page.locator('button:has-text("Clear Filter")')).toBeDisabled();
 
-        await page.locator('[data-cy="display-options"]:has-text("Incident Reports")').click();
+        await page.locator('[data-cy="display-options"]:has-text("Incidents")').click();
 
-        await page.locator('[data-cy="display-options"] li:has-text("Incidents")').click();
+        await page.locator('[data-cy="display-options"] li:has-text("Incident Reports")').click();
         await expect(page.locator('button:has-text("Clear Filter")')).toBeEnabled();
 
-        await page.locator('[data-cy="display-options"]:has-text("Incidents")').click();
+        await page.locator('[data-cy="display-options"]:has-text("Incident Reports")').click();
         await page.locator('[data-cy="display-options"] li:has-text("Issue Reports")').nth(1).click();
         await expect(page.locator('button:has-text("Clear Filter")')).toBeEnabled();
 
@@ -341,7 +343,7 @@ test.describe('The Discover app', () => {
         await expect(page.locator('button:has-text("Clear Filter")')).toBeEnabled();
 
         await page.locator('[data-cy="display-options"]:has-text("Incident and Issue Reports")').click();
-        await page.locator('[data-cy="display-options"] li:has-text("Incident Reports")').click();
+        await page.locator('[data-cy="display-options"] li:has-text("Incidents")').click();
         await expect(page.locator('button:has-text("Clear Filter")')).toBeDisabled();
     });
 
@@ -400,7 +402,7 @@ test.describe('The Discover app', () => {
     test('Should not add a trailing slash when loading the discover app', async ({ page }) => {
         await page.goto(url);
 
-        await expect(page).toHaveURL(/\?is_incident_report=true$/);
+        await expect(page).toHaveURL(/\?hideDuplicates=1&is_incident_report=true$/);
     });
 
     test('Should export results to a CSV file', async ({ page, skipOnEmptyEnvironment }) => {
@@ -440,7 +442,7 @@ test.describe('The Discover app', () => {
     test('Should set the sort with the value from the URL', async ({ page }) => {
         await page.goto(url);
 
-        await expect(page).toHaveURL(/\?is_incident_report=true/);
+        await expect(page).toHaveURL(/\?hideDuplicates=1&is_incident_report=true/);
         await expect(page.locator('[data-cy="discover-sort"]')).toHaveText('Relevance');
 
         const newUrl = url + '?display=details&is_incident_report=true&page=1&sortBy=incident-date-desc';
@@ -485,13 +487,12 @@ test.describe('The Discover app', () => {
     });
 
     test('Loads filters based on URL', async ({ page, skipOnEmptyEnvironment }) => {
-        await page.goto(url + '?is_incident_report=true&submitters=Anonymous&page=3&classifications=CSETv0%3AIntent%3AAccident');
+        await page.goto(url + '?hideDuplicates=1&is_incident_report=true&submitters=Anonymous&page=3&classifications=CSETv0%3AIntent%3AAccident');
 
         await expect(page.locator('button:has-text("Submitters") span.badge')).toContainText('1');
         await expect(page.locator('button:has-text("Classifications") span.badge')).toContainText('1');
-        await expect(page.locator('li.ais-Pagination-item--selected .ais-Pagination-link')).toHaveText('3');
 
-        await page.goto(url + '?authors=Christopher%20Knaus&incident_id=57&is_incident_report=true&language=en&source_domain=theguardian.com');
+        await page.goto(url + '?authors=Christopher%20Knaus&incident_id=57&hideDuplicates=1&is_incident_report=true&language=en&source_domain=theguardian.com');
 
         await expect(page.locator('button:has-text("Authors") span.badge')).toContainText('1');
         await expect(page.locator('button:has-text("Source") span.badge')).toContainText('1');

@@ -16,7 +16,7 @@ function ClearButton({ children }) {
   const disabled =
     items.length == 1 &&
     items?.[0]?.refinements?.[0].value == 'true' &&
-    configure?.distinct == false &&
+    configure?.distinct == true &&
     !indexUiState.query;
 
   return (
@@ -28,10 +28,10 @@ function ClearButton({ children }) {
           refinementList: { is_incident_report: ['true'] },
           range: {},
           query: '',
-          configure: { distinct: false, hitsPerPage: 28 },
+          configure: { distinct: true, hitsPerPage: 28 },
         }));
 
-        setConfigure((configure) => ({ ...configure, distinct: false }));
+        setConfigure((configure) => ({ ...configure, distinct: true }));
       }}
       disabled={disabled}
     >
