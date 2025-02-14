@@ -35,12 +35,6 @@ jobs:
       - name: Process Notifications
         working-directory: site/gatsby-site
         env:
-          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
-          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
-          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
-          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
-          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
-          REALM_APP_ID: ${{ vars.REALM_APP_ID }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN }}
           MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
