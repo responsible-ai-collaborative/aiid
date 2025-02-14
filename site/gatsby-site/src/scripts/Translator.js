@@ -142,9 +142,6 @@ class Translator {
         this.reporter.error(
           `Error translating report ${entry.report_number}, ${keys[i]} field is empty`
         );
-        throw new Error(
-          `Translation process failed for report ${entry.report_number}. ${keys[i]} field is empty`
-        );
       }
 
       const key = keys[i];
@@ -200,7 +197,10 @@ class Translator {
 
       const items = reports.filter((r) => r.language !== to);
 
-      const translated = await this.translateReportsCollection({ items, to });
+      let translated = await this.translateReportsCollection({ items, to });
+
+      // filter translated reports that are not empty
+      translated = translated.filter((t) => t.text !== '' && t.title !== '');
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
