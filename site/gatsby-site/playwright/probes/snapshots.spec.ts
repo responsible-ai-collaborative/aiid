@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../../utils';
+import { test } from '../utils';
 
 test.describe('The Database Snapshots Page', () => {
   const url = '/research/snapshots';

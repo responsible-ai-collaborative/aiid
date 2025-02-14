@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import config from '../../../config';
-import { test } from '../../utils';
+import config from '../../config';
+import { test } from '../utils';
 
 const googleTrackingId = config.gatsby.gaTrackingId;
 

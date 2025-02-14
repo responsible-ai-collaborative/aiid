@@ -1,5 +1,5 @@
 import { test } from '../utils';
-import { testPages } from './pages-tests';
+import { testPages } from '../shared/pages-tests';
 
 test.describe('Pages 1', () => {
 
