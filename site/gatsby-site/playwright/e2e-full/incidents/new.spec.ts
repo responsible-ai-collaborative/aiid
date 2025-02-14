@@ -13,12 +13,12 @@ test.describe('New Incident page', () => {
     await init({
       customData: {
         users: [
-          { userId: 'johndoe', first_name: 'John', last_name: 'Doe', roles: ['admin'] },
+          { userId: 'mocked', first_name: 'Mock', last_name: 'User', roles: ['admin'] },
         ]
       }
     });
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     await page.goto(url);
 
@@ -41,7 +41,7 @@ test.describe('New Incident page', () => {
     await page.locator('[data-cy="implicated-systems-input"] input').first().fill('children');
     await page.keyboard.press('Enter');
 
-    await fillAutoComplete(page, '#input-editors', 'Joh', 'John Doe');
+    await fillAutoComplete(page, '#input-editors', 'John', 'John Doe');
 
     await page.getByText('Save').click();
 
@@ -52,7 +52,7 @@ test.describe('New Incident page', () => {
 
     await init();
 
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+    await login();
 
     const newIncidentId = 5;
 
