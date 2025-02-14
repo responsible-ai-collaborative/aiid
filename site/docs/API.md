@@ -102,7 +102,7 @@ npm run codegen
   }
   ```
 
-These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
+These subscription types are also documented in [subscriptions.js](..//gatsby-site/src/utils/subscriptions.js) file.
 
 ### Sending Email Notifications
 
