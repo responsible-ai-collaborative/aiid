@@ -137,6 +137,16 @@ class Translator {
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
 
+      // Check if the translation is empty. The translation API sometimes returns empty strings with a 200 status code.
+      if (result === '') {
+        this.reporter.error(
+          `Error translating report ${entry.report_number}, ${keys[i]} field is empty`
+        );
+        throw new Error(
+          `Translation process failed for report ${entry.report_number}. ${keys[i]} field is empty`
+        );
+      }
+
       const key = keys[i];
 
       translatedEntry[key] = result;
