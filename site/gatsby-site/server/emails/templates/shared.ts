@@ -29,7 +29,8 @@ const insertContent= (content: string, variables: any): string  => {
 					<img
 						alt="AIID"
 						src="https://res.cloudinary.com/pai/image/upload/v1727286210/Black_Glowing_AIID_400x218_jqcgpb.png"
-						height="100"
+            width="200"
+						height="109"
 					/>
 					<div style="${headerTitleStyle}">
 						AI INCIDENT DATABASE
@@ -59,7 +60,6 @@ const wrapperStyle: string = ignoreWhitespace(`
 
 const headerStyle: string = ignoreWhitespace(`
   padding: 16px;
-  height: 100px;
   text-align: center;
   margin-bottom: 16px;
 `);
