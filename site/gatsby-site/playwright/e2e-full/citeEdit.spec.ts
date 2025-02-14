@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import config from '../config';
 import { init } from '../memory-mongo';
 import reports from '../seeds/aiidprod/reports';
-import reports_es from '../seeds/translations/reports_es';
+import reportsTranslations from '../seeds/translations/reports';
 import gql from 'graphql-tag';
 
 test.describe('Edit report', () => {
@@ -49,7 +49,7 @@ test.describe('Edit report', () => {
 
     await expect(page.locator('.submit-report-tags [option="Test Tag"]')).toHaveCount(1);
 
-    const report_es = reports_es.find((r) => r.report_number === 3);
+    const report_es = reportsTranslations.find((r) => r.report_number === 3 && r.language === 'es');
 
     await expect(page.locator('[data-cy="translation-es"] [type="text"]')).toHaveValue(report_es.title);
 
@@ -101,7 +101,7 @@ test.describe('Edit report', () => {
           title
           url
           editor_notes
-          translations_es: translations(input: "es") {
+          translations(languages: ["es"]) {
             title
             text
           }
@@ -119,10 +119,10 @@ test.describe('Edit report', () => {
       title: 'Test Title',
       url: 'https://www.test.com/test',
       editor_notes: 'Pro iustitia tantum',
-      translations_es: {
+      translations: [{
         title: 'Este es un titulo en Espanol!',
         text: '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
-      },
+      }],
     })
   });
 
@@ -174,7 +174,7 @@ test.describe('Edit report', () => {
           title
           url
           editor_notes
-          translations_es: translations(input: "es") {
+          translations(languages: ["es"]) {
             title
             text
           }
@@ -192,10 +192,10 @@ test.describe('Edit report', () => {
       title: 'Test Title',
       url: 'https://www.test.com/test',
       editor_notes: 'Pro iustitia tantum',
-      translations_es: {
+      translations: [{
         title: 'Este es un titulo en Espanol!',
         text: '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
-      },
+      }],
     })
   });
 
