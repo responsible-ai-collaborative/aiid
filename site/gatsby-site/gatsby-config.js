@@ -90,9 +90,9 @@ const plugins = [
         'entity_relationships',
       ],
       connectionString: config.mongodb.connectionString,
-      extraParams: {
-        replicaSet: config.mongodb.replicaSet,
-      },
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
     },
   },
   // TODO: Remove the following source once all reports are migrated to the new schema
@@ -108,9 +108,9 @@ const plugins = [
         []
       ),
       connectionString: config.mongodb.connectionString,
-      extraParams: {
-        replicaSet: config.mongodb.replicaSet,
-      },
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
     },
   },
   {
