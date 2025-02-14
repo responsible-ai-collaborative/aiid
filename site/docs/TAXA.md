@@ -82,10 +82,10 @@ Let's say you want to add the `CTECH` Taxonomy.
 }
 ```
 
-4. Update `createCitiationPages.js` to have it pull the new taxonomy definitions. The relevant lines are:
+4. Update `createCitationPages.js` to have it pull the new taxonomy definitions. The relevant lines are:
 
-   - /site/gatsby-site/page-creators/createCitiationPages.js#L125
-   - /site/gatsby-site/page-creators/createCitiationPages.js#L180
+   - /site/gatsby-site/page-creators/createCitationPages.js#L125
+   - /site/gatsby-site/page-creators/createCitationPages.js#L180
 
 5. Restart Gatsby
 

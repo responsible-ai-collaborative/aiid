@@ -222,7 +222,7 @@ When building the site, some steps can take a while to run. This can be inconven
 Example:
 
 ```bash
-SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitiationPages npm run start
+SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitationPages npm run start
 ```
 
 In general, skipping the TSNE visualization has the most significant reduction in build time.
