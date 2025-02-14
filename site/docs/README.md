@@ -36,5 +36,5 @@ Details about the AIID API, including how to access and interact with it, and in
 
 1. Open issues on [GitHub](https://github.com/responsible-ai-collaborative/aiid/issues)
 2. Visit the [contact page](https://incidentdatabase.ai/contact)
-3. Join the project's Slack (link available on contact page)
+3. Join the project's [Slack](https://join.slack.com/t/raicollab/shared_invite/zt-2ztu81jvq-kZLH0KCF8ilpF~iqp33G3A)
 4. Subscribe to the [announcements mailing list](https://groups.google.com/g/incidentsdb)
