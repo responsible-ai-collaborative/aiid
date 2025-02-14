@@ -1,6 +1,6 @@
 # "Serverless" Database
 
-The AIID is stored on MongoDB as document collections and hosted in [MongoDB Realm](https://www.mongodb.com/realm). MongoDB is responsible for managing the availability and backups of the database, as well as presenting web-accessible APIs for the content. This document details the database structure as is present on the MongoDB servers. Database exports are available upon request to `aiid.export@incidentdatabase.ai`, but for most database development needs you should be able to interface with the production database.
+The AIID is stored on MongoDB as document collections and hosted in [MongoDB Realm](https://www.mongodb.com/realm). MongoDB is responsible for managing the availability and backups of the database, as well as presenting web-accessible APIs for the content. This document outlines the database structure as it exists on the MongoDB servers. Database exports are available upon request to `aiid.export@incidentdatabase.ai`, but for most database development needs you should be able to interface with the production database.
 
 # Administering Data
 
@@ -16,6 +16,7 @@ Administering data requires administrative access to the database. This access i
 * `taxa`: Metadata describing the taxonomies of the classifications collection.
 * `classifications`: All the taxonomic classifications of incident records.
 * `entities`: The organizations and individuals related to incidents.
+* `entity_relationships`: A collection that connects entities that share a relationship.
 
 
 ## Incidents Collection Details
@@ -43,6 +44,7 @@ Administering data requires administrative access to the database. This access i
 * `Alleged deployer of AI system`: String[] The entities responsible for deploying the AI system in the real world.
 * `Alleged developer of AI system`: String[] The entities responsible for developing the AI system in the real world.
 * `Alleged harmed or nearly harmed parties`: String[] The entities harmed as a result of the AI system.
+* `implicated systems`: String[] The incident's AI Implicated systems.
 
 ## Reports Collection Details
 
@@ -403,6 +405,14 @@ It is not specified.
 * `entity_id`: `google` # Identifies an Entity, it is generaly the computed slug from the Entity's name.
 * `name`: `Google` # Name of the Entity.
 
+## Entity Relationships Collection Details
 
+### Systems
+
+* `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* `sub`: `google` # Refers to the current Entity, using its `entity_id`.
+* `obj`: `google` # Refers the object Entity to which it relates using its `entity_id`.
+* `is_symmetric`: true # Indicates if the relationships works both ways
+* `pred`: `related` # (string) The predicate on how those entities are related.
 
 
