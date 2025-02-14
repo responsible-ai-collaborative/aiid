@@ -1,3 +1,8 @@
+[!WARNING]
+Outdated Process
+Since we no longer depend on MongoDB Realm, the process for creating new taxonomies described below is outdated and may not work as expected. This documentation needs to be updated to reflect the current database structure and workflow.
+
+
 ## Adding new Taxonomies
 
 ### To add new taxonomies, follow these steps:

@@ -1,5 +1,8 @@
 # "Serverless" Database
 
+> [!IMPORTANT]  
+> This documentation is outdated. We no longer depend on MongoDB Realm. The database structure and hosting details may have changed. This document needs to be updated accordingly.
+
 The AIID is stored on MongoDB as document collections and hosted in [MongoDB Realm](https://www.mongodb.com/realm). MongoDB is responsible for managing the availability and backups of the database, as well as presenting web-accessible APIs for the content. This document outlines the database structure as it exists on the MongoDB servers. Database exports are available upon request to `aiid.export@incidentdatabase.ai`, but for most database development needs you should be able to interface with the production database.
 
 # Administering Data

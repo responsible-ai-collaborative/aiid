@@ -127,7 +127,7 @@ More details are available on our [documentation](site/docs/README.md).
 
 ## Public GraphQL endpoint
 
-The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
+The site exposes a read-only GraphQL endpoint at `/api/graphql`.
 
 ### Accessing the endpoint
 
