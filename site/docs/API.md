@@ -64,13 +64,6 @@ npm run codegen
 
 ### Subscription types
 
-- **All**: This subscription type is not defined yet.
-  ```
-  {
-      "userId": "63320ce63ec803072c9f529c"
-      "type": "all",
-  }
-  ```
 - **Incident**: Users with this subscription type will be notified when the incident associated is updated. This subscription type needs an incident_id value associated.
   ```
   {
