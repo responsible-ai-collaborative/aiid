@@ -175,20 +175,6 @@ function CiteTemplate({
             {locale == 'en' ? metaTitle : defaultIncidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
-            {incidentResponded && (
-              <div className="self-center">
-                <Badge color="success" data-cy="responded-badge">
-                  {t('Responded')}
-                </Badge>
-              </div>
-            )}
-            {isSubscribed && (
-              <div className="self-center">
-                <Badge color="success" data-cy="subscribed-badge">
-                  <Trans>Subscribed to Updates</Trans>
-                </Badge>
-              </div>
-            )}
             {!readOnly && (
               <>
                 <div className="flex flex-wrap justify-end shrink">
@@ -238,6 +224,22 @@ function CiteTemplate({
               </>
             )}
           </div>
+        </div>
+        <div className="flex w-full gap-2">
+          {incidentResponded && (
+            <div className="self-center">
+              <Badge color="success" data-cy="responded-badge">
+                {t('Responded')}
+              </Badge>
+            </div>
+          )}
+          {isSubscribed && (
+            <div className="self-center">
+              <Badge color="success" data-cy="subscribed-badge">
+                <Trans>Subscribed to Updates</Trans>
+              </Badge>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex mt-6 justify-between">
