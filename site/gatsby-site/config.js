@@ -6,12 +6,10 @@ const config = {
   },
   realm: {
     review_db: {
-      db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'submissions',
     },
     production_db: {
-      db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_history_name: 'history',
       db_custom_data: 'customData',
