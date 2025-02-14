@@ -1,4 +1,4 @@
-import { handler } from '../../netlify/functions/auth';
+const { handler } = require('../../netlify/functions/auth');
 import { HandlerEvent, HandlerContext } from '@netlify/functions'
 import * as emails from '../emails';
 import { getCollection, seedFixture } from './utils';
@@ -12,6 +12,7 @@ function mockAuthEmailEvent(operation: string, email: string, callbackUrl: strin
 
     return {
         path: "/api/auth/signin/http-email",
+        rawUrl: "http://localhost:8000/api/auth/signin/http-email",
         httpMethod: "POST",
         queryStringParameters: {
             operation,
@@ -38,6 +39,7 @@ function mockMagicLinkEvent(email: string, token: string, callbackUrl: string): 
     return {
         path: "/api/auth/callback/http-email",
         httpMethod: "GET",
+        rawUrl: `http://localhost:8000/api/auth/callback/http-email?callbackUrl=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(email)}`,
         queryStringParameters: {
             callbackUrl,
             token,
@@ -64,6 +66,7 @@ function mockAuthSessionEvent(sessionToken: string): Partial<HandlerEvent> {
         path: "/api/auth/session",
         httpMethod: "GET",
         queryStringParameters: {},
+        rawUrl: `http://localhost:8000/api/auth/session`,
         headers: {
             cookie: `next-auth.session-token=${sessionToken}; next-auth.callback-url=${encodedCallbackUrl}; next-auth.csrf-token=3fc5b5ba3bb4457090ea32b335e69294637dca5a9473dcc669a4ed00cdadf199%7C1ecd6e1064b23beb6a1e215165a586be0a08bed2d588cc0a440ab3e43c4d2e87`,
             connection: "close",
@@ -138,11 +141,9 @@ describe('Auth', () => {
                 dynamicData: {
                     magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
                 },
-                recipients: [
-                    {
-                        email: "test.user@incidentdatabase.ai",
-                    },
-                ],
+                recipient: {
+                    email: "test.user@incidentdatabase.ai",
+                },
                 subject: "Secure link to log in to AIID",
                 templateId: "Login",
 
@@ -189,11 +190,9 @@ describe('Auth', () => {
                 dynamicData: {
                     magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2Fsome-path%2Fsome-page&token=.+&email=test.user%40incidentdatabase.ai$/),
                 },
-                recipients: [
-                    {
-                        email: "test.user@incidentdatabase.ai",
-                    },
-                ],
+                recipient: {
+                    email: "test.user@incidentdatabase.ai",
+                },
                 subject: "Secure link to log in to AIID",
                 templateId: "Login",
 
@@ -223,11 +222,9 @@ describe('Auth', () => {
                 dynamicData: {
                     magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
                 },
-                recipients: [
-                    {
-                        email: "test.user@incidentdatabase.ai",
-                    },
-                ],
+                recipient: {
+                    email: "test.user@incidentdatabase.ai",
+                },
                 subject: "Secure link to create your AIID account",
                 templateId: "Signup",
             });
@@ -270,11 +267,9 @@ describe('Auth', () => {
                 dynamicData: {
                     magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
                 },
-                recipients: [
-                    {
-                        email: "test.user@incidentdatabase.ai",
-                    },
-                ],
+                recipient: {
+                    email: "test.user@incidentdatabase.ai",
+                },
                 subject: "Secure link to log in to AIID",
                 templateId: "Login",
             });
@@ -313,11 +308,9 @@ describe('Auth', () => {
                 dynamicData: {
                     magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2Fsome-path%2Fsome-page&token=.+&email=test.user%40incidentdatabase.ai$/),
                 },
-                recipients: [
-                    {
-                        email: "test.user@incidentdatabase.ai",
-                    },
-                ],
+                recipient: {
+                    email: "test.user@incidentdatabase.ai",
+                },
                 subject: "Secure link to create your AIID account",
                 templateId: "Signup",
             });

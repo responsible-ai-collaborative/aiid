@@ -9,6 +9,7 @@
 
 import config from "../../server/config"
 import { HandlerEvent } from '@netlify/functions'
+import cookie from 'cookie';
 
 export const createResponse = () => {
 
@@ -121,4 +122,31 @@ export const recreateRequest = (event: HandlerEvent) => {
         headers: parseHeaders(event),
         body: parseBody(event),
     }
+}
+
+interface ExtendedHandlerEvent extends HandlerEvent {
+    [key: string]: unknown;
+}
+
+export const netlifyEventToLambdaEvent = (event: HandlerEvent) => {
+
+    const extendedEvent = event as ExtendedHandlerEvent;
+
+    if (!extendedEvent.requestContext) {
+        extendedEvent.requestContext = { http: { method: event.httpMethod } };
+    }
+
+    if (!extendedEvent.rawQuery) {
+        extendedEvent.rawQueryString = event.rawQuery;
+    }
+
+    if (!extendedEvent.method) {
+        extendedEvent.method = event.httpMethod;
+    }
+
+    if (!extendedEvent.cookies) {
+        extendedEvent.cookies = cookie.parse(event.headers.cookie || '');
+    }
+
+    return extendedEvent;
 }
