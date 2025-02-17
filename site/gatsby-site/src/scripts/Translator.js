@@ -199,7 +199,7 @@ class Translator {
 
       let translated = await this.translateReportsCollection({ items, to });
 
-      // filter translated reports that are not empty
+      // filter translated reports that are empty
       translated = translated.filter((t) => t.text !== '' && t.title !== '');
 
       if (translated.length > 0) {
