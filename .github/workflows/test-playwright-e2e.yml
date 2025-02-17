@@ -109,10 +109,32 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: site/gatsby-site
 
-      # Start the server in the background
+      # Start the server and redirect output
       - name: Start local server
         run: |
-          nohup npm run serve &
+          npm run serve > server.log 2>&1 &
+          SERVER_PID=$!
+          echo "Server PID: $SERVER_PID"
+        working-directory: site/gatsby-site
+        env:
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
+          MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          TEST_FOLDER: playwright/e2e-full/
+          MAILERSEND_API_KEY: something
+          NOTIFICATIONS_SENDER_NAME: Test Preview
+          NOTIFICATIONS_SENDER: test@test.com
+          SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+
+      # Show server logs
+      - name: Show server logs
+        run: tail -f server.log &
         working-directory: site/gatsby-site
 
       # Wait for the server to be available
@@ -144,6 +166,13 @@ jobs:
           SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+      
+      - name: Kill server
+        if: always()
+        run: |
+          echo "Killing server process: $SERVER_PID"
+          kill -9 $SERVER_PID || true
+        working-directory: site/gatsby-site
 
       - name: Upload Playwright traces
         if: failure()
