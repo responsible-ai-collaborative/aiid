@@ -1,4 +1,17 @@
-## Setting Up a Local Development Environment
+<p align="center">
+  <a href="https://incidentdatabase.ai#gh-light-mode-only">
+    <img src="./static/logos/Blue_AIID.svg" height="100">
+  </a>
+  <a href="https://incidentdatabase.ai#gh-dark-mode-only">
+    <img src="./static/logos/White_AIID.svg" height="100">
+  </a>
+</p>
+
+<h1 align="center">
+ Artificial Intelligence Incident Database
+</h1>
+
+## Setting Up a Basic Development Environment
 
 Once you have cloned the repository, to set up a local development environment for the AIID project, follow these steps:
 
@@ -18,44 +31,73 @@ Once you have cloned the repository, to set up a local development environment f
    npm install
    ```
 
-3. **Configure Environment Variables**
+3. **Configure the Environment Variables**
 
    Create a `.env` file in the root of the `gatsby-site` directory. Add the following environment variables to the file, replacing the placeholders with your actual credentials:
 
    ```env
-   REALM_API_APP_ID=  # Application ID for MongoDB Realm API
-   REALM_API_GROUP_ID=  # Group ID for MongoDB Realm API
-   REALM_API_PRIVATE_KEY=  # Private key for accessing the MongoDB Realm API
-   REALM_API_PUBLIC_KEY=  # Public key for accessing the MongoDB Realm API
-   REALM_GRAPHQL_API_KEY=  # API key for accessing the Realm GraphQL API
-   REALM_APP_ID=  # App ID used to access MongoDB Realm services
+   # Mongo database
+
    API_MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
-   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=  # Token for sending error reports to Rollbar from the server
-   GATSBY_REALM_APP_ID=  # Application ID used in the Gatsby frontend for MongoDB Realm, same as REALM_APP_ID
-   GATSBY_ALGOLIA_APP_ID=  # Application ID for Algolia search integration in the Gatsby app
-   GATSBY_ALGOLIA_SEARCH_KEY=  # Public search key for Algolia, used in the Gatsby frontend
-   ALGOLIA_ADMIN_KEY=  # Admin key for managing the Algolia index
    MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
-   MONGODB_REPLICA_SET=  # Name of the MongoDB replica set for high availability
+   # MONGODB_REPLICA_SET= # Name of the MongoDB replica set for high availability, leave it empty if not using a replica set or in development
    MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string for the translations database
-   GOOGLE_MAPS_API_KEY=  # API key for accessing Google Maps services
-   GATSBY_AVAILABLE_LANGUAGES=  # List of languages available for the Gatsby app (e.g., en, es, fr)
+   MONGODB_MIGRATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110
+
+   # Rollbar
+
+   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=dummy  # Token for sending error reports to Rollbar from the server
+   GATSBY_ROLLBAR_TOKEN=dummy  # Token for Rollbar error tracking in the Gatsby frontend
+
+
+   # Algolia
+
+   GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS  # Application ID for Algolia search integration in the Gatsby app
+   GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c  # Public search key for Algolia, used in the Gatsby frontend
+   ALGOLIA_ADMIN_KEY=  # Admin key for managing the Algolia index
+
+
+   # Translations
+
+   GATSBY_AVAILABLE_LANGUAGES=en,es  # List of languages available for the Gatsby app (e.g., en, es, fr)
    GOOGLE_TRANSLATE_API_KEY=  # API key for accessing Google Translate services
-   GATSBY_ROLLBAR_TOKEN=  # Token for Rollbar error tracking in the Gatsby frontend
+
+
+   # Cloudflare R2 storage
+
    CLOUDFLARE_R2_ACCOUNT_ID=  # Account ID for Cloudflare R2 storage service
    CLOUDFLARE_R2_ACCESS_KEY_ID=  # Access key ID for Cloudflare R2 storage
    CLOUDFLARE_R2_SECRET_ACCESS_KEY=  # Secret access key for Cloudflare R2 storage
    CLOUDFLARE_R2_BUCKET_NAME=  # Name of the Cloudflare R2 bucket for storage
    GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=  # Public URL for accessing the Cloudflare R2 bucket from the Gatsby app
-   MAILERSEND_API_KEY= # API key for MailerSend email service
-   NOTIFICATIONS_SENDER_NAME= # Name of the sender for email notifications
-   NOTIFICATIONS_SENDER= # Email address of the sender for email notifications
-   SITE_URL=http://localhost:8000
+
+
+   # Email notifications
+
+   MAILERSEND_API_KEY=dummy # API key for MailerSend email service or dummy value if you don't plan to send emails
+   NOTIFICATIONS_SENDER_NAME=AIID Notifications # Name of the sender for email notifications
+   NOTIFICATIONS_SENDER=notifications@incidentdatabase.ai # Email address of the sender for email notifications
+
+   # Prismic
+
+   PRISMIC_ACCESS_TOKEN=MC5aSjFfa0JFQUFDQUFiOURr.77-977-977-977-977-977-9NgI8PU7vv70rKu-_ve-_ve-_ve-_ve-_ve-_vUlN77-9Q2fvv71O77-977-9Y--_ve-_vQ # Access token for Prismic API
+   GATSBY_PRISMIC_REPO_NAME=aiidstaging # Name of the Prismic repository
+
+
+   # Auth
+
+   NEXTAUTH_URL=http://localhost:8000
+   NEXTAUTH_SECRET=678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
+
+
+   # Other
+
+   GOOGLE_MAPS_API_KEY=  # API key for accessing Google Maps services
+   SITE_URL=http://localhost:8000 # URL
+   SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip during build
    ```
 
-   Ensure that each variable is set correctly to match your development environment's requirements.
-
-4. **Start a Memory Mongo Instance**
+4. **Start a Memory MongoDB Instance**
 
    To start a memory MongoDB instance, run the following command:
 
@@ -63,7 +105,9 @@ Once you have cloned the repository, to set up a local development environment f
    npm run start:memory-mongo
    ```
 
-5. **Start Gatsby and Netlify Development Server**
+   This command will start a MongoDB instance in memory, which is useful for local development and testing. The instance will be available at `mongodb://localhost:4110`. This is an ephemeral instance that will be destroyed when the process is terminated. It is seeded with some initial data to facilitate development. The seed data is stored in the `playwright/seeds` directory.
+
+5. **Start the Gatsby and Netlify Development Server**
 
    Finally, start the Gatsby development server along with Netlify dev using:
 
@@ -71,75 +115,70 @@ Once you have cloned the repository, to set up a local development environment f
    npm run start
    ```
 
-Follow these steps to get your local environment up and running for development with the AIID project. Make sure to replace the placeholder values in the `.env` file with your actual credentials to ensure proper functionality.
+The project is now running locally and can be accessed at `http://localhost:8000`, and the API is available at `http://localhost:8000/api/graphql`.
 
-## AIID API 
+6. **Implementing a New Feature**
 
-### Overview
+Both the Gatsby frontend and the API are running in development mode, allowing you to make changes and see them reflected in real-time.
 
-The AIID API is built to facilitate interactions with the AI Incident Database. It is implemented as a collection of serverless functions that are composed ("stitched") into a singular GraphQL endpoint.
+## Setting Up a Development Environment with Production Data
 
-1. **Access the Apollo Explorer**
+To set up a local development environment with production data, follow the steps from the previous section, but instead of using the memory MongoDB instance with seed data, you will need to import a recent backup of the production database into it or use an existing MongoDB instance with the production data.
 
-   Navigate to `http://localhost:8000/graphql` in your web browser. The Apollo Explorer instance should be displayed, allowing you to introspect and run queries against the API.
+1. Download a recent backup of the production database from the Cloudflare R2 bucket. The backup file should be named `aiid-backup-<timestamp>.tar.gz` and can be found at https://incidentdatabase.ai/research/snapshots/
 
-### Performing Queries
+2. Extract the backup file and import the data into your MongoDB instance. In this example, we'll use the memory MongoDB instance:
 
-Here is an example query you can run in the Apollo Explorer to retrieve incidents:
+   ```bash
+   mongorestore mongodb://127.0.0.1:4110/aiidprod ./aiidprod/ --noOptionsRestore --drop
+   mongorestore mongodb://127.0.0.1:4110/translations ./translations/ --noOptionsRestore --drop
+   ```
 
-```graphql
-query {
-  incident {
-    incident_id
-    title
-  }
-}
+3. Start the Gatsby and Netlify Development Server:
+
+   ```bash
+   npm run start
+   ```
+
+The project is now running locally with production data and can be accessed at `http://localhost:8000`.
+
+4. (Optional) Push to Your Own Algolia Index
+
+If the feature you are developing requires changes to the Algolia index, you can push the changes to your own Algolia index by setting the `ALGOLIA_ADMIN_KEY` environment variable to your own Algolia admin key and running the following command:
+
+```bash
+npm run algolia:push
 ```
 
-### Expected Response
+5. (Optional) Pushing to Your Own Cloudflare R2 Bucket, Prismic, and Other Services
 
-The query should return a response similar to this:
+Please refer to the [Deployment Guide](../docs/DEPLOYMENT.md) for more information on how to set up these services.
 
-```json
-{
-  "data": {
-    "incident": {
-      "incident_id": 1,
-      "title": "Incident 1"
-    }
-  }
-}
+## Running Tests
+
+### Playwright End to End Tests
+
+To run Playwright end-to-end tests locally:
+
+```sh
+npm run test:e2e
 ```
 
-### Project Structure
+It is recommended to use the Playwright extension for VS Code to enhance your testing experience.
 
-#### Folders
 
-The API is contained within the `server` directory. The following folders are present in the project:
+### Jest API Tests
 
-- **fields/**: Contains the field definitions for the GraphQL root fields.
-- **generated/**: Holds the generated GraphQL types derived from the schema using the GraphQL code generator CLI.
-- **tests/**: Contains the test cases written using Jest.
-- **types/**: Contains the base GraphQL types.
-
-#### Important Files
-
-- **`remote.ts`**: Handles the auto-generated MongoDB Atlas schema, ignoring fields that have migrated to the local GraphQL schema.  
-- **`local.ts`**: Handles the local GraphQL schema, where migrated fields from the remote schema are added. These fields are ignored in `remote.ts`.  
-- **`schema.ts`**: Combines the remote and local schemas into the final schema using **schema stitching** from GraphQL Tools.
-- **`netlify/functions/graphql.ts`**: Sets up the **GraphQL server** and exposes it as a **Netlify function**, loading the schema from `schema.ts`.
-- 
-### Running Tests
-
-To run Jest tests locally:
+To run Jest API tests locally:
 
 ```sh
 npm run test:api
 ```
 
-It is recommended to install the Jest extension for VS Code to enhance the testing experience.
+It is recommended to install the Jest extension for VS Code to enhance your testing experience.
 
-### Running Code Generation
+
+## Running Code Generation
 
 To run the GraphQL code generation CLI to generate TypeScript typings from the schema, allowing statically typed Apollo client mutations and queries, and statically typed server code:
 
@@ -147,106 +186,68 @@ To run the GraphQL code generation CLI to generate TypeScript typings from the s
 npm run codegen
 ```
 
-### Schema and API Stitching
+Running this command is only necessary after making changes to the GraphQL schema or queries.
 
-> [!IMPORTANT]
+## Additional Configuration
 
-The API previously relied on the MongoDB Atlas Realm GraphQL API to fetch data, [but now that it has been deprecated](https://www.mongodb.com/developer/products/atlas/deprecating-mongodb-atlas-graphql-hosting-services/), we have migrated to a new API that we implement in this codebase. During the migration from Realm to our API, we stitch two GraphQL schemas: the auto-generated one from Atlas and the one defined in this codebase. These schemas can be found in the `remote.ts` and `local.ts` files respectively. The migration process involves progressively transferring GraphQL fields and functionality from the remote schema to the local one. The final combined schema is found in `schema.ts`.
+### Using Magic Links for Local Authentication
 
-### Email notifications
+During local development, you can use the magic links utility script to simulate the authentication flow without setting up email services. This is particularly useful for testing and debugging authentication features.
 
-#### Subscription types
+The script generates magic login links that would normally be sent via email.
 
-- **All**: This subscription type is not defined yet.
-    ```
-    {
-        "userId": "63320ce63ec803072c9f529c"
-        "type": "all",
-    }
-    ```
-- **Incident**: Users with this subscription type will be notified when the incident associated is updated. This subscription type needs an incident_id value associated.
-    ```
-    {
-        "userId": "63320ce63ec803072c9f529c"
-        "type": "incident",
-        "incident_id": 10,
-    }
-    ```
-- **New Incident**: Users with this subscription type will be notified when a new Incident is created. The notification will be sent after finish the next site build when the Incident page is actually created.
-    ```
-    {
-        "userId": "63320ce63ec803072c9f529c"
-        "type": "new-incidents",
-    }
-    ```
-- **Entities**: Users can subscribe to a specific Entity. The user with this subscription type will be notified when a new Incident associated with an specific Entity is created or when an existing Incident is updated to be associated with that Entity.
-    ```
-    {
-        "userId": "63320ce63ec803072c9f529c",
-        "type": "entity"
-        "entityId": "openai",
-    }
-    ```
-- **Submission Promoted**: Users that submit a new Incident Report are automatically subscribed to its promotion. Once the submission has been approved by an editor, the user will receive an email informing that the submission is now an incident/issue/report.
-    ```
-    {
-        "userId": "63320ce63ec803072c9f529c",
-        "type": "submission-promoted"
-    }
-    ```
+Usage:
 
-These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
+```bash
+npm run magic-link <email> [callbackUrl] 
+```
 
-#### Sending Email Notifications
+Examples:
 
-[MailerSend](https://www.mailersend.com/) is used to send email notifications.
+```
+# Generate a magic link that redirects to homepage after login
+npm run magic-link user@example.com /
 
-Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
-When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
-And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
+# Generate a magic link that redirects to incidents page
+npm run magic-link user@example.com /apps/discover
 
-#### Notifications collection definition
+# Generate a magic link for admin testing
+npm run magic-link admin@example.com /admin/dashboard
+```
 
-- **Incident Updated**
-    ```
-    {
-        "type": "incident-updated",
-        "incident_id": 374,
-        "processed": false
-    }
-    ```
-- **New Incident Report**
-    ```
-    {
-        "type": "new-report-incident",
-        "incident_id": 374,
-        "report_number": 2172,
-        "processed": false
-    }
-    ```
-- **New Incident**
-    ```
-    {
-        "type": "new-incidents",
-        "incident_id": 374,
-        "processed": false
-    }
-    ```
-- **Entities**
-    ```
-    {
-        "type": "entity",
-        "incident_id": 374,
-        "entity_id": "openai",
-        "isUpdate": true,
-        "processed": false
-    }
-    ```
-- **Submission Promoted**
-    ```
-    {
-        "type": "submission-promoted",
-        "incident_id": 374,
-        "processed": false
-    }
-    ```
+### Faster Development Builds
+
+When building the site, some steps can take a while to run. This can be inconvenient if you're working on a feature that isn't related to the slowest steps in the build process. To avoid this problem, you can set the environment variable `SKIP_PAGE_CREATOR` to a comma-separated list of page-creator functions found in [`gatsby-node`](https://github.com/responsible-ai-collaborative/aiid/blob/main/site/gatsby-site/gatsby-node.js) that should be skipped. These include: `createMdxPages`, `createCitationPages`, `createWordCountsPages`, `createBackupsPage`, `createTaxonomyPages`, `createDownloadIndexPage`, `createDuplicatePages`, `createTsneVisualizationPage`, and `createEntitiesPages`. For instance, to run a development build skipping the creation of the TSNE (spatial) visualization and citation pages, you would run:
+
+Example:
+
+```bash
+SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitationPages npm run start
+```
+
+In general, skipping the TSNE visualization has the most significant reduction in build time.
+
+
+### Restoring Production database to Staging
+
+There is a GitHub Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
+Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow`
+
+To enable this workflow these [GitHub secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
+
+```
+DB_PRODUCTION_CONNECTION_STRING=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
+
+NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
+```
+
+
+
+## Further Reading
+
+For more information on the project structure, how to deploy the project, and other useful information, refer to the [Project Documentation](../docs/README.md), [Frontend Documentation](../docs/FRONTEND.md), and [API Documentation](../docs/API.md).
+
+## Deployment
+
+For a detailed guide on deploying the project, refer to the [Deployment Guide](../docs/DEPLOYMENT.md).
