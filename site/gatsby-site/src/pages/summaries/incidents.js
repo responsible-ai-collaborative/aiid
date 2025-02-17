@@ -52,7 +52,7 @@ const IncidentList = ({ incidents }) => {
               </Button>
             </div>
           </div>
-          <div className="text-base text-gray-700 italic">&quot;{incident.title}&quot;</div>
+          <div className="text-base text-gray-700 italic">&ldquo;{incident.title}&rdquo;</div>
           <ReportList items={incident.reports} />
         </Card>
       ))}
