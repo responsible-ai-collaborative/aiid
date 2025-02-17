@@ -170,8 +170,8 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-4 items-center">
-          <div className="flex flex-row flex-nowrap justify-between w-full gap-4">
+        <div className="w-full flex justify-between flex-wrap xl:flex-nowrap gap-4 items-center">
+          <div className="flex flex-row flex-wrap xl:flex-nowrap justify-between w-full gap-4">
             <h1 data-testid="incident-title" className="text-2xl inline flex-grow">
               {locale == 'en' ? metaTitle : defaultIncidentTitle}
             </h1>
