@@ -109,6 +109,21 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: site/gatsby-site
 
+      # Start the server in the background
+      - name: Start local server
+        run: |
+          nohup npm run serve &
+        working-directory: site/gatsby-site
+
+      # Wait for the server to be available
+      - name: Wait for server to start
+        run: |
+          while ! nc -z localhost 8000; do
+            echo "Waiting for server to start on port 8000..."
+            sleep 2
+          done
+          echo "Server has started on port 8000."
+
       - name: Run playwright tests
         run: npm run test:e2e:ci
         working-directory: site/gatsby-site

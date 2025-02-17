@@ -52,9 +52,9 @@ jobs:
       environment: production
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
 
-  call-test-playwright-full:
+  call-test-playwright-e2e:
     if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test-playwright-full.yml
+    uses: ./.github/workflows/test-playwright-e2e.yml
     needs: [cache-modifier]
     secrets: inherit
     with:
@@ -70,7 +70,7 @@ jobs:
         cache-modifier,
         call-test-api,
         call-test-playwright,
-        call-test-playwright-full,
+        call-test-playwright-e2e,
       ]
     secrets: inherit
     permissions:

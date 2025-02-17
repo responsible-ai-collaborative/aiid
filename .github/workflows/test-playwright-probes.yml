@@ -18,6 +18,11 @@ on:
         type: string
         required: false
         default: ""
+      site-url:
+        description: The URL of the site to deploy
+        type: string
+        default: ""
+        required: false
 
 jobs:
   tests:
@@ -85,8 +90,8 @@ jobs:
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
-          SITE_URL: http://localhost:8000
-          NEXTAUTH_URL: http://localhost:8000
+          SITE_URL: ${{ inputs.site-url }}
+          NEXTAUTH_URL: ${{ inputs.site-url }}
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
 
       - uses: actions/upload-artifact@v4
