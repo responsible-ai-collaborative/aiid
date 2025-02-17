@@ -119,7 +119,7 @@ async function notificationsToNewIncidents(context: Context) {
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
                                     implicatedSystems: buildEntityList(allEntities, incident.implicated_systems),
                                 },
-                                templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
+                                templateId: 'NewIncident'
                             };
 
                             await sendBulkEmails(sendEmailParams);
@@ -214,7 +214,6 @@ async function notificationsToIncidentUpdates(context: Context) {
                                     reportTitle: newReport ? newReport.title : '',
                                     reportAuthor: (newReport && newReport.authors[0]) ? newReport.authors[0] : '',
                                 },
-                                // Template value from function name sufix from "site/realm/functions/config.json"
                                 templateId: newReportNumber ? 'NewReportAddedToAnIncident' : 'IncidentUpdate',
                             };
 
@@ -310,7 +309,6 @@ async function notificationsToNewEntityIncidents(context: Context) {
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
                                     implicatedSystems: buildEntityList(allEntities, incident.implicated_systems),
                                 },
-                                // Template value from function name sufix from "site/realm/functions/config.json"
                                 templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident'
                             };
 
@@ -383,7 +381,7 @@ async function notificationsToNewPromotions(context: Context) {
                                 incidentDescription: incident.description ?? undefined,
                                 incidentDate: incident.date,
                             },
-                            templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
+                            templateId: 'SubmissionApproved'
                         };
 
                         await sendBulkEmails(sendEmailParams);

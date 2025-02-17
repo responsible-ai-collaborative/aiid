@@ -23,15 +23,6 @@ jobs:
     with:
       skip-cache: ${{ github.event.inputs.skip-cache }}
 
-  call-atlas:
-    uses: ./.github/workflows/realm.yml
-    secrets: inherit
-    needs: cache-modifier
-    with:
-      sha: ${{ github.sha }}
-      environment: staging
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-
   call-test-api:
     uses: ./.github/workflows/test-api.yml
     needs: cache-modifier
@@ -43,7 +34,7 @@ jobs:
   call-test-build:
     uses: ./.github/workflows/test-build.yml
     secrets: inherit
-    needs: [cache-modifier, call-atlas]
+    needs: [cache-modifier]
     with:
       sha: ${{ github.sha }}
       environment: staging
