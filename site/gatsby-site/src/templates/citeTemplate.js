@@ -170,13 +170,13 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-4 items-center ">
+        <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-4 items-center">
           <div className="flex flex-row flex-nowrap justify-between w-full gap-4">
             <h1 data-testid="incident-title" className="text-2xl inline flex-grow">
               {locale == 'en' ? metaTitle : defaultIncidentTitle}
             </h1>
             {(incidentResponded || isSubscribed) && (
-              <div className="flex flex-wrap my-auto gap-2">
+              <div className="flex flex-wrap gap-2 my-auto">
                 {incidentResponded && (
                   <div className="self-center">
                     <Badge color="success" data-cy="responded-badge">
@@ -196,7 +196,7 @@ function CiteTemplate({
           </div>
           {!readOnly && (
             <>
-              <div className="flex flex-wrap justify-end shrink flex-nowrap">
+              <div className="flex justify-end items-start shrink flex-nowrap">
                 <SocialShareButtons
                   metaTitle={metaTitle}
                   path={locationPathName}
