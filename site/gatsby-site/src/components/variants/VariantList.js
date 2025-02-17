@@ -242,12 +242,15 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
         <Trans ns="variants">
           A &quot;variant&quot; is an AI incident similar to a known case—it has the same causes,
           harms, and AI system. Instead of listing it separately, we group it under the first
-          reported incident. Unlike other incidents, variants don’t need external sources.{' '}
+          reported incident. Unlike other incidents, variants do not need to have been reported
+          outside the AIID.{' '}
           <a href="https://arxiv.org/abs/2211.10384">Learn more from the research paper.</a>
         </Trans>
         {!readOnly && (
           <div className="flex items-center mt-4 gap-4">
-            <div className="font-semibold flex items-center">Seen something similar?</div>
+            <div className="font-semibold flex items-center">
+              <Trans ns="variants">Seen something similar?</Trans>
+            </div>
             <div>
               <Button
                 variant="outline-primary"
