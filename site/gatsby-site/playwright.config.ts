@@ -25,4 +25,15 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], launchOptions: { args: ['--auto-open-devtools-for-tabs'] } },
     },
   ],
+  // Start the web server if running in CI and the site URL is localhost
+  webServer:
+    process.env.CI && process.env.SITE_URL === 'http://localhost:8000'
+      ? {
+          command:
+            'npm run serve',
+          url: 'http://localhost:8000',
+          reuseExistingServer: !process.env.CI,
+          timeout: 120 * 1000,
+        }
+      : undefined,
 });
