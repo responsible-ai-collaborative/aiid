@@ -81,6 +81,16 @@ jobs:
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
 
+      - name: Read Gatsby cache
+        id: cache-gatsby
+        uses: actions/cache/restore@v4
+        env:
+          cache-name: cache-gatsby
+        with:
+          path: |
+            site/gatsby-site/.cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('site/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+
       - name: Set branch context URL
         continue-on-error: true
         run: |
@@ -124,9 +134,19 @@ jobs:
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
-          MAILERSEND_API_KEY: dummy 
+          MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
+
+      - name: Save Gatsby cache
+        id: save-gatsby-cache
+        uses: actions/cache/save@v4
+        env:
+          cache-name: cache-gatsby
+        with:
+          path: |
+            site/gatsby-site/.cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('site/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Build size
         run: |
@@ -138,7 +158,7 @@ jobs:
         run: |
           set -e
           # If no alias is specified, deploy to production
-          if [[ -z "${{ inputs.netlify-alias }}" ]]; then 
+          if [[ -z "${{ inputs.netlify-alias }}" ]]; then
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
