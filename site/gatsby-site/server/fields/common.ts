@@ -100,6 +100,7 @@ export const getUserAdminData = async (userId: string, context: Context): Promis
             creationDate: new Date(), //TODO: find a way to get this data
             lastAuthenticationDate: new Date(), //TODO: find a way to get this data
             disabled: false,
+            userId,
         }
     }
 
