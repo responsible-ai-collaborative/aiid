@@ -397,3 +397,77 @@ test('Translations - Should not translate if the report was already translated',
   sinon.assert.notCalled(reportsESCollection.insertMany);
   sinon.assert.calledOnce(mongoClient.close);
 });
+
+test("Translations - Should not insert report translation if the Google's translate API returns empty translations", async ({ page }) => {
+  const translatedReportsEN = [];
+
+  const translatedReportsES = [];
+
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
+
+  const reportsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(reports),
+    }),
+  };
+
+  const reportsENCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReportsEN),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
+  const reportsESCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReportsES),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
+  const mongoClient = {
+    connect: sinon.stub().resolves(),
+    close: sinon.stub().resolves(),
+    db: sinon.stub().returns({
+      collection: (name: string) => {
+        if (name === 'reports') return reportsCollection;
+        if (name === 'reports_en') return reportsENCollection;
+        if (name === 'reports_es') return reportsESCollection;
+        return null;
+      },
+    }),
+  };
+
+  // Mock Google Translate API to return empty translations only for the 'en' language
+  const translateClient = {
+    translate: sinon.stub().callsFake((payload, { to }) => {
+      if(to === 'en') return [['', '']];
+      return [payload.map((p: any) => `test-${to}-${p}`)];
+    }
+    ),
+  };
+
+  const translator = new Translator({
+    mongoClient,
+    translateClient,
+    languages: [{ code: 'es' }, {code: 'en'}],
+    reporter,
+    dryRun: false,
+  });
+
+  await translator.run();
+  
+  sinon.assert.calledOnce(mongoClient.connect);
+  sinon.assert.calledOnce(reportsCollection.find);
+  sinon.assert.calledThrice(translateClient.translate);
+  sinon.assert.calledOnce(reportsESCollection.insertMany);
+  sinon.assert.calledWith(reportsESCollection.insertMany, [{
+    report_number: 1,
+    text: 'test-es-Report 1 **text**',
+    title: 'test-es-Report 1 title',
+    plain_text: 'test-es-Report 1 text\n',
+  }]);
+  sinon.assert.notCalled(reportsENCollection.insertMany);
+  sinon.assert.callCount(reporter.error, 4);
+  sinon.assert.calledOnce(mongoClient.close);
+});
