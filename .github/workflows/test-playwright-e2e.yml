@@ -40,15 +40,15 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Read node modules from cache
+      - name: Cache node modules
         id: cache-nodemodules
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         env:
           cache-name: cache-install-folder
         with:
           path: |
             site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'

@@ -56,33 +56,24 @@ jobs:
         with:
           ref: ${{ inputs.sha }}
 
-      - name: Read node modules from cache
-        id: cache-nodemodules
-        uses: actions/cache/restore@v4
+      - name: Cache dependencies and Gatsby cache
+        id: cache-all
+        uses: actions/cache@v4
         env:
-          cache-name: cache-install-folder
+          cache-name: deploy-cache
         with:
           path: |
             site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+            site/gatsby-site/.cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
 
       - name: Install dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        if: steps.cache-all.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: site/gatsby-site
-
-      - name: Save node modules cache
-        id: save-nodemodules-cache
-        uses: actions/cache/save@v4
-        env:
-          cache-name: cache-install-folder
-        with:
-          path: |
-            site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
@@ -90,16 +81,6 @@ jobs:
 
       - name: Install Netlify CLI
         run: npm install netlify-cli -g
-
-      - name: Read Gatsby cache
-        id: cache-gatsby
-        uses: actions/cache/restore@v4
-        env:
-          cache-name: cache-gatsby
-        with:
-          path: |
-            site/gatsby-site/.cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('site/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set branch context URL
         continue-on-error: true
@@ -147,16 +128,6 @@ jobs:
           MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
-
-      - name: Save Gatsby cache
-        id: save-gatsby-cache
-        uses: actions/cache/save@v4
-        env:
-          cache-name: cache-gatsby
-        with:
-          path: |
-            site/gatsby-site/.cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('site/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Build size
         run: |
