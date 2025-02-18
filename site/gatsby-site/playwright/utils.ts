@@ -161,9 +161,6 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
-        // TODO: this should be removed since we pass the username and password as arguments
-        testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
-
         await use(async ({ email = testUser.email, customData = null } = {}) => {
 
             const userId = await getUserIdFromAuth(email);

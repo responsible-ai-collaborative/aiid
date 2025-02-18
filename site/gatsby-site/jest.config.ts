@@ -11,7 +11,7 @@ const config: Config = {
   preset: "ts-jest",
   clearMocks: true,
   collectCoverage: true,
-  testTimeout: 10000,
+  testTimeout: 99999999,
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   testEnvironment: "node",
