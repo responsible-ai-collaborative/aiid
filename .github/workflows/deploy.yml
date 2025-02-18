@@ -74,6 +74,16 @@ jobs:
         run: npm ci
         working-directory: site/gatsby-site
 
+      - name: Save node modules cache
+        id: save-nodemodules-cache
+        uses: actions/cache/save@v4
+        env:
+          cache-name: cache-install-folder
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
         working-directory: site/gatsby-site
