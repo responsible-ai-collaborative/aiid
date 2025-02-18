@@ -466,21 +466,23 @@ class AlgoliaUpdater {
   }
 
   async run() {
-    await this.mongoClient.connect();
+    return;
 
-    for (let { code: language } of this.languages) {
-      const entries = await this.generateIndex({ language });
+    // await this.mongoClient.connect();
 
-      this.reporter.log(
-        `Uploading Algolia index of [${language}] with [${entries.length}] entries`
-      );
+    // for (let { code: language } of this.languages) {
+    //   const entries = await this.generateIndex({ language });
 
-      await this.uploadToAlgolia({ entries, language });
+    //   this.reporter.log(
+    //     `Uploading Algolia index of [${language}] with [${entries.length}] entries`
+    //   );
 
-      await this.deleteDuplicates({ language });
-    }
+    //   await this.uploadToAlgolia({ entries, language });
 
-    await this.mongoClient.close();
+    //   await this.deleteDuplicates({ language });
+    // }
+
+    // await this.mongoClient.close();
   }
 }
 
