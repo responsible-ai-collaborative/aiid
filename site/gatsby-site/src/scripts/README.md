@@ -1,11 +1,11 @@
 # Translation Process
 
-The translation process runs as a Github Action workflow. The workflow is scheduled to run **every day at 5 AM GMT**.
+The translation process runs as a Github Action workflow. The workflow is scheduled to run once per day.
 
-We currently support translations for all reports in the `reports` collection, and the fields that are translated are:
+We currently support translations for all new reports in the `reports` collection, and the fields that are translated are:
 - Report `title`
-- Report `text`
-- Report `plain_text`
+- Report `text` (rich Markdown report text)
+- Report `plain_text` (Report text without Markdown formatting)
 
 The available languages for translation are defined in the environment variable `GATSBY_AVAILABLE_LANGUAGES`.
 ```
@@ -24,7 +24,7 @@ The structure of the Github Action workflow is as follows:
 
 1. Get the list of languages, which is pulled from the [/site/gatsby-site/i18n/config.json](/site/gatsby-site/i18n/config.json) using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter.
 
-2. Translate each report into every language and store the translated reports in a `translations` database within a `reports` collection:
+2. Translate each report into the supported languages and store the translated reports in a `translations` database within a `reports` collection:
 ```
 translations 
     |-- reports
