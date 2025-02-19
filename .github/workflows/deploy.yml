@@ -29,7 +29,8 @@ on:
       site-url:
         description: The URL of the site to deploy
         type: string
-        required: true
+        required: false
+        default: ""
 
 jobs:
   netlify-deploy:
