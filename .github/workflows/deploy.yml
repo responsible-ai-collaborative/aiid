@@ -65,6 +65,7 @@ jobs:
           path: |
             site/gatsby-site/node_modules
             site/gatsby-site/.cache
+            site/gatsby-site/.netlify
             site/gatsby-site/public
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
