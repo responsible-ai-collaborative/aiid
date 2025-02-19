@@ -61,7 +61,7 @@ jobs:
   call-test-playwright-probes:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright-probes.yml
-    # needs: call-deploy
+    needs: call-deploy
     secrets: inherit
     with:
       sha: ${{ github.event.pull_request.head.sha }}
