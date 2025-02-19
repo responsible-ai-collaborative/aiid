@@ -18,9 +18,6 @@ on:
         description: The commit SHA to deploy
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
@@ -36,7 +33,7 @@ jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+      labels: 'ubuntu-latest'
     permissions:
       pull-requests: write
     steps:
