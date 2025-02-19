@@ -1,7 +1,7 @@
 const config = {
   gatsby: {
     pathPrefix: '/',
-    siteUrl: 'https://incidentdatabase.ai',
+    siteUrl: process.env.SITE_URL,
     gaTrackingId: 'UA-23867277-2',
   },
   realm: {
