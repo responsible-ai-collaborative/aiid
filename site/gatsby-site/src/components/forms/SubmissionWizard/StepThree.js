@@ -360,6 +360,7 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
 
@@ -377,6 +378,7 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
 
@@ -394,6 +396,7 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
 
@@ -411,6 +414,7 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
           </>

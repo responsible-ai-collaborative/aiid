@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, Select } from 'flowbite-react';
+import { Badge, Button, Checkbox, Select, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,
@@ -18,11 +18,11 @@ import Table, {
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
 import { useMutation } from '@apollo/client';
-import { UPDATE_SUBMISSION } from '../../graphql/submissions';
+import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const SubmissionList = ({ data }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('submitted');
 
   const { loading, isRole, user } = useUserContext();
 
@@ -34,7 +34,46 @@ const SubmissionList = ({ data }) => {
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
+  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
+    update: (cache, { data }) => {
+      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
+      cache.evict({
+        id: cache.identify({
+          __typename: data.deleteOneSubmission.__typename,
+          id: data.deleteOneSubmission._id,
+        }),
+      });
+    },
+  });
+
   const addToast = useToastContext();
+
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  // Function to toggle individual row selection
+  const toggleRowSelection = (id) => {
+    setSelectedRows((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+      return [...prev, id];
+    });
+  };
+
+  // Function to toggle "Select All"
+  const toggleSelectAll = (isChecked) => {
+    const newSelection = [];
+
+    if (isChecked) {
+      tableData.forEach((item) => {
+        newSelection.push(item._id);
+      });
+    }
+    setSelectedRows(newSelection);
+  };
+
+  // Function to check if all rows are selected
+  const allSelected = selectedRows.length === tableData.length && tableData.length > 0;
 
   useEffect(() => {
     if (data) {
@@ -175,8 +214,122 @@ const SubmissionList = ({ data }) => {
     );
   }
 
+  const [selectedAction, setSelectedAction] = useState('claim');
+
+  const [performingAction, setPerformingAction] = useState(false);
+
+  const bulkActions = async () => {
+    try {
+      if (selectedRows.length > 0) {
+        await bulkAction(selectedAction);
+      }
+    } catch (error) {
+      addToast({
+        message: t(`There was an error performing this action. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+    } finally {
+      setPerformingAction(false);
+      setSelectedRows([]);
+    }
+  };
+
+  const bulkAction = async (selectedAction) => {
+    const actions = {
+      claim: {
+        confirmMessage: t(
+          'Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.'
+        ),
+        execute: (submissionId) => claimSubmission(submissionId),
+        successMessage: t(
+          `Successfully claimed {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+      unclaim: {
+        confirmMessage: t(
+          'Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.'
+        ),
+        execute: (submissionId) => unclaimSubmission(submissionId),
+        successMessage: t(
+          `Successfully unclaimed {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+      reject: {
+        confirmMessage: t(
+          'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+        ),
+        execute: (submissionId) => deleteSubmission({ variables: { _id: submissionId } }),
+        successMessage: t(
+          `Successfully rejected {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+    };
+
+    const actionConfig = actions[selectedAction];
+
+    if (actionConfig) {
+      await executeBulkAction(actionConfig);
+    }
+  };
+
+  const executeBulkAction = async ({ confirmMessage, execute, successMessage }) => {
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setPerformingAction(true);
+    try {
+      const promises = selectedRows.map((submissionId) => execute(submissionId));
+
+      await Promise.all(promises);
+
+      addToast({
+        message: successMessage,
+        severity: SEVERITY.success,
+      });
+    } catch (error) {
+      addToast({
+        message: t(`There was an error performing this action. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+    }
+  };
+
   const columns = React.useMemo(() => {
-    const columns = [
+    let columns = [];
+
+    if (isRole('incident_editor')) {
+      columns.push({
+        title: (
+          <Checkbox
+            data-testid="select-all-submissions"
+            checked={allSelected}
+            onChange={(e) => {
+              return toggleSelectAll(e.target.checked);
+            }}
+          />
+        ),
+        accessor: 'select',
+        className: 'min-w-[50px]',
+        width: 50,
+        disableFilters: true,
+        disableSortBy: true,
+        disableResizing: true,
+        Cell: ({ row }) => {
+          return (
+            <Checkbox
+              checked={selectedRows.includes(row.original._id)}
+              onChange={() => toggleRowSelection(row.original._id)}
+              data-testid={`select-submission-${row.original._id}`}
+            />
+          );
+        },
+      });
+    }
+    columns.push(
       {
         className: 'min-w-[300px]',
         title: t('Title'),
@@ -340,13 +493,15 @@ const SubmissionList = ({ data }) => {
           return (
             <div className="flex justify-center">
               <Badge className={`mr-2 ${color}`}>
-                <Trans>{STATUS[values.status]?.text || STATUS.pendingReview.text}</Trans>
+                <Trans ns="submitted">
+                  {STATUS[values.status]?.text || STATUS.pendingReview.text}
+                </Trans>
               </Badge>
             </div>
           );
         },
-      },
-    ];
+      }
+    );
 
     if (isRole('incident_editor')) {
       columns.push({
@@ -375,9 +530,9 @@ const SubmissionList = ({ data }) => {
                 disabled={reviewing.value}
               >
                 {reviewing.value && values._id === reviewing.submissionId ? (
-                  <Trans>Reviewing...</Trans>
+                  <Trans ns="submitted">Reviewing...</Trans>
                 ) : (
-                  <Trans>Review</Trans>
+                  <Trans ns="submitted">Review</Trans>
                 )}
               </Button>
               {!values.editor && (
@@ -392,17 +547,17 @@ const SubmissionList = ({ data }) => {
                   {isAlreadyEditor ? (
                     <>
                       {claiming.value && values._id === claiming.submissionId ? (
-                        <Trans>Unclaiming...</Trans>
+                        <Trans ns="submitted">Unclaiming...</Trans>
                       ) : (
-                        <Trans>Unclaim</Trans>
+                        <Trans ns="submitted">Unclaim</Trans>
                       )}
                     </>
                   ) : (
                     <>
                       {claiming.value && values._id === claiming.submissionId ? (
-                        <Trans>Claiming...</Trans>
+                        <Trans ns="submitted">Claiming...</Trans>
                       ) : (
-                        <Trans>Claim</Trans>
+                        <Trans ns="submitted">Claim</Trans>
                       )}
                     </>
                   )}
@@ -415,7 +570,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [loading, user, claiming, reviewing, dateFilter]);
+  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
 
   const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
 
@@ -534,7 +689,38 @@ const SubmissionList = ({ data }) => {
   };
 
   return (
-    <div className="">
+    <div className="relative">
+      {performingAction && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-400 opacity-20">
+          <Spinner size="xl" />
+        </div>
+      )}
+      {/* Actions */}
+      {selectedRows && selectedRows.length > 0 && (
+        <div className="flex justify-between items-center mb-5">
+          <div className="flex gap-2">
+            <Select
+              className="w-40"
+              placeholder={t('Bulk Actions')}
+              onChange={(e) => setSelectedAction(e.target.value)}
+              data-testid="bulk-action-select"
+            >
+              <option value="claim">{t('Claim')}</option>
+              <option value="unclaim">{t('Unclaim')}</option>
+              <option value="reject">{t('Reject')}</option>
+            </Select>
+            <Button
+              color="gray"
+              onClick={() => {
+                bulkActions();
+              }}
+              data-testid="bulk-action-button"
+            >
+              {t('Apply')}
+            </Button>
+          </div>
+        </div>
+      )}
       <Table
         table={table}
         data-cy="submissions"
