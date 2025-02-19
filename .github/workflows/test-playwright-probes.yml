@@ -10,9 +10,6 @@ on:
         description: The commit SHA to run the tests against
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
@@ -21,7 +18,8 @@ on:
       site-url:
         description: The URL of the site to deploy
         type: string
-        required: true
+        required: false
+        default: ""
 
 jobs:
   tests:
@@ -80,7 +78,7 @@ jobs:
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/probes/
           AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
-          SITE_URL: ${{ inputs.site-url }}
+          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
 
