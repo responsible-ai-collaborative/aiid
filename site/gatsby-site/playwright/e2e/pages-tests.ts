@@ -4,8 +4,10 @@ import config from '../../config';
 import isString from 'lodash/isString';
 import { test } from '../utils';
 
-export function testPages(paths: string[]) {
-  const baseUrl = config.gatsby.siteUrl;
+export function testUrls(baseUrl:string, paths: string[]) {
+  if (baseUrl == null) {
+  	baseUrl = config.gatsby.siteUrl;
+  }
 
   const languages = [
     {
@@ -128,4 +130,8 @@ export function testPages(paths: string[]) {
       });
     });
   });
+}
+
+export function testPages(paths: string[]) {
+	testUrls(null, paths)
 }
