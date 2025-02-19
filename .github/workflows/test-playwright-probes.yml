@@ -21,8 +21,7 @@ on:
       site-url:
         description: The URL of the site to deploy
         type: string
-        default: ""
-        required: false
+        required: true
 
 jobs:
   tests:
@@ -80,8 +79,8 @@ jobs:
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/probes/
-          SITE_URL: ${{ inputs.site-url }}
           AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          SITE_URL: ${{ inputs.site-url }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
 

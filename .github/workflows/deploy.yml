@@ -29,8 +29,7 @@ on:
       site-url:
         description: The URL of the site to deploy
         type: string
-        default: ""
-        required: false
+        required: true
 
 jobs:
   netlify-deploy:
@@ -124,8 +123,8 @@ jobs:
           GATSBY_COMMIT_SHA: ${{ inputs.sha }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
-          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
-          NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          SITE_URL: ${{ inputs.site-url }}
+          NEXTAUTH_URL: ${{ inputs.site-url }}
           NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
           MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
