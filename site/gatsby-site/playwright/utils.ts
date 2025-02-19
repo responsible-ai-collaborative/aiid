@@ -298,7 +298,7 @@ export const getApolloClient = () => {
 
     const client = new ApolloClient({
         link: new HttpLink({
-            uri: `http://localhost:8000/api/graphql`,
+            uri: `${config.SITE_URL}/api/graphql`,
         }),
         cache: new InMemoryCache({
             addTypename: false,
