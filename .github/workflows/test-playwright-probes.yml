@@ -81,6 +81,9 @@ jobs:
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/probes/
           SITE_URL: ${{ inputs.site-url }}
+          AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          NEXTAUTH_URL: dummy
+          NEXTAUTH_SECRET: dummy
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
