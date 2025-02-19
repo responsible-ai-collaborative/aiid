@@ -140,10 +140,10 @@ jobs:
           set -e
           # If no alias is specified, deploy to production
           if [[ -z "${{ inputs.netlify-alias }}" ]]; then
-            OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --json --prod --debug" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
-            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --json --debug --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
           fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
