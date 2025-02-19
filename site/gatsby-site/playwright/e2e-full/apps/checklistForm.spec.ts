@@ -125,7 +125,9 @@ test.describe('Checklists App Form', () => {
         await expect(page.locator('details')).not.toBeVisible();
     });
 
-    test.skip('Should change sort order of risk items', async ({ page, login }) => {
+    test('Should change sort order of risk items', async ({ page, login }) => {
+
+        await init();
 
         const [userId] = await login();
 
@@ -140,83 +142,60 @@ test.describe('Checklists App Form', () => {
         await expect(page.locator('details:nth-child(2)')).toContainText('Dataset Imbalance');
     });
 
-    test.skip('Should remove a manually-created risk', async ({ page, login }) => {
-
-        await init();
+    test('Should remove a manually-created risk', async ({ page, login }) => {
 
         const [userId] = await login();
 
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON()?.operationName === 'findChecklist',
-            {
-                data: {
-                    checklist: {
-                        ...defaultChecklist,
-                        owner_id: userId,
-                        risks: [
-                            {
-                                __typename: 'ChecklistRisk',
-                                generated: false,
-                                id: '5bb31fa6-2d32-4a01-b0a0-fa3fb4ec4b7d',
-                                likelihood: '',
-                                precedents: [],
-                                risk_notes: '',
-                                risk_status: 'Mitigated',
-                                severity: '',
-                                tags: ['GMF:Known AI Goal:Content Search'],
-                                title: 'Manual Test Risk',
-                                touched: false,
-                            },
-                        ],
-                    },
-                },
-            },
-            'findChecklist'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON()?.operationName === 'upsertChecklist',
-            { data: { checklist: { ...defaultChecklist, owner_id: userId } } },
-            'upsertChecklist'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON()?.operationName === 'FindRisks',
-            { data: { risks: [] } },
-            'risks'
-        );
+        await init({ 
+          aiidprod: { 
+            checklists: [
+              { ...defaultChecklist, 
+                owner_id: userId, 
+                risks: [
+                  { "generated": false,
+                    "id": "7876ca98-ca8a-4365-8c39-203474c1dc38",
+                    "likelihood": "",
+                    "precedents": [
+                      { "description": "",
+                        "incident_id": 287,
+                        "tags": ["GMF:Known AI Technical Failure:Distributional Artifacts"],
+                        "title": "OpenAI’s GPT-3 Reported as Unviable in Medical Tasks by Healthcare Firm"
+                      }
+                    ],
+                    "risk_notes": "",
+                    "risk_status": "Mitigated",
+                    "severity": "Minor",
+                    "tags": ["GMF:Known AI Technical Failure:Distributional Artifacts"],
+                    "title": "Distributional Artifacts",
+                    "touched": false
+                  }
+                ]
+              }
+            ] 
+          } 
+        }, { drop: true });
 
         await page.goto(url);
 
-        await waitForRequest('findChecklist');
-
         page.on('dialog', (dialog) => dialog.accept());
+
+        await expect(page.locator('[data-testid="Distributional Artifacts"]')).toHaveCount(1);
 
         await page.getByTestId('delete-risk').click();
 
-        await waitForRequest('upsertChecklist');
+        await expect(page.locator('[data-testid="Distributional Artifacts"]')).toHaveCount(0);
+      });
 
-        await waitForRequest('FindRisks');
+      // TODO: test is crashing not sure if it is a bug or missing seed data
+      test.skip('Should persist open state on editing query', async ({ page, login }) => {
 
-        await expect(page.locator('text=Manual Test Risk')).not.toBeVisible();
-    });
+          const [userId] = await login();
 
-    // TODO: test is crashing not sure if it is a bug or missing seed data
-    test.skip('Should persist open state on editing query', async ({ page, login }) => {
-
-        const [userId] = await login();
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON()?.operationName === 'findChecklist',
-            {
+          await conditionalIntercept(
+              page,
+              '**/graphql',
+              (req) => req.postDataJSON()?.operationName === 'findChecklist',
+              {
                 data: { checklist: { ...riskSortingChecklist.data.checklist, owner_id: userId } },
             },
             'findChecklist'
