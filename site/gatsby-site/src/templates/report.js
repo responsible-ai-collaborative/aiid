@@ -26,11 +26,11 @@ function ReportPage(props) {
 
   const { t } = useTranslation();
 
-  const { locale } = useLocalization();
+  const { locale: language } = useLocalization();
 
   const { loading, isRole } = useUserContext();
 
-  if (report.language !== locale && allMongodbTranslationsReports.nodes?.length > 0) {
+  if (report.language !== language && allMongodbTranslationsReports.nodes?.length > 0) {
     const reportTranslation = allMongodbTranslationsReports.nodes[0];
 
     report.title = reportTranslation.title;
@@ -65,7 +65,7 @@ function ReportPage(props) {
     <>
       <div className={'titleWrapper'}>
         <div className="flex content-between w-full">
-          <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
+          <h1 className="tw-styled-heading">{language == 'en' ? metaTitle : defaultTitle}</h1>
           {incidentId && (
             <Link
               to={`/cite/${incident.incident_id}#r${report.report_number}`}
