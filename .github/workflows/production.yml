@@ -32,26 +32,6 @@ jobs:
       sha: ${{ github.sha }}
       environment: production
 
-  call-test-build:
-    uses: ./.github/workflows/test-build.yml
-    secrets: inherit
-    needs: [cache-modifier]
-    with:
-      sha: ${{ github.sha }}
-      environment: production
-      netlify-context: production
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
-      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
-
-  call-test-playwright:
-    uses: ./.github/workflows/test-playwright.yml
-    needs: call-test-build
-    secrets: inherit
-    with:
-      sha: ${{ github.sha }}
-      environment: production
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
-
   call-test-playwright-e2e:
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright-e2e.yml
@@ -69,7 +49,6 @@ jobs:
       [
         cache-modifier,
         call-test-api,
-        call-test-playwright,
         call-test-playwright-e2e,
       ]
     secrets: inherit
@@ -82,6 +61,17 @@ jobs:
       netlify-alias:
       runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+
+  call-test-playwright-probes:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-probes.yml
+    needs: call-deploy
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
+      site-url: ${{ vars.SITE_URL }}
 
   call-process-notifications:
     needs: call-deploy

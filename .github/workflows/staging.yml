@@ -69,7 +69,7 @@ jobs:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
       runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
-      site-url: https://staging-aiid.netlify.app
+      site-url: ${{ vars.SITE_URL }}
 
   call-process-notifications:
     needs: call-deploy
