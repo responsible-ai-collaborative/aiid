@@ -3,7 +3,6 @@ import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
 import { init, seedCollection } from '../../memory-mongo';
 import { fillAutoComplete, query, setEditorText, test } from '../../utils';
-import config from '../../config';
 import { ObjectId } from 'mongodb';
 import { DBSubmission } from '../../../server/interfaces';
 
@@ -76,7 +75,7 @@ test.describe('Submitted reports', () => {
     test('Promotes a submission to a new report and links it to a new incident', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`); 
 
@@ -108,7 +107,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -140,7 +139,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -175,7 +174,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -205,16 +204,18 @@ test.describe('Submitted reports', () => {
 
         const submissions = await getSubmissions();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=${submissions[0]._id}`);
 
 
         page.on('dialog', dialog => dialog.accept());
 
+        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'DeleteSubmission');
+
         await page.locator('[data-cy="reject-button"]').click();
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('deleteOneSubmission'));
+        await deleteResponse;
 
         const updated = await getSubmissions();
 
@@ -227,7 +228,7 @@ test.describe('Submitted reports', () => {
 
         const submissions = await getSubmissions();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=${submissions[0]._id}`);
 
@@ -246,7 +247,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -280,7 +281,7 @@ test.describe('Submitted reports', () => {
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             title: "Sample title",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
@@ -289,7 +290,7 @@ test.describe('Submitted reports', () => {
 
         await init({ aiidprod: { submissions } });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
 
@@ -321,7 +322,7 @@ test.describe('Submitted reports', () => {
             tags: ["tag1", "tag2"],
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
@@ -332,7 +333,7 @@ test.describe('Submitted reports', () => {
 
         await init({ aiidprod: { submissions } });
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=5d34b8c29ced494f010ed469`);
 
@@ -347,7 +348,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -360,7 +361,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -373,13 +374,16 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url);
 
+        const updateResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'UpdateSubmission');
+
         await page.click('[data-cy="claim-submission"]');
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+        await updateResponse;
+
 
         const { data: { submissions } } = await query({
             query: gql`{
@@ -400,7 +404,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -421,7 +425,7 @@ test.describe('Submitted reports', () => {
             tags: ["tag1", "tag2"],
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
@@ -434,9 +438,11 @@ test.describe('Submitted reports', () => {
 
         await page.goto(url);
 
+        const response = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'UpdateSubmission');
+
         await page.getByText('Unclaim', { exact: true }).click();
 
-        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+        await response;
 
         const { data: { submissions: updated } } = await query({
             query: gql`{
@@ -457,7 +463,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = Array.from(Array(10).keys()).map(i => {
 
@@ -479,7 +485,7 @@ test.describe('Submitted reports', () => {
                 tags: ["tag1", "tag2"],
                 text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
                 url: "http://example.com",
-                user: "user1",
+                user: "6737a6e881955aa4905ccb04",
                 incident_title: "Incident title",
                 incident_date: "2021-09-14",
                 editor_notes: "",
@@ -513,7 +519,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -527,7 +533,7 @@ test.describe('Submitted reports', () => {
 
         await init();
 
-        const [userId] = await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         const submissions: DBSubmission[] = [{
             _id: new ObjectId('63f3d58c26ab981f33b3f9c7'),
@@ -548,7 +554,7 @@ test.describe('Submitted reports', () => {
             tags: ["tag1", "tag2"],
             text: "Sample text that must have at least 80 characters, so I will keep writing until I reach the minimum number of characters.",
             url: "http://example.com",
-            user: "user1",
+            user: "6737a6e881955aa4905ccb04",
             incident_title: "Incident title",
             incident_date: "2021-09-14",
             editor_notes: "",
@@ -569,7 +575,7 @@ test.describe('Submitted reports', () => {
     test('Edits a submission - links to existing incident - Incident Data should be hidden', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -585,7 +591,7 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
-        await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
+        await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
@@ -687,11 +693,278 @@ test.describe('Submitted reports', () => {
                 {
                     report_number: 10,
                     user: {
-                        userId: "user1",
+                        userId: "6737a6e881955aa4905ccb04",
                     },
                 },
             ],
 
         })
     });
+
+    test('Should perform a bulk claim on all submissions', async ({ page, login }) => {
+        await init();
+
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        const { data: { submissions } } = await query({
+            query: gql`{
+                submissions {
+                    _id
+                }
+            }
+        `,
+        });
+        // Select all submissions
+        await page.getByTestId("select-all-submissions").click({force: true});
+        await page.getByTestId("select-all-submissions").check({force: true});
+
+        page.on('dialog', dialog => dialog.accept());
+
+        // Select claim option
+        await page.getByTestId("bulk-action-select").selectOption('claim');
+
+        // Click on bulk action button
+        await page.getByTestId("bulk-action-button").click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully claimed ${submissions.length} submissions`);
+
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { incident_editors: { EQ: "${userId}" } }) {
+                  _id
+                  incident_editors {
+                      userId
+                  }
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions.length).toBe(submissions.length);
+    });
+
+    test('Should perform a bulk unclaim on all submissions', async ({ page, login }) => {
+        await init();
+
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        const { data: { submissions } } = await query({
+            query: gql`{
+                submissions {
+                    _id
+                }
+            }
+        `,
+        });
+        // Select all submissions
+        await page.getByTestId("select-all-submissions").click({force: true});
+        await page.getByTestId("select-all-submissions").check({force: true});
+
+        page.on('dialog', dialog => dialog.accept());
+
+        // Select unclaim option
+        await page.getByTestId("bulk-action-select").selectOption('unclaim');
+
+        // Click on bulk action button
+        await page.getByTestId("bulk-action-button").click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully unclaimed ${submissions.length} submissions`);
+
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { incident_editors: { EQ: "${userId}" } }) {
+                  _id
+                  incident_editors {
+                      userId
+                  }
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions.length).toBe(0);
+    });
+
+    test('Should perform a bulk to reject all submissions', async ({ page, login }) => {
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        const { data: { submissions } } = await query({
+            query: gql`{
+                submissions {
+                    _id
+                }
+            }
+        `,
+        });
+        // Select all submissions
+        await page.getByTestId("select-all-submissions").click({force: true});
+        await page.getByTestId("select-all-submissions").check({force: true});
+
+        page.on('dialog', dialog => dialog.accept());
+
+        // Select reject option
+        await page.getByTestId("bulk-action-select").selectOption('reject');
+
+        // Click on bulk action button
+        await page.getByTestId("bulk-action-button").click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully rejected ${submissions.length} submissions`);
+
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions.length).toBe(0);
+    });
+
+    test('Should select and claim one submission', async ({ page, login }) => {
+      await init();
+
+      const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+      await page.goto(url);
+
+      const { data: { submissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+              }
+          }
+      `,
+      });
+      // Select all submissions
+      const firstSubmission = submissions[0];
+      await page.getByTestId(`select-submission-${firstSubmission._id}`).click({force: true});
+      await page.getByTestId(`select-submission-${firstSubmission._id}`).check({force: true});
+
+      page.on('dialog', dialog => dialog.accept());
+
+      // Select claim option
+      await page.getByTestId("bulk-action-select").selectOption('claim');
+
+      // Click on bulk action button
+      await page.getByTestId("bulk-action-button").click();
+
+      await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully claimed 1 submission`);
+
+      const { data: { submissions: updatedSubmissions } } = await query({
+        query: gql`{
+            submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+                _id
+                incident_editors {
+                    userId
+                }
+            }
+        }
+      `,
+      });
+
+      expect(updatedSubmissions.length).toBe(1);
+  });
+
+  test('Should select and unclaim one submission', async ({ page, login }) => {
+    await init();
+
+    const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+    await page.goto(url);
+
+    const { data: { submissions } } = await query({
+        query: gql`{
+            submissions {
+                _id
+            }
+        }
+    `,
+    });
+    // Select all submissions
+    const firstSubmission = submissions[0];
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).click({force: true});
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).check({force: true});
+
+    page.on('dialog', dialog => dialog.accept());
+
+    // Select unclaim option
+    await page.getByTestId("bulk-action-select").selectOption('unclaim');
+
+    // Click on bulk action button
+    await page.getByTestId("bulk-action-button").click();
+
+    await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully unclaimed 1 submission`);
+
+    const { data: { submissions: updatedSubmissions } } = await query({
+      query: gql`{
+          submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+              _id
+              incident_editors {
+                  userId
+              }
+          }
+      }
+    `,
+    });
+
+    expect(updatedSubmissions.length).toBe(0);
+  });
+
+  test('Should select and reject one submission', async ({ page, login }) => {
+    await init();
+
+    const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+    await page.goto(url);
+
+    const { data: { submissions } } = await query({
+        query: gql`{
+            submissions {
+                _id
+            }
+        }
+    `,
+    });
+    // Select all submissions
+    const firstSubmission = submissions[0];
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).click({force: true});
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).check({force: true});
+
+    page.on('dialog', dialog => dialog.accept());
+
+    // Select reject option
+    await page.getByTestId("bulk-action-select").selectOption('reject');
+
+    // Click on bulk action button
+    await page.getByTestId("bulk-action-button").click();
+
+    await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully rejected 1 submission`);
+
+    const { data: { submissions: updatedSubmissions } } = await query({
+      query: gql`{
+          submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+              _id
+              incident_editors {
+                  userId
+              }
+          }
+      }
+    `,
+    });
+
+    expect(updatedSubmissions.length).toBe(0);
+  });
 });

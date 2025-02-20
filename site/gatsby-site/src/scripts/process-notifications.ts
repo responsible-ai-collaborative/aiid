@@ -3,11 +3,11 @@ import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
 import { MongoClient } from "mongodb";
-import { sendEmail } from "../../server/emails";
+import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
 
 const usersCache: UserAdminData[] = [];
 
-const getAndCacheRecipients = async (userIds: string[]) => {
+const getAndCacheRecipients = async (userIds: string[], context: Context) => {
 
     const recipients = [];
 
@@ -17,7 +17,7 @@ const getAndCacheRecipients = async (userIds: string[]) => {
 
         if (!user) {
 
-            user = await getUserAdminData(userId) ?? null;
+            user = await getUserAdminData(userId, context) ?? null;
 
             if (user) {
 
@@ -87,7 +87,7 @@ async function notificationsToNewIncidents(context: Context) {
 
             const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-            const recipients = await getAndCacheRecipients(uniqueUserIds);
+            const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
             const uniqueNotifications: number[] = [];
 
@@ -104,8 +104,8 @@ async function notificationsToNewIncidents(context: Context) {
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
 
                         if (incident && recipients.length > 0) {
-                            //Send email notification
-                            const sendEmailParams = {
+
+                            const sendEmailParams: SendBulkEmailParams = {
                                 recipients,
                                 subject: 'New Incident {{incidentId}} was created',
                                 dynamicData: {
@@ -119,10 +119,10 @@ async function notificationsToNewIncidents(context: Context) {
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
                                     implicatedSystems: buildEntityList(allEntities, incident.implicated_systems),
                                 },
-                                templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
+                                templateId: 'NewIncident'
                             };
 
-                            await sendEmail(sendEmailParams);
+                            await sendBulkEmails(sendEmailParams);
                         }
 
 
@@ -193,7 +193,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -203,7 +203,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         if (incident && recipients.length > 0) {
 
-                            const sendEmailParams = {
+                            const sendEmailParams: SendBulkEmailParams = {
                                 recipients,
                                 subject: 'Incident {{incidentId}} was updated',
                                 dynamicData: {
@@ -214,11 +214,10 @@ async function notificationsToIncidentUpdates(context: Context) {
                                     reportTitle: newReport ? newReport.title : '',
                                     reportAuthor: (newReport && newReport.authors[0]) ? newReport.authors[0] : '',
                                 },
-                                // Template value from function name sufix from "site/realm/functions/config.json"
                                 templateId: newReportNumber ? 'NewReportAddedToAnIncident' : 'IncidentUpdate',
                             };
 
-                            await sendEmail(sendEmailParams);
+                            await sendBulkEmails(sendEmailParams);
 
                             console.log(`Incident ${incident.incident_id} updates: Pending notification was processed.`);
                         }
@@ -284,7 +283,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -294,7 +293,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         if (incident && entity && recipients.length > 0) {
 
-                            const sendEmailParams = {
+                            const sendEmailParams: SendBulkEmailParams = {
                                 recipients,
                                 subject: isIncidentUpdate ? 'Update Incident for {{entityName}}' : 'New Incident for {{entityName}}',
                                 dynamicData: {
@@ -310,11 +309,10 @@ async function notificationsToNewEntityIncidents(context: Context) {
                                     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
                                     implicatedSystems: buildEntityList(allEntities, incident.implicated_systems),
                                 },
-                                // Template value from function name sufix from "site/realm/functions/config.json"
                                 templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident'
                             };
 
-                            await sendEmail(sendEmailParams);
+                            await sendBulkEmails(sendEmailParams);
 
                             console.log(`New "${entity.name}" Entity Incidents: pending notification was processed.`);
                         }
@@ -356,7 +354,7 @@ async function notificationsToNewPromotions(context: Context) {
 
         const uniqueUserIds = [...new Set(userIds)];
 
-        const recipients = await getAndCacheRecipients(uniqueUserIds);
+        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
         let uniqueNotifications: number[] = [];
 
@@ -373,8 +371,7 @@ async function notificationsToNewPromotions(context: Context) {
 
                     if (incident && recipients.length > 0) {
 
-                        //Send email notification
-                        const sendEmailParams = {
+                        const sendEmailParams: SendBulkEmailParams = {
                             recipients,
                             subject: 'Your submission has been approved!',
                             dynamicData: {
@@ -384,10 +381,10 @@ async function notificationsToNewPromotions(context: Context) {
                                 incidentDescription: incident.description ?? undefined,
                                 incidentDate: incident.date,
                             },
-                            templateId: 'SubmissionApproved' // Template value from function name sufix from "site/realm/functions/config.json"
+                            templateId: 'SubmissionApproved'
                         };
 
-                        await sendEmail(sendEmailParams);
+                        await sendBulkEmails(sendEmailParams);
                     }
 
                 } catch (error: any) {
