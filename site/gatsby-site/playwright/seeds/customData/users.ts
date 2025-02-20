@@ -15,6 +15,13 @@ const users: DBUser[] = [
         first_name: "John",
         last_name: "Doe"
     },
+    {
+        _id: new ObjectId("619b47eb5eed5334edfa3ba9"),
+        userId: '67a371b3fc0f0b924a91f636',
+        first_name: "Test",
+        last_name: "User Editor",
+        roles: ["incident_editor"],
+    },
 ]
 
 export default users;

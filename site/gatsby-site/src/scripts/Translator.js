@@ -100,6 +100,20 @@ class Translator {
       .find(query, { projection: { report_number: 1 } })
       .toArray();
 
+    // TODO: uncomment this block and delete the code above when the "reports_xx" collections are no longer needed
+    // const reportsTranslatedCollection = this.mongoClient
+    //   .db('translations')
+    //   .collection('reports');
+
+    // const query = {
+    //   report_number: { $in: originalIds },
+    //   $and: [{ language: language }].concat([...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } }))),
+    // };
+
+    // const translated = await reportsTranslatedCollection
+    //   .find(query, { projection: { report_number: 1 } })
+    //   .toArray();
+
     return translated;
   }
 
@@ -107,6 +121,8 @@ class Translator {
     const reportsTranslatedCollection = this.mongoClient
       .db('translations')
       .collection(`reports_${language}`);
+
+    const reportsTranslationsCollection = this.mongoClient.db('translations').collection('reports');
 
     const translated = [];
 
@@ -118,7 +134,13 @@ class Translator {
       translated.push({ report_number, text, title, plain_text });
     }
 
-    return reportsTranslatedCollection.insertMany(translated);
+    // TODO: remove this line when the "reports_xx" collections are no longer needed
+    await reportsTranslatedCollection.insertMany(translated);
+
+    // Insert the translated reports into the reports collection with the language field
+    const reportsTranslated = translated.map((t) => ({ ...t, language }));
+
+    return reportsTranslationsCollection.insertMany(reportsTranslated);
   }
 
   async translateReport({ entry, to }) {
@@ -136,6 +158,13 @@ class Translator {
 
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
+
+      // Check if the translation is empty. The translation API sometimes returns empty strings with a 200 status code.
+      if (result === '') {
+        this.reporter.error(
+          `Error translating report ${entry.report_number}, ${keys[i]} field is empty`
+        );
+      }
 
       const key = keys[i];
 
@@ -190,7 +219,10 @@ class Translator {
 
       const items = reports.filter((r) => r.language !== to);
 
-      const translated = await this.translateReportsCollection({ items, to });
+      let translated = await this.translateReportsCollection({ items, to });
+
+      // filter translated reports that are empty
+      translated = translated.filter((t) => t.text !== '' && t.title !== '');
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
