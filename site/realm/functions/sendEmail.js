@@ -57,8 +57,6 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
             encodeBodyAsJSON: true,
         });
 
-        console.log(`emailResult`, json.stringify(emailResult, null, 2));
-
         return emailResult;
     } catch (error) {
         error.message = `[Send Email]: ${error.message}`;

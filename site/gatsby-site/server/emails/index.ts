@@ -49,8 +49,6 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
 export const sendEmail = async ({ recipients, subject, dynamicData, templateId }: SendEmailParams) => {
 
-    console.log('sendEmail');
-
     const emailTemplateBody = templates[templateId];
 
     if (!emailTemplateBody) {
@@ -86,12 +84,9 @@ export const sendEmail = async ({ recipients, subject, dynamicData, templateId }
         bulk.push(emailParams);
     }
 
-    console.log(`bulk`, bulk);
     try {
 
-        const res = await mailersendBulkSend(bulk);
-
-        console.log(`res`, JSON.stringify(res,null,2));
+        await mailersendBulkSend(bulk);
 
     } catch (error: any) {
         error.message = `[Send Email]: ${error.message}`;
