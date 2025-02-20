@@ -53,24 +53,18 @@ jobs:
         with:
           ref: ${{ inputs.sha }}
 
-      - name: Cache dependencies and Gatsby cache
-        id: cache-all
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
         uses: actions/cache@v4
-        env:
-          cache-name: deploy-cache
         with:
-          path: |
-            site/gatsby-site/node_modules
-            site/gatsby-site/.cache
-            site/gatsby-site/.netlify
-            site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+          path: site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
 
       - name: Install dependencies
-        if: steps.cache-all.outputs.cache-hit != 'true'
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: site/gatsby-site
 

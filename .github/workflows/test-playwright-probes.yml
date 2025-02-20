@@ -43,18 +43,16 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Cache node modules
-        id: cache-nodemodules
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
         uses: actions/cache@v4
-        env:
-          cache-name: cache-install-folder
         with:
           path: |
             site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: site/gatsby-site
 
