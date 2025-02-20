@@ -27,7 +27,7 @@ const queryConfig = {
   epoch_date_published_max: StringParam,
   display: DisplayModeEnumParam,
   page: withDefault(NumberParam, 1),
-  hideDuplicates: BooleanParam,
+  hideDuplicates: withDefault(BooleanParam, true),
   is_incident_report: withDefault(StringParam, 'true'),
   sortBy: withDefault(StringParam, 'relevance'),
   tags: StringParam,
