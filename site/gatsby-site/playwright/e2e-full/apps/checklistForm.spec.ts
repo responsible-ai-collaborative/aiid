@@ -1,6 +1,4 @@
 import { expect } from '@playwright/test';
-import riskSortingRisks from '../../fixtures/checklists/riskSortingChecklist.json';
-import riskSortingChecklist from '../../fixtures/checklists/riskSortingChecklist.json';
 import { conditionalIntercept, query, test, waitForRequest } from '../../utils';
 import { init } from '../../memory-mongo';
 import gql from 'graphql-tag';
@@ -18,6 +16,25 @@ test.describe('Checklists App Form', () => {
         tags_goals: [],
         tags_methods: [],
         tags_other: [],
+    };
+
+    const defaultRisk = { 
+      "generated": false,
+      "id": "7876ca98-ca8a-4365-8c39-203474c1dc38",
+      "likelihood": "",
+      "precedents": [
+        { "description": "",
+          "incident_id": 287,
+          "tags": ["GMF:Known AI Technical Failure:Distributional Artifacts"],
+          "title": "OpenAI’s GPT-3 Reported as Unviable in Medical Tasks by Healthcare Firm"
+        }
+      ],
+      "risk_notes": "",
+      "risk_status": "Mitigated",
+      "severity": "Minor",
+      "tags": ["GMF:Known AI Technical Failure:Distributional Artifacts"],
+      "title": "Distributional Artifacts",
+      "touched": false
     };
 
     test('Should have read-only access for non-logged-in users', async ({ page }) => {
@@ -151,25 +168,7 @@ test.describe('Checklists App Form', () => {
             checklists: [
               { ...defaultChecklist, 
                 owner_id: userId, 
-                risks: [
-                  { "generated": false,
-                    "id": "7876ca98-ca8a-4365-8c39-203474c1dc38",
-                    "likelihood": "",
-                    "precedents": [
-                      { "description": "",
-                        "incident_id": 287,
-                        "tags": ["GMF:Known AI Technical Failure:Distributional Artifacts"],
-                        "title": "OpenAI’s GPT-3 Reported as Unviable in Medical Tasks by Healthcare Firm"
-                      }
-                    ],
-                    "risk_notes": "",
-                    "risk_status": "Mitigated",
-                    "severity": "Minor",
-                    "tags": ["GMF:Known AI Technical Failure:Distributional Artifacts"],
-                    "title": "Distributional Artifacts",
-                    "touched": false
-                  }
-                ]
+                risks: [ defaultRisk ]
               }
             ] 
           } 
@@ -187,27 +186,20 @@ test.describe('Checklists App Form', () => {
       });
 
       // TODO: test is crashing not sure if it is a bug or missing seed data
-      test.skip('Should persist open state on editing query', async ({ page, login }) => {
+      test('Should persist open state on editing query', async ({ page, login }) => {
 
-          const [userId] = await login();
+        const [userId] = await login();
 
-          await conditionalIntercept(
-              page,
-              '**/graphql',
-              (req) => req.postDataJSON()?.operationName === 'findChecklist',
-              {
-                data: { checklist: { ...riskSortingChecklist.data.checklist, owner_id: userId } },
-            },
-            'findChecklist'
-        );
-
-        await conditionalIntercept(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON()?.query.includes('GMF'),
-            { data: { risks: riskSortingRisks.data.checklist.risks } },
-            'risks'
-        );
+        await init({ 
+          aiidprod: { 
+            checklists: [
+              { ...defaultChecklist, 
+                owner_id: userId, 
+                risks: [ defaultRisk ]
+              }
+            ] 
+          } 
+        }, { drop: true });
 
         await page.goto(url);
 
@@ -220,6 +212,6 @@ test.describe('Checklists App Form', () => {
 
         await page.locator('[aria-label="CSETv1:Physical Objects:no"]').click();
 
-        await expect(page.locator('[data-cy="risk_query-container"]').locator('..').first()).toHaveAttribute('open', '');
+        await expect(page.locator('details').first()).toHaveAttribute('open', '');
     });
 });
