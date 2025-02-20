@@ -21,21 +21,25 @@ const createMissingTranslationsPage = async (graphql, createPage) => {
   const scannerEntries = [];
 
   for (const file of jsFiles) {
-    try {
-      const handler = (key, { defaultValue, fallbackKey, ns }) => {
-        scannerEntries.push({ key, defaultValue, fallbackKey, ns, file });
-      };
+    const handler = (key, { defaultValue, fallbackKey, ns }) => {
+      scannerEntries.push({ key, defaultValue, fallbackKey, ns, file });
+    };
 
-      const content = fs.readFileSync('src' + path.sep + file, 'utf-8');
+    const content = fs.readFileSync('src' + path.sep + file, 'utf-8');
 
-      // Parse Translation Function
-      parser.parseFuncFromString(content, handler); // use default options and handler
+    const oldConsoleError = console.error;
 
-      // Parse Trans component
-      parser.parseTransFromString(content, handler); // use default options and handler
-    } catch (error) {
-      console.log(error);
+    if (!process.env.I18NEXT_SCANNER_SHOW_ERRORS) {
+      console.error = () => {};
     }
+
+    // Parse Translation Function
+    parser.parseFuncFromString(content, handler); // use default options and handler
+
+    // Parse Trans component
+    parser.parseTransFromString(content, handler); // use default options and handler
+
+    console.error = oldConsoleError;
   }
 
   // Find the translations in our localization files
