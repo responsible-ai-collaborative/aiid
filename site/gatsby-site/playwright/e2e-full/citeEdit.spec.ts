@@ -101,7 +101,7 @@ test.describe('Edit report', () => {
           title
           url
           editor_notes
-          translations_es: translations(input: "es") {
+          translations(languages: ["es"]) {
             title
             text
           }
@@ -119,10 +119,10 @@ test.describe('Edit report', () => {
       title: 'Test Title',
       url: 'https://www.test.com/test',
       editor_notes: 'Pro iustitia tantum',
-      translations_es: {
+      translations: [{
         title: 'Este es un titulo en Espanol!',
         text: '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
-      },
+      }],
     })
   });
 
@@ -174,7 +174,7 @@ test.describe('Edit report', () => {
           title
           url
           editor_notes
-          translations_es: translations(input: "es") {
+          translations(languages: ["es"]) {
             title
             text
           }
@@ -192,10 +192,10 @@ test.describe('Edit report', () => {
       title: 'Test Title',
       url: 'https://www.test.com/test',
       editor_notes: 'Pro iustitia tantum',
-      translations_es: {
+      translations: [{
         title: 'Este es un titulo en Espanol!',
         text: '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
-      },
+      }],
     })
   });
 
