@@ -32,7 +32,7 @@ function CitePage(props) {
 
   const [isLiveData, setIsLiveData] = useState(false);
 
-  const { locale } = useLocalization();
+  const { locale: language } = useLocalization();
 
   // meta tags
 
@@ -40,8 +40,8 @@ function CitePage(props) {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: { [locale]: allMongodbTranslationsReports },
-    locale,
+    translations: { [language]: allMongodbTranslationsReports },
+    language,
   });
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
@@ -116,7 +116,7 @@ export const Head = (props) => {
     data: { allMongodbAiidprodReports, allMongodbTranslationsReports, incident },
   } = props;
 
-  const { locale } = useLocalization();
+  const { locale: language } = useLocalization();
 
   const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
 
@@ -124,8 +124,8 @@ export const Head = (props) => {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: { [locale]: allMongodbTranslationsReports },
-    locale,
+    translations: { [language]: allMongodbTranslationsReports },
+    language,
   });
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
