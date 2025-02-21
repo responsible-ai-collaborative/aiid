@@ -1,4 +1,4 @@
-function validateEnv(config: Record<string, unknown>) {
+function validateEnv(config) {
   const missingEnvs = Object.keys(config).filter(
     (key) => config[key] === undefined || config[key] === ''
   );
