@@ -215,9 +215,9 @@ const config = {
 const requiredEnvs = {
   GATSBY_SITE_URL: process.env.GATSBY_SITE_URL,
   GATSBY_AVAILABLE_LANGUAGES: process.env.GATSBY_AVAILABLE_LANGUAGES,
+  // TODO: These are also required and should be validated.
   // GATSBY_ALGOLIA_SEARCH_KEY: process.env.GATSBY_ALGOLIA_SEARCH_KEY,
   // GATSBY_ALGOLIA_APP_ID: process.env.GATSBY_ALGOLIA_APP_ID,
-  // TODO we should validate these too but I don't want to do that in this PR
   // ALGOLIA_ADMIN_KEY: process.env.ALGOLIA_ADMIN_KEY,
   // GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
   // GOOGLE_TRANSLATE_API_KEY: process.env.GOOGLE_TRANSLATE_API_KEY,
