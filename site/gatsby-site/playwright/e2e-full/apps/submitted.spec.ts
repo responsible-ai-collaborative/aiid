@@ -700,4 +700,271 @@ test.describe('Submitted reports', () => {
 
         })
     });
+
+    test('Should perform a bulk claim on all submissions', async ({ page, login }) => {
+        await init();
+
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        const { data: { submissions } } = await query({
+            query: gql`{
+                submissions {
+                    _id
+                }
+            }
+        `,
+        });
+        // Select all submissions
+        await page.getByTestId("select-all-submissions").click({force: true});
+        await page.getByTestId("select-all-submissions").check({force: true});
+
+        page.on('dialog', dialog => dialog.accept());
+
+        // Select claim option
+        await page.getByTestId("bulk-action-select").selectOption('claim');
+
+        // Click on bulk action button
+        await page.getByTestId("bulk-action-button").click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully claimed ${submissions.length} submissions`);
+
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { incident_editors: { EQ: "${userId}" } }) {
+                  _id
+                  incident_editors {
+                      userId
+                  }
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions.length).toBe(submissions.length);
+    });
+
+    test('Should perform a bulk unclaim on all submissions', async ({ page, login }) => {
+        await init();
+
+        const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        const { data: { submissions } } = await query({
+            query: gql`{
+                submissions {
+                    _id
+                }
+            }
+        `,
+        });
+        // Select all submissions
+        await page.getByTestId("select-all-submissions").click({force: true});
+        await page.getByTestId("select-all-submissions").check({force: true});
+
+        page.on('dialog', dialog => dialog.accept());
+
+        // Select unclaim option
+        await page.getByTestId("bulk-action-select").selectOption('unclaim');
+
+        // Click on bulk action button
+        await page.getByTestId("bulk-action-button").click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully unclaimed ${submissions.length} submissions`);
+
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { incident_editors: { EQ: "${userId}" } }) {
+                  _id
+                  incident_editors {
+                      userId
+                  }
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions.length).toBe(0);
+    });
+
+    test('Should perform a bulk to reject all submissions', async ({ page, login }) => {
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        const { data: { submissions } } = await query({
+            query: gql`{
+                submissions {
+                    _id
+                }
+            }
+        `,
+        });
+        // Select all submissions
+        await page.getByTestId("select-all-submissions").click({force: true});
+        await page.getByTestId("select-all-submissions").check({force: true});
+
+        page.on('dialog', dialog => dialog.accept());
+
+        // Select reject option
+        await page.getByTestId("bulk-action-select").selectOption('reject');
+
+        // Click on bulk action button
+        await page.getByTestId("bulk-action-button").click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully rejected ${submissions.length} submissions`);
+
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions.length).toBe(0);
+    });
+
+    test('Should select and claim one submission', async ({ page, login }) => {
+      await init();
+
+      const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+      await page.goto(url);
+
+      const { data: { submissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+              }
+          }
+      `,
+      });
+      // Select all submissions
+      const firstSubmission = submissions[0];
+      await page.getByTestId(`select-submission-${firstSubmission._id}`).click({force: true});
+      await page.getByTestId(`select-submission-${firstSubmission._id}`).check({force: true});
+
+      page.on('dialog', dialog => dialog.accept());
+
+      // Select claim option
+      await page.getByTestId("bulk-action-select").selectOption('claim');
+
+      // Click on bulk action button
+      await page.getByTestId("bulk-action-button").click();
+
+      await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully claimed 1 submission`);
+
+      const { data: { submissions: updatedSubmissions } } = await query({
+        query: gql`{
+            submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+                _id
+                incident_editors {
+                    userId
+                }
+            }
+        }
+      `,
+      });
+
+      expect(updatedSubmissions.length).toBe(1);
+  });
+
+  test('Should select and unclaim one submission', async ({ page, login }) => {
+    await init();
+
+    const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+    await page.goto(url);
+
+    const { data: { submissions } } = await query({
+        query: gql`{
+            submissions {
+                _id
+            }
+        }
+    `,
+    });
+    // Select all submissions
+    const firstSubmission = submissions[0];
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).click({force: true});
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).check({force: true});
+
+    page.on('dialog', dialog => dialog.accept());
+
+    // Select unclaim option
+    await page.getByTestId("bulk-action-select").selectOption('unclaim');
+
+    // Click on bulk action button
+    await page.getByTestId("bulk-action-button").click();
+
+    await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully unclaimed 1 submission`);
+
+    const { data: { submissions: updatedSubmissions } } = await query({
+      query: gql`{
+          submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+              _id
+              incident_editors {
+                  userId
+              }
+          }
+      }
+    `,
+    });
+
+    expect(updatedSubmissions.length).toBe(0);
+  });
+
+  test('Should select and reject one submission', async ({ page, login }) => {
+    await init();
+
+    const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+    await page.goto(url);
+
+    const { data: { submissions } } = await query({
+        query: gql`{
+            submissions {
+                _id
+            }
+        }
+    `,
+    });
+    // Select all submissions
+    const firstSubmission = submissions[0];
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).click({force: true});
+    await page.getByTestId(`select-submission-${firstSubmission._id}`).check({force: true});
+
+    page.on('dialog', dialog => dialog.accept());
+
+    // Select reject option
+    await page.getByTestId("bulk-action-select").selectOption('reject');
+
+    // Click on bulk action button
+    await page.getByTestId("bulk-action-button").click();
+
+    await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully rejected 1 submission`);
+
+    const { data: { submissions: updatedSubmissions } } = await query({
+      query: gql`{
+          submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+              _id
+              incident_editors {
+                  userId
+              }
+          }
+      }
+    `,
+    });
+
+    expect(updatedSubmissions.length).toBe(0);
+  });
 });

@@ -102,16 +102,33 @@ test('Translations - Should translate languages only if report language differs 
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
+  const reportsTranslationsCollection = {
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
   const mongoClient = {
     connect: sinon.stub().resolves(),
     close: sinon.stub().resolves(),
-    db: sinon.stub().returns({
-      collection: (name: string) => {
-        if (name === 'reports') return reportsCollection;
-        if (name === 'reports_en') return reportsENCollection;
-        if (name === 'reports_es') return reportsESCollection;
-        return null;
-      },
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports_en') return reportsENCollection;
+            if (name === 'reports_es') return reportsESCollection;
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
     }),
   };
 
@@ -154,6 +171,32 @@ test('Translations - Should translate languages only if report language differs 
     title: 'test-es-Report 1 title',
     plain_text: 'test-es-Report 1 text\n',
   }]);
+
+  sinon.assert.calledTwice(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
+    {
+      report_number: 2,
+      text: 'test-en-Reporte 2 **texto**',
+      title: 'test-en-Título del reporte 2',
+      plain_text: 'test-en-Reporte 2 texto\n',
+      language: 'en',
+    },
+    {
+      report_number: 3,
+      text: 'test-en-Reporte 3 **texto**',
+      title: 'test-en-Título del reporte 3',
+      plain_text: 'test-en-Reporte 3 texto\n',
+      language: 'en',
+    }
+  ]);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
+    report_number: 1,
+    text: 'test-es-Report 1 **text**',
+    title: 'test-es-Report 1 title',
+    plain_text: 'test-es-Report 1 text\n',
+    language: 'es',
+  }]);
+
   sinon.assert.calledOnce(mongoClient.close);
 });
 
@@ -184,16 +227,33 @@ test("Translations - Shouldn't call Google's translate api and use translation p
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
+  const reportsTranslationsCollection = {
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
   const mongoClient = {
     connect: sinon.stub().resolves(),
     close: sinon.stub().resolves(),
-    db: sinon.stub().returns({
-      collection: (name: string) => {
-        if (name === 'reports') return reportsCollection;
-        if (name === 'reports_en') return reportsENCollection;
-        if (name === 'reports_es') return reportsESCollection;
-        return null;
-      },
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports_en') return reportsENCollection;
+            if (name === 'reports_es') return reportsESCollection;
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
     }),
   };
 
@@ -236,6 +296,32 @@ test("Translations - Shouldn't call Google's translate api and use translation p
     title: 'translated-es-Report 1 title',
     plain_text: 'translated-es-Report 1 text\n',
   }]);
+
+  sinon.assert.calledTwice(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
+    {
+      report_number: 2,
+      text: 'translated-en-Reporte 2 **texto**',
+      title: 'translated-en-Título del reporte 2',
+      plain_text: 'translated-en-Reporte 2 texto\n',
+      language: 'en',
+    },
+    {
+      report_number: 3,
+      text: 'translated-en-Reporte 3 **texto**',
+      title: 'translated-en-Título del reporte 3',
+      plain_text: 'translated-en-Reporte 3 texto\n',
+      language: 'en',
+    }
+  ]);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
+    report_number: 1,
+    text: 'translated-es-Report 1 **text**',
+    title: 'translated-es-Report 1 title',
+    plain_text: 'translated-es-Report 1 text\n',
+    language: 'es',
+  }]);
+
   sinon.assert.calledOnce(mongoClient.close);
 });
 
@@ -268,16 +354,33 @@ test('Translations - Should translate reports with submission date greater than 
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
+  const reportsTranslationsCollection = {
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
   const mongoClient = {
     connect: sinon.stub().resolves(),
     close: sinon.stub().resolves(),
-    db: sinon.stub().returns({
-      collection: (name: string) => {
-        if (name === 'reports') return reportsCollection;
-        if (name === 'reports_en') return reportsENCollection;
-        if (name === 'reports_es') return reportsESCollection;
-        return null;
-      },
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports_en') return reportsENCollection;
+            if (name === 'reports_es') return reportsESCollection;
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
     }),
   };
 
@@ -310,6 +413,18 @@ test('Translations - Should translate reports with submission date greater than 
     }
   ]);
   sinon.assert.notCalled(reportsESCollection.insertMany);
+
+  sinon.assert.calledOnce(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
+    {
+      report_number: 3,
+      text: 'test-en-Reporte 3 **texto**',
+      title: 'test-en-Título del reporte 3',
+      plain_text: 'test-en-Reporte 3 texto\n',
+      language: 'en',
+    }
+  ]);
+
   sinon.assert.calledOnce(mongoClient.close);
 });
 
@@ -363,16 +478,33 @@ test('Translations - Should not translate if the report was already translated',
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
+  const reportsTranslationsCollection = {
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
   const mongoClient = {
     connect: sinon.stub().resolves(),
     close: sinon.stub().resolves(),
-    db: sinon.stub().returns({
-      collection: (name: string) => {
-        if (name === 'reports') return reportsCollection;
-        if (name === 'reports_en') return reportsENCollection;
-        if (name === 'reports_es') return reportsESCollection;
-        return null;
-      },
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports_en') return reportsENCollection;
+            if (name === 'reports_es') return reportsESCollection;
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
     }),
   };
 
@@ -395,5 +527,80 @@ test('Translations - Should not translate if the report was already translated',
   sinon.assert.notCalled(translateClient.translate);
   sinon.assert.notCalled(reportsENCollection.insertMany);
   sinon.assert.notCalled(reportsESCollection.insertMany);
+  sinon.assert.notCalled(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledOnce(mongoClient.close);
+});
+
+test("Translations - Should not insert report translation if the Google's translate API returns empty translations", async ({ page }) => {
+  const translatedReportsEN = [];
+
+  const translatedReportsES = [];
+
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
+
+  const reportsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(reports),
+    }),
+  };
+
+  const reportsENCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReportsEN),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
+  const reportsESCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReportsES),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+  };
+
+  const mongoClient = {
+    connect: sinon.stub().resolves(),
+    close: sinon.stub().resolves(),
+    db: sinon.stub().returns({
+      collection: (name: string) => {
+        if (name === 'reports') return reportsCollection;
+        if (name === 'reports_en') return reportsENCollection;
+        if (name === 'reports_es') return reportsESCollection;
+        return null;
+      },
+    }),
+  };
+
+  // Mock Google Translate API to return empty translations only for the 'en' language
+  const translateClient = {
+    translate: sinon.stub().callsFake((payload, { to }) => {
+      if(to === 'en') return [['', '']];
+      return [payload.map((p: any) => `test-${to}-${p}`)];
+    }
+    ),
+  };
+
+  const translator = new Translator({
+    mongoClient,
+    translateClient,
+    languages: [{ code: 'es' }, {code: 'en'}],
+    reporter,
+    dryRun: false,
+  });
+
+  await translator.run();
+  
+  sinon.assert.calledOnce(mongoClient.connect);
+  sinon.assert.calledOnce(reportsCollection.find);
+  sinon.assert.calledThrice(translateClient.translate);
+  sinon.assert.calledOnce(reportsESCollection.insertMany);
+  sinon.assert.calledWith(reportsESCollection.insertMany, [{
+    report_number: 1,
+    text: 'test-es-Report 1 **text**',
+    title: 'test-es-Report 1 title',
+    plain_text: 'test-es-Report 1 text\n',
+  }]);
+  sinon.assert.notCalled(reportsENCollection.insertMany);
+  sinon.assert.callCount(reporter.error, 4);
   sinon.assert.calledOnce(mongoClient.close);
 });

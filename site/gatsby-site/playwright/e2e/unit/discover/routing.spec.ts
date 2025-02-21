@@ -10,7 +10,7 @@ test('Should parse back and forth a discover URL', async () => {
 
   const location = {
     search:
-      '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&epoch_date_published_max=1670371200&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
+      '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&epoch_date_published_max=1670371200&hideDuplicates=1&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
   };
 
   const result = parseURL({ location, indexName, queryConfig });
@@ -31,7 +31,7 @@ test('Should parse back and forth a discover URL', async () => {
   });
 
   expect(state.configure).toEqual({
-    distinct: false,
+    distinct: true,
     hitsPerPage: 28,
   });
 
