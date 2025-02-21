@@ -113,7 +113,7 @@ jobs:
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
-          TEST_FOLDER: playwright/e2e-full/
+          TEST_FOLDER: playwright/e2e/
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
