@@ -40,7 +40,6 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: production
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
@@ -59,7 +58,6 @@ jobs:
       sha: ${{ github.sha }}
       netlify-context: production
       netlify-alias:
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
   call-test-playwright-probes:
@@ -70,7 +68,6 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: production
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
       site-url: ${{ vars.SITE_URL }}
 
   call-process-notifications:
