@@ -1707,4 +1707,66 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
+
+    test('Should allow commas in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+      await init();
+      await conditionalIntercept(
+        page,
+        '**/parseNews**',
+        () => true,
+        parseNews,
+        'parseNews'
+      );
+
+      await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+      );
+
+      await page.goto(url);
+
+      await waitForRequest('findSubmissions');
+
+      await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      await page.locator('button:has-text("Fetch info")').click();
+
+      await waitForRequest('parseNews');
+
+      await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+      await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+      await page.locator('[data-cy="to-step-2"]').click();
+
+      await page.locator('[data-cy="to-step-3"]').click();
+
+      await page.locator('input[name="developers"]').fill('This developer has a comma in its name, test');
+      await page.keyboard.press('Enter');
+
+      await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+      // Check for deployers field
+      await page.locator('input[name="deployers"]').fill('This deployer has a comma in its name, test');
+      await page.keyboard.press('Enter');
+      await expect(page.locator('text=Each alleged Deployer must have at least 3 characters and less than 200')).not.toBeVisible();
+
+      // Check for harmed_parties field
+      await page.locator('input[name="harmed_parties"]').fill('This harmed_parties has a comma in its name, test');
+      await page.keyboard.press('Enter');
+      await expect(page.locator('text=Each alleged Harmed parties must have at least 3 characters and less than 200')).not.toBeVisible();
+
+      await page.locator('input[name="implicated_systems"]').fill('This implicated_systems has a comma in its name, test');
+      await page.keyboard.press('Enter');
+      await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
+
+      await page.locator('button[type="submit"]').click();
+      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+      await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
+  
 });
