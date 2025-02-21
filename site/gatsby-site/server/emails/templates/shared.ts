@@ -2,12 +2,12 @@ const ignoreWhitespace = (s: string): string => s.replace(/\s+/g, ' ').trim();
 
 // Wraps email content with shared header, footer...
 const insertContent= (content: string, variables: any): string  => {
-	return `
-	<!doctype html>
-	<html>
-		<head>
-			<meta charset="utf-8"/>
-			<title>${variables.title}</title>
+  return `
+  <!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>${variables.title}</title>
       <style>
         /* These media queries may not be supported,
          * so we have to ensure it works
@@ -22,25 +22,26 @@ const insertContent= (content: string, variables: any): string  => {
           a    { color: #2764eb ;                       }
         }
       </style>
-		</head>
-		<body style="${bodyStyle}">
-			<div style="${wrapperStyle}">
-				<div style="${headerStyle}">
-					<img
-						alt="AIID"
-						src="https://res.cloudinary.com/pai/image/upload/v1727286210/Black_Glowing_AIID_400x218_jqcgpb.png"
-						height="100"
-					/>
-					<div style="${headerTitleStyle}">
-						AI INCIDENT DATABASE
-					</div>
-				</div>
-				<div style="padding: 32px 8px;">
+    </head>
+    <body style="${bodyStyle}">
+      <div style="${wrapperStyle}">
+        <div style="${headerStyle}">
+          <img
+            alt="AIID"
+            src="https://res.cloudinary.com/pai/image/upload/v1727286210/Black_Glowing_AIID_400x218_jqcgpb.png"
+            width="200"
+            height="109"
+          />
+          <div style="${headerTitleStyle}">
+            AI INCIDENT DATABASE
+          </div>
+        </div>
+        <div style="padding: 32px 8px;">
           ${content}
-				</div>
-			</div>
-		</body>
-	</html>
+        </div>
+      </div>
+    </body>
+  </html>
   `.replace(/\n\t/g, '\n').trim();
 }
 
@@ -59,7 +60,6 @@ const wrapperStyle: string = ignoreWhitespace(`
 
 const headerStyle: string = ignoreWhitespace(`
   padding: 16px;
-  height: 100px;
   text-align: center;
   margin-bottom: 16px;
 `);
