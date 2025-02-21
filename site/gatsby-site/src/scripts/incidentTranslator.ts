@@ -16,7 +16,7 @@ interface IncidentTranslatorOptions {
   translateClient: Translate;
   languages: string[];
   reporter: Reporter;
-  submissionDateStart?: string;
+  creationDateStart?: string;
   dryRun?: boolean;
 }
 
@@ -33,7 +33,7 @@ export default class IncidentTranslator {
 
   languages: string[];
 
-  submissionDateStart: string | undefined;
+  creationDateStart: string | undefined;
 
   dryRun: boolean;
 
@@ -42,14 +42,14 @@ export default class IncidentTranslator {
     translateClient,
     languages,
     reporter,
-    submissionDateStart = process.env.TRANSLATE_SUBMISSION_DATE_START,
+    creationDateStart = process.env.TRANSLATE_INCIDENT_CREATION_DATE_START,
     dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
   }: IncidentTranslatorOptions) {
     this.translateClient = translateClient;
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
-    this.submissionDateStart = submissionDateStart;
+    this.creationDateStart = creationDateStart;
     this.dryRun = dryRun;
   }
 
@@ -216,20 +216,20 @@ export default class IncidentTranslator {
 
     let incidentsQuery = {};
 
-    // If submissionDateStart is provided, only translate incidents after that date
-    if (this.submissionDateStart) {
-      if (isNaN(Date.parse(this.submissionDateStart))) {
-        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
+    // If creationDateStart is provided, only translate incidents after that date
+    if (this.creationDateStart) {
+      if (isNaN(Date.parse(this.creationDateStart))) {
+        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_INCIDENT_CREATION_DATE_START env variable: [${this.creationDateStart}]`;
 
         this.reporter.error(errorMessage);
         throw new Error(errorMessage);
       }
 
-      this.reporter.log(`Translating incidents created after [${this.submissionDateStart}]`);
-      incidentsQuery = { created_at: { $gte: new Date(this.submissionDateStart) } };
+      this.reporter.log(`Translating incidents created after [${this.creationDateStart}]`);
+      incidentsQuery = { created_at: { $gte: new Date(this.creationDateStart) } };
     } else {
       this.reporter.log(
-        'Translating all incidents. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)'
+        'Translating all incidents. (TRANSLATE_INCIDENT_CREATION_DATE_START env variable is not defined)'
       );
     }
 
