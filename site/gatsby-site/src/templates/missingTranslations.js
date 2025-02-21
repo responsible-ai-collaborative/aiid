@@ -8,7 +8,19 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons';
 const bgByLocale = { es: 'bg-yellow-100', fr: 'bg-blue-100', ja: 'bg-green-100', en: 'bg-red-100' };
 
 export default function MissingTranslations({ pageContext }) {
-  const { translationEntries, allLocales } = pageContext;
+  const { translationEntries, allLocales, scannerEntries } = pageContext;
+
+  for (const entry of translationEntries) {
+    entry.normalizedKey = normalize(entry.key);
+  }
+
+  for (const entry of scannerEntries) {
+    if (entry.key) {
+      entry.normalizedKey = normalize(entry.key);
+    } else {
+      entry.normalizedKey = normalize(entry.defaultValue);
+    }
+  }
 
   const nonEnglishLocales = new FunctionalSet(pageContext.allLocales).filter(
     (locale) => locale != 'en'
@@ -19,6 +31,18 @@ export default function MissingTranslations({ pageContext }) {
 
   // e.g. { Hello: { fr: { "translation.json": "Bonjour" } } }
   const klft = recursiveMap(translationEntries, ['key', 'locale', 'file', 'translation'], true);
+
+  const normalizedTranslatedKeys = new FunctionalSet(
+    translationEntries.map((e) => e.normalizedKey)
+  );
+
+  const scannerEntriesWithoutTranslations = scannerEntries.filter(
+    (e) =>
+      e.normalizedKey &&
+      klft[e.key] == undefined &&
+      klft[e.defaultValue] == undefined &&
+      !normalizedTranslatedKeys.has(e.normalizedKey)
+  );
 
   const allKeys = getKeys(klft);
 
@@ -64,6 +88,8 @@ export default function MissingTranslations({ pageContext }) {
     return !FunctionalSet.allEqual(listsOfFilesWithTranslations);
   });
 
+  const totalTranslationKeyCount = allKeys.size + scannerEntriesWithoutTranslations.length;
+
   return (
     <div>
       <div className={'titleWrapper'}>
@@ -87,7 +113,7 @@ export default function MissingTranslations({ pageContext }) {
                       en: 'rgb(220 38 38)',
                     }[locale]
                   } ${Math.round(
-                  (100 * translatedKeyCountByLocale[locale]) / allKeys.size
+                  (100 * translatedKeyCountByLocale[locale]) / totalTranslationKeyCount
                 )}%, rgb(209 213 219) 0)
                 `,
               }}
@@ -107,7 +133,7 @@ export default function MissingTranslations({ pageContext }) {
               >
                 {translatedKeyCountByLocale[locale]}
               </span>{' '}
-              / {allKeys.size}
+              / {totalTranslationKeyCount}
             </div>
             <div className="text-gray-600">keys translated</div>
           </div>
@@ -158,7 +184,7 @@ export default function MissingTranslations({ pageContext }) {
           </div>
         ))}
       </div>
-      <h2 className="mt-4 mb-8">Missing Translations By File</h2>
+      <h2 className="mt-4 mb-8">Missing translations by file</h2>
       <table className="w-full">
         {Object.keys(localeSlashFileToMissingKeysMap)
           .sort()
@@ -191,7 +217,7 @@ export default function MissingTranslations({ pageContext }) {
             </tr>
           ))}
       </table>
-      <h2 className="mt-8">Missing Translations By Key</h2>
+      <h2 className="mt-8">Keys missing translations in some languages</h2>
       {keysWithMissingTranslations.map((key) => (
         <table key={key} className="my-8 w-full">
           <tr className="bg-gray-100">
@@ -228,6 +254,27 @@ export default function MissingTranslations({ pageContext }) {
             )}
         </table>
       ))}
+      <h2>Keys missing translations in all languages</h2>
+      <p>
+        Found <strong>{scannerEntriesWithoutTranslations.length}</strong> keys with no matching
+        entries in translation files for any languages.
+      </p>
+      <table className="w-full">
+        <tr>
+          <th className="p-2 bg-gray-100 border-1">File</th>
+          <th className="p-2 bg-gray-100 border-1">Namespace</th>
+          <th className="p-2 bg-gray-100 border-1">Key</th>
+        </tr>
+        {scannerEntriesWithoutTranslations.map((scannerEntry, i) => (
+          <tr key={scannerEntry} className={i % 2 == 1 ? 'bg-gray-50' : undefined}>
+            <td className="p-2 border-1">{scannerEntry.file}</td>
+            <td className="p-2 border-1">{scannerEntry.ns}</td>
+            <td className="p-2 border-1 font-mono">
+              <Copyable text={scannerEntry.key || scannerEntry.defaultValue}></Copyable>
+            </td>
+          </tr>
+        ))}
+      </table>
     </div>
   );
 }
@@ -260,6 +307,23 @@ const Copyable = ({ text, fullButton }) => {
       )}
     </button>
   );
+};
+
+// The scanner sometimes extracts a key that's compatible
+// but slightly different from the one
+// used in the translation file. E.g.
+//
+// "Found {{count}} entries at <2>location</2>" vs
+// "Found {{ count }} entries at  <3>location</3>"
+//
+// This gives a normalized representation that we can compare.
+const normalize = (transString) => {
+  return transString
+    .replace(/{{\s\s*/g, '{{')
+    .replace(/\s\s*}}/g, '}}')
+    .replace(/<\d>/g, '<d>')
+    .replace(/<\/\d>/g, '</d>')
+    .replace(/\s\s*/g, ' ');
 };
 
 /*
