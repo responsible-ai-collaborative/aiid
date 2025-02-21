@@ -179,7 +179,7 @@
     "jest-cli": "^29.7.0",
     "lint-staged": "^10.5.3",
     "mongodb-memory-server": "^9.1.8",
-    "netlify-cli": "^17.36.0",
+    "netlify-cli": "^18.1.0",
     "postcss": "^8.4.31",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
