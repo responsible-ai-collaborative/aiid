@@ -10,14 +10,17 @@ on:
         description: The commit SHA to run the tests against
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
         required: false
         default: ""
+      site-url:
+        description: The URL of the site to deploy
+        type: string
+        required: false
+        default: ""
+      
 
 jobs:
   tests:
@@ -40,32 +43,28 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Read node modules from cache
-        id: cache-nodemodules
-        uses: actions/cache/restore@v4
-        env:
-          cache-name: cache-install-folder
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
         with:
           path: |
             site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install NPM dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: site/gatsby-site
 
-      - name: Restore build cache
-        uses: actions/cache/restore@v4
-        env:
-          cache-name: cache-build-folder
+      - name: Cache Playwright Browsers
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
         with:
-          path: |
-            site/gatsby-site/public
-            site/gatsby-site/netlify/functions
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Install playwright browsers
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
         working-directory: site/gatsby-site
 
@@ -73,21 +72,14 @@ jobs:
         run: npm run test:e2e:ci
         working-directory: site/gatsby-site
         env:
-          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
           IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
-          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
-          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
-          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
-          TEST_FOLDER: playwright/e2e/
-          MAILERSEND_API_KEY: something
-          NOTIFICATIONS_SENDER_NAME: Test Preview
-          NOTIFICATIONS_SENDER: test@test.com
-          SITE_URL: http://localhost:8000
-          NEXTAUTH_URL: http://localhost:8000
-          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+          TEST_FOLDER: playwright/probes/
+          AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          NEXTAUTH_URL: dummy
+          NEXTAUTH_SECRET: dummy
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

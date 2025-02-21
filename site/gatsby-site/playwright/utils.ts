@@ -64,6 +64,12 @@ type TestFixtures = {
      * Runs the test in any environment except production
      */
     runAnywhereExceptProduction: () => Promise<void>,
+
+    /**
+     * Skips the test if the specified language(s) is/are not available in the config's AVAILABLE_LANGUAGES.
+     * @param language - A language code or an array of language codes to check.
+     */
+    skipIfLanguageUnavailable: (language: string | string[]) => Promise<void>,
 };
 
 /**
@@ -161,9 +167,6 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
-        // TODO: this should be removed since we pass the username and password as arguments
-        testInfo.skip(!config.E2E_ADMIN_USERNAME || !config.E2E_ADMIN_PASSWORD, 'E2E_ADMIN_USERNAME or E2E_ADMIN_PASSWORD not set');
-
         await use(async ({ email = testUser.email, customData = null } = {}) => {
 
             const userId = await getUserIdFromAuth(email);
@@ -216,9 +219,18 @@ export const test = base.extend<TestFixtures>({
         if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
             testInfo.skip();
         }
-
         await use(null);
-    }
+    },
+
+    skipIfLanguageUnavailable: async ({ }, use, testInfo) => {
+        await use(async (language: string | string[]) => {
+            const langs = typeof language === 'string' ? [language] : language;
+            const availableLanguages = config.AVAILABLE_LANGUAGES.split(',').map(l => l.trim());
+            for (const lang of langs) {
+                testInfo.skip(!availableLanguages.includes(lang), `Language ${lang} is not available as per AVAILABLE_LANGUAGES config`);
+            }
+        });
+    },
 });
 
 // SEE: https://playwright.dev/docs/api/class-page#page-wait-for-request
@@ -301,7 +313,7 @@ export const getApolloClient = () => {
 
     const client = new ApolloClient({
         link: new HttpLink({
-            uri: `http://localhost:8000/api/graphql`,
+            uri: `${config.SITE_URL}/api/graphql`,
         }),
         cache: new InMemoryCache({
             addTypename: false,

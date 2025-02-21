@@ -54,7 +54,7 @@ test.describe('The Landing page', () => {
 
   test.skip('Should redirect to the account page when logged in',
     async ({ page, skipOnEmptyEnvironment, login }) => {
-      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+      await login();
 
       await expect(page).toHaveURL('/');
       await page.locator('[data-cy="sidebar-desktop"]').locator('[data-cy="sidebar-user"]').click();
