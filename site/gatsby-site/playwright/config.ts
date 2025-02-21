@@ -1,3 +1,5 @@
+import validateEnv from '../src/utils/validateEnv'
+
 type ConfigType = {
     IS_EMPTY_ENVIRONMENT: string;
     AVAILABLE_LANGUAGES?: string;
@@ -14,10 +16,6 @@ const config: ConfigType = {
     SITE_URL: process.env.SITE_URL ?? '',
 }
 
-Object.keys(config).forEach((key) => {
-    if (config[key as keyof ConfigType] === undefined) {
-        throw new Error(`Config property ${key} is undefined`);
-    }
-});
+validateEnv(config);
 
 export default config;
