@@ -185,7 +185,6 @@ test.describe('Checklists App Form', () => {
         await expect(page.locator('[data-testid="Distributional Artifacts"]')).toHaveCount(0);
       });
 
-      // TODO: test is crashing not sure if it is a bug or missing seed data
       test('Should persist open state on editing query', async ({ page, login }) => {
 
         const [userId] = await login();
