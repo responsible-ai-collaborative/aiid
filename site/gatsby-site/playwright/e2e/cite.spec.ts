@@ -17,7 +17,7 @@ test.describe('Cite pages', () => {
 
     test.beforeAll(async ({ request }) => {
         // Skip all tests if the environment is empty since /cite/{incident_id} is not available
-        if (config.IS_EMPTY_ENVIRONMENT) {
+        if (config.IS_EMPTY_ENVIRONMENT == 'true') {
             test.skip();
         }
 

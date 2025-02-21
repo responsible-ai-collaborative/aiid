@@ -150,7 +150,7 @@ export const testUser = { ...users[0], email: authUsers.find(u => u._id.equals(n
 
 export const test = base.extend<TestFixtures>({
     skipOnEmptyEnvironment: async ({ }, use, testInfo) => {
-        if (config.IS_EMPTY_ENVIRONMENT) {
+        if (config.IS_EMPTY_ENVIRONMENT == 'true') {
             testInfo.skip();
         }
 
@@ -158,7 +158,7 @@ export const test = base.extend<TestFixtures>({
     },
 
     runOnlyOnEmptyEnvironment: async ({ }, use, testInfo) => {
-        if (!config.IS_EMPTY_ENVIRONMENT) {
+        if (config.IS_EMPTY_ENVIRONMENT == 'false') {
             testInfo.skip();
         }
 
