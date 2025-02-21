@@ -38,63 +38,80 @@ Once you have cloned the repository, to set up a local development environment f
    ```env
    # Mongo database
 
-   API_MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
-   MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string
-   # MONGODB_REPLICA_SET= # Name of the MongoDB replica set for high availability, leave it empty if not using a replica set or in development
-   MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110  # MongoDB connection string for the translations database
+   # MongoDB connection string
+   API_MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110  
+   # MongoDB connection string
+   MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110 
+   # MONGODB_REPLICA_SET= # Name of the MongoDB replica set for high availability
+   # MongoDB connection string for the translations database
+   MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110 
    MONGODB_MIGRATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110
 
    # Rollbar
 
-   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=dummy  # Token for sending error reports to Rollbar from the server
-   GATSBY_ROLLBAR_TOKEN=dummy  # Token for Rollbar error tracking in the Gatsby frontend
-
+   # Token for sending error reports to Rollbar from the server
+   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=dummy  
+   # Token for Rollbar error tracking in the Gatsby frontend
+   GATSBY_ROLLBAR_TOKEN=dummy  
 
    # Algolia
 
-   GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS  # Application ID for Algolia search integration in the Gatsby app
-   GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c  # Public search key for Algolia, used in the Gatsby frontend
-   ALGOLIA_ADMIN_KEY=  # Admin key for managing the Algolia index
-
+   # Application ID for Algolia search integration in the Gatsby app
+   GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS  
+   # Public search key for Algolia, used in the Gatsby frontend
+   GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c  
+   # Admin key for managing the Algolia index
+   ALGOLIA_ADMIN_KEY=dummy
 
    # Translations
 
-   GATSBY_AVAILABLE_LANGUAGES=en,es  # List of languages available for the Gatsby app (e.g., en, es, fr)
-   GOOGLE_TRANSLATE_API_KEY=  # API key for accessing Google Translate services
-
+   # List of languages available for the Gatsby app (e.g., en, es, fr)
+   GATSBY_AVAILABLE_LANGUAGES=en,es 
+   # API key for accessing Google Translate services
+   GOOGLE_TRANSLATE_API_KEY=dummy  
 
    # Cloudflare R2 storage
 
-   CLOUDFLARE_R2_ACCOUNT_ID=  # Account ID for Cloudflare R2 storage service
-   CLOUDFLARE_R2_ACCESS_KEY_ID=  # Access key ID for Cloudflare R2 storage
-   CLOUDFLARE_R2_SECRET_ACCESS_KEY=  # Secret access key for Cloudflare R2 storage
-   CLOUDFLARE_R2_BUCKET_NAME=  # Name of the Cloudflare R2 bucket for storage
-   GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=  # Public URL for accessing the Cloudflare R2 bucket from the Gatsby app
-
+   # Account ID for Cloudflare R2 storage service
+   CLOUDFLARE_R2_ACCOUNT_ID=  
+   # Access key ID for Cloudflare R2 storage
+   CLOUDFLARE_R2_ACCESS_KEY_ID=  
+   # Secret access key for Cloudflare R2 storage
+   CLOUDFLARE_R2_SECRET_ACCESS_KEY=  
+   # Name of the Cloudflare R2 bucket for storage
+   CLOUDFLARE_R2_BUCKET_NAME=  
+   # Public URL for accessing the Cloudflare R2 bucket from the Gatsby app
+   GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL=
 
    # Email notifications
 
-   MAILERSEND_API_KEY=dummy # API key for MailerSend email service or dummy value if you don't plan to send emails
-   NOTIFICATIONS_SENDER_NAME=AIID Notifications # Name of the sender for email notifications
-   NOTIFICATIONS_SENDER=notifications@incidentdatabase.ai # Email address of the sender for email notifications
+   # API key for MailerSend email service or dummy value if you don't plan to send emails
+   MAILERSEND_API_KEY=dummy
+   # Name of the sender for email notifications
+   NOTIFICATIONS_SENDER_NAME=AIID Notifications
+   # Email address of the sender for email notifications
+   NOTIFICATIONS_SENDER=notifications@incidentdatabase.ai
 
    # Prismic
 
-   PRISMIC_ACCESS_TOKEN=MC5aSjFfa0JFQUFDQUFiOURr.77-977-977-977-977-977-9NgI8PU7vv70rKu-_ve-_ve-_ve-_ve-_ve-_vUlN77-9Q2fvv71O77-977-9Y--_ve-_vQ # Access token for Prismic API
-   GATSBY_PRISMIC_REPO_NAME=aiidstaging # Name of the Prismic repository
-
+   # Access token for Prismic API
+   PRISMIC_ACCESS_TOKEN=MC5aSjFfa0JFQUFDQUFiOURr.77-977-977-977-977-977-9NgI8PU7vv70rKu-_ve-_ve-_ve-_ve-_ve-_vUlN77-9Q2fvv71O77-977-9Y--_ve-_vQ 
+   # Name of the Prismic repository
+   GATSBY_PRISMIC_REPO_NAME=aiidstaging 
 
    # Auth
 
    NEXTAUTH_URL=http://localhost:8000
    NEXTAUTH_SECRET=678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
 
-
    # Other
 
-   GOOGLE_MAPS_API_KEY=  # API key for accessing Google Maps services
-   SITE_URL=http://localhost:8000 # URL
-   SKIP_PAGE_CREATOR=createBackupsPage # List of page creator functions to skip during build
+   # API key for accessing Google Maps services
+   GOOGLE_MAPS_API_KEY=
+   GATSBY_SITE_URL=http://localhost:8000
+   SITE_URL=http://localhost:8000
+   # List of page creator functions to skip during build
+   SKIP_PAGE_CREATOR=createBackupsPage 
    ```
 
 4. **Start a Memory MongoDB Instance**
