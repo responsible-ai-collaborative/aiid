@@ -382,7 +382,7 @@ test.describe('Cite pages', () => {
         expect(data.incident.flagged_dissimilar_incidents).toContain(1);
     });
 
-    test('Should have OpenGraph meta tags', async ({ page }) => {
+    test('Should have OpenGraph meta tags', async ({ page, baseURL }) => {
         await page.goto(url);
 
         const response = await query({
@@ -408,7 +408,7 @@ test.describe('Cite pages', () => {
 
         await expect(page.locator('head meta[name="twitter:site"]')).toHaveAttribute('content', '@IncidentsDB');
         await expect(page.locator('head meta[name="twitter:creator"]')).toHaveAttribute('content', '@IncidentsDB');
-        await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', new RegExp(`^https://incidentdatabase.ai${url}/?$`));
+        await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', new RegExp(`^${baseURL}${url}/?$`));
         await expect(page.locator('head meta[property="og:type"]')).toHaveAttribute('content', 'website');
         await expect(page.locator('head meta[property="og:title"]')).toHaveAttribute('content', title);
         await expect(page.locator('head meta[property="og:description"]')).toHaveAttribute('content', description);
