@@ -40,7 +40,7 @@ export const FIND_REPORT = gql(`
 `);
 
 export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
-  query FindReportWithTranslations($filter: ReportFilterType!) {
+  query FindReportWithTranslations($filter: ReportFilterType!, $translationLanguages: [String!]!) {
     report(filter: $filter) {
       url
       title
@@ -60,21 +60,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
       is_incident_report
       inputs_outputs
       quiet
-      translations_es: translations(input: "es") {
+      translations(languages: $translationLanguages) {
         title
         text
-      }
-      translations_en: translations(input: "en") {
-        title
-        text
-      }
-      translations_fr: translations(input: "fr") {
-        title
-        text
-      }
-      translations_ja: translations(input: "ja") {
-        title
-        text
+        language
       }
     }
   }
