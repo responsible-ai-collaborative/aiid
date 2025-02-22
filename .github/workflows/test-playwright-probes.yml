@@ -76,7 +76,7 @@ jobs:
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
           TEST_FOLDER: playwright/probes/
-          AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
