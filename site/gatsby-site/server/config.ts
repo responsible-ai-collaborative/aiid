@@ -1,3 +1,5 @@
+import validateEnv from '../src/utils/validateEnv';
+
 export interface Config {
     API_MONGODB_CONNECTION_STRING: string
     ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: string
@@ -18,12 +20,8 @@ const config: Config = {
     SITE_URL: process.env.SITE_URL! || process.env.URL!,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
-}
+};
 
-Object.keys(config).forEach((key) => {
-    if (config[key as keyof Config] === undefined || config[key as keyof Config] === '') {
-        throw new Error(`Config property ${key} is undefined`);
-    }
-});
+validateEnv(config);
 
 export default config;

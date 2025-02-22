@@ -70,7 +70,7 @@ export default function RiskSection({
   };
 
   return (
-    <RiskDetails open={open} generated={generated}>
+    <RiskDetails data-testid={risk.title} open={open} generated={generated}>
       <RiskHeaderSummary generated={generated} onClick={toggleOpen}>
         <HeaderItemsGroup>
           <FontAwesomeIcon

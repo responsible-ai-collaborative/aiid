@@ -2,7 +2,7 @@ import { withSentry } from '../../sentry-instrumentation';
 import siteConfig from '../../config';
 import OpenAPIRequestValidator from 'openapi-request-validator';
 import spec from '../../static/spec.json';
-import normalizeRequest from '../../src/utils/normalizeRequest';
+import { HandlerEvent } from '@netlify/functions';
 
 const requestValidator = new OpenAPIRequestValidator({
   parameters: spec.paths['/api/lookupbyurl'].get.parameters,
@@ -17,21 +17,21 @@ const isValidURL = (string) => {
   }
 };
 
-async function handler(event) {
-  const req = normalizeRequest(event);
+async function handler(event: HandlerEvent) {
 
-  const errors = requestValidator.validateRequest(req);
+  const parsedUrl = new URL(event.rawUrl);
+
+  const urls = [...parsedUrl.searchParams.getAll('urls'), ...parsedUrl.searchParams.getAll('urls[]')];
+
+  const errors = requestValidator.validateRequest({ query: { urls } });
 
   if (errors) {
-    console.warn(req.query, errors);
 
     return {
       statusCode: 400,
       body: JSON.stringify(errors),
     };
   }
-
-  const urls = req.query.urls;
 
   const index = require('./lookupIndex.json');
 
