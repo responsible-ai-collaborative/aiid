@@ -11,7 +11,6 @@ import { ObjectId } from 'bson';
 import users from './seeds/customData/users';
 import authUsers from './seeds/auth/users';
 import { algoliaMock } from './fixtures/algoliaMock';
-import siteConfig from '../config';
 
 declare module '@playwright/test' {
     interface Request {
@@ -208,7 +207,9 @@ export const test = base.extend<TestFixtures>({
     }, { auto: true }],
 
     runOnlyInProduction: async ({ }, use, testInfo) => {
-        if (config.SITE_URL !== siteConfig.gatsby.siteUrl) {
+
+        //TODO: introduce a new env variable ENVIRONMENT_NAME to check against
+        if (config.SITE_URL !== 'https://incidentdatabase.ai') {
             testInfo.skip();
         }
 
@@ -216,7 +217,9 @@ export const test = base.extend<TestFixtures>({
     },
 
     runAnywhereExceptProduction: async ({ }, use, testInfo) => {
-        if (config.SITE_URL === siteConfig.gatsby.siteUrl) {
+
+        //TODO: introduce a new env variable ENVIRONMENT_NAME to check against
+        if (config.SITE_URL === 'https://incidentdatabase.ai') {
             testInfo.skip();
         }
         await use(null);
