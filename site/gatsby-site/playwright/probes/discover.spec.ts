@@ -6,7 +6,6 @@ import { getUnixTime } from 'date-fns';
 import { deleteReportTypenames, transformReportData } from '../../src/utils/reports';
 import fs from 'fs/promises';
 import path from 'path';
-import config from '../../config';
 
 test.describe('The Discover app', () => {
     const url = '/apps/discover';
@@ -261,21 +260,21 @@ test.describe('The Discover app', () => {
         const mockResponse = {
             url: reportUrl,
             archived_snapshots: {
-              closest: {
-                status: '200',
-                available: true,
-                url: `http://web.archive.org/web/${mockedTimestamp}/${reportUrl}`,
-                timestamp: mockedTimestamp,
-              }
+                closest: {
+                    status: '200',
+                    available: true,
+                    url: `http://web.archive.org/web/${mockedTimestamp}/${reportUrl}`,
+                    timestamp: mockedTimestamp,
+                }
             }
-          };
+        };
 
         // Intercept the request to the Wayback Machine API
         await page.route(`https://archive.org/wayback/available?url=${reportUrl}`, async (route) => {
             await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify(mockResponse)
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify(mockResponse)
             });
         });
 
@@ -454,7 +453,38 @@ test.describe('The Discover app', () => {
     test('Should default to the featured incidents', async ({ page, skipOnEmptyEnvironment }) => {
         await page.goto(url);
 
-        for (const item of config.header.search.featured) {
+        const featured = [
+            { 23: 2 },
+            { 1967: 1 },
+            { 1551: 1 },
+            { 835: 1 },
+            { 1470: 1 },
+            { 1118: 1 },
+            { 1773: 1 },
+            { 1509: 1 },
+            { 1245: 1 },
+            { 679: 1 },
+            { 1606: 1 },
+            { 1374: 1 },
+            { 1065: 1 },
+            { 1543: 1 },
+            { 1505: 1 },
+            { 1468: 1 },
+            { 1539: 1 },
+            { 1420: 1 },
+            { 101: 1 },
+            { 12: 1 },
+            { 368: 1 },
+            { 1427: 1 },
+            { 392: 1 },
+            { 595: 1 },
+            { 1235: 1 },
+            { 45: 1 },
+            { 620: 1 },
+            { 519: 1 },
+        ];
+
+        for (const item of featured) {
             const [report_number] = Object.entries(item).flat();
             await expect(page.locator(`[data-cy-report-number="${report_number}"]`)).toBeVisible();
         }
