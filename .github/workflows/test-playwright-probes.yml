@@ -78,6 +78,7 @@ jobs:
           TEST_FOLDER: playwright/probes/
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.GATSBY_SITE_URL }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
 
