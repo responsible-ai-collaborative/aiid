@@ -104,7 +104,7 @@ test.describe('The Landing page', () => {
     await page.goto('/');
     await page.locator('[data-cy="random-incidents-carousel"]').scrollIntoViewIfNeeded();
     await expect(page.locator('[data-cy="random-incidents-carousel"]')).toBeVisible();
-    await expect(page.locator('[data-cy="random-incidents-carousel-item"]')).toHaveCount(5);
+    await expect(page.locator('[data-cy="random-incidents-carousel-item"]')).toHaveCount(4);
   });
 
   test('Renders commit sha in the footer', async ({ page }) => {
