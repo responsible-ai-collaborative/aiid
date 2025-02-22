@@ -68,7 +68,6 @@ jobs:
     with:
       sha: ${{ github.sha }}
       environment: production
-      site-url: ${{ vars.SITE_URL }}
 
   call-process-notifications:
     needs: call-deploy
