@@ -385,6 +385,9 @@ test.describe('Submitted reports', () => {
           await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
         }
 
+        // Expects the submitters input to be empty
+        await expect(page.locator('[data-cy="submitters-input"]')).toHaveText('');
+
         await expect(page.locator('[data-cy="saving-status"]')).toHaveText('Changes saved');
 
         const { data: { submissions } } = await query({
