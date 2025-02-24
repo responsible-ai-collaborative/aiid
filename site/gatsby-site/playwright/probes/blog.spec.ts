@@ -1,5 +1,6 @@
 import { test } from '../utils';
 import { expect } from '@playwright/test';
+import config from '../config';
 
 test.describe('Blog', () => {
 
@@ -15,7 +16,9 @@ test.describe('Blog', () => {
 
   });
 
-  test('Should load mdx blog post in spanish', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should load mdx blog post in spanish', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('es');
+
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/representation-and-imagination');
 
@@ -27,7 +30,9 @@ test.describe('Blog', () => {
 
   });
 
-  test('Should load mdx blog post in french', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should load mdx blog post in french', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('fr');
+
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/fr/blog/join-raic');
 
@@ -51,7 +56,9 @@ test.describe('Blog', () => {
 
   });
 
-  test('Should load prismic blog post in spanish', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should load prismic blog post in spanish', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('es');
+
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/incident-report-2024-january');
 
@@ -84,7 +91,9 @@ test.describe('Blog', () => {
     await expect(page.locator('[data-cy="outline"]:has-text("Credit and Acknowledgements")')).not.toBeVisible();
   });
 
-  test('Should include outline in Spanish blog post', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should include outline in Spanish blog post', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('es');
+
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/blog/multilingual-incident-reporting');
 
@@ -107,7 +116,7 @@ test.describe('Blog', () => {
     const postSlug = 'incident-report-2022-july-august';
     const title = 'AI Incident Report for July and August 2022';
     const description = 'This compilation of AI incidents published in July and August of 2022 highlights emerging incidents and provides a digest of recent additions to the database.';
-    const imageUrl = 'https://incidentdatabase.ai/static/99f8b794fdc0da79022b7f6e38025aca/011c1/aiid-july-august.png';
+    const imageUrl = `${config.SITE_URL}/static/99f8b794fdc0da79022b7f6e38025aca/011c1/aiid-july-august.png`;
 
     await page.goto(`/blog/${postSlug}`);
 
@@ -116,7 +125,7 @@ test.describe('Blog', () => {
     await expect(page.locator('head meta[name="twitter:site"]')).toHaveAttribute('content', '@IncidentsDB');
     await expect(page.locator('head meta[name="twitter:creator"]')).toHaveAttribute('content', '@IncidentsDB');
 
-    await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', `https://incidentdatabase.ai/blog/${postSlug}/`);
+    await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', `${config.SITE_URL}/blog/${postSlug}/`);
     await expect(page.locator('head meta[property="og:type"]')).toHaveAttribute('content', 'website');
     await expect(page.locator('head meta[property="og:title"]')).toHaveAttribute('content', title);
     await expect(page.locator('head meta[property="og:description"]')).toHaveAttribute('content', description);

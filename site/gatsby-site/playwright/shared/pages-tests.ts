@@ -1,11 +1,12 @@
 import { expect } from '@playwright/test';
-import { switchLocalizedPath } from '../../i18n/';
-import config from '../../config';
+import { switchLocalizedPath } from '../../i18n';
 import isString from 'lodash/isString';
 import { test } from '../utils';
+import config from '../config';
 
 export function testPages(paths: string[]) {
-  const baseUrl = config.gatsby.siteUrl;
+
+  const baseUrl = config.SITE_URL;
 
   const languages = [
     {
@@ -24,7 +25,7 @@ export function testPages(paths: string[]) {
       code: 'ja',
       hrefLang: 'ja',
     },
-  ];
+  ].filter(({ code }) => config.AVAILABLE_LANGUAGES.includes(code));
 
   paths.forEach((path) => {
     languages.forEach(({ code }) => {
