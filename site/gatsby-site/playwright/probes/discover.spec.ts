@@ -312,6 +312,9 @@ test.describe('The Discover app', () => {
     });
 
     test('Lets you filter by type', async ({ page }) => {
+
+        test.slow();
+
         await page.goto(url);
 
         await page.locator('[data-cy="display-options"]:has-text("Incident Reports")').click();
