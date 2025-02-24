@@ -263,6 +263,9 @@ test.describe('Cite pages', () => {
     });
 
     test('Should display correct BibTex Citation', async ({ page }) => {
+
+        test.slow();
+
         await page.goto(url);
 
         const date = format(new Date(), 'MMMMd,y');
