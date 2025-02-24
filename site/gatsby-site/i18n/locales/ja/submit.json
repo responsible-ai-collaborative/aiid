@@ -39,7 +39,7 @@
   "Who created or built the technology involved in the incident?": "このインシデントに関係する技術を構築したのは誰ですか？",
   "Who employed or was responsible for the technology?": "この技術を採用もしくはこの技術に責任があるのは誰ですか？",
   "Who experienced negative impacts?": "悪影響を受けたのは誰ですか？",
-  "Your name as you would like it to appear in the leaderboard": "ランキングに表示されても構わないのであれば、あなたの名前",
+  "Enter your name for the leaderboard or leave blank for 'Anonymous'.": "リストに表示してもよい場合は、あなたの名前を入力してください。この欄を空欄にした場合、あなたの投稿は「匿名」として表示されます。",
   "The author or authors of the report": "レポートの著者",
   "Description": "説明",
   "Report Description": "レポートの説明",

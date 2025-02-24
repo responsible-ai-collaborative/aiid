@@ -18,7 +18,7 @@
   "Who created or built the technology involved in the incident?": "Qui a créé ou développé la technologie impliquée dans l'incident ?",
   "Who employed or was responsible for the technology?": "Qui a employé ou a été responsable pour la technologie ?",
   "Who experienced negative impacts?": "Qui a subi des impacts négatifs ?",
-  "Your name as you would like it to appear in the leaderboard": "Votre nom comme vous voulez qu'il apparaisse dans le classement",
+  "Enter your name for the leaderboard or leave blank for 'Anonymous'.": "Entrez votre nom pour le classement ou laissez vide pour 'Anonyme'.",
   "Author CSV": "Auteur CSV",
   "Submitter CSV": "Reporteurs CSV",
   "Author(s)": "Auteur(s)",
