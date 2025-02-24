@@ -380,10 +380,8 @@ test.describe('Submitted reports', () => {
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
         // Deletes submitters tags
-        const closeButtons = await page.locator('[data-cy="submitters-input"] .rbt-close').all();
-        for (const button of closeButtons) {
-          await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
-        }
+        await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
+        await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
 
         // Expects the submitters input to be empty
         await expect(page.locator('[data-cy="submitters-input"]')).toHaveText('');
