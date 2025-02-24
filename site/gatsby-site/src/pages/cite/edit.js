@@ -108,15 +108,29 @@ function EditCitePage(props) {
   const addToast = useToastContext();
 
   useEffect(() => {
-    if (reportData?.report?.translations) {
-      const translations = reportData.report.translations.reduce((acc, translation) => {
-        acc[`translations_${translation.language}`] = pick(translation, translationsFields);
-        return acc;
-      }, {});
+    if (reportData?.report) {
+      const translations = availableLanguages
+        .map((c) => c.code)
+        .reduce((acc, languageCode) => {
+          // Find existing translation for this language
+          const existingTranslation = reportData.report.translations?.find(
+            (t) => t.language === languageCode
+          );
+
+          // If translation exists use its values, otherwise use empty values
+          acc[`translations_${languageCode}`] = existingTranslation
+            ? pick(existingTranslation, translationsFields)
+            : translationsFields.reduce((obj, field) => {
+                obj[field] = '';
+                return obj;
+              }, {});
+
+          return acc;
+        }, {});
 
       setReportTranslations(translations);
     }
-  }, [reportData]);
+  }, [reportData, availableLanguages]);
 
   const updateSuccessToast = ({ reportNumber, incidentId }) => ({
     message: (

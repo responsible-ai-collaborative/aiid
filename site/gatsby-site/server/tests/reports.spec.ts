@@ -132,11 +132,6 @@ describe(`Reports`, () => {
                         title: "this is the title in spanish",
                         text: "this is the text in spanish",
                     },
-                    {
-                        language: "fr",
-                        title: "",
-                        text: "",
-                    }
                 ]
             }
         })
