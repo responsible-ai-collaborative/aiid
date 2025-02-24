@@ -1,12 +1,12 @@
 import { test } from '../utils';
-import { testPages } from './pages-tests';
+import { testPages } from '../shared/pages-tests';
 import config from '../../config';
 
 test.describe('Pages 4', () => {
 
   const paths = [];
 
-  if (!config.IS_EMPTY_ENVIRONMENT) {
+  if (config.IS_EMPTY_ENVIRONMENT == 'false') {
     paths.push('/apps/classifications/');
     paths.push('/reports/2302/');
     paths.push('/cite/1/');

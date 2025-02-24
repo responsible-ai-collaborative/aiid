@@ -18,7 +18,7 @@ const urlsToTest = [
   },
 ];
 
-if (!config.IS_EMPTY_ENVIRONMENT) {
+if (config.IS_EMPTY_ENVIRONMENT == 'false') {
   urlsToTest.push({
     page: 'Incident',
     url: incidentUrl,

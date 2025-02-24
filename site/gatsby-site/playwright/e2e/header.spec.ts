@@ -1,6 +1,4 @@
-import { conditionalIntercept, waitForRequest, query, mockDate } from '../utils';
 import { test, expect } from '@playwright/test';
-import config from '../config';
 
 test.describe('Header', () => {
 

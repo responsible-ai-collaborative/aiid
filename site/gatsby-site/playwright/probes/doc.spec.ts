@@ -15,7 +15,8 @@ test.describe('Docs', () => {
 
   });
 
-  test('Should load mdx doc in spanish', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should load mdx doc in spanish', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('es');
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/research/4-related-work'); // This doc hasn't been translated yet to Spanish yet, so it should fallback to English
 
@@ -27,7 +28,8 @@ test.describe('Docs', () => {
 
   });
 
-  test('Should load mdx doc in french', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should load mdx doc in french', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('fr');
     
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/fr/research/4-related-work'); // This doc hasn't been translated to French yet, so it will default to English
@@ -40,8 +42,8 @@ test.describe('Docs', () => {
 
   });
 
-  test('Should load mdx doc in japanese', async ({ page, skipOnEmptyEnvironment }) => {
-    
+  test('Should load mdx doc in japanese', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('ja');
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/ja/research/4-related-work');
 
@@ -65,7 +67,9 @@ test.describe('Docs', () => {
 
   });
 
-  test('Should load prismic doc post in spanish', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should load prismic doc post in spanish', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('es');
+    
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/about');
 
@@ -102,7 +106,9 @@ test.describe('Docs', () => {
     await expect(page.locator('[data-cy="outline"]:has-text("Collaborators")')).not.toBeVisible();
   });
 
-  test('Should include outline in Spanish About page', async ({ page, skipOnEmptyEnvironment }) => {
+  test('Should include outline in Spanish About page', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
+    await skipIfLanguageUnavailable('es');
+    
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/es/about');
 
@@ -117,7 +123,6 @@ test.describe('Docs', () => {
     await expect(page.locator('[data-cy="outline"]:has-text("Colaboradores")')).toBeVisible();
 
     await page.setViewportSize({ width: 800, height: 1000 });
-
 
     await expect(page.locator('[data-cy="outline"]:has-text("¿Por qué \\"incidentes de IA\\"?")')).not.toBeVisible();
     await expect(page.locator('[data-cy="outline"]:has-text("¿Qué es un incidente?")')).not.toBeVisible();

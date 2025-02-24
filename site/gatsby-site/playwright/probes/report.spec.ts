@@ -4,7 +4,7 @@ import { test } from '../utils';
 
 test.describe('Report pages', () => {
   test.beforeAll(async () => {
-    if (config.IS_EMPTY_ENVIRONMENT) {
+    if (config.IS_EMPTY_ENVIRONMENT == 'true') {
       test.skip();
     }
   });
