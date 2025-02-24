@@ -96,7 +96,9 @@ const SubmissionEdit = ({ id }) => {
         submitters: values.submitters
           ? !isArray(values.submitters)
             ? values.submitters.split(',').map((s) => s.trim())
-            : values.submitters
+            : values.submitters.length > 0
+            ? values.submitters
+            : ['Anonymous']
           : ['Anonymous'],
         plain_text: await stripMarkdown(update.text),
         date_modified: format(now, 'yyyy-MM-dd'),
