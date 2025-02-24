@@ -23,6 +23,39 @@ if (!email) {
       entitiesHarmed: 'Zelda Williams , Robin Williams and Family of Robin Williams',
       entityUrl: 'https://incidentdatabase.ai/entities/unknown-deepfake-creators/',
       entityName: 'Unknown deepfake creators',
+      newIncidents: [
+        {
+          id: '741',
+          title: "Robin Williams's Voice Deepfaked Without Consent",
+          url: 'https://incidentdatabase.ai/cite/741',
+          date: '2023-10-02',
+          description:
+            "Zelda Williams, the daughter of the late Robin Williams, condemned the misuse of her father's voice in AI-generated productions, having cited some instances where his voice had been deepfaked, along with the potential for further misuse, as such instances do not involve consent.",
+          developers: 'Unknown deepfake creators',
+          deployers: 'Unknown deepfake creators',
+          entitiesHarmed: 'Zelda Williams , Robin Williams and Family of Robin Williams',
+        },
+        {
+          id: '741',
+          title: "Robin Williams's Voice Deepfaked Without Consent",
+          url: 'https://incidentdatabase.ai/cite/741',
+          date: '2023-10-02',
+          description:
+            "Zelda Williams, the daughter of the late Robin Williams, condemned the misuse of her father's voice in AI-generated productions, having cited some instances where his voice had been deepfaked, along with the potential for further misuse, as such instances do not involve consent.",
+          developers: 'Unknown deepfake creators',
+          deployers: 'Unknown deepfake creators',
+          entitiesHarmed: 'Zelda Williams , Robin Williams and Family of Robin Williams',
+        },
+      ],
+      blogPosts: [
+        {
+          title: "Robin Williams's Voice Deepfaked Without Consent",
+          url: 'https://incidentdatabase.ai/cite/741',
+        },
+      ],
+      newFeatures: [
+        'New Incident Briefing',
+      ],
     },
 
     // Possible values:
