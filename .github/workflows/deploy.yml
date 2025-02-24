@@ -18,9 +18,6 @@ on:
         description: The commit SHA to deploy
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
@@ -29,14 +26,14 @@ on:
       site-url:
         description: The URL of the site to deploy
         type: string
-        default: ""
         required: false
+        default: ""
 
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+      labels: 'ubuntu-latest'
     permissions:
       pull-requests: write
     steps:
@@ -56,21 +53,18 @@ jobs:
         with:
           ref: ${{ inputs.sha }}
 
-      - name: Read node modules from cache
-        id: cache-nodemodules
-        uses: actions/cache/restore@v4
-        env:
-          cache-name: cache-install-folder
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
         with:
-          path: |
-            site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+          path: site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
 
       - name: Install dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: site/gatsby-site
 
@@ -100,8 +94,6 @@ jobs:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
-          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
           GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
           GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
@@ -124,9 +116,10 @@ jobs:
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
-          MAILERSEND_API_KEY: dummy 
+          MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
 
@@ -140,7 +133,7 @@ jobs:
         run: |
           set -e
           # If no alias is specified, deploy to production
-          if [[ -z "${{ inputs.netlify-alias }}" ]]; then 
+          if [[ -z "${{ inputs.netlify-alias }}" ]]; then
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else

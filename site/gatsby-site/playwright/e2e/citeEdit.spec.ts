@@ -231,7 +231,7 @@ test.describe('Edit report', () => {
 
   test('Should link a report to another incident', async ({ page, login }) => {
 
-    await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD, { customData: { roles: ['admin'] } });
+    await login();
 
     await page.goto(`/cite/edit?report_number=3`);
 

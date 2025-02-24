@@ -34,12 +34,12 @@ test.describe('/api/lookupbyurl endpoint', () => {
                         {
                             incident_id: 3,
                             title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
-                            url: "https://incidentdatabase.ai/cite/3",
+                            url: `${baseURL}/cite/3`,
                         },
                         {
                             incident_id: 4,
                             title: "Test title 4",
-                            url: "https://incidentdatabase.ai/cite/4",
+                            url: `${baseURL}/cite/4`,
                         },
                     ],
                 },
@@ -56,7 +56,7 @@ test.describe('/api/lookupbyurl endpoint', () => {
                         {
                             incident_id: 3,
                             title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
-                            url: "https://incidentdatabase.ai/cite/3",
+                            url: `${baseURL}/cite/3`,
                         },
                     ],
                 },
