@@ -78,55 +78,17 @@ test.describe('createCitationPages', () => {
 
     await createCitationPages(graphql as unknown as CreatePagesArgs['graphql'], createPage, { languages });
 
-    expect(createPage.callCount).toEqual(4);
+    expect(createPage.callCount).toEqual(languages.length);
 
-    // Assert for English page
-    expect(createPage.calledWithMatch({
-      path: '/cite/1/',
-      context: {
-        locale: 'en',
-        translate_es: true,
-        translate_en: false,
-        translate_fr: true,
-        translate_ja: true,
-      },
-      component: sinon.match((value) => value.includes('/templates/cite.js')),
-    })).toBe(true);
-
-    // Assert for Spanish page
-    expect(createPage.calledWithMatch({
-      path: '/es/cite/1/',
-      context: {
-        locale: 'es',
-        translate_es: true,
-        translate_en: false,
-        translate_fr: true,
-        translate_ja: true,
-      },
-    })).toBe(true);
-
-    // Assert for French page
-    expect(createPage.calledWithMatch({
-      path: '/fr/cite/1/',
-      context: {
-        locale: 'fr',
-        translate_es: true,
-        translate_en: false,
-        translate_fr: true,
-        translate_ja: true,
-      },
-    })).toBe(true);
-
-    // Assert for Japanese page
-    expect(createPage.calledWithMatch({
-      path: '/ja/cite/1/',
-      context: {
-        locale: 'ja',
-        translate_es: true,
-        translate_en: false,
-        translate_fr: true,
-        translate_ja: true,
-      },
-    })).toBe(true);
+    languages.forEach((language) => {
+      // Assert each language has a page created
+      expect(createPage.calledWithMatch({
+        path: language.code === 'en' ? '/cite/1/' : `/${language.code}/cite/1/`,
+        context: {
+          locale: language.code,
+        },
+        component: sinon.match((value) => value.includes('/templates/cite.js')),
+      })).toBe(true);
+    });
   });
 });

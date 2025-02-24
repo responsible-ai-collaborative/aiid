@@ -39,36 +39,14 @@ jobs:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
 
-  call-test-build:
+  call-test-playwright-e2e:
     if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test-build.yml
+    uses: ./.github/workflows/test-playwright-e2e.yml
     needs: permissions-check
     secrets: inherit
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
-      netlify-context: branch-deploy
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
-
-  call-test-playwright:
-    if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test-playwright.yml
-    needs: call-test-build
-    secrets: inherit
-    with:
-      sha: ${{ github.event.pull_request.head.sha }}
-      environment: staging
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
-
-  call-test-playwright-full:
-    if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test-playwright-full.yml
-    needs: permissions-check
-    secrets: inherit
-    with:
-      sha: ${{ github.event.pull_request.head.sha }}
-      environment: staging
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: ${{ !failure() && !cancelled() }}
@@ -82,5 +60,14 @@ jobs:
       environment: staging
       netlify-context: branch-deploy
       netlify-alias: pr-${{ github.event.pull_request.number }}
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
+      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app
+
+  call-test-playwright-probes:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-probes.yml
+    needs: call-deploy
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
       site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app

@@ -107,7 +107,7 @@ test.describe('Edit Entity', () => {
   test('Should successfully add Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
   
     await init();
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    await login();
   
     await page.goto(url);
   
@@ -149,7 +149,7 @@ test.describe('Edit Entity', () => {
         ],
       },
     });
-    await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+    await login();
   
     await page.goto(`/entities/edit?entity_id=${entity_id}`);
 
