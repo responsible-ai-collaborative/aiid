@@ -1,0 +1,114 @@
+name: Run playwright tests
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      sha:
+        description: The commit SHA to run the tests against
+        type: string
+        required: true
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
+      site-url:
+        description: The URL of the site to deploy
+        type: string
+        required: false
+        default: ""
+      
+
+jobs:
+  tests:
+    name: Run Playwright tests
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5, 6]
+        shardTotal: [6]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Cache Playwright Browsers
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Install playwright browsers
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+        working-directory: site/gatsby-site
+
+      - name: Run playwright tests
+        run: npm run test:e2e:ci
+        working-directory: site/gatsby-site
+        env:
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
+          SHARD_INDEX: ${{ matrix.shardIndex }}
+          SHARD_TOTAL: ${{ matrix.shardTotal }}
+          TEST_FOLDER: playwright/probes/
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          NEXTAUTH_URL: dummy
+          NEXTAUTH_SECRET: dummy
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: site/gatsby-site/blob-report/
+          retention-days: 1
+
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [tests]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 7

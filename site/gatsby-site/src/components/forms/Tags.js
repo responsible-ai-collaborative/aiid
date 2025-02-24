@@ -14,13 +14,20 @@ export default function Tags({
   className,
   allowNew = true,
   stayOpen = false,
+  splitChar = ',',
 }) {
   const [open, setOpen] = useState(false);
 
   const ref = useRef(null);
 
   const commitTag = (tag) => {
-    const splitTags = tag.split(',').map((tag) => tag.trim());
+    let splitTags = [];
+
+    if (splitChar) {
+      splitTags = tag.split(splitChar).map((tag) => tag.trim());
+    } else {
+      splitTags = [tag.trim()];
+    }
 
     onChange(value ? value.concat(splitTags) : splitTags);
     ref.current.clear();
@@ -31,10 +38,12 @@ export default function Tags({
       className={`Typeahead ${className || ''}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
-        if (e.key === ',') {
+        if (splitChar && e.key === splitChar) {
           e.preventDefault();
         }
-        if (['Enter', ','].includes(e.key) && e.target.value) {
+        const splitChars = splitChar ? ['Enter', splitChar] : ['Enter'];
+
+        if (splitChars.includes(e.key) && e.target.value) {
           commitTag(e.target.value);
         }
       }}
