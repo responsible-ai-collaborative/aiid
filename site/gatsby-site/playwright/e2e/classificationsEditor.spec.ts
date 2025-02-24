@@ -217,7 +217,7 @@ test.describe('Classifications Editor', () => {
 
       for (const taxa of taxas) {
         await page.locator('text=Select a taxonomy').click();
-        await page.locator(`[data-testid="flowbite-tooltip"] >> text=${namespace}`).first().click();
+        await page.getByRole('menuitem').getByText(namespace).first().click();
         await page.locator('text=Add').first().click();
 
         const selectedValues = {};
