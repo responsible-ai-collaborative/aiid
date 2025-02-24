@@ -1,7 +1,9 @@
+const validateEnv = require('./src/utils/validateEnv');
+
 const config = {
   gatsby: {
     pathPrefix: '/',
-    siteUrl: 'https://incidentdatabase.ai',
+    siteUrl: process.env.GATSBY_SITE_URL,
     gaTrackingId: 'UA-23867277-2',
   },
   realm: {
@@ -209,5 +211,24 @@ const config = {
     publicBucketUrl: process.env.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
   },
 };
+
+const requiredEnvs = {
+  GATSBY_SITE_URL: process.env.GATSBY_SITE_URL,
+  GATSBY_AVAILABLE_LANGUAGES: process.env.GATSBY_AVAILABLE_LANGUAGES,
+  // TODO: These are also required and should be validated.
+  // GATSBY_ALGOLIA_SEARCH_KEY: process.env.GATSBY_ALGOLIA_SEARCH_KEY,
+  // GATSBY_ALGOLIA_APP_ID: process.env.GATSBY_ALGOLIA_APP_ID,
+  // ALGOLIA_ADMIN_KEY: process.env.ALGOLIA_ADMIN_KEY,
+  // GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+  // GOOGLE_TRANSLATE_API_KEY: process.env.GOOGLE_TRANSLATE_API_KEY,
+  // GATSBY_ROLLBAR_TOKEN: process.env.GATSBY_ROLLBAR_TOKEN,
+  // CLOUDFLARE_R2_ACCOUNT_ID: process.env.CLOUDFLARE_R2_ACCOUNT_ID,
+  // CLOUDFLARE_R2_ACCESS_KEY_ID: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+  // CLOUDFLARE_R2_SECRET_ACCESS_KEY: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+  // CLOUDFLARE_R2_BUCKET_NAME: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+  // GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: process.env.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
+};
+
+validateEnv(requiredEnvs);
 
 module.exports = config;
