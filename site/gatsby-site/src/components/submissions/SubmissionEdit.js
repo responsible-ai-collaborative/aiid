@@ -134,7 +134,10 @@ const SubmissionEdit = ({ id }) => {
           </Trans>
         </h1>
         <div className="flex items-center gap-2">
-          <span className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}>
+          <span
+            className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}
+            data-cy="saving-status"
+          >
             {saving ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}

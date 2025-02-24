@@ -237,6 +237,7 @@ const SubmissionForm = ({ onChange = null }) => {
           label={t('Submitter(s)')}
           icon={faMedal}
           className="mt-3"
+          data-cy="submitters-input"
           {...TextInputGroupProps}
         />
 

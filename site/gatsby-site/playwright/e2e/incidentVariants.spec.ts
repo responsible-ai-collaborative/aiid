@@ -99,6 +99,11 @@ test.describe('Variants pages', () => {
         await expect(page.locator('[data-cy="toast"]')).toContainText(
             'Your variant has been added to the review queue and will appear on this page within 12 hours.'
         );
+
+        // Check that the new variant's submitters are Anonymous
+        const variants = await getVariants();
+        const newVariant = variants[variants.length - 1];
+        expect(newVariant.submitters).toEqual(['Anonymous']);
     });
 
     test("Shouldn't edit a Variant - Unauthenticated user", async ({ page }) => {

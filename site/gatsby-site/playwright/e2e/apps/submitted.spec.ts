@@ -370,6 +370,36 @@ test.describe('Submitted reports', () => {
         await expect(page.locator('[data-cy="submission-form"]')).toContainText('Date must be in the past');
     });
 
+
+    test('Edits a submission - submitters are Anonymous if left blank', async ({ page, login }) => {
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        // Deletes submitters tags
+        const closeButtons = await page.locator('[data-cy="submitters-input"] .rbt-close').all();
+        for (const button of closeButtons) {
+          await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
+        }
+
+        await expect(page.locator('[data-cy="saving-status"]')).toHaveText('Changes saved');
+
+        const { data: { submissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+                  submitters
+              }
+          }
+      `,
+      });
+
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').submitters).toEqual(['Anonymous']);
+    });
+
     test('Claims a submission', async ({ page, login }) => {
 
         await init();
