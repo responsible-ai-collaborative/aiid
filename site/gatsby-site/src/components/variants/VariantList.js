@@ -223,6 +223,8 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
       inputs_outputs,
     };
 
+    variant.submitters = variant.submitters.length > 0 ? variant.submitters : ['Anonymous'];
+
     await createVariantMutation({ variables: { input: { incidentId, variant } } });
 
     setDisplayForm(false);
