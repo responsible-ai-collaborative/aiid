@@ -13,7 +13,8 @@ const adapter = require('gatsby-adapter-netlify').default;
 
 let googleTrackingIds = [];
 
-if (process.env.SITE_URL === config.gatsby.siteUrl) {
+// TODO: Remove this once we have a new env variable ENVIRONMENT to check against
+if (process.env.SITE_URL === 'https://incidentdatabase.ai') {
   googleTrackingIds.push(config.gatsby.gaTrackingId);
 }
 
