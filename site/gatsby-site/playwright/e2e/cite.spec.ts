@@ -115,6 +115,9 @@ test.describe('Cite pages', () => {
         await expect(async () => {
 
             await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
+
+            await expect(page.locator(`[id="r${_id}"] [data-cy="flag-button"]`)).toBeVisible({ timeout: 1000 });
+
             await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
 
             await expect(modal).toBeVisible({ timeout: 1000 });
