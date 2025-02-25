@@ -32,35 +32,14 @@ jobs:
       sha: ${{ github.sha }}
       environment: production
 
-  call-test-build:
-    uses: ./.github/workflows/test-build.yml
-    secrets: inherit
-    needs: [cache-modifier]
-    with:
-      sha: ${{ github.sha }}
-      environment: production
-      netlify-context: production
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
-      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
-
-  call-test-playwright:
-    uses: ./.github/workflows/test-playwright.yml
-    needs: call-test-build
-    secrets: inherit
-    with:
-      sha: ${{ github.sha }}
-      environment: production
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
-
-  call-test-playwright-full:
+  call-test-playwright-e2e:
     if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test-playwright-full.yml
+    uses: ./.github/workflows/test-playwright-e2e.yml
     needs: [cache-modifier]
     secrets: inherit
     with:
       sha: ${{ github.sha }}
       environment: production
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
@@ -69,8 +48,7 @@ jobs:
       [
         cache-modifier,
         call-test-api,
-        call-test-playwright,
-        call-test-playwright-full,
+        call-test-playwright-e2e,
       ]
     secrets: inherit
     permissions:
@@ -80,11 +58,18 @@ jobs:
       sha: ${{ github.sha }}
       netlify-context: production
       netlify-alias:
-      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
-  call-process-notifications:
+  call-test-playwright-probes:
+    uses: ./.github/workflows/test-playwright-probes.yml
     needs: call-deploy
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: production
+
+  call-process-notifications:
+    needs: call-test-playwright-probes
     uses: ./.github/workflows/process-notifications.yml
     secrets: inherit
     with:

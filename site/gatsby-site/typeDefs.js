@@ -179,28 +179,11 @@ const typeDefs = `
         complete_from: completeFrom
     }
 
-    type mongodbTranslationsReportsEs implements Node{
+    type mongodbTranslationsReports implements Node {
         title: String
         text: String
         report_number: Int
-    }
-
-    type mongodbTranslationsReportsEn implements Node {
-        title: String
-        text: String
-        report_number: Int
-    }
-
-    type mongodbTranslationsReportsFr implements Node {
-        title: String
-        text: String
-        report_number: Int
-    }
-
-    type mongodbTranslationsReportsJa implements Node {
-        title: String
-        text: String
-        report_number: Int
+        language: String
     }
 
     type mongodbAiidprodDuplicates implements Node {

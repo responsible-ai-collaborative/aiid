@@ -1,0 +1,165 @@
+name: Run playwright tests full e2e
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      sha:
+        description: The commit SHA to run the tests against
+        type: string
+        required: true
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  tests:
+    name: Run Playwright tests
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8]
+        shardTotal: [8]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
+        with:
+          path: site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Install dependencies
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: start in memory mongodb
+        run: nohup npm run start:memory-mongo:ci &
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+
+      - name: Wait for memory mongodb to start
+        run: |
+          while ! nc -z localhost 4110; do
+            echo "Waiting for Mongodb memory server to start on port 4110..."
+            sleep 2
+          done
+          echo "MongoDB has started on port 4110."
+
+      - name: Build using Netlify
+        run: npm run build
+        working-directory: site/gatsby-site
+        env:
+          INSTRUMENT: true
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          MONGODB_MIGRATIONS_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          GATSBY_SITE_URL: http://localhost:8000
+          SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms
+          MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
+
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: site/gatsby-site
+
+      - name: Run playwright tests
+        run: npm run test:e2e:ci
+        working-directory: site/gatsby-site
+        env:
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
+          MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          SHARD_INDEX: ${{ matrix.shardIndex }}
+          SHARD_TOTAL: ${{ matrix.shardTotal }}
+          TEST_FOLDER: playwright/e2e/
+          MAILERSEND_API_KEY: something
+          NOTIFICATIONS_SENDER_NAME: Test Preview
+          NOTIFICATIONS_SENDER: test@test.com
+          GATSBY_SITE_URL: http://localhost:8000
+          SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-${{ matrix.shardIndex }}
+          path: site/gatsby-site/test-results/**/*.zip
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-full-${{ matrix.shardIndex }}
+          path: site/gatsby-site/blob-report/
+          retention-days: 7
+
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [tests]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-full-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Rename report directory
+        run: mv playwright-report playwright-report-full
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-full-attempt-${{ github.run_attempt }}
+          path: playwright-report-full
+          retention-days: 7

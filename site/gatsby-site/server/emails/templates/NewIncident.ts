@@ -56,7 +56,7 @@ const getEmailTemplate = () => {
 
       <div style="${incidentStyle}">
         <h1 style="font-size: 100%; margin-top: 0px;">
-          Incident {{incidentId}}: {{incidentTitle}}
+          <a href="{{incidentUrl}}">Incident {{incidentId}}: {{incidentTitle}}</a>
         </h1>
 
         <p style="font-size: 85%;">{{incidentDate}}</p>
