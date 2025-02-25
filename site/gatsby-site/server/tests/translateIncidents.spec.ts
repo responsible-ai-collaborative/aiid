@@ -1,5 +1,4 @@
 import * as translateIncidents from '../../src/scripts/translateIncidents';
-import * as reporter from '../reporter';
 
 describe('Translate incidents script', () => {
 
