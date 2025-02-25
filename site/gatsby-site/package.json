@@ -38,6 +38,7 @@
     "cloudinary": "^1.36.4",
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.5",
+    "csv-parse": "^5.5.5",
     "csvtojson": "^2.0.10",
     "d3": "^7.1.1",
     "date-fns": "^2.19.0",
@@ -127,6 +128,7 @@
     "tsne-js": "^1.0.3",
     "umzug": "^3.0.0",
     "use-query-params": "^1.2.0",
+    "yargs": "^17.7.2",
     "yup": "^0.29.3"
   },
   "license": "MIT",
@@ -148,6 +150,7 @@
     "process-notifications": "npx tsx --env-file=.env src/scripts/process-notifications.ts",
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
     "translate-reports": "node src/scripts/translateReports.js",
+    "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
   },
   "devDependencies": {
