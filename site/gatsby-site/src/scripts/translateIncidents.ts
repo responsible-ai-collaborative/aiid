@@ -26,8 +26,8 @@ export const translateIncidents = async () => {
     mongoClient,
     translateClient,
     languages: getLanguages()
-      .filter((language) => language.code !== 'en')
-      .map((l) => l.code), // We do not translate to English since it's the source language
+      .filter((language: { code: string }) => language.code !== 'en')
+      .map((l: { code: string }) => l.code), // We do not translate to English since it's the source language
     reporter: {
       log: console.log,
       error: console.error,
