@@ -98,9 +98,9 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
   return taxonomies;
 };
 
-export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, locale }) => {
+export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, language }) => {
   return allMongodbAiidprodReports.nodes.map((r) => {
-    const translation = translations[locale]?.nodes.find(
+    const translation = translations[language]?.nodes.find(
       (t) => t.report_number === r.report_number
     );
 

@@ -16,6 +16,7 @@ const TagsInputGroup = ({
   disabled = false,
   options = undefined,
   popoverName = null,
+  splitChar = ',',
   ...props
 }) => {
   const [optional, setOptional] = useState(true);
@@ -42,7 +43,14 @@ const TagsInputGroup = ({
           data-cy={props['data-cy']}
         >
           <TagsControl
-            {...{ name, placeholder, disabled, options, handleChange: props.handleChange }}
+            {...{
+              name,
+              placeholder,
+              disabled,
+              options,
+              handleChange: props.handleChange,
+              splitChar,
+            }}
           />
         </div>
         <div className="text-sm text-red-700">
