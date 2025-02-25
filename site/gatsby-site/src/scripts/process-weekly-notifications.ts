@@ -43,8 +43,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
     const pendingWeeklyNotificationsToNewIncidents = await notificationsCollection.find({
-        sentToWeekly: false,
-        type: 'new-incidents',
+        processed: false,
+        type: 'ai-weekly-briefing',
         sentDate: { $gte: oneWeekAgo }
     }).toArray();
 
@@ -54,7 +54,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     }
 
     // Get weekly subscribers
-    const weeklySubscribers = await subscriptionsCollection.find<DBSubscription>({ type: 'new-incidents', frequency: 'weekly' }).toArray();
+    const weeklySubscribers = await subscriptionsCollection.find<DBSubscription>({ type: 'ai-weekly-briefing' }).toArray();
 
     if (weeklySubscribers.length === 0) {
         console.log("No weekly subscribers found.");
@@ -104,11 +104,11 @@ export const processWeeklyNotifications = async () => {
     await notificationsToWeeklyIncidents(context);
 };
 
-const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any, isSentToWeekly: any) => {
+const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
   for (const pendingNotification of notifications) {
       await notificationsCollection.updateOne(
           { _id: pendingNotification._id },
-          { $set: { processed: isProcessed, sentToWeekly: isSentToWeekly, sentDate: new Date() } }
+          { $set: { processed: isProcessed, sentDate: new Date() } }
       );
   }
 }
