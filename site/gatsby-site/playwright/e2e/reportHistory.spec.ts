@@ -77,9 +77,10 @@ test.describe('Report History', () => {
   test('Should refresh Report history if the user go back on the browser', async ({ page, skipOnEmptyEnvironment }) => {
     await page.goto('/cite/1/');
 
-    await page.locator('button:has-text("Read More")').first().click();
-
-    await expect(page.locator('[data-cy="report-history-button"]')).toBeVisible();
+    await expect(async () => {
+      await page.getByText('Read More').first().click();
+      await expect(page.locator('[data-cy="report-history-button"]')).toBeVisible({ timeout: 1000 });
+    }).toPass();
 
     await page.locator('[data-cy="report-history-button"]').click();
 
