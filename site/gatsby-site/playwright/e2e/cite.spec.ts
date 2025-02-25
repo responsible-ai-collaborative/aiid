@@ -110,11 +110,15 @@ test.describe('Cite pages', () => {
 
         await page.goto(url + '#' + _id);
 
-        await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
-        await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
-
         const modal = page.locator('[data-cy="flag-report-3"]');
-        await expect(modal).toBeVisible();
+
+        await expect(async () => {
+
+            await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
+            await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
+
+            await expect(modal).toBeVisible({ timeout: 1000 });
+        }).toPass();
 
         await modal.locator('[data-cy="flag-toggle"]').click();
 
@@ -585,7 +589,7 @@ test.describe('Cite pages', () => {
         await expect(page.getByText('Incident 6 description')).toBeVisible();
         await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
     });
-  
+
     test('Should not show Annotator taxonomies', async ({ page, login }) => {
 
         await page.goto('/cite/3');
