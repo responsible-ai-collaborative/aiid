@@ -1,4 +1,5 @@
-name: Translate Reports - Staging
+name: Translate - Staging
+description: Workflow for automated translation of Staging reports and incidents using Google Translate API
 
 on:
   schedule:

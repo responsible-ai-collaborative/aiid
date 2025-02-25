@@ -148,6 +148,7 @@
     "process-notifications": "npx tsx --env-file=.env src/scripts/process-notifications.ts",
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
     "translate-reports": "node src/scripts/translateReports.js",
+    "translate-incidents": "npx tsx src/scripts/translateIncidents.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
   },
   "devDependencies": {
@@ -160,6 +161,7 @@
     "@netlify/plugin-gatsby": "^3.8.1",
     "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.8",
+    "@types/async": "^3.2.24",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.12.13",
