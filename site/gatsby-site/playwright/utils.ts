@@ -90,7 +90,7 @@ export function hashToken(token: string) {
         .digest("hex");
 }
 
-export const generateMagicLink = async (email: string, callbackUrl = '/') => {
+export const generateMagicLink = async (email: string, callbackUrl = '/', roles: string[] = null) => {
 
     const token = randomString(32);
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -98,6 +98,7 @@ export const generateMagicLink = async (email: string, callbackUrl = '/') => {
     await memoryMongo.execute(async (client) => {
 
         const collection = client.db('auth').collection('verification_tokens');
+
         const hashedToken = hashToken(token); // next auth stores the hashed token
 
         await collection.insertOne({
@@ -105,6 +106,25 @@ export const generateMagicLink = async (email: string, callbackUrl = '/') => {
             token: hashedToken,
             expires,
         });
+
+        if (roles) {
+
+            const result = await client.db('auth').collection('users').updateOne(
+                { email },
+                { $set: { email, emailVerified: new Date() } },
+                { upsert: true }
+            );
+
+            const userId = result.upsertedId
+                ? result.upsertedId
+                : (await client.db('auth').collection('users').findOne({ email }))?._id;
+
+            await client.db('customData').collection('users').updateOne(
+                { userId: userId.toString() },
+                { $set: { roles, userId: userId.toString() } },
+                { upsert: true }
+            );
+        }
     });
 
     const baseUrl = config.NEXTAUTH_URL;
