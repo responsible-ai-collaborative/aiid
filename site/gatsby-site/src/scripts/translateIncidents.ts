@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from "../../server/config";
 import { MongoClient } from 'mongodb';
 import { Translate } from '@google-cloud/translate/build/src/v2';
 import IncidentTranslator from './incidentTranslator';
@@ -9,18 +9,18 @@ export const translateIncidents = async () => {
 
   let mongoClient: MongoClient | null = null;
 
-  mongoClient = new MongoClient(config.mongodb.translationsConnectionString || '');
+  mongoClient = new MongoClient(config.MONGODB_TRANSLATIONS_CONNECTION_STRING || '');
   try {
     await mongoClient.connect();
   } catch (mongoError: any) {
     throw new Error(`Error connecting to MongoDB: ${mongoError.message}`);
   }
 
-  if (!config.i18n.translateApikey) {
+  if (!config.GOOGLE_TRANSLATE_API_KEY) {
     throw new Error('Google Translate API (GOOGLE_TRANSLATE_API_KEY) key is missing.');
   }
 
-  const translateClient = new Translate({ key: config.i18n.translateApikey });
+  const translateClient = new Translate({ key: config.GOOGLE_TRANSLATE_API_KEY });
 
   const translator = new IncidentTranslator({
     mongoClient,

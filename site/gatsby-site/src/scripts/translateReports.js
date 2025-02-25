@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const config = require('../../config');
+const config = require('../../server/config');
 
 const { MongoClient } = require('mongodb');
 
