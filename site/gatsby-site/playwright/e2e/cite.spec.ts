@@ -110,11 +110,18 @@ test.describe('Cite pages', () => {
 
         await page.goto(url + '#' + _id);
 
-        await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
-        await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
-
         const modal = page.locator('[data-cy="flag-report-3"]');
-        await expect(modal).toBeVisible();
+
+        await expect(async () => {
+
+            await page.locator(`[id="r${_id}"] [data-cy="expand-report-button"]`).click();
+
+            await expect(page.locator(`[id="r${_id}"] [data-cy="flag-button"]`)).toBeVisible({ timeout: 1000 });
+
+            await page.locator(`[id="r${_id}"] [data-cy="flag-button"]`).click();
+
+            await expect(modal).toBeVisible({ timeout: 1000 });
+        }).toPass();
 
         await modal.locator('[data-cy="flag-toggle"]').click();
 
@@ -271,9 +278,10 @@ test.describe('Cite pages', () => {
         const date = format(new Date(), 'MMMMd,y');
         const retrievedDate = format(new Date(), 'MMMMyyyy')
 
-        await page.locator('button:has-text("Citation Info")').click();
-
-        await expect(page.locator('[data-cy="citation-info-modal"]')).toBeVisible();
+        await expect(async () => {
+            await page.locator('button:has-text("Citation Info")').click();
+            await expect(page.locator('[data-cy="citation-info-modal"]')).toBeVisible({ timeout: 1000 });
+        }).toPass();
 
         const bibTextElement = await page.locator('[data-cy="bibtex-format"] code').textContent();
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
@@ -585,7 +593,7 @@ test.describe('Cite pages', () => {
         await expect(page.getByText('Incident 6 description')).toBeVisible();
         await expect(page.getByText('Alleged: Entity 2 developed an AI system deployed by Entity 1, which harmed Entity 3.')).toBeVisible()
     });
-  
+
     test('Should not show Annotator taxonomies', async ({ page, login }) => {
 
         await page.goto('/cite/3');
