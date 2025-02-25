@@ -104,8 +104,6 @@ test.describe('Cite pages', () => {
     });
 
     test('Should flag an incident', async ({ page }) => {
-        test.slow();
-
         const _id = '3';
 
         await init();
