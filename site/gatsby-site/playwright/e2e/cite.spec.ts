@@ -275,9 +275,10 @@ test.describe('Cite pages', () => {
         const date = format(new Date(), 'MMMMd,y');
         const retrievedDate = format(new Date(), 'MMMMyyyy')
 
-        await page.locator('button:has-text("Citation Info")').click();
-
-        await expect(page.locator('[data-cy="citation-info-modal"]')).toBeVisible();
+        await expect(async () => {
+            await page.locator('button:has-text("Citation Info")').click();
+            await expect(page.locator('[data-cy="citation-info-modal"]')).toBeVisible({ timeout: 1000 });
+        }).toPass();
 
         const bibTextElement = await page.locator('[data-cy="bibtex-format"] code').textContent();
         const bibText = bibTextElement.replace(/(\r\n|\n|\r| |\s)/g, '');
