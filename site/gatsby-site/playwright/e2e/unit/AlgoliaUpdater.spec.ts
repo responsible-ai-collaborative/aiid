@@ -90,23 +90,22 @@ test('Should update translations to Algolia', async ({ page }) => {
     },
   ];
 
-  const translatedReportsEN = [
+  const reportTranslations = [
     {
       _id: '61d5ad9f102e6e30fca9065r',
       text: 'translated-en-text **report 23**',
       plain_text: 'translated-en-text report 23',
       title: 'translated-en-title report 23',
       report_number: 23,
+      language: 'en',
     },
-  ];
-
-  const translatedReportsES = [
     {
       _id: '61d5ad9f102e6e30fca90ddf',
       text: 'translated-es-text **report 1**',
       plain_text: 'translated-es-text report 1',
       title: 'translated-es-title report 1',
       report_number: 1,
+      language: 'es',
     },
   ];
 
@@ -122,52 +121,63 @@ test('Should update translations to Algolia', async ({ page }) => {
   const mongoClientStub = {
     connect: sinon.stub().resolves(),
     close: sinon.stub().resolves(),
-    db: sinon.stub().returns({
-      collection: (name: string) => {
-        if (name === 'reports') {
-          return {
-            find: sinon.stub().returns({
-              toArray: sinon.stub().resolves(reports),
-            }),
-          };
-        }
-        if (name === 'reports_en') {
-          return {
-            find: sinon.stub().returns({
-              toArray: sinon.stub().resolves(translatedReportsEN),
-            }),
-          };
-        }
-        if (name === 'reports_es') {
-          return {
-            find: sinon.stub().returns({
-              toArray: sinon.stub().resolves(translatedReportsES),
-            }),
-          };
-        }
-        if (name === 'classifications') {
-          return {
-            find: sinon.stub().returns({
-              toArray: sinon.stub().resolves(classifications),
-            }),
-          };
-        }
-        if (name === 'incidents') {
-          return {
-            find: sinon.stub().returns({
-              toArray: sinon.stub().resolves(incidents),
-            }),
-          };
-        }
-        if (name === 'duplicates') {
-          return {
-            find: sinon.stub().returns({
-              toArray: sinon.stub().resolves(duplicates),
-            }),
-          };
-        }
-        return null;
-      },
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') {
+              return {
+                find: sinon.stub().returns({
+                  toArray: sinon.stub().resolves(reports),
+                }),
+              };
+            }
+            if (name === 'classifications') {
+              return {
+                find: sinon.stub().returns({
+                  toArray: sinon.stub().resolves(classifications),
+                }),
+              };
+            }
+            if (name === 'incidents') {
+              return {
+                find: sinon.stub().returns({
+                  toArray: sinon.stub().resolves(incidents),
+                }),
+              };
+            }
+            if (name === 'duplicates') {
+              return {
+                find: sinon.stub().returns({
+                  toArray: sinon.stub().resolves(duplicates),
+                }),
+              };
+            }
+            return null;
+          },
+        };
+      }
+      if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') {
+              return {
+                find: sinon.stub().callsFake((filter: { language?: string }) => {
+                  const filtered = filter?.language
+                    ? reportTranslations.filter((trans) => trans.language === filter.language)
+                    : reportTranslations;
+
+                  return {
+                    toArray: sinon.stub().resolves(filtered),
+                  };
+                }),
+              };
+            }
+            return null;
+          },
+        };
+      }
+      return null;
     }),
   };
 
@@ -234,13 +244,26 @@ test('Should update translations to Algolia', async ({ page }) => {
   const enIndexResult = algoliaClientStub.initIndex('instant_search-en');
   expect(enIndexResult.replaceAllObjects.calledOnce).toBeTruthy();
 
-  const replaceAllObjectsArgs = enIndexResult.replaceAllObjects.getCall(0).args[0];
-  replaceAllObjectsArgs.forEach((entry) => {
+  const enReplaceAllObjectsArgs = enIndexResult.replaceAllObjects.getCall(0).args[0];
+  enReplaceAllObjectsArgs.forEach((entry) => {
     if (entry.incident_id) {
       expect(entry.incident_id).toBeDefined();
+    }
+    if (entry.is_translated) {
+      expect(entry.language).not.toBe('en');
     }
   });
 
   const esIndexResult = algoliaClientStub.initIndex('instant_search-es');
   expect(esIndexResult.replaceAllObjects.calledOnce).toBeTruthy();
+
+  const esReplaceAllObjectsArgs = esIndexResult.replaceAllObjects.getCall(0).args[0];
+  esReplaceAllObjectsArgs.forEach((entry) => {
+    if (entry.incident_id) {
+      expect(entry.incident_id).toBeDefined();
+    }
+    if (entry.is_translated) {
+      expect(entry.language).not.toBe('es');
+    }
+  });
 });
