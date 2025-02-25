@@ -21,7 +21,7 @@ function CiteDynamicTemplate({
   locationPathName,
   setIsLiveData,
 }) {
-  const { locale } = useLocalization();
+  const { locale: language } = useLocalization();
 
   const [loadingIncident, setLoadingIncident] = useState(true);
 
@@ -87,7 +87,7 @@ function CiteDynamicTemplate({
           es: { nodes: incidentTemp.reports },
           fr: { nodes: incidentTemp.reports },
         },
-        locale,
+        language,
       });
 
       const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);

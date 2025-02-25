@@ -48,8 +48,10 @@ const LandingPage = (props) => {
     );
 
     if (report.language !== language) {
-      const translation = data[`latestIncidentsReports_${language}`]?.edges.find(
-        (translation) => translation.node.report_number === report.report_number
+      const translation = data.latestIncidentsReportsTranslations?.edges.find(
+        (translation) =>
+          translation.node.report_number === report.report_number &&
+          translation.node.language === language
       );
 
       if (translation) {
@@ -229,7 +231,7 @@ export const query = graphql`
       cloudinary_id
       language
     }
-    latestIncidentsReports_es: allMongodbTranslationsReportsEs(
+    latestIncidentsReportsTranslations: allMongodbTranslationsReports(
       filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
       edges {
@@ -237,39 +239,7 @@ export const query = graphql`
           title
           text
           report_number
-        }
-      }
-    }
-    latestIncidentsReports_fr: allMongodbTranslationsReportsFr(
-      filter: { report_number: { in: $latestIncidentsReportNumbers } }
-    ) {
-      edges {
-        node {
-          title
-          text
-          report_number
-        }
-      }
-    }
-    latestIncidentsReports_ja: allMongodbTranslationsReportsJa(
-      filter: { report_number: { in: $latestIncidentsReportNumbers } }
-    ) {
-      edges {
-        node {
-          title
-          text
-          report_number
-        }
-      }
-    }
-    latestIncidentsReports_en: allMongodbTranslationsReportsEn(
-      filter: { report_number: { in: $latestIncidentsReportNumbers } }
-    ) {
-      edges {
-        node {
-          title
-          text
-          report_number
+          language
         }
       }
     }

@@ -10,9 +10,6 @@ on:
         description: The commit SHA to run the tests against
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
@@ -24,7 +21,7 @@ jobs:
     name: Run tests
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+      labels: 'ubuntu-latest'
     defaults:
       run:
         shell: bash
