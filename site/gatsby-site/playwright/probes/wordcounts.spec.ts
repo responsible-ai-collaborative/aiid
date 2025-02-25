@@ -29,7 +29,9 @@ test.describe('The Word Counts Page', () => {
 
   test('Word cloud should exist', async ({ page, skipOnEmptyEnvironment }) => {
     await page.goto(url);
-    const wordclouds = page.locator('[data-cy=wordcloud]');
+    const wordclouds = page.locator('[data-cy=wordcloud]').first();
+    await expect(wordclouds).toBeVisible();
+
     const wordcloudCount = await wordclouds.count();
     for (let i = 0; i < wordcloudCount; i++) {
       await expect(wordclouds.nth(i)).toBeVisible();

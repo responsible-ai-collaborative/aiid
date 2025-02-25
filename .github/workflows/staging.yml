@@ -59,7 +59,6 @@ jobs:
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
 
   call-test-playwright-probes:
-    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/test-playwright-probes.yml
     needs: call-deploy
     secrets: inherit
@@ -68,7 +67,7 @@ jobs:
       environment: staging
 
   call-process-notifications:
-    needs: call-deploy
+    needs: call-test-playwright-probes
     uses: ./.github/workflows/process-notifications.yml
     secrets: inherit
     with:
