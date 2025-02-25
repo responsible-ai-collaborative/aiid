@@ -51,6 +51,9 @@ if (!email) {
         {
           title: "Robin Williams's Voice Deepfaked Without Consent",
           url: 'https://incidentdatabase.ai/cite/741',
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          date: '2023-10-02',
         },
       ],
       newFeatures: [

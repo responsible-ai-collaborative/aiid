@@ -27,6 +27,13 @@ export interface SendBulkEmailParams {
         entityName?: string;
         entityUrl?: string;
         magicLink?: string;    // URL for magic link (optional)
+        newIncidents?: {
+            id: number;
+            title: string;
+            url: string;
+            date: string;
+            description: string;
+        }[];
     };
     templateId: string; // Email template ID
 }

@@ -18,7 +18,6 @@ const getEmailTemplate = () => {
   
   const incidentStyle = ignoreWhitespace(`
     padding: 32px;
-    border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     font-size: 90%;
   `);
@@ -55,7 +54,7 @@ const getEmailTemplate = () => {
         {% if newIncidents %}
           <ul>
             {% for incident in newIncidents %}
-              <li>
+              <li style="list-style-type: none;">
                 <div style="${incidentStyle}">
                   <h1 style="font-size: 100%; margin-top: 0px;">
                     Incident {{ incident.id }}: {{ incident.title }}
@@ -83,30 +82,37 @@ const getEmailTemplate = () => {
 
       <div style="${sectionStyle}">
         <h2>New Blog Posts</h2>
-        {{#if newBlogPosts}}
-          {{#each newBlogPosts}}
-            <p>
-              <a href="{{this.url}}">{{this.title}}</a>
-              <br>
-              <span style="font-size: 85%;">{{this.date}}</span>
-            </p>
-          {{/each}}
-        {{else}}
+        {% if newBlogPosts %}
+          <ul>
+            {% for blogPost in newBlogPosts %}
+              <div style="${incidentStyle}">
+                <h1 style="font-size: 100%; margin-top: 0px;">
+                  {{ blogPost.title }}
+                </h1>
+
+                <p style="font-size: 85%;">{{ blogPost.date }}</p>
+
+                <p style="font-size: 85%;">
+                  {{ blogPost.description }}
+                </p>
+              </div>
+            {% endfor %}
+        {% else %}
           <p>No new blog posts were published this week.</p>
-        {{/if}}
+        {% endif %}
       </div>
 
       <div style="${sectionStyle}">
         <h2>New Features & Updates</h2>
-        {{#if newFeatures}}
+        {% if newFeatures %}
           <ul>
-            {{#each newFeatures}}
-              <li>{{this}}</li>
-            {{/each}}
+            {% for newFeature in newFeatures %}
+              <li style="list-style-type: none;">{{newFeature}}</li>
+            {% endfor %}
           </ul>
-        {{else}}
+        {% else %}
           <p>No major updates this week.</p>
-        {{/if}}
+        {% endif %}
       </div>
 
       <p style="margin-bottom: 32px">

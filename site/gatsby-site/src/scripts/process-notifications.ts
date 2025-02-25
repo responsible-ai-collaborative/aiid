@@ -76,7 +76,7 @@ async function notificationsToNewIncidents(context: Context) {
 
         result += pendingNotificationsToNewIncidents.length;
 
-        const subscriptionsToNewIncidents = await subscriptionsCollection.find<DBSubscription>({ type: 'new-incidents' }).toArray();
+        const subscriptionsToNewIncidents = await subscriptionsCollection.find<DBSubscription>({ type: 'new-incidents', frequency: 'instant' }).toArray();
 
         // Process subscriptions to New Incidents
         if (subscriptionsToNewIncidents.length > 0) {
