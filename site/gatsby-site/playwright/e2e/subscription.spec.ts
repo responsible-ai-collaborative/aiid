@@ -98,7 +98,7 @@ test.describe('Subscriptions', () => {
 
 
         await expect(page.locator('input[name=subscribe-all]')).not.toBeVisible();
-        await expect(page.locator('button[role=switch][aria-checked=false]')).toBeVisible();
+        await expect(page.locator('#subscribe-all[role=switch][aria-checked=false]')).toBeVisible();
     });
 
     test('New Incidents: Should display the switch toggle on if user has a subscription', async ({ page, login }) => {
