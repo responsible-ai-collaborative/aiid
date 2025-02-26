@@ -2,7 +2,7 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import config from '../../../config';
 
 /**
- * @property {string} instantKey - This field is used to generate the instant search key for each language
+ * @property {string} instantKey - This auxiliary field is used to generate the instant search key for each language, and should be removed before creating the final sorting list.
  */
 const BASE_SORTING_LIST = [
   {
