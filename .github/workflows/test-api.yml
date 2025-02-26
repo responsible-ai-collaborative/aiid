@@ -63,8 +63,6 @@ jobs:
           SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
-          GATSBY_SITE_URL: http://localhost:8000
-          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
