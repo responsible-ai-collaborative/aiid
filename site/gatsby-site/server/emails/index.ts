@@ -50,7 +50,7 @@ export interface SendBulkEmailParams {
     templateId: string; // Email template ID
 }
 
-export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string } = {}, allowedKeys: string[]): string => {
+export const replacePlaceholdersWithAllowedKeys = (template: string, data: any = {}, allowedKeys: string[]): string => {
     return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
         return allowedKeys.includes(key) && key in data ? data[key] : match;
     });
