@@ -13,7 +13,7 @@ const urlsToTest = [
     title: `Join the Responsible AI Collaborative Founding Staff`,
     shareButtonSections: 1,
     fbShareUrl: [
-      'https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fshare_channel%2F%3Flink%3Dhttps%253A%252F%252Fincidentdatabase.ai%252Fblog%252Fjoin-raic%252F%26',
+      `https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fshare_channel%2F%3Flink%3D${encodeURIComponent(`${config.SITE_URL}${blogPostUrl}`).replace(/%253A/g, '%3A').replace(/%252F/g, '%2F')}%26`,
     ]
   },
 ];
@@ -25,7 +25,7 @@ if (config.IS_EMPTY_ENVIRONMENT == 'false') {
     title: 'Incident 3: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees',
     shareButtonSections: 1,
     fbShareUrl: [
-      'https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fshare_channel%2F%3Flink%3Dhttps%253A%252F%252Fincidentdatabase.ai%252Fcite%252F3%252F%26',
+      `https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fshare_channel%2F%3Flink%3D${encodeURIComponent(`${config.SITE_URL}${incidentUrl}`).replace(/%253A/g, '%3A').replace(/%252F/g, '%2F')}%26`,
     ]
   });
 }
@@ -41,30 +41,36 @@ test.describe('Social Share Buttons', () => {
       await expect(buttons).toHaveCount(shareButtonSections * shareButtonsPerSection);
     });
 
-    const canonicalUrl = `https://incidentdatabase.ai${url}`;
+    const canonicalUrl = `${config.SITE_URL}${url}`;
 
     test(`${page} page should have a Twitter share button`, async ({ page }) => {
       await page.goto(url);
       const twitterButton = page.locator('[data-cy=btn-share-twitter]');
       await expect(twitterButton).toBeVisible();
 
-      const popupPromise = page.waitForEvent('popup');
-      await twitterButton.first().click();
-
-      const popup = await popupPromise;
-
-      await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/);
+      await expect(async () => {
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 })
+        await twitterButton.first().click();
+        const popup = await popupPromise;
+        await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 1000 });
+      }).toPass();
     });
 
     test(`${page} page should have a LinkedIn share button`, async ({ page }) => {
       await page.goto(url);
       const linkedInButton = page.locator('[data-cy=btn-share-linkedin]');
       await expect(linkedInButton).toBeVisible();
-      await page.evaluate(() => {
-        window.open = (url: string) => { window.location.href = url; return null; };
-      });
-      await linkedInButton.first().click();
-      await page.waitForURL(/https:\/\/www\.linkedin\.com*/);
+
+      const expectedUrlPart = `shareArticle%2F%3Furl%3D${encodeURIComponent(canonicalUrl)}`;
+
+      await expect(async () => {
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
+        await linkedInButton.first().click();
+        const popup = await popupPromise;
+        await popup.waitForURL((url) => {
+          return url.toString().includes(expectedUrlPart);
+        }, { timeout: 1000 });
+      }).toPass();
     });
 
     test(`${page} page should have an Email share button`, async ({ page }) => {
@@ -89,15 +95,15 @@ test.describe('Social Share Buttons', () => {
       const facebookButton = page.locator('[data-cy=btn-share-facebook]');
       await expect(facebookButton).toBeVisible();
 
-      const popupPromise = page.waitForEvent('popup');
+      const expectedUrlPart = `u=${canonicalUrl}`;
 
-      await facebookButton.first().click();
-
-      const popup = await popupPromise;
-
-      expect(async () => {
-        const popupUrl = await popup.url();
-        await expect(fbShareUrl.some(url => popupUrl.includes(url))).toBeTruthy();
+      await expect(async () => {
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
+        await facebookButton.first().click();
+        const popup = await popupPromise;
+        await popup.waitForURL((url) => {
+          return url.search.includes(expectedUrlPart);
+        }, { timeout: 1000 });
       }).toPass();
     });
   });
