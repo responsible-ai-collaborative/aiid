@@ -38,14 +38,9 @@ async function notificationsToWeeklyIncidents(context: Context) {
     const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
     const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
 
-    // Find all notifications from the past week
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
     const pendingWeeklyNotificationsToNewIncidents = await notificationsCollection.find({
         processed: false,
-        type: 'ai-weekly-briefing',
-        sentDate: { $gte: oneWeekAgo }
+        type: 'ai-weekly-briefing'
     }).toArray();
 
     if (pendingWeeklyNotificationsToNewIncidents.length === 0) {
@@ -83,11 +78,16 @@ async function notificationsToWeeklyIncidents(context: Context) {
         description: i.description ?? ''
     }));
 
+    const newBlogPosts = []; // TODO: Fetch new blog posts from prismic
+    const updates = []; // TODO: Fetch updates from prismic
+
     const sendEmailParams: SendBulkEmailParams = {
         recipients,
         subject: "Your Weekly AI Incident Briefing",
         dynamicData: {
-            newIncidents: incidentList
+            newIncidents: incidentList,
+            newBlogPosts: [],
+            updates: []
         },
         templateId: "AIIncidentBriefing"
     };

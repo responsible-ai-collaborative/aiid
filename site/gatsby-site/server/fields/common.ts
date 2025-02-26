@@ -122,6 +122,13 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
         created_at: new Date(),
     });
 
+    await notificationsCollection.insertOne({
+        type: 'ai-weekly-briefing',
+        incident_id: incidentId,
+        processed: false,
+        created_at: new Date(),
+    });
+
     const entityFields: (keyof DBIncident)[] = [
         'Alleged deployer of AI system',
         'Alleged developer of AI system',

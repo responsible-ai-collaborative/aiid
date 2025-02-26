@@ -34,6 +34,18 @@ export interface SendBulkEmailParams {
             date: string;
             description: string;
         }[];
+        newBlogPosts?: {
+            title: string;
+            url: string;
+            date: string;
+            description: string;
+        }[];
+        updates?: {
+            title: string;
+            url: string;
+            date: string;
+            description: string;
+        }[];
     };
     templateId: string; // Email template ID
 }

@@ -82,7 +82,13 @@ const UserSubscriptions = () => {
       (s) => s.type == SUBSCRIPTION_TYPE.newIncidents
     );
 
+    const hasAiWeeklyBriefingSubscription = data?.subscriptions.some(
+      (s) => s.type == SUBSCRIPTION_TYPE.aiWeeklyBriefing
+    );
+
     setIsSubscribeToNewIncidents(hasSubscription);
+
+    setIsSubscribeToAiWeeklyBriefing(hasAiWeeklyBriefingSubscription);
   }, [user, data]);
 
   const onSusbcribeToggle = async (checked) => {
