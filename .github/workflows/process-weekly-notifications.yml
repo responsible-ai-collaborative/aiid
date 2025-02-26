@@ -1,7 +1,7 @@
 name: Process Weekly Notifications
 on:
   schedule:
-    - cron: '0 18 * * 3'  # Runs every Sunday at 15:00 UTC
+    - cron: '0 15 * * 0'  # Runs every Sunday at 15:00 UTC
   workflow_dispatch: # Allows manual triggering
 
 jobs:
