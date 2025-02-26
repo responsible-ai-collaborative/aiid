@@ -199,7 +199,8 @@ export const getSchema = () => {
             },
         },
         {
-            allowExternalErrors: process.env.NODE_ENV !== 'production',
+            allowExternalErrors: true,
+            debug: true,
         }
     );
 
