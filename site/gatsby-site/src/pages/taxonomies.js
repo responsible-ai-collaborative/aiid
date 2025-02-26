@@ -54,6 +54,20 @@ export default function Taxonomies({ data }) {
               axes={['Known AI Goal', 'Known AI Technology', 'Known AI Technical Failure']}
             />
           </li>
+          <li>
+            <p>
+              <Trans>
+                <LocalizedLink to="/taxonomy/mit">MIT AI Risk Repository</LocalizedLink> The MIT AI
+                Risk Repository contains detailed records of AI-related risks extracted from a
+                variety of sources, categorized into high-level and mid-level taxonomies. Its
+                high-level Causal Taxonomy includes attributes such as the entity responsible for
+                the risk (human, AI, or other), the intent (intentional, unintentional, or other),
+                and the timing (pre-deployment, post-deployment, or other). Its mid-level Domain
+                Taxonomy categorizes risks into 23 specific domains like discrimination,
+                misinformation, malicious use, and human-computer interaction issues.
+              </Trans>
+            </p>
+          </li>
         </ul>
 
         <h2>
