@@ -114,7 +114,7 @@ function EditCitePage(props) {
         .reduce((acc, languageCode) => {
           // Find existing translation for this language
           const existingTranslation = reportData.report.translations?.find(
-            (t) => t.language === languageCode
+            (t) => t.language === languageCode && t.title !== null && t.text !== null
           );
 
           // If translation exists use its values, otherwise use empty values
