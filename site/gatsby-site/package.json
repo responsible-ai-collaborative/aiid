@@ -129,7 +129,9 @@
     "umzug": "^3.0.0",
     "use-query-params": "^1.2.0",
     "yargs": "^17.7.2",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "ora": "^7.0.1",
+    "chalk": "^5.3.0"
   },
   "license": "MIT",
   "main": "n/a",
@@ -151,6 +153,7 @@
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
     "translate-reports": "node src/scripts/translateReports.js",
     "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
+    "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
   },
   "devDependencies": {
