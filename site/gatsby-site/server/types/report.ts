@@ -9,9 +9,9 @@ import { EmbeddingType } from "./types";
 const ReportTranslationsType = new GraphQLObjectType({
     name: 'ReportTranslations',
     fields: {
-        text: { type: new GraphQLNonNull(GraphQLString) },
-        title: { type: new GraphQLNonNull(GraphQLString) },
-        plain_text: { type: new GraphQLNonNull(GraphQLString) },
+        text: { type: GraphQLString },
+        title: { type: GraphQLString },
+        plain_text: { type: GraphQLString },
         language: { type: new GraphQLNonNull(GraphQLString) },
     }
 });
@@ -70,8 +70,13 @@ export const ReportType = new GraphQLObjectType({
                         title: translation.title,
                         plain_text: translation.plain_text,
                         language: language,
-                    } : null;
-                }).filter(Boolean);
+                    } : {
+                        text: null,
+                        title: null,
+                        plain_text: null,
+                        language: language,
+                    };
+                });
             },
         }
     }
