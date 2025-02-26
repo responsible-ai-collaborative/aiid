@@ -34,4 +34,4 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL }}
           NEXTAUTH_URL: ${{ vars.SITE_URL }} # NextAuth requires this variable
           NEXTAUTH_SECRET: dummy # No actual secret needed unless sending magic links
-        run: npm run process-weekly-notbifications:ci
+        run: npm run process-weekly-notifications:ci
