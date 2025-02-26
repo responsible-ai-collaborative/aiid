@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -57,8 +57,12 @@ const reportFields = [
   'quiet',
 ];
 
+const translationsFields = ['title', 'text'];
+
 function EditCitePage(props) {
   const { t, i18n } = useTranslation();
+
+  const { config: availableLanguages } = useLocalization();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
@@ -69,8 +73,13 @@ function EditCitePage(props) {
     loading: loadingReport,
     refetch: refetchReport,
   } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
-    variables: { filter: { report_number: { EQ: reportNumber } } },
+    variables: {
+      filter: { report_number: { EQ: reportNumber } },
+      translationLanguages: availableLanguages.map((c) => c.code),
+    },
   });
+
+  const [reportTranslations, setReportTranslations] = useState(null);
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
@@ -92,13 +101,36 @@ function EditCitePage(props) {
 
   const incident_ids = incidentsData?.incidents.map((incident) => incident.incident_id);
 
-  const loading = loadingIncident || loadingReport;
+  const loading = loadingIncident || loadingReport || reportTranslations === null;
 
   const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
   const addToast = useToastContext();
 
-  const { config } = useLocalization();
+  useEffect(() => {
+    if (reportData?.report) {
+      const translations = availableLanguages
+        .map((c) => c.code)
+        .reduce((acc, languageCode) => {
+          // Find existing translation for this language
+          const existingTranslation = reportData.report.translations?.find(
+            (t) => t.language === languageCode && t.title !== null && t.text !== null
+          );
+
+          // If translation exists use its values, otherwise use empty values
+          acc[`translations_${languageCode}`] = existingTranslation
+            ? pick(existingTranslation, translationsFields)
+            : translationsFields.reduce((obj, field) => {
+                obj[field] = '';
+                return obj;
+              }, {});
+
+          return acc;
+        }, {});
+
+      setReportTranslations(translations);
+    }
+  }, [reportData, availableLanguages]);
 
   const updateSuccessToast = ({ reportNumber, incidentId }) => ({
     message: (
@@ -196,8 +228,8 @@ function EditCitePage(props) {
         },
       });
 
-      for (const { code } of config.filter((c) => c.code !== values.language)) {
-        const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
+      for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
+        const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
 
         await updateReportTranslations({
           variables: {
@@ -307,6 +339,7 @@ function EditCitePage(props) {
                 initialValues={{
                   ...reportData.report,
                   incident_ids,
+                  ...reportTranslations,
                 }}
               >
                 {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
