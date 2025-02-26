@@ -67,6 +67,8 @@ const BASE_SORTING_LIST = [
 ];
 
 const SORTING_LIST = BASE_SORTING_LIST.map((item) => {
+  // Featured items use a hyphen (-) separator while other sorting options use underscore (_)
+  // This matches the index naming convention in Algolia
   const newItem = {
     ...item,
     value: `instant_search-en${item.instantKey == 'featured' ? '-' : '_'}${item.instantKey}`,
