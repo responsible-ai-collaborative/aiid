@@ -1,12 +1,12 @@
 require('dotenv').config();
 
-const config = require('../../config');
+const config = require('../../server/config');
 
 const { MongoClient } = require('mongodb');
 
 const { Translate } = require('@google-cloud/translate').v2;
 
-const Translator = require('./Translator');
+const ReportTranslator = require('./reportTranslator');
 
 const { getLanguages } = require('../../i18n');
 
@@ -33,7 +33,7 @@ const reporter = { log: console.log, error: console.error, warn: console.warn };
     const translateClient = new Translate({ key: config.i18n.translateApikey });
 
     // Create Translator instance
-    const translator = new Translator({
+    const translator = new ReportTranslator({
       mongoClient,
       translateClient,
       languages: getLanguages(),

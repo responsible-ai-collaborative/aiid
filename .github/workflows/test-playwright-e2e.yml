@@ -97,6 +97,7 @@ jobs:
           MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
+          GOOGLE_TRANSLATE_API_KEY: dummy
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps

@@ -12,6 +12,7 @@ const incidents: DBIncident[] = [
         editors: ["6737a6e881955aa4905ccb04"],
         reports: [1],
         implicated_systems: ["entity-1"],
+        created_at: new Date('2020-01-01'),
 
         // TODO: this aren't required but break the build if missing
         editor_notes: "",
@@ -30,6 +31,7 @@ const incidents: DBIncident[] = [
         editors: ["6737a6e881955aa4905ccb04"],
         reports: [2],
         implicated_systems: ["entity-1"],
+        created_at: new Date('2020-02-01'),
 
         // TODO: this aren't required but break the build if missing
         editor_notes: "",
@@ -89,6 +91,7 @@ const incidents: DBIncident[] = [
         // this field is currently present in the database but not mapped to any graphql fueld
         // "created_at": 1407974400000
         implicated_systems: ["entity-1"],
+        created_at: new Date('2020-03-01'),
     },
     {
         incident_id: 4,
@@ -130,8 +133,7 @@ const incidents: DBIncident[] = [
             x: 0.0487331398239335,
             y: 0.38604577108881916
         },
-        // this field is currently present in the database but not mapped to any graphql fueld
-        // "created_at": 1407974400000
+        created_at: new Date('2020-04-01'),
     },
 ]
 
