@@ -147,7 +147,7 @@
     "clean": "gatsby clean",
     "process-notifications": "npx tsx --env-file=.env src/scripts/process-notifications.ts",
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
-    "translate-reports": "node src/scripts/translateReports.js",
+    "translate-reports": "npx tsx src/scripts/translateReports.ts",
     "translate-incidents": "npx tsx src/scripts/translateIncidents.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
   },
