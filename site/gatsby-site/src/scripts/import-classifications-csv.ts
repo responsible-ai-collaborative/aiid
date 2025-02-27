@@ -44,7 +44,8 @@ import {
   AttributeInsertType,
   ClassificationFilterType,
   ClassificationIncidentsRelationInput,
-  IntFilter
+  IntFilter,
+  ClassificationReportsRelationInput
 } from '../../server/generated/graphql';
 
 interface CSVRow {
@@ -192,7 +193,7 @@ function readCSVFile(filePath: string): CSVRow[] {
     });
     console.log(`Read ${records.length} rows from CSV file`);
     return records;
-  } 
+  }
   catch (error) {
     logError(`Error reading CSV file: ${(error as Error).message}`);
     throw error;
@@ -204,30 +205,30 @@ function readMappingFile(filePath: string): Mapping {
     console.log(`Reading mapping file: ${filePath}`);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const mapping = JSON.parse(fileContent) as Mapping;
-    
+
     // Validate the structure and ensure both sections are defined
     if (!mapping.fieldMappings) {
       logError(`Missing "fieldMappings" section in the mapping file: ${filePath}`);
       throw new Error(`Missing "fieldMappings" section in the mapping file: ${filePath}`);
     }
-    
+
     if (!mapping.valueMappings) {
       logError(`Missing "valueMappings" section in the mapping file: ${filePath}`);
       throw new Error(`Missing "valueMappings" section in the mapping file: ${filePath}`);
     }
-    
+
     // Check if they're empty objects and warn (but don't fail)
     if (Object.keys(mapping.fieldMappings).length === 0) {
       logWarning(`"fieldMappings" section is empty in the mapping file: ${filePath}`);
     }
-    
+
     if (Object.keys(mapping.valueMappings).length === 0) {
       logWarning(`"valueMappings" section is empty in the mapping file: ${filePath}`);
     }
-    
+
     console.log(`Loaded ${Object.keys(mapping.fieldMappings).length} field mappings and ${Object.keys(mapping.valueMappings).length} value mapping categories`);
     return mapping;
-  } 
+  }
   catch (error) {
     logError(`Error reading mapping file: ${(error as Error).message}`);
     throw error;
@@ -274,7 +275,7 @@ async function executeGraphQLOperation<T extends GraphQLErrorResponse>(
     }
 
     return result as T;
-  } 
+  }
   catch (error: any) {
     logError(`GraphQL operation failed: ${error.message}`);
     throw error;
@@ -287,7 +288,7 @@ async function fetchTaxonomyDefinition(
   sessionToken: string
 ): Promise<TaxonomyField[]> {
   const spinner = ora(`Fetching taxonomy definition for namespace: ${namespace}`).start();
-  
+
   const query = `
     query GetTaxonomyDefinition($filter: TaxaFilterType!) {
       taxa(filter: $filter) {
@@ -323,7 +324,7 @@ async function fetchTaxonomyDefinition(
 
     spinner.succeed(`Loaded ${result.data.taxa.field_list.length} taxonomy fields`);
     return result.data.taxa.field_list;
-  } 
+  }
   catch (error: any) {
     spinner.fail(`Error fetching taxonomy definition: ${error.message}`);
     throw error;
@@ -341,7 +342,7 @@ function convertValueByMongoType(value: string, mongoType: string): any {
 }
 
 function validateValueAgainstPermittedValues(
-  value: any, 
+  value: any,
   permittedValues?: string[],
   valueMapping?: ValueMapping,
   fieldName?: string
@@ -374,14 +375,14 @@ function validateValueAgainstPermittedValues(
 }
 
 function transformToClassificationsFormat(
-  data: CSVRow[], 
-  namespace: string, 
+  data: CSVRow[],
+  namespace: string,
   fieldMapping: FieldMapping,
   taxonomyFields: TaxonomyField[],
   valueMapping?: ValueMapping
 ): ClassificationInsertType[] {
   const spinner = ora('Transforming data to classifications format...').start();
-  
+
   // Create a map of field names to taxonomy field definitions for quick lookup
   const taxonomyFieldMap = new Map<string, TaxonomyField>();
   taxonomyFields.forEach(field => {
@@ -395,7 +396,7 @@ function transformToClassificationsFormat(
 
   const classifications = data.map(row => {
     const incidentId = parseInt(row['Incident ID'], 10);
-    
+
     if (isNaN(incidentId)) {
       logWarning(`Skipping row with invalid Incident ID: ${row['Incident ID']}`);
       skippedCount++;
@@ -409,7 +410,7 @@ function transformToClassificationsFormat(
     for (const [sourceField, destinationField] of Object.entries(fieldMapping)) {
       if (sourceField in row && row[sourceField] !== '') {
         const taxonomyField = taxonomyFieldMap.get(destinationField);
-        
+
         if (!taxonomyField) {
           const errorMsg = `Field "${destinationField}" not found in taxonomy definition for incident ID ${incidentId}.`;
           logWarning(errorMsg);
@@ -422,31 +423,31 @@ function transformToClassificationsFormat(
         let convertedValue;
         try {
           convertedValue = convertValueByMongoType(rawValue, taxonomyField.mongo_type);
-        } 
+        }
         catch (error) {
           const errorMsg = `${(error as Error).message} Field: "${destinationField}" for incident ID ${incidentId}.`;
           logWarning(errorMsg);
           invalidFields.push(`${destinationField} (unsupported type: ${taxonomyField.mongo_type})`);
           continue;
         }
-        
+
         // Validate against permitted values if available
         const validationResult = validateValueAgainstPermittedValues(convertedValue, taxonomyField.permitted_values, valueMapping, destinationField);
         if (!validationResult.isValid) {
           const errorMsg = `Value "${rawValue}" for field "${destinationField}" is not in the permitted values for incident ID ${incidentId}.`;
           logWarning(errorMsg);
-          
+
           // Display all permitted values
           if (taxonomyField.permitted_values && taxonomyField.permitted_values.length > 0) {
             console.log(chalk.cyan(`  Valid options for "${destinationField}":`));
             taxonomyField.permitted_values.forEach((value, index) => {
               console.log(chalk.cyan(`    ${index + 1}. ${value}`));
             });
-          } 
+          }
           else {
             console.log(chalk.cyan('  No permitted values defined'));
           }
-          
+
           invalidFields.push(`${destinationField} (value: ${rawValue})`);
           continue;
         }
@@ -472,11 +473,14 @@ function transformToClassificationsFormat(
       incidents: {
         link: [incidentId]
       } as ClassificationIncidentsRelationInput,
+      reports: {
+        link: []
+      } as ClassificationReportsRelationInput,
       publish: true,
       notes: '',
       attributes: attributes
     };
-    
+
     return classification;
   }).filter((item): item is ClassificationInsertType => item !== null);
 
@@ -486,7 +490,7 @@ function transformToClassificationsFormat(
   if (Object.keys(validationIssues).length > 0) {
     logSection('Validation Issues Summary');
     console.log(chalk.yellow(`${Object.keys(validationIssues).length} incidents had validation issues and were skipped:`));
-    
+
     Object.entries(validationIssues).forEach(([incidentId, issues]) => {
       console.log(chalk.yellow(`  Incident ID ${incidentId}: ${issues.length} invalid field(s)`));
       issues.forEach(issue => {
@@ -510,7 +514,7 @@ async function executeGraphQLMutation(
 ): Promise<ClassificationMutationResponse> {
   const incidentId = classification.incidents?.link[0] as number;
   const spinner = ora(`Processing incident ID: ${incidentId}`).start();
-  
+
   const mutation = `
     mutation UpsertOneClassification($filter: ClassificationFilterType!, $update: ClassificationInsertType!) {
       upsertOneClassification(filter: $filter, update: $update) {
@@ -553,19 +557,19 @@ async function executeGraphQLMutation(
       variables,
       sessionToken
     );
-    
+
     if (result.errors && result.errors.length > 0) {
       spinner.fail(`GraphQL errors for incident ${incidentId}`);
       return result;
-    } 
+    }
     else if (!result.data || !result.data.upsertOneClassification) {
       spinner.fail(`Unexpected GraphQL response for incident ${incidentId}`);
       return result;
     }
-    
+
     spinner.succeed(`Successfully processed incident ID: ${incidentId} (ID: ${result.data.upsertOneClassification._id})`);
     return result;
-  } 
+  }
   catch (error: any) {
     spinner.fail(`Error upserting classification: ${error.message}`);
     throw error;
@@ -573,19 +577,19 @@ async function executeGraphQLMutation(
 }
 
 async function prepareClassificationsData(
-  csvFile: string, 
-  namespace: string, 
+  csvFile: string,
+  namespace: string,
   mappingFile: string,
   graphqlEndpoint: string,
   sessionToken: string
 ): Promise<ClassificationInsertType[]> {
   logSection('Data Preparation');
   const data = readCSVFile(csvFile);
-  
+
   const mapping = readMappingFile(mappingFile);
   const fieldMapping = mapping.fieldMappings;
   const valueMapping = mapping.valueMappings;
-  
+
   const taxonomyFields = await fetchTaxonomyDefinition(graphqlEndpoint, namespace, sessionToken);
 
   logSection('Data Transformation');
@@ -604,13 +608,13 @@ function performDryRun(classifications: ClassificationInsertType[]): void {
   }
 
   console.log(`Found ${chalk.cyan(classifications.length.toString())} classifications to process.`);
-  
+
   // Output all classifications with their GraphQL variables
   classifications.forEach((classification, index) => {
     const incidentId = classification.incidents?.link[0] as number;
-    
+
     console.log(chalk.cyan(`\n--- Classification ${index + 1}/${classifications.length} (Incident ID: ${incidentId}) ---`));
-    
+
     // Show the attributes that will be inserted
     console.log('Attributes to be inserted:');
     if (classification.attributes && classification.attributes.length > 0) {
@@ -619,25 +623,25 @@ function performDryRun(classifications: ClassificationInsertType[]): void {
           console.log(`  ${attr.short_name}: ${attr.value_json}`);
         }
       });
-    } 
+    }
     else {
       console.log('  No attributes found for this classification.');
     }
-    
+
     // Output the GraphQL variables in a condensed format
     console.log('\nGraphQL operation:');
     console.log(`  Namespace: ${classification.namespace}`);
     console.log(`  Incident ID: ${incidentId}`);
     console.log(`  Number of attributes: ${classification.attributes?.length || 0}`);
   });
-  
+
   // Add a simple summary at the end of the dry run
   logSection('Dry Run Summary');
   console.log(`Total classifications: ${classifications.length}`);
   console.log(`Would succeed: ${chalk.green(classifications.length.toString())}`);
   console.log(`Would fail: ${chalk.red('0')}`);
   console.log(`Would skip: ${chalk.yellow('0')}`);
-  
+
   logSuccess('Dry run completed. Use the same command without --dryRun to apply these changes.');
 }
 
@@ -647,7 +651,7 @@ async function importClassifications(
   sessionToken: string
 ): Promise<void> {
   logSection('Import Process');
-  
+
   if (classifications.length === 0) {
     console.log('No classifications to process.');
     return;
@@ -666,14 +670,14 @@ async function importClassifications(
           console.log(chalk.red(`  - ${error.message}`));
         });
         errors++;
-      } 
+      }
       else if (!response.data || !response.data.upsertOneClassification) {
         errors++;
-      } 
+      }
       else {
         processed++;
       }
-    } 
+    }
     catch (error: any) {
       const incidentId = classification.incidents?.link[0];
       logError(`Error processing classification for incident ${incidentId}: ${error.message}`);
@@ -685,10 +689,10 @@ async function importClassifications(
   console.log(`Total classifications: ${classifications.length}`);
   console.log(`Successfully processed: ${chalk.green(processed.toString())}`);
   console.log(`Errors: ${chalk.red(errors.toString())}`);
-  
+
   if (processed === classifications.length) {
     logSuccess('All classifications were successfully imported!');
-  } 
+  }
   else {
     logWarning(`Import completed with ${errors} errors.`);
   }
@@ -700,21 +704,21 @@ async function main(): Promise<void> {
     const args = parseArgs();
     console.log(chalk.yellow('Source CSV:'), args.csvFile);
     console.log(chalk.yellow('Namespace:'), args.namespace);
-    
+
     // Log mapping file information
     console.log(chalk.yellow('Mapping file:'), args.mappingFile);
-    
+
     console.log(chalk.yellow('GraphQL endpoint:'), args.graphqlEndpoint);
-    
+
     if (args.dryRun) {
       console.log(chalk.yellow('DRY RUN MODE: No changes will be made to the database'));
     }
 
     const startTime = Date.now();
-    
+
     const classifications = await prepareClassificationsData(
-      args.csvFile, 
-      args.namespace, 
+      args.csvFile,
+      args.namespace,
       args.mappingFile,
       args.graphqlEndpoint,
       args.sessionToken
@@ -722,17 +726,17 @@ async function main(): Promise<void> {
 
     if (args.dryRun) {
       performDryRun(classifications);
-    } 
+    }
     else {
       await importClassifications(classifications, args.graphqlEndpoint, args.sessionToken);
     }
-    
+
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
-    
+
     logSection('Process Complete');
     console.log(`Duration: ${Math.round(duration)} seconds`);
-  } 
+  }
   catch (error) {
     logSection('Fatal Error');
     logError(`${error}`);
