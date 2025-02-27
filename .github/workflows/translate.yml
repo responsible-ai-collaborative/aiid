@@ -44,6 +44,7 @@ jobs:
           SITE_URL: dummy
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
+          GATSBY_SITE_URL: dummy
 
       - name: Run Incidents translation script
         run: npm run translate-incidents
@@ -62,4 +63,4 @@ jobs:
           SITE_URL: dummy
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
-
+          GATSBY_SITE_URL: dummy
