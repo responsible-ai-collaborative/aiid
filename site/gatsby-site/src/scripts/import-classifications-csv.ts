@@ -279,7 +279,7 @@ function convertValueByMongoType(value: string, mongoType: string): any {
     case 'string':
       return value.trim();
     default:
-      throw new Error(`Unsupported mongo_type: ${mongoType}. Supported types are: string, number, boolean, date`);
+      throw new Error(`Unsupported mongo_type: ${mongoType}. Supported types: string`);
   }
 }
 
