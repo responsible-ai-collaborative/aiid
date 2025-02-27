@@ -96,7 +96,9 @@ const SubmissionEdit = ({ id }) => {
         submitters: values.submitters
           ? !isArray(values.submitters)
             ? values.submitters.split(',').map((s) => s.trim())
-            : values.submitters
+            : values.submitters.length > 0
+            ? values.submitters
+            : ['Anonymous']
           : ['Anonymous'],
         plain_text: await stripMarkdown(update.text),
         date_modified: format(now, 'yyyy-MM-dd'),
@@ -132,7 +134,10 @@ const SubmissionEdit = ({ id }) => {
           </Trans>
         </h1>
         <div className="flex items-center gap-2">
-          <span className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}>
+          <span
+            className={`${saving ? 'text-orange-400' : 'text-gray-400'} text-sm mb-5`}
+            data-cy="saving-status"
+          >
             {saving ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="mr-1" />{' '}
