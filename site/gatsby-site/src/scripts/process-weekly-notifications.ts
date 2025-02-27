@@ -3,6 +3,8 @@ import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBSubscription } from "../../server/interfaces";
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import { UserAdminData, getAndCacheRecipients, buildEntityList } from "../../server/fields/common";
+import { gql } from 'graphql-tag';
+import { useApolloClient } from '@apollo/client';
 
 const usersCache: UserAdminData[] = [];
 
@@ -63,7 +65,43 @@ async function notificationsToWeeklyIncidents(context: Context) {
     }
   });
 
-  const newBlogPosts = []; // TODO: Fetch new blog posts from prismic
+  let newBlogPosts = [];
+  const lastWeek = new Date();
+  lastWeek.setDate(lastWeek.getDate() - 7);
+  const formattedDate = lastWeek.toISOString().split('T')[0];
+
+  const client = useApolloClient();
+
+  const BLOG_POSTS_QUERY = gql`
+    query GetRecentBlogPosts($date: String!) {
+      allBlogPost(filter: {data: {date: {gt: $date}}}, sort: {data: {date: DESC}}) {
+        nodes {
+          id
+          title
+          date
+          slug
+        }
+      }
+    }
+  `;
+
+  try {
+    const { data } = await client.query({
+      query: BLOG_POSTS_QUERY,
+      variables: { date: formattedDate }
+    });
+    
+    newBlogPosts = data.allBlogPost.nodes.map((post: any) => ({
+      id: post.id,
+      title: post.title,
+      url: `${config.SITE_URL}/blog/${post.slug}`,
+      date: post.date
+    }));
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    newBlogPosts = [];
+  }
+
   const updates = []; // TODO: Fetch updates from prismic
 
   const sendEmailParams: SendBulkEmailParams = {
@@ -71,7 +109,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     subject: "Your Weekly AI Incident Briefing",
     dynamicData: {
       newIncidents: incidentList,
-      newBlogPosts: [],
+      newBlogPosts: newBlogPosts,
       updates: []
     },
     templateId: "AIIncidentBriefing"
