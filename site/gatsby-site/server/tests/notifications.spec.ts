@@ -599,7 +599,7 @@ describe(`Notifications`, () => {
               processed: false,
               type: 'submission-promoted',
               incident_id: 2,
-              userId: '507f1f77bcf86cd799439011',
+              userId: '60a7c5b7b4f5b8a6d8f9c7e4',
           },
         ]
 
@@ -621,7 +621,7 @@ describe(`Notifications`, () => {
                 roles: ['admin'],
             },
             {
-                userId: "507f1f77bcf86cd799439011",
+                userId: "60a7c5b7b4f5b8a6d8f9c7e4",
                 roles: ['admin'],
             }
         ]
@@ -694,7 +694,7 @@ describe(`Notifications`, () => {
                         roles: ['admin'],
                     },
                     {
-                        _id: new ObjectId('507f1f77bcf86cd799439011'),
+                        _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
                         email: 'user2@test.com',
                         roles: ['admin'],
                     }
@@ -704,7 +704,7 @@ describe(`Notifications`, () => {
 
 
         mockSession('5f8f4b3b9b3e6f001f3b3b3b');
-        // mockSession('507f1f77bcf86cd799439011');
+        mockSession('60a7c5b7b4f5b8a6d8f9c7e4');
 
         const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
@@ -733,7 +733,7 @@ describe(`Notifications`, () => {
             recipients: [
                 {
                     email: "user2@test.com",
-                    userId: "507f1f77bcf86cd799439011",
+                    userId: "60a7c5b7b4f5b8a6d8f9c7e4",
                 },
             ],
             subject: "Your submission has been approved!",
