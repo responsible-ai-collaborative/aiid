@@ -589,12 +589,18 @@ describe(`Notifications`, () => {
     it(`processNotifications mutation - notifications of submission promotion`, async () => {
 
         const notifications: DBNotification[] = [
-            {
-                processed: false,
-                type: 'submission-promoted',
-                incident_id: 1,
-                userId: '5f8f4b3b9b3e6f001f3b3b3b',
-            },
+          {
+              processed: false,
+              type: 'submission-promoted',
+              incident_id: 1,
+              userId: '5f8f4b3b9b3e6f001f3b3b3b',
+          },
+          {
+              processed: false,
+              type: 'submission-promoted',
+              incident_id: 2,
+              userId: '507f1f77bcf86cd799439011',
+          },
         ]
 
         const subscriptions: DBSubscription[] = [
@@ -612,6 +618,10 @@ describe(`Notifications`, () => {
         const users: DBUser[] = [
             {
                 userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                roles: ['admin'],
+            },
+            {
+                userId: "507f1f77bcf86cd799439011",
                 roles: ['admin'],
             }
         ]
@@ -682,6 +692,11 @@ describe(`Notifications`, () => {
                         _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
                         email: 'test@test.com',
                         roles: ['admin'],
+                    },
+                    {
+                        _id: new ObjectId('507f1f77bcf86cd799439011'),
+                        email: 'user2@test.com',
+                        roles: ['admin'],
                     }
                 ]
             }
@@ -689,12 +704,13 @@ describe(`Notifications`, () => {
 
 
         mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+        // mockSession('507f1f77bcf86cd799439011');
 
         const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
-        expect(sendEmailMock).toHaveBeenCalledTimes(1);
+        expect(sendEmailMock).toHaveBeenCalledTimes(2);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
@@ -712,6 +728,25 @@ describe(`Notifications`, () => {
             },
             templateId: "SubmissionApproved",
         }));
+        
+        expect(sendEmailMock).nthCalledWith(2, expect.objectContaining({
+            recipients: [
+                {
+                    email: "user2@test.com",
+                    userId: "507f1f77bcf86cd799439011",
+                },
+            ],
+            subject: "Your submission has been approved!",
+            dynamicData: {
+                incidentId: "2",
+                incidentTitle: "Incident 2",
+                incidentUrl: config.SITE_URL + "/cite/2",
+                incidentDescription: "Incident 2 description",
+                incidentDate: incidents[1].date,
+            },
+            templateId: "SubmissionApproved",
+        }));
+
         expect(result).toBe(1);
     });
 
@@ -1249,7 +1284,7 @@ describe(`Notifications`, () => {
             },
             {
                 type: 'new-incidents',
-                userId: '5f8f4b3b9b3e6f001f3b3b3c',
+                userId: '507f1f77bcf86cd799439011',
             },
             {
                 type: 'incident',
@@ -1269,7 +1304,7 @@ describe(`Notifications`, () => {
                 roles: ['admin'],
             },
             {
-                userId: "5f8f4b3b9b3e6f001f3b3b3c",
+                userId: "507f1f77bcf86cd799439011",
                 roles: ['subscriber'],
             }
         ]
@@ -1346,7 +1381,7 @@ describe(`Notifications`, () => {
                         roles: ['admin'],
                     },
                     {
-                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3c'),
+                        _id: new ObjectId('507f1f77bcf86cd799439011'),
                         email: 'test2@test.com',
                         roles: ['subscriber'],
                     }
@@ -1451,7 +1486,7 @@ describe(`Notifications`, () => {
                         developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         email: "test2@test.com",
-                        userId: "5f8f4b3b9b3e6f001f3b3b3c",
+                        userId: "507f1f77bcf86cd799439011",
                         siteUrl: "http://localhost:8000",
                         implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
