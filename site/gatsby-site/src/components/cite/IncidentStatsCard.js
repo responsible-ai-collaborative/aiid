@@ -81,7 +81,7 @@ const IncidentStatsCard = ({
                     {
                       CSETv1: 'text-orange-800 bg-orange-200',
                       GMF: 'text-blue-800 bg-blue-200',
-                      MIT: 'text-green-800 bg-green-200',
+                      MIT: 'text-[#760216] bg-gray-100', // "MIT Red" https://brand.mit.edu/color
                     }[t] || 'text-gray-800 bg-gray-200';
 
                   return (
