@@ -169,6 +169,7 @@ export const query = graphql`
         weight
         description
         complete_entities
+        automatedClassifications
         dummy_fields {
           field_number
           short_name
