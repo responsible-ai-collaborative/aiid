@@ -2,45 +2,47 @@
  * @fileoverview Development utility to generate magic login links without requiring MailerSend setup.
  * Useful for local testing and debugging authentication flows.
  * 
- * @example npm run magic-link user@example.com [callbackUrl]
+ * @example npm run magic-link -- --email user@example.com [--callbackUrl /path] [--roles role1,role2]
  * 
  * @note For development use only.
  */
 
 import { generateMagicLink } from "../../playwright/utils";
-
-function displayHelp(): void {
-  console.log(`
-  Usage: npm run magic-link <email> [callbackUrl]
-  
-  Arguments:
-    email       Required. The email address to generate a magic link for
-    callbackUrl Optional. The URL to redirect to after authentication
-  
-  Examples:
-    npm run magic-link user@example.com
-    npm run magic-link user@example.com /apps/incidents
-    `);
-}
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
 async function start() {
+  const argv = yargs(hideBin(process.argv))
+    .usage("Usage: npm run magic-link --email <email> [--callbackUrl <url>] [--roles <roles>]")
+    .option("email", {
+      describe: "The email address to generate a magic link for",
+      type: "string",
+      demandOption: true,
+    })
+    .option("callbackUrl", {
+      describe: "The URL to redirect to after authentication",
+      type: "string",
+      default: "/",
+    })
+    .option("roles", {
+      describe: "Comma-separated list of roles to assign to the user",
+      type: "string",
+      default: "subscriber",
+    })
+    .example("npm run magic-link -- --email user@example.com", "Generate a magic link for user@example.com")
+    .example("npm run magic-link -- --email user@example.com --callbackUrl /apps/incidents", "Generate a magic link with a custom callback URL")
+    .example("npm run magic-link -- --email user@example.com --roles admin,editor", "Generate a magic link with custom roles")
+    .help()
+    .alias("h", "help")
+    .parseSync();
 
-  const args = process.argv.slice(2);
+  const { email, callbackUrl, roles } = argv;
+  const rolesList = roles.split(",").map(role => role.trim());
 
-  if (args.length === 0) {
-    console.error('Error: Email is required');
-    displayHelp();
-    process.exit(1);
-  }
-
-  const email = args[0];
-  const callbackUrl = args[1];
-
-  const magicLink = await generateMagicLink(email, callbackUrl);
+  const magicLink = await generateMagicLink(email, callbackUrl, rolesList);
 
   console.log(`\nMagic link: ${magicLink}\n\n`);
 }
-
 
 if (require.main === module) {
   start();

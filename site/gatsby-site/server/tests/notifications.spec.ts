@@ -98,7 +98,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -229,7 +229,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -365,7 +365,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -493,7 +493,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -623,7 +623,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -1285,7 +1285,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -1502,7 +1502,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -1642,7 +1642,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
