@@ -251,7 +251,7 @@ async function executeGraphQLOperation<T extends GraphQLErrorResponse>(
 ): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Cookie': `next-auth.session-token=${encodeURIComponent(sessionToken)}`
+    'Cookie': `__Secure-next-auth.session-token=${encodeURIComponent(sessionToken)};next-auth.session-token=${encodeURIComponent(sessionToken)}`
   };
 
   try {
