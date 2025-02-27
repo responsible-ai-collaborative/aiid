@@ -33,7 +33,7 @@ jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: 'ubuntu-latest'
+      labels: ${{ vars.RUNNER_LABEL || 'ubuntu-latest' }}
     permissions:
       pull-requests: write
     steps:
