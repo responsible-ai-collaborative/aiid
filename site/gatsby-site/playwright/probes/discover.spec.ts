@@ -317,13 +317,13 @@ test.describe('The Discover app', () => {
 
         await page.goto(url);
 
-        await page.locator('[data-cy="display-options"]:has-text("Incident Reports")').click();
+        await page.locator('[data-cy="display-options"]').getByText("Incident").click();
 
         await page.locator('li:has-text("Issue Reports")').first().click();
 
         await expect(page).toHaveURL(/is_incident_report=false/);
 
-        await expect(page.locator('[data-cy="display-options"]:has-text("Issue Reports")')).toBeVisible();
+        await expect(page.locator('[data-cy="display-options"]').getByText("Issue Reports")).toBeVisible();
     });
 
     test('Clear filters button should be enabled if other than Incident Reports is selected', async ({ page }) => {

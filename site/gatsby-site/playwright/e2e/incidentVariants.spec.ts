@@ -81,8 +81,10 @@ test.describe('Variants pages', () => {
 
         await expect(page.locator('[data-cy=variant-form]')).not.toBeVisible();
 
-        await page.locator('[data-cy=add-variant-btn]').click();
-        await page.waitForSelector('[data-cy=variant-form]');
+        await expect(async () => {
+            await page.locator('[data-cy=add-variant-btn]').click();
+            await page.waitForSelector('[data-cy=variant-form]', { timeout: 1000 });
+        }).toPass();
 
         await page.locator('[data-cy="variant-form-date-published"]').fill(new_date_published);
         await page.locator('[data-cy="variant-form-submitters"] input').first().fill(new_submitter);
