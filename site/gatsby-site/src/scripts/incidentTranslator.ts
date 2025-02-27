@@ -192,6 +192,13 @@ export default class IncidentTranslator {
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
 
+      // Check if the translation is empty. The translation API sometimes returns empty strings with a 200 status code.
+      if (result === '') {
+        this.reporter.error(
+          `Error translating incident ${entry.incident_id}, ${keys[i]} field is empty`
+        );
+      }
+
       const field = keys[i];
 
       translatedEntry[field] = result;
@@ -248,10 +255,13 @@ export default class IncidentTranslator {
     const q = queue(async (task: { to: string }, done: () => void) => {
       this.reporter.log(`Translating incidents for [${task.to}]`);
 
-      const translated = await this.translateIncidentsCollection({
+      let translated = await this.translateIncidentsCollection({
         items: incidents,
         to: task.to,
       });
+
+      // filter translated reports that are empty
+      translated = translated.filter((t) => t.title !== '' && t.description !== '');
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new incidents to [${task.to}]`);
