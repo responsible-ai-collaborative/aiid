@@ -18,7 +18,7 @@ describe(`History`, () => {
 
     it(`Create history item when linking reports to incidents`, async () => {
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -195,7 +195,7 @@ describe(`History`, () => {
 
     it(`Create history item when flagging for dissimilarity`, async () => {
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -286,7 +286,7 @@ describe(`History`, () => {
 
     it(`Create history item when editing Incident`, async () => {
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -584,7 +584,7 @@ describe(`History`, () => {
         mockSession('123');
 
         await makeRequest(url, mutationData);
-        
+
         const history = await makeRequest(url, {
             query: `
             query {
