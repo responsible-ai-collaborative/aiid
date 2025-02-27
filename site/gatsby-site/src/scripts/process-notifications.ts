@@ -1,4 +1,4 @@
-import { getUserAdminData, UserAdminData } from "../../server/fields/common";
+import { buildEntityList, getAndCacheRecipients, UserAdminData } from "../../server/fields/common";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
@@ -6,32 +6,6 @@ import { MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
 
 const usersCache: UserAdminData[] = [];
-
-const getAndCacheRecipients = async (userIds: string[], context: Context) => {
-
-    const recipients = [];
-
-    for (const userId of userIds) {
-
-        let user = usersCache.find((user) => user.userId === userId) ?? null;
-
-        if (!user) {
-
-            user = await getUserAdminData(userId, context) ?? null;
-
-            if (user) {
-
-                usersCache.push(user);
-            }
-        }
-
-        if (user?.email && user?.userId) {
-            recipients.push({ email: user.email, userId: user.userId });
-        }
-    }
-
-    return recipients;
-}
 
 const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
     for (const pendingNotification of notifications) {
@@ -48,17 +22,6 @@ const markNotificationsAsProcessed = async (notificationsCollection: any, notifi
 
 const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
     await markNotifications(notificationsCollection, notifications, false);
-}
-
-const buildEntityList = (allEntities: any, entityIds: any) => {
-    const entityNames = entityIds.map((entityId: string) => {
-        const entity = allEntities.find((entity: any) => entity.entity_id === entityId);
-        return entity ? `<a href="${config.SITE_URL}/entities/${entity.entity_id}">${entity.name}</a>` : '';
-    });
-
-    if (entityNames.length < 3) { return entityNames.join(' and '); }
-
-    return `${entityNames.slice(0, - 1).join(', ')}, and ${entityNames[entityNames.length - 1]}`;
 }
 
 async function notificationsToNewIncidents(context: Context) {
@@ -87,7 +50,7 @@ async function notificationsToNewIncidents(context: Context) {
 
             const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-            const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+            const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
 
             const uniqueNotifications: number[] = [];
 
@@ -193,7 +156,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -283,7 +246,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -354,7 +317,7 @@ async function notificationsToNewPromotions(context: Context) {
 
         const uniqueUserIds = [...new Set(userIds)];
 
-        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+        const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
 
         let uniqueNotifications: number[] = [];
 

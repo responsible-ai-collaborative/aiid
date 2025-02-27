@@ -301,3 +301,40 @@ export const logIncidentHistory = async (updated: DBIncident, context: Context) 
 
     await incidentHistoryCollection.insertOne(incidentHistory);
 }
+
+export const buildEntityList = (allEntities: any, entityIds: any) => {
+  const entityNames = entityIds.map((entityId: string) => {
+      const entity = allEntities.find((entity: any) => entity.entity_id === entityId);
+      return entity ? `<a href="${config.SITE_URL}/entities/${entity.entity_id}">${entity.name}</a>` : '';
+  });
+
+  if (entityNames.length < 3) { return entityNames.join(' and '); }
+
+  return `${entityNames.slice(0, - 1).join(', ')}, and ${entityNames[entityNames.length - 1]}`;
+}
+
+export const getAndCacheRecipients = async (userIds: string[], context: Context, usersCache: UserAdminData[]) => {
+
+  const recipients = [];
+
+  for (const userId of userIds) {
+
+      let user = usersCache.find((user) => user.userId === userId) ?? null;
+
+      if (!user) {
+
+          user = await getUserAdminData(userId, context) ?? null;
+
+          if (user) {
+
+              usersCache.push(user);
+          }
+      }
+
+      if (user?.email && user?.userId) {
+          recipients.push({ email: user.email, userId: user.userId });
+      }
+  }
+
+  return recipients;
+}
