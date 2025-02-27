@@ -1,7 +1,7 @@
 /**
  * A script for restoring data from a MongoDB database to an in-memory MongoDB instance.
  * 
- * Usage: npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations
+ * Usage: npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations,history
  * 
  * The script will copy all collections from the specified databases from the source to the destination MongoDB instance.
  * By default, it will restore the 'aiidprod' and 'translations' databases, but you can specify other databases as needed.
