@@ -1284,7 +1284,7 @@ describe(`Notifications`, () => {
             },
             {
                 type: 'new-incidents',
-                userId: '507f1f77bcf86cd799439011',
+                userId: '5f8f4b3b9b3e6f001f3b3b3c',
             },
             {
                 type: 'incident',
@@ -1304,7 +1304,7 @@ describe(`Notifications`, () => {
                 roles: ['admin'],
             },
             {
-                userId: "507f1f77bcf86cd799439011",
+                userId: "5f8f4b3b9b3e6f001f3b3b3c",
                 roles: ['subscriber'],
             }
         ]
@@ -1381,7 +1381,7 @@ describe(`Notifications`, () => {
                         roles: ['admin'],
                     },
                     {
-                        _id: new ObjectId('507f1f77bcf86cd799439011'),
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3c'),
                         email: 'test2@test.com',
                         roles: ['subscriber'],
                     }
@@ -1486,7 +1486,7 @@ describe(`Notifications`, () => {
                         developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         email: "test2@test.com",
-                        userId: "507f1f77bcf86cd799439011",
+                        userId: "5f8f4b3b9b3e6f001f3b3b3c",
                         siteUrl: "http://localhost:8000",
                         implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
