@@ -122,6 +122,8 @@ jobs:
           SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+          GOOGLE_TRANSLATE_API_KEY: dummy
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
 
       - name: Upload Playwright traces
         if: failure()
