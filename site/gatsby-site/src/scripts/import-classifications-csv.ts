@@ -36,9 +36,10 @@ import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
-import fetch from 'cross-fetch';
 import ora from 'ora';
 import chalk from 'chalk';
+import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
+import fetch from 'cross-fetch';
 import {
   ClassificationInsertType,
   AttributeInsertType,
@@ -48,67 +49,14 @@ import {
   ClassificationReportsRelationInput
 } from '../../server/generated/graphql';
 
+
 interface CSVRow {
   [key: string]: string;
 }
 
-interface FieldMapping {
-  [sourceField: string]: string;
-}
-
-interface ValueMapping {
-  [field: string]: {
-    [sourceValue: string]: string;
-  };
-}
-
 interface Mapping {
-  fieldMappings: FieldMapping;
-  valueMappings: ValueMapping;
-}
-
-// Base interface for GraphQL error responses
-interface GraphQLErrorResponse {
-  errors?: Array<{
-    message: string;
-    locations: Array<{
-      line: number;
-      column: number;
-    }>;
-    path: string[];
-  }>;
-}
-
-// Interface for taxonomy query response
-interface TaxonomyQueryResponse extends GraphQLErrorResponse {
-  data?: {
-    taxa?: {
-      field_list?: TaxonomyField[];
-    };
-  };
-}
-
-// Interface for classification mutation response
-interface ClassificationMutationResponse extends GraphQLErrorResponse {
-  data?: {
-    upsertOneClassification?: {
-      _id: string;
-      namespace: string;
-      incident_id: number;
-      attributes: {
-        short_name: string;
-        value_json: string;
-      }[];
-      incidents: {
-        incident_id: number;
-      }[];
-      notes: string;
-      publish: boolean;
-      reports: {
-        report_number: string;
-      }[];
-    };
-  };
+  fieldMappings: Record<string, string>;
+  valueMappings: Record<string, Record<string, string>>;
 }
 
 interface TaxonomyField {
@@ -126,25 +74,50 @@ interface CommandLineArgs {
   mappingFile: string;
 }
 
-// Helper function for console logging with better formatting
-function logSection(title: string): void {
-  console.log('\n' + chalk.blue('='.repeat(80)));
-  console.log(chalk.blue(title));
-  console.log(chalk.blue('='.repeat(80)));
+
+const logger = {
+  section: (title: string): void => {
+    console.log('\n' + chalk.blue('='.repeat(80)));
+    console.log(chalk.blue(title));
+    console.log(chalk.blue('='.repeat(80)));
+  },
+
+  warning: (message: string): void => {
+    console.warn(chalk.yellow(`\nWarning: ${message}`));
+  },
+
+  error: (message: string): void => {
+    console.error(chalk.red(`\nError: ${message}`));
+  },
+
+  success: (message: string): void => {
+    console.log(chalk.green(`\n${message}`));
+  },
+
+  info: (message: string): void => {
+    console.log(message);
+  }
+};
+
+/**
+ * Creates an Apollo client for GraphQL operations
+ */
+function createApolloClient(endpoint: string, sessionToken: string): ApolloClient<any> {
+  return new ApolloClient({
+    link: new HttpLink({
+      uri: endpoint,
+      fetch,
+      headers: {
+        'Cookie': `__Secure-next-auth.session-token=${encodeURIComponent(sessionToken)};next-auth.session-token=${encodeURIComponent(sessionToken)}`
+      }
+    }),
+    cache: new InMemoryCache({ addTypename: false }),
+  });
 }
 
-function logWarning(message: string): void {
-  console.warn(chalk.yellow(`\nWarning: ${message}`));
-}
-
-function logError(message: string): void {
-  console.error(chalk.red(`\nError: ${message}`));
-}
-
-function logSuccess(message: string): void {
-  console.log(chalk.green(`\n${message}`));
-}
-
+/**
+ * Parse command line arguments
+ */
 function parseArgs(): CommandLineArgs {
   return yargs(hideBin(process.argv))
     .option('csvFile', {
@@ -168,7 +141,7 @@ function parseArgs(): CommandLineArgs {
       demandOption: true,
     })
     .option('sessionToken', {
-      description: 'Next.js Auth session token for authentication (e.g., next-auth.session-token=token-value)',
+      description: 'Next.js Auth session token for authentication',
       type: 'string',
       demandOption: true
     })
@@ -182,114 +155,75 @@ function parseArgs(): CommandLineArgs {
     .parseSync() as CommandLineArgs;
 }
 
+/**
+ * Read and parse CSV file
+ */
 function readCSVFile(filePath: string): CSVRow[] {
   try {
-    console.log(`Reading CSV file: ${filePath}`);
+    logger.info(`Reading CSV file: ${filePath}`);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const records = parse(fileContent, {
       columns: true,
       skip_empty_lines: true,
       trim: true
     });
-    console.log(`Read ${records.length} rows from CSV file`);
+    logger.info(`Read ${records.length} rows from CSV file`);
     return records;
   }
   catch (error) {
-    logError(`Error reading CSV file: ${(error as Error).message}`);
-    throw error;
-  }
-}
-
-function readMappingFile(filePath: string): Mapping {
-  try {
-    console.log(`Reading mapping file: ${filePath}`);
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const mapping = JSON.parse(fileContent) as Mapping;
-
-    // Validate the structure and ensure both sections are defined
-    if (!mapping.fieldMappings) {
-      logError(`Missing "fieldMappings" section in the mapping file: ${filePath}`);
-      throw new Error(`Missing "fieldMappings" section in the mapping file: ${filePath}`);
-    }
-
-    if (!mapping.valueMappings) {
-      logError(`Missing "valueMappings" section in the mapping file: ${filePath}`);
-      throw new Error(`Missing "valueMappings" section in the mapping file: ${filePath}`);
-    }
-
-    // Check if they're empty objects and warn (but don't fail)
-    if (Object.keys(mapping.fieldMappings).length === 0) {
-      logWarning(`"fieldMappings" section is empty in the mapping file: ${filePath}`);
-    }
-
-    if (Object.keys(mapping.valueMappings).length === 0) {
-      logWarning(`"valueMappings" section is empty in the mapping file: ${filePath}`);
-    }
-
-    console.log(`Loaded ${Object.keys(mapping.fieldMappings).length} field mappings and ${Object.keys(mapping.valueMappings).length} value mapping categories`);
-    return mapping;
-  }
-  catch (error) {
-    logError(`Error reading mapping file: ${(error as Error).message}`);
+    logger.error(`Error reading CSV file: ${(error as Error).message}`);
     throw error;
   }
 }
 
 /**
- * Executes a GraphQL query or mutation against the specified endpoint
- * @param endpoint The GraphQL endpoint URL
- * @param query The GraphQL query or mutation string
- * @param variables Variables to be passed to the GraphQL operation
- * @param sessionToken Authentication session token
- * @returns The GraphQL response
+ * Read and parse mapping file
  */
-async function executeGraphQLOperation<T extends GraphQLErrorResponse>(
-  endpoint: string,
-  query: string,
-  variables: Record<string, any>,
-  sessionToken: string
-): Promise<T> {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    'Cookie': `__Secure-next-auth.session-token=${encodeURIComponent(sessionToken)};next-auth.session-token=${encodeURIComponent(sessionToken)}`
-  };
-
+function readMappingFile(filePath: string): Mapping {
   try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query,
-        variables
-      })
-    });
+    logger.info(`Reading mapping file: ${filePath}`);
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    const mapping = JSON.parse(fileContent) as Mapping;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    // Validate the structure
+    if (!mapping.fieldMappings) {
+      throw new Error(`Missing "fieldMappings" section in the mapping file: ${filePath}`);
     }
 
-    const result = await response.json();
-
-    if (result.errors && result.errors.length > 0) {
-      throw new Error(`GraphQL errors: ${result.errors.map((e: any) => e.message).join(', ')}`);
+    if (!mapping.valueMappings) {
+      throw new Error(`Missing "valueMappings" section in the mapping file: ${filePath}`);
     }
 
-    return result as T;
+    // Warn if sections are empty
+    if (Object.keys(mapping.fieldMappings).length === 0) {
+      logger.warning(`"fieldMappings" section is empty in the mapping file: ${filePath}`);
+    }
+
+    if (Object.keys(mapping.valueMappings).length === 0) {
+      logger.warning(`"valueMappings" section is empty in the mapping file: ${filePath}`);
+    }
+
+    logger.info(`Loaded ${Object.keys(mapping.fieldMappings).length} field mappings and ${Object.keys(mapping.valueMappings).length} value mapping categories`);
+    return mapping;
   }
-  catch (error: any) {
-    logError(`GraphQL operation failed: ${error.message}`);
+  catch (error) {
+    logger.error(`Error reading mapping file: ${(error as Error).message}`);
     throw error;
   }
 }
 
+/**
+ * Fetch taxonomy definition from GraphQL API
+ */
 async function fetchTaxonomyDefinition(
   endpoint: string,
   namespace: string,
   sessionToken: string
 ): Promise<TaxonomyField[]> {
   const spinner = ora(`Fetching taxonomy definition for namespace: ${namespace}`).start();
+  const client = createApolloClient(endpoint, sessionToken);
 
-  const query = `
+  const query = gql`
     query GetTaxonomyDefinition($filter: TaxaFilterType!) {
       taxa(filter: $filter) {
         field_list {
@@ -310,14 +244,20 @@ async function fetchTaxonomyDefinition(
   };
 
   try {
-    const result = await executeGraphQLOperation<TaxonomyQueryResponse>(
-      endpoint,
+    const result = await client.query({
       query,
       variables,
-      sessionToken
-    );
+      fetchPolicy: 'no-cache'
+    });
 
-    if (!result.data?.taxa || !result.data.taxa.field_list || result.data.taxa.field_list.length === 0) {
+    // Check for GraphQL errors
+    if (result.errors && result.errors.length > 0) {
+      const errorMessages = result.errors.map(e => e.message).join(', ');
+      spinner.fail(`GraphQL errors when fetching taxonomy: ${errorMessages}`);
+      throw new Error(`GraphQL errors: ${errorMessages}`);
+    }
+
+    if (!result.data?.taxa?.field_list || result.data.taxa.field_list.length === 0) {
       spinner.fail(`No taxonomy definition found for namespace: ${namespace}`);
       throw new Error(`No taxonomy definition found for namespace: ${namespace}`);
     }
@@ -331,55 +271,58 @@ async function fetchTaxonomyDefinition(
   }
 }
 
+/**
+ * Convert value based on MongoDB type
+ */
 function convertValueByMongoType(value: string, mongoType: string): any {
   switch (mongoType) {
-    case 'String':
     case 'string':
-      return value;
+      return value.trim();
     default:
-      throw new Error(`Unsupported mongo_type: ${mongoType}. Only string type is supported.`);
+      throw new Error(`Unsupported mongo_type: ${mongoType}. Supported types are: string, number, boolean, date`);
   }
 }
 
+/**
+ * Validate a value against permitted values, applying mapping if available
+ */
 function validateValueAgainstPermittedValues(
   value: any,
   permittedValues?: string[],
-  valueMapping?: ValueMapping,
+  valueMapping?: Record<string, Record<string, string>>,
   fieldName?: string
-): { isValid: boolean; mappedValue?: any } {
+): { isValid: boolean; mappedValue: any } {
+  // If there are no permitted values, any value is valid
   if (!permittedValues || permittedValues.length === 0) {
-    return { isValid: true, mappedValue: value }; // No validation needed
+    return { isValid: true, mappedValue: value };
   }
 
+  // Convert value to string for comparison with permitted values
+  const stringValue = String(value);
+
   // Check if we have a mapping for this value
-  if (valueMapping && fieldName && typeof value === 'string') {
-    const fieldMappings = valueMapping[fieldName];
-    if (fieldMappings && fieldMappings[value]) {
-      const mappedValue = fieldMappings[value];
-      // Check if the mapped value is valid
-      if (permittedValues.includes(mappedValue)) {
-        return { isValid: true, mappedValue };
-      }
+  if (valueMapping && fieldName && valueMapping[fieldName] && valueMapping[fieldName][stringValue]) {
+    const mappedValue = valueMapping[fieldName][stringValue];
+    // Check if the mapped value is valid
+    if (permittedValues.includes(mappedValue)) {
+      return { isValid: true, mappedValue };
     }
   }
 
-  // For arrays, check if all elements are in permitted values
-  if (Array.isArray(value)) {
-    const allValid = value.every(v => permittedValues.includes(String(v)));
-    return { isValid: allValid, mappedValue: value };
-  }
-
-  // For other types, check if the value is in permitted values
-  const isValid = permittedValues.includes(String(value));
+  // If no mapping or mapping didn't match, check if the original value is valid
+  const isValid = permittedValues.includes(stringValue);
   return { isValid, mappedValue: value };
 }
 
+/**
+ * Transform CSV data to classifications format
+ */
 function transformToClassificationsFormat(
   data: CSVRow[],
   namespace: string,
-  fieldMapping: FieldMapping,
+  fieldMapping: Record<string, string>,
   taxonomyFields: TaxonomyField[],
-  valueMapping?: ValueMapping
+  valueMapping?: Record<string, Record<string, string>>
 ): ClassificationInsertType[] {
   const spinner = ora('Transforming data to classifications format...').start();
 
@@ -398,7 +341,7 @@ function transformToClassificationsFormat(
     const incidentId = parseInt(row['Incident ID'], 10);
 
     if (isNaN(incidentId)) {
-      logWarning(`Skipping row with invalid Incident ID: ${row['Incident ID']}`);
+      logger.warning(`Skipping row with invalid Incident ID: ${row['Incident ID']}`);
       skippedCount++;
       return null;
     }
@@ -412,8 +355,7 @@ function transformToClassificationsFormat(
         const taxonomyField = taxonomyFieldMap.get(destinationField);
 
         if (!taxonomyField) {
-          const errorMsg = `Field "${destinationField}" not found in taxonomy definition for incident ID ${incidentId}.`;
-          logWarning(errorMsg);
+          logger.warning(`Field "${destinationField}" not found in taxonomy definition for incident ID ${incidentId}.`);
           invalidFields.push(`${destinationField} (not in taxonomy definition)`);
           continue;
         }
@@ -425,17 +367,15 @@ function transformToClassificationsFormat(
           convertedValue = convertValueByMongoType(rawValue, taxonomyField.mongo_type);
         }
         catch (error) {
-          const errorMsg = `${(error as Error).message} Field: "${destinationField}" for incident ID ${incidentId}.`;
-          logWarning(errorMsg);
-          invalidFields.push(`${destinationField} (unsupported type: ${taxonomyField.mongo_type})`);
+          logger.warning(`${(error as Error).message} Field: "${destinationField}" for incident ID ${incidentId}.`);
+          invalidFields.push(`${destinationField} (type conversion error: ${taxonomyField.mongo_type})`);
           continue;
         }
 
         // Validate against permitted values if available
         const validationResult = validateValueAgainstPermittedValues(convertedValue, taxonomyField.permitted_values, valueMapping, destinationField);
         if (!validationResult.isValid) {
-          const errorMsg = `Value "${rawValue}" for field "${destinationField}" is not in the permitted values for incident ID ${incidentId}.`;
-          logWarning(errorMsg);
+          logger.warning(`Value "${rawValue}" for field "${destinationField}" is not in the permitted values for incident ID ${incidentId}.`);
 
           // Display all permitted values
           if (taxonomyField.permitted_values && taxonomyField.permitted_values.length > 0) {
@@ -462,7 +402,7 @@ function transformToClassificationsFormat(
     // If any field has an invalid value, skip the entire classification
     if (invalidFields.length > 0) {
       validationIssues[incidentId] = invalidFields;
-      logError(`Skipping entire classification for incident ID ${incidentId} due to ${invalidFields.length} invalid field(s)`);
+      logger.error(`Skipping entire classification for incident ID ${incidentId} due to ${invalidFields.length} invalid field(s)`);
       skippedCount++;
       return null;
     }
@@ -488,7 +428,7 @@ function transformToClassificationsFormat(
 
   // Print summary of validation issues
   if (Object.keys(validationIssues).length > 0) {
-    logSection('Validation Issues Summary');
+    logger.section('Validation Issues Summary');
     console.log(chalk.yellow(`${Object.keys(validationIssues).length} incidents had validation issues and were skipped:`));
 
     Object.entries(validationIssues).forEach(([incidentId, issues]) => {
@@ -499,7 +439,7 @@ function transformToClassificationsFormat(
     });
   }
 
-  logSection('Processing Summary');
+  logger.section('Processing Summary');
   console.log(`Total rows in CSV: ${data.length}`);
   console.log(`Successfully processed: ${chalk.green(processedCount.toString())}`);
   console.log(`Skipped due to validation issues: ${chalk.yellow(skippedCount.toString())}`);
@@ -507,15 +447,29 @@ function transformToClassificationsFormat(
   return classifications;
 }
 
-async function executeGraphQLMutation(
-  endpoint: string,
-  classification: ClassificationInsertType,
+/**
+ * Import classifications to database via GraphQL
+ */
+async function importClassifications(
+  classifications: ClassificationInsertType[],
+  graphqlEndpoint: string,
   sessionToken: string
-): Promise<ClassificationMutationResponse> {
-  const incidentId = classification.incidents?.link[0] as number;
-  const spinner = ora(`Processing incident ID: ${incidentId}`).start();
+): Promise<void> {
+  logger.section('Import Process');
 
-  const mutation = `
+  if (classifications.length === 0) {
+    logger.info('No classifications to process.');
+    return;
+  }
+
+  logger.info(`Processing ${chalk.cyan(classifications.length.toString())} classifications via GraphQL...`);
+  let processed = 0;
+  let errors = 0;
+
+  // Create a single Apollo client instance to be reused for all mutations
+  const client = createApolloClient(graphqlEndpoint, sessionToken);
+
+  const mutation = gql`
     mutation UpsertOneClassification($filter: ClassificationFilterType!, $update: ClassificationInsertType!) {
       upsertOneClassification(filter: $filter, update: $update) {
         _id
@@ -536,78 +490,133 @@ async function executeGraphQLMutation(
     }
   `;
 
-  const filter: ClassificationFilterType = {
-    incidents: {
-      EQ: incidentId
-    } as IntFilter,
-    namespace: {
-      EQ: classification.namespace
+  for (const classification of classifications) {
+    const incidentId = classification.incidents?.link[0] as number;
+    const spinner = ora(`Processing incident ID: ${incidentId}`).start();
+
+    const filter: ClassificationFilterType = {
+      incidents: {
+        EQ: incidentId
+      } as IntFilter,
+      namespace: {
+        EQ: classification.namespace
+      }
+    };
+
+    try {
+      const result = await client.mutate({
+        mutation,
+        variables: {
+          filter,
+          update: classification
+        },
+        fetchPolicy: 'no-cache'
+      });
+
+      // Check for GraphQL errors in the response
+      if (result.errors && result.errors.length > 0) {
+        spinner.fail(`GraphQL errors for incident ${incidentId}`);
+        result.errors.forEach(error => {
+          console.log(chalk.red(`  - ${error.message}`));
+        });
+        errors++;
+        continue;
+      }
+
+      // Check for missing or unexpected data
+      if (!result.data?.upsertOneClassification) {
+        spinner.fail(`Unexpected GraphQL response for incident ${incidentId}: Missing data`);
+        console.log(chalk.yellow(`  Response data: ${JSON.stringify(result.data)}`));
+        errors++;
+        continue;
+      }
+
+      // Success case
+      spinner.succeed(`Successfully processed incident ID: ${incidentId} (ID: ${result.data.upsertOneClassification._id})`);
+      processed++;
     }
-  };
+    catch (error: any) {
+      spinner.fail(`Error processing classification for incident ${incidentId}`);
+      logger.error(`Error details: ${error.message}`);
 
-  const variables = {
-    filter,
-    update: classification
-  };
+      // Check for network errors
+      if (error.networkError) {
+        console.log(chalk.red(`  Network error: ${error.networkError.message}`));
+      }
 
-  try {
-    const result = await executeGraphQLOperation<ClassificationMutationResponse>(
-      endpoint,
-      mutation,
-      variables,
-      sessionToken
-    );
+      // Check for GraphQL errors
+      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        error.graphQLErrors.forEach((graphQLError: any) => {
+          console.log(chalk.red(`  GraphQL error: ${graphQLError.message}`));
+        });
+      }
 
-    if (result.errors && result.errors.length > 0) {
-      spinner.fail(`GraphQL errors for incident ${incidentId}`);
-      return result;
+      errors++;
     }
-    else if (!result.data || !result.data.upsertOneClassification) {
-      spinner.fail(`Unexpected GraphQL response for incident ${incidentId}`);
-      return result;
-    }
-
-    spinner.succeed(`Successfully processed incident ID: ${incidentId} (ID: ${result.data.upsertOneClassification._id})`);
-    return result;
   }
-  catch (error: any) {
-    spinner.fail(`Error upserting classification: ${error.message}`);
-    throw error;
+
+  logger.section('Import Summary');
+  console.log(`Total classifications: ${classifications.length}`);
+  console.log(`Successfully processed: ${chalk.green(processed.toString())}`);
+  console.log(`Errors: ${chalk.red(errors.toString())}`);
+
+  if (processed === classifications.length) {
+    logger.success('All classifications were successfully imported!');
+  }
+  else {
+    logger.warning(`Import completed with ${errors} errors.`);
   }
 }
 
+/**
+ * Prepare classifications data from CSV and mapping files
+ */
 async function prepareClassificationsData(
   csvFile: string,
   namespace: string,
   mappingFile: string,
   graphqlEndpoint: string,
   sessionToken: string
-): Promise<ClassificationInsertType[]> {
-  logSection('Data Preparation');
+): Promise<{ classifications: ClassificationInsertType[]; totalRows: number; skippedCount: number }> {
+  logger.section('Data Preparation');
   const data = readCSVFile(csvFile);
+  const totalRows = data.length;
 
   const mapping = readMappingFile(mappingFile);
-  const fieldMapping = mapping.fieldMappings;
-  const valueMapping = mapping.valueMappings;
-
   const taxonomyFields = await fetchTaxonomyDefinition(graphqlEndpoint, namespace, sessionToken);
 
-  logSection('Data Transformation');
-  const classifications = transformToClassificationsFormat(data, namespace, fieldMapping, taxonomyFields, valueMapping);
-
-  return classifications;
+  logger.section('Data Transformation');
+  const result = transformToClassificationsFormat(
+    data, 
+    namespace, 
+    mapping.fieldMappings, 
+    taxonomyFields, 
+    mapping.valueMappings
+  );
+  
+  // Calculate skipped count
+  const skippedCount = totalRows - result.length;
+  
+  return { 
+    classifications: result,
+    totalRows,
+    skippedCount
+  };
 }
 
-function performDryRun(classifications: ClassificationInsertType[]): void {
-  logSection('Dry Run Mode');
+/**
+ * Perform a dry run without making changes to the database
+ */
+function performDryRun(classifications: ClassificationInsertType[], totalRowsInCsv: number, skippedCount: number): void {
+  logger.section('Dry Run Mode');
   console.log(chalk.yellow('No changes will be made to the database.'));
 
   if (classifications.length === 0) {
-    console.log('No classifications to process.');
+    logger.info('No classifications to process.');
     return;
   }
 
-  console.log(`Found ${chalk.cyan(classifications.length.toString())} classifications to process.`);
+  logger.info(`Found ${chalk.cyan(classifications.length.toString())} valid classifications to process.`);
 
   // Output all classifications with their GraphQL variables
   classifications.forEach((classification, index) => {
@@ -636,78 +645,24 @@ function performDryRun(classifications: ClassificationInsertType[]): void {
   });
 
   // Add a simple summary at the end of the dry run
-  logSection('Dry Run Summary');
-  console.log(`Total classifications: ${classifications.length}`);
-  console.log(`Would succeed: ${chalk.green(classifications.length.toString())}`);
-  console.log(`Would fail: ${chalk.red('0')}`);
-  console.log(`Would skip: ${chalk.yellow('0')}`);
+  logger.section('Dry Run Summary');
+  console.log(`Total rows in CSV: ${totalRowsInCsv}`);
+  console.log(`Would process: ${chalk.green(classifications.length.toString())}`);
+  console.log(`Would skip: ${chalk.yellow(skippedCount.toString())}`);
 
-  logSuccess('Dry run completed. Use the same command without --dryRun to apply these changes.');
+  logger.success('Dry run completed. Use the same command without --dryRun to apply these changes.');
 }
 
-async function importClassifications(
-  classifications: ClassificationInsertType[],
-  graphqlEndpoint: string,
-  sessionToken: string
-): Promise<void> {
-  logSection('Import Process');
-
-  if (classifications.length === 0) {
-    console.log('No classifications to process.');
-    return;
-  }
-
-  console.log(`Processing ${chalk.cyan(classifications.length.toString())} classifications via GraphQL...`);
-  let processed = 0;
-  let errors = 0;
-
-  for (const classification of classifications) {
-    try {
-      const response = await executeGraphQLMutation(graphqlEndpoint, classification, sessionToken);
-
-      if (response.errors && response.errors.length > 0) {
-        response.errors.forEach(error => {
-          console.log(chalk.red(`  - ${error.message}`));
-        });
-        errors++;
-      }
-      else if (!response.data || !response.data.upsertOneClassification) {
-        errors++;
-      }
-      else {
-        processed++;
-      }
-    }
-    catch (error: any) {
-      const incidentId = classification.incidents?.link[0];
-      logError(`Error processing classification for incident ${incidentId}: ${error.message}`);
-      errors++;
-    }
-  }
-
-  logSection('Import Summary');
-  console.log(`Total classifications: ${classifications.length}`);
-  console.log(`Successfully processed: ${chalk.green(processed.toString())}`);
-  console.log(`Errors: ${chalk.red(errors.toString())}`);
-
-  if (processed === classifications.length) {
-    logSuccess('All classifications were successfully imported!');
-  }
-  else {
-    logWarning(`Import completed with ${errors} errors.`);
-  }
-}
-
+/**
+ * Main function
+ */
 async function main(): Promise<void> {
   try {
     console.log(chalk.green('Classifications Import Tool'));
     const args = parseArgs();
     console.log(chalk.yellow('Source CSV:'), args.csvFile);
     console.log(chalk.yellow('Namespace:'), args.namespace);
-
-    // Log mapping file information
     console.log(chalk.yellow('Mapping file:'), args.mappingFile);
-
     console.log(chalk.yellow('GraphQL endpoint:'), args.graphqlEndpoint);
 
     if (args.dryRun) {
@@ -716,7 +671,7 @@ async function main(): Promise<void> {
 
     const startTime = Date.now();
 
-    const classifications = await prepareClassificationsData(
+    const { classifications, totalRows, skippedCount } = await prepareClassificationsData(
       args.csvFile,
       args.namespace,
       args.mappingFile,
@@ -725,7 +680,7 @@ async function main(): Promise<void> {
     );
 
     if (args.dryRun) {
-      performDryRun(classifications);
+      performDryRun(classifications, totalRows, skippedCount);
     }
     else {
       await importClassifications(classifications, args.graphqlEndpoint, args.sessionToken);
@@ -734,26 +689,30 @@ async function main(): Promise<void> {
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
 
-    logSection('Process Complete');
+    logger.section('Process Complete');
     console.log(`Duration: ${Math.round(duration)} seconds`);
+    console.log(`Total rows in CSV: ${totalRows}`);
+    console.log(`Successfully processed: ${chalk.green(classifications.length.toString())}`);
+    console.log(`Skipped: ${chalk.yellow(skippedCount.toString())}`);
   }
   catch (error) {
-    logSection('Fatal Error');
-    logError(`${error}`);
+    logger.section('Fatal Error');
+    logger.error(`${error}`);
     process.exit(1);
   }
 }
 
+// Run the script if it's called directly
 if (require.main === module) {
   main();
 }
 
+// Export functions for testing or reuse
 export {
   readCSVFile,
   readMappingFile,
   transformToClassificationsFormat,
-  executeGraphQLOperation,
-  executeGraphQLMutation,
+  createApolloClient,
   parseArgs,
   prepareClassificationsData,
   performDryRun,
