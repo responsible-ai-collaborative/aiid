@@ -38,7 +38,7 @@ function parseArgs(): CommandLineArgs {
     .option('databases', {
       description: 'Comma-separated list of databases to restore',
       type: 'string',
-      default: 'aiidprod,translations'
+      default: 'aiidprod,translations,history'
     })
     .option('dryRun', {
       description: 'Run without making changes to the destination database',
