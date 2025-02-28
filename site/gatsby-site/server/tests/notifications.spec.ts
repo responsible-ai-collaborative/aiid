@@ -645,7 +645,20 @@ describe(`Notifications`, () => {
                 editors: [],
                 reports: [1],
                 implicated_systems: [],
-            }
+            },
+
+            {
+              incident_id: 2,
+              title: 'Incident 2',
+              description: 'Incident 2 description',
+              "Alleged deployer of AI system": [],
+              "Alleged developer of AI system": [],
+              "Alleged harmed or nearly harmed parties": [],
+              date: new Date().toISOString(),
+              editors: [],
+              reports: [2],
+              implicated_systems: [],
+          }
         ]
 
         const reports: DBReport[] = [
@@ -747,7 +760,7 @@ describe(`Notifications`, () => {
             templateId: "SubmissionApproved",
         }));
 
-        expect(result).toBe(1);
+        expect(result).toBe(2);
     });
 
     it(`Should create Incident and Entity Notifications on Incident creation`, async () => {
