@@ -347,18 +347,13 @@ async function notificationsToNewPromotions(context: Context) {
     if (pendingNotificationsToNewPromotions.length > 0) {
 
         result += pendingNotificationsToNewPromotions.length;
-
-        const userIds = pendingNotificationsToNewPromotions
-            .filter(s => s.userId)
-            .map(s => s.userId) as string[];
-
-        const uniqueUserIds = [...new Set(userIds)];
-
-        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
-
+        
         let uniqueNotifications: number[] = [];
-
+        
         for (const pendingNotification of pendingNotificationsToNewPromotions) {
+          const uniqueUserIds = [pendingNotification.userId?.toString() ?? ""]; // Sends only to the user who submitted the report
+          
+          const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
             // Mark the notification as processed before sending the email
             await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
