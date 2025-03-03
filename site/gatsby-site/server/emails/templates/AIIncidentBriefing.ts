@@ -104,10 +104,10 @@ const getEmailTemplate = () => {
 
       <div style="${sectionStyle}">
         <h2>New Features & Updates</h2>
-        {% if newFeatures %}
+        {% if updates %}
           <ul>
-            {% for newFeature in newFeatures %}
-              <li style="list-style-type: none;">{{newFeature}}</li>
+            {% for update in updates %}
+              <li style="list-style-type: none;">{{update.text}}</li>
             {% endfor %}
           </ul>
         {% else %}

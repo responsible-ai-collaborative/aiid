@@ -90,7 +90,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
       query: BLOG_POSTS_QUERY,
       variables: { date: formattedDate }
     });
-    
+
     newBlogPosts = data.allBlogPost.nodes.map((post: any) => ({
       id: post.id,
       title: post.title,
@@ -102,7 +102,36 @@ async function notificationsToWeeklyIncidents(context: Context) {
     newBlogPosts = [];
   }
 
-  const updates = []; // TODO: Fetch updates from prismic
+  const UPDATES_QUERY = gql`
+    query GetRecentUpdates($date: String!) {
+      allUpdate(filter: {first_publication_date: {gt: $date}}) {
+        nodes {
+          text {
+            text
+            html
+          }
+        }
+      }
+    }
+  `;
+
+  let updates = [];
+
+  try {
+    const { data } = await client.query({
+      query: UPDATES_QUERY,
+      variables: { date: formattedDate }
+    });
+
+    updates = data.allUpdate.nodes.map((update: any) => ({
+      text: update.text.html,
+      date: update.first_publication_date
+    }));
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    updates = [];
+  }
+
 
   const sendEmailParams: SendBulkEmailParams = {
     recipients,
@@ -110,7 +139,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     dynamicData: {
       newIncidents: incidentList,
       newBlogPosts: newBlogPosts,
-      updates: []
+      updates: updates
     },
     templateId: "AIIncidentBriefing"
   };
