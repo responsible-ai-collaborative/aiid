@@ -316,7 +316,7 @@ async function notificationsToNewPromotions(context: Context) {
         for (const pendingNotification of pendingNotificationsToNewPromotions) {
           const uniqueUserIds = [pendingNotification.userId?.toString() ?? ""]; // Sends only to the user who submitted the report
           
-          const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+          const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
 
             // Mark the notification as processed before sending the email
             await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
