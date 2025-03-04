@@ -28,11 +28,16 @@ on:
         type: string
         required: false
         default: ""
+      runner-label:
+        description: The runner label to use for this workflow
+        type: string
+        required: false
+        default: "ubuntu-latest"
 
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest-8-core-32gb
+    runs-on: ${{ inputs.runner-label }}
     permissions:
       pull-requests: write
     steps:
