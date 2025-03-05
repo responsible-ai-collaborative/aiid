@@ -5,6 +5,7 @@ import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import { UserAdminData, getAndCacheRecipients, buildEntityList } from "../../server/fields/common";
 import { gql } from 'graphql-tag';
 import { useApolloClient } from '@apollo/client';
+import * as reporter from '../../server/reporter';
 
 const usersCache: UserAdminData[] = [];
 
@@ -137,11 +138,11 @@ async function notificationsToWeeklyIncidents(context: Context) {
     updates = [];
   }
 
-
-  const sendEmailParams: SendBulkEmailParams = {
-    recipients,
-    subject: "Your Weekly AI Incident Briefing",
-    dynamicData: {
+  try {
+    const sendEmailParams: SendBulkEmailParams = {
+      recipients,
+      subject: "Your Weekly AI Incident Briefing",
+      dynamicData: {
       newIncidents: incidentList,
       newBlogPosts: newBlogPosts,
       updates: updates
@@ -149,7 +150,15 @@ async function notificationsToWeeklyIncidents(context: Context) {
     templateId: "AIIncidentBriefing"
   };
 
-  await sendBulkEmails(sendEmailParams);
+    await sendBulkEmails(sendEmailParams);
+  } catch (error: any) {
+    // If there is an error sending the email > Mark the notification as not processed
+    await markNotificationsAsNotProcessed(notificationsCollection, [pendingWeeklyNotificationsToNewIncidents]);
+
+    error.message = `[Process Weekly Notifications: AI Incident Briefing]: ${error.message}`;
+
+    throw error;
+}
 
   console.log(`Sent AI Incident Briefing to ${recipients.length} users.`);
 
@@ -177,6 +186,10 @@ const markNotifications = async (notificationsCollection: any, notifications: an
   }
 }
 
+const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
+  await markNotifications(notificationsCollection, notifications, false);
+}
+
 export const run = async () => {
   try {
     await processWeeklyNotifications();
@@ -184,6 +197,7 @@ export const run = async () => {
     process.exit(0);
   } catch (error: any) {
     console.error(error);
+    reporter.error(error);
     process.exit(1);
   }
 };

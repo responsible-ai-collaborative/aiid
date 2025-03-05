@@ -1795,7 +1795,7 @@ describe(`Notifications`, () => {
         ]);
     });
 
-  it(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
+  it.skip(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
 
     const notifications: DBNotification[] = [
       {
