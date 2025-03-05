@@ -9,6 +9,7 @@ import { useApolloClient } from '@apollo/client';
 const usersCache: UserAdminData[] = [];
 
 async function notificationsToWeeklyIncidents(context: Context) {
+  let result = 0;
   const notificationsCollection = context.client.db('customData').collection("notifications");
   const subscriptionsCollection = context.client.db('customData').collection("subscriptions");
   const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
@@ -24,6 +25,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
     return;
   }
 
+  result += pendingWeeklyNotificationsToNewIncidents.length;
+
   // Get weekly subscribers
   const weeklySubscribers = await subscriptionsCollection.find<DBSubscription>({ type: 'ai-weekly-briefing' }).toArray();
 
@@ -38,7 +41,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
   const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-  const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
+  const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
   await markNotifications(notificationsCollection, pendingWeeklyNotificationsToNewIncidents, true);
 
@@ -106,6 +109,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     query GetRecentUpdates($date: String!) {
       allUpdate(filter: {first_publication_date: {gt: $date}}) {
         nodes {
+          title
           text {
             text
             html
@@ -124,7 +128,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
     });
 
     updates = data.allUpdate.nodes.map((update: any) => ({
-      text: update.text.html,
+      title: update.title,
+      description: update.text.html,
       date: update.first_publication_date
     }));
   } catch (error) {
@@ -147,13 +152,20 @@ async function notificationsToWeeklyIncidents(context: Context) {
   await sendBulkEmails(sendEmailParams);
 
   console.log(`Sent AI Incident Briefing to ${recipients.length} users.`);
+
+  return result;
 }
 
 export const processWeeklyNotifications = async () => {
   const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
   const context: Context = { client, user: null, req: {} as any };
+  usersCache.length = 0;
 
-  await notificationsToWeeklyIncidents(context);
+  const result = await notificationsToWeeklyIncidents(context);
+
+  console.log(`Processed ${result} notifications.`);
+
+  return result;
 };
 
 const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {

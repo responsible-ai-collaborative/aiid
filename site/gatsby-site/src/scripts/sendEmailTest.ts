@@ -56,7 +56,7 @@ if (!email) {
           date: '2023-10-02',
         },
       ],
-      newFeatures: [
+      updates: [
         'New Incident Briefing',
       ],
     },
