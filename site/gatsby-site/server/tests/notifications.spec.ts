@@ -10,6 +10,7 @@ import { ObjectId } from 'bson';
 import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processNotifications } from '../../src/scripts/process-notifications';
+import { processWeeklyNotifications } from '../../src/scripts/process-weekly-notifications';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -1793,4 +1794,134 @@ describe(`Notifications`, () => {
             },
         ]);
     });
+
+  it(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
+
+    const notifications: DBNotification[] = [
+      {
+        processed: false,
+        type: 'ai-weekly-briefing',
+        incident_id: 1,
+      },
+    ]
+
+    const subscriptions: DBSubscription[] = [
+      {
+        type: 'ai-weekly-briefing',
+        userId: '5f8f4b3b9b3e6f001f3b3b3b',
+        incident_id: 1,
+      }
+    ]
+
+    const users: DBUser[] = [
+      {
+        userId: '5f8f4b3b9b3e6f001f3b3b3b',
+        roles: ['admin'],
+      }
+    ]
+
+    const authUsers = [
+      {
+        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+        email: 'test@test.com',
+        roles: ['admin'],
+      }
+    ]
+
+    const incidents: Partial<DBIncident>[] = [
+      {
+        incident_id: 1,
+        title: 'Incident 1',
+        description: 'Incident 1 description',
+        "Alleged deployer of AI system": [],
+        "Alleged developer of AI system": [],
+        "Alleged harmed or nearly harmed parties": [],
+        date: new Date().toISOString(),
+        editors: [],
+        reports: [1],
+        implicated_systems: [],
+      }
+    ]
+
+    const reports: DBReport[] = [
+      {
+        report_number: 1,
+        title: 'Report 1',
+        description: 'Report 1 description',
+        authors: [],
+        cloudinary_id: 'cloudinary_id',
+        date_downloaded: new Date().toISOString(),
+        date_modified: new Date().toISOString(),
+        date_published: new Date().toISOString(),
+        date_submitted: new Date().toISOString(),
+        epoch_date_downloaded: 1,
+        epoch_date_modified: 1,
+        epoch_date_published: 1,
+        epoch_date_submitted: 1,
+        image_url: 'image_url',
+        language: 'en',
+        plain_text: 'plain_text',
+        source_domain: 'source_domain',
+        submitters: [],
+        tags: [],
+        text: 'text',
+        url: 'url',
+        user: 'user_id',
+      }
+    ]
+
+    await seedFixture({
+      customData: {
+        users,
+        notifications,
+        subscriptions,
+      },
+      aiidprod: {
+        incidents,
+        reports,
+      },
+      auth: {
+        users: authUsers,
+      }
+    });
+
+    mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+
+
+    const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
+
+
+    const result = await processWeeklyNotifications();
+
+
+    expect(sendEmailMock).toHaveBeenCalledTimes(1);
+    expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+      recipients: [
+        {
+          email: "test@test.com",
+          userId: "5f8f4b3b9b3e6f001f3b3b3b",
+        },
+      ],
+      subject: "Your Weekly AI Incident Briefing",
+      dynamicData: {
+        newIncidents: [
+          {
+            incidentId: "1",
+            incidentTitle: "Incident 1",
+            incidentUrl: config.SITE_URL + "/cite/1",
+            incidentDescription: "Incident 1 description",
+            incidentDate: incidents[0].date,
+            developers: "",
+            deployers: "",
+            entitiesHarmed: "",
+            implicatedSystems: "",
+          }],
+          newBlogPosts: [],
+          updates: []
+      },
+      templateId: "AIIncidentBriefing",
+    }));
+
+    expect(result).toBe(1);
+  });
 });
