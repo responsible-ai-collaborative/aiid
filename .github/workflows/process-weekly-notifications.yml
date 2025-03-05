@@ -7,7 +7,7 @@ on:
 jobs:
   execute-process-weekly:
     runs-on: ubuntu-latest
-    environment: production # Change if needed
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
