@@ -1795,7 +1795,7 @@ describe(`Notifications`, () => {
         ]);
     });
 
-  it.skip(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
+  it(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
 
     const notifications: DBNotification[] = [
       {
@@ -1906,11 +1906,11 @@ describe(`Notifications`, () => {
       dynamicData: {
         newIncidents: [
           {
-            incidentId: "1",
-            incidentTitle: "Incident 1",
-            incidentUrl: config.SITE_URL + "/cite/1",
-            incidentDescription: "Incident 1 description",
-            incidentDate: incidents[0].date,
+            id: 1,
+            title: "Incident 1",
+            url: config.SITE_URL + "/cite/1",
+            description: "Incident 1 description",
+            date: incidents[0].date,
             developers: "",
             deployers: "",
             entitiesHarmed: "",
