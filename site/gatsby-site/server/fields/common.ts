@@ -313,7 +313,7 @@ export const buildEntityList = (allEntities: any, entityIds: any) => {
   return `${entityNames.slice(0, - 1).join(', ')}, and ${entityNames[entityNames.length - 1]}`;
 }
 
-export const getAndCacheRecipients = async (userIds: string[], context: Context, usersCache: UserAdminData[]) => {
+export const getAndCacheRecipients = async (userIds: string[], context: Context) => {
 
   const recipients = [];
 
@@ -338,3 +338,5 @@ export const getAndCacheRecipients = async (userIds: string[], context: Context,
 
   return recipients;
 }
+
+export const usersCache: UserAdminData[] = [];

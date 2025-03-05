@@ -1,11 +1,9 @@
-import { buildEntityList, getAndCacheRecipients, UserAdminData } from "../../server/fields/common";
+import { buildEntityList, getAndCacheRecipients, UserAdminData, usersCache } from "../../server/fields/common";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
 import { MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
-
-const usersCache: UserAdminData[] = [];
 
 const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
     for (const pendingNotification of notifications) {
@@ -50,7 +48,7 @@ async function notificationsToNewIncidents(context: Context) {
 
             const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-            const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
+            const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
             const uniqueNotifications: number[] = [];
 
@@ -156,7 +154,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -246,7 +244,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
+                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -316,7 +314,7 @@ async function notificationsToNewPromotions(context: Context) {
         for (const pendingNotification of pendingNotificationsToNewPromotions) {
           const uniqueUserIds = [pendingNotification.userId?.toString() ?? ""]; // Sends only to the user who submitted the report
           
-          const recipients = await getAndCacheRecipients(uniqueUserIds, context, usersCache);
+          const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
             // Mark the notification as processed before sending the email
             await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
