@@ -4,7 +4,7 @@ import { Context, DBEntity, DBIncident, DBSubscription } from "../../server/inte
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import { UserAdminData, getAndCacheRecipients, buildEntityList } from "../../server/fields/common";
 import { gql } from 'graphql-tag';
-import { useApolloClient } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import * as reporter from '../../server/reporter';
 
 const usersCache: UserAdminData[] = [];
@@ -74,7 +74,13 @@ async function notificationsToWeeklyIncidents(context: Context) {
   lastWeek.setDate(lastWeek.getDate() - 7);
   const formattedDate = lastWeek.toISOString().split('T')[0];
 
-  const client = useApolloClient();
+  const client = new ApolloClient({
+    link: new HttpLink({
+      uri: `${config.SITE_URL}/api/graphql`,
+      fetch,
+    }),
+    cache: new InMemoryCache(),
+  });
 
   const BLOG_POSTS_QUERY = gql`
     query GetRecentBlogPosts($date: String!) {
@@ -143,12 +149,12 @@ async function notificationsToWeeklyIncidents(context: Context) {
       recipients,
       subject: "Your Weekly AI Incident Briefing",
       dynamicData: {
-      newIncidents: incidentList,
-      newBlogPosts: newBlogPosts,
-      updates: updates
-    },
-    templateId: "AIIncidentBriefing"
-  };
+        newIncidents: incidentList,
+        newBlogPosts: newBlogPosts,
+        updates: updates
+      },
+      templateId: "AIIncidentBriefing"
+    };
 
     await sendBulkEmails(sendEmailParams);
   } catch (error: any) {
@@ -158,7 +164,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     error.message = `[Process Weekly Notifications: AI Incident Briefing]: ${error.message}`;
 
     throw error;
-}
+  }
 
   console.log(`Sent AI Incident Briefing to ${recipients.length} users.`);
 
