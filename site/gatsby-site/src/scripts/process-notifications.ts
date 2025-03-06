@@ -1,4 +1,4 @@
-import { buildEntityList, getAndCacheRecipients, UserAdminData, usersCache } from "../../server/fields/common";
+import { buildEntityList, clearUsersCache, getAndCacheRecipients } from "../../server/fields/common";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
@@ -365,7 +365,7 @@ async function notificationsToNewPromotions(context: Context) {
 
 export const processNotifications = async () => {
 
-    usersCache.length = 0;
+    clearUsersCache();
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 

@@ -1,13 +1,10 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBSubscription } from "../../server/interfaces";
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
-import { UserAdminData, getAndCacheRecipients, buildEntityList } from "../../server/fields/common";
-import { gql } from 'graphql-tag';
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { buildEntityList, clearUsersCache, UserAdminData } from "../../server/fields/common";
 import * as reporter from '../../server/reporter';
-
-const usersCache: UserAdminData[] = [];
+import * as prismic from '@prismicio/client';
 
 async function notificationsToWeeklyIncidents(context: Context) {
   let result = 0;
@@ -44,9 +41,9 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
   const recipients = await getAndCacheRecipients(uniqueUserIds, context);
 
-  await markNotifications(notificationsCollection, pendingWeeklyNotificationsToNewIncidents, true);
-
   const incidentIds = pendingWeeklyNotificationsToNewIncidents.map(n => n.incident_id);
+
+  await markNotificationsAsProcessed(notificationsCollection, pendingWeeklyNotificationsToNewIncidents);
 
   const incidents = await incidentsCollection.find({ incident_id: { $in: incidentIds } }).toArray();
 
@@ -69,80 +66,61 @@ async function notificationsToWeeklyIncidents(context: Context) {
     }
   });
 
-  let newBlogPosts = [];
   const lastWeek = new Date();
   lastWeek.setDate(lastWeek.getDate() - 7);
   const formattedDate = lastWeek.toISOString().split('T')[0];
 
-  const client = new ApolloClient({
-    link: new HttpLink({
-      uri: `${config.SITE_URL}/api/graphql`,
-      fetch,
-    }),
-    cache: new InMemoryCache(),
+  // Initialize the Prismic client
+  const prismicClient = await prismic.createClient(config.GATSBY_PRISMIC_REPO_NAME, {
+    accessToken: config.PRISMIC_ACCESS_TOKEN, // If you have a private repository
   });
-
-  const BLOG_POSTS_QUERY = gql`
-    query GetRecentBlogPosts($date: String!) {
-      allBlogPost(filter: {data: {date: {gt: $date}}}, sort: {data: {date: DESC}}) {
-        nodes {
-          id
-          title
-          date
-          slug
-        }
-      }
-    }
-  `;
+  
+  let newBlogPosts: any[] = [];
 
   try {
-    const { data } = await client.query({
-      query: BLOG_POSTS_QUERY,
-      variables: { date: formattedDate }
+
+    const response = await prismicClient.getAllByType('blog', {
+      orderings: {
+        field: "my.blog.date",
+      },
+      filters: [
+        prismic.filter.dateAfter('my.blog.date', formattedDate) // Ensure formattedDate is a valid ISO string
+      ]
     });
 
-    newBlogPosts = data.allBlogPost.nodes.map((post: any) => ({
-      id: post.id,
-      title: post.title,
-      url: `${config.SITE_URL}/blog/${post.slug}`,
-      date: post.date
+    newBlogPosts = response.map((blogPost: any) => ({
+      url: `${config.SITE_URL}/blog/${blogPost.data.slug}`,
+      title: blogPost.data.title[0]?.text ?? '',
+      description: blogPost.data.metaDescription[0]?.text ?? '',
+      date: blogPost.data.date
     }));
   } catch (error) {
-    console.error('Error fetching blog posts:', error);
+    console.error('Error fetching newBlogPosts:', JSON.stringify(error));
     newBlogPosts = [];
   }
 
-  const UPDATES_QUERY = gql`
-    query GetRecentUpdates($date: String!) {
-      allUpdate(filter: {first_publication_date: {gt: $date}}) {
-        nodes {
-          title
-          text {
-            text
-            html
-          }
-        }
-      }
-    }
-  `;
-
-  let updates = [];
+  let updates: any[] = [];
 
   try {
-    const { data } = await client.query({
-      query: UPDATES_QUERY,
-      variables: { date: formattedDate }
+
+    const response = await prismicClient.getAllByType('update', {
+      orderings: {
+        field: "document.first_publication_date",
+      },
+      filters: [
+        prismic.filter.dateAfter('document.first_publication_date', formattedDate)
+      ]
     });
 
-    updates = data.allUpdate.nodes.map((update: any) => ({
-      title: update.title,
-      description: update.text.html,
-      date: update.first_publication_date
+    updates = response.map((update: any) => ({
+      title: update.data.title,
+      description: update.data.text[0]?.text ?? '',
     }));
   } catch (error) {
-    console.error('Error fetching updates:', error);
+    console.error('Error fetching updates:', JSON.stringify(error));
     updates = [];
   }
+
 
   try {
     const sendEmailParams: SendBulkEmailParams = {
@@ -173,8 +151,10 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
 export const processWeeklyNotifications = async () => {
   const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
+
   const context: Context = { client, user: null, req: {} as any };
-  usersCache.length = 0;
+
+  clearUsersCache();
 
   const result = await notificationsToWeeklyIncidents(context);
 
@@ -190,6 +170,10 @@ const markNotifications = async (notificationsCollection: any, notifications: an
       { $set: { processed: isProcessed, sentDate: new Date() } }
     );
   }
+}
+
+const markNotificationsAsProcessed = async (notificationsCollection: any, notifications: any) => {
+  await markNotifications(notificationsCollection, notifications, true);
 }
 
 const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
@@ -210,4 +194,51 @@ export const run = async () => {
 
 if (require.main === module) {
   run();
+}
+
+const usersCache: UserAdminData[] = [];
+
+export const getAndCacheRecipients = async (userIds: string[], context: Context) => {
+
+  const recipients = [];
+
+  for (const userId of userIds) {
+
+      let user = usersCache.find((user) => user.userId === userId) ?? null;
+
+      if (!user) {
+
+          user = await getUserAdminData(userId, context) ?? null;
+
+          if (user) {
+
+              usersCache.push(user);
+          }
+      }
+
+      if (user?.email && user?.userId) {
+          recipients.push({ email: user.email, userId: user.userId });
+      }
+  }
+
+  return recipients;
+}
+
+export const getUserAdminData = async (userId: string, context: Context): Promise<UserAdminData | null> => {
+
+  const authUsersCollection = context.client.db('auth').collection("users");
+  const authUser = await authUsersCollection.findOne({ _id: new ObjectId(userId) });
+
+  if (authUser) {
+
+      return {
+          email: authUser.email,
+          creationDate: new Date(), //TODO: find a way to get this data
+          lastAuthenticationDate: new Date(), //TODO: find a way to get this data
+          disabled: false,
+          userId,
+      }
+  }
+
+  return null;
 }

@@ -2,7 +2,8 @@ import { MongoClient, ObjectId } from "mongodb";
 import config from "../config";
 import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
-import jwt from 'jsonwebtoken';
+
+const usersCache: UserAdminData[] = [];
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
@@ -339,4 +340,6 @@ export const getAndCacheRecipients = async (userIds: string[], context: Context)
   return recipients;
 }
 
-export const usersCache: UserAdminData[] = [];
+export const clearUsersCache = () => {
+  usersCache.length = 0;
+}

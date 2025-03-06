@@ -11,6 +11,17 @@ import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processNotifications } from '../../src/scripts/process-notifications';
 import { processWeeklyNotifications } from '../../src/scripts/process-weekly-notifications';
+import * as prismic from '@prismicio/client';
+import * as prismicT from '@prismicio/types';
+
+jest.mock('@prismicio/client', () => ({
+  createClient: jest.fn().mockReturnValue({
+    getAllByType: jest.fn(),
+  }),
+  filter: {
+    dateAfter: jest.fn(),
+  },
+}));
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -1809,7 +1820,6 @@ describe(`Notifications`, () => {
       {
         type: 'ai-weekly-briefing',
         userId: '5f8f4b3b9b3e6f001f3b3b3b',
-        incident_id: 1,
       }
     ]
 
@@ -1825,6 +1835,13 @@ describe(`Notifications`, () => {
         _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
         email: 'test@test.com',
         roles: ['admin'],
+      }
+    ]
+
+    const entities: DBEntity[] = [
+      {
+        entity_id: 'entity-1',
+        name: 'Entity 1',
       }
     ]
 
@@ -1878,11 +1895,47 @@ describe(`Notifications`, () => {
       },
       aiidprod: {
         incidents,
+        entities,
         reports,
       },
       auth: {
         users: authUsers,
       }
+    });
+
+    const mockBlogPosts = [
+      {
+        data: {
+          slug: 'example-blog-post',
+          title: [{ text: 'Example Blog Post' }],
+          metaDescription: [{ text: 'This is an example blog post description.' }],
+          date: '2023-10-01'
+        }
+      }
+    ];
+
+    const mockUpdates = [
+      {
+        data: {
+          title: 'Example Update',
+          text: [{ text: 'Example Update' }],
+        }
+      }
+    ];
+  
+    // Mock both blog and update queries to return empty arrays by default
+    const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
+      if (documentType === 'blog') {
+        return Promise.resolve(mockBlogPosts as any);
+      }
+      if (documentType === 'update') {
+        return Promise.resolve(mockUpdates as any);
+      }
+      return Promise.resolve([]);
+    });
+
+    (prismic.createClient as jest.Mock).mockReturnValue({
+      getAllByType: mockGetAllByType
     });
 
     mockSession('5f8f4b3b9b3e6f001f3b3b3b');
@@ -1916,8 +1969,16 @@ describe(`Notifications`, () => {
             entitiesHarmed: "",
             implicatedSystems: "",
           }],
-          newBlogPosts: [],
-          updates: []
+        newBlogPosts: [{
+          "date": "2023-10-01",
+          "description": "This is an example blog post description.",
+          "title": "Example Blog Post",
+          "url": config.SITE_URL + "/blog/example-blog-post"
+        }],
+        updates: [{
+          "description": "Example Update",
+          "title": "Example Update"
+        }]
       },
       templateId: "AIIncidentBriefing",
     }));
