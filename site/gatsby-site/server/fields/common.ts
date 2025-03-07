@@ -3,8 +3,6 @@ import config from "../config";
 import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
 
-const usersCache: UserAdminData[] = [];
-
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
     return reports.length == 0
@@ -124,10 +122,10 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
     });
 
     await notificationsCollection.insertOne({
-        type: 'ai-weekly-briefing',
-        incident_id: incidentId,
-        processed: false,
-        created_at: new Date(),
+      type: 'ai-weekly-briefing',
+      incident_id: incidentId,
+      processed: false,
+      created_at: new Date(),
     });
 
     const entityFields: (keyof DBIncident)[] = [
@@ -301,45 +299,4 @@ export const logIncidentHistory = async (updated: DBIncident, context: Context) 
     const incidentHistoryCollection = context.client.db('history').collection<DBIncidentHistory>("incidents");
 
     await incidentHistoryCollection.insertOne(incidentHistory);
-}
-
-export const buildEntityList = (allEntities: any, entityIds: any) => {
-  const entityNames = entityIds.map((entityId: string) => {
-      const entity = allEntities.find((entity: any) => entity.entity_id === entityId);
-      return entity ? `<a href="${config.SITE_URL}/entities/${entity.entity_id}">${entity.name}</a>` : '';
-  });
-
-  if (entityNames.length < 3) { return entityNames.join(' and '); }
-
-  return `${entityNames.slice(0, - 1).join(', ')}, and ${entityNames[entityNames.length - 1]}`;
-}
-
-export const getAndCacheRecipients = async (userIds: string[], context: Context) => {
-
-  const recipients = [];
-
-  for (const userId of userIds) {
-
-      let user = usersCache.find((user) => user.userId === userId) ?? null;
-
-      if (!user) {
-
-          user = await getUserAdminData(userId, context) ?? null;
-
-          if (user) {
-
-              usersCache.push(user);
-          }
-      }
-
-      if (user?.email && user?.userId) {
-          recipients.push({ email: user.email, userId: user.userId });
-      }
-  }
-
-  return recipients;
-}
-
-export const clearUsersCache = () => {
-  usersCache.length = 0;
 }
