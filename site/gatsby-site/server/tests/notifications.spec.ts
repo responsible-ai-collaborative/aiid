@@ -955,16 +955,16 @@ describe(`Notifications`, () => {
 
         expect(result.body.data.notifications).toMatchObject([
             {
-                type: "new-incidents",
-                incident_id: 1,
-                processed: false,
-                entity_id: null,
+              type: "new-incidents",
+              incident_id: 1,
+              processed: false,
+              entity_id: null,
             },
             {
-                type: "ai-weekly-briefing",
+                entity_id: null,
                 incident_id: 1,
                 processed: false,
-                entity_id: null,
+                type: "ai-weekly-briefing",
             },
             {
                 entity_id: "entity-1",
