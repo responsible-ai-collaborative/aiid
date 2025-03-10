@@ -1,37 +1,9 @@
-import { getUserAdminData, UserAdminData } from "../../server/fields/common";
+import { clearUsersCache, getAndCacheRecipients } from "../../server/fields/common";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
 import { MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
-
-const usersCache: UserAdminData[] = [];
-
-const getAndCacheRecipients = async (userIds: string[], context: Context) => {
-
-    const recipients = [];
-
-    for (const userId of userIds) {
-
-        let user = usersCache.find((user) => user.userId === userId) ?? null;
-
-        if (!user) {
-
-            user = await getUserAdminData(userId, context) ?? null;
-
-            if (user) {
-
-                usersCache.push(user);
-            }
-        }
-
-        if (user?.email && user?.userId) {
-            recipients.push({ email: user.email, userId: user.userId });
-        }
-    }
-
-    return recipients;
-}
 
 const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
     for (const pendingNotification of notifications) {
@@ -404,7 +376,7 @@ async function notificationsToNewPromotions(context: Context) {
 
 export const processNotifications = async () => {
 
-    usersCache.length = 0;
+    clearUsersCache();
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 

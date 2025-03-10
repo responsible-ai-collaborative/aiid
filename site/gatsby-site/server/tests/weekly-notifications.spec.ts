@@ -10,6 +10,7 @@ import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processWeeklyNotifications } from '../../src/scripts/process-weekly-notifications';
 import * as prismic from '@prismicio/client';
+import { processNotifications } from '../../src/scripts/process-notifications';
 
 jest.mock('@prismicio/client', () => ({
   createClient: jest.fn().mockReturnValue({
@@ -410,142 +411,7 @@ describe(`Weekly Notifications`, () => {
         ]);
     });
 
-    it('Should not crash if no recipients found', async () => {
 
-        const notifications: DBNotification[] = [
-            {
-                processed: false,
-                type: 'ai-weekly-briefing',
-                incident_id: 1,
-            },
-        ]
-
-        const subscriptions: DBSubscription[] = [
-            {
-                type: 'ai-weekly-briefing',
-                userId: '5f8f4b3b9b3e6f001f3b3b3c',
-            }
-        ]
-
-        const users: DBUser[] = [
-            {
-                userId: "5f8f4b3b9b3e6f001f3b3b3c",
-                roles: ['admin'],
-            }
-        ]
-
-        const entities: DBEntity[] = [
-            {
-                entity_id: 'entity-1',
-                name: 'Entity 1',
-            }
-        ]
-
-        const incidents: Partial<DBIncident>[] = [
-            {
-                incident_id: 1,
-                title: 'Incident 1',
-                description: 'Incident 1 description',
-                "Alleged deployer of AI system": [],
-                "Alleged developer of AI system": [],
-                "Alleged harmed or nearly harmed parties": [],
-                date: new Date().toISOString(),
-                editors: [],
-                reports: [1],
-                implicated_systems: [],
-            }
-        ]
-
-        const reports: DBReport[] = [
-            {
-                report_number: 1,
-                title: 'Report 1',
-                description: 'Report 1 description',
-                authors: [],
-                cloudinary_id: 'cloudinary_id',
-                date_downloaded: new Date().toISOString(),
-                date_modified: new Date().toISOString(),
-                date_published: new Date().toISOString(),
-                date_submitted: new Date().toISOString(),
-                epoch_date_downloaded: 1,
-                epoch_date_modified: 1,
-                epoch_date_published: 1,
-                epoch_date_submitted: 1,
-                image_url: 'image_url',
-                language: 'en',
-                plain_text: 'plain_text',
-                source_domain: 'source_domain',
-                submitters: [],
-                tags: [],
-                text: 'text',
-                url: 'url',
-                user: 'user_id',
-            }
-        ]
-
-        await seedFixture({
-            customData: {
-                users,
-                notifications,
-                subscriptions,
-            },
-            aiidprod: {
-                incidents,
-                entities,
-                reports,
-            }
-        });
-
-        // Mock both blog and update queries to return empty arrays by default
-        const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
-          if (documentType === 'blog') {
-            return Promise.resolve([] as any);
-          }
-          if (documentType === 'update') {
-            return Promise.resolve([] as any);
-          }
-          return Promise.resolve([]);
-        });
-
-        (prismic.createClient as jest.Mock).mockReturnValue({
-          getAllByType: mockGetAllByType
-        });
-
-        mockSession('5f8f4b3b9b3e6f001f3b3b3c');
-
-        // No recipients
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
-
-        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
-            throw new Error('Failed to send email');
-        });
-
-
-        await processWeeklyNotifications();
-
-        expect(sendEmailMock).not.toHaveBeenCalled();
-
-        const result = await makeRequest(url, {
-            query: `
-            query {
-                notifications {
-                    type
-                    incident_id
-                    processed
-                    entity_id
-                }
-            }
-            `});
-
-        // notifications should be marked as processed
-        expect(result.body.data.notifications).toMatchObject([
-            {
-                type: 'ai-weekly-briefing',
-                incident_id: 1,
-                processed: true
-            },
-        ]);
-    });
 
     it(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
 
@@ -723,4 +589,142 @@ describe(`Weekly Notifications`, () => {
 
       expect(result).toBe(1);
     });
+
+    it('Should not crash if no recipients found', async () => {
+
+        const notifications: DBNotification[] = [
+            {
+                processed: false,
+                type: 'ai-weekly-briefing',
+                incident_id: 1,
+            },
+        ]
+
+        const subscriptions: DBSubscription[] = [
+            {
+                type: 'ai-weekly-briefing',
+                userId: '5f8f4b3b9b3e6f001f3b3b3c',
+            }
+        ]
+
+        const users: DBUser[] = [
+            {
+                userId: "5f8f4b3b9b3e6f001f3b3b3c",
+                roles: ['admin'],
+            }
+        ]
+
+        const entities: DBEntity[] = [
+            {
+                entity_id: 'entity-1',
+                name: 'Entity 1',
+            }
+        ]
+
+        const incidents: Partial<DBIncident>[] = [
+            {
+                incident_id: 1,
+                title: 'Incident 1',
+                description: 'Incident 1 description',
+                "Alleged deployer of AI system": [],
+                "Alleged developer of AI system": [],
+                "Alleged harmed or nearly harmed parties": [],
+                date: new Date().toISOString(),
+                editors: [],
+                reports: [1],
+                implicated_systems: [],
+            }
+        ]
+
+        const reports: DBReport[] = [
+            {
+                report_number: 1,
+                title: 'Report 1',
+                description: 'Report 1 description',
+                authors: [],
+                cloudinary_id: 'cloudinary_id',
+                date_downloaded: new Date().toISOString(),
+                date_modified: new Date().toISOString(),
+                date_published: new Date().toISOString(),
+                date_submitted: new Date().toISOString(),
+                epoch_date_downloaded: 1,
+                epoch_date_modified: 1,
+                epoch_date_published: 1,
+                epoch_date_submitted: 1,
+                image_url: 'image_url',
+                language: 'en',
+                plain_text: 'plain_text',
+                source_domain: 'source_domain',
+                submitters: [],
+                tags: [],
+                text: 'text',
+                url: 'url',
+                user: 'user_id',
+            }
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                notifications,
+                subscriptions,
+            },
+            aiidprod: {
+                incidents,
+                entities,
+                reports,
+            }
+        });
+
+        // Mock both blog and update queries to return empty arrays by default
+        const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
+          if (documentType === 'blog') {
+            return Promise.resolve([] as any);
+          }
+          if (documentType === 'update') {
+            return Promise.resolve([] as any);
+          }
+          return Promise.resolve([]);
+        });
+
+        (prismic.createClient as jest.Mock).mockReturnValue({
+          getAllByType: mockGetAllByType
+        });
+
+        mockSession('5f8f4b3b9b3e6f001f3b3b3c');
+
+        // No recipients
+        jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
+
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
+            throw new Error('Failed to send email');
+        });
+
+
+        await processWeeklyNotifications();
+
+        expect(sendEmailMock).not.toHaveBeenCalled();
+
+        const result = await makeRequest(url, {
+            query: `
+            query {
+                notifications {
+                    type
+                    incident_id
+                    processed
+                    entity_id
+                }
+            }
+            `});
+
+        // notifications should be marked as processed
+        expect(result.body.data.notifications).toMatchObject([
+            {
+                type: 'ai-weekly-briefing',
+                incident_id: 1,
+                processed: true
+            },
+        ]);
+    });
+    
 });

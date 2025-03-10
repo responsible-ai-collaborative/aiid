@@ -1,10 +1,10 @@
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient } from "mongodb";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBSubscription } from "../../server/interfaces";
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
-import { UserAdminData } from "../../server/fields/common";
+import { clearUsersCache, getAndCacheRecipients } from "../../server/fields/common";
 
 async function notificationsToWeeklyIncidents(context: Context) {
   let result = 0;
@@ -154,7 +154,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
 }
 
 export const processWeeklyNotifications = async () => {
-  usersCache.length = 0;
+  clearUsersCache();
 
   const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
@@ -182,53 +182,6 @@ const markNotificationsAsProcessed = async (notificationsCollection: any, notifi
 
 const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
   await markNotifications(notificationsCollection, notifications, false);
-}
-
-const usersCache: UserAdminData[] = [];
-
-export const getAndCacheRecipients = async (userIds: string[], context: Context) => {
-
-  const recipients = [];
-
-  for (const userId of userIds) {
-
-    let user = usersCache.find((user) => user.userId === userId) ?? null;
-
-    if (!user) {
-
-      user = await getUserAdminData(userId, context) ?? null;
-
-      if (user) {
-
-        usersCache.push(user);
-      }
-    }
-
-    if (user?.email && user?.userId) {
-      recipients.push({ email: user.email, userId: user.userId });
-    }
-  }
-
-  return recipients;
-}
-
-export const getUserAdminData = async (userId: string, context: Context): Promise<UserAdminData | null> => {
-
-  const authUsersCollection = context.client.db('auth').collection("users");
-  const authUser = await authUsersCollection.findOne({ _id: new ObjectId(userId) });
-
-  if (authUser) {
-
-    return {
-      email: authUser.email,
-      creationDate: new Date(), //TODO: find a way to get this data
-      lastAuthenticationDate: new Date(), //TODO: find a way to get this data
-      disabled: false,
-      userId,
-    }
-  }
-
-  return null;
 }
 
 const buildEntityList = (allEntities: any, entityIds: any) => {
