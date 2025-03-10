@@ -2,7 +2,7 @@ import React from 'react';
 import md5 from 'md5';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useTranslation } from 'react-i18next';
-import { Carousel } from 'flowbite-react';
+import { Carousel } from 'components/Flowbite';
 import { Image } from 'utils/cloudinary';
 import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 

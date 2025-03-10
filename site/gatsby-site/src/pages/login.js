@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'components/Flowbite';
 import { useUserContext } from 'contexts/UserContext';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';

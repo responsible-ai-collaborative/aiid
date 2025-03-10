@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { format, fromUnixTime } from 'date-fns';
-import { Modal, Button } from 'flowbite-react';
+import { Modal, Button } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
 import supportedLanguages from 'components/i18n/languages.json';

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'components/Flowbite';
 import { FIND_INCIDENT, GET_LATEST_INCIDENT_ID, INSERT_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';

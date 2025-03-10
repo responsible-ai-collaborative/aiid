@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Alert, Modal } from 'flowbite-react';
+import { Alert, Modal } from 'components/Flowbite';
 import { Formik } from 'formik';
 import { Trans } from 'react-i18next';
 import UserForm, { schema } from './UserForm';

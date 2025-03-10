@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Checkbox, Select } from 'flowbite-react';
+import { Checkbox, Select } from 'components/Flowbite';
 import { Form, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';

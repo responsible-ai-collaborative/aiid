@@ -5,7 +5,7 @@ import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans, useTranslation } from 'react-i18next';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { useUserContext } from 'contexts/UserContext';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 

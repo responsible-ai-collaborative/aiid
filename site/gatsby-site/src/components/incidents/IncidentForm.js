@@ -11,7 +11,7 @@ import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
 import IncidentsField from './IncidentsField';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($filter: IncidentFilterType) {

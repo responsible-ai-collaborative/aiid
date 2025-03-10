@@ -1,4 +1,4 @@
-import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch } from 'components/Flowbite';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';

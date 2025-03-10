@@ -5,7 +5,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
-import { Tooltip, Badge } from 'flowbite-react';
+import { Tooltip, Badge } from 'components/Flowbite';
 import Markdown from 'react-markdown';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';

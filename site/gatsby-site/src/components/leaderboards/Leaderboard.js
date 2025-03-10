@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import { Trans } from 'react-i18next';
-import { Badge } from 'flowbite-react';
+import { Badge } from 'components/Flowbite';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const medalMap = (position) => {

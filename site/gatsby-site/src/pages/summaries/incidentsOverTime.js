@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
 import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
-import { TextInput, Label } from 'flowbite-react';
+import { TextInput, Label } from 'components/Flowbite';
 import { format } from 'date-fns';
 
 const countByDate = (items, series, startDate) =>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 
 export default function SubmitButton({ disabled, loading, onClick, children, ...props }) {

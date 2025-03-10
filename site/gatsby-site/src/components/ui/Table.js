@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
-import { Button, Dropdown, Pagination, Select, TextInput } from 'flowbite-react';
+import { Button, Dropdown, Pagination, Select, TextInput } from 'components/Flowbite';
 import { format } from 'date-fns';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 

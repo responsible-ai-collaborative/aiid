@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRefinementList, Highlight } from 'react-instantsearch';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, ListGroup } from 'flowbite-react';
+import { Badge, Button, ListGroup } from 'components/Flowbite';
 import { Form, Formik } from 'formik';
 import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import Label from 'components/forms/Label';

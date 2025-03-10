@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button, Tooltip } from 'components/Flowbite';
 import Card from 'elements/Card';
 import Select from 'elements/Select';
 import { Trans, useTranslation } from 'react-i18next';

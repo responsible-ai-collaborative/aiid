@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Button } from 'flowbite-react';
+import { Badge, Button } from 'components/Flowbite';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client';

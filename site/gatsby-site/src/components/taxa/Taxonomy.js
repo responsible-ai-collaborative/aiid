@@ -3,7 +3,7 @@ import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button, Tooltip } from 'components/Flowbite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faHand } from '@fortawesome/free-solid-svg-icons';
 

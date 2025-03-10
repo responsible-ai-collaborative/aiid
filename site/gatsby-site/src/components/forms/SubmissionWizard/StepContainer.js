@@ -1,4 +1,4 @@
-import { Badge } from 'flowbite-react';
+import { Badge } from 'components/Flowbite';
 import React from 'react';
 
 const StepContainer = (props) => {

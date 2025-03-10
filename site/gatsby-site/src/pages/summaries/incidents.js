@@ -3,7 +3,7 @@ import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from 'elements/Card';

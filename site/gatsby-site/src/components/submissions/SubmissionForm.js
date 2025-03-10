@@ -35,7 +35,7 @@ import {
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-import { Checkbox, Select } from 'flowbite-react';
+import { Checkbox, Select } from 'components/Flowbite';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { graphql, useStaticQuery } from 'gatsby';
 

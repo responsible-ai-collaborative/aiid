@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Modal, Spinner } from 'flowbite-react';
+import { Button, Modal, Spinner } from 'components/Flowbite';
 import SubmissionForm from '../../components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';

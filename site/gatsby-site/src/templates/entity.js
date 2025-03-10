@@ -2,7 +2,7 @@ import EntityCard from 'components/entities/EntityCard';
 import IncidentCard from 'components/incidents/IncidentCard';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/UserContext';
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'components/Flowbite';
 import { graphql } from 'gatsby';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';

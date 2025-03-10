@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { gql, useQuery, useMutation } from '@apollo/client';
-import { Card, Badge, Dropdown } from 'flowbite-react';
+import { Card, Badge, Dropdown } from 'components/Flowbite';
 import { format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

@@ -8,7 +8,7 @@ import BillboardJS from '@billboard.js/react';
 
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
-import { Card, Badge, Button } from 'flowbite-react';
+import { Card, Badge, Button } from 'components/Flowbite';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';

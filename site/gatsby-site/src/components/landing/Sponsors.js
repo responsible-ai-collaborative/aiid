@@ -3,7 +3,7 @@ import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { StyledImage, StyledImageCover, StyledImageModal } from '../../elements/StyledImage';
-import { Button, Card, Modal } from 'flowbite-react';
+import { Button, Card, Modal } from 'components/Flowbite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 import { GatsbyImage } from 'gatsby-plugin-image';

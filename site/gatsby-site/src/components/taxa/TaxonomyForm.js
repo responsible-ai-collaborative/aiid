@@ -7,7 +7,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
 import { getClassificationValue, serializeClassification } from 'utils/classifications';
 import { debounce } from 'debounce';
-import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
+import { Button, Radio, Label, Checkbox, Select } from 'components/Flowbite';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
 import SubmitButton from 'components/ui/SubmitButton';

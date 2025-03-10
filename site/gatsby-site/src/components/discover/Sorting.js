@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSortBy } from 'react-instantsearch';
-import { Dropdown } from 'flowbite-react';
+import { Dropdown } from 'components/Flowbite';
 import { Trans, useTranslation } from 'react-i18next';
 import SORTING_LIST from './SORTING_LISTS';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
@@ -36,7 +36,7 @@ export default function Sorting() {
   return (
     <>
       <div className="flex justify-end px-2 relative floating-label-dropdown">
-        <span className="absolute left-4 -top-2 text-xs text-gray-400 bg-white px-2">
+        <span className="absolute left-4 -top-2 text-xs text-gray-400 bg-white px-2 z-2">
           <Trans>Sort by</Trans>
         </span>
         <Dropdown

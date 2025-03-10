@@ -11,7 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.

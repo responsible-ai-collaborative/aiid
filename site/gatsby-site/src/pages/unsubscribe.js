@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '../elements/Button';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 import Link from '../components/ui/Link';
 import { useMutation } from '@apollo/client';
 import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';

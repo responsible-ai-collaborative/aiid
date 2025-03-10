@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { format, fromUnixTime } from 'date-fns';
 import { useQuery } from '@apollo/client';
-import { Modal, Button } from 'flowbite-react';
+import { Modal, Button } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import { RESPONSE_TAG, computeEntities } from 'utils/entities';
 import { FIND_REPORTS } from '../../graphql/reports';

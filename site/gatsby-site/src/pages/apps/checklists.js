@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 import { debounce } from 'debounce';
 import { Formik } from 'formik';
 import { graphql } from 'gatsby';

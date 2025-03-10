@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 import { useUserContext } from 'contexts/UserContext';
 import { navigate } from 'gatsby';
 import { Trans } from 'react-i18next';

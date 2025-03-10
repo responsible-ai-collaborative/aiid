@@ -1,4 +1,4 @@
-import { Button, Select } from 'flowbite-react';
+import { Button, Select } from 'components/Flowbite';
 import { Formik, Form, useFormikContext } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

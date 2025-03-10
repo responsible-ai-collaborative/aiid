@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'components/Flowbite';
 import { FIND_ENTITIES, FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Form, Formik } from 'formik';

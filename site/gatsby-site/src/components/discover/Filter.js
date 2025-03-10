@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import componentsMap from './filterTypes';
 import { Trans } from 'react-i18next';
-import { Accordion, Badge, Card } from 'flowbite-react';
+import { Accordion, Badge, Card } from 'components/Flowbite';
 import { useInstantSearch } from 'react-instantsearch';
 
 function ToggleContent({ label, touched, faIcon, toggled, accordion = false }) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel } from 'flowbite-react';
+import { Carousel } from 'components/Flowbite';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';

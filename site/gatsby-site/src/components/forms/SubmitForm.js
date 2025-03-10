@@ -25,7 +25,7 @@ import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
 import isEqual from 'lodash/isEqual';

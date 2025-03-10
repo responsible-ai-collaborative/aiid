@@ -7,7 +7,7 @@ import { Trans } from 'react-i18next';
 import DisplayModeSwitch from './DisplayModeSwitch';
 import Button from 'elements/Button';
 import DisplayOptions from './DisplayOptions';
-import { Accordion, Modal } from 'flowbite-react';
+import { Accordion, Modal } from 'components/Flowbite';
 import { graphql, useStaticQuery } from 'gatsby';
 import { useRange, useRefinementList } from 'react-instantsearch';
 

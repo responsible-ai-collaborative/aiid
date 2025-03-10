@@ -4,7 +4,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import { Tooltip } from 'flowbite-react';
+import { Tooltip } from 'components/Flowbite';
 
 const Label = ({ popover, label = '', required = false, showPopover = true, className = '' }) => {
   const [show, setShow] = useState(false);

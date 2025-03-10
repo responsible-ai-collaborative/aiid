@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select } from 'flowbite-react';
+import { Select } from 'components/Flowbite';
 import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';

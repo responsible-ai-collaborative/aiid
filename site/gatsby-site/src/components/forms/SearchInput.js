@@ -1,6 +1,6 @@
 import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TextInput } from 'flowbite-react';
+import { TextInput } from 'components/Flowbite';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 

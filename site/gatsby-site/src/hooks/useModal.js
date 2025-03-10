@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { Trans } from 'react-i18next';
-import { Button, Modal } from 'flowbite-react';
+import { Button, Modal } from 'components/Flowbite';
 
 export const useModal = () => {
   const [isOpen, setIsOpen] = useState(false);

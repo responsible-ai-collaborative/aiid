@@ -2,7 +2,7 @@ import { useUserContext } from 'contexts/UserContext';
 import React from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, ToggleSwitch } from 'components/Flowbite';
 import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,

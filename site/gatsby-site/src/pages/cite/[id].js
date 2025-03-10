@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';

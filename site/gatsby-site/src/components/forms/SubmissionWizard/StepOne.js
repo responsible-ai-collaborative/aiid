@@ -1,4 +1,4 @@
-import { Badge, Button, Spinner } from 'flowbite-react';
+import { Badge, Button, Spinner } from 'components/Flowbite';
 import { Formik, Form, useFormikContext } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

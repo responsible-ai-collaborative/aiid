@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Select, TextInput, Textarea, Card } from 'flowbite-react';
+import { Select, TextInput, Textarea, Card } from 'components/Flowbite';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
 

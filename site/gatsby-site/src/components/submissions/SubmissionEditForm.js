@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Checkbox, Dropdown, Label, Select } from 'flowbite-react';
+import { Badge, Button, Card, Checkbox, Dropdown, Label, Select } from 'components/Flowbite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import SubmissionForm from './SubmissionForm';
@@ -24,7 +24,7 @@ import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import isEmpty from 'lodash/isEmpty';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import { DropdownItem } from 'flowbite-react/lib/esm/components/Dropdown/DropdownItem';
+//import { DropdownItem } from 'components/Flowbite/lib/esm/components/Dropdown/DropdownItem';
 
 const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, userData }) => {
   const [promoting, setPromoting] = useState('');
@@ -375,7 +375,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
                         selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
 
                       return (
-                        <DropdownItem key={`editors-${user.userId}`}>
+                        <Dropdown.Item key={`editors-${user.userId}`}>
                           <div className="flex justify-center items-center gap-2">
                             <Checkbox
                               id={`checkbox-${user.userId}`}
@@ -386,7 +386,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
                               {user.first_name} {user.last_name}
                             </Label>
                           </div>
-                        </DropdownItem>
+                        </Dropdown.Item>
                       );
                     })}
                 </Dropdown>

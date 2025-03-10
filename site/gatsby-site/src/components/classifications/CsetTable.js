@@ -7,7 +7,7 @@ import { useMutation } from '@apollo/client';
 import { serializeClassification } from 'utils/classifications';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 

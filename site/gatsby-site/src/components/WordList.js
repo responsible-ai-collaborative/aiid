@@ -1,4 +1,4 @@
-import { ListGroup } from 'flowbite-react';
+import { ListGroup } from 'components/Flowbite';
 import React from 'react';
 
 const Wordlist = ({ content }) => {

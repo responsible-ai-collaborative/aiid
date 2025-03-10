@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, Checkbox, Select, Spinner } from 'flowbite-react';
+import { Badge, Button, Checkbox, Select, Spinner } from 'components/Flowbite';
 import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,

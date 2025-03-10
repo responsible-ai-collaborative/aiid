@@ -2,7 +2,7 @@ import React from 'react';
 import { Field, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TagsControl from 'components/forms/TagsControl';
-import { Label, TextInput } from 'flowbite-react';
+import { Label, TextInput } from 'components/Flowbite';
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from 'contexts/UserContext';
 

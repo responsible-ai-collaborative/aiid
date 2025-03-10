@@ -5,7 +5,7 @@ import Link from 'components/ui/Link';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import Container from 'elements/Container';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans } from 'react-i18next';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';

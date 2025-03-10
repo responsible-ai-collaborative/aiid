@@ -2,7 +2,7 @@ import React from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Spinner, Button } from 'flowbite-react';
+import { Spinner, Button } from 'components/Flowbite';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,

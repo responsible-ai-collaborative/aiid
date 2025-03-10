@@ -2,7 +2,7 @@ import React from 'react';
 import { useRange } from 'react-instantsearch';
 import { Trans } from 'react-i18next';
 import { debounce } from 'debounce';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { Form, Formik } from 'formik';
 import Label from 'components/forms/Label';
 import TextInputGroup from 'components/forms/TextInputGroup';

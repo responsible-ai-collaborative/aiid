@@ -3,7 +3,7 @@ import { useQueryParam } from 'use-query-params';
 import { DisplayModeEnumParam } from './queryParams';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faThList, faInfo } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { useInstantSearch } from 'react-instantsearch';
 
 const modes = {

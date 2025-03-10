@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Field, FieldArray, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';

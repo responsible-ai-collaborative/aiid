@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Spinner, Button } from 'flowbite-react';
+import { Spinner, Button } from 'components/Flowbite';
 import WebArchiveLink from '../ui/WebArchiveLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -14,7 +14,7 @@ import { FIND_REPORT, FLAG_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
-import { Modal } from 'flowbite-react';
+import { Modal } from 'components/Flowbite';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function FlagModalContent({ reportNumber }) {

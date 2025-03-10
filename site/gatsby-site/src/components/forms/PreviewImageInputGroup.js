@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import debounce from 'lodash/debounce';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import TextInputGroup from './TextInputGroup';
 import { Image } from 'utils/cloudinary';

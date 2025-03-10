@@ -2,7 +2,7 @@ import React from 'react';
 import { getFormattedName } from '../../../utils/typography';
 import { format } from 'date-fns';
 import useToastContext, { SEVERITY } from '../../../hooks/useToast';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans, useTranslation } from 'react-i18next';

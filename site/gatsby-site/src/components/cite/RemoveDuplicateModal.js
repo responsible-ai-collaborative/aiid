@@ -6,7 +6,7 @@ import { UPSERT_CLASSIFICATION, FIND_CLASSIFICATION } from '../../graphql/classi
 import { UPSERT_SUBSCRIPTION, FIND_FULL_SUBSCRIPTIONS } from '../../graphql/subscriptions';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { Formik, Form } from 'formik';
-import { Button, Modal } from 'flowbite-react';
+import { Button, Modal } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import useToast, { SEVERITY } from '../../hooks/useToast';
 

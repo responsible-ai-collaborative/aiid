@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { Dropdown } from 'flowbite-react';
+import { Dropdown } from 'components/Flowbite';
 
 async function getSnapshotURL(url) {
   const waUrl = `https://archive.org/wayback/available?url=${url}`;

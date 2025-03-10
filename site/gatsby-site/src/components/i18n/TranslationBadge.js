@@ -2,7 +2,7 @@ import Link from 'components/ui/Link';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { Badge } from 'flowbite-react';
+import { Badge } from 'components/Flowbite';
 
 export default function TranslationBadge({ className = '', originalLanguage = '' }) {
   const { locale } = useLocalization();

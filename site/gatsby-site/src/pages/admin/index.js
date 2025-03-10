@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client/react';
 import UsersTable from 'components/users/UsersTable';
 import ListSkeleton from 'elements/Skeletons/List';
 import { useUserContext } from 'contexts/UserContext';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';

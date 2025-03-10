@@ -1,4 +1,4 @@
-import { Badge, Button, Spinner } from 'flowbite-react';
+import { Badge, Button, Spinner } from 'components/Flowbite';
 import { Link } from 'gatsby';
 import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import React, { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';

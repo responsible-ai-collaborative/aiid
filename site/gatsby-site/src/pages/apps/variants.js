@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 import VariantsTable from '../../components/variants/VariantsTable';
 import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';

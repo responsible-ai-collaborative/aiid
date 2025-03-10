@@ -1,7 +1,7 @@
 import { faCopy, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format } from 'date-fns';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button, Tooltip } from 'components/Flowbite';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

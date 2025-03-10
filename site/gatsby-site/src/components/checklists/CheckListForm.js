@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Form } from 'formik';
-import { Button, Textarea, Spinner } from 'flowbite-react';
+import { Button, Textarea, Spinner } from 'components/Flowbite';
 import { Trans, useTranslation } from 'react-i18next';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';

@@ -4,7 +4,7 @@ import CsvDownloadButton from 'react-json-to-csv';
 import { format, fromUnixTime } from 'date-fns';
 import { faFileCsv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button, Tooltip } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import Link from 'components/ui/Link';
 

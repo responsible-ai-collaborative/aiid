@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import { computeEntities } from 'utils/entities';
-import { Card } from 'flowbite-react';
+import { Card } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import Link from 'components/ui/Link';
 import facebook from '../../images/facebook.svg';

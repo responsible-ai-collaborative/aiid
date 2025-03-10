@@ -3,7 +3,7 @@ import { navigate } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import Form from '../../elements/Form';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 
 export default function QuickSearch() {
   const [searchTerm, setSearchTerm] = useState('');

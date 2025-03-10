@@ -8,7 +8,7 @@ import SubmissionListWrapper from '../../components/submissions/SubmissionListWr
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
-import { Badge, Button, ListGroup } from 'flowbite-react';
+import { Badge, Button, ListGroup } from 'components/Flowbite';
 import { useQueryParam } from 'use-query-params';
 import SubmissionEdit from 'components/submissions/SubmissionEdit';
 

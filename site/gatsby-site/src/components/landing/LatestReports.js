@@ -1,6 +1,6 @@
 import React from 'react';
 import LatestIncidentReport from 'components/landing/LatestIncidentReport';
-import { Carousel } from 'flowbite-react';
+import { Carousel } from 'components/Flowbite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleLeft, faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 

@@ -20,7 +20,7 @@ import { VariantStatusBadge } from './VariantList';
 import { VARIANT_STATUS } from 'utils/variants';
 import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 export default function VariantsTable({ data, refetch, setLoading }) {

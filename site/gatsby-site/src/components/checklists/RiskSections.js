@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Spinner, Button } from 'flowbite-react';
+import { Spinner, Button } from 'components/Flowbite';
 import { Trans } from 'react-i18next';
 import {
   faWindowMaximize,

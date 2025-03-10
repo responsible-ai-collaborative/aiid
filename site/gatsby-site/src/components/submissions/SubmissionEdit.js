@@ -1,4 +1,4 @@
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { Link } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

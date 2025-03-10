@@ -13,7 +13,7 @@ import IncidentVersionViewModal from 'components/incidents/IncidentVersionViewMo
 import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'components/Flowbite';
 import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { graphql } from 'gatsby';

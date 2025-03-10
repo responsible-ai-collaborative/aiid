@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Modal, Spinner } from 'flowbite-react';
+import { Button, Modal, Spinner } from 'components/Flowbite';
 import { Formik } from 'formik';
 import { useTranslation, Trans } from 'react-i18next';
 import VariantForm, { schema } from './VariantForm';

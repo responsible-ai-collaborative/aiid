@@ -7,7 +7,7 @@ import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import ReportsTable from 'components/reports/ReportsTable';
 import { FIND_REPORTS_TABLE } from '../../graphql/reports';
 import { useQueryParam } from 'use-query-params';

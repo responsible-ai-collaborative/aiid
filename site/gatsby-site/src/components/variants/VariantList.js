@@ -3,7 +3,7 @@ import Markdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, Spinner, Tooltip } from 'flowbite-react';
+import { Button, Spinner, Tooltip } from 'components/Flowbite';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import {
   getVariantStatus,

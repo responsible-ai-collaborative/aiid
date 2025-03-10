@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { useTranslation } from 'react-i18next';
 
 const SimilaritySelector = ({

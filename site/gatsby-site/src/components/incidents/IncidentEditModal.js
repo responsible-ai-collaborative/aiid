@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Spinner, Modal, Button } from 'flowbite-react';
+import { Spinner, Modal, Button } from 'components/Flowbite';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Badge } from 'flowbite-react';
+import { Badge } from 'components/Flowbite';
 
 const UserCreationDateCell = ({ creationDate }) => {
   return <>{creationDate && format(new Date(creationDate), 'yyyy-MM-dd')}</>;

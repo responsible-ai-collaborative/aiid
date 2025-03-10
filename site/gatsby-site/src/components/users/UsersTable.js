@@ -6,7 +6,7 @@ import Table, {
   SelectDatePickerFilter,
   filterDate,
 } from 'components/ui/Table';
-import { Badge, Button } from 'flowbite-react';
+import { Badge, Button } from 'components/Flowbite';
 import UserEditModal from './UserEditModal';
 import { UserCreationDateCell, UserEmailCell, UserLastAuthDateCell } from './UserInfoCells';
 import { useApolloClient } from '@apollo/client';

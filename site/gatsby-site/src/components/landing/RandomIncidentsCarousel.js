@@ -3,7 +3,7 @@ import { StaticQuery, graphql, Link } from 'gatsby';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { Carousel } from 'flowbite-react';
+import { Carousel } from 'components/Flowbite';
 import { useTranslation } from 'react-i18next';
 import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
 

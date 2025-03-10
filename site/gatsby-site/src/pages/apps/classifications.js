@@ -3,14 +3,14 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Select, Spinner } from 'flowbite-react';
+import { Button, Select, Spinner } from 'components/Flowbite';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from 'contexts/UserContext';
 import ListSkeleton from 'elements/Skeletons/List';
-import { Modal } from 'flowbite-react';
+import { Modal } from 'components/Flowbite';
 import { Trans, useTranslation } from 'react-i18next';
 import Table, {
   DefaultColumnFilter,

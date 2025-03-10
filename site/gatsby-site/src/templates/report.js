@@ -6,7 +6,7 @@ import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { Link, graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
-import { Button } from 'flowbite-react';
+import { Button } from 'components/Flowbite';
 import { useUserContext } from 'contexts/UserContext';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';

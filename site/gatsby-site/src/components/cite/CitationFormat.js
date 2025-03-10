@@ -1,6 +1,6 @@
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Modal } from 'flowbite-react';
+import { Button, Modal } from 'components/Flowbite';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import citationTypes from './citationTypes';

@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/UserContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, ToggleSwitch } from 'components/Flowbite';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';

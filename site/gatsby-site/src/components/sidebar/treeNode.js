@@ -19,7 +19,7 @@ import {
   faTable,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { Tooltip } from 'flowbite-react';
+import { Tooltip } from 'components/Flowbite';
 
 const TreeNode = ({
   item,

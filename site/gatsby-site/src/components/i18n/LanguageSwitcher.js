@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from './useLocalizePath';
-import { Badge, Dropdown } from 'flowbite-react';
+import { Badge, Dropdown } from 'components/Flowbite';
 
 const isBetaLocale = ({ code }) => code === 'fr' || code === 'ja';
 

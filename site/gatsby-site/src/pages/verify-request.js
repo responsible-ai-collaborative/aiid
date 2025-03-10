@@ -2,7 +2,7 @@ import React from 'react';
 import { useUserContext } from 'contexts/UserContext';
 import { Trans, useTranslation } from 'react-i18next';
 import HeadContent from 'components/HeadContent';
-import { Spinner } from 'flowbite-react';
+import { Spinner } from 'components/Flowbite';
 
 const VerifyRequest = ({ location: { state } }) => {
   const { user, loading } = useUserContext();

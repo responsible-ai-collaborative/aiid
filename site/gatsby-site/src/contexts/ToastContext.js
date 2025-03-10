@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, createContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { globalHistory } from '@reach/router';
-import { Toast } from 'flowbite-react';
+import { Toast } from 'components/Flowbite';
 
 const ToastContext = createContext();
 
