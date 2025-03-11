@@ -2102,6 +2102,7 @@ export type Report = {
   epoch_date_submitted: Scalars['Int']['output'];
   flag?: Maybe<Scalars['Boolean']['output']>;
   image_url: Scalars['String']['output'];
+  incidents?: Maybe<Array<Maybe<Incident>>>;
   inputs_outputs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   is_incident_report?: Maybe<Scalars['Boolean']['output']>;
   language: Scalars['String']['output'];
