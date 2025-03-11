@@ -48,6 +48,13 @@ export const IncidentType = new GraphQLObjectType({
         flagged_dissimilar_incidents: { type: new GraphQLNonNull(new GraphQLList(GraphQLInt)) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
         reports: getListRelationshipConfig(require('./report').ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
+        classifications: {
+            type: new GraphQLList(require('./classification').ClassificationType),
+            resolve: async (incident, args, context) => {
+                const classificationsCollection = context.client.db('aiidprod').collection('classifications');
+                return classificationsCollection.find({ incidents: incident.incident_id }).toArray();
+            },
+        },
         tsne: { type: TsneType },
         created_at: { type: GraphQLDateTime },
     }),
