@@ -12,6 +12,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/UserContext';
 import Link from 'components/ui/Link';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 
 const UserSubscriptions = () => {
   const { user } = useUserContext();
@@ -28,9 +29,17 @@ const UserSubscriptions = () => {
 
   const [isSubscribeToAiWeeklyBriefing, setIsSubscribeToAiWeeklyBriefing] = useState(false);
 
+  const [highlight, setHighlight] = useState(false);
+
   const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: { filter: { userId: { EQ: user.id } } },
   });
+
+  const [{ receiveAIBriefing }] = useQueryParams({
+    receiveAIBriefing: withDefault(StringParam, false),
+  });
+
+  const [receiveAIBriefingParam] = useState(receiveAIBriefing);
 
   const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS);
 
@@ -82,14 +91,36 @@ const UserSubscriptions = () => {
       (s) => s.type == SUBSCRIPTION_TYPE.newIncidents
     );
 
-    const hasAiWeeklyBriefingSubscription = data?.subscriptions.some(
+    let hasAiWeeklyBriefingSubscription = data?.subscriptions.some(
       (s) => s.type == SUBSCRIPTION_TYPE.aiWeeklyBriefing
     );
 
-    setIsSubscribeToNewIncidents(hasSubscription);
+    if (!hasAiWeeklyBriefingSubscription && receiveAIBriefingParam === 'true') {
+      subscribeToAiWeeklyBriefingMutation({
+        variables: {
+          filter: { type: { EQ: SUBSCRIPTION_TYPE.aiWeeklyBriefing }, userId: { EQ: user.id } },
+          update: {
+            type: SUBSCRIPTION_TYPE.aiWeeklyBriefing,
+            userId: { link: user.id },
+          },
+        },
+      });
+      hasAiWeeklyBriefingSubscription = true;
+      window.history.replaceState({}, '', window.location.pathname);
+    }
 
+    setIsSubscribeToNewIncidents(hasSubscription);
     setIsSubscribeToAiWeeklyBriefing(hasAiWeeklyBriefingSubscription);
-  }, [user, data]);
+  }, [user, data, receiveAIBriefing, loading]);
+
+  useEffect(() => {
+    if (receiveAIBriefingParam === 'true') {
+      setHighlight(true);
+      const timer = setTimeout(() => setHighlight(false), 1000); // Highlight for 1 second
+
+      return () => clearTimeout(timer);
+    }
+  }, [receiveAIBriefingParam]);
 
   const onSusbcribeToggle = async (checked) => {
     if (checked) {
@@ -140,15 +171,17 @@ const UserSubscriptions = () => {
 
   return (
     <div className="mt-4">
-      <div className="my-4">
-        <ToggleSwitch
-          id="subscribe-ai-weekly-briefing"
-          checked={isSubscribeToAiWeeklyBriefing}
-          label={t('Receive weekly AI Incident Briefing')}
-          onChange={onSusbcribeAiWeeklyBriefingToggle}
-          name="subscribe-ai-weekly-briefing"
-          disabled={loading || deleting || subscribingToAiWeeklyBriefing}
-        />
+      <div className={`my-2 -ml-2`}>
+        <div className={`${highlight ? 'bg-cyan-100' : ''} p-2`}>
+          <ToggleSwitch
+            id="subscribe-ai-weekly-briefing"
+            checked={isSubscribeToAiWeeklyBriefing}
+            label={t('Receive weekly AI Incident Briefing')}
+            onChange={onSusbcribeAiWeeklyBriefingToggle}
+            name="subscribe-ai-weekly-briefing"
+            disabled={loading || deleting || subscribingToAiWeeklyBriefing}
+          />
+        </div>
       </div>
       <div className="my-4">
         <ToggleSwitch
