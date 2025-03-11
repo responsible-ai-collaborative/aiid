@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification, History_Report, History_Incident, Checklist } from './generated/graphql';
 import { IncomingMessage } from 'http';
-
+import { GraphQLSchema } from 'graphql';
 export interface Context {
   user: {
     id: string,
@@ -9,6 +9,7 @@ export interface Context {
   } | null,
   req: IncomingMessage,
   client: MongoClient,
+  schema: GraphQLSchema
 }
 
 export type DBIncident = Omit<Incident, 'AllegedDeployerOfAISystem' | 'AllegedDeveloperOfAISystem' | 'AllegedHarmedOrNearlyHarmedParties' | 'reports' | 'editors' | 'implicated_systems'>

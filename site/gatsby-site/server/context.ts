@@ -4,6 +4,7 @@ import * as reporter from "./reporter";
 import { getServerSession } from 'next-auth'
 import { getAuthConfig } from "../nextauth.config";
 import { createResponse } from '../src/utils/serverless'
+import { schema } from "./schema";
 
 export const verifyToken = async (req: IncomingMessage) => {
 
@@ -20,7 +21,7 @@ export const context = async ({ req, client }: { req: IncomingMessage, client: M
 
         const user = await verifyToken(req);
 
-        return { user, req, client };
+        return { user, req, client, schema };
     }
     catch (e) {
 

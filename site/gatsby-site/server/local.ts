@@ -52,6 +52,11 @@ import {
 } from './fields/classifications';
 
 import {
+    mutationFields as machineClassificationsMutationFields,
+    permissions as machineClassificationsPermissions
+} from './fields/machineClassifications';
+
+import {
     queryFields as taxaQueryFields,
     permissions as taxaPermissions
 } from './fields/taxa';
@@ -135,6 +140,7 @@ export const getSchema = () => {
             ...submissionsMutationFields,
             ...entity_relationshipsMutationFields,
             ...classificationsMutationFields,
+            ...machineClassificationsMutationFields,
             ...candidatesMutationFields,
             ...subscriptionsMutationFields,
             ...duplicatesMutationFields,
@@ -192,6 +198,7 @@ export const getSchema = () => {
                 ...submissionsPermissions.Mutation,
                 ...entity_relationshipsPermissions.Mutation,
                 ...classificationsPermissions.Mutation,
+                ...machineClassificationsPermissions.Mutation,
                 ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
                 ...duplicatesPermissions.Mutation,

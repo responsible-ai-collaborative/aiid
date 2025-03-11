@@ -31,7 +31,7 @@ const items: DBReport[] = [
         quiet: null,
     },
     {
-        title: "Report 2",
+        title: "Virtual Assistant Accidentally Orders 500 Inflatable Flamingos for Local Accounting Firm",
         authors: ["author2"],
         report_number: 2,
         is_incident_report: true,
@@ -49,8 +49,8 @@ const items: DBReport[] = [
 
         image_url: "image_url1",
         language: "en",
-        plain_text: "plain_text1",
-        text: "text1",
+        plain_text: "An accounting firm's AI assistant misheard '5 file folders' as '500 flamingos,' resulting in a parking lot full of inflatable pink birds. The managing partner remarked, 'I wanted to organize tax documents, not create a tropical paradise.' The mishap has since become the firm's quirky claim to fame.",
+        text: "An accounting firm's AI assistant misheard '5 file folders' as '500 flamingos,' resulting in a parking lot full of inflatable pink birds. The managing partner remarked, 'I wanted to organize tax documents, not create a tropical paradise.' The mishap has since become the firm's quirky claim to fame.",
         source_domain: "source_domain1",
         submitters: ["submitter1"],
         tags: ["tag1"],
