@@ -151,28 +151,6 @@ jobs:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
       - name: Comment on PR
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
-            const deployData = JSON.parse(deployOutput);
-            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
-
-            const { data: pullRequests } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              commit_sha: '${{ inputs.sha }}'
-            });
-
-            for (const pr of pullRequests) {
-              if (pr.state === 'open') {
-                github.rest.issues.createComment({
-                  issue_number: pr.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: comment
-                });
-                break; // Assuming you want to comment only on the first open PR
-              }
-            }
+        working-directory: site/gatsby-site
+        run: npm run comment-on-pr -- "${{ secrets.GITHUB_TOKEN }}" "${{ steps.deploy-netlify.outputs.deploy_log }}" "${{ inputs.sha }}"
+        continue-on-error: true
