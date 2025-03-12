@@ -18,6 +18,7 @@ import { UPDATE_REPORT } from '../../graphql/reports';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { isCompleteReport } from '../../utils/variants';
+import { getUnixTime } from 'date-fns';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($filter: IncidentFilterType) {
@@ -120,18 +121,17 @@ function IncidentForm({ entityNames = [] }) {
           update: {
             set: {
               tags: newTags,
+              epoch_date_modified: getUnixTime(new Date()),
             },
           },
         },
       });
 
-      // Update local state
       setReportTags({
         ...reportTags,
         [reportNumber]: newTags,
       });
 
-      // Update the values.reports array
       if (values.reports) {
         const updatedReports = values.reports.map((report) => {
           if (report.report_number === reportNumber) {
@@ -143,11 +143,9 @@ function IncidentForm({ entityNames = [] }) {
           return report;
         });
 
-        // This won't trigger a re-render of the form, but will update the values object
         values.reports = updatedReports;
       }
 
-      // Close edit mode
       setEditingReportTags(null);
 
       addToast({
@@ -155,7 +153,6 @@ function IncidentForm({ entityNames = [] }) {
         severity: SEVERITY.success,
       });
     } catch (error) {
-      console.error('Error updating tags:', error);
       addToast({
         message: t('Error updating tags: {{message}}', { message: error.message }),
         severity: SEVERITY.danger,
