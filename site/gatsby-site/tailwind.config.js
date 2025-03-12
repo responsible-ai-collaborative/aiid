@@ -115,6 +115,7 @@ module.exports = {
         // in a way that's not easy to reverse.
         // We don't use cyan anywhere,
         // so the easiest fix is to redefine cyan as blue.
+        // Issue: https://github.com/responsible-ai-collaborative/aiid/issues/3412
         'cyan-50': 'oklch(0.97 0.014 254.604)',
         'cyan-100': 'oklch(0.932 0.032 255.585)',
         'cyan-200': 'oklch(0.882 0.059 254.128)',
