@@ -84,6 +84,8 @@ function IncidentForm({ entityNames = [] }) {
 
   const [reportTags, setReportTags] = useState({});
 
+  const [originalTags, setOriginalTags] = useState({});
+
   const [allTags, setAllTags] = useState([]);
 
   useEffect(() => {
@@ -91,7 +93,6 @@ function IncidentForm({ entityNames = [] }) {
       const tags = new Set();
 
       values.reports.forEach((report) => {
-        console.log('Report tags:', report.report_number, report.tags);
         if (report.tags) {
           report.tags.forEach((tag) => tags.add(tag));
         }
@@ -408,6 +409,7 @@ function IncidentForm({ entityNames = [] }) {
                               <Typeahead
                                 key={`report-tags-typeahead-${report.report_number}`}
                                 id={`report-tags-${report.report_number}`}
+                                className="Typeahead"
                                 allowNew
                                 multiple
                                 onChange={(value) => {
@@ -439,7 +441,17 @@ function IncidentForm({ entityNames = [] }) {
                               <Button
                                 size="xs"
                                 color="light"
-                                onClick={() => setEditingReportTags(null)}
+                                onClick={() => {
+                                  if (originalTags[report.report_number]) {
+                                    setReportTags({
+                                      ...reportTags,
+                                      [report.report_number]: [
+                                        ...originalTags[report.report_number],
+                                      ],
+                                    });
+                                  }
+                                  setEditingReportTags(null);
+                                }}
                               >
                                 {t('Cancel')}
                               </Button>
@@ -462,7 +474,15 @@ function IncidentForm({ entityNames = [] }) {
                                 size="xs"
                                 color="light"
                                 className="ml-2"
-                                onClick={() => setEditingReportTags(report.report_number)}
+                                onClick={() => {
+                                  setOriginalTags({
+                                    ...originalTags,
+                                    [report.report_number]: [
+                                      ...(reportTags[report.report_number] || []),
+                                    ],
+                                  });
+                                  setEditingReportTags(report.report_number);
+                                }}
                               >
                                 <FontAwesomeIcon icon={faEdit} className="mr-1" />
                                 {t('Edit')}
