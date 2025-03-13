@@ -50,6 +50,10 @@ function LinkedReportsForm({ reports }) {
 
   const handleUpdateReportTags = async (reportNumber, newTags) => {
     try {
+      const processedTags = newTags.map((tag) =>
+        typeof tag === 'object' && tag.label ? tag.label : tag
+      );
+
       await updateReport({
         variables: {
           filter: {
@@ -57,7 +61,7 @@ function LinkedReportsForm({ reports }) {
           },
           update: {
             set: {
-              tags: newTags,
+              tags: processedTags,
               epoch_date_modified: getUnixTime(new Date()),
             },
           },
@@ -66,13 +70,13 @@ function LinkedReportsForm({ reports }) {
 
       setReportTags({
         ...reportTags,
-        [reportNumber]: newTags,
+        [reportNumber]: processedTags,
       });
 
       if (reports) {
         reports.forEach((report) => {
           if (report.report_number === reportNumber) {
-            report.tags = newTags;
+            report.tags = processedTags;
           }
         });
       }
@@ -104,7 +108,11 @@ function LinkedReportsForm({ reports }) {
           .filter((r) => isCompleteReport(r))
           .map((report) => {
             return (
-              <div key={report.report_number} className="border rounded-lg p-4 bg-gray-50">
+              <div
+                key={report.report_number}
+                className="border rounded-lg p-4 bg-gray-50"
+                data-testid={`linked-report-${report.report_number}`}
+              >
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2 items-center">
                     <p className="text-md text-gray-500 m-0">#{report.report_number}</p>
@@ -149,10 +157,13 @@ function LinkedReportsForm({ reports }) {
                           options={allTags}
                           value={reportTags[report.report_number] || []}
                           onChange={(value) => {
-                            console.log('Tags onChange:', value);
+                            const processedTags = value.map((tag) =>
+                              typeof tag === 'object' && tag.label ? tag.label : tag
+                            );
+
                             setReportTags({
                               ...reportTags,
-                              [report.report_number]: value,
+                              [report.report_number]: processedTags,
                             });
                           }}
                         />
