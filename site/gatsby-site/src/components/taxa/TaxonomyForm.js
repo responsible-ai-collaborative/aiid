@@ -2,6 +2,7 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } f
 import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { FIND_CLASSIFICATION, UPSERT_CLASSIFICATION } from '../../graphql/classifications';
+import { MACHINE_CLASSIFICATION_BY_INCIDENT_ID } from '../../graphql/machineClassifications';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -38,10 +39,62 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     debounce((values) => setInitialValues(values), 500)
   ).current;
 
+  const [machineClassifyByIncidentId] = useMutation(MACHINE_CLASSIFICATION_BY_INCIDENT_ID);
+
+  const onMachineClassification = async () => {
+    try {
+      const { data } = await machineClassifyByIncidentId({
+        variables: {
+          incident_id: incidentId,
+          taxonomy: taxonomy.namespace,
+        },
+      });
+
+      if (data && data.machineClassificationByIncidentId) {
+        const result = data.machineClassificationByIncidentId;
+
+        const classification = result.classification;
+
+        if (classification.attributes && classification.attributes.length > 0) {
+          const newValues = { ...formRef.current.values, notes: result.explanation };
+
+          classification.attributes.forEach((attr) => {
+            const valueJson = JSON.parse(attr.value_json);
+
+            const field = taxonomy.taxonomyFields.find((f) => f.short_name === attr.short_name);
+
+            if (field) {
+              newValues[attr.short_name] = valueJson;
+            }
+          });
+
+          formRef.current.setValues(newValues);
+          addToast({
+            message: `Classification applied with confidence: ${(result.confidence * 100).toFixed(
+              2
+            )}%`,
+            severity: SEVERITY.success,
+          });
+        } else {
+          addToast({
+            message: 'No classification attributes returned',
+            severity: SEVERITY.warning,
+          });
+        }
+      } else {
+        addToast({ message: 'Classification failed', severity: SEVERITY.danger });
+      }
+    } catch (error) {
+      console.error('Error during machine classification:', error);
+      addToast({ message: `Classification error: ${error.message}`, severity: SEVERITY.danger });
+    }
+  };
+
   useImperativeHandle(ref, () => ({
     submit() {
       formRef.current.submitForm();
     },
+    onMachineClassification,
   }));
 
   const incidentsQuery = incidentId ? { incidents: { EQ: incidentId } } : {};

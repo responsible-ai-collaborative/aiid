@@ -4,12 +4,11 @@ import { EntityType } from "./entity";
 import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getRelationshipConfig } from "../utils";
 import { UserType } from "./user";
 import { IncidentEmbeddingType, NlpSimilarIncidentType, TsneType } from "./types";
-import { ReportType } from "./report";
 import { GraphQLDateTime } from "graphql-scalars";
 
 export const IncidentType = new GraphQLObjectType({
     name: 'Incident',
-    fields: {
+    fields: () => ({
         _id: { type: ObjectIdScalar },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
@@ -48,10 +47,17 @@ export const IncidentType = new GraphQLObjectType({
         embedding: { type: IncidentEmbeddingType },
         flagged_dissimilar_incidents: { type: new GraphQLNonNull(new GraphQLList(GraphQLInt)) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },
-        reports: getListRelationshipConfig(ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
+        reports: getListRelationshipConfig(require('./report').ReportType, GraphQLInt, 'reports', 'report_number', 'reports', 'aiidprod'),
+        classifications: {
+            type: new GraphQLList(require('./classification').ClassificationType),
+            resolve: async (incident, args, context) => {
+                const classificationsCollection = context.client.db('aiidprod').collection('classifications');
+                return classificationsCollection.find({ incidents: incident.incident_id }).toArray();
+            },
+        },
         tsne: { type: TsneType },
         created_at: { type: GraphQLDateTime },
-    },
+    }),
 });
 
 // dependencies property gets ignored by newest graphql package so we have to add it manually after the type is created

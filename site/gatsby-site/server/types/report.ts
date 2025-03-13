@@ -1,7 +1,7 @@
 import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { DateTimeResolver, GraphQLDateTime } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
-import { getRelationshipConfig } from "../utils";
+import { getListRelationshipResolver, getRelationshipConfig } from "../utils";
 import { Context } from "../interfaces";
 import { UserType } from "./user";
 import { EmbeddingType } from "./types";
@@ -14,9 +14,9 @@ const ReportTranslationsType = new GraphQLObjectType({
     }
 });
 
-export const ReportType = new GraphQLObjectType({
+export const ReportType: GraphQLObjectType = new GraphQLObjectType({
     name: 'Report',
-    fields: {
+    fields: () => ({
         _id: { type: ObjectIdScalar },
         authors: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         cloudinary_id: { type: new GraphQLNonNull(GraphQLString) },
@@ -35,6 +35,13 @@ export const ReportType = new GraphQLObjectType({
         flag: { type: GraphQLBoolean },
         image_url: { type: new GraphQLNonNull(GraphQLString) },
         inputs_outputs: { type: new GraphQLList(GraphQLString) },
+        incidents: {
+            type: new GraphQLList(require('./incidents').IncidentType),
+            resolve: async (source, args, context: Context) => {
+                const incidentsCollection = context.client.db('aiidprod').collection("incidents");
+                return incidentsCollection.find({ reports: { $in: [source.report_number] } }).toArray();
+            }
+        },
         is_incident_report: { type: GraphQLBoolean },
         language: { type: new GraphQLNonNull(GraphQLString) },
         plain_text: { type: new GraphQLNonNull(GraphQLString) },
@@ -55,18 +62,14 @@ export const ReportType = new GraphQLObjectType({
             resolve: async (source, args, context: Context, info) => {
 
                 const translations = context.client.db('translations').collection("reports_" + args.input);
-
                 const translation = await translations.findOne({ report_number: source.report_number });
-
                 if (translation) {
-
                     return { text: translation.text, title: translation.title };
                 }
-
                 return { text: "", title: "" }
             },
         }
-    }
+    })
 });
 
 //@ts-ignore

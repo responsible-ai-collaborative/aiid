@@ -1,20 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import { Button, Tooltip } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faHand } from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faHand, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing = false, id }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
 
+  const taxonomyFormRef = useRef();
+
+  const [machineClassificationLoading, setMachineClassificationLoading] = useState(false);
+
   const handleSubmit = () => {
     setShowBanner(true);
     setEditing(false);
+  };
+
+  const handleOnMachineClassification = async () => {
+    setMachineClassificationLoading(true);
+    await taxonomyFormRef.current.onMachineClassification();
+    setMachineClassificationLoading(false);
   };
 
   const [editing, setEditing] = useState(initialEditing);
@@ -75,9 +85,24 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
         </h4>
         <>
           {editing ? (
-            <Button size="xs" color={'gray'} onClick={() => setEditing(false)}>
-              <Trans>Cancel</Trans>
-            </Button>
+            <>
+              <Button size="xs" color={'gray'} onClick={() => setEditing(false)}>
+                <Trans>Cancel</Trans>
+              </Button>
+              <Button
+                size="xs"
+                color={'gray'}
+                onClick={handleOnMachineClassification}
+                disabled={machineClassificationLoading}
+              >
+                {machineClassificationLoading ? (
+                  <FontAwesomeIcon icon={faSpinner} className="mr-2" />
+                ) : (
+                  <FontAwesomeIcon icon={faRobot} className="mr-2" />
+                )}
+                <Trans>Machine Classification</Trans>
+              </Button>
+            </>
           ) : (
             canEdit && (
               <Button size="xs" color={'gray'} onClick={() => setEditing(true)}>
@@ -222,6 +247,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
           reportNumber={reportNumber}
           onSubmit={handleSubmit}
           active={editing}
+          ref={taxonomyFormRef}
         />
       </>
     </Card>
