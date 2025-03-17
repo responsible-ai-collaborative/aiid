@@ -83,32 +83,36 @@ const getEmailTemplate = () => {
       {% if newBlogPosts %}
         <div style="${sectionStyle}">
           <h2>New Blog Posts</h2>
-          <ul>
-            {% for blogPost in newBlogPosts %}
-              <div style="${incidentStyle}">
-                <h1 style="font-size: 100%; margin-top: 0px;">
-                  {{ blogPost.title }}
-                </h1>
+          {% for blogPost in newBlogPosts %}
+            <div style="${incidentStyle}">
+              <h1 style="font-size: 100%; margin-top: 0px;">
+                <a href="{{ blogPost.url }}">{{ blogPost.title }}</a>
+              </h1>
 
-                <p style="font-size: 85%;">{{ blogPost.date }}</p>
+              <p style="font-size: 85%;">{{ blogPost.date }}</p>
 
-                <p style="font-size: 85%;">
-                  {{ blogPost.description }}
-                </p>
-              </div>
-            {% endfor %}
-          </ul>
+              <p style="font-size: 85%;">
+                {{ blogPost.description }}
+              </p>
+            </div>
+          {% endfor %}
         </div>
       {% endif %}
 
       {% if updates %}
         <div style="${sectionStyle}">
           <h2>New Features & Updates</h2>
-          <ul>
-            {% for update in updates %}
-              <li style="list-style-type: none;">{{update.text}}</li>
-            {% endfor %}
-          </ul>
+          {% for update in updates %}
+            <div style="${incidentStyle}">
+              <h1 style="font-size: 100%; margin-top: 0px;">
+                {{ update.title }}
+              </h1>
+
+              <p style="font-size: 85%;">
+                {{ update.description }}
+              </p>
+            </div>
+          {% endfor %}
         </div>
       {% endif %}
 

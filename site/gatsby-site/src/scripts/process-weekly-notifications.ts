@@ -70,19 +70,25 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
   const now = new Date();
   const dayOfWeek = now.getUTCDay();
+  // const dayOfWeek = 0; // For testing
   const daysSinceLastSunday = (dayOfWeek + 6) % 7; // Calculate days since last Sunday
   const lastSunday = new Date(now);
   lastSunday.setUTCDate(now.getUTCDate() - daysSinceLastSunday);
-  lastSunday.setUTCHours(15, 0, 0, 0); // Set to 15:00 UTC
+  lastSunday.setUTCHours(15, 0, 0, 0); // Set to start of the day
 
   const thisSunday = new Date(lastSunday);
   thisSunday.setUTCDate(lastSunday.getUTCDate() + 7); // Move to this Sunday
-  thisSunday.setUTCHours(15, 0, 0, 0); // Set to 15:00 UTC
+  thisSunday.setUTCHours(15, 0, 0, 0); // Set to start of the day
 
   // Initialize the Prismic client
   const prismicClient = await prismic.createClient(config.GATSBY_PRISMIC_REPO_NAME, {
     accessToken: config.PRISMIC_ACCESS_TOKEN,
   });
+
+  const lastSundayDate = lastSunday.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  const thisSundayDate = thisSunday.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  const lastSundayISOString = lastSunday.toISOString().split('.')[0] + 'Z';
+  const thisSundayISOString = thisSunday.toISOString().split('.')[0] + 'Z';
 
   let newBlogPosts: any[] = [];
 
@@ -90,22 +96,22 @@ async function notificationsToWeeklyIncidents(context: Context) {
     const response = await prismicClient.getAllByType('blog', {
       orderings: {
         field: "my.blog.date",
+        direction: "desc"
       },
       filters: [
-        prismic.filter.dateAfter('my.blog.date', lastSunday.toISOString()),
-        prismic.filter.dateBefore('my.blog.date', thisSunday.toISOString())
+        prismic.filter.dateAfter('my.blog.date', lastSundayDate),
+        prismic.filter.dateBefore('my.blog.date', thisSundayDate)
       ]
     });
 
     newBlogPosts = response.map((blogPost: any) => ({
       url: `${config.SITE_URL}/blog/${blogPost.data.slug}`,
       title: blogPost.data.title[0]?.text ?? '',
-      description: blogPost.data.metaDescription[0]?.text ?? '',
+      description: blogPost.data.metaDescription ?? '',
       date: blogPost.data.date
     }));
-    console.log('newBlogPosts', newBlogPosts);
-  } catch (error) {
-    console.error('Error fetching newBlogPosts:', JSON.stringify(error));
+  } catch (error: any) {
+    console.error('Error fetching newBlogPosts:', JSON.stringify(error), JSON.stringify(error.message));
     newBlogPosts = [];
   }
 
@@ -117,8 +123,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
         field: "document.first_publication_date",
       },
       filters: [
-        prismic.filter.dateAfter('document.first_publication_date', lastSunday.toISOString()),
-        prismic.filter.dateBefore('document.first_publication_date', thisSunday.toISOString())
+        prismic.filter.dateAfter('document.first_publication_date', lastSundayISOString),
+        prismic.filter.dateBefore('document.first_publication_date', thisSundayISOString)
       ]
     });
 
@@ -127,7 +133,6 @@ async function notificationsToWeeklyIncidents(context: Context) {
       description: update.data.text[0]?.text ?? '',
     }));
 
-    console.log('updates', updates);
   } catch (error) {
     console.error('Error fetching updates:', JSON.stringify(error));
     updates = [];
