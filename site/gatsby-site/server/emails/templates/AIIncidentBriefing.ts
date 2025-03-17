@@ -1,4 +1,4 @@
-import { 
+import {
   ignoreWhitespace,
   insertContent,
   bodyStyle,
@@ -15,7 +15,7 @@ const getEmailTemplate = () => {
     border-bottom: 1px solid #ccc;
     font-size: 90%;
   `);
-  
+
   const incidentStyle = ignoreWhitespace(`
     padding: 32px;
     border-bottom: 1px solid #ccc;
@@ -80,9 +80,9 @@ const getEmailTemplate = () => {
         {% endif %}
       </div>
 
-      <div style="${sectionStyle}">
-        <h2>New Blog Posts</h2>
-        {% if newBlogPosts %}
+      {% if newBlogPosts %}
+        <div style="${sectionStyle}">
+          <h2>New Blog Posts</h2>
           <ul>
             {% for blogPost in newBlogPosts %}
               <div style="${incidentStyle}">
@@ -97,23 +97,20 @@ const getEmailTemplate = () => {
                 </p>
               </div>
             {% endfor %}
-        {% else %}
-          <p>No new blog posts were published this week.</p>
-        {% endif %}
-      </div>
+          </ul>
+        </div>
+      {% endif %}
 
-      <div style="${sectionStyle}">
-        <h2>New Features & Updates</h2>
-        {% if updates %}
+      {% if updates %}
+        <div style="${sectionStyle}">
+          <h2>New Features & Updates</h2>
           <ul>
             {% for update in updates %}
               <li style="list-style-type: none;">{{update.text}}</li>
             {% endfor %}
           </ul>
-        {% else %}
-          <p>No major updates this week.</p>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
 
       <p style="margin-bottom: 32px">
         You can manage your email subscriptions from

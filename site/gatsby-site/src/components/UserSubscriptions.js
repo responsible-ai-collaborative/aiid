@@ -17,7 +17,7 @@ import { StringParam, useQueryParams, withDefault } from 'use-query-params';
 const UserSubscriptions = () => {
   const { user } = useUserContext();
 
-  const { t } = useTranslation(['account']);
+  const { t } = useTranslation(['account', 'login']);
 
   const [incidentSubscriptions, setIncidentSubscriptions] = useState(null);
 
@@ -176,7 +176,7 @@ const UserSubscriptions = () => {
           <ToggleSwitch
             id="subscribe-ai-weekly-briefing"
             checked={isSubscribeToAiWeeklyBriefing}
-            label={t('Receive weekly AI Incident Briefing')}
+            label={t('Receive weekly AI Incident Briefing', { ns: 'login' })}
             onChange={onSusbcribeAiWeeklyBriefingToggle}
             name="subscribe-ai-weekly-briefing"
             disabled={loading || deleting || subscribingToAiWeeklyBriefing}

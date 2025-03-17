@@ -96,6 +96,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
       description: blogPost.data.metaDescription[0]?.text ?? '',
       date: blogPost.data.date
     }));
+    console.log('newBlogPosts', newBlogPosts);
   } catch (error) {
     console.error('Error fetching newBlogPosts:', JSON.stringify(error));
     newBlogPosts = [];
@@ -118,6 +119,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
       title: update.data.title,
       description: update.data.text[0]?.text ?? '',
     }));
+
+    console.log('updates', updates);
   } catch (error) {
     console.error('Error fetching updates:', JSON.stringify(error));
     updates = [];
