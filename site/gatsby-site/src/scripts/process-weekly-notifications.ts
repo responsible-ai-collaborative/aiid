@@ -68,25 +68,32 @@ async function notificationsToWeeklyIncidents(context: Context) {
     }
   });
 
-  const lastWeek = new Date();
-  lastWeek.setDate(lastWeek.getDate() - 7);
-  const formattedDate = lastWeek.toISOString().split('T')[0];
+  const now = new Date();
+  const dayOfWeek = now.getUTCDay();
+  const daysSinceLastSunday = (dayOfWeek + 6) % 7; // Calculate days since last Sunday
+  const lastSunday = new Date(now);
+  lastSunday.setUTCDate(now.getUTCDate() - daysSinceLastSunday);
+  lastSunday.setUTCHours(15, 0, 0, 0); // Set to 15:00 UTC
+
+  const thisSunday = new Date(lastSunday);
+  thisSunday.setUTCDate(lastSunday.getUTCDate() + 7); // Move to this Sunday
+  thisSunday.setUTCHours(15, 0, 0, 0); // Set to 15:00 UTC
 
   // Initialize the Prismic client
   const prismicClient = await prismic.createClient(config.GATSBY_PRISMIC_REPO_NAME, {
-    accessToken: config.PRISMIC_ACCESS_TOKEN, // If you have a private repository
+    accessToken: config.PRISMIC_ACCESS_TOKEN,
   });
 
   let newBlogPosts: any[] = [];
 
   try {
-
     const response = await prismicClient.getAllByType('blog', {
       orderings: {
         field: "my.blog.date",
       },
       filters: [
-        prismic.filter.dateAfter('my.blog.date', formattedDate) // Ensure formattedDate is a valid ISO string
+        prismic.filter.dateAfter('my.blog.date', lastSunday.toISOString()),
+        prismic.filter.dateBefore('my.blog.date', thisSunday.toISOString())
       ]
     });
 
@@ -105,13 +112,13 @@ async function notificationsToWeeklyIncidents(context: Context) {
   let updates: any[] = [];
 
   try {
-
     const response = await prismicClient.getAllByType('update', {
       orderings: {
         field: "document.first_publication_date",
       },
       filters: [
-        prismic.filter.dateAfter('document.first_publication_date', formattedDate)
+        prismic.filter.dateAfter('document.first_publication_date', lastSunday.toISOString()),
+        prismic.filter.dateBefore('document.first_publication_date', thisSunday.toISOString())
       ]
     });
 
