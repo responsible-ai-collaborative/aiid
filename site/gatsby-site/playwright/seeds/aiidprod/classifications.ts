@@ -1339,6 +1339,39 @@ const items: DBClassification[] = [
         ],
         reports: [],
     },
+    {
+        _id: new ObjectId("67bf851c254e207883afa8b5"),
+        publish: true,
+        reports: [],
+        "attributes": [
+            {
+                "short_name": "Risk Domain",
+                "value_json": "\"1. Discrimination and Toxicity\""
+            },
+            {
+                "short_name": "Entity",
+                "value_json": "\"AI\""
+            },
+            {
+                "short_name": "Timing",
+                "value_json": "\"Post-deployment\""
+            },
+            {
+                "short_name": "Intent",
+                "value_json": "\"Unintentional\""
+            },
+            {
+                "short_name": "Risk Subdomain",
+                "value_json": "\"1.1. Unfair discrimination and misrepresentation\""
+            }
+        ],
+        incidents: [1],
+        namespace: "MIT",
+        notes: "",
+
+        // TODO: not in graphql schema but present on db
+        // created_at: new Date( "1708982300630")
+    }
 ]
 
 export default items;
