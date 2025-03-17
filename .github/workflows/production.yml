@@ -59,6 +59,7 @@ jobs:
       netlify-context: production
       netlify-alias:
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
 
   call-test-playwright-probes:
     uses: ./.github/workflows/test-playwright-probes.yml
