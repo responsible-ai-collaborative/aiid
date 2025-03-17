@@ -61,6 +61,7 @@ jobs:
       netlify-context: branch-deploy
       netlify-alias: pr-${{ github.event.pull_request.number }}
       site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
   call-test-playwright-probes:
     if: ${{ !failure() && !cancelled() }}

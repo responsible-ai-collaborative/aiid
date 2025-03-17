@@ -120,6 +120,7 @@ const typeDefs = `
         weight: Int
         description: String
         dummy_fields: [mongodbAiidprodTaxaDummy_fields]
+        automatedClassifications: Boolean
     }
 
     type mongodbAiidprodClassificationsAttribute {

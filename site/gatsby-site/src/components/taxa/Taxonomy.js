@@ -4,6 +4,8 @@ import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import { Button, Tooltip } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRobot, faHand } from '@fortawesome/free-solid-svg-icons';
 
 const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing = false, id }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
@@ -66,7 +68,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
           'tw-taxa-card-header tw-card-header bg-gray-50 ' + (editing && ' sticky top-0 z-50')
         }
       >
-        <h4 id={`${taxonomy.namespace}-classifications`} className="pr-0.8">
+        <h4 id={`${taxonomy.namespace}-classifications`} className="pr-0.8 mb-0">
           <Trans namespace={taxonomy.namespace}>
             {{ namespace: taxonomy.namespace }} Taxonomy Classifications
           </Trans>
@@ -84,10 +86,19 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
             )
           )}
         </>
-        <a
-          style={{ order: 2, marginLeft: 'auto' }}
-          href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}
-        >
+        <div className="mx-auto" />
+        <div className="mx-4 text-gray-600">
+          {taxonomy.automatedClassifications === true && (
+            <>
+              <FontAwesomeIcon icon={faRobot} className="mr-2" />
+              Machine-Classified
+            </>
+          )}
+          {taxonomy.automatedClassifications === false && (
+            <FontAwesomeIcon icon={faHand} title="Human-Classified" />
+          )}
+        </div>
+        <a style={{ order: 2 }} href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}>
           <Trans>Taxonomy Details</Trans>
         </a>
       </div>

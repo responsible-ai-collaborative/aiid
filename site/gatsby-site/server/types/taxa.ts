@@ -110,6 +110,7 @@ const TaxaType = new GraphQLObjectType({
         field_list: { type: new GraphQLList(FieldListType) },
         namespace: { type: GraphQLString },
         weight: { type: GraphQLInt },
+        automatedClassifications: { type: GraphQLBoolean },
     },
 });
 

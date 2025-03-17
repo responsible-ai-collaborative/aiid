@@ -92,6 +92,7 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
       taxonomyFields: t.field_list,
       dummyFields: t.dummy_fields,
       complete_entities: t.complete_entities,
+      automatedClassifications: t.automatedClassifications,
     });
   });
 
