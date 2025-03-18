@@ -4,21 +4,32 @@ exports.up = async ({ context: { client } }) => {
 
   const authDb = client.db('auth');
 
-  await authDb.collection('users').deleteMany({
+  const customDataDb = client.db('customData');
+
+  // Get the list of user IDs to delete
+  const userIdsToDelete = [
+    '669913cbd94a3e8a91dea333',
+    '632a0c33ebcf864e7983520c',
+    '632a0bd2717bef09c21ea385',
+  ];
+
+  // Delete from auth.users collection
+  const authDeleteResult = await authDb.collection('users').deleteMany({
     _id: {
-      $in: [
-        { $oid: '669913cbd94a3e8a91dea333' },
-        { $oid: '632a0c33ebcf864e7983520c' },
-        { $oid: '632a0bd2717bef09c21ea385' },
-      ],
+      $in: userIdsToDelete.map((id) => ({ $oid: id })),
     },
   });
 
-  console.log('Successfully deleted specified users');
-};
+  console.log(`Successfully deleted ${authDeleteResult.deletedCount} users from auth.users`);
 
-/** @type {import('umzug').MigrationFn<any>} */
-exports.down = async () => {
-  // Deleting users is not easily reversible, so the down function is intentionally empty.
-  // If rollback is necessary, you would need to manually re-create the deleted users or restore from a database backup.
+  // Delete from customData.users collection using userId field
+  const customDataDeleteResult = await customDataDb.collection('users').deleteMany({
+    userId: {
+      $in: userIdsToDelete,
+    },
+  });
+
+  console.log(
+    `Successfully deleted ${customDataDeleteResult.deletedCount} users from customData.users`
+  );
 };
