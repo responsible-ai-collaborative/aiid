@@ -160,6 +160,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
         type: ReportType,
         resolve: getQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
 
+            // TODO: remove this updateOne when we have all translations migrated to the new collection `translations.reports`
             const translations = context.client.db('translations').collection("reports_" + args.input.language);
 
             const update = {
@@ -170,6 +171,26 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
 
             await translations.updateOne({ report_number: args.input.report_number }, { $set: { ...update } }, { upsert: true });
 
+            // update the translation in the `reports` collection
+            const translationsCollection = context.client.db('translations').collection("reports");
+
+            const translation = {
+                title: args.input.title,
+                text: args.input.text,
+                plain_text: args.input.plain_text,
+                language: args.input.language,
+            };
+            
+            await translationsCollection.updateOne(
+                {
+                    report_number: args.input.report_number,
+                    language: args.input.language,
+                }, 
+                {
+                    $set: { ...translation }
+                }, 
+                { upsert: true }
+            );
 
             const reports = context.client.db('aiidprod').collection("reports");
 
