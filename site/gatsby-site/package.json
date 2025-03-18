@@ -152,8 +152,9 @@
     "process-notifications": "npx tsx --env-file=.env src/scripts/process-notifications.ts",
     "process-notifications:ci": "npx tsx src/scripts/process-notifications.ts",
     "translate-reports": "node src/scripts/translateReports.js",
-    "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
-    "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2"
+    "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
+    "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
+    "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
