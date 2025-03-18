@@ -83,6 +83,7 @@ describe(`Reports`, () => {
                     translations(languages: $languages) {
                         title
                         text
+                        plain_text
                         language
                     }
                 }
@@ -131,6 +132,13 @@ describe(`Reports`, () => {
                         language: "es",
                         title: "this is the title in spanish",
                         text: "this is the text in spanish",
+                        plain_text: "this is plain text in spanish",
+                    },
+                    {
+                        language: "fr",
+                        title: null,
+                        text: null,
+                        plain_text: null,
                     },
                 ]
             }
