@@ -18,6 +18,7 @@ jest.mock('@prismicio/client', () => ({
   }),
   filter: {
     dateAfter: jest.fn(),
+    dateBefore: jest.fn(),
   },
 }));
 
@@ -422,21 +423,21 @@ describe(`Weekly Notifications`, () => {
           incident_id: 1,
         },
       ]
-
+  
       const subscriptions: DBSubscription[] = [
         {
           type: 'ai-weekly-briefing',
           userId: '5f8f4b3b9b3e6f001f3b3b3b',
         }
       ]
-
+  
       const users: DBUser[] = [
         {
           userId: '5f8f4b3b9b3e6f001f3b3b3b',
           roles: ['admin'],
         }
       ]
-
+  
       const authUsers = [
         {
           _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
@@ -444,14 +445,14 @@ describe(`Weekly Notifications`, () => {
           roles: ['admin'],
         }
       ]
-
+  
       const entities: DBEntity[] = [
         {
           entity_id: 'entity-1',
           name: 'Entity 1',
         }
       ]
-
+  
       const incidents: Partial<DBIncident>[] = [
         {
           incident_id: 1,
@@ -466,7 +467,7 @@ describe(`Weekly Notifications`, () => {
           implicated_systems: [],
         }
       ]
-
+  
       const reports: DBReport[] = [
         {
           report_number: 1,
@@ -493,7 +494,7 @@ describe(`Weekly Notifications`, () => {
           user: 'user_id',
         }
       ]
-
+  
       await seedFixture({
         customData: {
           users,
@@ -509,18 +510,22 @@ describe(`Weekly Notifications`, () => {
           users: authUsers,
         }
       });
-
+  
       const mockBlogPosts = [
         {
           data: {
             slug: 'example-blog-post',
             title: [{ text: 'Example Blog Post' }],
             metaDescription: [{ text: 'This is an example blog post description.' }],
-            date: '2023-10-01'
+            date: '2023-10-01',
+            author: "John Doe",
+            image: {
+              url: 'image_url',
+            },
           }
         }
       ];
-
+  
       const mockUpdates = [
         {
           data: {
@@ -529,7 +534,7 @@ describe(`Weekly Notifications`, () => {
           }
         }
       ];
-    
+  
       // Mock both blog and update queries to return empty arrays by default
       const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
         if (documentType === 'blog') {
@@ -540,17 +545,17 @@ describe(`Weekly Notifications`, () => {
         }
         return Promise.resolve([]);
       });
-
+  
       (prismic.createClient as jest.Mock).mockReturnValue({
         getAllByType: mockGetAllByType
       });
-
+  
       mockSession('5f8f4b3b9b3e6f001f3b3b3b');
-
+  
       const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
-
+  
       const result = await processWeeklyNotifications();
-
+  
       expect(sendEmailMock).toHaveBeenCalledTimes(1);
       expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
         recipients: [
@@ -560,33 +565,40 @@ describe(`Weekly Notifications`, () => {
           },
         ],
         subject: "Your Weekly AI Incident Briefing",
+  
         dynamicData: {
-          newIncidents: [
-            {
-              id: 1,
-              title: "Incident 1",
-              url: config.SITE_URL + "/cite/1",
-              description: "Incident 1 description",
-              date: incidents[0].date,
-              developers: "",
-              deployers: "",
-              entitiesHarmed: "",
-              implicatedSystems: "",
-            }],
-          newBlogPosts: [{
-            "date": "2023-10-01",
-            "description": "This is an example blog post description.",
-            "title": "Example Blog Post",
-            "url": config.SITE_URL + "/blog/example-blog-post"
-          }],
-          updates: [{
-            "description": "Example Update",
-            "title": "Example Update"
-          }]
+          newBlogPosts:
+            [
+              {
+                author: "John Doe",
+                date: "2023-10-01",
+                description: "",
+                image: "image_url",
+                title: "Example Blog Post",
+                url: `${config.SITE_URL}/blog/example-blog-post`
+              }],
+          newIncidents:
+            [
+              {
+                id: 1,
+                date: incidents[0].date,
+                deployers: "",
+                description: "Incident 1 description",
+                developers: "",
+                entitiesHarmed: "",
+                implicatedSystems: "",
+                reportImageUrl: "image_url",
+                title: "Incident 1",
+                url: config.SITE_URL + "/cite/1",
+              }
+            ],
+          updates: [
+            { description: "Example Update", title: "Example Update" }
+          ]
         },
         templateId: "AIIncidentBriefing",
       }));
-
+  
       expect(result).toBe(1);
     });
 
