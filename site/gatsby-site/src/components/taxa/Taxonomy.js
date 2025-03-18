@@ -185,6 +185,10 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                           ${isFirst ? 'border-t-0' : ''}
                           ${isLast ? 'border-b-0' : ''}
                         `}
+                          components={{
+                            ol: ({ children }) => <ol className="mt-4 mb-4">{children}</ol>,
+                            p: ({ children }) => <p className="mt-4 mb-4">{children}</p>,
+                          }}
                         >
                           {showNotes ? taxonomy.notes : field.value}
                         </Markdown>
