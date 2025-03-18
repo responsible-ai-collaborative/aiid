@@ -3,12 +3,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import Card from 'elements/Card';
 import Envelope from '../../images/neural-net-envelope.png';
 import Link from 'components/ui/Link';
-import { useUserContext } from 'contexts/UserContext';
 
 export default function NewsletterSignup() {
   const { t } = useTranslation();
-
-  const { user } = useUserContext();
 
   return (
     <Card className="h-full w-full self-stretch flex justify-center shadow-md">
@@ -23,21 +20,12 @@ export default function NewsletterSignup() {
             className="w-2/5 mx-auto drop-shadow-xl mb-6"
           />
         </Link>
-        {user ? (
-          <p>
-            <Trans ns="login">
-              <Link to="/account?receiveAIBriefing=true">Subscribe</Link> to the &quot;AI Incident
-              Briefing&quot; and receive weekly notifications about new incidents and other updates.
-            </Trans>
-          </p>
-        ) : (
-          <p>
-            <Trans ns="login">
-              <Link to="/signup">Create an account</Link> to subscribe to new incident notifications
-              and other updates.
-            </Trans>
-          </p>
-        )}
+        <p>
+          <Trans>
+            <Link to="/signup">Create an account</Link> to subscribe to new incident notifications
+            and other updates.
+          </Trans>
+        </p>
       </div>
     </Card>
   );
