@@ -1,33 +1,24 @@
 import {
   ignoreWhitespace,
   insertContent,
-  bodyStyle,
-  wrapperStyle,
-  headerStyle,
-  headerTitleStyle,
-  mainActionLink,
 } from './shared';
 
 const getEmailTemplate = () => {
   const sectionStyle = ignoreWhitespace(`
     padding: 24px;
-    border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     font-size: 90%;
   `);
 
   const incidentStyle = ignoreWhitespace(`
     padding: 32px;
-    border-bottom: 1px solid #ccc;
     font-size: 90%;
   `);
 
   const incidentImageStyle = ignoreWhitespace(`
-    border-radius: 8px;
-    float: right; 
-    margin-top: 16px;
-    margin-left: 16px;
-    margin-bottom: 16px;
+    width: 100%; 
+    height: auto; 
+    object-fit: cover;
   `);
 
   const entityStyle = ignoreWhitespace(`
@@ -49,51 +40,67 @@ const getEmailTemplate = () => {
         Stay informed about new incidents, reports, blog posts, and platform updates.
       </p>
 
+      {% if newIncidents %}
       <div style="${sectionStyle}">
         <h2>New Incidents & Reports</h2>
-        {% if newIncidents %}
-          <ul>
             {% for incident in newIncidents %}
-              <li style="list-style-type: none;">
-                <div style="${incidentStyle}">
-                  <h1 style="font-size: 100%; margin-top: 0px;">
-                    Incident {{ incident.id }}: {{ incident.title }}
-                  </h1>
+                <div style="
+                  ${incidentStyle}
+                  {% if not loop.last %}
+                    border-bottom: 1px solid #ccc;
+                  {% endif %}
+                ">
+                  <div style="float: left; width: 30%;">
+                    <img src="{{ incident.reportImageUrl }}" alt="First Report Image" style="${incidentImageStyle}">
+                  </div>
+                  <div style="float: left; width: 65%; margin-left: 5%;">
+                    <h1 style="font-size: 100%; margin-top: 0px;">
+                      Incident {{ incident.id }}: {{ incident.title }}
+                    </h1>
 
-                  <p style="font-size: 85%;">{{ incident.date }}</p>
+                    <p style="font-size: 85%;">{{ incident.date }}</p>
 
-                  <p style="font-size: 85%;">
-                    {{ incident.description }}
-                  </p>
-                  <p style="margin-bottom: 0px; line-height: 1.75;">
-                    <strong>Alleged</strong>:
-                    <span style="${entityStyle}">{{ incident.developers }}</span> developed an AI system deployed by
-                    <span style="${entityStyle}">{{ incident.deployers }}</span> which harmed 
-                    <span style="${entityStyle}">{{ incident.entitiesHarmed }}</span>.
-                  </p>
+                    <p style="font-size: 85%;">
+                      {{ incident.description }}
+                    </p>
+                    <p style="margin-bottom: 0px; line-height: 1.75;">
+                      <strong>Alleged</strong>:
+                      <span style="${entityStyle}">{{ incident.developers }}</span> developed an AI system deployed by
+                      <span style="${entityStyle}">{{ incident.deployers }}</span> which harmed 
+                      <span style="${entityStyle}">{{ incident.entitiesHarmed }}</span>.
+                    </p>
+                  </div>
+                  <div style="clear: both;"></div>
                 </div>
-              </li>
             {% endfor %}
-          </ul>
-        {% else %}
-          <p>No new incidents were reported this week.</p>
-        {% endif %}
-      </div>
+            </div>
+            {% endif %}
 
       {% if newBlogPosts %}
         <div style="${sectionStyle}">
           <h2>New Blog Posts</h2>
           {% for blogPost in newBlogPosts %}
-            <div style="${incidentStyle}">
-              <h1 style="font-size: 100%; margin-top: 0px;">
-                <a href="{{ blogPost.url }}">{{ blogPost.title }}</a>
-              </h1>
+            <div style="
+                  ${incidentStyle}
+                  {% if not loop.last %}
+                    border-bottom: 1px solid #ccc;
+                  {% endif %}
+                ">
+              <div style="float: left; width: 30%;">
+                <img src="{{ blogPost.image }}" alt="Blog Post Image" style="${incidentImageStyle}">
+              </div>
+              <div style="float: left; width: 65%; margin-left: 5%;">
+                <h1 style="font-size: 100%; margin-top: 0px;">
+                  <a href="{{ blogPost.url }}">{{ blogPost.title }}</a>
+                </h1>
+                <p style="font-size: 85%;">{{ blogPost.author }}</p>
+                <p style="font-size: 85%;">{{ blogPost.date }}</p>
 
-              <p style="font-size: 85%;">{{ blogPost.date }}</p>
-
-              <p style="font-size: 85%;">
-                {{ blogPost.description }}
-              </p>
+                <p style="font-size: 85%;">
+                  {{ blogPost.description }}
+                </p>
+              </div>
+              <div style="clear: both;"></div>
             </div>
           {% endfor %}
         </div>
@@ -103,7 +110,12 @@ const getEmailTemplate = () => {
         <div style="${sectionStyle}">
           <h2>New Features & Updates</h2>
           {% for update in updates %}
-            <div style="${incidentStyle}">
+            <div style="
+                  ${incidentStyle}
+                  {% if not loop.last %}
+                    border-bottom: 1px solid #ccc;
+                  {% endif %}
+                ">
               <h1 style="font-size: 100%; margin-top: 0px;">
                 {{ update.title }}
               </h1>

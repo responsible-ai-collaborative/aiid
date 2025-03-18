@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import config from "../../server/config";
-import { Context, DBEntity, DBIncident, DBSubscription } from "../../server/interfaces";
+import { Context, DBEntity, DBIncident, DBReport, DBSubscription } from "../../server/interfaces";
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
@@ -12,6 +12,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
   const subscriptionsCollection = context.client.db('customData').collection("subscriptions");
   const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
   const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
+  const reportsCollection = context.client.db('aiidprod').collection<DBReport>("reports");
 
   const pendingWeeklyNotificationsToNewIncidents = await notificationsCollection.find({
     processed: false,
@@ -22,7 +23,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed
     await markNotificationsAsProcessed(notificationsCollection, pendingWeeklyNotificationsToNewIncidents);
     console.log("No new incidents for weekly briefing.");
-    return;
+    return result;
   }
 
   result += pendingWeeklyNotificationsToNewIncidents.length;
@@ -49,12 +50,27 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
   const incidents = await incidentsCollection.find({ incident_id: { $in: incidentIds } }).toArray();
 
+  // Find first report for each incident
+  const firstReports = await Promise.all(incidents.map(async (incident) => {
+    if (incident.reports && incident.reports.length > 0) {
+      const firstReportNumber = incident.reports[0];
+      const report = await reportsCollection.findOne({ report_number: firstReportNumber });
+
+      return {
+        incident_id: incident.incident_id,
+        report_number: report?.report_number,
+        image_url: report?.image_url
+      };
+    }
+    return null; // Return null or handle the case where there are no reports
+  }).filter(report => report !== null)); // Filter out null values
+
   const incidentList = incidents.map(i => {
     const developers = buildEntityList(allEntities, i['Alleged developer of AI system']);
     const deployers = buildEntityList(allEntities, i['Alleged deployer of AI system']);
     const entitiesHarmed = buildEntityList(allEntities, i['Alleged harmed or nearly harmed parties']);
     const implicatedSystems = buildEntityList(allEntities, i.implicated_systems);
-
+    const reportImageUrl = firstReports.find(r => r && r.incident_id === i.incident_id)?.image_url;
     return {
       id: i.incident_id,
       title: i.title,
@@ -64,7 +80,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
       developers,
       deployers,
       entitiesHarmed,
-      implicatedSystems
+      implicatedSystems,
+      reportImageUrl
     }
   });
 
@@ -107,8 +124,10 @@ async function notificationsToWeeklyIncidents(context: Context) {
     newBlogPosts = response.map((blogPost: any) => ({
       url: `${config.SITE_URL}/blog/${blogPost.data.slug}`,
       title: blogPost.data.title[0]?.text ?? '',
-      description: blogPost.data.metaDescription ?? '',
-      date: blogPost.data.date
+      description: blogPost.data.metadescription ?? '',
+      date: blogPost.data.date,
+      image: blogPost.data.image.url ?? '',
+      author: blogPost.data.author ?? ''
     }));
   } catch (error: any) {
     console.error('Error fetching newBlogPosts:', JSON.stringify(error), JSON.stringify(error.message));
@@ -201,8 +220,8 @@ const markNotificationsAsNotProcessed = async (notificationsCollection: any, not
 
 const buildEntityList = (allEntities: any, entityIds: any) => {
   const entityNames = entityIds.map((entityId: string) => {
-      const entity = allEntities.find((entity: any) => entity.entity_id === entityId);
-      return entity ? `<a href="${config.SITE_URL}/entities/${entity.entity_id}">${entity.name}</a>` : '';
+    const entity = allEntities.find((entity: any) => entity.entity_id === entityId);
+    return entity ? `<a href="${config.SITE_URL}/entities/${entity.entity_id}">${entity.name}</a>` : '';
   });
 
   if (entityNames.length < 3) { return entityNames.join(' and '); }
