@@ -10,7 +10,6 @@ import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processWeeklyNotifications } from '../../src/scripts/process-weekly-notifications';
 import * as prismic from '@prismicio/client';
-import { processNotifications } from '../../src/scripts/process-notifications';
 
 jest.mock('@prismicio/client', () => ({
   createClient: jest.fn().mockReturnValue({
