@@ -2,7 +2,9 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } f
 import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { FIND_CLASSIFICATION, UPSERT_CLASSIFICATION } from '../../graphql/classifications';
-import { MACHINE_CLASSIFICATION_BY_INCIDENT_ID } from '../../graphql/machineClassifications';
+import { FIND_INCIDENT } from '../../graphql/incidents';
+import { FIND_REPORT } from '../../graphql/reports';
+import { FIND_ENTITIES } from '../../graphql/entities';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -12,7 +14,6 @@ import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
 import SubmitButton from 'components/ui/SubmitButton';
 import { uniq } from 'lodash';
-import { FIND_ENTITIES } from '../../graphql/entities';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, reportNumber, onSubmit, active },
@@ -34,48 +35,91 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
   const formRef = useRef(null);
 
-  // const debouncedSetInitialValues = useRef(
-  //   debounce((values) => setInitialValues(values), 500)
-  // ).current;
-
-  const [machineClassifyByIncidentId] = useMutation(MACHINE_CLASSIFICATION_BY_INCIDENT_ID);
+  const client = useApolloClient();
 
   const onMachineClassification = async () => {
     try {
-      const { data } = await machineClassifyByIncidentId({
+      const incidentResult = await client.query({
+        query: FIND_INCIDENT,
         variables: {
-          incident_id: incidentId,
-          taxonomy: taxonomy.namespace,
+          filter: { incident_id: { EQ: incidentId } },
         },
       });
 
-      if (data && data.machineClassificationByIncidentId) {
-        const result = data.machineClassificationByIncidentId;
+      if (!incidentResult.data || !incidentResult.data.incident) {
+        throw new Error(`Incident with ID ${incidentId} not found`);
+      }
 
-        const classification = result.classification;
+      const incident = incidentResult.data.incident;
 
-        if (classification.attributes && classification.attributes.length > 0) {
-          const newValues = {
-            ...parseClassification(taxonomy, classification),
-            notes: result.explanation,
-          };
+      let combinedText = `${incident.title}\n${incident.description || ''}`;
 
-          formRef.current.setValues(newValues);
+      if (incident.reports && incident.reports.length > 0) {
+        const firstReportNumber = incident.reports[0].report_number;
 
-          addToast({
-            message: `Classification applied with confidence: ${(result.confidence * 100).toFixed(
-              2
-            )}%`,
-            severity: SEVERITY.success,
-          });
-        } else {
-          addToast({
-            message: 'No classification attributes returned',
-            severity: SEVERITY.warning,
-          });
+        const reportResult = await client.query({
+          query: FIND_REPORT,
+          variables: {
+            filter: { report_number: { EQ: firstReportNumber } },
+          },
+          fetchPolicy: 'network-only',
+        });
+
+        if (reportResult.data && reportResult.data.report) {
+          const report = reportResult.data.report;
+
+          if (report.text) {
+            combinedText += `\n${report.title || ''}\n${report.description || ''}\n${report.text}`;
+          }
         }
+      }
+
+      const response = await fetch('https://aiid-llm.vercel.app/api/tools/get-classifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: combinedText,
+          taxonomy: taxonomy.namespace,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Classification API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (
+        data &&
+        data.classification &&
+        data.classification.attributes &&
+        data.classification.attributes.length > 0
+      ) {
+        const classification = {
+          namespace: taxonomy.namespace,
+          attributes: data.classification.attributes,
+        };
+
+        const newValues = {
+          ...parseClassification(taxonomy, classification),
+          notes: data.explanation,
+        };
+
+        formRef.current.setValues(newValues);
+
+        addToast({
+          message: `Classification applied with confidence: ${(
+            parseFloat(data.confidence) * 100
+          ).toFixed(2)}%`,
+          severity: SEVERITY.success,
+        });
       } else {
-        addToast({ message: 'Classification failed', severity: SEVERITY.danger });
+        addToast({
+          message: 'No classification attributes returned',
+          severity: SEVERITY.warning,
+        });
       }
     } catch (error) {
       console.error('Error during machine classification:', error);
@@ -111,8 +155,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
   // We can't use a hook because we want to load the entities data
   // only if it will be used.
-  const client = useApolloClient();
-
   useEffect(() => {
     (async () => {
       if (taxonomy.complete_entities) {
