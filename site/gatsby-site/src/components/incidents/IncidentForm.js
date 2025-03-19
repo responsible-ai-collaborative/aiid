@@ -11,6 +11,7 @@ import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
 import IncidentsField from './IncidentsField';
+import LinkedReportsForm from './LinkedReportsForm';
 import { Spinner } from 'flowbite-react';
 
 const relatedIncidentIdsQuery = gql`
@@ -262,6 +263,10 @@ function IncidentForm({ entityNames = [] }) {
             data-cy="editor-notes-input"
           />
         </FieldContainer>
+
+        {values.reports && values.reports.length > 0 && (
+          <LinkedReportsForm reports={values.reports} />
+        )}
 
         <div id="similar-incidents">
           <Label

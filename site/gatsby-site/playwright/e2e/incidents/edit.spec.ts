@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
-import { conditionalIntercept, waitForRequest, test, fillAutoComplete } from '../../utils';
+import { test, fillAutoComplete, query } from '../../utils';
 import { init } from '../../memory-mongo';
+import gql from 'graphql-tag';
 
 test.describe('Incidents', () => {
   const url = '/incidents/edit?incident_id=3';
@@ -40,5 +41,93 @@ test.describe('Incidents', () => {
     await page.getByText('Save', { exact: true }).click();
 
     await page.locator('.tw-toast:has-text("Incident 3 updated successfully.")').isVisible();
+  });
+
+  test('Should successfully edit tags for linked reports', async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto(url);
+
+    await expect(page.locator('text=Linked Reports')).toBeVisible();
+
+
+    const reportSection = page.locator('[data-testid="linked-report-3"]');
+
+
+    await expect(reportSection.getByText('Test Tag')).toBeVisible();
+
+    await reportSection.getByRole('button', { name: 'Edit' }).click();
+
+    await expect(reportSection.locator('.Typeahead')).toBeVisible();
+
+    const removeButton = reportSection.locator('.rbt-token-remove-button');
+    await removeButton.click();
+
+    await reportSection.locator('input[type="text"]').fill('New Tag');
+    await reportSection.locator('a[aria-label="New Tag"]').click();
+
+    await reportSection.getByText('Save').click();
+
+    await expect(page.locator('.tw-toast:has-text("Tags updated successfully")')).toBeVisible();
+
+    await expect(reportSection.getByText('New Tag')).toBeVisible();
+    await expect(reportSection.getByText('Test Tag')).not.toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        report(filter: { report_number: { EQ: 3 } }) {
+          report_number
+          tags
+        }
+      }`
+    });
+
+    expect(data.report.tags).toEqual(['New Tag']);
+  });
+
+  test('Should handle cancellation when editing tags', async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto(url);
+
+    await expect(page.locator('text=Linked Reports')).toBeVisible();
+
+    const reportSection = page.locator('[data-testid="linked-report-3"]');
+
+    await expect(reportSection.getByText('Test Tag')).toBeVisible();
+
+    await reportSection.locator('button:has-text("Edit")').click();
+
+    await expect(reportSection.locator('.Typeahead')).toBeVisible();
+
+    const removeButton = reportSection.locator('.rbt-token-remove-button');
+    await removeButton.click();
+
+    await reportSection.locator('input[type="text"]').fill('New Tag');
+    await reportSection.locator('a[aria-label="New Tag"]').click();
+
+    await reportSection.locator('button:has-text("Cancel")').click();
+
+    await expect(reportSection.getByText('Test Tag')).toBeVisible();
+    await expect(reportSection.getByText('New Tag')).not.toBeVisible();
+
+    // Verify the tags in the database using GraphQL query
+    const { data } = await query({
+      query: gql`{
+        report(filter: { report_number: { EQ: 3 } }) {
+          report_number
+          tags
+        }
+      }`
+    });
+
+    // Verify that the tags in the database remain unchanged after cancellation
+    expect(data.report.tags).toEqual(['Test Tag']);
   });
 });
