@@ -39,6 +39,17 @@ export const FIND_REPORT = gql(`
   }
 `);
 
+export const FIND_REPORT_MINIMAL = gql(`
+  query FindReportMinimal($filter: ReportFilterType!) {
+    report(filter: $filter) {
+      title
+      description
+      text
+      report_number
+    }
+  }
+`);
+
 export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
   query FindReportWithTranslations($filter: ReportFilterType!) {
     report(filter: $filter) {

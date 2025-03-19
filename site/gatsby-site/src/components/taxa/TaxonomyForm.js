@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { FIND_CLASSIFICATION, UPSERT_CLASSIFICATION } from '../../graphql/classifications';
 import { FIND_INCIDENT } from '../../graphql/incidents';
-import { FIND_REPORT } from '../../graphql/reports';
+import { FIND_REPORT_MINIMAL } from '../../graphql/reports';
 import { FIND_ENTITIES } from '../../graphql/entities';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
@@ -58,7 +58,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         const firstReportNumber = incident.reports[0].report_number;
 
         const reportResult = await client.query({
-          query: FIND_REPORT,
+          query: FIND_REPORT_MINIMAL,
           variables: {
             filter: { report_number: { EQ: firstReportNumber } },
           },
