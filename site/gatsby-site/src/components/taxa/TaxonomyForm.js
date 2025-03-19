@@ -7,7 +7,6 @@ import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
 import { getClassificationValue, serializeClassification } from 'utils/classifications';
-import { debounce } from 'debounce';
 import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
@@ -25,7 +24,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
   const [error] = useState('');
 
-  const [initialValues, setInitialValues] = useState({});
+  const [initialValues, setInitialValues] = useState();
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
 
@@ -35,9 +34,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
   const formRef = useRef(null);
 
-  const debouncedSetInitialValues = useRef(
-    debounce((values) => setInitialValues(values), 500)
-  ).current;
+  // const debouncedSetInitialValues = useRef(
+  //   debounce((values) => setInitialValues(values), 500)
+  // ).current;
 
   const [machineClassifyByIncidentId] = useMutation(MACHINE_CLASSIFICATION_BY_INCIDENT_ID);
 
@@ -56,19 +55,13 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         const classification = result.classification;
 
         if (classification.attributes && classification.attributes.length > 0) {
-          const newValues = { ...formRef.current.values, notes: result.explanation };
-
-          classification.attributes.forEach((attr) => {
-            const valueJson = JSON.parse(attr.value_json);
-
-            const field = taxonomy.taxonomyFields.find((f) => f.short_name === attr.short_name);
-
-            if (field) {
-              newValues[attr.short_name] = valueJson;
-            }
-          });
+          const newValues = {
+            ...parseClassification(taxonomy, classification),
+            notes: result.explanation,
+          };
 
           formRef.current.setValues(newValues);
+
           addToast({
             message: `Classification applied with confidence: ${(result.confidence * 100).toFixed(
               2
@@ -151,62 +144,59 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       []
     );
 
-  const loadInitialValues = () => {
+  const parseClassification = (taxonomy, classification) => {
+    const values = {};
+
+    taxonomy.taxonomyFields.forEach((field) => {
+      let classificationValue =
+        classification && getClassificationValue(classification, field.short_name);
+
+      if (classificationValue && field.display_type == 'object-list') {
+        classificationValue.forEach((subClassification, i) => {
+          for (const subAttribute of subClassification.attributes) {
+            const formValue = JSON.parse(subAttribute.value_json);
+
+            const formKey = [field.short_name, i, subAttribute.short_name].join('___');
+
+            values[formKey] = formValue;
+          }
+        });
+      }
+
+      if (classificationValue === null) {
+        if (field.display_type === 'multi') {
+          classificationValue = [];
+        } else {
+          classificationValue = '';
+        }
+      }
+      if (classificationValue) {
+        if (field.display_type === 'date') {
+          classificationValue = classificationValue.split('T')[0];
+        }
+      }
+
+      values[field.short_name] = classificationValue;
+    });
+
+    return values;
+  };
+
+  useEffect(() => {
     if (taxonomy && classificationsData) {
       const notes = classification?.notes || '';
 
       const publish = classification?.publish || false;
 
-      const fieldsArray = [];
+      const defaultValues = parseClassification(taxonomy, classification);
 
-      const defaultValues = {};
-
-      taxonomy.taxonomyFields.forEach((field) => {
-        fieldsArray.push(field);
-
-        let classificationValue =
-          classification && getClassificationValue(classification, field.short_name);
-
-        if (classificationValue && field.display_type == 'object-list') {
-          classificationValue.forEach((subClassification, i) => {
-            for (const subAttribute of subClassification.attributes) {
-              const formValue = JSON.parse(subAttribute.value_json);
-
-              const formKey = [field.short_name, i, subAttribute.short_name].join('___');
-
-              defaultValues[formKey] = formValue;
-            }
-          });
-        }
-
-        if (classificationValue === null) {
-          if (field.display_type === 'multi') {
-            classificationValue = [];
-          } else {
-            classificationValue = '';
-          }
-        }
-        if (classificationValue) {
-          if (field.display_type === 'date') {
-            classificationValue = classificationValue.split('T')[0];
-          }
-        }
-
-        defaultValues[field.short_name] = classificationValue;
-      });
+      const fieldsArray = taxonomy.taxonomyFields.map((field) => field);
 
       setFieldsWithDefaultValues(fieldsArray);
-
-      setInitialValues({
-        ...defaultValues,
-        notes,
-        publish,
-      });
+      setInitialValues({ ...defaultValues, notes, publish });
       setLoading(false);
     }
-  };
-
-  useEffect(loadInitialValues, [classificationsData, taxonomy]);
+  }, [classificationsData, taxonomy]);
 
   const submit = async (values, { setSubmitting }) => {
     try {
@@ -313,7 +303,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           setFieldValue,
           isSubmitting,
         }) => {
-          debouncedSetInitialValues(values);
           return (
             <Form onSubmit={handleSubmit}>
               <div className="mb-4" data-cy="Notes">
