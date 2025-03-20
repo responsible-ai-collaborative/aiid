@@ -2,6 +2,8 @@
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
+  const { ObjectId } = require('mongodb');
+
   const authDb = client.db('auth');
 
   const customDataDb = client.db('customData');
@@ -16,7 +18,7 @@ exports.up = async ({ context: { client } }) => {
   // Delete from auth.users collection
   const authDeleteResult = await authDb.collection('users').deleteMany({
     _id: {
-      $in: userIdsToDelete.map((id) => ({ $oid: id })),
+      $in: userIdsToDelete.map((id) => new ObjectId(id)),
     },
   });
 

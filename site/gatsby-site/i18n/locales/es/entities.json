@@ -22,6 +22,7 @@
     "Incidents involved as both Developer and Deployer": "Incidentes involucrados como desarrollador e implementador",
     "Incidents Harmed By": "Afectado por Incidentes",
     "Alleged: <2></2> developed and deployed an AI system, which harmed <6></6>.": "Presunto: un sistema de IA desarrollado e implementado por <2></2>, perjudicó a <6></6>.",
+    "Alleged: <2></2> developed and deployed an AI system, which harmed <5></5>.": "Presunto: un sistema de IA desarrollado e implementado por <2></2>, perjudicó a <5></5>.",
     "Alleged implicated AI system:": "Sistema de IA presuntamente implicado:",
     "Alleged implicated AI systems:": "Sistemas de IA presuntamente implicados:",
     "Alleged: <1></1> developed an AI system deployed by <4></4>, which harmed <6></6>.": "Presunto: un sistema de IA desarrollado por <1></1> e implementado por <4></4>, perjudicó a <6></6>.",
@@ -33,5 +34,9 @@
     "Error updating Entity.": "Error al actualizar la Entidad.",
     "Entity Relationships": "Relaciones de Entidad",
     "Add or remove relationships to other entities": "Agregar o eliminar relaciones con otras entidades",
-    "Loading related entities...": "Cargando entidades relacionadas..."
+    "Loading related entities...": "Cargando entidades relacionadas...",
+    "The AI implicated system is": "El sistema de IA implicado es",
+    "The AI implicated systems are": "Los sistemas de IA implicados son",
+    "Implicated AI system:": "Sistema de IA implicado:",
+    "Implicated AI systems:": "Sistemas de IA implicados:"
 }
