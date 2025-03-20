@@ -100,7 +100,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                 ) : (
                   <FontAwesomeIcon icon={faRobot} className="mr-2" />
                 )}
-                <Trans>Machine Classification</Trans>
+                <Trans>Auto-Classify</Trans>
               </Button>
             </>
           ) : (
