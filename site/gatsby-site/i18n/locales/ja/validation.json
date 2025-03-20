@@ -9,7 +9,6 @@
   "Incident ID {{value}} not found!": "インシデント{{value}}が見つかりません！",
   "Type and press Enter to add an item": "アイテムを追加するには入力してEnterを押下してください",
   "*Text must have at least 80 characters": "*テキストは少なくとも80文字必要です",
-  "*Text can’t be longer than 50000 characters": "*50000文字を超えるテキストは登録できません",
   "Please review report. Some data is missing.": "レポートを確認してください。足りない情報があります",
   "Please review submission. Some data is missing.": "投稿を確認してください。足りない情報があります",
   "Some data is missing.": "足りない情報があります",
@@ -45,5 +44,6 @@
   "Each alleged Developer must have at least 3 characters and less than 200": "推定される開発者は3文字以上200文字以下でなければいけません",
   "Each alleged Deployer must have at least 3 characters and less than 200": "推定されるデプロイヤーは3文字以上200文字以下でなければいけません",
   "Each alleged Harmed parties must have at least 3 characters and less than 200": "推定される被害グループは3文字以上200文字以下でなければいけません",
-  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "推定される関連AIシステムは3文字以上200文字以下でなければいけません"
+  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "推定される関連AIシステムは3文字以上200文字以下でなければいけません",
+  "*Text can't be longer than 50000 characters": "*50000文字を超えるテキストは登録できません"
 }
