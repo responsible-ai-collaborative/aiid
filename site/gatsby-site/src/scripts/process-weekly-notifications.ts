@@ -85,27 +85,20 @@ async function notificationsToWeeklyIncidents(context: Context) {
     }
   });
 
-  const now = new Date();
-  const dayOfWeek = now.getUTCDay();
-  // const dayOfWeek = 0; // For testing
-  const daysSinceLastSunday = (dayOfWeek + 6) % 7; // Calculate days since last Sunday
-  const lastSunday = new Date(now);
-  lastSunday.setUTCDate(now.getUTCDate() - daysSinceLastSunday);
-  lastSunday.setUTCHours(15, 0, 0, 0); // Set to start of the day
-
-  const thisSunday = new Date(lastSunday);
-  thisSunday.setUTCDate(lastSunday.getUTCDate() + 7); // Move to this Sunday
-  thisSunday.setUTCHours(15, 0, 0, 0); // Set to start of the day
-
   // Initialize the Prismic client
   const prismicClient = await prismic.createClient(config.GATSBY_PRISMIC_REPO_NAME, {
     accessToken: config.PRISMIC_ACCESS_TOKEN,
   });
 
-  const lastSundayDate = lastSunday.toISOString().split('T')[0]; // 'YYYY-MM-DD'
-  const thisSundayDate = thisSunday.toISOString().split('T')[0]; // 'YYYY-MM-DD'
-  const lastSundayISOString = lastSunday.toISOString().split('.')[0] + 'Z';
-  const thisSundayISOString = thisSunday.toISOString().split('.')[0] + 'Z';
+  const now = new Date();
+  const lastWeek = new Date(now);
+  lastWeek.setUTCDate(now.getUTCDate() - 7); // Move to 7 days ago
+  lastWeek.setUTCHours(15, 0, 0, 0); // Set to start of the day
+
+  const lastWeekDate = lastWeek.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  const nowDate = now.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  const lastWeekISOString = lastWeek.toISOString().split('.')[0] + 'Z';
+  const nowISOString = now.toISOString().split('.')[0] + 'Z';
 
   let newBlogPosts: any[] = [];
 
@@ -116,8 +109,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
         direction: "desc"
       },
       filters: [
-        prismic.filter.dateAfter('my.blog.date', lastSundayDate),
-        prismic.filter.dateBefore('my.blog.date', thisSundayDate)
+        prismic.filter.dateAfter('my.blog.date', lastWeekDate),
+        prismic.filter.dateBefore('my.blog.date', nowDate)
       ]
     });
 
@@ -142,8 +135,8 @@ async function notificationsToWeeklyIncidents(context: Context) {
         field: "document.first_publication_date",
       },
       filters: [
-        prismic.filter.dateAfter('document.first_publication_date', lastSundayISOString),
-        prismic.filter.dateBefore('document.first_publication_date', thisSundayISOString)
+        prismic.filter.dateAfter('document.first_publication_date', lastWeekISOString),
+        prismic.filter.dateBefore('document.first_publication_date', nowISOString)
       ]
     });
 
@@ -156,7 +149,6 @@ async function notificationsToWeeklyIncidents(context: Context) {
     console.error('Error fetching updates:', JSON.stringify(error));
     updates = [];
   }
-
 
   try {
     if (incidentList.length > 0 && recipients.length > 0) {
