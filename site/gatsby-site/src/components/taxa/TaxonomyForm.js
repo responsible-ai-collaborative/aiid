@@ -15,6 +15,9 @@ import Card from 'elements/Card';
 import SubmitButton from 'components/ui/SubmitButton';
 import { uniq } from 'lodash';
 
+const API_URL = 'https://aiid-llm.vercel.app/api/tools/get-classifications';
+// const API_URL = 'http://localhost:3000/api/tools/get-classifications';
+
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, reportNumber, onSubmit, active },
   ref
@@ -74,7 +77,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         }
       }
 
-      const response = await fetch('https://aiid-llm.vercel.app/api/tools/get-classifications', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
