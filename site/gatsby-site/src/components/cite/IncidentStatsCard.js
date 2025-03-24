@@ -77,7 +77,12 @@ const IncidentStatsCard = ({
               {taxonomiesWithClassifications
                 .filter((t) => !t.includes('_Annotator,'))
                 .map((t, i) => {
-                  const color = { CSETv1: 'orange', GMF: 'blue' }[t] || 'gray';
+                  const taxonomyStyle =
+                    {
+                      CSETv1: 'text-orange-800 bg-orange-200',
+                      GMF: 'text-blue-800 bg-blue-200',
+                      MIT: 'text-[#760216] bg-gray-100', // "MIT Red" https://brand.mit.edu/color
+                    }[t] || 'text-gray-800 bg-gray-200';
 
                   return (
                     <>
@@ -88,7 +93,7 @@ const IncidentStatsCard = ({
                         className={`
                         inline-block  px-2.5 py-0.5 rounded
                         font-semibold text-xs
-                        bg-${color}-200 text-${color}-800
+                        ${taxonomyStyle}
                       `}
                       >
                         {t}

@@ -296,8 +296,8 @@ class AlgoliaUpdater {
 
     const translations = await this.mongoClient
       .db('translations')
-      .collection(`reports_${language}`)
-      .find({})
+      .collection('reports')
+      .find({ language })
       .toArray();
 
     const fullReports = reports.map((r) => {
