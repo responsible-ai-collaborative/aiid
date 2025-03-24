@@ -433,9 +433,13 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
                 data-cy="promote-to-report-button"
               >
                 <FontAwesomeIcon className="mr-2" icon={faCheck} />
-                <Trans ns="submitted" id={values.incident_ids[0]}>
-                  Add to incident {{ id: values.incident_ids[0] }}
-                </Trans>
+                {values.incident_ids.length > 1 ? (
+                  <Trans ns="submitted">Add to incidents {values.incident_ids.join(', ')}</Trans>
+                ) : (
+                  <Trans ns="submitted" id={values.incident_ids[0]}>
+                    Add to incident {{ id: values.incident_ids[0] }}
+                  </Trans>
+                )}
               </Button>
             </div>
           )}
