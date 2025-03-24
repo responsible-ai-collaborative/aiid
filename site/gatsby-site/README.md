@@ -248,18 +248,38 @@ In general, skipping the TSNE visualization has the most significant reduction i
 ### Restoring Production database to Staging
 
 There is a GitHub Workflow "Restore Prod DB into Staging" that can be triggered manually to dump and restore Production database into Staging database (both `aiidprod` and `translations` databases)
-Go to [Actions](https://github.com/responsible-ai-collaborative/aiid/actions) > `Restore Prod DB into Staging` > `Run Workflow` dropdown > `Run Workflow`
 
-To enable this workflow these [GitHub secrets](https://github.com/responsible-ai-collaborative/aiid/settings/secrets/actions) should be added:
+### Using a Reduced Dataset for GitHub Runners
 
+To work with a smaller subset of the database (useful for GitHub Actions free runners or local development), you can use the `restore-mongodb.ts` script to create a reduced dataset containing only specific incidents and their related reports.
+
+The script allows you to specify which incidents to include, and it will automatically include all related incidents (similar and dissimilar) and their associated reports.
+
+Usage:
+
+```bash
+npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations --incidentIds=ID1,ID2,ID3
 ```
-DB_PRODUCTION_CONNECTION_STRING=[Production connection string with readonly user credentials. ie: mongodb+srv://[DB readonly user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
-DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credentials. ie: mongodb+srv://[DB admin user]:[DB user password]@aiiddev-xxxxxx.gcp.mongodb.net]
 
-NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
+Example with featured incidents from the AIID:
+
+```bash
+npm run restore-mongodb -- --sourceUrl=mongodb+srv://username:password@cluster.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --incidentIds=23,1967,1551,835,1470,1118,1773,1509,1245,679,1606,1374,1065,1543,1505,1468,1539,1420,101,12,368,1427,392,595,1235,45,620,519
 ```
 
+This example includes the featured incidents that are shown on the AIID homepage, creating a representative subset of the database suitable for testing and development.
 
+The script will:
+1. Find all the specified incidents
+2. Include all related incidents (those marked as similar or dissimilar)
+3. Include all reports associated with these incidents
+4. Copy all the data to the destination database
+
+You can also run this in dry-run mode to see what would be copied without making changes:
+
+```bash
+npm run restore-mongodb -- --sourceUrl=mongodb+srv://username:password@cluster.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --incidentIds=23,1967,1551 --dryRun
+```
 
 ## Further Reading
 
