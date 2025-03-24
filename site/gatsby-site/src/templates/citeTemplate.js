@@ -241,7 +241,10 @@ function CiteTemplate({
           <Row>
             <Col>
               <div>
-                <strong>Description</strong>: {incident.description}
+                <strong>
+                  <Trans>Description</Trans>
+                </strong>
+                : {incident.description}
               </div>
             </Col>
           </Row>
