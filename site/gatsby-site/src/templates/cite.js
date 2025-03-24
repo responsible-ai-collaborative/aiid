@@ -13,6 +13,7 @@ import config from '../../config';
 import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
 import CiteDynamicTemplate from './citeDynamicTemplate';
+import { useTranslation } from 'react-i18next';
 
 function CitePage(props) {
   const {
@@ -43,9 +44,13 @@ function CitePage(props) {
 
   const { locale: language } = useLocalization();
 
+  const { t } = useTranslation();
+
   // meta tags
 
-  const metaTitle = `Incident ${translatedIncident.incident_id}: ${translatedIncident.title}`;
+  const metaTitle = `${t('Incident')} ${translatedIncident.incident_id}: ${
+    translatedIncident.title
+  }`;
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
