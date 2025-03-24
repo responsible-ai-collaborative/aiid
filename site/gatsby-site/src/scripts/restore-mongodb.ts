@@ -1,13 +1,18 @@
 /**
  * A script for restoring data from a MongoDB database to an in-memory MongoDB instance.
  * 
- * Usage: npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations
+ * Usage: npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations [--incidentIds=ID1,ID2,ID3]
  * 
  * The script will copy all collections from the specified databases from the source to the destination MongoDB instance.
  * By default, it will restore the 'aiidprod' and 'translations' databases, but you can specify other databases as needed.
+ * You can optionally specify which incidents to restore by using the --incidentIds parameter with a comma-separated list.
+ * When specifying incidents, the script will automatically include only the reports associated with those incidents.
+ * When specifying incidents, the script will also include all related incidents (similar and dissimilar) and their reports.
+ * If incidentIds is not provided, all incidents will be restored.
  * 
  * Example:
  * npm run restore-mongodb -- --sourceUrl=mongodb+srv://*:*@*.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/
+ * npm run restore-mongodb -- --sourceUrl=mongodb+srv://*:*@*.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --incidentIds=1,42,100
  */
 
 import { MongoClient } from 'mongodb';
@@ -21,6 +26,7 @@ interface CommandLineArgs {
   destinationUrl: string;
   databases: string;
   dryRun: boolean;
+  incidentIds: string;
 }
 
 function parseArgs(): CommandLineArgs {
@@ -45,10 +51,18 @@ function parseArgs(): CommandLineArgs {
       type: 'boolean',
       default: false
     })
+    .option('incidentIds', {
+      description: 'Comma-separated list of incident IDs to restore. Associated reports will be included. If not provided, all incidents will be restored.',
+      type: 'string',
+      default: ''
+    })
     .help()
     .alias('help', 'h')
     .parseSync() as CommandLineArgs;
 }
+
+// Keep track of the reports that need to be included
+let associatedReportNumbers: (number | string)[] = [];
 
 async function connectToMongoDB(url: string, description: string): Promise<MongoClient> {
   const spinner = ora(`Connecting to ${description} MongoDB at ${url}`).start();
@@ -77,48 +91,341 @@ async function listCollections(client: MongoClient, dbName: string): Promise<str
   return collections.map(collection => collection.name);
 }
 
+async function findAllRelatedIncidents(
+  sourceClient: MongoClient,
+  initialIncidentIds: (number | string)[]
+): Promise<Set<number | string>> {
+  const sourceDb = sourceClient.db('aiidprod');
+  const incidentsCollection = sourceDb.collection('incidents');
+
+  // Get a sample incident to determine the ID type used in the DB
+  const sampleIncident = await incidentsCollection.findOne({});
+  const idType = sampleIncident ? typeof sampleIncident.incident_id : 'number';
+
+  // Use a Set to avoid duplicates - always includes the initial IDs
+  const processedIncidentIds = new Set<number | string>();
+  // Start with the initial incident IDs provided by the user, converting to correct type
+  const pendingIncidentIds: (number | string)[] = initialIncidentIds.map(id => {
+    // Convert to the correct type based on what's in the DB
+    if (idType === 'number') {
+      const numId = Number(id);
+      return isNaN(numId) ? null : numId;
+    } else if (idType === 'string') {
+      return String(id);
+    }
+    return id;
+  }).filter(id => id !== null); // Filter out any nulls
+
+  // Add initial IDs to processed set
+  pendingIncidentIds.forEach(id => processedIncidentIds.add(id));
+
+  const spinner = ora(`Finding related incidents...`).start();
+
+  // Process incidents recursively to find all related incidents
+  while (pendingIncidentIds.length > 0) {
+    const currentId = pendingIncidentIds.shift();
+
+    if (currentId === undefined) {
+      continue;
+    }
+
+    // Find the incident document to extract related incidents
+    const incident = await incidentsCollection.findOne({ incident_id: currentId });
+
+    if (incident) {
+      // Extract and add all related incident IDs from the similarity fields
+      let relatedIds: (number | string)[] = [];
+
+      // Add similar incidents from NLP
+      if (incident.nlp_similar_incidents && Array.isArray(incident.nlp_similar_incidents)) {
+        // Check if the items are objects with incident_id property
+        const nlpIds: (number | string)[] = incident.nlp_similar_incidents
+          .map(item => {
+            // If it's an object with incident_id property
+            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
+              return item.incident_id;
+            }
+            // If it's a direct ID
+            else if (typeof item === 'number' || typeof item === 'string') {
+              return item;
+            }
+            return null;
+          })
+          .filter(id => id !== null);
+
+        // Convert IDs to correct type
+        const validNlpIds = nlpIds
+          .map(id => {
+            if (idType === 'number') {
+              const numId = Number(id);
+              return isNaN(numId) ? null : numId;
+            } else if (idType === 'string') {
+              return String(id);
+            }
+            return id;
+          })
+          .filter(id => id !== null);
+
+        relatedIds = [...relatedIds, ...validNlpIds];
+      }
+
+      // Add similar incidents from editor
+      if (incident.editor_similar_incidents && Array.isArray(incident.editor_similar_incidents)) {
+        // Check if the items are objects with incident_id property
+        const editorIds: (number | string)[] = incident.editor_similar_incidents
+          .map(item => {
+            // If it's an object with incident_id property
+            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
+              return item.incident_id;
+            }
+            // If it's a direct ID
+            else if (typeof item === 'number' || typeof item === 'string') {
+              return item;
+            }
+            return null;
+          })
+          .filter(id => id !== null);
+
+        // Convert IDs to correct type
+        const validEditorIds = editorIds
+          .map(id => {
+            if (idType === 'number') {
+              const numId = Number(id);
+              return isNaN(numId) ? null : numId;
+            } else if (idType === 'string') {
+              return String(id);
+            }
+            return id;
+          })
+          .filter(id => id !== null);
+
+        relatedIds = [...relatedIds, ...validEditorIds];
+      }
+
+      // Add dissimilar incidents from editor
+      if (incident.editor_dissimilar_incidents && Array.isArray(incident.editor_dissimilar_incidents)) {
+        // Check if the items are objects with incident_id property
+        const editorDissimilarIds: (number | string)[] = incident.editor_dissimilar_incidents
+          .map(item => {
+            // If it's an object with incident_id property
+            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
+              return item.incident_id;
+            }
+            // If it's a direct ID
+            else if (typeof item === 'number' || typeof item === 'string') {
+              return item;
+            }
+            return null;
+          })
+          .filter(id => id !== null);
+
+        // Convert IDs to correct type
+        const validDissimilarIds = editorDissimilarIds
+          .map(id => {
+            if (idType === 'number') {
+              const numId = Number(id);
+              return isNaN(numId) ? null : numId;
+            } else if (idType === 'string') {
+              return String(id);
+            }
+            return id;
+          })
+          .filter(id => id !== null);
+
+        relatedIds = [...relatedIds, ...validDissimilarIds];
+      }
+
+      // Add flagged dissimilar incidents
+      if (incident.flagged_dissimilar_incidents && Array.isArray(incident.flagged_dissimilar_incidents)) {
+        // Check if the items are objects with incident_id property
+        const flaggedDissimilarIds: (number | string)[] = incident.flagged_dissimilar_incidents
+          .map(item => {
+            // If it's an object with incident_id property
+            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
+              return item.incident_id;
+            }
+            // If it's a direct ID
+            else if (typeof item === 'number' || typeof item === 'string') {
+              return item;
+            }
+            return null;
+          })
+          .filter(id => id !== null);
+
+        // Convert IDs to correct type
+        const validFlaggedIds = flaggedDissimilarIds
+          .map(id => {
+            if (idType === 'number') {
+              const numId = Number(id);
+              return isNaN(numId) ? null : numId;
+            } else if (idType === 'string') {
+              return String(id);
+            }
+            return id;
+          })
+          .filter(id => id !== null);
+
+        relatedIds = [...relatedIds, ...validFlaggedIds];
+      }
+
+      // Add new IDs to the pending list for processing
+      for (const id of relatedIds) {
+        if (!processedIncidentIds.has(id)) {
+          processedIncidentIds.add(id);
+          pendingIncidentIds.push(id);
+        }
+      }
+    }
+  }
+
+  spinner.succeed(`Found ${processedIncidentIds.size} incidents including initial and related incidents`);
+  return processedIncidentIds;
+}
+
 async function copyCollection(
   sourceClient: MongoClient,
   destinationClient: MongoClient,
   dbName: string,
   collectionName: string,
-  dryRun: boolean
+  dryRun: boolean,
+  incidentIds: (number | string)[] = []
 ): Promise<{ count: number; size: number }> {
   const sourceDb = sourceClient.db(dbName);
   const sourceCollection = sourceDb.collection(collectionName);
-  
+
+  // Determine if we're filtering incidents
+  const isIncidentsCollection = collectionName === 'incidents';
+  const isReportsCollection = collectionName === 'reports';
+  const hasIncidentFilter = isIncidentsCollection && incidentIds.length > 0;
+
+  // Get a sample document to determine ID type
+  const sampleDoc = await sourceCollection.findOne({});
+  const idType = isIncidentsCollection && sampleDoc ? typeof sampleDoc.incident_id : 'number';
+  const reportType = isReportsCollection && sampleDoc && sampleDoc.report_number !== undefined ? typeof sampleDoc.report_number : 'number';
+
+  // For incidents collection with specific IDs
+  if (isIncidentsCollection && hasIncidentFilter) {
+    // Clear the associated reports array before processing incidents
+    associatedReportNumbers = [];
+
+    // Ensure all incident IDs are the correct type based on how they're stored in the DB
+    const typeCorrectIncidentIds: (number | string)[] = incidentIds
+      .map(id => {
+        if (idType === 'number') {
+          const numId = Number(id);
+          return isNaN(numId) ? null : numId;
+        } else if (idType === 'string') {
+          return String(id);
+        }
+        return id;
+      })
+      .filter(id => id !== null); // Filter out any nulls
+
+    // Get the specified incidents to collect their report numbers
+    const filteredIncidents = await sourceCollection.find({ incident_id: { $in: typeCorrectIncidentIds } }).toArray();
+
+    // Collect all report numbers from these incidents
+    for (const incident of filteredIncidents) {
+      if (incident.reports && Array.isArray(incident.reports)) {
+        associatedReportNumbers.push(...incident.reports);
+      }
+    }
+
+    // Remove duplicates
+    associatedReportNumbers = [...new Set(associatedReportNumbers)];
+    console.log(chalk.yellow(`Found ${associatedReportNumbers.length} reports associated with ${filteredIncidents.length} incidents`));
+  }
+
+  // Prepare query based on collection type and filters
+  let query = {};
+
+  if (isIncidentsCollection && hasIncidentFilter) {
+    // Convert incident IDs to the correct type based on DB storage
+    const typeCorrectIncidentIds = incidentIds
+      .map(id => {
+        if (idType === 'number') {
+          const numId = Number(id);
+          return isNaN(numId) ? null : numId;
+        } else if (idType === 'string') {
+          return String(id);
+        }
+        return id;
+      })
+      .filter(id => id !== null); // Filter out any nulls
+
+    query = { incident_id: { $in: typeCorrectIncidentIds } };
+  } else if (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0) {
+    // Convert report numbers to the correct type based on DB storage
+    const typeCorrectReportIds = associatedReportNumbers
+      .map(id => {
+        if (reportType === 'number') {
+          const numId = Number(id);
+          return isNaN(numId) ? null : numId;
+        } else if (reportType === 'string') {
+          return String(id);
+        }
+        return id;
+      })
+      .filter(id => id !== null); // Filter out any nulls
+
+    query = { report_number: { $in: typeCorrectReportIds } };
+  }
+
   // Get document count and size estimate
-  const count = await sourceCollection.countDocuments();
+  let count;
+  if ((isIncidentsCollection && hasIncidentFilter) ||
+    (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0)) {
+    count = await sourceCollection.countDocuments(query);
+  } else {
+    count = await sourceCollection.countDocuments();
+  }
+
+  const totalCount = await sourceCollection.countDocuments();
+
+  // If we're filtering incidents or processing reports with filtered incidents
+  if ((isIncidentsCollection && hasIncidentFilter) ||
+    (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0)) {
+    console.log(chalk.yellow(`Filtering ${collectionName} to ${count} documents (out of ${totalCount})`));
+  }
+
   const stats = await sourceDb.command({ collStats: collectionName });
   const sizeInMB = Math.round((stats.size / (1024 * 1024)) * 100) / 100;
-  
+
   if (dryRun) {
     return { count, size: sizeInMB };
   }
-  
+
   const destinationDb = destinationClient.db(dbName);
-  
+
   // Drop the collection if it exists
   try {
     await destinationDb.collection(collectionName).drop();
   } catch (error) {
     // Collection might not exist, which is fine
   }
-  
+
   const destinationCollection = destinationDb.collection(collectionName);
-  
+
   // Copy documents in batches to avoid memory issues
   const batchSize = 1000;
   let copied = 0;
   const spinner = ora(`Copying ${collectionName} (${count} documents, ${sizeInMB} MB)`).start();
-  
+
   if (count > 0) {
-    const cursor = sourceCollection.find({});
+    // Configure cursor based on collection and filters
+    let cursor;
+    if ((isIncidentsCollection && hasIncidentFilter) ||
+      (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0)) {
+      cursor = sourceCollection.find(query);
+    } else {
+      cursor = sourceCollection.find({});
+    }
+
     let batch = [];
-    
+
     for await (const doc of cursor) {
       batch.push(doc);
-      
+
       if (batch.length >= batchSize) {
         await destinationCollection.insertMany(batch);
         copied += batch.length;
@@ -126,13 +433,13 @@ async function copyCollection(
         spinner.text = `Copying ${collectionName}: ${copied}/${count} documents`;
       }
     }
-    
+
     if (batch.length > 0) {
       await destinationCollection.insertMany(batch);
       copied += batch.length;
     }
   }
-  
+
   spinner.succeed(`Copied ${collectionName}: ${copied}/${count} documents (${sizeInMB} MB)`);
   return { count, size: sizeInMB };
 }
@@ -141,28 +448,51 @@ async function restoreDatabase(
   sourceClient: MongoClient,
   destinationClient: MongoClient,
   dbName: string,
-  dryRun: boolean
+  dryRun: boolean,
+  incidentIds: (number | string)[] = []
 ): Promise<{ collections: number; documents: number; size: number }> {
   console.log(chalk.blue(`\nProcessing database: ${dbName}`));
-  
+
   const collections = await listCollections(sourceClient, dbName);
   console.log(`Found ${collections.length} collections in ${dbName}`);
-  
+
   let totalDocuments = 0;
   let totalSize = 0;
-  
+
+  // Process incidents collection first to gather report numbers
+  if (dbName === 'aiidprod' && incidentIds.length > 0) {
+    // Get all related incidents recursively
+    const allRelatedIncidents = await findAllRelatedIncidents(sourceClient, incidentIds);
+
+    // Convert set to array
+    const expandedIncidentIds = Array.from(allRelatedIncidents);
+
+    console.log(chalk.green(`Including ${expandedIncidentIds.length} incidents after adding related incidents`));
+
+    // Replace the original incident IDs with the expanded list
+    incidentIds = expandedIncidentIds;
+
+    const incidentsIndex = collections.indexOf('incidents');
+    if (incidentsIndex > 0) {
+      // Move incidents to the front of the array
+      collections.splice(incidentsIndex, 1);
+      collections.unshift('incidents');
+    }
+  }
+
   for (const collectionName of collections) {
     const { count, size } = await copyCollection(
       sourceClient,
       destinationClient,
       dbName,
       collectionName,
-      dryRun
+      dryRun,
+      incidentIds
     );
     totalDocuments += count;
     totalSize += size;
   }
-  
+
   return {
     collections: collections.length,
     documents: totalDocuments,
@@ -174,69 +504,83 @@ async function main(): Promise<void> {
   try {
     const args = parseArgs();
     const databases = args.databases.split(',').map(db => db.trim());
-    
+
+    // Parse incident IDs if provided
+    const incidentIds: (number | string)[] = args.incidentIds
+      ? args.incidentIds.split(',')
+        .map(id => id.trim())
+        .filter(id => id !== '')
+      : [];
+
     console.log(chalk.green('MongoDB Restore Tool'));
     console.log(chalk.yellow('Source URL:'), args.sourceUrl);
     console.log(chalk.yellow('Destination URL:'), args.destinationUrl);
     console.log(chalk.yellow('Databases to restore:'), databases.join(', '));
-    
+
+    if (incidentIds.length > 0) {
+      console.log(chalk.yellow('Initial Incident IDs:'), incidentIds.join(', '), '(will include related incidents and reports)');
+    } else {
+      console.log(chalk.yellow('Incident IDs:'), 'All incidents will be restored');
+    }
+
     if (args.dryRun) {
       console.log(chalk.yellow('DRY RUN MODE: No changes will be made to the destination database'));
     }
-    
+
     const sourceClient = await connectToMongoDB(args.sourceUrl, 'source');
     const destinationClient = await connectToMongoDB(args.destinationUrl, 'destination');
-    
+
     const availableDatabases = await listDatabases(sourceClient);
-    
+
     const invalidDatabases = databases.filter(db => !availableDatabases.includes(db));
     if (invalidDatabases.length > 0) {
       console.warn(chalk.yellow(`Warning: The following databases were not found in the source: ${invalidDatabases.join(', ')}`));
     }
-    
+
     const validDatabases = databases.filter(db => availableDatabases.includes(db));
     if (validDatabases.length === 0) {
       console.error(chalk.red('Error: None of the specified databases were found in the source'));
       process.exit(1);
     }
-    
+
     console.log(chalk.green(`\nRestoring ${validDatabases.length} databases: ${validDatabases.join(', ')}`));
-    
+
     const startTime = Date.now();
     let totalCollections = 0;
     let totalDocuments = 0;
     let totalSize = 0;
-    
+
     for (const dbName of validDatabases) {
       const { collections, documents, size } = await restoreDatabase(
         sourceClient,
         destinationClient,
         dbName,
-        args.dryRun
+        args.dryRun,
+        incidentIds
       );
       totalCollections += collections;
       totalDocuments += documents;
       totalSize += size;
     }
-    
+
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
-    
+
     console.log(chalk.green('\nRestore Summary:'));
     console.log(`Databases: ${validDatabases.length}`);
     console.log(`Collections: ${totalCollections}`);
     console.log(`Documents: ${totalDocuments}`);
     console.log(`Total Size: ${Math.round(totalSize * 100) / 100} MB`);
     console.log(`Duration: ${Math.round(duration)} seconds`);
-    
+
     if (args.dryRun) {
       console.log(chalk.yellow('\nThis was a dry run. No changes were made to the destination database.'));
       console.log(chalk.yellow('Run the command without --dryRun to perform the actual restore.'));
     }
-    
+
     await sourceClient.close();
     await destinationClient.close();
-    
+
   } catch (error) {
     console.error('Error:', error);
     process.exit(1);
@@ -254,5 +598,6 @@ export {
   listCollections,
   copyCollection,
   restoreDatabase,
+  findAllRelatedIncidents,
   main
 }; 
