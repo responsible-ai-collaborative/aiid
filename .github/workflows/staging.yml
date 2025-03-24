@@ -31,13 +31,13 @@ jobs:
       sha: ${{ github.sha }}
       environment: staging
 
-  # call-test-playwright-e2e:
-  #   uses: ./.github/workflows/test-playwright-e2e.yml
-  #   needs: cache-modifier
-  #   secrets: inherit
-  #   with:
-  #     sha: ${{ github.sha }}
-  #     environment: staging
+  call-test-playwright-e2e:
+    uses: ./.github/workflows/test-playwright-e2e.yml
+    needs: cache-modifier
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
 
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
@@ -46,7 +46,7 @@ jobs:
       [
         cache-modifier,
         call-test-api,
-        # call-test-playwright-e2e,
+        call-test-playwright-e2e,
       ]
     secrets: inherit
     permissions:
