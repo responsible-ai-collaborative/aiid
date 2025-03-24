@@ -170,78 +170,84 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap xl:flex-nowrap items-center">
-          <div className="flex flex-row flex-wrap xl:flex-nowrap justify-between w-full gap-4">
-            <h1 data-testid="incident-title" className="text-2xl inline flex-grow">
-              {locale == 'en' ? metaTitle : defaultIncidentTitle}
-            </h1>
-            {(incidentResponded || isSubscribed) && (
-              <div className="flex flex-wrap gap-2 my-auto">
-                {incidentResponded && (
-                  <div className="self-center">
-                    <Badge color="success" data-cy="responded-badge">
-                      {t('Responded')}
-                    </Badge>
+        <div className="w-full flex justify-between flex-wrap xl:flex-nowrap items-center gap-4">
+          <h1 data-testid="incident-title" className="text-2xl inline w-full xl:w-3/5 ">
+            {locale == 'en' ? metaTitle : defaultIncidentTitle}
+          </h1>
+          <div className="flex flex-row flex-wrap xl:flex-nowrap gap-4 justify-between w-full xl:w-2/5">
+            <>
+              {(incidentResponded || isSubscribed) && (
+                <div className="flex flex-wrap gap-2 my-auto">
+                  {incidentResponded && (
+                    <div className="self-center">
+                      <Badge color="success" data-cy="responded-badge">
+                        {t('Responded')}
+                      </Badge>
+                    </div>
+                  )}
+                  {isSubscribed && (
+                    <div className="self-center">
+                      <Badge
+                        color="success"
+                        data-cy="subscribed-badge"
+                        className="whitespace-nowrap"
+                      >
+                        <Trans>Subscribed to Updates</Trans>
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+            {!readOnly && (
+              <>
+                <div className="flex justify-end items-start shrink flex-nowrap">
+                  <SocialShareButtons
+                    metaTitle={metaTitle}
+                    path={locationPathName}
+                    page="cite"
+                  ></SocialShareButtons>
+
+                  <div className="ml-4 text-lg flex flex-nowrap gap-1">
+                    <a
+                      data-cy="header-previous-incident-link"
+                      title={t('Previous Incident')}
+                      className={`${
+                        prevIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                      } h-[50px] leading-[50px]`}
+                      href={
+                        prevIncident ? localizePath({ path: `/cite/${prevIncident}` }) : undefined
+                      }
+                    >
+                      <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
+                    </a>
+                    <a
+                      data-cy="header-random-incident-link"
+                      title={t('Random Incident')}
+                      className={`${
+                        nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                      } h-[50px] leading-[50px]`}
+                      href={localizePath({ path: `/random/` })}
+                    >
+                      <FontAwesomeIcon icon={faDice} className="mr-2" />
+                    </a>
+                    <a
+                      data-cy="header-next-incident-link"
+                      title={t('Next Incident')}
+                      className={`${
+                        nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                      } h-[50px] leading-[50px]`}
+                      href={
+                        nextIncident ? localizePath({ path: `/cite/${nextIncident}` }) : undefined
+                      }
+                    >
+                      <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
+                    </a>
                   </div>
-                )}
-                {isSubscribed && (
-                  <div className="self-center">
-                    <Badge color="success" data-cy="subscribed-badge" className="whitespace-nowrap">
-                      <Trans>Subscribed to Updates</Trans>
-                    </Badge>
-                  </div>
-                )}
-              </div>
+                </div>
+              </>
             )}
           </div>
-          {!readOnly && (
-            <>
-              <div className="flex justify-end items-start shrink flex-nowrap">
-                <SocialShareButtons
-                  metaTitle={metaTitle}
-                  path={locationPathName}
-                  page="cite"
-                ></SocialShareButtons>
-
-                <div className="ml-4 text-lg flex flex-nowrap gap-1">
-                  <a
-                    data-cy="header-previous-incident-link"
-                    title={t('Previous Incident')}
-                    className={`${
-                      prevIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
-                    } h-[50px] leading-[50px]`}
-                    href={
-                      prevIncident ? localizePath({ path: `/cite/${prevIncident}` }) : undefined
-                    }
-                  >
-                    <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
-                  </a>
-                  <a
-                    data-cy="header-random-incident-link"
-                    title={t('Random Incident')}
-                    className={`${
-                      nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
-                    } h-[50px] leading-[50px]`}
-                    href={localizePath({ path: `/random/` })}
-                  >
-                    <FontAwesomeIcon icon={faDice} className="mr-2" />
-                  </a>
-                  <a
-                    data-cy="header-next-incident-link"
-                    title={t('Next Incident')}
-                    className={`${
-                      nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
-                    } h-[50px] leading-[50px]`}
-                    href={
-                      nextIncident ? localizePath({ path: `/cite/${nextIncident}` }) : undefined
-                    }
-                  >
-                    <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
-                  </a>
-                </div>
-              </div>
-            </>
-          )}
         </div>
       </div>
       <div className="flex mt-6 justify-between">
