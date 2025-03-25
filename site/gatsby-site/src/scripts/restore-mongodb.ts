@@ -62,7 +62,7 @@ function parseArgs(): CommandLineArgs {
 }
 
 // Keep track of the reports that need to be included
-let associatedReportNumbers: (number | string)[] = [];
+let associatedReportNumbers: number[] = [];
 
 async function connectToMongoDB(url: string, description: string): Promise<MongoClient> {
   const spinner = ora(`Connecting to ${description} MongoDB at ${url}`).start();
@@ -93,31 +93,15 @@ async function listCollections(client: MongoClient, dbName: string): Promise<str
 
 async function findAllRelatedIncidents(
   sourceClient: MongoClient,
-  initialIncidentIds: (number | string)[]
-): Promise<Set<number | string>> {
+  initialIncidentIds: number[]
+): Promise<Set<number>> {
   const sourceDb = sourceClient.db('aiidprod');
   const incidentsCollection = sourceDb.collection('incidents');
 
-  // Get a sample incident to determine the ID type used in the DB
-  const sampleIncident = await incidentsCollection.findOne({});
-  const idType = sampleIncident ? typeof sampleIncident.incident_id : 'number';
-
   // Use a Set to avoid duplicates - always includes the initial IDs
-  const processedIncidentIds = new Set<number | string>();
-  // Start with the initial incident IDs provided by the user, converting to correct type
-  const pendingIncidentIds: (number | string)[] = initialIncidentIds.map(id => {
-    // Convert to the correct type based on what's in the DB
-    if (idType === 'number') {
-      const numId = Number(id);
-      return isNaN(numId) ? null : numId;
-    } else if (idType === 'string') {
-      return String(id);
-    }
-    return id;
-  }).filter(id => id !== null); // Filter out any nulls
-
-  // Add initial IDs to processed set
-  pendingIncidentIds.forEach(id => processedIncidentIds.add(id));
+  const processedIncidentIds = new Set<number>(initialIncidentIds);
+  // Start with the initial incident IDs
+  const pendingIncidentIds = [...initialIncidentIds];
 
   const spinner = ora(`Finding related incidents...`).start();
 
@@ -134,138 +118,42 @@ async function findAllRelatedIncidents(
 
     if (incident) {
       // Extract and add all related incident IDs from the similarity fields
-      let relatedIds: (number | string)[] = [];
+      let relatedIds: number[] = [];
 
-      // Add similar incidents from NLP
+      // Add similar incidents from NLP - these are objects with incident_id property
       if (incident.nlp_similar_incidents && Array.isArray(incident.nlp_similar_incidents)) {
-        // Check if the items are objects with incident_id property
-        const nlpIds: (number | string)[] = incident.nlp_similar_incidents
-          .map(item => {
-            // If it's an object with incident_id property
-            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
-              return item.incident_id;
-            }
-            // If it's a direct ID
-            else if (typeof item === 'number' || typeof item === 'string') {
-              return item;
-            }
-            return null;
-          })
-          .filter(id => id !== null);
-
-        // Convert IDs to correct type
-        const validNlpIds = nlpIds
-          .map(id => {
-            if (idType === 'number') {
-              const numId = Number(id);
-              return isNaN(numId) ? null : numId;
-            } else if (idType === 'string') {
-              return String(id);
-            }
-            return id;
-          })
-          .filter(id => id !== null);
-
-        relatedIds = [...relatedIds, ...validNlpIds];
+        const nlpIds = incident.nlp_similar_incidents.map(item => Number(item.incident_id));
+        relatedIds = [...relatedIds, ...nlpIds];
       }
 
-      // Add similar incidents from editor
+      // Add similar incidents from editor - these are direct number IDs
       if (incident.editor_similar_incidents && Array.isArray(incident.editor_similar_incidents)) {
-        // Check if the items are objects with incident_id property
-        const editorIds: (number | string)[] = incident.editor_similar_incidents
-          .map(item => {
-            // If it's an object with incident_id property
-            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
-              return item.incident_id;
-            }
-            // If it's a direct ID
-            else if (typeof item === 'number' || typeof item === 'string') {
-              return item;
-            }
-            return null;
-          })
-          .filter(id => id !== null);
-
-        // Convert IDs to correct type
-        const validEditorIds = editorIds
-          .map(id => {
-            if (idType === 'number') {
-              const numId = Number(id);
-              return isNaN(numId) ? null : numId;
-            } else if (idType === 'string') {
-              return String(id);
-            }
-            return id;
-          })
-          .filter(id => id !== null);
-
-        relatedIds = [...relatedIds, ...validEditorIds];
+        relatedIds = [...relatedIds, ...incident.editor_similar_incidents];
       }
 
-      // Add dissimilar incidents from editor
+      // Add dissimilar incidents from editor - these are direct number IDs
       if (incident.editor_dissimilar_incidents && Array.isArray(incident.editor_dissimilar_incidents)) {
-        // Check if the items are objects with incident_id property
-        const editorDissimilarIds: (number | string)[] = incident.editor_dissimilar_incidents
-          .map(item => {
-            // If it's an object with incident_id property
-            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
-              return item.incident_id;
-            }
-            // If it's a direct ID
-            else if (typeof item === 'number' || typeof item === 'string') {
-              return item;
-            }
-            return null;
-          })
-          .filter(id => id !== null);
-
-        // Convert IDs to correct type
-        const validDissimilarIds = editorDissimilarIds
-          .map(id => {
-            if (idType === 'number') {
-              const numId = Number(id);
-              return isNaN(numId) ? null : numId;
-            } else if (idType === 'string') {
-              return String(id);
-            }
-            return id;
-          })
-          .filter(id => id !== null);
-
-        relatedIds = [...relatedIds, ...validDissimilarIds];
+        relatedIds = [...relatedIds, ...incident.editor_dissimilar_incidents];
       }
 
       // Add flagged dissimilar incidents
       if (incident.flagged_dissimilar_incidents && Array.isArray(incident.flagged_dissimilar_incidents)) {
         // Check if the items are objects with incident_id property
-        const flaggedDissimilarIds: (number | string)[] = incident.flagged_dissimilar_incidents
+        const flaggedDissimilarIds: number[] = incident.flagged_dissimilar_incidents
           .map(item => {
             // If it's an object with incident_id property
             if (typeof item === 'object' && item !== null && 'incident_id' in item) {
-              return item.incident_id;
+              return Number(item.incident_id);
             }
             // If it's a direct ID
             else if (typeof item === 'number' || typeof item === 'string') {
-              return item;
+              return Number(item);
             }
             return null;
           })
-          .filter(id => id !== null);
+          .filter(id => id !== null && !isNaN(id)) as number[];
 
-        // Convert IDs to correct type
-        const validFlaggedIds = flaggedDissimilarIds
-          .map(id => {
-            if (idType === 'number') {
-              const numId = Number(id);
-              return isNaN(numId) ? null : numId;
-            } else if (idType === 'string') {
-              return String(id);
-            }
-            return id;
-          })
-          .filter(id => id !== null);
-
-        relatedIds = [...relatedIds, ...validFlaggedIds];
+        relatedIds = [...relatedIds, ...flaggedDissimilarIds];
       }
 
       // Add new IDs to the pending list for processing
@@ -288,7 +176,7 @@ async function copyCollection(
   dbName: string,
   collectionName: string,
   dryRun: boolean,
-  incidentIds: (number | string)[] = []
+  incidentIds: number[] = []
 ): Promise<{ count: number; size: number }> {
   const sourceDb = sourceClient.db(dbName);
   const sourceCollection = sourceDb.collection(collectionName);
@@ -298,31 +186,13 @@ async function copyCollection(
   const isReportsCollection = collectionName === 'reports';
   const hasIncidentFilter = isIncidentsCollection && incidentIds.length > 0;
 
-  // Get a sample document to determine ID type
-  const sampleDoc = await sourceCollection.findOne({});
-  const idType = isIncidentsCollection && sampleDoc ? typeof sampleDoc.incident_id : 'number';
-  const reportType = isReportsCollection && sampleDoc && sampleDoc.report_number !== undefined ? typeof sampleDoc.report_number : 'number';
-
   // For incidents collection with specific IDs
   if (isIncidentsCollection && hasIncidentFilter) {
     // Clear the associated reports array before processing incidents
     associatedReportNumbers = [];
 
-    // Ensure all incident IDs are the correct type based on how they're stored in the DB
-    const typeCorrectIncidentIds: (number | string)[] = incidentIds
-      .map(id => {
-        if (idType === 'number') {
-          const numId = Number(id);
-          return isNaN(numId) ? null : numId;
-        } else if (idType === 'string') {
-          return String(id);
-        }
-        return id;
-      })
-      .filter(id => id !== null); // Filter out any nulls
-
     // Get the specified incidents to collect their report numbers
-    const filteredIncidents = await sourceCollection.find({ incident_id: { $in: typeCorrectIncidentIds } }).toArray();
+    const filteredIncidents = await sourceCollection.find({ incident_id: { $in: incidentIds } }).toArray();
 
     // Collect all report numbers from these incidents
     for (const incident of filteredIncidents) {
@@ -340,35 +210,10 @@ async function copyCollection(
   let query = {};
 
   if (isIncidentsCollection && hasIncidentFilter) {
-    // Convert incident IDs to the correct type based on DB storage
-    const typeCorrectIncidentIds = incidentIds
-      .map(id => {
-        if (idType === 'number') {
-          const numId = Number(id);
-          return isNaN(numId) ? null : numId;
-        } else if (idType === 'string') {
-          return String(id);
-        }
-        return id;
-      })
-      .filter(id => id !== null); // Filter out any nulls
-
-    query = { incident_id: { $in: typeCorrectIncidentIds } };
+    query = { incident_id: { $in: incidentIds } };
   } else if (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0) {
-    // Convert report numbers to the correct type based on DB storage
-    const typeCorrectReportIds = associatedReportNumbers
-      .map(id => {
-        if (reportType === 'number') {
-          const numId = Number(id);
-          return isNaN(numId) ? null : numId;
-        } else if (reportType === 'string') {
-          return String(id);
-        }
-        return id;
-      })
-      .filter(id => id !== null); // Filter out any nulls
-
-    query = { report_number: { $in: typeCorrectReportIds } };
+    // Report numbers are always numbers
+    query = { report_number: { $in: associatedReportNumbers } };
   }
 
   // Get document count and size estimate
@@ -449,7 +294,7 @@ async function restoreDatabase(
   destinationClient: MongoClient,
   dbName: string,
   dryRun: boolean,
-  incidentIds: (number | string)[] = []
+  incidentIds: number[] = []
 ): Promise<{ collections: number; documents: number; size: number }> {
   console.log(chalk.blue(`\nProcessing database: ${dbName}`));
 
@@ -506,10 +351,10 @@ async function main(): Promise<void> {
     const databases = args.databases.split(',').map(db => db.trim());
 
     // Parse incident IDs if provided
-    const incidentIds: (number | string)[] = args.incidentIds
+    const incidentIds: number[] = args.incidentIds
       ? args.incidentIds.split(',')
-        .map(id => id.trim())
-        .filter(id => id !== '')
+        .map(id => Number(id.trim()))
+        .filter(id => !isNaN(id))
       : [];
 
     console.log(chalk.green('MongoDB Restore Tool'));
