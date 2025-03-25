@@ -27,28 +27,40 @@ const truncate = (doc) => {
 
   // When in subset mode, ensure total entry size is under limit
   if (process.env.ALGOLIA_SUBSET) {
-    console.log('🔍 Running in Algolia subset mode - entries will be truncated to fit size limits');
     let size = calculateEntrySize(doc);
 
     const keys = ['text', 'description', 'plain_text', 'editor_notes'];
 
-    let i = 0;
-
-    // Keep reducing the longest text fields until under limit
-    while (size > MAX_ENTRY_SIZE && i < keys.length) {
-      const key = keys[i];
+    // First try: aggressive reduction
+    while (size > MAX_ENTRY_SIZE && keys.length > 0) {
+      const key = keys.shift();
 
       if (doc[key] && typeof doc[key] === 'string') {
         const currentLength = doc[key].length;
 
-        const reduction = Math.ceil((size - MAX_ENTRY_SIZE) / 2); // Reduce by more than needed to account for other fields
+        // More aggressive reduction - take off more than half if needed
+        const reduction = Math.ceil((size - MAX_ENTRY_SIZE) * 1.5);
 
-        const newLength = Math.max(currentLength - reduction, 100); // Keep at least 100 chars
+        const newLength = Math.max(currentLength - reduction, 100);
 
         doc[key] = doc[key].substring(0, newLength);
         size = calculateEntrySize(doc);
       }
-      i++;
+    }
+
+    // If still too big, remove fields entirely
+    size = calculateEntrySize(doc);
+    if (size > MAX_ENTRY_SIZE) {
+      console.warn(
+        `⚠️ Record ${doc.report_number} is still too big after truncation: ${size} bytes`
+      );
+      for (const key of ['text', 'plain_text', 'description', 'editor_notes']) {
+        if (doc[key]) {
+          delete doc[key];
+        }
+        size = calculateEntrySize(doc);
+        if (size <= MAX_ENTRY_SIZE) break;
+      }
     }
   }
 
@@ -208,6 +220,12 @@ class AlgoliaUpdater {
   }
 
   generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
+    if (process.env.ALGOLIA_SUBSET) {
+      console.log(
+        '🔍 Running in Algolia subset mode - entries will be truncated to fit size limits'
+      );
+    }
+
     const downloadData = [];
 
     for (const incident of incidents) {
