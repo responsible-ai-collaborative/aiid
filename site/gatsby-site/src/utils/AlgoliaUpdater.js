@@ -8,16 +8,49 @@ const { isCompleteReport } = require('./variants');
 
 const { merge } = require('lodash');
 
-const subset = !!process.env.ALGOLIA_SUBSET;
+const MAX_ENTRY_SIZE = 10000; // Algolia's 10KB limit
+
+const MAX_STRING_LENGTH = 8000;
+
+const calculateEntrySize = (entry) => {
+  return Buffer.from(JSON.stringify(entry)).length;
+};
 
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
-      if (value.length > 8000) {
-        doc[key] = value.substring(0, 8000);
+      if (value.length > MAX_STRING_LENGTH) {
+        doc[key] = value.substring(0, MAX_STRING_LENGTH);
       }
     }
   }
+
+  // When in subset mode, ensure total entry size is under limit
+  if (process.env.ALGOLIA_SUBSET) {
+    let size = calculateEntrySize(doc);
+
+    const keys = ['text', 'description', 'plain_text', 'editor_notes'];
+
+    let i = 0;
+
+    // Keep reducing the longest text fields until under limit
+    while (size > MAX_ENTRY_SIZE && i < keys.length) {
+      const key = keys[i];
+
+      if (doc[key] && typeof doc[key] === 'string') {
+        const currentLength = doc[key].length;
+
+        const reduction = Math.ceil((size - MAX_ENTRY_SIZE) / 2); // Reduce by more than needed to account for other fields
+
+        const newLength = Math.max(currentLength - reduction, 100); // Keep at least 100 chars
+
+        doc[key] = doc[key].substring(0, newLength);
+        size = calculateEntrySize(doc);
+      }
+      i++;
+    }
+  }
+
   return doc;
 };
 
@@ -218,15 +251,7 @@ class AlgoliaUpdater {
 
     const truncatedData = downloadData.map(truncate);
 
-    const smallData = subset
-      ? truncatedData.filter((entry) =>
-          [1, 3, 4, 8, 9, 10, 18, 20, 23, 29, 47, 49, 52, 63, 70, 71, 77, 77, 82, 83, 86].includes(
-            entry.incident_id
-          )
-        )
-      : truncatedData;
-
-    return smallData;
+    return truncatedData;
   };
 
   getClassifications = async () => {
