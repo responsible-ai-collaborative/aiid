@@ -171,13 +171,10 @@ function CiteTemplate({
     <>
       <div className="titleWrapper">
         <div className="flex flex-wrap justify-between items-center gap-4 w-full xl:flex-nowrap">
-          <h1
-            data-testid="incident-title"
-            className="inline text-2xl w-full lg:w-3/4 xl:w-3/5 justify-between"
-          >
+          <h1 data-testid="incident-title" className="inline text-2xl flex-grow justify-between">
             {locale == 'en' ? metaTitle : defaultIncidentTitle}
           </h1>
-          <div className="flex flex-wrap sm:flex-nowrap gap-4 w-full lg:w-1/4 xl:w-2/5 xl:justify-end">
+          <div className="flex flex-wrap sm:flex-nowrap gap-4 xl:justify-end">
             <>
               {(incidentResponded || isSubscribed) && (
                 <div className="flex flex-wrap gap-2 my-auto">
