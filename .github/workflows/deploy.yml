@@ -127,6 +127,16 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
 
+      - name: Update Algolia indexes
+        if: inputs.netlify-context == 'production' && inputs.netlify-alias == ''
+        run: npm run algolia-update:ci
+        working-directory: site/gatsby-site
+        env:
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+
       - name: Build size
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
