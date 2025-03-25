@@ -27,6 +27,7 @@ const truncate = (doc) => {
 
   // When in subset mode, ensure total entry size is under limit
   if (process.env.ALGOLIA_SUBSET) {
+    console.log('🔍 Running in Algolia subset mode - entries will be truncated to fit size limits');
     let size = calculateEntrySize(doc);
 
     const keys = ['text', 'description', 'plain_text', 'editor_notes'];
