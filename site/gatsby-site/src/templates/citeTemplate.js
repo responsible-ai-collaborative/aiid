@@ -169,12 +169,15 @@ function CiteTemplate({
 
   return (
     <>
-      <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap xl:flex-nowrap items-center gap-4">
-          <h1 data-testid="incident-title" className="text-2xl inline w-full xl:w-3/5 ">
+      <div className="titleWrapper">
+        <div className="flex flex-wrap justify-between items-center gap-4 w-full xl:flex-nowrap">
+          <h1
+            data-testid="incident-title"
+            className="inline text-2xl w-full lg:w-3/4 xl:w-3/5 justify-between"
+          >
             {locale == 'en' ? metaTitle : defaultIncidentTitle}
           </h1>
-          <div className="flex flex-row flex-wrap xl:flex-nowrap gap-4 justify-between w-full xl:w-2/5">
+          <div className="flex flex-wrap sm:flex-nowrap gap-4 w-full lg:w-1/4 xl:w-2/5 xl:justify-end">
             <>
               {(incidentResponded || isSubscribed) && (
                 <div className="flex flex-wrap gap-2 my-auto">
@@ -208,7 +211,7 @@ function CiteTemplate({
                     page="cite"
                   ></SocialShareButtons>
 
-                  <div className="ml-4 text-lg flex flex-nowrap gap-1">
+                  <div className="flex flex-nowrap gap-1 ml-4 text-lg">
                     <a
                       data-cy="header-previous-incident-link"
                       title={t('Previous Incident')}
@@ -250,7 +253,7 @@ function CiteTemplate({
           </div>
         </div>
       </div>
-      <div className="flex mt-6 justify-between">
+      <div className="flex justify-between mt-6">
         <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
@@ -288,7 +291,7 @@ function CiteTemplate({
           <Container>
             <Row>
               <Col>
-                <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
+                <Card className="mt-6 shadow-card border-1.5 border-border-light-gray rounded-5px">
                   <Card.Header className="items-center justify-between">
                     <h4 className="m-0">
                       <Trans ns="entities">Entities</Trans>
@@ -365,7 +368,7 @@ function CiteTemplate({
 
             <Row className="mt-6">
               <Col>
-                <Card className="max-w-3xl mx-auto">
+                <Card className="mx-auto max-w-3xl">
                   <ImageCarousel nodes={sortedReports} />
                 </Card>
               </Col>
@@ -381,7 +384,7 @@ function CiteTemplate({
                     size={'xs'}
                     color="light"
                     href={`/cite/edit?report_number=${report.report_number}&incident_id=${incident.incident_id}`}
-                    className="hover:no-underline "
+                    className="hover:no-underline"
                   >
                     <Trans>Edit</Trans>
                   </Button>
