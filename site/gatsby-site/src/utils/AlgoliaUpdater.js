@@ -8,7 +8,7 @@ const { isCompleteReport } = require('./variants');
 
 const { merge } = require('lodash');
 
-const MAX_ENTRY_SIZE = 10000; // Algolia's 10KB limit
+const MAX_ENTRY_SIZE = 10000;
 
 const MAX_STRING_LENGTH = 8000;
 
@@ -17,10 +17,13 @@ const calculateEntrySize = (entry) => {
 };
 
 const truncate = (doc) => {
+  // In subset mode, be much more aggressive with initial string length limits
+  const maxLength = process.env.ALGOLIA_SUBSET ? 2000 : MAX_STRING_LENGTH;
+
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
-      if (value.length > MAX_STRING_LENGTH) {
-        doc[key] = value.substring(0, MAX_STRING_LENGTH);
+      if (value.length > maxLength) {
+        doc[key] = value.substring(0, maxLength);
       }
     }
   }
@@ -31,17 +34,17 @@ const truncate = (doc) => {
 
     const keys = ['text', 'description', 'plain_text', 'editor_notes'];
 
-    // First try: aggressive reduction
+    // First try: very aggressive reduction
     while (size > MAX_ENTRY_SIZE && keys.length > 0) {
       const key = keys.shift();
 
       if (doc[key] && typeof doc[key] === 'string') {
         const currentLength = doc[key].length;
 
-        // More aggressive reduction - take off more than half if needed
-        const reduction = Math.ceil((size - MAX_ENTRY_SIZE) * 1.5);
+        // Even more aggressive reduction - take off 75% if needed
+        const reduction = Math.ceil((size - MAX_ENTRY_SIZE) * 2);
 
-        const newLength = Math.max(currentLength - reduction, 100);
+        const newLength = Math.max(currentLength - reduction, 50);
 
         doc[key] = doc[key].substring(0, newLength);
         size = calculateEntrySize(doc);
@@ -54,12 +57,16 @@ const truncate = (doc) => {
       console.warn(
         `⚠️ Record ${doc.report_number} is still too big after truncation: ${size} bytes`
       );
+      // Remove fields in order until size is under limit
       for (const key of ['text', 'plain_text', 'description', 'editor_notes']) {
         if (doc[key]) {
           delete doc[key];
         }
         size = calculateEntrySize(doc);
-        if (size <= MAX_ENTRY_SIZE) break;
+        if (size <= MAX_ENTRY_SIZE) {
+          console.log(`✂️ Removed ${key} from record ${doc.report_number} to fit size limit`);
+          break;
+        }
       }
     }
   }
