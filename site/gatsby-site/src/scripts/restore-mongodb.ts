@@ -136,24 +136,9 @@ async function findAllRelatedIncidents(
         relatedIds = [...relatedIds, ...incident.editor_dissimilar_incidents];
       }
 
-      // Add flagged dissimilar incidents
+      // Add flagged dissimilar incidents - these are direct number IDs
       if (incident.flagged_dissimilar_incidents && Array.isArray(incident.flagged_dissimilar_incidents)) {
-        // Check if the items are objects with incident_id property
-        const flaggedDissimilarIds: number[] = incident.flagged_dissimilar_incidents
-          .map(item => {
-            // If it's an object with incident_id property
-            if (typeof item === 'object' && item !== null && 'incident_id' in item) {
-              return Number(item.incident_id);
-            }
-            // If it's a direct ID
-            else if (typeof item === 'number' || typeof item === 'string') {
-              return Number(item);
-            }
-            return null;
-          })
-          .filter(id => id !== null && !isNaN(id)) as number[];
-
-        relatedIds = [...relatedIds, ...flaggedDissimilarIds];
+        relatedIds = [...relatedIds, ...incident.flagged_dissimilar_incidents];
       }
 
       // Add new IDs to the pending list for processing
