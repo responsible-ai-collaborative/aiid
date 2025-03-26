@@ -12,66 +12,140 @@ const MAX_ENTRY_SIZE = 10000;
 
 const MAX_STRING_LENGTH = 8000;
 
+// Fields that should never be truncated
+const TRUNCATION_BLACKLIST = [
+  'report_number',
+  'incident_id',
+  'mongodb_id',
+  'objectID',
+  'url',
+  'image_url',
+  'cloudinary_id',
+  'date',
+  'incident_date',
+  'epoch_date_downloaded',
+  'epoch_date_modified',
+  'epoch_date_published',
+  'epoch_date_submitted',
+  'epoch_incident_date',
+  'language',
+  'source_domain',
+  'namespace',
+];
+
 const calculateEntrySize = (entry) => {
   return Buffer.from(JSON.stringify(entry)).length;
 };
 
-const truncate = (doc) => {
-  // In subset mode, be much more aggressive with initial string length limits
-  const maxLength = process.env.ALGOLIA_SUBSET ? 2000 : MAX_STRING_LENGTH;
-
+const regularTruncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
-    if (typeof value == 'string') {
-      if (value.length > maxLength) {
-        doc[key] = value.substring(0, maxLength);
-      }
+    if (typeof value == 'string' && value.length > MAX_STRING_LENGTH) {
+      doc[key] = value.substring(0, MAX_STRING_LENGTH);
     }
   }
+  return doc;
+};
 
-  // When in subset mode, ensure total entry size is under limit
-  if (process.env.ALGOLIA_SUBSET) {
-    let size = calculateEntrySize(doc);
-
-    const keys = ['text', 'description', 'plain_text', 'editor_notes'];
-
-    // First try: very aggressive reduction
-    while (size > MAX_ENTRY_SIZE && keys.length > 0) {
-      const key = keys.shift();
-
-      if (doc[key] && typeof doc[key] === 'string') {
-        const currentLength = doc[key].length;
-
-        // Even more aggressive reduction - take off 75% if needed
-        const reduction = Math.ceil((size - MAX_ENTRY_SIZE) * 2);
-
-        const newLength = Math.max(currentLength - reduction, 50);
-
-        doc[key] = doc[key].substring(0, newLength);
-        size = calculateEntrySize(doc);
+const findAllStrings = (obj, strings = []) => {
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === 'string') {
+      // Only include strings that aren't in the blacklist
+      if (!TRUNCATION_BLACKLIST.includes(key)) {
+        strings.push({ key, length: value.length, ref: obj });
       }
+    } else if (typeof value === 'object' && value !== null) {
+      findAllStrings(value, strings);
+    }
+  }
+  return strings;
+};
+
+const subsetTruncate = (doc) => {
+  let size = calculateEntrySize(doc);
+
+  if (size <= MAX_ENTRY_SIZE) return doc;
+
+  // Debug size composition
+  const initialStrings = findAllStrings(doc);
+
+  const totalStringLength = initialStrings.reduce((sum, field) => sum + field.length, 0);
+
+  console.warn(
+    `[Warning] Large record detected ${doc.report_number} (${size} bytes, ${initialStrings.length} strings, total length: ${totalStringLength})`
+  );
+
+  // Log top 5 largest strings
+  const topStrings = [...initialStrings].sort((a, b) => b.length - a.length).slice(0, 5);
+
+  console.log('Largest strings:');
+  topStrings.forEach((s) => console.log(`${s.key}: ${s.length} chars`));
+
+  let iteration = 0;
+
+  const maxIterations = 10;
+
+  while (size > MAX_ENTRY_SIZE && iteration < maxIterations) {
+    iteration++;
+
+    // Find all string fields in the entire object tree
+    const stringFields = findAllStrings(doc);
+
+    // Sort by length, longest first
+    stringFields.sort((a, b) => b.length - a.length);
+
+    if (stringFields.length === 0) break;
+
+    const reductionFactor = Math.max(0.1, (MAX_ENTRY_SIZE / size) * 0.8); // Try to get to 80% of target
+
+    // Reduce each string field
+    for (const field of stringFields) {
+      const currentLength = field.ref[field.key].length;
+
+      const newLength = Math.max(Math.floor(currentLength * reductionFactor), 5);
+
+      field.ref[field.key] = field.ref[field.key].substring(0, newLength);
     }
 
-    // If still too big, remove fields entirely
     size = calculateEntrySize(doc);
-    if (size > MAX_ENTRY_SIZE) {
-      console.warn(
-        `⚠️ Record ${doc.report_number} is still too big after truncation: ${size} bytes`
-      );
-      // Remove fields in order until size is under limit
-      for (const key of ['text', 'plain_text', 'description', 'editor_notes']) {
-        if (doc[key]) {
-          delete doc[key];
-        }
-        size = calculateEntrySize(doc);
-        if (size <= MAX_ENTRY_SIZE) {
-          console.log(`✂️ Removed ${key} from record ${doc.report_number} to fit size limit`);
-          break;
-        }
-      }
+    console.log(
+      `Iteration ${iteration}: reduced to ${size} bytes (target: ${MAX_ENTRY_SIZE}), reduction factor: ${reductionFactor.toFixed(
+        2
+      )}`
+    );
+  }
+
+  // If still too big, do one final aggressive pass
+  if (size > MAX_ENTRY_SIZE) {
+    console.warn(`[Warning] Final aggressive reduction for record ${doc.report_number}`);
+    const stringFields = findAllStrings(doc);
+
+    const finalReductionFactor = (MAX_ENTRY_SIZE / size) * 0.5; // Even more aggressive
+
+    for (const field of stringFields) {
+      const newLength = Math.max(Math.floor(field.ref[field.key].length * finalReductionFactor), 3);
+
+      field.ref[field.key] = field.ref[field.key].substring(0, newLength);
     }
+
+    size = calculateEntrySize(doc);
+  }
+
+  if (size > MAX_ENTRY_SIZE) {
+    // Log final state for debugging
+    const finalStrings = findAllStrings(doc);
+
+    const finalTotalLength = finalStrings.reduce((sum, field) => sum + field.length, 0);
+
+    console.warn(
+      `[Warning] Record ${doc.report_number} is still ${size} bytes after maximum reduction (${finalStrings.length} strings, total length: ${finalTotalLength})`
+    );
   }
 
   return doc;
+};
+
+const truncate = (doc) => {
+  return process.env.ALGOLIA_SUBSET ? subsetTruncate(doc) : regularTruncate(doc);
 };
 
 const includedCSETAttributes = [
@@ -228,9 +302,7 @@ class AlgoliaUpdater {
 
   generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
     if (process.env.ALGOLIA_SUBSET) {
-      console.log(
-        '🔍 Running in Algolia subset mode - entries will be truncated to fit size limits'
-      );
+      console.log('Running in Algolia subset mode - entries will be truncated to fit size limits');
     }
 
     const downloadData = [];
