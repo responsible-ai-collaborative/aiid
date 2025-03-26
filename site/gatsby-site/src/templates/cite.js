@@ -139,7 +139,9 @@ export const Head = (props) => {
 
   const { locale: language } = useLocalization();
 
-  const metaTitle = `Incident ${incident.incident_id}: ${
+  const { t } = useTranslation();
+
+  const metaTitle = `${t('Incident')} ${incident.incident_id}: ${
     translation ? translation.title : incident.title
   }`;
 
