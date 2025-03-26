@@ -60,7 +60,17 @@ mongoexport -o ${TARGET}/incidents.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v
 mongoexport -o ${TARGET}/duplicates.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --collection=duplicates --fields=duplicate_incident_number,true_incident_number
 mongoexport -o ${TARGET}/quickadd.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --collection=quickadd --fields=incident_id,url,date_submitted,source_domain
 mongoexport -o ${TARGET}/submissions.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --collection=submissions --fields=authors,date_downloaded,date_modified,date_published,date_submitted,image_url,incident_date,incident_id,language,mongodb_id,source_domain,submitters,text,title,url
-mongoexport -o ${TARGET}/reports.csv --uri=${MONGODB_URI}/${MONGODB_DBNAME} -v --type=csv --collection=reports --fields=_id,incident_id,authors,date_downloaded,date_modified,date_published,date_submitted,description,epoch_date_downloaded,epoch_date_modified,epoch_date_published,epoch_date_submitted,image_url,language,ref_number,report_number,source_domain,submitters,text,title,url,tags
+
+###### Begin Reports CSV Export ######
+
+JSON_FILE="${TARGET}/reports.json"
+CSV_FILE="${TARGET}/reports.csv"
+FIELDS="_id,authors,date_downloaded,date_modified,date_published,date_submitted,description,epoch_date_downloaded,epoch_date_modified,epoch_date_published,epoch_date_submitted,image_url,language,ref_number,report_number,source_domain,submitters,text,title,url,tags"
+mongoexport --uri="${MONGODB_URI}/${MONGODB_DBNAME}" --collection=reports --out="${JSON_FILE}" --jsonArray --jsonFormat=relaxed --fields="${FIELDS}"
+python3 convert_json_to_csv.py "${JSON_FILE}" "${CSV_FILE}" "${FIELDS}"
+rm -f $JSON_FILE
+
+###### End Reports CSV Export ######
 
 ###### Begin Taxa CSV Export ######
 

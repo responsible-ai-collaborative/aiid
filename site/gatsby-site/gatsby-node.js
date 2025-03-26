@@ -258,27 +258,6 @@ exports.onPreInit = async ({ reporter }) => {
   reporter.log('Lookup index created.');
 };
 
-exports.onPreBootstrap = async ({ reporter }) => {
-  const migrationsActivity = reporter.activityTimer(`Migrations`);
-
-  if (!process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
-    console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set, skipping migrations.');
-  } else if (process.env.CONTEXT !== 'production') {
-    console.info('Netlify CONTEXT is not production, skipping migrations.');
-  } else {
-    migrationsActivity.start();
-    migrationsActivity.setStatus('Running...');
-
-    const migrator = require('./migrator');
-
-    await migrator.umzug.runAsCLI(['up']);
-
-    migrationsActivity.setStatus('Finished!');
-
-    migrationsActivity.end();
-  }
-};
-
 exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
     reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
