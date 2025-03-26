@@ -170,6 +170,19 @@ test.describe('Submitted reports', () => {
         expect(incidents.find((i) => i.incident_id === 3).reports.map((r) => r.report_number)).toContain(10);
     });
 
+    test('Displays correct button text when multiple incidents are selected', async ({ page, login }) => {
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        await fillAutoComplete(page, '#input-incident_ids', 'inci', 'Incident 2');
+        await fillAutoComplete(page, '#input-incident_ids', 'Kron', 'Kronos');
+
+        await expect(page.locator('[data-cy="promote-to-report-button"]')).toContainText('Add to incidents 2, 3');
+    });
+
     test('Promotes a submission to a new issue', async ({ page, login }) => {
 
         await init();
@@ -454,7 +467,7 @@ test.describe('Submitted reports', () => {
                 }
             }
         `,
-        });
+    });
 
         expect(updated.find((s) => s._id === '63f3d58c26ab981f33b3f9c7').incident_editors.map((e) => e.userId)).not.toContain(userId);
     });
@@ -873,9 +886,9 @@ test.describe('Submitted reports', () => {
             }
         }
       `,
-      });
+    });
 
-      expect(updatedSubmissions.length).toBe(1);
+    expect(updatedSubmissions.length).toBe(1);
   });
 
   test('Should select and unclaim one submission', async ({ page, login }) => {
@@ -918,9 +931,9 @@ test.describe('Submitted reports', () => {
           }
       }
     `,
-    });
+  });
 
-    expect(updatedSubmissions.length).toBe(0);
+  expect(updatedSubmissions.length).toBe(0);
   });
 
   test('Should select and reject one submission', async ({ page, login }) => {
@@ -963,8 +976,8 @@ test.describe('Submitted reports', () => {
           }
       }
     `,
-    });
+  });
 
-    expect(updatedSubmissions.length).toBe(0);
+  expect(updatedSubmissions.length).toBe(0);
   });
 });
