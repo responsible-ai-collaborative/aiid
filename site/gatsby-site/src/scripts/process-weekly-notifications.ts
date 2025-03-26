@@ -4,7 +4,7 @@ import { Context, DBEntity, DBIncident, DBReport, DBSubscription } from "../../s
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
-import { clearUsersCache, getAndCacheRecipients } from "../../server/fields/common";
+import { UserCacheManager } from "../../server/fields/userCacheManager";
 
 async function notificationsToWeeklyIncidents(context: Context) {
   let result = 0;
@@ -42,7 +42,9 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
   const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-  const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+  const userCacheManager = new UserCacheManager();
+
+  const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
   const incidentIds = pendingWeeklyNotificationsToNewIncidents.map(n => n.incident_id);
 
@@ -180,7 +182,9 @@ async function notificationsToWeeklyIncidents(context: Context) {
 }
 
 export const processWeeklyNotifications = async () => {
-  clearUsersCache();
+  const userCacheManager = new UserCacheManager();
+
+  userCacheManager.clearUsersCache();
 
   const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 

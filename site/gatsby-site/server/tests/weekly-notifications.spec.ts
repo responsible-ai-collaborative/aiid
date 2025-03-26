@@ -10,6 +10,7 @@ import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processWeeklyNotifications } from '../../src/scripts/process-weekly-notifications';
 import * as prismic from '@prismicio/client';
+import * as userCacheManager from '../fields/userCacheManager';
 
 jest.mock('@prismicio/client', () => ({
   createClient: jest.fn().mockReturnValue({
@@ -705,7 +706,7 @@ describe(`Weekly Notifications`, () => {
         mockSession('5f8f4b3b9b3e6f001f3b3b3c');
 
         // No recipients
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
+        jest.spyOn(userCacheManager.UserCacheManager.prototype, 'getUserAdminData').mockResolvedValue(null);
 
         const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
             throw new Error('Failed to send email');
