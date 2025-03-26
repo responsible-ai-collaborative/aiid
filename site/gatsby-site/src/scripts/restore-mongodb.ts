@@ -1,18 +1,23 @@
 /**
  * A script for restoring data from a MongoDB database to an in-memory MongoDB instance.
  * 
- * Usage: npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations [--incidentIds=ID1,ID2,ID3]
+ * Usage: npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations [--incidentIds=ID1,ID2,ID3] [--reportNumbers=NUM1,NUM2,NUM3] [--classificationNamespaces=CSETv1,CSETv0]
  * 
  * The script will copy all collections from the specified databases from the source to the destination MongoDB instance.
  * By default, it will restore the 'aiidprod' and 'translations' databases, but you can specify other databases as needed.
  * You can optionally specify which incidents to restore by using the --incidentIds parameter with a comma-separated list.
+ * You can optionally specify which reports to restore by using the --reportNumbers parameter with a comma-separated list.
+ * You can optionally specify which classification namespaces to restore by using the --classificationNamespaces parameter with a comma-separated list.
  * When specifying incidents, the script will automatically include only the reports associated with those incidents.
  * When specifying incidents, the script will also include all related incidents (similar and dissimilar) and their reports.
  * If incidentIds is not provided, all incidents will be restored.
+ * If reportNumbers is not provided, all reports will be restored.
+ * If classificationNamespaces is not provided, all classifications will be restored.
  * 
  * Example:
  * npm run restore-mongodb -- --sourceUrl=mongodb+srv://*:*@*.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/
  * npm run restore-mongodb -- --sourceUrl=mongodb+srv://*:*@*.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --incidentIds=1,42,100
+ * npm run restore-mongodb -- --sourceUrl=mongodb+srv://*:*@*.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --classificationNamespaces=CSETv1,CSETv0
  */
 
 import { MongoClient } from 'mongodb';
@@ -27,6 +32,8 @@ interface CommandLineArgs {
   databases: string;
   dryRun: boolean;
   incidentIds: string;
+  reportNumbers: string;
+  classificationNamespaces: string;
 }
 
 function parseArgs(): CommandLineArgs {
@@ -56,13 +63,20 @@ function parseArgs(): CommandLineArgs {
       type: 'string',
       default: ''
     })
+    .option('reportNumbers', {
+      description: 'Comma-separated list of report numbers to restore. If not provided, all reports will be restored.',
+      type: 'string',
+      default: ''
+    })
+    .option('classificationNamespaces', {
+      description: 'Comma-separated list of classification namespaces to restore (e.g. CSETv1,CSETv0). If not provided, all classifications will be restored.',
+      type: 'string',
+      default: ''
+    })
     .help()
     .alias('help', 'h')
     .parseSync() as CommandLineArgs;
 }
-
-// Keep track of the reports that need to be included
-let associatedReportNumbers: number[] = [];
 
 async function connectToMongoDB(url: string, description: string): Promise<MongoClient> {
   const spinner = ora(`Connecting to ${description} MongoDB at ${url}`).start();
@@ -155,79 +169,103 @@ async function findAllRelatedIncidents(
   return processedIncidentIds;
 }
 
+// Add helper functions for computing associated report numbers and ordering collections
+async function computeAssociatedReportNumbers(
+  sourceClient: MongoClient,
+  incidentIds: number[],
+  reportNumbers: number[]
+): Promise<number[]> {
+  const sourceDb = sourceClient.db('aiidprod');
+  const incidentsCollection = sourceDb.collection('incidents');
+  const incidents = await incidentsCollection.find({ incident_id: { $in: incidentIds } }).toArray();
+  let assocReports: number[] = [];
+  for (const incident of incidents) {
+    if(incident.reports && Array.isArray(incident.reports)) {
+      assocReports.push(...incident.reports);
+    }
+  }
+  if(reportNumbers.length > 0) {
+    assocReports.push(...reportNumbers);
+  }
+  return [...new Set(assocReports)];
+}
+
+function orderCollections(
+  collections: string[],
+  reportNumbers: number[],
+  classificationNamespaces: string[]
+): string[] {
+  const ordered = [...collections];
+  const incidentsIndex = ordered.indexOf('incidents');
+  if(incidentsIndex > 0) {
+    ordered.splice(incidentsIndex, 1);
+    ordered.unshift('incidents');
+  }
+  if(reportNumbers.length > 0) {
+    const reportsIndex = ordered.indexOf('reports');
+    if(reportsIndex > 1) {
+      ordered.splice(reportsIndex, 1);
+      ordered.splice(1, 0, 'reports');
+    }
+  }
+  if(classificationNamespaces.length > 0) {
+    const classificationsIndex = ordered.indexOf('classifications');
+    if(classificationsIndex > -1) {
+      const pos = reportNumbers.length > 0 ? 2 : 1;
+      if(classificationsIndex > pos) {
+        ordered.splice(classificationsIndex, 1);
+        ordered.splice(pos, 0, 'classifications');
+      }
+    }
+  }
+  return ordered;
+}
+
+// Updated copyCollection function signature and internals
 async function copyCollection(
   sourceClient: MongoClient,
   destinationClient: MongoClient,
   dbName: string,
   collectionName: string,
   dryRun: boolean,
-  incidentIds: number[] = []
+  incidentIds: number[] = [],
+  classificationNamespaces: string[] = [],
+  computedReportNumbers: number[] = []
 ): Promise<{ count: number; size: number }> {
   const sourceDb = sourceClient.db(dbName);
   const sourceCollection = sourceDb.collection(collectionName);
 
-  // Determine if we're filtering incidents
   const isIncidentsCollection = collectionName === 'incidents';
   const isReportsCollection = collectionName === 'reports';
-  const hasIncidentFilter = isIncidentsCollection && incidentIds.length > 0;
+  const isClassificationsCollection = collectionName === 'classifications';
+  const hasClassificationFilter = isClassificationsCollection && classificationNamespaces.length > 0;
 
-  // For incidents collection with specific IDs
-  if (isIncidentsCollection && hasIncidentFilter) {
-    // Clear the associated reports array before processing incidents
-    associatedReportNumbers = [];
-
-    // Get the specified incidents to collect their report numbers
-    const filteredIncidents = await sourceCollection.find({ incident_id: { $in: incidentIds } }).toArray();
-
-    // Collect all report numbers from these incidents
-    for (const incident of filteredIncidents) {
-      if (incident.reports && Array.isArray(incident.reports)) {
-        associatedReportNumbers.push(...incident.reports);
-      }
-    }
-
-    // Remove duplicates
-    associatedReportNumbers = [...new Set(associatedReportNumbers)];
-    console.log(chalk.yellow(`Found ${associatedReportNumbers.length} reports associated with ${filteredIncidents.length} incidents`));
-  }
-
-  // Prepare query based on collection type and filters
   let query = {};
-
-  if (isIncidentsCollection && hasIncidentFilter) {
+  if(isIncidentsCollection && incidentIds.length > 0) {
     query = { incident_id: { $in: incidentIds } };
-  } else if (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0) {
-    // Report numbers are always numbers
-    query = { report_number: { $in: associatedReportNumbers } };
+  } else if(isReportsCollection && computedReportNumbers.length > 0) {
+    query = { report_number: { $in: computedReportNumbers } };
+  } else if(isClassificationsCollection && hasClassificationFilter) {
+    query = { namespace: { $in: classificationNamespaces } };
   }
 
-  // Get document count and size estimate
   let count;
-  if ((isIncidentsCollection && hasIncidentFilter) ||
-    (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0)) {
+  if((isIncidentsCollection && incidentIds.length > 0) ||
+     (isReportsCollection && computedReportNumbers.length > 0) ||
+     (isClassificationsCollection && hasClassificationFilter)) {
     count = await sourceCollection.countDocuments(query);
   } else {
     count = await sourceCollection.countDocuments();
   }
 
-  const totalCount = await sourceCollection.countDocuments();
-
-  // If we're filtering incidents or processing reports with filtered incidents
-  if ((isIncidentsCollection && hasIncidentFilter) ||
-    (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0)) {
-    console.log(chalk.yellow(`Filtering ${collectionName} to ${count} documents (out of ${totalCount})`));
-  }
-
   const stats = await sourceDb.command({ collStats: collectionName });
   const sizeInMB = Math.round((stats.size / (1024 * 1024)) * 100) / 100;
 
-  if (dryRun) {
+  if(dryRun) {
     return { count, size: sizeInMB };
   }
 
   const destinationDb = destinationClient.db(dbName);
-
-  // Drop the collection if it exists
   try {
     await destinationDb.collection(collectionName).drop();
   } catch (error) {
@@ -235,28 +273,22 @@ async function copyCollection(
   }
 
   const destinationCollection = destinationDb.collection(collectionName);
-
-  // Copy documents in batches to avoid memory issues
   const batchSize = 1000;
   let copied = 0;
   const spinner = ora(`Copying ${collectionName} (${count} documents, ${sizeInMB} MB)`).start();
 
-  if (count > 0) {
-    // Configure cursor based on collection and filters
+  if(count > 0) {
     let cursor;
-    if ((isIncidentsCollection && hasIncidentFilter) ||
-      (isReportsCollection && incidentIds.length > 0 && associatedReportNumbers.length > 0)) {
+    if(Object.keys(query).length > 0) {
       cursor = sourceCollection.find(query);
     } else {
       cursor = sourceCollection.find({});
     }
 
     let batch = [];
-
     for await (const doc of cursor) {
       batch.push(doc);
-
-      if (batch.length >= batchSize) {
+      if(batch.length >= batchSize) {
         await destinationCollection.insertMany(batch);
         copied += batch.length;
         batch = [];
@@ -264,7 +296,7 @@ async function copyCollection(
       }
     }
 
-    if (batch.length > 0) {
+    if(batch.length > 0) {
       await destinationCollection.insertMany(batch);
       copied += batch.length;
     }
@@ -274,53 +306,64 @@ async function copyCollection(
   return { count, size: sizeInMB };
 }
 
+// Updated restoreDatabase to use helper functions for ordering and computing associated reports
 async function restoreDatabase(
   sourceClient: MongoClient,
   destinationClient: MongoClient,
   dbName: string,
   dryRun: boolean,
-  incidentIds: number[] = []
+  incidentIds: number[] = [],
+  reportNumbers: number[] = [],
+  classificationNamespaces: string[] = []
 ): Promise<{ collections: number; documents: number; size: number }> {
   console.log(chalk.blue(`\nProcessing database: ${dbName}`));
 
-  const collections = await listCollections(sourceClient, dbName);
+  let collections = await listCollections(sourceClient, dbName);
   console.log(`Found ${collections.length} collections in ${dbName}`);
 
   let totalDocuments = 0;
   let totalSize = 0;
 
-  // Process incidents collection first to gather report numbers
-  if (dbName === 'aiidprod' && incidentIds.length > 0) {
-    // Get all related incidents recursively
-    const allRelatedIncidents = await findAllRelatedIncidents(sourceClient, incidentIds);
-
-    // Convert set to array
-    const expandedIncidentIds = Array.from(allRelatedIncidents);
-
-    console.log(chalk.green(`Including ${expandedIncidentIds.length} incidents after adding related incidents`));
-
-    // Replace the original incident IDs with the expanded list
-    incidentIds = expandedIncidentIds;
-
-    const incidentsIndex = collections.indexOf('incidents');
-    if (incidentsIndex > 0) {
-      // Move incidents to the front of the array
-      collections.splice(incidentsIndex, 1);
-      collections.unshift('incidents');
+  if(dbName === 'aiidprod' && (incidentIds.length > 0 || reportNumbers.length > 0 || classificationNamespaces.length > 0)) {
+    if(incidentIds.length > 0) {
+      const allRelatedIncidents = await findAllRelatedIncidents(sourceClient, incidentIds);
+      incidentIds = Array.from(allRelatedIncidents);
+      console.log(chalk.green(`Including ${incidentIds.length} incidents after adding related incidents`));
     }
-  }
-
-  for (const collectionName of collections) {
-    const { count, size } = await copyCollection(
-      sourceClient,
-      destinationClient,
-      dbName,
-      collectionName,
-      dryRun,
-      incidentIds
-    );
-    totalDocuments += count;
-    totalSize += size;
+    collections = orderCollections(collections, reportNumbers, classificationNamespaces);
+    let computedReportNumbers: number[] = [];
+    if(incidentIds.length > 0 || reportNumbers.length > 0) {
+      computedReportNumbers = await computeAssociatedReportNumbers(sourceClient, incidentIds, reportNumbers);
+      console.log(chalk.yellow(`Found ${computedReportNumbers.length} reports associated with provided parameters`));
+    }
+    for (const collectionName of collections) {
+      const { count, size } = await copyCollection(
+        sourceClient,
+        destinationClient,
+        dbName,
+        collectionName,
+        dryRun,
+        incidentIds,
+        classificationNamespaces,
+        computedReportNumbers
+      );
+      totalDocuments += count;
+      totalSize += size;
+    }
+  } else {
+    for (const collectionName of collections) {
+      const { count, size } = await copyCollection(
+        sourceClient,
+        destinationClient,
+        dbName,
+        collectionName,
+        dryRun,
+        incidentIds,
+        classificationNamespaces
+      );
+      totalDocuments += count;
+      totalSize += size;
+    }
   }
 
   return {
@@ -342,6 +385,18 @@ async function main(): Promise<void> {
         .filter(id => !isNaN(id))
       : [];
 
+    // Parse report numbers if provided
+    const reportNumbers: number[] = args.reportNumbers
+      ? args.reportNumbers.split(',')
+        .map(num => Number(num.trim()))
+        .filter(num => !isNaN(num))
+      : [];
+
+    // Parse classification namespaces if provided
+    const classificationNamespaces: string[] = args.classificationNamespaces
+      ? args.classificationNamespaces.split(',').map(ns => ns.trim()).filter(ns => ns)
+      : [];
+
     console.log(chalk.green('MongoDB Restore Tool'));
     console.log(chalk.yellow('Source URL:'), args.sourceUrl);
     console.log(chalk.yellow('Destination URL:'), args.destinationUrl);
@@ -351,6 +406,18 @@ async function main(): Promise<void> {
       console.log(chalk.yellow('Initial Incident IDs:'), incidentIds.join(', '), '(will include related incidents and reports)');
     } else {
       console.log(chalk.yellow('Incident IDs:'), 'All incidents will be restored');
+    }
+
+    if (reportNumbers.length > 0) {
+      console.log(chalk.yellow('Report Numbers:'), reportNumbers.join(', '));
+    } else {
+      console.log(chalk.yellow('Report Numbers:'), 'All reports will be restored');
+    }
+
+    if (classificationNamespaces.length > 0) {
+      console.log(chalk.yellow('Classification Namespaces:'), classificationNamespaces.join(', '));
+    } else {
+      console.log(chalk.yellow('Classification Namespaces:'), 'All classifications will be restored');
     }
 
     if (args.dryRun) {
@@ -386,7 +453,9 @@ async function main(): Promise<void> {
         destinationClient,
         dbName,
         args.dryRun,
-        incidentIds
+        incidentIds,
+        reportNumbers,
+        classificationNamespaces
       );
       totalCollections += collections;
       totalDocuments += documents;
