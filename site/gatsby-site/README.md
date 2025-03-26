@@ -261,13 +261,11 @@ Usage:
 npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations --incidentIds=ID1,ID2,ID3
 ```
 
-Example with featured incidents from the AIID:
+For deploying on a free GitHub runner, you can use the following command that includes a specific set of incident IDs, classification namespaces, and report numbers:
 
 ```bash
-npm run restore-mongodb -- --sourceUrl=mongodb+srv://username:password@cluster.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --incidentIds=23,1967,1551,835,1470,1118,1773,1509,1245,679,1606,1374,1065,1543,1505,1468,1539,1420,101,12,368,1427,392,595,1235,45,620,519
+npm run restore-mongodb -- --sourceUrl=<SOURCE_MONGODB_URL> --destinationUrl=<DESTINATION_MONGODB_URL> --incidentIds=23,1967,1551,835,1470,1118,1773,1509,1245,679,1606,1374,1065,1543,1505,1468,1539,1420,101,12,368,1427,392,595,1235,45,620,519 --classificationNamespaces=CSETv1 --reportNumbers=2302
 ```
-
-This example includes the featured incidents that are shown on the AIID homepage, creating a representative subset of the database suitable for testing and development.
 
 The script will:
 1. Find all the specified incidents
@@ -275,11 +273,11 @@ The script will:
 3. Include all reports associated with these incidents
 4. Copy all the data to the destination database
 
-You can also run this in dry-run mode to see what would be copied without making changes:
+You can also specify additional options:
+- `--classificationNamespaces=NAMESPACE`: Include only specific classification namespaces
+- `--reportNumbers=NUMBER`: Include specific report numbers
 
-```bash
-npm run restore-mongodb -- --sourceUrl=mongodb+srv://username:password@cluster.mongodb.net --destinationUrl=mongodb://127.0.0.1:4110/ --incidentIds=23,1967,1551 --dryRun
-```
+You can also run this in dry-run mode to see what would be copied without making changes with the `--dryRun` flag.
 
 ## Further Reading
 
