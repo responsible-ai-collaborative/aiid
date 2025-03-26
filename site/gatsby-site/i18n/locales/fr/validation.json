@@ -5,7 +5,7 @@
   "*Date published is required": "*Date de publication obligatoire",
   "*Date downloaded required": "*Date de téléchargement obligatoire",
   "*Must enter URL in http://www.example.com/images/preview.png format": "*Vous devez entrer l'URL avec le format http://www.example.com/images/preview.png",
-  "Incident ID {{value}} not found!": "Incident {{value}} introuvable !",
+  "Incident ID {{value}} not found!": "Incident {{value}} introuvable !",
   "Incident ID": "ID de l'incident",
   "Type and press Enter to add an item": "Ecrivez et appuyez Enter pour ajouter un élément",
   "*Title must have at least 6 characters": "*Le titre doit comporter au moins 6 caractères",
@@ -35,7 +35,6 @@
   "Implicated AI systems must have at least 3 characters": "Les systèmes de l'IA impliqués doivent avoir au moins 3 caractères",
   "Implicated AI systems can't be longer than 200 characters": "Les systèmes de l'IA impliqués ne peuvent pas comporter plus de 200 caractères",
   "*Text must have at least 80 characters": "*Le texte doit comporter au moins 80 caractères",
-  "*Text can’t be longer than 50000 characters": "*Le texte ne peut pas comporter plus de 50000 caractères",
   "Please review report. Some data is missing.": "Veuillez vérifier le rapport. Certaines données manquent.",
   "Please review submission. Some data is missing.": "Veuillez vérifier la soumission. Certaines données manquent.",
   "Some data is missing.": "Certaines données manquent.",
@@ -45,5 +44,6 @@
   "Each alleged Developer must have at least 3 characters and less than 200": "Chaque développeur présumé doit comporter au moins 3 caractères et moins de 200",
   "Each alleged Deployer must have at least 3 characters and less than 200": "Chaque implémenteur présumé doit comporter au moins 3 caractères et moins de 200",
   "Each alleged Harmed parties must have at least 3 characters and less than 200": "Chaque partie lésée présumée doit comporter au moins 3 caractères et moins de 200",
-  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "Chaque système d'IA impliqué présumé doit comporter au moins 3 caractères et moins de 200"
+  "Each alleged Implicated AI system must have at least 3 characters and less than 200": "Chaque système d'IA présumé impliqué doit comporter au moins 3 caractères et moins de 200.",
+  "*Text can't be longer than 50000 characters": "*Le texte ne peut pas comporter plus de 50000 caractères"
 }
