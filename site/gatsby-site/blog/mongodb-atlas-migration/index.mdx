@@ -1,0 +1,39 @@
+---
+title: 'User Story Spotlight: Navigating the MongoDB Atlas Deprecation'
+metaTitle: 'User Story Spotlight: Navigating the MongoDB Atlas Deprecation'
+metaDescription: 'How the AIID team migrated from MongoDB Atlas GraphQL and Hosting services after their deprecation announcement'
+date: '2025-03-20'
+image: '../user-story-spotlights/images/spotlight.png'
+author: 'Cesar Varela'
+slug: '/blog/mongodb-atlas-migration'
+---
+
+At the AI Incident Database (AIID), we continuously strive to provide a reliable and robust platform for exploring and understanding AI incidents. Recently, we faced a significant challenge when MongoDB announced the deprecation of their Atlas GraphQL and Hosting services ([official announcement](https://www.mongodb.com/developer/products/atlas/deprecating-mongodb-atlas-graphql-hosting-services/)). This blog post shares our experience navigating this transition, highlighting the decisions we made and the lessons learned along the way.
+
+## Featured User Story: Migrating the GraphQL API
+
+> **User Story**: "I want a stable and maintainable GraphQL API so I can reliably access incident data without disruptions."
+
+Our first priority was migrating our GraphQL API. Initially, we considered several third-party solutions, including popular libraries like Hasura and Apollo. However, after careful evaluation, we decided against adopting another external service. Our previous experience with MongoDB's deprecation had taught us the importance of minimizing external dependencies, especially when our API complexity did not justify the overhead of third-party solutions.
+
+Instead, we opted for an in-house solution. This approach allowed us to tailor the API precisely to our needs, ensuring greater control, flexibility, and long-term stability. The migration was smooth, and our new GraphQL API now provides reliable and efficient access to incident data without the risk of future disruptions from external service changes.
+
+## Featured User Story: Simplifying Authentication with NextAuth
+
+> **User Story**: "I want a straightforward and reliable authentication system so I can securely manage user access without unnecessary complexity."
+
+The second step in our migration was addressing the authentication layer. Again, we explored popular third-party authentication providers such as Clerk and Auth0. While these services offer robust features, our authentication requirements at AIID are relatively straightforward. We concluded that integrating a third-party solution would introduce unnecessary complexity and potential future dependency risks.
+
+Ultimately, we chose NextAuth, a lightweight and flexible authentication library that integrates seamlessly with our existing Gatsby infrastructure. This decision proved to be highly effective, providing us with a simple yet secure authentication solution that perfectly matches our needs.
+
+## Lessons Learned and Looking Ahead
+
+This migration experience reinforced several key lessons for our team:
+
+- **Evaluate Complexity vs. Dependency**: Always weigh the complexity of your requirements against the risks and overhead of external dependencies.
+- **Prioritize Stability and Control**: In-house solutions can offer greater stability and control, especially for simpler use cases.
+- **Keep It Simple**: Opt for simplicity whenever possible to reduce maintenance overhead and future-proof your infrastructure.
+
+At AIID, we remain committed to providing a stable, reliable, and user-friendly platform for exploring AI incidents. This migration has strengthened our infrastructure and positioned us well for future growth and enhancements.
+
+If you have any questions or suggestions about our migration experience or the AIID platform, please [contact us](/contact)! 
