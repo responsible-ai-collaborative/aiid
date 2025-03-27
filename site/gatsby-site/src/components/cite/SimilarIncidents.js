@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { formatISO, format, parse, getUnixTime } from 'date-fns';
+import React, { useCallback, useState } from 'react';
+import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, FLAG_INCIDENT_SIMILARITY } from '../../graphql/incidents';
 import md5 from 'md5';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
 import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -28,19 +27,15 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
-  const [updateIncidentMutation] = useMutation(UPDATE_INCIDENT);
+  const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: parentIncident.incident_id } },
+    variables: { filter: { incident_id: { EQ: parentIncident.incident_id } } },
   });
 
   const addToast = useToastContext();
 
-  const { logIncidentHistory } = useLogIncidentHistory();
-
-  const flagIncident = async () => {
-    const now = new Date();
-
+  const flagIncident = useCallback(async () => {
     const flagged_dissimilar_incidents = isFlagged
       ? parentIncident.flagged_dissimilar_incidents?.filter((e) => e != incident.incident_id)
       : parentIncident.flagged_dissimilar_incidents
@@ -54,26 +49,12 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       editors.push(user.id);
     }
 
-    await updateIncidentMutation({
+    await flagSimilarity({
       variables: {
-        query: { incident_id: parentIncident.incident_id },
-        set: {
-          flagged_dissimilar_incidents,
-          epoch_date_modified: getUnixTime(now),
-          editors: { link: editors },
-        },
+        incidentId: parentIncident.incident_id,
+        dissimilarIds: flagged_dissimilar_incidents,
       },
     });
-
-    await logIncidentHistory(
-      {
-        ...incidentData.incident,
-        flagged_dissimilar_incidents,
-        epoch_date_modified: getUnixTime(now),
-        editors: { link: editors },
-      },
-      user
-    );
 
     addToast({
       message: isFlagged
@@ -84,7 +65,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       severity: SEVERITY.success,
     });
     setFlagged(!isFlagged);
-  };
+  }, [incidentData]);
 
   return (
     <div
@@ -128,7 +109,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         </div>
         <div className="inline-block ml-auto mr-auto" />
 
-        {flaggable && (
+        {flaggable && incidentData && (
           <Button
             variant="link"
             className={`p-0 hover:text-gray-500 ${
@@ -170,7 +151,7 @@ const SimilarIncidents = ({
   );
 
   return (
-    <div className={`tw-similar-incidents ${className}`}>
+    <div className={`tw-similar-incidents ${className || ''}`}>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <LocalizedLink
           to={'/summaries/spatial?incident=' + parentIncident.incident_id}

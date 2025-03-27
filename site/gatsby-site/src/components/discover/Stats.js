@@ -1,20 +1,15 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { connectStats } from 'react-instantsearch-dom';
-import DisplayOptions from './DisplayOptions';
+import { useStats } from 'react-instantsearch';
 
-function Stats({ className, nbHits: count }) {
+export default function Stats({ className, ...props }) {
+  const { nbHits: count } = useStats(props);
+
   return (
     <div className={'flex gap-3 items-center ' + className}>
-      <Trans count={count}>
-        <b>{{ count }}</b>{' '}
-        <span data-cy="display-options">
-          <DisplayOptions />
-        </span>{' '}
-        found
-      </Trans>
+      <div>
+        <b>{count}</b> <Trans>results found</Trans>
+      </div>
     </div>
   );
 }
-
-export default connectStats(Stats);

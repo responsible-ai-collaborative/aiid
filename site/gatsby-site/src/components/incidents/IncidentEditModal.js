@@ -10,8 +10,7 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { getUnixTime } from 'date-fns';
-import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
+import { useUserContext } from 'contexts/UserContext';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();
@@ -21,7 +20,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [incident, setIncident] = useState(null);
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { filter: { incident_id: { EQ: incidentId } } },
   });
 
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -31,8 +30,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
-
-  const { logIncidentHistory } = useLogIncidentHistory();
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -70,6 +67,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         embedding: undefined,
         editors: { link: values.editors },
         tsne: undefined,
+        incidentSearch: undefined,
       };
 
       const { entities } = entitiesData;
@@ -92,6 +90,12 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         createEntityMutation
       );
 
+      updated.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       updated.epoch_date_modified = getUnixTime(new Date());
 
       // Add the current user to the list of editors
@@ -101,24 +105,16 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
       await updateIncident({
         variables: {
-          query: {
-            incident_id: incidentId,
+          filter: {
+            incident_id: { EQ: incidentId },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
-
-      await logIncidentHistory(
-        {
-          ...incident,
-          ...updated,
-          reports: incident.reports,
-          embedding: incident.embedding,
-        },
-        user
-      );
 
       addToast(updateSuccessToast({ incidentId }));
 
@@ -131,6 +127,10 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   if (!show) {
     return null;
   }
+
+  const entityNames = entitiesData?.entities
+    ? entitiesData.entities.map((node) => node.name).sort()
+    : [];
 
   return (
     <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
@@ -165,13 +165,17 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
               incident.AllegedHarmedOrNearlyHarmedParties === null
                 ? []
                 : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+            implicated_systems:
+              incident.implicated_systems === null
+                ? []
+                : incident.implicated_systems.map((item) => item.name),
             editors: incident.editors.map((editor) => editor.userId),
           }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
               <Modal.Body>
-                <IncidentForm />
+                <IncidentForm entityNames={entityNames} />
               </Modal.Body>
               <Modal.Footer>
                 <Button color="gray" onClick={onClose}>

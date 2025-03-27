@@ -28,6 +28,7 @@ import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
 import { debounce } from 'debounce';
+import SubmissionButton from './SubmissionButton';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -211,7 +212,7 @@ const FormDetails = ({
         </span>
       )}
       <Form
-        className={`relative z-2 ${parsingNews ? 'opacity-50' : ''} ${
+        className={`relative ${parsingNews ? 'opacity-50' : ''} ${
           !isEmpty(errors) ? 'form-has-errors' : ''
         }`}
       >
@@ -244,7 +245,12 @@ const FormDetails = ({
             btnDisabled={!!errors.url || !touched.url || parsingNews}
             btnText={t('Fetch info')}
           />
-          <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+          <RelatedIncidents
+            incident={values}
+            setFieldValue={setFieldValue}
+            columns={['byURL']}
+            triggerSearch={values['url']?.length}
+          />
         </FieldContainer>
 
         <FieldContainer>
@@ -278,6 +284,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byAuthors']}
+            triggerSearch={values['authors']?.length}
           />
         </FieldContainer>
 
@@ -300,6 +307,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byDatePublished']}
+            triggerSearch={values['date_published']?.length}
           />
         </FieldContainer>
 
@@ -433,7 +441,7 @@ const FormDetails = ({
           </Button>
         </div>
         <div className="flex justify-end mt-4 gap-2">
-          <Button
+          <SubmissionButton
             data-cy="submit-step-1"
             disabled={isSubmitting || parsingNews}
             onClick={() => {
@@ -448,14 +456,7 @@ const FormDetails = ({
                 submitForm
               );
             }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
-              </div>
-            )}
-            <Trans>Submit</Trans>
-          </Button>
+          />
         </div>
       </Form>
 

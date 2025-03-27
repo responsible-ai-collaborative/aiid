@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import { FIND_REPORT, FIND_REPORT_HISTORY, UPDATE_REPORT } from '../../graphql/reports';
-import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
+import { FIND_REPORT_HISTORY, UPDATE_REPORT } from '../../graphql/reports';
+import { FIND_USERS } from '../../graphql/users';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
@@ -16,14 +16,13 @@ import Link from 'components/ui/Link';
 import ReportVersionViewModal from 'components/reports/ReportVersionViewModal';
 import { Button, Spinner } from 'flowbite-react';
 import CustomButton from 'elements/Button';
-import { useUserContext } from 'contexts/userContext';
-import { useLogReportHistory } from '../../hooks/useLogReportHistory';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function IncidentHistoryPage() {
   const { t } = useTranslation();
 
-  const { isRole, user } = useUserContext();
+  const { isRole } = useUserContext();
 
   const addToast = useToastContext();
 
@@ -39,16 +38,7 @@ function IncidentHistoryPage() {
 
   const [reportVersionDetails, setReportVersionDetails] = useState(null);
 
-  const [report, setReport] = useState(null);
-
-  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
-
-  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
-    fetchPolicy: 'network-only',
-    variables: {
-      query: { report_number: reportNumber },
-    },
-  });
+  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
 
   const {
     data: reportHistoryData,
@@ -57,23 +47,13 @@ function IncidentHistoryPage() {
   } = useQuery(FIND_REPORT_HISTORY, {
     fetchPolicy: 'network-only',
     variables: {
-      query: {
-        report_number: reportNumber,
+      filter: {
+        report_number: { EQ: reportNumber },
       },
     },
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
-
-  const { logReportHistory } = useLogReportHistory();
-
-  useEffect(() => {
-    if (reportData?.report) {
-      setReport({ ...reportData.report });
-    } else {
-      setReport(undefined);
-    }
-  }, [reportData]);
 
   useEffect(() => {
     if (reportHistoryData?.history_reports?.length > 0) {
@@ -113,7 +93,7 @@ function IncidentHistoryPage() {
     }
   }, [reportHistoryData, usersData]);
 
-  const loading = loadingReportHistory || loadingUsers || loadingReport;
+  const loading = loadingReportHistory || loadingUsers;
 
   const restoreVersion = async (version) => {
     if (confirm(t('Are you sure you want to restore this version?'))) {
@@ -128,6 +108,7 @@ function IncidentHistoryPage() {
           __typename: undefined,
           _id: undefined,
           changes: undefined,
+          date_modified: new Date(),
           epoch_date_modified: getUnixTime(new Date()),
           editor_notes: version.editor_notes ? version.editor_notes : '',
           embedding: version.embedding
@@ -137,12 +118,10 @@ function IncidentHistoryPage() {
 
         await updateReport({
           variables: {
-            query: { report_number: reportNumber },
-            set: updatedReport,
+            filter: { report_number: { EQ: reportNumber } },
+            update: { set: updatedReport },
           },
         });
-
-        await logReportHistory(report, updatedReport, user);
 
         await refetchHistory();
 
@@ -163,12 +142,16 @@ function IncidentHistoryPage() {
     }
   };
 
+  const reportUrl = incidentId
+    ? `/cite/${incidentId}#r${reportNumber}`
+    : `/reports/${reportNumber}`;
+
   return (
     <div className={'w-full p-1'}>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="text-2xl mb-5">{incidentTitle}</h1>
-          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
+          <Link to={reportUrl} className="hover:no-underline mb-5">
             <Button outline={true} color={'light'}>
               <Trans>Back to Report {{ reportNumber }}</Trans>
             </Button>
@@ -197,7 +180,7 @@ function IncidentHistoryPage() {
                 <hr />
               </div>
               {restoringVersion && (
-                <div className="font-semibold mb-2" data-cy="restoring-message">
+                <div className="font-semibold mb-2" data-testid="restoring-message">
                   <div className="flex gap-3 mb-2">
                     <Trans>Restoring version</Trans>
                     <Spinner />

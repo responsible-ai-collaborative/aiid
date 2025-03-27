@@ -1,25 +1,18 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import HeadContent from 'components/HeadContent.js';
 
-export default function Taxonomies({ data, ...props }) {
+export default function Taxonomies({ data }) {
   const { t } = useTranslation();
-
-  const title = t('Taxonomies');
 
   const metaTitle = t('List of taxonomies');
 
-  const metaDescription = t('This is the list of taxonomies supported in AIID');
-
   return (
     <>
-      <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
-        <title>{title}</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>{metaTitle}</h1>
         <TranslationBadge originalLanguage="en" />
@@ -47,15 +40,33 @@ export default function Taxonomies({ data, ...props }) {
           </li>
           <li>
             <p>
-              <LocalizedLink to="/taxonomy/gmf/">Goals, Methods, and Failures (GMF)</LocalizedLink>.
-              This is a taxonomy detailing the technological and process factors producing an
-              incident.
+              <Trans>
+                <LocalizedLink to="/taxonomy/gmf/">
+                  Goals, Methods, and Failures (GMF)
+                </LocalizedLink>
+                . This is a taxonomy detailing the technological and process factors producing an
+                incident.
+              </Trans>
             </p>
             <TaxonomyGraphCarousel
               data={data}
               namespace="GMF"
               axes={['Known AI Goal', 'Known AI Technology', 'Known AI Technical Failure']}
             />
+          </li>
+          <li>
+            <p>
+              <Trans>
+                <LocalizedLink to="/taxonomy/mit">MIT AI Risk Repository</LocalizedLink> The MIT AI
+                Risk Repository contains detailed records of AI-related risks extracted from a
+                variety of sources, categorized into high-level and mid-level taxonomies. Its
+                high-level Causal Taxonomy includes attributes such as the entity responsible for
+                the risk (human, AI, or other), the intent (intentional, unintentional, or other),
+                and the timing (pre-deployment, post-deployment, or other). Its mid-level Domain
+                Taxonomy categorizes risks into 23 specific domains like discrimination,
+                misinformation, malicious use, and human-computer interaction issues.
+              </Trans>
+            </p>
           </li>
         </ul>
 
@@ -74,6 +85,29 @@ export default function Taxonomies({ data, ...props }) {
     </>
   );
 }
+
+export const Head = (props) => {
+  const { t } = useTranslation();
+
+  const {
+    location: { pathname },
+  } = props;
+
+  const title = t('Taxonomies');
+
+  const metaTitle = t('List of taxonomies');
+
+  const metaDescription = t('This is the list of taxonomies supported in AIID');
+
+  return (
+    <HeadContent
+      path={pathname}
+      title={title}
+      metaTitle={metaTitle}
+      metaDescription={metaDescription}
+    />
+  );
+};
 
 export const pageQuery = graphql`
   query TaxonomoyGraphCarouselTaxa {

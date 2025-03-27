@@ -3,7 +3,7 @@ import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, UPDATE_INCIDENT, UPDATE_INCIDENTS } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -13,8 +13,7 @@ import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
-import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
+import { useUserContext } from 'contexts/UserContext';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
@@ -26,7 +25,7 @@ function EditCitePage(props) {
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id: incidentId } },
+    variables: { filter: { incident_id: { EQ: incidentId } } },
   });
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
@@ -35,11 +34,11 @@ function EditCitePage(props) {
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
+  const [updateIncidents] = useMutation(UPDATE_INCIDENTS);
+
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
-
-  const { logIncidentHistory } = useLogIncidentHistory();
 
   const updateSuccessToast = ({ incidentId }) => ({
     message: (
@@ -80,6 +79,7 @@ function EditCitePage(props) {
           __typename: undefined,
         },
         __typename: undefined,
+        incidentSearch: undefined,
       };
 
       const { entities } = entitiesData;
@@ -102,6 +102,12 @@ function EditCitePage(props) {
         createEntityMutation
       );
 
+      updated.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
+        createEntityMutation
+      );
+
       updated.epoch_date_modified = getUnixTime(new Date());
 
       // Add the current user to the list of editors
@@ -111,23 +117,20 @@ function EditCitePage(props) {
 
       await updateIncident({
         variables: {
-          query: {
-            incident_id: incidentId,
+          filter: {
+            incident_id: { EQ: incidentId },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
 
-      await logIncidentHistory(
-        {
-          ...incident,
-          ...updated,
-          reports: incident.reports,
-          embedding: incident.embedding,
-        },
-        user
+      await updateSimilarIncidentsReciprocal(
+        updated.editor_similar_incidents,
+        updated.editor_dissimilar_incidents
       );
 
       addToast(updateSuccessToast({ incidentId }));
@@ -135,6 +138,32 @@ function EditCitePage(props) {
       addToast(updateErrorToast({ incidentId, error }));
     }
   };
+
+  const updateSimilarIncidentsReciprocal = async (similarIncidents, dissimilarIncidents) => {
+    const updateIncidentSet = async (incidents, setKey) => {
+      if (incidents.length > 0) {
+        const querySet = {
+          [setKey]: [incident.incident_id],
+        };
+
+        await updateIncidents({
+          variables: {
+            filter: { incident_id: { IN: incidents } },
+            update: { set: querySet },
+          },
+        });
+      }
+    };
+
+    await Promise.all([
+      updateIncidentSet(similarIncidents, 'editor_similar_incidents'),
+      updateIncidentSet(dissimilarIncidents, 'editor_dissimilar_incidents'),
+    ]);
+  };
+
+  const entityNames = entitiesData?.entities
+    ? entitiesData.entities.map((node) => node.name).sort()
+    : [];
 
   return (
     <div className={'w-full'} {...props}>
@@ -152,7 +181,7 @@ function EditCitePage(props) {
       )}
 
       {loading && <DefaultSkeleton />}
-      {incident === null && !loading && <div>Report not found</div>}
+      {incident === null && !loading && <div>Incident not found</div>}
 
       {incident && (
         <Formik
@@ -173,11 +202,23 @@ function EditCitePage(props) {
                 ? []
                 : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
             editors: incident.editors.map((user) => user.userId),
+            implicated_systems:
+              incident.implicated_systems === null
+                ? []
+                : incident.implicated_systems.map((item) => item.name),
           }}
         >
-          {({ isValid, isSubmitting, submitForm }) => (
+          {({ isValid, isSubmitting, submitForm, errors }) => (
             <>
-              <IncidentForm />
+              <IncidentForm entityNames={entityNames} />
+              {!isValid && (
+                <div className="text-red-500">
+                  Could not validate form:{' '}
+                  {Object.values(errors).map((error, index) => (
+                    <div key={`error-${index}`}>{error}</div>
+                  ))}
+                </div>
+              )}
               <Button
                 onClick={submitForm}
                 type="submit"

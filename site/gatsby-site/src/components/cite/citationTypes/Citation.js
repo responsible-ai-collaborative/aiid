@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getFormattedName } from '../../../utils/typography';
 
-const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
+const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) => {
   const docs = [...nodes];
 
   // Sort the docs according to their submit date
@@ -48,7 +48,7 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
   const editorFirstNameInitial = first_name[0] + '.';
 
   const text = t(
-    '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',
+    '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}: {{incidentTitle}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',
     {
       submitterCite,
       incidentDate,
@@ -56,6 +56,7 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
       editorLastName,
       editorFirstNameInitial,
       retrievalString,
+      incidentTitle,
     }
   );
 
@@ -83,7 +84,16 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
         <Button
           color={'gray'}
           onClick={() => {
-            navigator.clipboard.writeText(text);
+            const copyListener = (e) => {
+              e.clipboardData.setData('text/html', text);
+              e.clipboardData.setData('text/plain', text.replace(/<[/]?[A-Za-z]>/g, ''));
+              e.preventDefault();
+            };
+
+            document.addEventListener('copy', copyListener);
+            document.execCommand('copy');
+            document.removeEventListener('copy', copyListener);
+
             addToast({
               message: 'Citation format copied to clipboard',
               severity: SEVERITY.success,

@@ -1,0 +1,79 @@
+{
+  "Main" : {
+    "title" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Title",
+        "placeholder" : "The title will appear at the top of your document"
+      }
+    },
+    "language" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Language",
+        "placeholder" : "en, es or fr"
+      }
+    },
+    "slug" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Slug",
+        "placeholder" : "Path where your document leaves. Must start with \"/\". For example: /contact"
+      }
+    },
+    "metatitle" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "metaTitle",
+        "placeholder" : "The metatitle of your page"
+      }
+    },
+    "metadescription" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "metaDescription",
+        "placeholder" : "The meta description of your page"
+      }
+    },
+    "aitranslated" : {
+      "type" : "Boolean",
+      "config" : {
+        "default_value" : false,
+        "label" : "aiTranslated"
+      }
+    },
+    "content" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "text" : {
+            "type" : "StructuredText",
+            "config" : {
+              "multi" : "paragraph,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+              "allowTargetBlank" : true,
+              "label" : "text",
+              "placeholder" : "Rich text field with the doc's page content. This field takes priority over markdown."
+            }
+          },
+          "markdown" : {
+            "type" : "StructuredText",
+            "config" : {
+              "multi" : "preformatted",
+              "allowTargetBlank" : true,
+              "label" : "markdown",
+              "placeholder" : "Markdown content. Use text or markdown, not both. If both are filled, text has priority over markdown."
+            }
+          },
+          "component" : {
+            "type" : "Text",
+            "config" : {
+              "label" : "Component",
+              "placeholder" : "Reference to internal component. It must be a component that doesn't receive props. Example: Sponsors"
+            }
+          }
+        },
+        "label" : "content"
+      }
+    }
+  }
+}

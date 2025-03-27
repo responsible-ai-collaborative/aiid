@@ -1,24 +1,21 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { Dropdown } from 'flowbite-react';
-import { Link } from 'gatsby';
 
-async function getSnapshotURL(url, date) {
-  const timestamp = date ? date.replace('-', '') : '';
-
-  const waUrl = `https://archive.org/wayback/available?url=${url}&timestamp=${timestamp}`;
+async function getSnapshotURL(url) {
+  const waUrl = `https://archive.org/wayback/available?url=${url}`;
 
   const response = await (await fetch(waUrl)).json();
 
   return response.archived_snapshots.closest.url.replace('http:', 'https:');
 }
 
-export default function WebArchiveLink({ url, date, children, className = '' }) {
+export default function WebArchiveLink({ url, children, className = '' }) {
   const onClick = async () => {
     const win = window.open('', '_blank');
 
     try {
-      const snapshotUrl = await getSnapshotURL(url, date);
+      const snapshotUrl = await getSnapshotURL(url);
 
       win.location.href = snapshotUrl;
     } catch (e) {
@@ -31,10 +28,10 @@ export default function WebArchiveLink({ url, date, children, className = '' }) 
   };
 
   return (
-    <div className={`flex items-center ${className}`} data-cy="web-archive-link">
-      <Link className="text-black" to={url}>
+    <div className={`flex items-center ${className || ''}`} data-cy="web-archive-link">
+      <a className="text-black" href={url}>
         {children}
-      </Link>
+      </a>
       <div data-cy="dropdown-toggle">
         <Dropdown inline={true} label="" className="-ml-3">
           <Dropdown.Item onClick={() => navigateToUrl(url)} data-cy="original">

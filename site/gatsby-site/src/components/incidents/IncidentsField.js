@@ -6,11 +6,13 @@ import { FIND_INCIDENTS_TITLE } from '../../graphql/incidents';
 
 const filterBy = (option, text) => {
   return (
-    option?.title.toLowerCase().includes(text.toLowerCase()) || option.id?.toString().includes(text)
+    option?.title.toLowerCase().includes(text.toLowerCase()) ||
+    text.toLowerCase().includes(option.id?.toString()) ||
+    `${option.id} - ${option.title}`.toLowerCase().includes(text.toLowerCase())
   );
 };
 
-export default function IncidentsField({ id, name, placeHolder = '' }) {
+export default function IncidentsField({ id, name, placeHolder = '', multiple = true, className }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
@@ -21,9 +23,11 @@ export default function IncidentsField({ id, name, placeHolder = '' }) {
 
   const [selected, setSelected] = useState(
     value
-      .slice()
-      .sort()
-      .map((id) => ({ id, title: '' }))
+      ? value
+          .slice()
+          .sort()
+          .map((id) => ({ id, title: '' }))
+      : []
   );
 
   useEffect(() => {
@@ -57,13 +61,13 @@ export default function IncidentsField({ id, name, placeHolder = '' }) {
   return (
     <>
       <AsyncTypeahead
-        className="Typeahead incident-ids-field"
+        className={`Typeahead incident-ids-field ${className}`}
         filterBy={() => true}
         id={id}
         inputProps={{ id: 'input-' + id, name }}
         selected={selected}
         options={options}
-        multiple
+        multiple={multiple}
         labelKey={(option) => `${option.id}`}
         isLoading={loading}
         onSearch={handleSearch}

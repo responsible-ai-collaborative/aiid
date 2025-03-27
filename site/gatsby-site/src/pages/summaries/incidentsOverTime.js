@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import { TextInput, Label } from 'flowbite-react';
 import { format } from 'date-fns';
@@ -24,7 +24,7 @@ const countByDate = (items, series, startDate) =>
     return points.concat([newPoint]);
   }, []);
 
-export default function IncidentsOverTimePage({ data, ...props }) {
+export default function IncidentsOverTimePage({ data }) {
   const metaTitle = 'Incidents Over Time';
 
   const [startDate, setStartDate] = useState(new Date(2020, 10, 7));
@@ -34,9 +34,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
   const incidentsByDate = data.allMongodbAiidprodIncidents.nodes
     .filter((i) => i.reports && i.reports.length > 0)
     .map((incident) => {
-      const reports = data.allMongodbAiidprodReports.nodes.filter((report) =>
-        incident.reports.some((r) => report.report_number == r.report_number)
-      );
+      const reports = incident.reports;
 
       const earliestReport = reports.sort((a, b) => a.date_submitted - b.date_submitted)[0];
 
@@ -49,7 +47,11 @@ export default function IncidentsOverTimePage({ data, ...props }) {
 
   const incidentsData = countByDate(incidentsByDate, 'incidents', startDate);
 
-  const reportsData = countByDate(data.allMongodbAiidprodReports.nodes, 'reports', startDate);
+  const allReports = data.allMongodbAiidprodIncidents.nodes
+    .flatMap((incident) => incident.reports)
+    .sort((a, b) => Date.parse(a.date_submitted) - Date.parse(b.date_submitted));
+
+  const reportsData = countByDate(allReports, 'reports', startDate);
 
   const params = {
     x: (d) => d.date,
@@ -66,10 +68,6 @@ export default function IncidentsOverTimePage({ data, ...props }) {
 
   return (
     <>
-      <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{metaTitle}</h1>
       </div>
@@ -117,34 +115,48 @@ export default function IncidentsOverTimePage({ data, ...props }) {
   );
 }
 
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Incidents Over Time';
+
+  const metaDescription = 'View how the number of incidents and reports has changed over time.';
+
+  return (
+    <HeadContent
+      path={pathname}
+      metaTitle={metaTitle}
+      metaType="website"
+      metaDescription={metaDescription}
+    />
+  );
+};
+
 export const pageQuery = graphql`
   query IncidentsOverTime {
-    allMongodbAiidprodIncidents {
+    allMongodbAiidprodIncidents(sort: { reports: { date_submitted: ASC } }) {
       nodes {
         incident_id
         title
         date
         reports {
           report_number
+          title
+          url
+          authors
+          date_downloaded
+          date_modified
+          date_published
+          date_submitted
+          description
+          flag
+          image_url
+          language
+          source_domain
+          submitters
         }
-      }
-    }
-    allMongodbAiidprodReports(sort: { date_submitted: ASC }, limit: 9999) {
-      nodes {
-        report_number
-        title
-        url
-        authors
-        date_downloaded
-        date_modified
-        date_published
-        date_submitted
-        description
-        flag
-        image_url
-        language
-        source_domain
-        submitters
       }
     }
   }

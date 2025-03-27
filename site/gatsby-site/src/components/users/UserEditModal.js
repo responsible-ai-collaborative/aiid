@@ -9,7 +9,7 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import lodash from 'lodash';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 const supportedRoles = [
   { name: 'admin', description: 'All permissions' },
@@ -51,10 +51,10 @@ const RolesTable = ({ roles }) => (
 
 export default function UserEditModal({ onClose, userId, alertTitle = '', alertText = '' }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
-    variables: { query: { userId } },
+    variables: { filter: { userId: { EQ: userId } } },
   });
 
-  const { user, isRole } = useUserContext();
+  const { isRole } = useUserContext();
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
 
@@ -76,8 +76,6 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
         },
       });
 
-      await user.refreshCustomData();
-
       addToast({
         message: <>User updated.</>,
         severity: SEVERITY.success,
@@ -94,7 +92,7 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
   };
 
   return (
-    <Modal show={true} onClose={onClose} data-cy="edit-user-modal" size="lg">
+    <Modal show={true} onClose={onClose} data-testid="edit-user-modal" size="lg">
       <Modal.Header>
         <Trans>Edit</Trans>
       </Modal.Header>

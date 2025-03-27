@@ -10,48 +10,29 @@ import {
   faHashtag,
   faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
+import { FIND_REPORT, FLAG_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
-import { useLogReportHistory } from '../../hooks/useLogReportHistory';
-import { format, getUnixTime } from 'date-fns';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 function FlagModalContent({ reportNumber }) {
-  const { user } = useUserContext();
-
   const { data } = useQuery(FIND_REPORT, {
-    variables: { query: { report_number: reportNumber } },
+    variables: {
+      filter: { report_number: { EQ: reportNumber } },
+    },
   });
 
-  const [flagReportMutation, { loading }] = useMutation(UPDATE_REPORT);
-
-  const { logReportHistory } = useLogReportHistory();
+  const [flagReportMutation, { loading }] = useMutation(FLAG_REPORT);
 
   const flagReport = async () => {
-    const now = new Date();
-
-    const updated = {
-      flag: true,
-      date_modified: format(now, 'yyyy-MM-dd'),
-      epoch_date_modified: getUnixTime(now),
-    };
-
     await flagReportMutation({
       variables: {
-        query: {
-          report_number: reportNumber,
-        },
-        set: {
-          ...updated,
-        },
+        report_number: reportNumber,
+        input: true,
       },
     });
-
-    await logReportHistory(data.report, updated, user);
   };
 
   const report = data?.report;
@@ -97,20 +78,12 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
 
   return (
     <div className="flex flex-wrap">
-      <WebArchiveLink
-        url={item.url}
-        date={item.date_submitted}
-        className="btn btn-link px-1"
-        title={t('Authors')}
-        datePublished={item.epoch_date_published}
-        incidentDate={item.epoch_incident_date}
-        dateSubmitted={item.epoch_date_submitted}
-      >
+      <WebArchiveLink url={item.url} className="btn btn-link px-1">
         <FontAwesomeIcon
           titleId="report-source"
           icon={faNewspaper}
           className="fa-newspaper"
-          title="Read the Source"
+          title={t('Read the Source')}
         />
       </WebArchiveLink>
 
@@ -203,7 +176,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
             titleId="report-hashtag"
             icon={faHashtag}
             className="fa-hashtag"
-            title="Incident ID"
+            title={t('Incident ID')}
           />
           {item.incident_id}
         </CustomButton>

@@ -1,11 +1,18 @@
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import React, { useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import { Button, ToggleSwitch } from 'flowbite-react';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  SelectDatePickerFilter,
+  filterDate,
+  formatDateField,
+  sortDateField,
+} from 'components/ui/Table';
 
 function ListCell({ cell }) {
   return (
@@ -41,7 +48,7 @@ function ListCell({ cell }) {
 export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
-  const { isLoggedIn, isRole } = useUserContext();
+  const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -78,6 +85,12 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
       {
         title: t('Date'),
         accessor: 'date',
+        Cell: ({ value }) => formatDateField(value),
+        Filter: SelectDatePickerFilter,
+        sortType: (rowA, rowB) => {
+          return sortDateField(rowA, rowB, 'date');
+        },
+        filter: (rows, id, filterValue) => filterDate(rows, id, filterValue),
       },
       {
         title: t('Alleged Deployer of AI System'),
@@ -100,6 +113,12 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
           data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
+      {
+        title: t('Implicated Systems'),
+        id: 'implicated_systems',
+        accessor: (data) => data.implicated_systems?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
+        Cell: ListCell,
+      },
     ];
 
     if (isRole('incident_editor')) {
@@ -114,14 +133,14 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
             variant="link"
             onClick={() => setIncindentIdToEdit(values.incident_id)}
           >
-            Edit
+            <Trans>Edit</Trans>
           </Button>
         ),
       });
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [loading]);
 
   const table = useTable(
     {
@@ -134,18 +153,32 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
     usePagination
   );
 
+  const pageLength = table.page.length;
+
+  const allResultsCount = data.length;
+
   return (
     <>
-      <div className="flex justify-start ml-4 mb-2 pt-1">
-        <ToggleSwitch
-          checked={isLiveData}
-          label={t('Show Live data')}
-          onChange={(checked) => {
-            setIsLiveData(checked);
-          }}
-          name="live-data-switch"
-        />
+      <div className="flex items-center mb-2">
+        <div className="flex justify-start ml-4 mb-2 pt-1 mr-2">
+          <ToggleSwitch
+            checked={isLiveData}
+            label={t('Show Live data')}
+            onChange={(checked) => {
+              setIsLiveData(checked);
+            }}
+            name="live-data-switch"
+          />
+        </div>
+        <Button color="light" onClick={() => table.setAllFilters([])}>
+          Reset filters
+        </Button>
       </div>
+      <p>
+        <Trans>
+          Displaying {{ pageLength }} of {{ allResultsCount }} incidents
+        </Trans>
+      </p>
 
       <Table table={table} />
       {incidentIdToEdit !== 0 && (

@@ -1,25 +1,22 @@
+const validateEnv = require('./src/utils/validateEnv');
+
 const config = {
   gatsby: {
     pathPrefix: '/',
-    siteUrl: 'https://incidentdatabase.ai',
+    siteUrl: process.env.GATSBY_SITE_URL,
     gaTrackingId: 'UA-23867277-2',
   },
   realm: {
     review_db: {
-      realm_app_id: process.env.GATSBY_REALM_APP_ID,
-      db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'submissions',
     },
     production_db: {
-      realm_app_id: process.env.GATSBY_REALM_APP_ID,
-      db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_history_name: 'history',
       db_custom_data: 'customData',
       db_collection: 'incidents',
     },
-    graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
   },
   header: {
     logo: '/logos/White_Transparent_AIID_short.png',
@@ -86,10 +83,12 @@ const config = {
       { title: 'Discover Incidents', label: 'discover', url: '/apps/discover/', items: [] },
       { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial/', items: [] },
       { title: 'Table View', label: 'incidents', url: '/apps/incidents/', items: [] },
+      { title: 'List View', label: 'list', url: '/summaries/incidents/', items: [] },
       { title: 'Entities', label: 'entities', url: '/entities/', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies/', items: [] },
-      { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts/', items: [] },
+      { title: 'Random Incident', label: 'random', url: '/random/', items: [] },
       { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit/', items: [] },
+      { title: 'Risk Checklists', label: 'checklists', url: '/apps/checklists/', items: [] },
       {
         title: 'Submission Leaderboard',
         label: 'leaderboard',
@@ -135,7 +134,7 @@ const config = {
         items: [
           { title: 'About', label: 'about', url: '/about', items: [] },
           { title: 'Contact and Follow', label: 'contact', url: '/contact' },
-          { title: 'About Apps', label: 'about_apps', url: '/about_apps' },
+          { title: 'Apps and Summaries', label: 'about_apps', url: '/about_apps' },
           { title: 'Editor’s Guide', label: 'editors-guide', url: '/editors-guide' },
         ],
       },
@@ -201,6 +200,35 @@ const config = {
   rollbar: {
     token: process.env.GATSBY_ROLLBAR_TOKEN,
   },
+  discover: {
+    taxa: ['CSETv0', 'CSETv1', 'GMF'],
+  },
+  cloudflareR2: {
+    accountId: process.env.CLOUDFLARE_R2_ACCOUNT_ID,
+    accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+    bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+    publicBucketUrl: process.env.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
+  },
 };
+
+const requiredEnvs = {
+  GATSBY_SITE_URL: process.env.GATSBY_SITE_URL,
+  GATSBY_AVAILABLE_LANGUAGES: process.env.GATSBY_AVAILABLE_LANGUAGES,
+  // TODO: These are also required and should be validated.
+  // GATSBY_ALGOLIA_SEARCH_KEY: process.env.GATSBY_ALGOLIA_SEARCH_KEY,
+  // GATSBY_ALGOLIA_APP_ID: process.env.GATSBY_ALGOLIA_APP_ID,
+  // ALGOLIA_ADMIN_KEY: process.env.ALGOLIA_ADMIN_KEY,
+  // GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+  // GOOGLE_TRANSLATE_API_KEY: process.env.GOOGLE_TRANSLATE_API_KEY,
+  // GATSBY_ROLLBAR_TOKEN: process.env.GATSBY_ROLLBAR_TOKEN,
+  // CLOUDFLARE_R2_ACCOUNT_ID: process.env.CLOUDFLARE_R2_ACCOUNT_ID,
+  // CLOUDFLARE_R2_ACCESS_KEY_ID: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+  // CLOUDFLARE_R2_SECRET_ACCESS_KEY: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+  // CLOUDFLARE_R2_BUCKET_NAME: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+  // GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: process.env.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
+};
+
+validateEnv(requiredEnvs);
 
 module.exports = config;

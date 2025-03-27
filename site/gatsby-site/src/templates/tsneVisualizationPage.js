@@ -1,5 +1,5 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -15,18 +15,10 @@ function TsneVisulizationPage(props) {
 
   const csetClassifications = props.pageContext.csetClassifications;
 
-  // meta tags
-
-  const metaTitle = t('Spatial Visualization');
-
   const metaDescription = t('Spatial Visualization');
 
   return (
     <div className="max-w-full w-full" {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
         <h1>{t(metaDescription)}</h1>
       </div>
@@ -61,5 +53,19 @@ function TsneVisulizationPage(props) {
     </div>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const metaTitle = t('Spatial Visualization');
+
+  const metaDescription = t('Spatial Visualization');
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} metaType="website" />;
+};
 
 export default TsneVisulizationPage;

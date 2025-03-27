@@ -12,6 +12,14 @@ import config from '../../../config';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 
+function CommitSHA() {
+  return (
+    <div className="text-muted-gray text-xs" data-cy="commit-sha">
+      {process.env.GATSBY_COMMIT_SHA.toString().substring(0, 7)}
+    </div>
+  );
+}
+
 export default function Footer() {
   const data = useStaticQuery(graphql`
     query FooterQuery {
@@ -48,6 +56,7 @@ export default function Footer() {
                 url {
                   url
                 }
+                path
               }
             }
           }
@@ -114,7 +123,7 @@ export default function Footer() {
       id="main-footer"
       className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5 z-50"
     >
-      {footerContent.map((group) => {
+      {footerContent.map((group, i) => {
         const title = group.title;
 
         const items = group.items;
@@ -128,30 +137,31 @@ export default function Footer() {
               {items.map((item) => {
                 const url = item.url;
 
-                return (
-                  <>
-                    {item.title && (
-                      <li key={item.title}>
-                        {url.includes('http') ? (
-                          <a href={url} className="tw-footer-link">
-                            {t(item.title)}{' '}
-                            <FontAwesomeIcon
-                              icon={faExternalLinkAlt}
-                              color={'gray'}
-                              className="pointer fa fa-sm  hover:text-primary-blue"
-                              title="External Link"
-                            />
-                          </a>
-                        ) : (
-                          <LocalizedLink to={url} className="tw-footer-link">
-                            {t(item.title)}
-                          </LocalizedLink>
-                        )}
-                      </li>
-                    )}
-                  </>
-                );
+                if (item.title) {
+                  return (
+                    <li key={item.title}>
+                      {url.includes('http') ? (
+                        <a href={url} className="tw-footer-link">
+                          {t(item.title)}{' '}
+                          <FontAwesomeIcon
+                            icon={faExternalLinkAlt}
+                            color={'gray'}
+                            className="pointer fa fa-sm  hover:text-primary-blue"
+                            title="External Link"
+                          />
+                        </a>
+                      ) : (
+                        <LocalizedLink to={url} className="tw-footer-link">
+                          {t(item.title)}
+                        </LocalizedLink>
+                      )}
+                    </li>
+                  );
+                }
+
+                return null;
               })}
+
               {socialItems.length > 0 && (
                 <div className="pt-3 mb-2">
                   {socialItems.map((item) => {
@@ -176,29 +186,39 @@ export default function Footer() {
                         icon = faRssSquare;
                         break;
                     }
-                    return (
-                      <>
-                        {item.name && (
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="pr-2 tw-footer-link"
-                          >
-                            <FontAwesomeIcon
-                              titleId={item.name}
-                              icon={icon}
-                              color={'gray'}
-                              className="pointer fa fa-lg hover:text-primary-blue"
-                              title={`Open ${item.name}`}
-                            />
-                          </a>
-                        )}
-                      </>
-                    );
+
+                    if (item.name) {
+                      return (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="pr-2 tw-footer-link"
+                        >
+                          <FontAwesomeIcon
+                            titleId={item.name}
+                            icon={icon}
+                            color={'gray'}
+                            className="pointer fa fa-lg hover:text-primary-blue"
+                            title={`Open ${item.name}`}
+                          />
+                        </a>
+                      );
+                    }
+
+                    return null;
                   })}
                 </div>
               )}
+
+              {i == footerContent.length - 1 &&
+                allPrismicFooter.edges.length > 0 &&
+                process.env.GATSBY_COMMIT_SHA && (
+                  <li>
+                    <CommitSHA />
+                  </li>
+                )}
             </ul>
           </div>
         );
@@ -206,7 +226,7 @@ export default function Footer() {
 
       {allPrismicFooter.edges.length <= 0 && (
         <div>
-          <h3 className="text-base mt-4">2023 - AI Incident Database</h3>
+          <h3 className="text-base mt-4">2024 - AI Incident Database</h3>
 
           <LocalizedLink to="/terms-of-use" className="tw-footer-link">
             <Trans ns="footer">Terms of use</Trans>
@@ -286,6 +306,7 @@ export default function Footer() {
               />
             </a>
           </div>
+          <CommitSHA />
         </div>
       )}
     </footer>

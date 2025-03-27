@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 
 const ReportList = ({ report }) => (
@@ -37,34 +37,11 @@ const IncidentList = ({ incidents }) => {
   );
 };
 
-export default function FlaggedIncidents({ data, ...props }) {
-  const incidents = data.allMongodbAiidprodIncidents.nodes
-    .filter((incident) => {
-      return incident.reports.some((report_number) =>
-        data.allMongodbAiidprodReports.nodes.find((report) => report.report_number == report_number)
-      );
-    })
-    .map((incident) => {
-      const reports = incident.reports.reduce((filtered, report_number) => {
-        const report = data.allMongodbAiidprodReports.nodes.find(
-          (r) => r.report_number == report_number
-        );
-
-        if (report) {
-          filtered.push(report);
-        }
-
-        return filtered;
-      }, []);
-
-      return { ...incident, reports };
-    });
+export default function FlaggedIncidents({ data }) {
+  const incidents = data.allMongodbAiidprodIncidents.nodes;
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Incident List</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>Flagged Incident List</h1>
       </div>
@@ -79,34 +56,44 @@ export default function FlaggedIncidents({ data, ...props }) {
   );
 }
 
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'Incident List';
+
+  const metaDescription = 'Flagged Incident List';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
+};
+
 export const pageQuery = graphql`
   query AllFlaggedIncidents {
-    allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
+    allMongodbAiidprodIncidents(
+      filter: { reports: { elemMatch: { flag: { eq: true } } } }
+      sort: { incident_id: ASC }
+    ) {
       nodes {
         incident_id
         title
         date
         reports {
           report_number
+          title
+          url
+          authors
+          date_downloaded
+          date_modified
+          date_published
+          date_submitted
+          description
+          flag
+          image_url
+          language
+          source_domain
+          submitters
         }
-      }
-    }
-    allMongodbAiidprodReports(filter: { flag: { eq: true } }) {
-      nodes {
-        report_number
-        title
-        url
-        authors
-        date_downloaded
-        date_modified
-        date_published
-        date_submitted
-        description
-        flag
-        image_url
-        language
-        source_domain
-        submitters
       }
     }
   }

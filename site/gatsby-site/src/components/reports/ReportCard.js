@@ -24,7 +24,7 @@ const ReportCard = ({
   incidentId = null,
   readOnly = false,
 }) => {
-  item.incident_id = incidentId;
+  item.incident_id = incidentId || item.incident_id;
 
   const { t } = useTranslation();
 
@@ -120,12 +120,12 @@ const ReportCard = ({
   return (
     <>
       <div
-        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative ${
-          expanded ? 'expanded' : ''
-        }`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${
+          className || ''
+        } p-4 relative ${expanded ? 'expanded' : ''}`}
         id={`r${item.report_number}`}
         ref={ref}
-        data-cy="incident-report-card"
+        data-testid="incident-report-card"
       >
         <div
           className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
@@ -165,7 +165,7 @@ const ReportCard = ({
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
               {item.date_published
-                ? item.date_published.substring(0, 4)
+                ? format(new Date(item.date_published), 'yyyy')
                 : item.epoch_date_published
                 ? format(fromUnixTime(item.epoch_date_published), 'yyyy')
                 : 'Needs publish date'}
@@ -173,7 +173,9 @@ const ReportCard = ({
             {actions && !readOnly && <>{actions}</>}
           </div>
           <div className="mt-1 flex w-fit">
-            <TranslationBadge className="mx-2" originalLanguage={item.language} />
+            {item.isTranslated && (
+              <TranslationBadge className="mx-2" originalLanguage={item.language} />
+            )}
             {item.tags && item.tags.includes(RESPONSE_TAG) && (
               <div className="flex-1">
                 <Badge color={'success'}>

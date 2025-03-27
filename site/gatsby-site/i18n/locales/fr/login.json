@@ -1,6 +1,7 @@
 {
   "Login": "Connexion",
   "Sign up": "Enregistrement",
+  "Sign Up": "Enregistrement",
   "Log out": "Déconnexion",
   "Password": "Mot de passe",
   "Confirm password": "Confirmer mot de passe",
@@ -21,5 +22,6 @@
   "Your Account": "Votre compte",
   "Subscribe": "S'abonner",
   "Subscribe to Major Updates": "S'abonner aux mises à jour majeures",
-  "Subscribe to New Incidents": "S'abonner aux Nouveaux Incidents"
+  "Subscribe to New Incidents": "S'abonner aux Nouveaux Incidents",
+  "Verification email sent to {{email}}": "E-mail de vérification envoyé à {{email}}"
 }

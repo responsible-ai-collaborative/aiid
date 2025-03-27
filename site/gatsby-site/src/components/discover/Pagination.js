@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pagination } from 'react-instantsearch-dom';
+import { Pagination } from 'react-instantsearch';
 
 const StyledPagination = () => {
   return <Pagination className="tw-ais-pagination" />;

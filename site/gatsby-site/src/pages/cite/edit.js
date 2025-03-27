@@ -1,20 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { useLogReportHistory } from '../../hooks/useLogReportHistory';
-import { useUserContext } from 'contexts/userContext';
 import { Spinner, Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
   FIND_REPORT_WITH_TRANSLATIONS,
   LINK_REPORTS_TO_INCIDENTS,
-  FIND_REPORT,
 } from '../../graphql/reports';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
@@ -27,7 +24,7 @@ import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
 
 const UPDATE_REPORT_TRANSLATION = gql`
-  mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
+  mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput!) {
     updateOneReportTranslation(input: $input) {
       report_number
     }
@@ -57,36 +54,38 @@ const reportFields = [
   'url',
   'embedding',
   'inputs_outputs',
+  'quiet',
 ];
 
-function EditCitePage(props) {
-  const { user } = useUserContext();
+const translationsFields = ['title', 'text'];
 
+function EditCitePage(props) {
   const { t, i18n } = useTranslation();
+
+  const { config: availableLanguages } = useLocalization();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
-  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
+  const [incidentId] = useQueryParam('incident_id');
 
   const {
     data: reportData,
     loading: loadingReport,
     refetch: refetchReport,
   } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
-    variables: { query: { report_number: reportNumber } },
+    variables: {
+      filter: { report_number: { EQ: reportNumber } },
+      translationLanguages: availableLanguages.map((c) => c.code),
+    },
   });
+
+  const [reportTranslations, setReportTranslations] = useState(null);
 
   const [updateReport] = useMutation(UPDATE_REPORT);
-
-  const { data: currentReportData } = useQuery(FIND_REPORT, {
-    variables: { query: { report_number: reportNumber } },
-  });
 
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
-
-  const { logReportHistory } = useLogReportHistory();
 
   const {
     data: incidentsData,
@@ -94,23 +93,44 @@ function EditCitePage(props) {
     refetch: refetchIncidents,
   } = useQuery(FIND_INCIDENTS, {
     variables: {
-      query: {
-        reports_in: {
-          report_number: reportNumber,
-        },
+      filter: {
+        reports: { IN: [reportNumber] },
       },
     },
   });
 
   const incident_ids = incidentsData?.incidents.map((incident) => incident.incident_id);
 
-  const loading = loadingIncident || loadingReport;
+  const loading = loadingIncident || loadingReport || reportTranslations === null;
 
   const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
   const addToast = useToastContext();
 
-  const { config } = useLocalization();
+  useEffect(() => {
+    if (reportData?.report) {
+      const translations = availableLanguages
+        .map((c) => c.code)
+        .reduce((acc, languageCode) => {
+          // Find existing translation for this language
+          const existingTranslation = reportData.report.translations?.find(
+            (t) => t.language === languageCode && t.title !== null && t.text !== null
+          );
+
+          // If translation exists use its values, otherwise use empty values
+          acc[`translations_${languageCode}`] = existingTranslation
+            ? pick(existingTranslation, translationsFields)
+            : translationsFields.reduce((obj, field) => {
+                obj[field] = '';
+                return obj;
+              }, {});
+
+          return acc;
+        }, {});
+
+      setReportTranslations(translations);
+    }
+  }, [reportData, availableLanguages]);
 
   const updateSuccessToast = ({ reportNumber, incidentId }) => ({
     message: (
@@ -184,30 +204,32 @@ function EditCitePage(props) {
 
       const now = new Date();
 
-      values.date_modified = format(now, 'yyyy-MM-dd');
+      values.date_modified = now;
 
-      values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(now);
+
+      values.date_published = new Date(values.date_published);
+      values.date_downloaded = new Date(values.date_downloaded);
 
       const updated = pick(values, reportFields);
 
       await updateReport({
         variables: {
-          query: {
-            report_number: reportNumber,
+          filter: {
+            report_number: { EQ: reportNumber },
           },
-          set: {
-            ...updated,
-            plain_text: await stripMarkdown(updated.text),
+          update: {
+            set: {
+              ...updated,
+              plain_text: await stripMarkdown(updated.text),
+            },
           },
         },
       });
 
-      await logReportHistory(currentReportData.report, updated, user);
-
-      for (const { code } of config.filter((c) => c.code !== values.language)) {
-        const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
+      for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
+        const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
 
         await updateReportTranslations({
           variables: {
@@ -250,8 +272,8 @@ function EditCitePage(props) {
     try {
       await deleteReport({
         variables: {
-          query: {
-            report_number: reportNumber,
+          filter: {
+            report_number: { EQ: reportNumber },
           },
         },
       });
@@ -278,11 +300,24 @@ function EditCitePage(props) {
           <h1 className="mb-5">
             <Trans>Editing Incident Report {{ reportNumber }}</Trans>
           </h1>
-          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
-            <Button outline={true} color={'light'}>
-              <Trans>Back to Report {{ reportNumber }}</Trans>
-            </Button>
-          </Link>
+          {incidentId ? (
+            <Link to={`/cite/${incidentId}#r${reportNumber}`} className="hover:no-underline mb-5">
+              <Button outline={true} color={'light'}>
+                <Trans>Back to Report {{ reportNumber }}</Trans>
+              </Button>
+            </Link>
+          ) : (
+            <Link
+              to={`/apps/incidents/?view=${
+                reportData?.report?.is_incident_report ? 'reports' : 'issueReports'
+              }`}
+              className="hover:no-underline mb-5"
+            >
+              <Button outline={true} color={'light'}>
+                <Trans>Back to Report List</Trans>
+              </Button>
+            </Link>
+          )}
         </div>
       )}
 
@@ -304,6 +339,7 @@ function EditCitePage(props) {
                 initialValues={{
                   ...reportData.report,
                   incident_ids,
+                  ...reportTranslations,
                 }}
               >
                 {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (

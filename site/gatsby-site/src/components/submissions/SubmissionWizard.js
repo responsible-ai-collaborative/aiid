@@ -5,7 +5,7 @@ import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 
 const SubmissionWizard = ({
   submitForm,
@@ -76,7 +76,20 @@ const SubmissionWizard = ({
         const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error('Parser error');
+          let errorText = 'Parser error';
+
+          let responseErrorText = null;
+
+          try {
+            responseErrorText = await response.text();
+          } catch (e) {
+            responseErrorText = 'Could not read parser error:' + '\n\n' + e.message;
+          }
+
+          if (responseErrorText) {
+            errorText += '\n\n' + responseErrorText;
+          }
+          throw new Error(errorText);
         }
 
         const news = await response.json();
@@ -97,13 +110,11 @@ const SubmissionWizard = ({
           cloudinary_id,
         };
 
-        if (!loading) {
-          if (user?.profile?.email) {
-            newValues.user = { link: user.id };
+        if (!loading && user) {
+          newValues.user = { link: user.id };
 
-            if (user.customData.first_name && user.customData.last_name) {
-              newValues.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
-            }
+          if (user.first_name && user.last_name) {
+            newValues.submitters = [`${user.first_name} ${user.last_name}`];
           }
         }
 
@@ -122,13 +133,12 @@ const SubmissionWizard = ({
 
         setData(newValues);
       } catch (e) {
-        const message =
-          e.message == 'Parser error'
-            ? t(
-                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
-                { newsUrl }
-              )
-            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
+        const message = e.message.startsWith('Parser error')
+          ? t(
+              `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+              { newsUrl }
+            )
+          : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
         addToast({
           message: <>{message}</>,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { Trans, useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
@@ -7,26 +7,33 @@ import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 import { Button } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 import Card from 'elements/Card';
 
 function ReportPage(props) {
   const {
-    data: { report, allMongodbAiidprodTaxa, allMongodbAiidprodClassifications, incidents },
-    data,
+    data: {
+      report,
+      allMongodbAiidprodTaxa,
+      allMongodbAiidprodClassifications,
+      incidents,
+      allMongodbTranslationsReports,
+    },
   } = props;
 
   const { t } = useTranslation();
 
-  const { locale } = useLocalization();
+  const { locale: language } = useLocalization();
 
   const { loading, isRole } = useUserContext();
 
-  if (report.language !== locale) {
-    report.title = data[locale].title;
-    report.text = data[locale].text;
+  if (report.language !== language && allMongodbTranslationsReports.nodes?.length > 0) {
+    const reportTranslation = allMongodbTranslationsReports.nodes[0];
+
+    report.title = reportTranslation.title;
+    report.text = reportTranslation.text;
   }
 
   const defaultTitle = t('Report {{report_number}}', { ...report });
@@ -49,23 +56,27 @@ function ReportPage(props) {
         </Button>
       );
     }
-  }, []);
+  }, [loading]);
 
   return (
     <>
-      <AiidHelmet
-        {...{
-          metaTitle,
-          metaDescription: report.description,
-          path: props.location.pathname,
-          metaImage: report.image_url,
-        }}
-      >
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       <div className={'titleWrapper'}>
-        <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
+        <div className="flex content-between w-full">
+          <h1 className="tw-styled-heading">{language == 'en' ? metaTitle : defaultTitle}</h1>
+          {incidents.nodes.length > 0 &&
+            incidents.nodes.map(({ incident_id }) => (
+              <LocalizedLink
+                to={`/cite/${incident_id}#r${report.report_number}`}
+                className="hover:no-underline mb-5"
+                language={language}
+                key={incident_id}
+              >
+                <Button outline={true} color={'light'}>
+                  <Trans>Back to Incident {{ incident_id }}</Trans>
+                </Button>
+              </LocalizedLink>
+            ))}
+        </div>
         <SocialShareButtons
           metaTitle={metaTitle}
           path={props.location.pathname}
@@ -73,11 +84,7 @@ function ReportPage(props) {
         ></SocialShareButtons>
       </div>
 
-      <ClassificationsEditor
-        classifications={allMongodbAiidprodClassifications}
-        taxa={allMongodbAiidprodTaxa}
-        reportNumber={report.report_number}
-      />
+      <ClassificationsEditor taxa={allMongodbAiidprodTaxa} reportNumber={report.report_number} />
 
       <ClassificationsDisplay
         classifications={allMongodbAiidprodClassifications}
@@ -95,7 +102,11 @@ function ReportPage(props) {
 
             <Card.Body>
               {incidents.nodes.map((incident) => (
-                <LocalizedLink to={`/cite/${incident.incident_id}`} key={incident.incident_id}>
+                <LocalizedLink
+                  to={`/cite/${incident.incident_id}`}
+                  key={incident.incident_id}
+                  language={language}
+                >
                   <h4 className="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white">
                     <span className="text-sm">
                       <Trans>Incident {{ id: incident.incident_id }}</Trans>
@@ -119,13 +130,29 @@ function ReportPage(props) {
   );
 }
 
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    data: { report },
+  } = props;
+
+  const metaTitle = `Report ${report.report_number}`;
+
+  return (
+    <HeadContent
+      path={pathname}
+      {...{
+        metaTitle,
+        metaDescription: report.description || metaTitle,
+        metaImage: report.image_url,
+      }}
+      metaType="website"
+    />
+  );
+};
+
 export const query = graphql`
-  query ReportPageQuery(
-    $report_number: Int
-    $translate_es: Boolean!
-    $translate_fr: Boolean!
-    $translate_en: Boolean!
-  ) {
+  query ReportPageQuery($report_number: Int, $locale: String!) {
     report: mongodbAiidprodReports(report_number: { eq: $report_number }) {
       submitters
       date_published
@@ -142,23 +169,14 @@ export const query = graphql`
       language
       description
     }
-    es: mongodbTranslationsReportsEs(report_number: { eq: $report_number })
-      @include(if: $translate_es) {
-      title
-      text
-      report_number
-    }
-    fr: mongodbTranslationsReportsFr(report_number: { eq: $report_number })
-      @include(if: $translate_fr) {
-      title
-      text
-      report_number
-    }
-    en: mongodbTranslationsReportsEn(report_number: { eq: $report_number })
-      @include(if: $translate_en) {
-      title
-      text
-      report_number
+    allMongodbTranslationsReports(
+      filter: { report_number: { eq: $report_number }, language: { eq: $locale } }
+    ) {
+      nodes {
+        title
+        text
+        report_number
+      }
     }
     allMongodbAiidprodTaxa {
       nodes {

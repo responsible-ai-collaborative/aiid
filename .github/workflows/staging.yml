@@ -1,0 +1,77 @@
+name: Deploy Staging Branch
+
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+    inputs:
+      skip-cache:
+        description: "Skip Cache"
+        required: true
+        default: true
+        type: boolean
+      force-deploy:
+        description: "Deploy even if tests fail"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  cache-modifier:
+    uses: ./.github/workflows/cache-modifier.yml
+    with:
+      skip-cache: ${{ github.event.inputs.skip-cache }}
+
+  call-test-api:
+    uses: ./.github/workflows/test-api.yml
+    needs: cache-modifier
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+
+  call-test-playwright-e2e:
+    uses: ./.github/workflows/test-playwright-e2e.yml
+    needs: cache-modifier
+    secrets: inherit
+    with:
+      sha: ${{ github.sha }}
+      environment: staging
+
+  call-deploy:
+    if: (inputs.force-deploy == true || success()) && !cancelled()
+    uses: ./.github/workflows/deploy.yml
+    needs: 
+      [
+        cache-modifier,
+        call-test-api,
+        call-test-playwright-e2e,
+      ]
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: staging
+      sha: ${{ github.sha }}
+      netlify-context: production
+      netlify-alias:
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+
+  call-test-playwright-probes:
+    uses: ./.github/workflows/test-playwright-probes.yml
+    needs: call-deploy
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+
+  call-process-notifications:
+    needs: call-test-playwright-probes
+    uses: ./.github/workflows/process-notifications.yml
+    secrets: inherit
+    with:
+      environment: staging
+      # inputs from the workflow_dispatch event come as strings even if they are explicitly defined as boolean
+      force-deploy: ${{ inputs.force-deploy == 'true' }}

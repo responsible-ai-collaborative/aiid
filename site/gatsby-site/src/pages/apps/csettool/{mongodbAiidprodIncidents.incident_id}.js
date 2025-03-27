@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import { useQuery } from '@apollo/client/react';
 import ListSkeleton from 'elements/Skeletons/List';
 import { FIND_CLASSIFICATION } from '../../../graphql/classifications';
@@ -10,13 +10,14 @@ const allNamespaces = ['CSETv1_Annotator-1', 'CSETv1_Annotator-2', 'CSETv1_Annot
 
 const ToolPage = (props) => {
   const {
-    location: { pathname },
     params: { incident_id },
     data: { taxa },
   } = props;
 
   const { data, loading } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incidents_in: { incident_id }, namespace_in: allNamespaces } },
+    variables: {
+      filter: { incidents: { IN: parseInt(incident_id) }, namespace: { IN: allNamespaces } },
+    },
   });
 
   const [tableData, setTableData] = useState([]);
@@ -62,9 +63,6 @@ const ToolPage = (props) => {
 
   return (
     <div {...props} className="w-full">
-      <AiidHelmet path={pathname}>
-        <title>CSET Tool</title>
-      </AiidHelmet>
       <div className="w-full max-w-full">
         {loading ? (
           <ListSkeleton />
@@ -85,6 +83,16 @@ const ToolPage = (props) => {
       </div>
     </div>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const metaTitle = 'CSET Tool';
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaTitle} />;
 };
 
 export default ToolPage;

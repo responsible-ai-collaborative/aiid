@@ -1,22 +1,17 @@
 import React from 'react';
 import { Spinner } from 'flowbite-react';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import AiidHelmet from 'components/AiidHelmet';
 import UserSubscriptions from 'components/UserSubscriptions';
 import UserDetails from 'components/users/UserDetails';
+import HeadContent from 'components/HeadContent';
 
-const Account = (props) => {
+const Account = () => {
   const { user, loading } = useUserContext();
-
-  const { t } = useTranslation(['account']);
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>{t('Account Details')}</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>
           <Trans ns="account">Account Details</Trans>
@@ -27,7 +22,7 @@ const Account = (props) => {
           <Spinner />
           <Trans>Loading...</Trans>
         </div>
-      ) : user && user.isLoggedIn && user.profile.email ? (
+      ) : user && !loading ? (
         <>
           <div className="block p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
             <h2>
@@ -49,6 +44,18 @@ const Account = (props) => {
         </Link>
       )}
     </>
+  );
+};
+
+export const Head = (props) => {
+  const { t } = useTranslation(['account']);
+
+  return (
+    <HeadContent
+      path={props.location.pathname}
+      metaTitle={t('Account Details')}
+      metaDescription={t('Account Deails')}
+    />
   );
 };
 

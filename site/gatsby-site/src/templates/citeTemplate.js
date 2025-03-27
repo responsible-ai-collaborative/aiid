@@ -7,7 +7,7 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
 import ReportCard from '../components/reports/ReportCard';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
 import Card from '../elements/Card';
 import Container from '../elements/Container';
@@ -24,7 +24,13 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleArrowLeft,
+  faCircleArrowRight,
+  faArrowLeft,
+  faArrowRight,
+  faDice,
+} from '@fortawesome/free-solid-svg-icons';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
@@ -55,13 +61,19 @@ function CiteTemplate({
 
   const localizePath = useLocalizePath();
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState();
 
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
-      query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
+      filter: { userId: { EQ: user?.id }, incident_id: { EQ: incident.incident_id } },
     },
   });
+
+  const visibleClassifications = {
+    nodes: allMongodbAiidprodClassifications.nodes.filter(
+      (classification) => !classification.namespace.includes('_Annotator')
+    ),
+  };
 
   // meta tags
 
@@ -92,12 +104,12 @@ function CiteTemplate({
 
           await subscribeToNewReportsMutation({
             variables: {
-              query: {
-                type: SUBSCRIPTION_TYPE.incident,
-                userId: { userId: user.id },
-                incident_id: { incident_id: incidentId },
+              filter: {
+                type: { EQ: SUBSCRIPTION_TYPE.incident },
+                userId: { EQ: user.id },
+                incident_id: { EQ: incidentId },
               },
-              subscription: {
+              update: {
                 type: SUBSCRIPTION_TYPE.incident,
                 userId: {
                   link: user.id,
@@ -158,9 +170,11 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap gap-1">
-          <h1 className="text-2xl inline">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-          <div className="inline-flex gap-2">
+        <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center">
+          <h1 data-testid="incident-title" className="text-2xl inline">
+            {locale == 'en' ? metaTitle : defaultIncidentTitle}
+          </h1>
+          <div className="inline-flex gap-2 lg:justify-end">
             {incidentResponded && (
               <div className="self-center">
                 <Badge color="success" data-cy="responded-badge">
@@ -176,17 +190,58 @@ function CiteTemplate({
               </div>
             )}
             {!readOnly && (
-              <SocialShareButtons
-                metaTitle={metaTitle}
-                path={locationPathName}
-                page="cite"
-              ></SocialShareButtons>
+              <>
+                <div className="flex flex-wrap justify-end shrink">
+                  <SocialShareButtons
+                    metaTitle={metaTitle}
+                    path={locationPathName}
+                    page="cite"
+                  ></SocialShareButtons>
+
+                  <div className="ml-4 text-lg flex flex-nowrap gap-1">
+                    <a
+                      data-cy="header-previous-incident-link"
+                      title={t('Previous Incident')}
+                      className={`${
+                        prevIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                      } h-[50px] leading-[50px]`}
+                      href={
+                        prevIncident ? localizePath({ path: `/cite/${prevIncident}` }) : undefined
+                      }
+                    >
+                      <FontAwesomeIcon icon={faCircleArrowLeft} className="mr-2" />
+                    </a>
+                    <a
+                      data-cy="header-random-incident-link"
+                      title={t('Random Incident')}
+                      className={`${
+                        nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                      } h-[50px] leading-[50px]`}
+                      href={localizePath({ path: `/random/` })}
+                    >
+                      <FontAwesomeIcon icon={faDice} className="mr-2" />
+                    </a>
+                    <a
+                      data-cy="header-next-incident-link"
+                      title={t('Next Incident')}
+                      className={`${
+                        nextIncident ? 'text-black hover:text-primary-blue' : 'text-gray-400'
+                      } h-[50px] leading-[50px]`}
+                      href={
+                        nextIncident ? localizePath({ path: `/cite/${nextIncident}` }) : undefined
+                      }
+                    >
+                      <FontAwesomeIcon icon={faCircleArrowRight} className="mr-2" />
+                    </a>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>
       </div>
-      <div className="flex mt-6">
-        <div className="shrink-1">
+      <div className="flex mt-6 justify-between">
+        <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
               <div>
@@ -247,7 +302,14 @@ function CiteTemplate({
                       incidentId: incident.incident_id,
                       reportCount: sortedReports.length,
                       incidentDate: incident.date,
+                      taxonomiesWithClassifications: Array.from(
+                        visibleClassifications.nodes.reduce((namespaces, classification) => {
+                          namespaces.add(classification.namespace);
+                          return namespaces;
+                        }, new Set())
+                      ),
                       editors: incident.editors
+                        .filter((editor) => editor && editor.first_name && editor.last_name)
                         .map(({ first_name, last_name }) => `${first_name} ${last_name}`)
                         .join(', '),
                     }}
@@ -265,7 +327,7 @@ function CiteTemplate({
                   />
                 )}
                 <ClassificationsDisplay
-                  classifications={allMongodbAiidprodClassifications}
+                  classifications={visibleClassifications}
                   taxa={allMongodbAiidprodTaxa}
                 />
               </Col>
@@ -293,7 +355,7 @@ function CiteTemplate({
 
             <Row className="mt-6">
               <Col>
-                <Card>
+                <Card className="max-w-3xl mx-auto">
                   <ImageCarousel nodes={sortedReports} />
                 </Card>
               </Col>
@@ -346,12 +408,13 @@ function CiteTemplate({
                 className="xl:hidden"
               />
             )}
-
             {!readOnly && (
               <div className="flex justify-between">
                 <Button
                   color={'gray'}
-                  href={localizePath({ path: `/cite/${prevIncident}` })}
+                  {...(prevIncident
+                    ? { href: localizePath({ path: `/cite/${prevIncident}` }) }
+                    : {})}
                   disabled={!prevIncident}
                   className="hover:no-underline"
                 >
@@ -360,7 +423,9 @@ function CiteTemplate({
                 </Button>
                 <Button
                   color={'gray'}
-                  href={localizePath({ path: `/cite/${nextIncident}` })}
+                  {...(nextIncident
+                    ? { href: localizePath({ path: `/cite/${nextIncident}` }) }
+                    : {})}
                   disabled={!nextIncident}
                   className="hover:no-underline"
                 >
@@ -372,7 +437,10 @@ function CiteTemplate({
           </Container>
         </div>
         {!readOnly && (
-          <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
+          <div
+            className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0"
+            data-cy="similar-incidents-column"
+          >
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}
               editor_similar_incidents={editor_similar_incidents}

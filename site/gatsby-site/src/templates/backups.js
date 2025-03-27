@@ -1,24 +1,48 @@
 import React from 'react';
-import AiidHelmet from 'components/AiidHelmet';
-
+import HeadContent from 'components/HeadContent';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import { format } from 'date-fns';
+import config from '../../config';
+import { useTranslation } from 'react-i18next';
 
-const Backups = ({ pageContext, ...props }) => {
+const Backups = ({ pageContext }) => {
   const { backups } = pageContext;
 
   if (!backups) {
     return null;
   }
 
+  /**
+   * Parses the creation date from the backup key.
+   *
+   * The expected format of the key is "backup-YYYYMMDDHHmmss.tar.bz2" (e.g. "backup-20240101101425.tar.bz2").
+   * The function extracts the date and time from the key and returns a JavaScript Date object.
+   *
+   * @param {string} key - The backup key.
+   * @returns {Date} The creation date of the backup.
+   */
+  const parseCreationDate = (key) => {
+    const stringDate = key.split('backup-')[1].split('.')[0];
+
+    const year = stringDate.substring(0, 4);
+
+    const month = stringDate.substring(4, 6);
+
+    const day = stringDate.substring(6, 8);
+
+    const hour = stringDate.substring(8, 10);
+
+    const minute = stringDate.substring(10, 12);
+
+    return new Date(year, month - 1, day, hour, minute);
+  };
+
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Database Backups and Snapshots</title>
-      </AiidHelmet>
       <div className="titleWrapper">
         <h1>Database Snapshots</h1>
       </div>
@@ -59,15 +83,17 @@ const Backups = ({ pageContext, ...props }) => {
         <Container>
           <Row>
             <Col xs={12}>
-              <ul className="pl-8 leading-6">
+              <ul className="pl-8 leading-6" data-cy="snapshots-list">
                 {backups
                   .map((b) => ({
                     ...b,
-                    Url: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
+                    Url: `${config.cloudflareR2.publicBucketUrl}/${b.Key}`,
+                    CreationDate: parseCreationDate(b.Key),
                   }))
                   .map((value) => (
                     <li key={`snapshot-${value['Key']}`}>
-                      {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
+                      {format(new Date(value['CreationDate']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
+                      {(value['Size'] / 1000000).toFixed(2)} MB &middot;{' '}
                       <Link to={value['Url']}>{value['Key']}</Link>
                     </li>
                   ))}
@@ -78,6 +104,20 @@ const Backups = ({ pageContext, ...props }) => {
       </div>
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const metaTitle = t('Database Backups and Snapshots');
+
+  const metaDescription = t('Find and download the latest Database Backups and snapshots');
+
+  return <HeadContent path={pathname} metaTitle={metaTitle} metaDescription={metaDescription} />;
 };
 
 export default Backups;

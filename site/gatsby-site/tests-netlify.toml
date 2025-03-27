@@ -1,0 +1,9 @@
+[build]
+  base = "/site/gatsby-site"
+  publish = "public"
+
+[[plugins]]
+  package = "@netlify/plugin-gatsby"
+
+[build.processing.html]
+  pretty_urls = false

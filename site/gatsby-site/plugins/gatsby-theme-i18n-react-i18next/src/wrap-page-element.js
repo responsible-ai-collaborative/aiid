@@ -12,7 +12,16 @@ const wrapPageElement = ({ element, props }, themeOptions) => {
   let resources = {};
 
   i18nextOptions.ns.forEach((name) => {
-    const data = require(`${GATSBY_THEME_I18N_REACT_I18NEXT}/${locale}/${name}.json`);
+    let data = null;
+
+    try {
+      data = require(`${GATSBY_THEME_I18N_REACT_I18NEXT}/${locale}/${name}.json`);
+    } catch (error) {
+      console.error(
+        `[gatsby-theme-i18n-react-i18next]: Failed to load translation file for ${locale}/${name}.json. Please create i18n/locales/${locale} folder and add ${name}.json there. Now defaulting to en/${name}.json`
+      );
+      data = require(`${GATSBY_THEME_I18N_REACT_I18NEXT}/en/${name}.json`);
+    }
 
     resources = {
       ...resources,

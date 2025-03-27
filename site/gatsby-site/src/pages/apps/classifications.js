@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AiidHelmet from '../../components/AiidHelmet';
 import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
@@ -9,7 +8,7 @@ import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from '../../hooks/useModal';
-import { useUserContext } from '../../contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,6 +19,7 @@ import Table, {
   SelectDatePickerFilter,
 } from 'components/ui/Table';
 import { v4 as uuidv4 } from 'uuid';
+import HeadContent from 'components/HeadContent';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
@@ -188,10 +188,10 @@ export default function ClassificationsDbView(props) {
     setupTaxonomiesSelect();
   }, [isAdmin]);
 
-  const fetchClassificationData = async (query) => {
+  const fetchClassificationData = async (filter) => {
     const classificationsData = await client.query({
       query: FIND_CLASSIFICATION,
-      variables: { query },
+      variables: { filter },
     });
 
     // For now we convert the list of attributes into a classifications object
@@ -439,7 +439,7 @@ export default function ClassificationsDbView(props) {
     ]);
 
     let rowQuery = {
-      namespace: currentTaxonomy,
+      namespace: { EQ: currentTaxonomy },
     };
 
     const classificationData = await fetchClassificationData(rowQuery);
@@ -510,9 +510,6 @@ export default function ClassificationsDbView(props) {
 
   return (
     <div {...props}>
-      <AiidHelmet path={props.location.pathname}>
-        <title>Artificial Intelligence Incident Database</title>
-      </AiidHelmet>
       <div
         className={`p-0 md:p-[auto] my-0 mx-[auto] overflow-auto whitespace-nowrap text=[0.8em]`}
       >
@@ -569,3 +566,17 @@ export default function ClassificationsDbView(props) {
     </div>
   );
 }
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  return (
+    <HeadContent
+      path={pathname}
+      metaTitle={'Artificial Intelligence Incident Database'}
+      metaDescription={'Classifications page'}
+    />
+  );
+};

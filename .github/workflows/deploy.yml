@@ -1,0 +1,185 @@
+name: Deploy to Netlify
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      netlify-context:
+        description: The Netlify context use when building
+        type: string
+        required: true
+      netlify-alias:
+        description: The Netlify alias to deploy to (empty deploys to production)
+        type: string
+        required: true
+      sha:
+        description: The commit SHA to deploy
+        type: string
+        required: true
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
+      site-url:
+        description: The URL of the site to deploy
+        type: string
+        required: false
+        default: ""
+      runner-label:
+        description: The runner label to use for this workflow
+        type: string
+        required: false
+        default: "ubuntu-latest"
+
+jobs:
+  netlify-deploy:
+    environment: ${{ inputs.environment }}
+    runs-on: ${{ inputs.runner-label || 'ubuntu-latest' }}
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Cleanup Disk Space
+        run: |
+          echo "Before removing files:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "After removing files:"
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
+        with:
+          path: site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Run database migrations
+        if: ${{ inputs.netlify-alias == '' }}
+        run: node migrator up
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+
+      - name: Use deploy specific netlify.toml
+        run: mv deploy-netlify.toml netlify.toml
+        working-directory: site/gatsby-site
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Set branch context URL
+        continue-on-error: true
+        run: |
+          # Extract branch name from ref (removes refs/heads/ prefix)
+          if [[ ! -z "${{ inputs.netlify-alias }}" ]]; then
+            netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+          fi
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+
+      - name: Build using Netlify
+        run: npm run build --context=${{ inputs.netlify-context }}
+        working-directory: site/gatsby-site
+        env:
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
+          MAILERSEND_API_KEY: dummy
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
+
+      - name: Build size
+        run: |
+          du -ah . 2>/dev/null | sort -rh | head -n 20
+
+      - name: Upload to netlify
+        id: deploy-netlify
+        working-directory: site/gatsby-site
+        run: |
+          set -e
+          # If no alias is specified, deploy to production
+          if [[ -z "${{ inputs.netlify-alias }}" ]]; then
+            OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
+          # Otherwise, deploy to the specified alias
+          else
+            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
+          fi
+          set +e
+          NETLIFY_OUTPUT=$(echo "$OUTPUT")
+          echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            const deployData = JSON.parse(deployOutput);
+            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
+
+            const { data: pullRequests } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: '${{ inputs.sha }}'
+            });
+
+            for (const pr of pullRequests) {
+              if (pr.state === 'open') {
+                github.rest.issues.createComment({
+                  issue_number: pr.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+                break; // Assuming you want to comment only on the first open PR
+              }
+            }

@@ -1,0 +1,29 @@
+name: Cache Modifier
+
+on:
+  workflow_call:
+    inputs:
+      skip-cache:
+        description: "Skip Cache"
+        required: true
+        default: "false"
+        type: string
+    outputs:
+      cache-modifier:
+        description: "Cache Modifier"
+        value: ${{ jobs.prepare-cache.outputs.cache-modifier }}
+
+jobs:
+  prepare-cache:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-modifier: ${{ steps.set-cache-modifier.outputs.cache-modifier }}
+    steps:
+      - name: Set cache modifier
+        id: set-cache-modifier
+        run: |
+          if [[ "${{ inputs.skip-cache }}" == "true" ]] || [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
+            echo "cache-modifier=$(date +%s)" >> $GITHUB_OUTPUT
+          else
+            echo "cache-modifier=" >> $GITHUB_OUTPUT
+          fi

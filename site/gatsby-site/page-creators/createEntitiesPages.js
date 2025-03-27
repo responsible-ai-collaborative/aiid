@@ -4,7 +4,7 @@ const { computeEntities } = require('../src/utils/entities');
 
 const createEntitiesPages = async (graphql, createPage) => {
   const {
-    data: { incidents, entities: entitiesData, responses },
+    data: { incidents, entities: entitiesData, responses, entityRelationships },
   } = await graphql(`
     {
       incidents: allMongodbAiidprodIncidents {
@@ -14,6 +14,7 @@ const createEntitiesPages = async (graphql, createPage) => {
           Alleged_deployer_of_AI_system
           Alleged_developer_of_AI_system
           Alleged_harmed_or_nearly_harmed_parties
+          implicated_systems
           reports {
             report_number
           }
@@ -31,6 +32,17 @@ const createEntitiesPages = async (graphql, createPage) => {
           title
         }
       }
+
+      entityRelationships: allMongodbAiidprodEntityRelationships(
+        filter: { pred: { eq: "related" } }
+      ) {
+        nodes {
+          sub
+          obj
+          is_symmetric
+          pred
+        }
+      }
     }
   `);
 
@@ -38,12 +50,18 @@ const createEntitiesPages = async (graphql, createPage) => {
     incidents: incidents.nodes,
     entities: entitiesData.nodes,
     responses: responses.nodes,
+    entityRelationships: entityRelationships.nodes,
   });
 
   for (const entity of entities) {
     const { id } = entity;
 
     const pagePath = `/entities/${id}`;
+
+    const currentEntityRelationships =
+      entityRelationships.nodes.filter(
+        (rel) => (rel.sub === id || rel.obj === id) && rel.is_symmetric
+      ) || [];
 
     createPage({
       path: pagePath,
@@ -55,8 +73,10 @@ const createEntitiesPages = async (graphql, createPage) => {
         incidentsAsDeveloper: entity.incidentsAsDeveloper,
         incidentsAsBoth: entity.incidentsAsBoth,
         incidentsHarmedBy: entity.incidentsHarmedBy,
+        incidentsImplicatedSystems: entity.incidentsImplicatedSystems,
         relatedEntities: entity.relatedEntities,
         responses: entity.responses,
+        entityRelationships: currentEntityRelationships,
       },
     });
   }
@@ -66,6 +86,7 @@ const createEntitiesPages = async (graphql, createPage) => {
     component: path.resolve('./src/templates/entities.js'),
     context: {
       entities,
+      entityRelationships: entityRelationships.nodes,
     },
   });
 };

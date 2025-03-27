@@ -74,6 +74,7 @@ export function SelectDatePickerFilter({
   startDate = null,
   endDate = null,
   setDates = null,
+  ...props
 }) {
   const [min, max] = React.useMemo(() => {
     let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
@@ -148,6 +149,7 @@ export function SelectDatePickerFilter({
           type="text"
           className="form-control col-4 p-2"
           defaultValue={defaultValue}
+          {...props}
         />
       </DateRangePicker>
     </div>
@@ -219,13 +221,47 @@ export function SelectColumnFilter({
 }
 
 export function formatDateField(date) {
-  const dateObj = new Date(date);
+  const dateObj = new Date(`${date}T00:00:00`); // Fix date to avoid timezone issues
 
   if (dateObj instanceof Date && !isNaN(dateObj)) {
     return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
   } else {
     return <>{date}</>;
   }
+}
+
+export function sortDateField(rowA, rowB, fieldName) {
+  if (
+    rowA.original[fieldName] &&
+    rowA.original[fieldName] !== '' &&
+    rowB.original[fieldName] &&
+    rowB.original[fieldName] !== ''
+  ) {
+    const dateRowA = new Date(rowA.original[fieldName]);
+
+    const dateRowB = new Date(rowB.original[fieldName]);
+
+    if (dateRowA > dateRowB) {
+      return 1;
+    }
+
+    if (dateRowA < dateRowB) {
+      return -1;
+    }
+
+    return 0;
+  }
+}
+
+export function filterDate(rows, id, filterValue) {
+  return rows.filter((row) => {
+    const rowValue = row.values[id];
+
+    if (!rowValue) return false;
+    const filterValueDate = new Date(rowValue).getTime();
+
+    return filterValueDate >= filterValue[0] && filterValueDate <= filterValue[1];
+  });
 }
 
 export default function Table({
@@ -251,7 +287,7 @@ export default function Table({
   } = table;
 
   return (
-    <div className={`max-w-full ${className}`} {...props}>
+    <div className={`max-w-full ${className || ''}`} {...props}>
       {/* eslint-disable react/jsx-key */}
       <div className="max-w-full overflow-x-scroll">
         <table {...getTableProps()} className={`${tableClassName} w-full`}>

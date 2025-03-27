@@ -220,32 +220,40 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
     const [template, mdxFile] = page.component.split(`?__contentFilePath=`);
 
-    // if the mdxFile path possesses a language, let's strip the language to it
-    // ex: index.de.mdx ==> index.mdx
+    // Process the mdxFile if it exists
     if (mdxFile) {
-      //split the filename in three parts split by the dot.
-      let [thePath /* lang */, , ext] = mdxFile.split(`.`);
+      const directory = path.dirname(mdxFile); // Get the directory path
 
-      if (ext === `mdx`) {
-        //if there's data in the third part, just keep the first and last part, removing the language
-        theFilePath = `${thePath}.${ext}`;
-      } else {
-        //if there's no content in the third part, it means that there's no language part. No need to remove the language
-        theFilePath = mdxFile;
+      const fileName = path.basename(mdxFile, `.mdx`); // Extract the file name without `.mdx`
+
+      const ext = path.extname(mdxFile); // Get the file extension
+
+      if (ext !== `.mdx`) {
+        throw new Error(`Unexpected file extension in MDX path parsing: ${mdxFile}`);
       }
 
-      //if we use a non-default language, and the language file is on the disk, then use it
-      [thePath, ext] = theFilePath.split(`.`);
-      if (ext === `mdx` && locale.code !== defaultLang) {
-        if (fs.existsSync(`${thePath}.${locale.code}.${ext}`)) {
-          theFilePath = `${thePath}.${locale.code}.${ext}`;
+      // Extract the locale from the file name if present (e.g., "index.es" → "es")
+      const nameParts = fileName.split(`.`);
+
+      let baseName = nameParts[0]; // Default to the base name without locale
+
+      // If it's a non-default language and the file exists, use the localized file
+      if (locale.code !== defaultLang) {
+        const localizedFile = path.join(directory, `${baseName}.${locale.code}${ext}`);
+
+        if (fs.existsSync(localizedFile)) {
+          theFilePath = `${template}?__contentFilePath=${localizedFile}`;
         } else {
-          //nothing to render if file doen't exist
-          theFilePath = '';
+          // If no localized file exists, use the default file
+          theFilePath = `${template}?__contentFilePath=${path.join(
+            directory,
+            `${baseName}${ext}`
+          )}`;
         }
+      } else {
+        // For the default language, strip the locale from the path if present
+        theFilePath = `${template}?__contentFilePath=${path.join(directory, `${baseName}${ext}`)}`;
       }
-
-      theFilePath = `${template}?__contentFilePath=${theFilePath}`;
     }
 
     const newPage = {
@@ -275,7 +283,6 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
 
     // Check if the page is a localized 404
     if (newPage.path.match(/^\/[a-z]{2}\/404\/$/)) {
-      // Match all paths starting with this code (apart from other valid paths)
       newPage.matchPath = `/${locale.code}/*`;
     }
 

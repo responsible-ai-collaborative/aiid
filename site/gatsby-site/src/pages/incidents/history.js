@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import {
-  FIND_FULL_INCIDENT,
-  FIND_INCIDENT_HISTORY,
-  UPDATE_INCIDENT,
-} from '../../graphql/incidents';
-import { FIND_USERS_FIELDS_ONLY } from '../../graphql/users';
+import { FIND_INCIDENT_HISTORY, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_USERS } from '../../graphql/users';
 import { FIND_ENTITIES } from '../../graphql/entities';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
@@ -18,8 +14,7 @@ import { format, fromUnixTime, getUnixTime } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import { Button, Spinner } from 'flowbite-react';
-import { useUserContext } from 'contexts/userContext';
-import { useLogIncidentHistory } from '../../hooks/useLogIncidentHistory';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { graphql } from 'gatsby';
 
@@ -42,26 +37,15 @@ function IncidentHistoryPage(props) {
 
   const [incidentVersionDetails, setIncidentVersionDetails] = useState(null);
 
-  const [incident, setIncident] = useState(null);
-
   const [incidentClassifications, setIncidentClassifications] = useState([]);
 
-  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS_FIELDS_ONLY);
+  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
     fetchPolicy: 'network-only',
   });
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
-  const { logIncidentHistory } = useLogIncidentHistory();
-
-  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    fetchPolicy: 'network-only',
-    variables: {
-      query: { incident_id: incidentId },
-    },
-  });
 
   const {
     data: incidentHistoryData,
@@ -70,8 +54,8 @@ function IncidentHistoryPage(props) {
   } = useQuery(FIND_INCIDENT_HISTORY, {
     fetchPolicy: 'network-only',
     variables: {
-      query: {
-        incident_id: incidentId,
+      filter: {
+        incident_id: { EQ: incidentId },
       },
     },
   });
@@ -79,17 +63,9 @@ function IncidentHistoryPage(props) {
   const { data: classificationsData, loading: loadingIncidentClassifications } = useQuery(
     FIND_CLASSIFICATION,
     {
-      variables: { query: { incidents: { incident_id: incidentId } } },
+      variables: { filter: { incidents: { EQ: incidentId } } },
     }
   );
-
-  useEffect(() => {
-    if (incidentData?.incident) {
-      setIncident({ ...incidentData.incident });
-    } else {
-      setIncident(undefined);
-    }
-  }, [incidentData]);
 
   useEffect(() => {
     if (incidentHistoryData?.history_incidents?.length > 0) {
@@ -143,7 +119,6 @@ function IncidentHistoryPage(props) {
   }, [classificationsData]);
 
   const loading =
-    loadingIncident ||
     loadingIncidentHistory ||
     loadingUsers ||
     loadingEntities ||
@@ -172,6 +147,7 @@ function IncidentHistoryPage(props) {
         updatedIncident.AllegedHarmedOrNearlyHarmedParties = {
           link: version.AllegedHarmedOrNearlyHarmedParties,
         };
+        updatedIncident.implicated_systems = { link: version.implicated_systems };
         updatedIncident.editors = { link: version.editors };
 
         // Add the current user to the list of editors
@@ -199,18 +175,10 @@ function IncidentHistoryPage(props) {
 
         await updateIncident({
           variables: {
-            query: { incident_id: incidentId },
-            set: updatedIncident,
+            filter: { incident_id: { EQ: incidentId } },
+            update: { set: updatedIncident },
           },
         });
-
-        await logIncidentHistory(
-          {
-            ...incident,
-            ...updatedIncident,
-          },
-          user
-        );
 
         await refetchHistory();
 
@@ -268,7 +236,7 @@ function IncidentHistoryPage(props) {
                 <hr />
               </div>
               {restoringVersion && (
-                <div className="font-semibold mb-2" data-cy="restoring-message">
+                <div className="font-semibold mb-2" data-testid="restoring-message">
                   <div className="flex gap-3 mb-2">
                     <Trans>Restoring version</Trans>
                     <Spinner />

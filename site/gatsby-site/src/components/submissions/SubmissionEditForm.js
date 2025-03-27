@@ -19,7 +19,7 @@ import {
 import { debounce } from 'debounce';
 import { STATUS } from 'utils/submissions';
 import StepContainer from 'components/forms/SubmissionWizard/StepContainer';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import isEmpty from 'lodash/isEmpty';
@@ -33,13 +33,11 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const { values, touched, setFieldValue, setFieldTouched } = useFormikContext();
 
-  const isNewIncident = values.incident_ids.length === 0;
+  const isNewIncident = !values.incident_ids || values.incident_ids.length === 0;
 
   const [promoType, setPromoType] = useState('none');
 
   const localizedPath = useLocalizePath();
-
-  const [subscribeToNewSubmissionPromotionMutation] = useMutation(UPSERT_SUBSCRIPTION);
 
   useEffect(() => {
     if (!isEmpty(touched)) {
@@ -57,7 +55,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const addToast = useToastContext();
 
-  const { i18n, t } = useTranslation(['submitted']);
+  const { i18n, t } = useTranslation(['submitted', 'validation']);
 
   const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',
@@ -94,18 +92,18 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const { user, isRole } = useUserContext();
 
-  const isSubmitter = isRole('submitter');
+  const canEditSubmissions = isRole('submitter') || isRole('incident_editor') || isRole('admin');
 
   const subscribeToNewReports = async (incident_id) => {
     if (user) {
       await subscribeToNewReportsMutation({
         variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.incident,
-            userId: { userId: user.id },
-            incident_id: { incident_id: incident_id },
+          filter: {
+            type: { EQ: SUBSCRIPTION_TYPE.incident },
+            userId: { EQ: user.id },
+            incident_id: { EQ: incident_id },
           },
-          subscription: {
+          update: {
             type: SUBSCRIPTION_TYPE.incident,
             userId: {
               link: user.id,
@@ -220,27 +218,6 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
     await subscribeToNewReports(incident_id);
 
-    if (values.user) {
-      await subscribeToNewSubmissionPromotionMutation({
-        variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.submissionPromoted,
-            userId: { userId: values.user.userId },
-            incident_id: { incident_id: incident_id },
-          },
-          subscription: {
-            type: SUBSCRIPTION_TYPE.submissionPromoted,
-            userId: {
-              link: values.user.userId,
-            },
-            incident_id: {
-              link: incident_id,
-            },
-          },
-        },
-      });
-    }
-
     addToast({
       message: (
         <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
@@ -283,7 +260,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       variables: {
         input: {
           submission_id: values._id,
-          incident_ids: values.incident_ids,
+          incident_ids: values.incident_ids || [],
           is_incident_report: true,
         },
       },
@@ -391,25 +368,27 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <div className="editors-dropdown">
               {!userLoading && (
                 <Dropdown label={t('Editors')} color={'light'}>
-                  {userData.users.map((user) => {
-                    const isChecked =
-                      selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
+                  {userData.users
+                    .filter((user) => user.first_name || user.last_name)
+                    .map((user) => {
+                      const isChecked =
+                        selectedOptions.findIndex((editor) => editor.userId === user.userId) > -1;
 
-                    return (
-                      <DropdownItem key={`editors-${user.userId}`}>
-                        <div className="flex justify-center items-center gap-2">
-                          <Checkbox
-                            id={`checkbox-${user.userId}`}
-                            checked={isChecked}
-                            onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
-                          />
-                          <Label htmlFor={`checkbox-${user.userId}`}>
-                            {user.first_name} {user.last_name}
-                          </Label>
-                        </div>
-                      </DropdownItem>
-                    );
-                  })}
+                      return (
+                        <DropdownItem key={`editors-${user.userId}`}>
+                          <div className="flex justify-center items-center gap-2">
+                            <Checkbox
+                              id={`checkbox-${user.userId}`}
+                              checked={isChecked}
+                              onClick={(ev) => handleSelect(ev.target.checked, user.userId)}
+                            />
+                            <Label htmlFor={`checkbox-${user.userId}`}>
+                              {user.first_name} {user.last_name}
+                            </Label>
+                          </div>
+                        </DropdownItem>
+                      );
+                    })}
                 </Dropdown>
               )}
             </div>
@@ -450,13 +429,17 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <div className="flex flex-col gap-2 w-full mb-2">
               <Button
                 onClick={promoteToReport}
-                disabled={!isSubmitter || deleting || promoting || saving}
+                disabled={!canEditSubmissions || deleting || promoting || saving}
                 data-cy="promote-to-report-button"
               >
                 <FontAwesomeIcon className="mr-2" icon={faCheck} />
-                <Trans ns="submitted" id={values.incident_ids[0]}>
-                  Add to incident {{ id: values.incident_ids[0] }}
-                </Trans>
+                {values.incident_ids.length > 1 ? (
+                  <Trans ns="submitted">Add to incidents {values.incident_ids.join(', ')}</Trans>
+                ) : (
+                  <Trans ns="submitted" id={values.incident_ids[0]}>
+                    Add to incident {{ id: values.incident_ids[0] }}
+                  </Trans>
+                )}
               </Button>
             </div>
           )}
@@ -485,7 +468,9 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             </Select>
             <Button
               onClick={promote}
-              disabled={!isSubmitter || deleting || promoting || saving || promoType === 'none'}
+              disabled={
+                !canEditSubmissions || deleting || promoting || saving || promoType === 'none'
+              }
               data-cy="promote-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faCheck} />
@@ -497,7 +482,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <Button
               color={'failure'}
               onClick={reject}
-              disabled={!isSubmitter || deleting || promoting || saving}
+              disabled={!canEditSubmissions || deleting || promoting || saving}
               data-cy="reject-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faXmark} />

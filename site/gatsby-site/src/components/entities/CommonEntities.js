@@ -28,6 +28,7 @@ export default function CommonEntities() {
           Alleged_deployer_of_AI_system
           Alleged_developer_of_AI_system
           Alleged_harmed_or_nearly_harmed_parties
+          implicated_systems
         }
       }
       entities: allMongodbAiidprodEntities {
@@ -71,6 +72,11 @@ export default function CommonEntities() {
           <Trans ns="entities">View all entities</Trans>
         </Link>
       </div>
+      {commonEntities.length === 0 && (
+        <div className="flex justify-center">
+          <Trans>There are no entities yet</Trans>
+        </div>
+      )}
       <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
         {commonEntities.map((entity, index) => {
           const incidentsCount = entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;

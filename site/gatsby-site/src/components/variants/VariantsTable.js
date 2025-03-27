@@ -1,7 +1,7 @@
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useMutation } from '@apollo/client';
@@ -24,7 +24,7 @@ import { Button } from 'flowbite-react';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 export default function VariantsTable({ data, refetch, setLoading }) {
-  const { isLoggedIn, isRole } = useUserContext();
+  const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation(['variants']);
 
@@ -55,9 +55,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
         await deleteVariant({
           variables: {
-            query: {
-              report_number,
-            },
+            filter: { report_number: { EQ: report_number } },
           },
         });
 
@@ -102,17 +100,13 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
       const today = new Date();
 
-      updated.date_modified = format(today, 'yyyy-MM-dd');
+      updated.date_modified = today;
       updated.epoch_date_modified = getUnixTime(today);
 
       await updateVariant({
         variables: {
-          query: {
-            report_number,
-          },
-          set: {
-            ...updated,
-          },
+          filter: { report_number: { EQ: report_number } },
+          update: { set: { ...updated } },
         },
       });
 
@@ -175,7 +169,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown className="variants-markdown">{values.text}</Markdown>
+            <Markdown className="variants-markdown overflow-auto">{values.text}</Markdown>
           </div>
         ),
       },
@@ -191,7 +185,9 @@ export default function VariantsTable({ data, refetch, setLoading }) {
               (input_output, index) =>
                 input_output != '' && (
                   <div
-                    className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                    className={`overflow-auto border-1 rounded-lg px-3 ${
+                      index % 2 == 1 ? 'bg-gray-200' : ''
+                    }`}
                     key={`inputs_outputs.${index}`}
                     data-cy="variant-inputs-outputs"
                   >
@@ -270,7 +266,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     }
 
     return columns;
-  }, [isLoggedIn]);
+  }, [loading]);
 
   const table = useTable(
     {

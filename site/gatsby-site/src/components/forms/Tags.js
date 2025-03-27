@@ -9,15 +9,25 @@ export default function Tags({
   onChange,
   name,
   disabled = false,
+  labelKey,
   options,
+  className,
+  allowNew = true,
   stayOpen = false,
+  splitChar = ',',
 }) {
   const [open, setOpen] = useState(false);
 
   const ref = useRef(null);
 
   const commitTag = (tag) => {
-    const splitTags = tag.split(',').map((tag) => tag.trim());
+    let splitTags = [];
+
+    if (splitChar) {
+      splitTags = tag.split(splitChar).map((tag) => tag.trim());
+    } else {
+      splitTags = [tag.trim()];
+    }
 
     onChange(value ? value.concat(splitTags) : splitTags);
     ref.current.clear();
@@ -25,15 +35,15 @@ export default function Tags({
 
   return (
     <Typeahead
-      className="Typeahead"
-      ref={ref}
-      id={id}
+      className={`Typeahead ${className || ''}`}
       inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
-        if (e.key === ',') {
+        if (splitChar && e.key === splitChar) {
           e.preventDefault();
         }
-        if (['Enter', ','].includes(e.key) && e.target.value) {
+        const splitChars = splitChar ? ['Enter', splitChar] : ['Enter'];
+
+        if (splitChars.includes(e.key) && e.target.value) {
           commitTag(e.target.value);
         }
       }}
@@ -44,15 +54,20 @@ export default function Tags({
         }
         setOpen(false);
       }}
-      allowNew
       multiple
       open={open && stayOpen ? true : undefined}
       renderMenu={options ? undefined : () => null}
       onChange={(value) => onChange(value)}
       options={options || []}
-      selected={value}
+      selected={(value || []).filter((v) => v)}
       placeholder={placeHolder}
-      disabled={disabled}
+      {...{
+        disabled,
+        labelKey,
+        ref,
+        id,
+        allowNew,
+      }}
     />
   );
 }

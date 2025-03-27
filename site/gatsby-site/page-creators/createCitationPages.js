@@ -78,16 +78,6 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
         path: '/cite/' + context.incident_id + '/',
       });
 
-      const incident = allMongodbAiidprodIncidents.nodes.find(
-        (incident) => incident.incident_id === context.incident_id
-      );
-
-      const translate_es = incident.reports.some((r) => r.language !== 'es');
-
-      const translate_fr = incident.reports.some((r) => r.language !== 'fr');
-
-      const translate_en = incident.reports.some((r) => r.language !== 'en');
-
       createPage({
         path: pagePath,
         component: path.resolve('./src/templates/cite.js'),
@@ -96,9 +86,6 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
           originalPath: pagePath,
           locale: language.code,
           hrefLang: language.hrefLang,
-          translate_es,
-          translate_fr,
-          translate_en,
         },
       });
     }

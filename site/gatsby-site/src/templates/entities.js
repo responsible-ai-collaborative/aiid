@@ -3,13 +3,14 @@ import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 
 const incidentFields = [
   'incidentsAsBoth',
   'incidentsAsDeployer',
   'incidentsAsDeveloper',
   'incidentsHarmedBy',
+  'incidentsImplicatedSystems',
 ];
 
 const entitiesFields = ['relatedEntities'];
@@ -17,13 +18,13 @@ const entitiesFields = ['relatedEntities'];
 const EntitiesPage = ({ pageContext, data, ...props }) => {
   const { t } = useTranslation(['entities']);
 
-  const { entities } = pageContext;
+  const { entities, entityRelationships } = pageContext;
 
   const { incidents } = data;
 
   const incidentsHash = useMemo(() => makeIncidentsHash(incidents.nodes), [incidents.nodes]);
 
-  const entitiesHash = useMemo(() => makeEntitiesHash(entities), [entities]);
+  const entitiesHash = useMemo(() => makeEntitiesHash(entities, entityRelationships), [entities]);
 
   const entitiesData = useMemo(
     () =>
@@ -52,14 +53,6 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
 
   return (
     <div {...props}>
-      <AiidHelmet
-        {...{
-          metaTitle,
-          metaDescription: t('Entities involved in AI Incidents'),
-          canonicalUrl: 'https://incidentdatabase.ai/entities',
-          path: props.location.pathname,
-        }}
-      />
       <div className="w-full">
         <div className="titleWrapper">
           <h1>{t(metaTitle)}</h1>
@@ -68,6 +61,22 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
       </div>
     </div>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation(['entities']);
+
+  const metaTitle = t('Entities');
+
+  const metaDescription = t('Entities involved in AI Incidents');
+
+  const canonicalUrl = 'https://incidentdatabase.ai/entities';
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription, canonicalUrl }} />;
 };
 
 export const query = graphql`
@@ -83,6 +92,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
   }

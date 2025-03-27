@@ -1,21 +1,25 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
 import RelatedIncidentsArea from '../RelatedIncidentsArea';
 import { gql, useQuery } from '@apollo/client';
-import { debounce } from 'debounce';
 import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { useTranslation } from 'react-i18next';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
+import IncidentsField from './IncidentsField';
+import LinkedReportsForm from './LinkedReportsForm';
+import { Spinner } from 'flowbite-react';
 
 const relatedIncidentIdsQuery = gql`
-  query IncidentWithReports($query: IncidentQueryInput) {
-    incidents(query: $query) {
+  query IncidentWithReports($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
+      title
+      description
       reports {
         report_number
         title
@@ -32,11 +36,12 @@ export const schema = Yup.object().shape({
   AllegedDeployerOfAISystem: Yup.array().required(),
   AllegedDeveloperOfAISystem: Yup.array().required(),
   AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
+  implicated_systems: Yup.array().required(),
   editors: Yup.array().of(Yup.string()).required(),
   editor_notes: Yup.string().nullable(),
 });
 
-function IncidentForm() {
+function IncidentForm({ entityNames = [] }) {
   const { values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue } =
     useFormikContext();
 
@@ -44,68 +49,85 @@ function IncidentForm() {
 
   const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
-      query: {
-        incident_id_in: [],
+      filter: {
+        incident_id: { IN: [] },
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
-
-  const selectedSimilarId = useRef(null);
-
-  const similarIdUpdate = useRef(
-    debounce((event) => {
-      const incident_id = Number(event.target.value);
-
-      selectedSimilarId.current = incident_id;
-
-      similarReportsByIdQuery.refetch({
-        query: {
-          incident_id_in: [incident_id],
-        },
-      });
-    })
-  ).current;
-
-  const similarReportsById =
-    similarReportsByIdQuery.loading ||
-    similarReportsByIdQuery.error ||
-    similarReportsByIdQuery.data.incidents.length == 0 ||
-    selectedSimilarId == null
-      ? []
-      : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
-          incident_id: selectedSimilarId.current,
-          ...report.report_number,
-        }));
 
   const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
-      query: {
-        incident_id_in: (values?.editor_similar_incidents || []).concat(
-          values.editor_dissimilar_incidents
-        ),
+      filter: {
+        incident_id: {
+          IN: (values?.editor_similar_incidents || []).concat(values.editor_dissimilar_incidents),
+        },
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
-  const editorSimilarIncidentReports =
-    editorSimilarIncidentReportsQuery.loading ||
-    editorSimilarIncidentReportsQuery.error ||
-    editorSimilarIncidentReportsQuery.data.incidents.length == 0
-      ? []
-      : editorSimilarIncidentReportsQuery.data.incidents.reduce(
-          (reports, incident) =>
-            reports.concat(
-              incident.reports.map((report) => ({
-                ...report.report_number,
-                incident_id: incident.incident_id,
-              }))
-            ),
-          []
-        );
+  const [editorSimilarIncidents, setEditorSimilarIncidents] = useState([]);
+
+  const [similarIncidentsById, setSimilarIncidentsById] = useState([]);
+
+  useEffect(() => {
+    let similarIncidentsById = [];
+
+    if (
+      !similarReportsByIdQuery.loading &&
+      !similarReportsByIdQuery.error &&
+      similarReportsByIdQuery.data?.incidents?.length > 0
+    ) {
+      similarIncidentsById = similarReportsByIdQuery.data.incidents.map((incident) => ({
+        ...incident,
+      }));
+
+      similarIncidentsById = similarIncidentsById.filter(
+        (incident) =>
+          !editorSimilarIncidents.some(
+            (editorIncident) => editorIncident.incident_id === incident.incident_id
+          )
+      );
+      setFieldValue('incidentSearch', []);
+    }
+    setSimilarIncidentsById(similarIncidentsById);
+  }, [similarReportsByIdQuery.loading, similarReportsByIdQuery.data, editorSimilarIncidents]);
+
+  useEffect(() => {
+    if (
+      !editorSimilarIncidentReportsQuery.loading &&
+      !editorSimilarIncidentReportsQuery.error &&
+      editorSimilarIncidentReportsQuery.data.incidents.length > 0
+    ) {
+      setEditorSimilarIncidents(
+        editorSimilarIncidentReportsQuery.data.incidents.map((incident) => {
+          return {
+            ...incident,
+          };
+        })
+      );
+    } else if (
+      !editorSimilarIncidentReportsQuery.loading &&
+      editorSimilarIncidentReportsQuery.data.incidents.length === 0
+    ) {
+      setEditorSimilarIncidents([]);
+    }
+  }, [editorSimilarIncidentReportsQuery.loading, editorSimilarIncidentReportsQuery.data]);
 
   useEffect(() => {
     window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
   }, []);
+
+  useEffect(() => {
+    if (values.incidentSearch?.length > 0) {
+      similarReportsByIdQuery.refetch({
+        filter: {
+          incident_id: { IN: [values.incidentSearch[0]] },
+        },
+      });
+    }
+  }, [values.incidentSearch]);
 
   return (
     <div>
@@ -171,6 +193,7 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-deployer-of-ai-system-input"
+            options={entityNames}
           />
         </FieldContainer>
 
@@ -183,6 +206,7 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-developer-of-ai-system-input"
+            options={entityNames}
           />
         </FieldContainer>
 
@@ -195,6 +219,20 @@ function IncidentForm() {
             touched={touched}
             schema={schema}
             data-cy="alleged-harmed-or-nearly-harmed-parties-input"
+            options={entityNames}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TagsInputGroup
+            name="implicated_systems"
+            label={t('Implicated Systems')}
+            placeholder={t('Implicated Systems')}
+            errors={errors}
+            touched={touched}
+            schema={schema}
+            data-cy="implicated-systems-input"
+            options={entityNames}
           />
         </FieldContainer>
 
@@ -226,45 +264,59 @@ function IncidentForm() {
           />
         </FieldContainer>
 
+        {values.reports && values.reports.length > 0 && (
+          <LinkedReportsForm reports={values.reports} />
+        )}
+
         <div id="similar-incidents">
+          <Label
+            label={t(`Manually-selected similar and dissimilar incidents`)}
+            popover="similarIncidentSearch"
+          />
+
+          <div className="border rounded-lg px-2 py-4 mt-4">
+            <IncidentsField
+              id="incidentSearch"
+              name="incidentSearch"
+              multiple={false}
+              placeHolder={t(`Search similar/dissimilar Incident Id`)}
+            />
+
+            {similarReportsByIdQuery.loading && <Spinner size={'sm'} className="mt-2 ml-1" />}
+            {similarIncidentsById.length > 0 && (
+              <RelatedIncidentsArea
+                columnKey={'byId'}
+                header={similarIncidentsById.length > 0 ? t('Incidents search results') : ''}
+                incidents={similarIncidentsById}
+                loading={similarReportsByIdQuery.loading}
+                setFieldValue={setFieldValue}
+                editId={false}
+                error={false}
+                notFoundText={
+                  'No similar incidents found. Please enter an incident ID above to perform the search.'
+                }
+              />
+            )}
+          </div>
           <RelatedIncidentsArea
+            header={
+              editorSimilarIncidents.length > 0 ? t('Assigned similar/dissimilar incidents') : ''
+            }
             columnKey={'editor_similar_incidents'}
-            header={'Manually-selected similar and dissimilar incidents'}
-            reports={editorSimilarIncidentReports}
-            loading={false}
+            incidents={editorSimilarIncidents}
+            loading={editorSimilarIncidentReportsQuery.loading}
             setFieldValue={setFieldValue}
             editId={false}
             error={false}
+            notFoundText={
+              'No similar/dissimilar incidents assigned to this incident. Use the search above to assign similar incidents.'
+            }
           />
 
           <SemanticallyRelatedIncidents
             incident={values}
             setFieldValue={setFieldValue}
             editId={false}
-          />
-
-          <div className="mt-4">
-            <FieldContainer>
-              <Label label={t(`Similar Incident Id`)} />
-              <input
-                type="number"
-                data-cy="similar-id-input"
-                onChange={similarIdUpdate}
-                className={
-                  'mt-2 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white'
-                }
-              />
-            </FieldContainer>
-          </div>
-
-          <RelatedIncidentsArea
-            columnKey={'byId'}
-            header={'Reports'}
-            reports={similarReportsById}
-            loading={false}
-            setFieldValue={setFieldValue}
-            editId={false}
-            error={false}
           />
         </div>
       </FormikForm>

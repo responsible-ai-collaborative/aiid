@@ -28,13 +28,13 @@ const SubmissionEdit = ({ id }) => {
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const { data: userData, loading: userLoading } = useQuery(FIND_USERS_BY_ROLE, {
-    variables: { role: 'editor' },
+    variables: { role: ['incident_editor', 'admin'] },
   });
 
   const addToast = useToastContext();
 
   useEffect(() => {
-    findSubmission({ variables: { query: { _id: id } } });
+    findSubmission({ variables: { filter: { _id: { EQ: id } } } });
   }, [id]);
 
   const [saving, setSaving] = useState(false);
@@ -64,6 +64,12 @@ const SubmissionEdit = ({ id }) => {
       update.harmed_parties = await processEntities(
         entities,
         values.harmed_parties,
+        createEntityMutation
+      );
+
+      update.implicated_systems = await processEntities(
+        entities,
+        values.implicated_systems,
         createEntityMutation
       );
 
@@ -99,10 +105,10 @@ const SubmissionEdit = ({ id }) => {
 
       await updateSubmission({
         variables: {
-          query: {
-            _id: values._id,
+          filter: {
+            _id: { EQ: values._id },
           },
-          set: updatedSubmission,
+          update: { set: updatedSubmission },
         },
       });
 
@@ -166,15 +172,24 @@ const SubmissionEdit = ({ id }) => {
                   developers:
                     submission.developers === null
                       ? []
-                      : submission.developers.map((item) => item.name || item),
+                      : submission.developers.filter((item) => item.name).map((item) => item.name),
                   deployers:
                     submission.deployers === null
                       ? []
-                      : submission.deployers.map((item) => item.name || item),
+                      : submission.deployers.filter((item) => item.name).map((item) => item.name),
                   harmed_parties:
                     submission.harmed_parties === null
                       ? []
-                      : submission.harmed_parties.map((item) => item.name || item),
+                      : submission.harmed_parties
+                          .filter((item) => item.name)
+                          .map((item) => item.name),
+                  implicated_systems:
+                    submission.implicated_systems === null ||
+                    submission.implicated_systems === undefined
+                      ? []
+                      : submission.implicated_systems
+                          .filter((item) => item.name)
+                          .map((item) => item.name),
                 }}
               >
                 <SubmissionEditForm

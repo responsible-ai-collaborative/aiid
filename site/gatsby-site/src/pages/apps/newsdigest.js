@@ -13,13 +13,14 @@ import {
   faTag,
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
-import AiidHelmet from 'components/AiidHelmet';
-import { useUserContext } from 'contexts/userContext';
+import HeadContent from 'components/HeadContent';
+import { useUserContext } from 'contexts/UserContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import useToast, { SEVERITY } from '../../hooks/useToast';
 
-export default function NewsSearchPage(props) {
+export default function NewsSearchPage() {
   const { t } = useTranslation(['submit']);
 
   const { isRole } = useUserContext();
@@ -28,37 +29,35 @@ export default function NewsSearchPage(props) {
 
   const { data: newsArticlesData, loading } = useQuery(
     gql`
-      query NewsArticles($query: CandidateQueryInput!) {
-        candidates(query: $query, limit: 9999) {
+      query NewsArticles($filter: CandidateFilterType!) {
+        candidates(filter: $filter) {
           title
           url
           similarity
-          classification_similarity {
-            classification
-            similarity
-          }
           matching_keywords
           matching_harm_keywords
           matching_entities
-          text
           date_published
           dismissed
+          text
         }
       }
     `,
     {
       variables: {
-        query: {
-          match: true,
-          date_published_in: Array(14)
-            .fill()
-            .map((e, i) =>
-              new Date(
-                new Date().getTime() - 86400000 * i // i days ago
-              )
-                .toISOString()
-                .slice(0, 10)
-            ),
+        filter: {
+          match: { EQ: true },
+          date_published: {
+            IN: Array(14)
+              .fill()
+              .map((e, i) =>
+                new Date(
+                  new Date().getTime() - 86400000 * i // i days ago
+                )
+                  .toISOString()
+                  .slice(0, 10)
+              ),
+          },
         },
       },
     }
@@ -66,30 +65,46 @@ export default function NewsSearchPage(props) {
 
   const { data: submissionsData } = useQuery(
     gql`
-      query ExistingSubmissions($query: SubmissionQueryInput!) {
-        submissions(query: $query, limit: 9999) {
+      query ExistingSubmissions($filter: SubmissionFilterType!) {
+        submissions(filter: $filter) {
           url
         }
       }
     `,
-    { variables: { query: { url_in: newsArticleUrls } } }
+    {
+      variables: {
+        filter: {
+          url: {
+            IN: newsArticleUrls,
+          },
+        },
+      },
+    }
   );
 
   const { data: reportsData } = useQuery(
     gql`
-      query ExistingReports($query: ReportQueryInput!) {
-        reports(query: $query, limit: 9999) {
+      query ExistingReports($filter: ReportFilterType!) {
+        reports(filter: $filter) {
           report_number
           url
         }
       }
     `,
-    { variables: { query: { url_in: newsArticleUrls } } }
+    {
+      variables: {
+        filter: {
+          url: {
+            IN: newsArticleUrls,
+          },
+        },
+      },
+    }
   );
 
   const [updateCandidate] = useMutation(gql`
-    mutation UpdateCandidate($query: CandidateQueryInput!, $set: CandidateUpdateInput!) {
-      updateOneCandidate(query: $query, set: $set) {
+    mutation UpdateCandidate($filter: CandidateFilterType!, $update: CandidateUpdateType!) {
+      updateOneCandidate(filter: $filter, update: $update) {
         url
       }
     }
@@ -162,16 +177,13 @@ export default function NewsSearchPage(props) {
 
   return (
     <>
-      <AiidHelmet path={props.location.pathname}>
-        <title>{title}</title>
-      </AiidHelmet>
       <div className={'titleWrapper'}>
         <h1>
           <Trans>{title}</Trans>
         </h1>
       </div>
       <p>
-        <Trans>
+        <Trans i18nKey={'newsDigestDescription'}>
           This digest shows news stories from around the web matching a set of AI-related{' '}
           <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
             <FontAwesomeIcon icon={faTag} className="pointer fa mr-1" fixedWidth />
@@ -265,6 +277,8 @@ function CandidateCard({
   dismissed = false,
   existingSubmissions,
 }) {
+  const addToast = useToast();
+
   const { isRole } = useUserContext();
 
   const localizePath = useLocalizePath();
@@ -337,18 +351,23 @@ function CandidateCard({
               {isRole('incident_editor') &&
                 (dismissed ? (
                   <Dropdown.Item
-                    onClick={() => {
+                    onClick={async () => {
                       setDismissedArticles((dismissedArticles) => {
                         const updatedValue = { ...dismissedArticles };
 
                         updatedValue[newsArticle.url] = false;
                         return updatedValue;
                       });
-                      updateCandidate({
+                      await updateCandidate({
                         variables: {
-                          query: { url: newsArticle.url },
-                          set: { dismissed: false },
+                          filter: { url: { EQ: newsArticle.url } },
+                          update: { set: { dismissed: false } },
                         },
+                      });
+
+                      addToast({
+                        message: `Restored article: ${newsArticle.url}`,
+                        severity: SEVERITY.success,
                       });
                     }}
                   >
@@ -362,18 +381,22 @@ function CandidateCard({
                   </Dropdown.Item>
                 ) : (
                   <Dropdown.Item
-                    onClick={() => {
+                    onClick={async () => {
                       setDismissedArticles((dismissedArticles) => {
                         const updatedValue = { ...dismissedArticles };
 
                         updatedValue[newsArticle.url] = true;
                         return updatedValue;
                       });
-                      updateCandidate({
+                      await updateCandidate({
                         variables: {
-                          query: { url: newsArticle.url },
-                          set: { dismissed: true },
+                          filter: { url: { EQ: newsArticle.url } },
+                          update: { set: { dismissed: true } },
                         },
+                      });
+                      addToast({
+                        message: `Dismissed article: ${newsArticle.url}`,
+                        severity: SEVERITY.success,
                       });
                     }}
                   >
@@ -485,4 +508,20 @@ var stats = (list) => {
   const m = mean(list);
 
   return [m, stdDev(list, m)];
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+  } = props;
+
+  const { t } = useTranslation();
+
+  const title = t('Related News Digest');
+
+  const metaDescription = t(
+    'This summary features AI-related news, identified and matched to our database via NLP for textual similarity, including potential incidents and highlighted harm keywords.'
+  );
+
+  return <HeadContent path={pathname} metaTitle={title} metaDescription={metaDescription} />;
 };

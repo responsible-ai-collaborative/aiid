@@ -1,0 +1,34 @@
+[build]
+  base = "/site/gatsby-site"
+  publish = "public"
+
+[[plugins]]
+  package = "@netlify/plugin-gatsby"
+
+[build.processing.html]
+  pretty_urls = false
+
+[[redirects]]
+  from = "/api/graphql"
+  to = "/.netlify/functions/graphql"
+  status = 200
+
+[[redirects]]
+  from = "/api/parseNews"
+  to = "/.netlify/functions/parseNews"
+  status = 200
+
+[[redirects]]
+  from = "/api/semanticallyRelated"
+  to = "/.netlify/functions/semanticallyRelated"
+  status = 200
+
+[[redirects]]
+  from = "/api/lookupbyurl"
+  to = "/.netlify/functions/lookupbyurl"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth"
+  status = 200

@@ -1,0 +1,75 @@
+{
+    "Main" : {
+      "title" : {
+        "type" : "Text",
+        "config" : {
+          "label" : "Title"
+        }
+      },
+      "order" : {
+        "type" : "Number",
+        "config" : {
+          "label" : "Order"
+        }
+      },
+      "items" : {
+        "type" : "Group",
+        "config" : {
+          "fields" : {
+            "item_title" : {
+              "type" : "Text",
+              "config" : {
+                "label" : "Item Title"
+              }
+            },
+            "item_url" : {
+              "type" : "Link",
+              "config" : {
+                "label" : "Item URL",
+                "select" : null,
+                "allowTargetBlank" : true,
+                "placeholder" : "External URL (outside site)"
+              }
+            },
+            "path" : {
+              "type" : "Text",
+              "config" : {
+                "label" : "Path"
+              }
+            }
+          },
+          "label" : "Items"
+        }
+      },
+      "social" : {
+        "type" : "Group",
+        "config" : {
+          "fields" : {
+            "name" : {
+              "type" : "Text",
+              "config" : {
+                "label" : "Name",
+                "placeholder" : "twitter/facebook/github/linked"
+              }
+            },
+            "url" : {
+              "type" : "Link",
+              "config" : {
+                "allowTargetBlank" : true,
+                "label" : "url",
+                "placeholder" : "URL to your social media account",
+                "select" : null
+              }
+            },
+            "path" : {
+              "type" : "Text",
+              "config" : {
+                "label" : "Path"
+              }
+            }
+          },
+          "label" : "social"
+        }
+      }
+    }
+  }

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from './useLocalizePath';
 import { Badge, Dropdown } from 'flowbite-react';
+
+const isBetaLocale = ({ code }) => code === 'fr' || code === 'ja';
 
 export default function LanguageSwitcher({ className = '' }) {
   const { locale: currentLang, config } = useLocalization();
@@ -18,17 +20,27 @@ export default function LanguageSwitcher({ className = '' }) {
     window.location.href = newPath + search;
   };
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return false;
+  }
+
   return (
     <div
       className="mr-3 md:mr-0 border border-gray-500 p-2 rounded-md hover:bg-white hover:text-gray-900"
-      data-cy="language-switcher"
+      data-testid="language-switcher"
     >
       <Dropdown
         id="dropdown-basic-button"
         label={
           <span className="flex">
             {currentLocale.localName}
-            {currentLocale.code === 'fr' && (
+            {isBetaLocale(currentLocale) && (
               <span className="mx-2 rounded hidden sm:flex">
                 <Badge>Beta</Badge>
               </span>
@@ -45,7 +57,7 @@ export default function LanguageSwitcher({ className = '' }) {
             className="flex"
           >
             {locale.localName}
-            {locale.code === 'fr' && (
+            {isBetaLocale(locale) && (
               <span className="ml-2 rounded">
                 <Badge>Beta</Badge>
               </span>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Label from './Label';
 import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import 'react-datetime/css/react-datetime.css';
 
 const TextInputGroup = ({
   name = '',
@@ -31,7 +32,7 @@ const TextInputGroup = ({
   }, []);
 
   return (
-    <div className={`form-group ${className}`}>
+    <div className={`form-group ${className || ''}`}>
       <div className="flex items-center">
         {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mr-1" />}
         {label && (
@@ -97,11 +98,13 @@ const TextAreaInput = ({
   <>
     <textarea
       name={name}
-      className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white min-h-[40px] ${className} ${
+      className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white min-h-[40px] ${
+        className || ''
+      } ${
         touched[name] && errors[name]
           ? 'border-red-600 focus:ring-red-500'
           : 'border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
-      } ${className}`}
+      } ${className || ''}`}
       placeholder={placeholder}
       value={values[name] || props.defaultValue || ''}
       {...props}
@@ -134,7 +137,7 @@ const Input = ({
           errors && touched && touched[name] && errors[name]
             ? 'border-red-600 focus:ring-red-500'
             : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
-        } ${className}`}
+        } ${className || ''}`}
         placeholder={placeholder}
         value={values[name] || props.defaultValue || ''}
         {...props}

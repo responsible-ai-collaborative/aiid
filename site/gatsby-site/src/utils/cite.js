@@ -92,19 +92,27 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
       taxonomyFields: t.field_list,
       dummyFields: t.dummy_fields,
       complete_entities: t.complete_entities,
+      automatedClassifications: t.automatedClassifications,
     });
   });
 
   return taxonomies;
 };
 
-export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, locale }) => {
+export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, language }) => {
   return allMongodbAiidprodReports.nodes.map((r) => {
-    const translation = translations[locale]?.nodes.find(
+    const translation = translations[language]?.nodes.find(
       (t) => t.report_number === r.report_number
     );
 
-    return translation ? { ...r, text: translation.text, title: translation.title } : { ...r };
+    return translation
+      ? {
+          ...r,
+          text: translation.text,
+          title: translation.title,
+          isTranslated: true, // Mark badge to display or not
+        }
+      : { ...r };
   });
 };
 
@@ -137,6 +145,7 @@ export const transformIncidentData = (incident, user) => {
     AllegedDeployerOfAISystem,
     AllegedDeveloperOfAISystem,
     AllegedHarmedOrNearlyHarmedParties,
+    implicated_systems,
     reports,
     embedding,
     nlp_similar_incidents,
@@ -160,6 +169,12 @@ export const transformIncidentData = (incident, user) => {
     result.AllegedHarmedOrNearlyHarmedParties = AllegedHarmedOrNearlyHarmedParties.link
       ? AllegedHarmedOrNearlyHarmedParties.link
       : AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
+  }
+
+  if (implicated_systems) {
+    result.implicated_systems = implicated_systems.link
+      ? implicated_systems.link
+      : implicated_systems.map((e) => e.entity_id);
   }
 
   result.reports = reports
@@ -210,6 +225,7 @@ const INCIDENT_TO_COMPARE = {
   AllegedDeployerOfAISystem: 'Alleged Deployer of AI System',
   AllegedDeveloperOfAISystem: 'Alleged Developer of AI System',
   AllegedHarmedOrNearlyHarmedParties: 'Alleged Harmed or Nearly Harmed Parties',
+  implicated_systems: 'Implicated Systems',
   editors: 'Editors',
   editor_notes: 'Editor Notes',
   reports: 'Reports',
@@ -255,6 +271,7 @@ export const getIncidentChanges = (oldVersion, newVersion, users, entities) => {
               'AllegedDeployerOfAISystem',
               'AllegedDeveloperOfAISystem',
               'AllegedHarmedOrNearlyHarmedParties',
+              'implicated_systems',
             ].includes(field)
           ) {
             removedLabels = removedClean.map(

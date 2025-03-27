@@ -1,0 +1,115 @@
+name: Build test site
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      sha:
+        description: The SHA of the commit to build
+        type: string
+        required: true
+      netlify-context:
+        description: The Netlify context use when building
+        type: string
+        required: true
+      runner-label:
+        description: The label of the runner to use
+        type: string
+      cache-modifier:
+        description: A modifier for the cache key used to bypass existing cache
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  test:
+    name: Build site for testing
+    environment: ${{ inputs.environment }}
+    runs-on:
+      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+    steps:
+      - name: Cleanup Disk Space
+        run: |
+          echo "Before removing files:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "After removing files:"
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-install-folder
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        working-directory: site/gatsby-site
+        run: npm ci
+
+      - name: Use tests specific netlify.toml
+        run: mv tests-netlify.toml netlify.toml
+        working-directory: site/gatsby-site
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Build using Netlify
+        run: npm run build --context=${{ inputs.netlify-context }}
+        working-directory: site/gatsby-site
+        env:
+          INSTRUMENT: true
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+          GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          SITE_URL: http://localhost:8000
+          NEXTAUTH_URL: http://localhost:8000
+          NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+          MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
+
+      - name: Cache build
+        uses: actions/cache/save@v4
+        env:
+          cache-name: cache-build-folder
+        with:
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/netlify/functions
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ inputs.sha }}-${{ inputs.cache-modifier }}

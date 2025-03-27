@@ -1,0 +1,74 @@
+name: Deploy Preview Branch
+
+on:
+  pull_request_target:
+    branches:
+      - staging
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  permissions-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get User Permission
+        id: checkAccess
+        uses: actions-cool/check-user-permission@v2
+        with:
+          require: write
+          username: ${{ github.triggering_actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check User Permission
+        if: steps.checkAccess.outputs.require-result == 'false'
+        run: |
+          echo "${{ github.triggering_actor }} does not have permissions on this repo."
+          echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
+          echo "Job originally triggered by ${{ github.actor }}"
+          exit 1
+
+  call-test-api:
+    if: ${{ !failure() && !cancelled()}}
+    uses: ./.github/workflows/test-api.yml
+    needs: permissions-check
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+
+  call-test-playwright-e2e:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-e2e.yml
+    needs: permissions-check
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+
+  call-deploy:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/deploy.yml
+    needs: permissions-check
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+      netlify-context: branch-deploy
+      netlify-alias: pr-${{ github.event.pull_request.number }}
+      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+
+  call-test-playwright-probes:
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/test-playwright-probes.yml
+    needs: call-deploy
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
+      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app

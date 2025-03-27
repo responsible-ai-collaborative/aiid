@@ -28,6 +28,7 @@ module.exports = {
     'is_incident_report',
     'searchable(tags)',
     'searchable(language)',
+    'namespaces',
   ],
   attributesToSnippet: ['description:200', 'text:15'],
   attributesToHighlight: ['description', 'text', 'title', 'incident_title', 'incident_description'],

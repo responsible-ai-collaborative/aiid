@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
-import { CloudinaryImage } from '@cloudinary/base';
 import { Trans } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
-import AiidHelmet from 'components/AiidHelmet';
-import { sortIncidentsByDatePublished } from 'utils/cite';
-import config from '../../../config';
-import { isCompleteReport } from 'utils/variants';
 import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
 import CiteDynamicTemplate from 'templates/citeDynamicTemplate';
 
@@ -25,45 +20,20 @@ function CiteDynamicPage(props) {
 
   const [incident, setIncident] = useState(null);
 
-  // meta tags
-
-  const [metaTitle, setMetaTitle] = useState(null);
-
-  const [metaDescription, setMetaDescription] = useState(null);
-
-  const [metaImage, setMetaImage] = useState(null);
-
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { query: { incident_id } },
+    variables: { filter: { incident_id: { EQ: parseInt(incident_id) } } },
   });
 
   useEffect(() => {
     if (incidentData?.incident) {
       const incidentTemp = { ...incidentData.incident };
 
-      const sortedIncidentReports = sortIncidentsByDatePublished(incidentTemp.reports);
-
-      const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
-
-      const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
-
-      const image = new CloudinaryImage(publicID, {
-        cloudName: config.cloudinary.cloudName,
-      });
-
-      setMetaTitle(`Incident ${incidentTemp.incident_id}: ${incidentTemp.title}`);
-      setMetaDescription(incidentTemp.description);
-      setMetaImage(image.createCloudinaryURL());
       setIncident(incidentTemp);
     }
   }, [incidentData]);
 
   return (
     <div {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
-        <meta property="og:type" content="website" />
-      </AiidHelmet>
-
       {loading ? (
         <Spinner />
       ) : !loading && incident ? (

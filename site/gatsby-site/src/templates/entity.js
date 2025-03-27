@@ -1,17 +1,17 @@
 import EntityCard from 'components/entities/EntityCard';
 import IncidentCard from 'components/incidents/IncidentCard';
 import Link from 'components/ui/Link';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { Button, Spinner } from 'flowbite-react';
 import { graphql } from 'gatsby';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import AiidHelmet from 'components/AiidHelmet';
+import HeadContent from 'components/HeadContent';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
 import {
   DELETE_SUBSCRIPTIONS,
@@ -20,6 +20,7 @@ import {
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import Label from '../components/forms/Label';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -28,10 +29,11 @@ const incidentFields = [
   'incidentsAsDeployer',
   'incidentsAsDeveloper',
   'incidentsHarmedBy',
+  'incidentsImplicatedSystems',
 ];
 
 const EntityPage = ({ pageContext, data, ...props }) => {
-  const { id, name, relatedEntities } = pageContext;
+  const { id, name, relatedEntities, entityRelationships } = pageContext;
 
   const { isRole, user } = useUserContext();
 
@@ -46,6 +48,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsAsDeveloper,
     incidentsAsBoth,
     incidentsHarmedBy,
+    incidentsImplicatedSystems,
     entities: entitiesData,
     responses,
   } = data;
@@ -55,6 +58,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsHarmedBy: incidentsHarmedBy.nodes.sort(sortByReports),
     incidentsAsDeveloper: incidentsAsDeveloper.nodes.sort(sortByReports),
     incidentsAsDeployer: incidentsAsDeployer.nodes.sort(sortByReports),
+    incidentsImplicatedSystems: incidentsImplicatedSystems.nodes.sort(sortByReports),
   };
 
   const sections = [
@@ -73,6 +77,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     {
       header: 'Incidents involved as Deployer',
       key: 'incidentsAsDeployer',
+    },
+    {
+      header: 'Incidents implicated systems',
+      key: 'incidentsImplicatedSystems',
     },
   ];
 
@@ -100,6 +108,16 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     return entity;
   });
 
+  const entityRelationshipsData = entityRelationships
+    .filter((rel) => rel.sub === id || rel.obj === id)
+    .map((rel) => {
+      const relatedId = rel.sub === id ? rel.obj : rel.sub;
+
+      const entity = entitiesData?.nodes?.find((entity) => entity.entity_id === relatedId);
+
+      return { ...entity, id: relatedId };
+    });
+
   const [subscribeToEntityMutation, { loading: subscribing }] = useMutation(UPSERT_SUBSCRIPTION);
 
   const [unsubscribeToEntityMutation, { loading: unsubscribing }] =
@@ -112,10 +130,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     networkStatus: subscriptionNetworkStatus,
   } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
-      query: {
-        type: SUBSCRIPTION_TYPE.entity,
-        userId: { userId: user?.id },
-        entityId: { entity_id: id },
+      filter: {
+        type: { EQ: SUBSCRIPTION_TYPE.entity },
+        userId: { EQ: user?.id },
+        entityId: { EQ: id },
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -126,12 +144,12 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       try {
         await subscribeToEntityMutation({
           variables: {
-            query: {
-              type: SUBSCRIPTION_TYPE.entity,
-              userId: { userId: user.id },
-              entityId: { entity_id: id },
+            filter: {
+              type: { EQ: SUBSCRIPTION_TYPE.entity },
+              userId: { EQ: user.id },
+              entityId: { EQ: id },
             },
-            subscription: {
+            update: {
               type: SUBSCRIPTION_TYPE.entity,
               userId: { link: user.id },
               entityId: { link: id },
@@ -179,10 +197,10 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     try {
       await unsubscribeToEntityMutation({
         variables: {
-          query: {
-            type: SUBSCRIPTION_TYPE.entity,
-            userId: { userId: user.id },
-            entityId: { entity_id: id },
+          filter: {
+            type: { EQ: SUBSCRIPTION_TYPE.entity },
+            userId: { EQ: user.id },
+            entityId: { EQ: id },
           },
         },
       });
@@ -211,26 +229,43 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   return (
     <>
-      <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
       <div className="titleWrapper">
         <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
         </LocalizedLink>
-        <div className="w-full flex flex-wrap items-center justify-between">
+        <div className="w-full flex flex-wrap items-center justify-between gap-2">
           <h1>{name}</h1>
-          <div className="flex items-center -mt-1">
+          <div className="flex items-center">
             {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
               <Spinner size="sm" />
             ) : subscriptions?.subscriptions.length > 0 ? (
               <UnsubscribeButton
-                {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
+                {...{
+                  unsubscribeToEntity,
+                  unsubscribing,
+                  subscriptionNetworkStatus,
+                  entityName: name,
+                }}
               >
                 <Trans>Unfollow</Trans>
               </UnsubscribeButton>
             ) : (
-              <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
+              <NotifyButton
+                {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus, entityName: name }}
+              >
                 <Trans>Follow</Trans>
               </NotifyButton>
+            )}
+            {subscriptionNetworkStatus != NetworkStatus.loading && isRole('admin') && (
+              <Button
+                className="hover:no-underline ml-2"
+                color="light"
+                href={localizePath({ path: `/entities/edit?entity_id=${id}` })}
+                data-cy="edit-entity-btn"
+              >
+                <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Entity')} />
+                <Trans>Edit</Trans>
+              </Button>
             )}
           </div>
         </div>
@@ -276,7 +311,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       {relatedEntitiesData.length > 0 && (
         <>
           <h2 className="mt-24">
-            <Trans ns="entities">Related Entities</Trans>
+            <Label popover="relatedEntities" label={t('Related Entities')} className="text-2xl" />
           </h2>
           <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
             {relatedEntitiesData.map((entity) => (
@@ -285,8 +320,38 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           </div>
         </>
       )}
+
+      {entityRelationshipsData && entityRelationshipsData?.length > 0 && (
+        <>
+          <h2 className="mt-24">
+            <Label
+              popover="entityRelationships"
+              label={t('Entity Relationships')}
+              className="text-2xl"
+            />
+          </h2>
+          <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
+            {entityRelationshipsData.map((entity) => (
+              <EntityCard key={entity.entity_id} entity={entity} />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
+};
+
+export const Head = (props) => {
+  const {
+    location: { pathname },
+    pageContext: { name },
+  } = props;
+
+  const metaTitle = 'Entity: ' + name;
+
+  const metaDescription = 'Information about ' + name + ' and its involvement in AI incidents.';
+
+  return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
 };
 
 function UnsubscribeButton({
@@ -294,16 +359,17 @@ function UnsubscribeButton({
   unsubscribeToEntity,
   unsubscribing,
   subscriptionNetworkStatus,
+  entityName,
 }) {
   const { t } = useTranslation();
 
   return (
     <Button
       onClick={unsubscribeToEntity}
-      color={'light'}
+      color="light"
       disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-1"
-      title={t('Unsubscribe from New {{name}} Incidents', { name })}
+      title={t('Unsubscribe from New {{name}} Incidents', { name: entityName })}
     >
       <div className="flex gap-2 items-center">
         {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
@@ -319,7 +385,13 @@ function UnsubscribeButton({
   );
 }
 
-function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNetworkStatus }) {
+function NotifyButton({
+  children,
+  subscribeToEntity,
+  subscribing,
+  subscriptionNetworkStatus,
+  entityName,
+}) {
   const { t } = useTranslation();
 
   return (
@@ -328,7 +400,7 @@ function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNe
       onClick={subscribeToEntity}
       disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
       className="mr-2 whitespace-nowrap"
-      title={t('Notify Me of New {{name}} Incidents', { name })}
+      title={t('Notify Me of New {{name}} Incidents', { name: entityName })}
     >
       <div className="flex gap-2 items-center">
         {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
@@ -350,6 +422,7 @@ export const query = graphql`
     $incidentsAsDeveloper: [Int]
     $incidentsAsBoth: [Int]
     $incidentsHarmedBy: [Int]
+    $incidentsImplicatedSystems: [Int]
   ) {
     incidentsAsDeployer: allMongodbAiidprodIncidents(
       filter: { incident_id: { in: $incidentsAsDeployer } }
@@ -365,6 +438,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 
@@ -382,6 +456,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 
@@ -399,6 +474,7 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 
@@ -416,6 +492,25 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
+      }
+    }
+
+    incidentsImplicatedSystems: allMongodbAiidprodIncidents(
+      filter: { incident_id: { in: $incidentsImplicatedSystems } }
+    ) {
+      nodes {
+        title
+        description
+        incident_id
+        reports {
+          report_number
+        }
+        date
+        Alleged_deployer_of_AI_system
+        Alleged_developer_of_AI_system
+        Alleged_harmed_or_nearly_harmed_parties
+        implicated_systems
       }
     }
 

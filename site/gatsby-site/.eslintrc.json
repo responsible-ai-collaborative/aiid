@@ -7,7 +7,7 @@
     "prettier",
     "prettier/react"
   ],
-  "plugins": ["react", "import", "jsx-a11y", "cypress"],
+  "plugins": ["react", "import", "jsx-a11y"],
   "settings": {
     "react": {
       "version": "detect"
@@ -16,6 +16,7 @@
       "alias": {
         "map": [
           ["components", "./src/components"],
+          ["contexts", "./src/contexts"],
           ["elements", "./src/elements"],
           ["hooks", "./src/hooks"],
           ["contexts", "./src/contexts"],
@@ -27,7 +28,7 @@
           ["plugins", "./plugins"],
           ["@reach/router", "@gatsbyjs/reach-router"]
         ],
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
@@ -60,8 +61,7 @@
   "env": {
     "es6": true,
     "browser": true,
-    "node": true,
-    "cypress/globals": true
+    "node": true
   },
   "globals": {
     "graphql": false,

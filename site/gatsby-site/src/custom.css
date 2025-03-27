@@ -9,3 +9,16 @@ a {
     appearance: none;
     -webkit-appearance: none;
 }
+
+.bytemd-preview ul {
+    list-style: inside disc;
+}
+
+.bytemd-preview ol {
+    list-style: inside auto;
+}
+
+.swagger-ui pre {
+    border: unset;
+    background-color: unset;
+}

@@ -11,7 +11,7 @@ import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
 import { VariantStatusBadge } from './VariantList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { format, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import Link from 'components/ui/Link';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
@@ -37,7 +37,7 @@ export default function VariantEditModal({
   const [newVariantStatus, setNewVariantStatus] = useState(null);
 
   const { data: variantData } = useQuery(FIND_VARIANT, {
-    variables: { query: { report_number: reportNumber } },
+    variables: { filter: { report_number: { EQ: reportNumber } } },
   });
 
   const [updateVariant] = useMutation(UPDATE_VARIANT);
@@ -59,7 +59,7 @@ export default function VariantEditModal({
   const handleSubmit = async (values) => {
     try {
       const updated = {
-        date_published: values.date_published,
+        date_published: new Date(values.date_published),
         submitters: values.submitters,
         text: values.text,
         inputs_outputs: values.inputs_outputs,
@@ -74,16 +74,18 @@ export default function VariantEditModal({
 
       const today = new Date();
 
-      updated.date_modified = format(today, 'yyyy-MM-dd');
+      updated.date_modified = today;
       updated.epoch_date_modified = getUnixTime(today);
 
       await updateVariant({
         variables: {
-          query: {
-            report_number: reportNumber,
+          filter: {
+            report_number: { EQ: reportNumber },
           },
-          set: {
-            ...updated,
+          update: {
+            set: {
+              ...updated,
+            },
           },
         },
       });
@@ -114,9 +116,7 @@ export default function VariantEditModal({
 
         await deleteVariant({
           variables: {
-            query: {
-              report_number: reportNumber,
-            },
+            filter: { report_number: { EQ: reportNumber } },
           },
         });
 

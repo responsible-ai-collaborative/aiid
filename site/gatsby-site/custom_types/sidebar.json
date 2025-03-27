@@ -1,0 +1,20 @@
+{
+  "Main" : {
+    "items" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "item" : {
+            "type" : "Link",
+            "config" : {
+              "select" : "document",
+              "customtypes" : [ "sidebar_item" ],
+              "label" : "item"
+            }
+          }
+        },
+        "label" : "items"
+      }
+    }
+  }
+}

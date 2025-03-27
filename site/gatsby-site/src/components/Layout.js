@@ -4,15 +4,21 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 import { useLayoutContext } from 'contexts/LayoutContext';
+import { useMenuContext } from '../contexts/MenuContext';
 
 const Layout = ({ children, className, sidebarCollapsed = false, location }) => {
   const { rightSidebar } = useLayoutContext();
+
+  const { isCollapsed } = useMenuContext();
 
   return (
     <>
       <Header location={location} />
       <div className="tw-layout">
-        <div className="hidden md:block z-[1] bg-text-light-gray shadow" data-cy="sidebar-desktop">
+        <div
+          className="hidden md:block z-[1] bg-text-light-gray shadow"
+          data-testid="sidebar-desktop"
+        >
           <Sidebar defaultCollapsed={sidebarCollapsed} location={location} />
         </div>
         {config.sidebar.title && (
@@ -23,10 +29,13 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
         )}
         <div
           id="content"
-          className={
-            'flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 z-[1] relative flex-1 overflow-clip' +
-            (rightSidebar ? ' xl:pr-5' : '')
-          }
+          className={`flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 relative flex-1 overflow-clip
+            w-full max-w-full ${
+              isCollapsed
+                ? 'lg:w-content lg:max-w-content'
+                : 'lg:w-content-sidebar lg:max-w-content-sidebar'
+            }
+            ${rightSidebar ? ' xl:pr-5' : ''}`}
         >
           <div className={`${className ? className : ''} w-full max-w-full`}>{children}</div>
         </div>

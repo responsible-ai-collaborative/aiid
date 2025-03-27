@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
 
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -7,10 +9,10 @@ import BillboardJS from '@billboard.js/react';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge, Button } from 'flowbite-react';
-import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function FacetTaxonomyPage(props) {
   if (!props || !props.pageContext || !props.data) {
@@ -35,16 +37,35 @@ export default function FacetTaxonomyPage(props) {
 
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
+  const { t } = useTranslation();
+
+  const markdownDescription = t('gmfMarkdown', description);
+
   return (
     <>
-      <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
-
       <div className={'titleWrapper'}>
         <h1>{namespace}</h1>
       </div>
-      <Markdown className="taxonomy-markdown">{description}</Markdown>
-      <h2 className="heading1">Taxonomy Fields</h2>
-      <div className="flex gap-9 flex-col">
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        className="
+          taxonomy-markdown 
+          prose
+          [&_.footnotes]:mt-6
+          [&_.footnotes]:pt-4
+          [&_.footnotes]:pl-4
+          [&_.footnotes]:text-xs 
+          [&_.footnotes]:border-t-2
+          [&_.footnotes_ol]:list-decimal
+        "
+      >
+        {markdownDescription}
+      </Markdown>
+      <h2 className="heading1">
+        <Trans>Taxonomy Fields</Trans>
+      </h2>
+      <div className="flex gap-9 flex-col max-w-prose text-[1rem]">
         {sortedFieldsArray
           .filter((f) => f.short_name !== 'Publish')
           .map(({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
@@ -54,10 +75,12 @@ export default function FacetTaxonomyPage(props) {
                   className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative flex items-center"
                   data-cy={`title-${short_name}`}
                 >
-                  {long_name}{' '}
+                  {t(long_name)}{' '}
                   {instant_facet && (
                     <span className="ml-2">
-                      <Badge color="gray">Searchable in Discover App</Badge>
+                      <Badge color="gray">
+                        <Trans>Searchable in Discover App</Trans>
+                      </Badge>
                     </span>
                   )}
                 </h3>
@@ -70,7 +93,7 @@ export default function FacetTaxonomyPage(props) {
                   geocodes={geocodes}
                 />
                 <Markdown className="taxonomy-markdown">
-                  {'**Definition**: ' + long_description}
+                  {`**${t('Definition')}**: ` + t(long_description)}
                 </Markdown>
               </Card>
             </div>
@@ -81,6 +104,8 @@ export default function FacetTaxonomyPage(props) {
 }
 
 const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) => {
+  const { t } = useTranslation();
+
   if (!instant_facet) {
     return '';
   }
@@ -128,9 +153,17 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
       ]);
     }
 
+    const names = data.columns.reduce((obj, key) => {
+      obj[key[0]] = t(key[0]);
+      return obj;
+    }, {});
+
     return (
       <div>
-        <strong>Discover</strong>:
+        <strong>
+          <Trans>Discover</Trans>
+        </strong>
+        :
         <ul className="text-gray-500 dark:text-gray-400 mt-4 ml-4">
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
@@ -155,10 +188,10 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
             onClick={toggleShowAllStats}
             style={{ padding: '0px', margin: '0px', textDecoration: 'none' }}
           >
-            {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
+            <Trans>{`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}</Trans>
           </Button>
         )}
-        <div className="my-3 h-[320px]">
+        <div className="my-3 h-[500px] [&>div]:h-full">
           {short_name == 'Location' ? (
             <LocationMap
               data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
@@ -181,6 +214,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
                       );
                     }
                   },
+                  names,
                 },
               }}
             />
@@ -200,18 +234,22 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
         />
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg">No classifications with this field</span>
+        <span className="text-lg">
+          <Trans>No classifications with this field</Trans>
+        </span>
       </div>
     </div>
   );
 };
 
 const StatItem = ({ text, value }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <span>{text}</span>
+      <span>{t(text)}</span>
       <div className="flex ml-4">
-        <Badge>{`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}</Badge>
+        <Badge>{`${value || 0} ${value === 1 ? t('Incident') : t('Incidents')}`}</Badge>
       </div>
     </>
   );

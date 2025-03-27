@@ -32,10 +32,12 @@ import {
   faAlignLeft,
   faStickyNote,
   faTenge,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-import { Select } from 'flowbite-react';
+import { Checkbox, Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const SubmissionForm = ({ onChange = null }) => {
   const {
@@ -94,7 +96,14 @@ const SubmissionForm = ({ onChange = null }) => {
           cloudinary_id,
         };
 
-        for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+        for (const key of [
+          'authors',
+          'submitters',
+          'developers',
+          'deployers',
+          'harmed_parties',
+          'implicated_systems',
+        ]) {
           if (newValues[key] && !Array.isArray(newValues[key])) {
             newValues[key] = [newValues[key]];
           }
@@ -145,6 +154,20 @@ const SubmissionForm = ({ onChange = null }) => {
     }
   }, [errors]);
 
+  const staticQueryData = useStaticQuery(graphql`
+    query SubmittedFormQuery {
+      allMongodbAiidprodEntities {
+        nodes {
+          name
+        }
+      }
+    }
+  `);
+
+  const entityNames = staticQueryData.allMongodbAiidprodEntities.nodes
+    .map((node) => node.name)
+    .sort();
+
   return (
     <div>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report" onChange={onChange}>
@@ -176,7 +199,12 @@ const SubmissionForm = ({ onChange = null }) => {
           btnDisabled={!!errors.url || !touched.url || parsingNews}
           btnText={t('Fetch info')}
         />
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byURL']}
+          triggerSearch={values['url']?.length}
+        />
 
         <TextInputGroup
           name="title"
@@ -196,7 +224,12 @@ const SubmissionForm = ({ onChange = null }) => {
           {...TextInputGroupProps}
         />
 
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byAuthors']}
+          triggerSearch={values['authors']?.length}
+        />
 
         <TagsInputGroup
           name="submitters"
@@ -221,6 +254,7 @@ const SubmissionForm = ({ onChange = null }) => {
           incident={values}
           setFieldValue={setFieldValue}
           columns={['byDatePublished']}
+          triggerSearch={values['date_published']?.length}
         />
 
         <TextInputGroup
@@ -331,7 +365,22 @@ const SubmissionForm = ({ onChange = null }) => {
           incident={values}
           setFieldValue={setFieldValue}
           columns={['byIncidentId']}
+          triggerSearch={values['incident_ids']?.length}
         />
+
+        <div className="mt-3">
+          <div className="flex items-center">
+            <Label popover="quiet" label={t('Quiet')} />
+          </div>
+          <div className="mt-1">
+            <Checkbox
+              checked={values.quiet}
+              onChange={(e) => {
+                setFieldValue('quiet', e.target.checked);
+              }}
+            />
+          </div>
+        </div>
 
         {(!values.incident_ids || values.incident_ids.length === 0) && (
           <div data-cy="incident-data-section">
@@ -371,6 +420,7 @@ const SubmissionForm = ({ onChange = null }) => {
               icon={faCode}
               placeholder={t('Who created or built the technology involved in the incident?')}
               className="mt-3"
+              options={entityNames}
               {...TextInputGroupProps}
             />
 
@@ -380,6 +430,7 @@ const SubmissionForm = ({ onChange = null }) => {
               icon={faHandPointRight}
               placeholder={t('Who employed or was responsible for the technology?')}
               className="mt-3"
+              options={entityNames}
               {...TextInputGroupProps}
             />
 
@@ -389,6 +440,17 @@ const SubmissionForm = ({ onChange = null }) => {
               icon={faBolt}
               placeholder={t('Who experienced negative impacts?')}
               className="mt-3"
+              options={entityNames}
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="implicated_systems"
+              label={t('Alleged implicated AI systems')}
+              icon={faGear}
+              placeholder={t('Which AI systems were involved?')}
+              className="mt-3"
+              options={entityNames}
               {...TextInputGroupProps}
             />
             <hr />

@@ -9,14 +9,17 @@ const config = require('./config');
 
 cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
+const adapter = require('gatsby-adapter-netlify').default;
+
+let googleTrackingIds = [];
+
+// TODO: Remove this once we have a new env variable ENVIRONMENT to check against
+if (process.env.SITE_URL === 'https://incidentdatabase.ai') {
+  googleTrackingIds.push(config.gatsby.gaTrackingId);
+}
+
 const plugins = [
   'layout',
-  {
-    resolve: `gatsby-plugin-netlify`,
-    options: {
-      mergeCachingHeaders: false,
-    },
-  },
   {
     resolve: `gatsby-plugin-catch-links`,
     options: {
@@ -36,7 +39,6 @@ const plugins = [
           resolve: 'gatsby-remark-images',
           options: {
             maxWidth: 1035,
-            sizeByPixelDensity: true,
           },
         },
         {
@@ -70,7 +72,7 @@ const plugins = [
   {
     resolve: `gatsby-plugin-google-gtag`,
     options: {
-      trackingIds: [config.gatsby.gaTrackingId],
+      trackingIds: googleTrackingIds,
     },
   },
   {
@@ -86,13 +88,15 @@ const plugins = [
         'classifications',
         'reports',
         'entities',
+        'entity_relationships',
       ],
       connectionString: config.mongodb.connectionString,
-      extraParams: {
-        replicaSet: config.mongodb.replicaSet,
-      },
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
     },
   },
+  // TODO: Remove the following source once all reports are migrated to the new schema
   {
     resolve: 'gatsby-source-mongodb',
     options: {
@@ -104,6 +108,17 @@ const plugins = [
         ],
         []
       ),
+      connectionString: config.mongodb.connectionString,
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
+    },
+  },
+  {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'translations',
+      collection: ['reports'],
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
@@ -136,6 +151,10 @@ const plugins = [
       feeds: [
         {
           serialize: ({ query: { allMongodbAiidprodReports, allMongodbAiidprodIncidents } }) => {
+            if (allMongodbAiidprodReports.edges.length === 0) {
+              return [{ title: 'There are no reports yet.' }];
+            }
+
             return allMongodbAiidprodReports.edges.map((edge) => {
               const publicID = edge.node.cloudinary_id
                 ? edge.node.cloudinary_id
@@ -217,20 +236,6 @@ const plugins = [
     },
   },
   {
-    resolve: `gatsby-source-s3`,
-    options: {
-      aws: {
-        // This AWS IAM user has been provisioned no permissions, but the plugin requires a user to
-        // get a listing of the public S3 bucket. User: backupindexpublic
-        accessKeyId: 'AKIA25BP4AERUFDGAJUJ',
-        secretAccessKeyId: 'backupindexpublic',
-        secretAccessKey: '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',
-      },
-      buckets: ['aiid-backups-public'],
-      // expiration: 120,
-    },
-  },
-  {
     resolve: `gatsby-theme-i18n`,
     options: {
       defaultLang: config.i18n.defaultLanguage,
@@ -260,6 +265,8 @@ const plugins = [
           'footer',
           'sponsors',
           'reports',
+          'incidents',
+          'auth',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
@@ -272,7 +279,14 @@ const plugins = [
     options: {
       repositoryName: process.env.GATSBY_PRISMIC_REPO_NAME,
       accessToken: process.env.PRISMIC_ACCESS_TOKEN,
-      customTypesApiToken: process.env.PRISMIC_CUSTOM_TYPES_API_TOKEN,
+      schemas: {
+        blog: require('./custom_types/blog.json'),
+        doc: require('./custom_types/doc.json'),
+        footer: require('./custom_types/footer.json'),
+        sidebar: require('./custom_types/sidebar.json'),
+        sidebar_item: require('./custom_types/sidebar_item.json'),
+        sponsor: require('./custom_types/sponsor.json'),
+      },
       routes: [
         {
           type: 'blog',
@@ -307,6 +321,9 @@ module.exports = {
     siteUrl: config.gatsby.siteUrl,
   },
   plugins: plugins,
+  adapter: adapter({
+    excludeDatastoreFromEngineFunction: true,
+  }),
   trailingSlash: `always`,
   flags: {
     DEV_SSR: true,

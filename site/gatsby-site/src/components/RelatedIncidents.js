@@ -7,8 +7,8 @@ import { Trans } from 'react-i18next';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 
 const relatedIncidentsQuery = gql`
-  query ProbablyRelatedIncidents($query: IncidentQueryInput) {
-    incidents(query: $query) {
+  query ProbablyRelatedIncidents($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
       incident_id
       title
       reports {
@@ -21,8 +21,8 @@ const relatedIncidentsQuery = gql`
 `;
 
 const relatedReportsQuery = gql`
-  query ProbablyRelatedReports($query: ReportQueryInput) {
-    reports(query: $query) {
+  query ProbablyRelatedReports($filter: ReportFilterType) {
+    reports(filter: $filter) {
       report_number
       title
       url
@@ -37,10 +37,8 @@ const reportsWithIncidentIds = async (reports, client) => {
   const response = await client.query({
     query: relatedIncidentsQuery,
     variables: {
-      query: {
-        reports_in: reports.map((report) => ({
-          report_number: report.report_number,
-        })),
+      filter: {
+        reports: { IN: reports.map((report) => report.report_number) },
       },
     },
   });
@@ -95,7 +93,9 @@ const allSearchColumns = {
 
       const epoch_date_published_lt = getUnixTime(addWeeks(datePublished, 2));
 
-      return { epoch_date_published_gt, epoch_date_published_lt };
+      return {
+        epoch_date_published: { GT: epoch_date_published_gt, LT: epoch_date_published_lt },
+      };
     },
   },
 
@@ -116,7 +116,7 @@ const allSearchColumns = {
       result.data.incidents.length ? result.data.incidents[0].reports : [],
     getIncidents: async (result) => result.data.incidents,
     isSet: (incident) => incident.incident_ids && incident.incident_ids.length,
-    getQueryVariables: (incident) => ({ incident_id_in: incident.incident_ids }),
+    getQueryVariables: (incident) => ({ incident_id: { IN: incident.incident_ids } }),
     editSimilar: false,
     editId: false,
     showIncidents: true,
@@ -138,7 +138,7 @@ const allSearchColumns = {
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
-      authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
+      authors: { IN: isArray(incident.authors) ? incident.authors : incident.authors.split(',') },
     }),
   },
 
@@ -157,7 +157,7 @@ const allSearchColumns = {
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.url,
-    getQueryVariables: (incident) => ({ url_in: [incident.url] }),
+    getQueryVariables: (incident) => ({ url: { IN: [incident.url] } }),
     editSimilar: false,
   },
 };
@@ -166,6 +166,7 @@ const RelatedIncidents = ({
   incident,
   setFieldValue = null,
   columns = Object.keys(allSearchColumns),
+  triggerSearch = null,
 }) => {
   const searchColumns = {};
 
@@ -210,15 +211,17 @@ const RelatedIncidents = ({
         if (key != 'byText') {
           setLoading((loading) => ({ ...loading, [key]: true }));
         }
-        const variables = { query: queryVariables[key] };
+        const variables = { filter: queryVariables[key] };
 
         const query = column.query;
 
         const result = await client.query({ query, variables });
 
-        const reports = await column.getReports(result, client);
+        let reports = await column.getReports(result, client);
 
         setLoading((loading) => ({ ...loading, [key]: false }));
+
+        reports = reports.filter((r) => r.incident_id);
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
 
@@ -246,6 +249,8 @@ const RelatedIncidents = ({
     <div data-cy="related-reports">
       {Object.keys(searchColumns).map((key) => {
         const column = searchColumns[key];
+
+        if (!triggerSearch) return null;
 
         return (
           <RelatedIncidentsArea

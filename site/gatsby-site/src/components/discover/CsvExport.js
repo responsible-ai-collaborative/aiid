@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connectHits, connectStateResults } from 'react-instantsearch-dom';
+import { useHits, useInstantSearch } from 'react-instantsearch';
 import CsvDownloadButton from 'react-json-to-csv';
 import { format, fromUnixTime } from 'date-fns';
 import { faFileCsv } from '@fortawesome/free-solid-svg-icons';
@@ -13,10 +13,10 @@ const convertData = (hits) => {
     'incident id': hit.incident_id,
     'report number': hit.report_number,
     title: hit.title,
-    'date published': format(fromUnixTime(hit.epoch_date_published), 'yyyy-MM-dd'),
-    'date submitted': format(fromUnixTime(hit.epoch_date_submitted), 'yyyy-MM-dd'),
-    'date modified': format(fromUnixTime(hit.epoch_date_modified), 'yyyy-MM-dd'),
-    'date downloaded': format(fromUnixTime(hit.epoch_date_downloaded), 'yyyy-MM-dd'),
+    'date published': format(fromUnixTime(hit.epoch_date_published ?? 0), 'yyyy-MM-dd'),
+    'date submitted': format(fromUnixTime(hit.epoch_date_submitted ?? 0), 'yyyy-MM-dd'),
+    'date modified': format(fromUnixTime(hit.epoch_date_modified ?? 0), 'yyyy-MM-dd'),
+    'date downloaded': format(fromUnixTime(hit.epoch_date_downloaded ?? 0), 'yyyy-MM-dd'),
     url: hit.url,
     'source domain': hit.source_domain,
     language: hit.language,
@@ -26,8 +26,14 @@ const convertData = (hits) => {
   }));
 };
 
-const CsvExport = ({ hits, isSearchStalled }) => {
+export default function CsvExport() {
   const [data, setData] = useState(null);
+
+  const { hits } = useHits();
+
+  const { status } = useInstantSearch();
+
+  const isLoading = status === 'loading' || status === 'stalled';
 
   useEffect(() => {
     if (hits) {
@@ -37,7 +43,7 @@ const CsvExport = ({ hits, isSearchStalled }) => {
 
   return (
     <div>
-      {!isSearchStalled && (
+      {!isLoading && (
         <Tooltip
           content={
             <Trans>
@@ -69,6 +75,4 @@ const CsvExport = ({ hits, isSearchStalled }) => {
       )}
     </div>
   );
-};
-
-export default connectHits(connectStateResults(CsvExport));
+}

@@ -5,30 +5,29 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
     `
       query BlogPosts {
         allPrismicBlog(sort: { data: { date: DESC } }) {
-          edges {
-            node {
-              uid
-              lang
-              data {
-                metatitle
-                metadescription
-                slug
-                aitranslated
-                language
-                title {
-                  text
-                }
-                content {
-                  richText
-                  text
-                  html
-                }
-                image {
-                  url
-                  gatsbyImageData
-                }
-                date
-                author
+          nodes {
+            uid
+            data {
+              aitranslated
+              author
+              content {
+                text
+                html
+                richText
+              }
+              date
+              image {
+                url
+                gatsbyImageData
+              }
+              language
+              metadescription
+              metatitle
+              slug
+              title {
+                text
+                html
+                richText
               }
             }
           }
@@ -54,18 +53,18 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
   );
 
   const {
-    allPrismicBlog: { edges: posts },
+    allPrismicBlog: { nodes: posts },
     mdxBlogPosts: { nodes: oldPosts },
   } = result.data;
 
   posts.forEach((post) => {
     let lang = languages[0];
 
-    if (post.node.data.language) {
+    if (post.data.language) {
       lang = languages.find(
         (l) =>
-          l.hrefLang.toLowerCase() === post.node.data.language.toLowerCase() ||
-          l.hrefLang.toLowerCase() === post.node.data.language.toLowerCase().slice(0, 2)
+          l.hrefLang.toLowerCase() === post.data.language.toLowerCase() ||
+          l.hrefLang.toLowerCase() === post.data.language.toLowerCase().slice(0, 2)
       );
       if (!lang) {
         lang = languages[0];
@@ -73,10 +72,10 @@ const createBlogPages = async (graphql, createPage, { languages, reporter }) => 
     }
 
     createPage({
-      path: `/blog/${post.node.data.slug}`,
-      component: path.resolve('./src/templates/blogPost.js'),
+      path: `/blog/${post.data.slug}`,
+      component: path.resolve('./src/templates/prismicBlogPost.js'),
       context: {
-        slug: post.node.data.slug,
+        slug: post.data.slug,
       },
     });
   });

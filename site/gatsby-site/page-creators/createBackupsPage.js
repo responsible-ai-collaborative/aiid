@@ -1,43 +1,49 @@
 const path = require('path');
 
-const createBackupsPage = (graphql, createPage) => {
+const { S3Client, ListObjectsV2Command } = require('@aws-sdk/client-s3');
+
+const config = require('../config');
+
+const createBackupsPage = (_, createPage) => {
   return new Promise((resolve, reject) => {
-    resolve(
-      graphql(
-        `
-          query AllS3Backups {
-            allS3Object {
-              nodes {
-                Size
-                LastModified
-                Key
+    try {
+      const S3 = new S3Client({
+        region: 'auto',
+        endpoint: `https://${config.cloudflareR2.accountId}.r2.cloudflarestorage.com`,
+        credentials: {
+          accessKeyId: config.cloudflareR2.accessKeyId,
+          secretAccessKey: config.cloudflareR2.secretAccessKey,
+        },
+      });
+
+      resolve(
+        S3.send(new ListObjectsV2Command({ Bucket: config.cloudflareR2.bucketName })).then(
+          (result) => {
+            const backups = result.Contents ?? [];
+
+            backups.sort(function (a, b) {
+              if (a.Key < b.Key) {
+                return 1;
               }
-            }
+              if (a.Key > b.Key) {
+                return -1;
+              }
+              return 0;
+            });
+
+            createPage({
+              path: '/research/snapshots',
+              component: path.resolve('./src/templates/backups.js'),
+              context: {
+                backups,
+              },
+            });
           }
-        `
-      ).then((result) => {
-        if (result.errors) {
-          console.log(result.errors); // eslint-disable-line no-console
-          reject(result.errors);
-        }
-        const backups = result.data.allS3Object.nodes;
-
-        backups.sort(function (a, b) {
-          const bInt = Date.parse(b['LastModified']);
-
-          const aInt = Date.parse(a['LastModified']);
-
-          return bInt - aInt;
-        });
-        createPage({
-          path: '/research/snapshots',
-          component: path.resolve('./src/templates/backups.js'),
-          context: {
-            backups,
-          },
-        });
-      })
-    );
+        )
+      );
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 

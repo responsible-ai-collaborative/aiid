@@ -26,13 +26,14 @@ export default function IncidentVersionViewModal({
   const [timeline, setTimeline] = useState(null);
 
   const { data: reportsData } = useQuery(FIND_REPORTS, {
-    variables: { query: { report_number_in: version.reports || [] } },
+    variables: { filter: { report_number: { IN: version.reports || [] } } },
   });
 
   const incidentEntitiesFields = {
     Alleged_deployer_of_AI_system: version.AllegedDeployerOfAISystem,
     Alleged_developer_of_AI_system: version.AllegedDeveloperOfAISystem,
     Alleged_harmed_or_nearly_harmed_parties: version.AllegedHarmedOrNearlyHarmedParties,
+    implicated_systems: version.implicated_systems,
   };
 
   const incidentEntities = computeEntities({

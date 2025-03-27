@@ -1,0 +1,63 @@
+name: Public backup to the cloud
+
+on:
+  schedule:
+    - cron: "0 10 * * 1" # At 10:00 on Monday.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-and-run-backups:
+    # If the execution is triggered by a schedule, the environment is production
+    environment: ${{ inputs.environment || 'production' }}
+    name: Backup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            coreutils \
+            bash \
+            tzdata \
+            curl \
+            npm
+          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
+          echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt update
+          sudo apt install -y mongodb-database-tools
+
+      - name: Generate public backup
+        # TODO: Unfix the version of boto3 and use the latest version
+        #   - Github issue related: https://github.com/boto/boto3/issues/4400#issuecomment-2605715606  
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install boto3==1.35.97
+          ./bin/backup.sh
+          ./bin/prune.sh
+          ./bin/list.sh
+        working-directory: site/db-backup
+        env:
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}

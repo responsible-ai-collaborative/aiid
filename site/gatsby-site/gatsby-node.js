@@ -4,17 +4,15 @@ const fs = require('fs');
 
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
-const { Translate } = require('@google-cloud/translate').v2;
-
 const { startCase, differenceWith } = require('lodash');
 
 const config = require('./config');
 
-const createMdxPages = require('./page-creators/createMdxPages');
-
 const createCitationPages = require('./page-creators/createCitationPages');
 
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
+
+const createLandingPage = require('./page-creators/createLandingPage');
 
 const createBackupsPage = require('./page-creators/createBackupsPage');
 
@@ -32,9 +30,11 @@ const createReportPages = require('./page-creators/createReportPages');
 
 const createBlogPages = require('./page-creators/createBlogPages');
 
-const algoliasearch = require('algoliasearch');
+const createDocPages = require('./page-creators/createDocPages');
 
-const Translator = require('./src/utils/Translator');
+const createMissingTranslationsPage = require('./page-creators/createMissingTranslationsPage');
+
+const algoliasearch = require('algoliasearch');
 
 const { MongoClient } = require('mongodb');
 
@@ -42,7 +42,11 @@ const { getLanguages } = require('./i18n');
 
 const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
+const typeDefs = require('./typeDefs');
+
 const googleMapsApiClient = new GoogleMapsAPIClient({});
+
+const LookupIndex = require('./src/utils/LookupIndex');
 
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createRedirect, createPage } = actions;
@@ -69,10 +73,11 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 
   for (const pageCreator of [
+    createMissingTranslationsPage,
     createBlogPages,
-    createMdxPages,
     createCitationPages,
     createWordCountsPages,
+    createLandingPage,
     createBackupsPage,
     createTaxonomyPages,
     createDownloadIndexPage,
@@ -80,6 +85,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createTsneVisualizationPage,
     createEntitiesPages,
     createReportPages,
+    createDocPages,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
@@ -112,6 +118,23 @@ exports.onCreateBabelConfig = ({ actions }) => {
   actions.setBabelPlugin({
     name: '@babel/plugin-proposal-export-default-from',
   });
+
+  actions.setBabelPlugin({
+    name: 'graphql-codegen-babel',
+    options: {
+      artifactDirectory: './server/generated/',
+      gqlTagName: 'gql',
+    },
+  });
+
+  if (process.env.INSTRUMENT) {
+    actions.setBabelPlugin({
+      name: 'babel-plugin-istanbul',
+      options: {
+        include: ['src/**/*.js'],
+      },
+    });
+  }
 };
 
 exports.onCreateNode = async ({ node, getNode, actions }) => {
@@ -146,6 +169,12 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
       name: 'title',
       node,
       value: node.frontmatter.title || startCase(parent.name),
+    });
+
+    createNodeField({
+      name: 'previewText',
+      node,
+      value: node.frontmatter.previewText || startCase(parent.name),
     });
   }
 
@@ -188,145 +217,57 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
-  const typeDefs = `
-    type reportEmbedding {
-      vector: [Float]
-      from_text_hash: String
-    }
-
-    type incidentEmbedding {
-      vector: [Float]
-      from_reports: [Int]
-    }
-
-    type mongodbAiidprodIncidents implements Node {
-      embedding: incidentEmbedding
-      editors: [mongodbCustomDataUsers] @link(by: "userId")
-      editor_notes: String
-    }
-
-    type nlpSimilarIncident {
-      incident_id: Int
-      similarity: Float
-    }
-
-    type mongodbAiidprodIncidents implements Node {
-      nlp_similar_incidents: [nlpSimilarIncident]
-      editor_similar_incidents: [Int]
-      editor_dissimilar_incidents: [Int]
-      flagged_dissimilar_incidents: [Int]
-      reports: [mongodbAiidprodReports] @link(by: "report_number")
-      incident_id: Int
-      epoch_date_modified: Int
-    }
-    
-    type mongodbAiidprodSubmissions implements Node {
-      nlp_similar_incidents: [nlpSimilarIncident]
-      editor_similar_incidents: [Int]
-      editor_dissimilar_incidents: [Int]
-    }
-
-    type mongodbAiidprodReports implements Node {
-      cloudinary_id: String
-      tags: [String]
-      plain_text: String
-      embedding: reportEmbedding
-      inputs_outputs: [String]
-      report_number: Int
-    }
-
-    type mongodbAiidprodTaxaField_list implements Node {
-      render_as: String
-    }  
-    
-    type mongodbAiidprodTaxa implements Node {
-      field_list: [mongodbAiidprodTaxaField_list]
-      complete_entities: Boolean
-    }
-
-    type mongodbAiidprodClassificationsAttribute {
-      short_name: String
-      value_json: String
-    }
-    
-    type mongodbAiidprodClassifications implements Node {
-      incidents: [mongodbAiidprodIncidents] @link(by: "incident_id")
-      reports: [mongodbAiidprodReports] @link(by: "report_number")
-      namespace: String
-      attributes: [mongodbAiidprodClassificationsAttribute]
-    }
-
-    type completeFrom {
-      all: [String]
-      current: [String]
-      entities: Boolean
-    }
-
-    type Subfield {
-      field_number: String
-      short_name: String 
-      long_name: String
-      short_description: String
-      long_description: String
-      display_type: String
-      mongo_type: String
-      default: String
-      placeholder: String
-      permitted_values: [String]
-      weight: Int
-      instant_facet: Boolean
-      required: Boolean
-      public: Boolean
-      complete_from: completeFrom
-    }
-
-    type mongodbAiidprodTaxaField_list {
-      subfields: [Subfield]
-      field_number: String
-      short_name: String 
-      long_name: String
-      short_description: String
-      long_description: String
-      display_type: String
-      mongo_type: String
-      default: String
-      placeholder: String
-      permitted_values: [String]
-      weight: Int
-      instant_facet: Boolean
-      required: Boolean
-      public: Boolean
-      complete_from: completeFrom
-    }
-  `;
-
   createTypes(typeDefs);
 };
 
+exports.createResolvers = ({ createResolvers }) => {
+  const resolvers = {
+    mongodbAiidprodIncidents: {
+      Alleged_deployer_of_AI_system: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged deployer of AI system'];
+        },
+      },
+      Alleged_developer_of_AI_system: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged developer of AI system'];
+        },
+      },
+      Alleged_harmed_or_nearly_harmed_parties: {
+        type: '[String]',
+        resolve(source) {
+          return source['Alleged harmed or nearly harmed parties'];
+        },
+      },
+    },
+  };
+
+  createResolvers(resolvers);
+};
+
+exports.onPreInit = async ({ reporter }) => {
+  reporter.log('Creating lookup index...');
+
+  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+
+  const lookupIndex = new LookupIndex({
+    client: mongoClient,
+    filePath: path.join(__dirname, 'netlify', 'functions', 'lookupIndex.json'),
+  });
+
+  await lookupIndex.run();
+
+  reporter.log('Lookup index created.');
+};
+
 exports.onPreBootstrap = async ({ reporter }) => {
-  const migrationsActivity = reporter.activityTimer(`Migrations`);
-
-  if (!process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
-    console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set, skipping migrations.');
-  } else if (process.env.CONTEXT !== 'production') {
-    console.info('Netlify CONTEXT is not production, skipping migrations.');
-  } else {
-    migrationsActivity.start();
-    migrationsActivity.setStatus('Running...');
-
-    const migrator = require('./migrator');
-
-    await migrator.umzug.runAsCLI(['up']);
-
-    migrationsActivity.setStatus('Finished!');
-
-    migrationsActivity.end();
-  }
-
+  // Algolia index update process
   if (process.env.CONTEXT === 'production') {
-    const translationsActivity = reporter.activityTimer(`Translations`);
+    const algoliaUpdaterActivity = reporter.activityTimer(`Algolia`);
 
-    translationsActivity.start();
+    algoliaUpdaterActivity.start();
 
     const configuredLanguages = getLanguages();
 
@@ -346,51 +287,40 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
     if (
       config.mongodb.translationsConnectionString &&
-      config.i18n.translateApikey &&
       config.i18n.availableLanguages &&
       config.header.search.algoliaAdminKey &&
       config.header.search.algoliaAppId
     ) {
-      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
-        reporter.warn(
-          'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
-        );
-      }
-
-      translationsActivity.setStatus('Translating incident reports...');
-
-      const translateClient = new Translate({ key: config.i18n.translateApikey });
-
       const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
       const languages = getLanguages();
 
-      const translator = new Translator({ mongoClient, translateClient, languages, reporter });
+      algoliaUpdaterActivity.setStatus('Updating Algolia incidents indexes...');
 
-      await translator.run();
+      try {
+        const algoliaClient = algoliasearch(
+          config.header.search.algoliaAppId,
+          config.header.search.algoliaAdminKey
+        );
 
-      translationsActivity.setStatus('Updating incidents indexes...');
+        const algoliaUpdater = new AlgoliaUpdater({
+          languages,
+          mongoClient,
+          algoliaClient,
+          reporter,
+        });
 
-      const algoliaClient = algoliasearch(
-        config.header.search.algoliaAppId,
-        config.header.search.algoliaAdminKey
-      );
-
-      const algoliaUpdater = new AlgoliaUpdater({
-        languages,
-        mongoClient,
-        algoliaClient,
-        reporter,
-      });
-
-      await algoliaUpdater.run();
+        await algoliaUpdater.run();
+      } catch (e) {
+        reporter.panicOnBuild('Error updating Algolia index:', e);
+      }
     } else {
-      throw `Missing environment variable, can't run translation process.`;
+      throw `Missing environment variable, can't run Algolia update process.`;
     }
 
-    translationsActivity.end();
+    algoliaUpdaterActivity.end();
   } else {
-    reporter.warn('Netlify CONTEXT is not production, skipping translations.');
+    reporter.warn('Netlify CONTEXT is not production, skipping Algolia index update process.');
   }
 };
 
@@ -400,9 +330,12 @@ exports.onPreBuild = function ({ reporter }) {
   }
 };
 
-exports.onPostBuild = () => {
-  // Replace Env variables on static file
+exports.onPostBuild = ({ reporter }) => {
+  reporter.info('Replacing Env variables on static file...');
+
   const filePath = `${process.cwd()}/public/rollbar.js`;
+
+  reporter.info(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
 
