@@ -84,7 +84,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@19.0.3 -g
 
       - name: Set branch context URL
         continue-on-error: true
@@ -134,6 +134,18 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
 
+      - name: Update Algolia indexes
+        if: inputs.netlify-context == 'production' && inputs.netlify-alias == ''
+        run: npm run algolia-update:ci
+        working-directory: site/gatsby-site
+        env:
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          ALGOLIA_SUBSET: ${{ vars.ALGOLIA_SUBSET }}
+
       - name: Build size
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
@@ -157,29 +169,55 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
-      - name: Comment on PR
-        uses: actions/github-script@v7
+      - name: Comment on PR (github-script)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        continue-on-error: true
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const deployOutput = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
-            const deployData = JSON.parse(deployOutput);
-            const comment = `🚀 Deployed to Netlify!\n\n✅ Build Log: \n${deployData.logs}\n\n🔗 Preview URL: ${deployData.deploy_url}`;
-
-            const { data: pullRequests } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+            const deployOutput = ${{ toJSON(steps.deploy-netlify.outputs.deploy_log) }};
+            let parsedOutput;
+            try {
+              parsedOutput = JSON.parse(deployOutput);
+            } catch (e) {
+              console.log('Failed to parse deploy output as JSON:', e);
+              return;
+            }
+            const url = parsedOutput?.deploy_url || parsedOutput?.url;
+            if (!url) {
+              console.log('No URL found in deploy output');
+              return;
+            }
+            
+            const issue_number = context.payload.pull_request?.number;
+            if (!issue_number) {
+              console.log('No PR number found');
+              return;
+            }
+            
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              commit_sha: '${{ inputs.sha }}'
+              issue_number,
+              body: `[Method 1 - github-script] 🚀 Netlify Preview deployed at: ${url}`
             });
 
-            for (const pr of pullRequests) {
-              if (pr.state === 'open') {
-                github.rest.issues.createComment({
-                  issue_number: pr.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: comment
-                });
-                break; // Assuming you want to comment only on the first open PR
-              }
-            }
+      - name: Comment on PR (sticky-pull-request-comment)
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        continue-on-error: true
+        with:
+          number: ${{ github.event.pull_request.number }}
+          header: netlify-preview
+          message: |
+            [Method 2 - sticky-pull-request-comment] 🚀 Netlify Preview deployed at: ${{ fromJSON(steps.deploy-netlify.outputs.deploy_log).deploy_url || fromJSON(steps.deploy-netlify.outputs.deploy_log).url }}
+
+      - name: Comment on PR (create-or-update-comment)
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v3
+        continue-on-error: true
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            [Method 3 - create-or-update-comment] 🚀 Netlify Preview deployed at: ${{ fromJSON(steps.deploy-netlify.outputs.deploy_log).deploy_url || fromJSON(steps.deploy-netlify.outputs.deploy_log).url }}
