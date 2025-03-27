@@ -74,8 +74,7 @@ async function commentOnPR(): Promise<void> {
     console.error(`Event file not found at: ${eventPath}`);
     return;
   }
-  
-  try {
+    try {
     const eventContent = fs.readFileSync(eventPath, 'utf8');
     const event = JSON.parse(eventContent);
     

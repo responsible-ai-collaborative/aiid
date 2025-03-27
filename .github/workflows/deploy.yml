@@ -77,7 +77,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@19.0.3 -g
 
       - name: Set branch context URL
         continue-on-error: true
@@ -152,7 +152,7 @@ jobs:
 
       - name: Comment on PR
         working-directory: site/gatsby-site
-        run: npm run comment-on-pr -- "${{ steps.deploy-netlify.outputs.deploy_log }}"
+        run: npm run comment-on-pr -- "${{ secrets.GITHUB_TOKEN }}" "${{ steps.deploy-netlify.outputs.deploy_log }}" "${{ github.event_path }}" "${{ inputs.sha }}"
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
