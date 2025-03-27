@@ -102,7 +102,7 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
     });
 
     await notificationsCollection.insertOne({
-      type: 'ai-weekly-briefing',
+      type: 'ai-briefing',
       incident_id: incidentId,
       processed: false,
       created_at: new Date(),

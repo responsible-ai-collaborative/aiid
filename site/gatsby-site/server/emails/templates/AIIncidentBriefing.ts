@@ -36,7 +36,7 @@ const getEmailTemplate = () => {
       </p>
 
       <p>
-        This is your Weekly AI Incident Briefing, summarizing the latest activity on the AI Incident Database.
+        This is your AI Incident Briefing, summarizing the latest activity on the AI Incident Database.
         Stay informed about new incidents, reports, blog posts, and platform updates.
       </p>
 
@@ -138,7 +138,7 @@ const getEmailTemplate = () => {
         Responsible AI Collaborative
       </p>
     `,
-    { title: 'Weekly AI Incident Briefing' }
+    { title: 'AI Incident Briefing' }
   );
 };
 

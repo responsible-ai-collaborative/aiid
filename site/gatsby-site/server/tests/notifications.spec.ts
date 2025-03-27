@@ -840,7 +840,7 @@ describe(`Notifications`, () => {
                 entity_id: null,
             },
             {
-                type: "ai-weekly-briefing",
+                type: "ai-briefing",
                 incident_id: 1,
                 processed: false,
                 entity_id: null,
@@ -964,7 +964,7 @@ describe(`Notifications`, () => {
                 entity_id: null,
                 incident_id: 1,
                 processed: false,
-                type: "ai-weekly-briefing",
+                type: "ai-briefing",
             },
             {
                 entity_id: "entity-1",

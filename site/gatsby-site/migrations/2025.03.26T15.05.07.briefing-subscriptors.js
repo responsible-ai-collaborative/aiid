@@ -31,14 +31,14 @@ exports.up = async ({ context: { client } }) => {
   for (const userId of userIds) {
     const existingSubscription = await subscriptionsCollection.findOne({
       userId: userId,
-      type: 'ai-weekly-briefing',
+      type: 'ai-briefing',
     });
 
     if (!existingSubscription) {
       results.push(
         subscriptionsCollection.insertOne({
           userId: userId,
-          type: 'ai-weekly-briefing',
+          type: 'ai-briefing',
           created_at: new Date(),
         })
       );
@@ -47,7 +47,7 @@ exports.up = async ({ context: { client } }) => {
 
   await Promise.all(results);
 
-  console.log(`Created ${results.length} ai-weekly-briefing subscriptions`);
+  console.log(`Created ${results.length} ai-briefing subscriptions`);
 };
 
 /** @type {import('umzug').MigrationFn<any>} */

@@ -8,7 +8,7 @@ import config from '../config';
 import { ObjectId } from 'bson';
 import templates from '../emails/templates';
 import { replacePlaceholdersWithAllowedKeys } from '../emails';
-import { processWeeklyNotifications } from '../../src/scripts/process-weekly-notifications';
+import { processBriefingNotifications } from '../../src/scripts/process-briefing-notifications';
 import * as prismic from '@prismicio/client';
 import * as userCacheManager from '../fields/userCacheManager';
 
@@ -22,7 +22,7 @@ jest.mock('@prismicio/client', () => ({
   },
 }));
 
-describe(`Weekly Notifications`, () => {
+describe(`Briefing Notifications`, () => {
     let server: ApolloServer, url: string;
 
     beforeAll(async () => {
@@ -38,18 +38,18 @@ describe(`Weekly Notifications`, () => {
         const notifications: DBNotification[] = [
             {
                 processed: false,
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 incident_id: 1,
             },
         ]
 
         const subscriptions: DBSubscription[] = [
             {
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 userId: '5f8f4b3b9b3e6f001f3b3b3b',
             },
             {
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 userId: '5f8f4b3b9b3e6f001f3b3b3c',
             }
         ]
@@ -165,7 +165,7 @@ describe(`Weekly Notifications`, () => {
 
         const mockMailersendBulkSend = jest.spyOn(emails, 'mailersendBulkSend').mockResolvedValue();
 
-        const result = await processWeeklyNotifications();
+        const result = await processBriefingNotifications();
 
         expect(result).toBe(1);
 
@@ -184,7 +184,7 @@ describe(`Weekly Notifications`, () => {
             bcc: undefined,
             reply_to: undefined,
             in_reply_to: undefined,
-            subject: "Your Weekly AI Incident Briefing",
+            subject: "Your AI Incident Briefing",
             text: undefined,
             html: replacePlaceholdersWithAllowedKeys(templates.AIIncidentBriefing, {
                 // deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
@@ -233,7 +233,7 @@ describe(`Weekly Notifications`, () => {
             bcc: undefined,
             reply_to: undefined,
             in_reply_to: undefined,
-            subject: "Your Weekly AI Incident Briefing",
+            subject: "Your AI Incident Briefing",
             text: undefined,
             html: replacePlaceholdersWithAllowedKeys(templates.AIIncidentBriefing, {
                 deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
@@ -273,14 +273,14 @@ describe(`Weekly Notifications`, () => {
         const notifications: DBNotification[] = [
             {
                 processed: false,
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 incident_id: 1,
             },
         ]
 
         const subscriptions: DBSubscription[] = [
             {
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 userId: '5f8f4b3b9b3e6f001f3b3b3b',
             }
         ]
@@ -386,8 +386,8 @@ describe(`Weekly Notifications`, () => {
             throw new Error('Failed to send email');
         });
 
-        const expectedErrorMessage = "[Process Weekly Notifications: AI Incident Briefing]: Failed to send email";
-        await expect(processWeeklyNotifications()).rejects.toThrow(expectedErrorMessage);
+        const expectedErrorMessage = "[Process Briefing Notifications: AI Incident Briefing]: Failed to send email";
+        await expect(processBriefingNotifications()).rejects.toThrow(expectedErrorMessage);
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
 
@@ -405,7 +405,7 @@ describe(`Weekly Notifications`, () => {
 
         expect(result.body.data.notifications).toMatchObject([
             {
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 incident_id: 1,
                 processed: false,
             },
@@ -414,19 +414,19 @@ describe(`Weekly Notifications`, () => {
 
 
 
-    it(`processNotifications mutation - notifications for weekly ai briefings`, async () => {
+    it(`processNotifications mutation - notifications for ai briefings`, async () => {
 
       const notifications: DBNotification[] = [
         {
           processed: false,
-          type: 'ai-weekly-briefing',
+          type: 'ai-briefing',
           incident_id: 1,
         },
       ]
   
       const subscriptions: DBSubscription[] = [
         {
-          type: 'ai-weekly-briefing',
+          type: 'ai-briefing',
           userId: '5f8f4b3b9b3e6f001f3b3b3b',
         }
       ]
@@ -554,7 +554,7 @@ describe(`Weekly Notifications`, () => {
   
       const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
   
-      const result = await processWeeklyNotifications();
+      const result = await processBriefingNotifications();
   
       expect(sendEmailMock).toHaveBeenCalledTimes(1);
       expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
@@ -564,7 +564,7 @@ describe(`Weekly Notifications`, () => {
             userId: "5f8f4b3b9b3e6f001f3b3b3b",
           },
         ],
-        subject: "Your Weekly AI Incident Briefing",
+        subject: "Your AI Incident Briefing",
   
         dynamicData: {
           newBlogPosts:
@@ -607,14 +607,14 @@ describe(`Weekly Notifications`, () => {
         const notifications: DBNotification[] = [
             {
                 processed: false,
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 incident_id: 1,
             },
         ]
 
         const subscriptions: DBSubscription[] = [
             {
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 userId: '5f8f4b3b9b3e6f001f3b3b3c',
             }
         ]
@@ -713,7 +713,7 @@ describe(`Weekly Notifications`, () => {
         });
 
 
-        await processWeeklyNotifications();
+        await processBriefingNotifications();
 
         expect(sendEmailMock).not.toHaveBeenCalled();
 
@@ -732,7 +732,7 @@ describe(`Weekly Notifications`, () => {
         // notifications should be marked as processed
         expect(result.body.data.notifications).toMatchObject([
             {
-                type: 'ai-weekly-briefing',
+                type: 'ai-briefing',
                 incident_id: 1,
                 processed: true
             },

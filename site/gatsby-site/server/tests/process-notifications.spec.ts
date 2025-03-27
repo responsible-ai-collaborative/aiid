@@ -1,5 +1,5 @@
 import * as notifications from '../../src/scripts/process-notifications';
-import * as weeklyNotifications from '../../src/scripts/process-weekly-notifications';
+import * as briefingNotifications from '../../src/scripts/process-briefing-notifications';
 import * as reporter from '../reporter';
 
 describe('Process Notifications script', () => {
@@ -33,17 +33,17 @@ describe('Process Notifications script', () => {
         expect(mockProcessExit).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle errors properly for weekly notifications, log them, and exit with code 1', async () => {
+    it('should handle errors properly for briefing notifications, log them, and exit with code 1', async () => {
 
         const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
         const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
-        const mockProcessWeeklyNotifications = jest.spyOn(weeklyNotifications, 'processWeeklyNotifications')
+        const mockProcessBriefingNotifications = jest.spyOn(briefingNotifications, 'processBriefingNotifications')
 
         const testError = new Error('Test error');
-        mockProcessWeeklyNotifications.mockRejectedValueOnce(testError);
+        mockProcessBriefingNotifications.mockRejectedValueOnce(testError);
 
-        await weeklyNotifications.run();
+        await briefingNotifications.run();
 
         expect(mockConsoleError).toHaveBeenCalledWith(testError);
         expect(mockReporterError).toHaveBeenCalledWith(testError);

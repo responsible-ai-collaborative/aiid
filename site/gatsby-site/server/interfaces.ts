@@ -43,12 +43,12 @@ export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed
   & { implicated_systems: string[] }
 
 
-export type SubscriptionTypes = 'incident' | 'new-incidents' | 'entity' | 'submission-promoted' | 'ai-weekly-briefing';
+export type SubscriptionTypes = 'incident' | 'new-incidents' | 'entity' | 'submission-promoted' | 'ai-briefing';
 
 export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'userId' | 'type'>
   & { entityId?: string, incident_id?: number, userId: string, type: SubscriptionTypes };
 
-export type NotificationTypes = 'new-report-incident' | 'incident-updated' | 'entity' | 'new-incidents' | 'submission-promoted' | 'ai-weekly-briefing'
+export type NotificationTypes = 'new-report-incident' | 'incident-updated' | 'entity' | 'new-incidents' | 'submission-promoted' | 'ai-briefing'
 
 export type DBNotification = Omit<Notification, 'userId'> & { userId?: string, type: NotificationTypes }
 

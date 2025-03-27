@@ -6,7 +6,7 @@ import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
 import { UserCacheManager } from "../../server/fields/userCacheManager";
 
-async function notificationsToWeeklyIncidents(context: Context) {
+async function notificationsToBriefingIncidents(context: Context) {
   let result = 0;
   const notificationsCollection = context.client.db('customData').collection("notifications");
   const subscriptionsCollection = context.client.db('customData').collection("subscriptions");
@@ -14,31 +14,31 @@ async function notificationsToWeeklyIncidents(context: Context) {
   const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
   const reportsCollection = context.client.db('aiidprod').collection<DBReport>("reports");
 
-  const pendingWeeklyNotificationsToNewIncidents = await notificationsCollection.find({
+  const pendingBriefingNotificationsToNewIncidents = await notificationsCollection.find({
     processed: false,
-    type: 'ai-weekly-briefing'
+    type: 'ai-briefing'
   }).toArray();
 
-  if (pendingWeeklyNotificationsToNewIncidents.length === 0) {
+  if (pendingBriefingNotificationsToNewIncidents.length === 0) {
     // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed
-    await markNotificationsAsProcessed(notificationsCollection, pendingWeeklyNotificationsToNewIncidents);
-    console.log("No new incidents for weekly briefing.");
+    await markNotificationsAsProcessed(notificationsCollection, pendingBriefingNotificationsToNewIncidents);
+    console.log("No new incidents for briefing.");
     return result;
   }
 
-  result += pendingWeeklyNotificationsToNewIncidents.length;
+  result += pendingBriefingNotificationsToNewIncidents.length;
 
-  // Get weekly subscribers
-  const weeklySubscribers = await subscriptionsCollection.find<DBSubscription>({ type: 'ai-weekly-briefing' }).toArray();
+  // Get briefing subscribers
+  const briefingSubscribers = await subscriptionsCollection.find<DBSubscription>({ type: 'ai-briefing' }).toArray();
 
-  if (weeklySubscribers.length === 0) {
-    console.log("No weekly subscribers found.");
+  if (briefingSubscribers.length === 0) {
+    console.log("No briefing subscribers found.");
     return;
   }
 
   const allEntities = await entitiesCollection.find({}).toArray();
 
-  const userIds = weeklySubscribers.map(s => s.userId);
+  const userIds = briefingSubscribers.map(s => s.userId);
 
   const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
@@ -46,9 +46,9 @@ async function notificationsToWeeklyIncidents(context: Context) {
 
   const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
-  const incidentIds = pendingWeeklyNotificationsToNewIncidents.map(n => n.incident_id);
+  const incidentIds = pendingBriefingNotificationsToNewIncidents.map(n => n.incident_id);
 
-  await markNotificationsAsProcessed(notificationsCollection, pendingWeeklyNotificationsToNewIncidents);
+  await markNotificationsAsProcessed(notificationsCollection, pendingBriefingNotificationsToNewIncidents);
 
   const incidents = await incidentsCollection.find({ incident_id: { $in: incidentIds } }).toArray();
 
@@ -156,7 +156,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
     if (incidentList.length > 0 && recipients.length > 0) {
       const sendEmailParams: SendBulkEmailParams = {
         recipients,
-        subject: "Your Weekly AI Incident Briefing",
+        subject: "Your AI Incident Briefing",
         dynamicData: {
           newIncidents: incidentList,
           newBlogPosts: newBlogPosts,
@@ -169,9 +169,9 @@ async function notificationsToWeeklyIncidents(context: Context) {
     }
   } catch (error: any) {
     // If there is an error sending the email > Mark the notification as not processed
-    await markNotificationsAsNotProcessed(notificationsCollection, pendingWeeklyNotificationsToNewIncidents);
+    await markNotificationsAsNotProcessed(notificationsCollection, pendingBriefingNotificationsToNewIncidents);
 
-    error.message = `[Process Weekly Notifications: AI Incident Briefing]: ${error.message}`;
+    error.message = `[Process Briefing Notifications: AI Incident Briefing]: ${error.message}`;
 
     throw error;
   }
@@ -181,7 +181,7 @@ async function notificationsToWeeklyIncidents(context: Context) {
   return result;
 }
 
-export const processWeeklyNotifications = async () => {
+export const processBriefingNotifications = async () => {
   const userCacheManager = new UserCacheManager();
 
   userCacheManager.clearUsersCache();
@@ -190,7 +190,7 @@ export const processWeeklyNotifications = async () => {
 
   const context: Context = { client, user: null, req: {} as any };
 
-  const result = await notificationsToWeeklyIncidents(context);
+  const result = await notificationsToBriefingIncidents(context);
 
   console.log(`Processed ${result} notifications.`);
 
@@ -227,8 +227,8 @@ const buildEntityList = (allEntities: any, entityIds: any) => {
 
 export const run = async () => {
   try {
-    await processWeeklyNotifications();
-    console.log("Process Weekly Notifications: Completed.");
+    await processBriefingNotifications();
+    console.log("Process Briefing Notifications: Completed.");
     process.exit(0);
   } catch (error: any) {
     console.error(error);

@@ -22,7 +22,7 @@ export const SUBSCRIPTION_TYPE = {
    * The user with this subscription type will be notified when a
    * new Incident associated with an specific Submission is created */
   submissionPromoted: 'submission-promoted',
-  /** AI Weekly Briefing: Users with this subscription type will be notified weekly
+  /** AI Briefing: Users with this subscription type will be notified
    * on new incidents created in the past week and other updates. */
-  aiWeeklyBriefing: 'ai-weekly-briefing',
+  aiBriefing: 'ai-briefing',
 };
