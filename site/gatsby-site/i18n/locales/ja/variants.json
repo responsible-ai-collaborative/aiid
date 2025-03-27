@@ -34,5 +34,8 @@
   "The sequence of data inputs into the intelligent system and outputs produced by the system involved in the incident. For a chatbot, this will generally present a back and forth between a human and the chatbot's responses.": "インシデントに関係する知的システムへのデータ入力とシステムによって生成される出力の流れ。チャットボットの場合は、一般に人間とチャットボットの反応が行き来します",
   "Add Row": "行を追加",
   "Delete Row": "行を削除",
-  "View all the variants in the database.": "データベース内のすべてのバリアントを表示"
+  "View all the variants in the database.": "データベース内のすべてのバリアントを表示",
+  "A \"variant\" is an AI incident similar to a known case—it has the same causes, harms, and AI system. Instead of listing it separately, we group it under the first reported incident. Unlike other incidents, variants do not need to have been reported outside the AIID. <2>Learn more from the research paper.</2>": "「バリアント」は既存のAIインシデントと同じ原因要素を共有し、同様な被害を引き起こし、同じ知的システムを含んだインシデントです。バリアントは完全に独立したインシデントとしてインデックスするのではなく、データベースに最初に投稿された同様なインシデントの元にインシデントのバリエーションとして一覧します。インシデントデータベースの他の投稿タイプとは違い、バリアントではインシデントデータベース以外の根拠のレポートは要求されません。<2>詳細についてはこの研究論文を参照してください</2>",
+  "Seen something similar?": "似たようなものを見つけましたか？",
+  "Submit a Variant": "バリアントを提出"
 }
