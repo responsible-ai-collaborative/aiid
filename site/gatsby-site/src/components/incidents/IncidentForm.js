@@ -7,6 +7,7 @@ import { gql, useQuery } from '@apollo/client';
 import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { useTranslation } from 'react-i18next';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
 import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
@@ -46,6 +47,8 @@ function IncidentForm({ entityNames = [] }) {
     useFormikContext();
 
   const { t } = useTranslation();
+
+  const { config } = useLocalization();
 
   const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
@@ -319,6 +322,52 @@ function IncidentForm({ entityNames = [] }) {
             editId={false}
           />
         </div>
+
+        <h4 className="mt-3">Translations</h4>
+
+        {config
+          .filter((c) => c.code !== 'en') // Exclude English since it's the default language
+          .map((c) => {
+            const name = `translations_${c.code}`;
+
+            return (
+              <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
+                <h5>{c.name}</h5>
+
+                <div className="mt-3">
+                  <div className="flex items-center">
+                    <Label label={t('Title')} />
+                  </div>
+                  <input
+                    type="text"
+                    value={values[name].title}
+                    onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
+                    className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+                      errors && touched && touched[`${name}.title`] && errors[`${name}.title`]
+                        ? 'border-red-600 focus:ring-red-500'
+                        : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+                    }`}
+                  />
+                </div>
+
+                <div className="mt-3">
+                  <div className="flex items-center">
+                    <Label label={t('Description')} />
+                  </div>
+                  <input
+                    type="text"
+                    value={values[name].description}
+                    onChange={(e) => setFieldValue(`${name}.description`, e.target.value)}
+                    className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+                      errors && touched && touched[`${name}.title`] && errors[`${name}.description`]
+                        ? 'border-red-600 focus:ring-red-500'
+                        : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+                    }`}
+                  />
+                </div>
+              </div>
+            );
+          })}
       </FormikForm>
     </div>
   );

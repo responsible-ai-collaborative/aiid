@@ -7,7 +7,8 @@ import { FIND_FULL_INCIDENT, UPDATE_INCIDENT, UPDATE_INCIDENTS } from '../../gra
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
-import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import pick from 'lodash/pick';
+import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
@@ -15,28 +16,37 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
 
+const translationsFields = ['title', 'description'];
+
 function EditCitePage(props) {
   const { user } = useUserContext();
 
   const { t, i18n } = useTranslation();
+
+  const { config: availableLanguages } = useLocalization();
 
   const [incident, setIncident] = useState(null);
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: incidentId } } },
+    variables: {
+      filter: { incident_id: { EQ: incidentId } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
-  const loading = loadingIncident || loadingEntities;
+  const [incidentTranslations, setIncidentTranslations] = useState(null);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [updateIncidents] = useMutation(UPDATE_INCIDENTS);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
+  const loading = loadingIncident || loadingEntities || incidentTranslations === null;
 
   const addToast = useToastContext();
 
@@ -58,6 +68,27 @@ function EditCitePage(props) {
 
   useEffect(() => {
     if (incidentData?.incident) {
+      const translations = availableLanguages
+        .map((c) => c.code)
+        .reduce((acc, languageCode) => {
+          // Find existing translation for this language
+          const existingTranslation = incidentData.incident.translations?.find(
+            (t) => t.language === languageCode && t.title !== null && t.description !== null
+          );
+
+          // If translation exists use its values, otherwise use empty values
+          acc[`translations_${languageCode}`] = existingTranslation
+            ? pick(existingTranslation, translationsFields)
+            : translationsFields.reduce((obj, field) => {
+                obj[field] = '';
+                return obj;
+              }, {});
+
+          return acc;
+        }, {});
+
+      setIncidentTranslations(translations);
+
       setIncident({
         ...incidentData.incident,
       });
@@ -206,6 +237,7 @@ function EditCitePage(props) {
               incident.implicated_systems === null
                 ? []
                 : incident.implicated_systems.map((item) => item.name),
+            ...incidentTranslations,
           }}
         >
           {({ isValid, isSubmitting, submitForm, errors }) => (
