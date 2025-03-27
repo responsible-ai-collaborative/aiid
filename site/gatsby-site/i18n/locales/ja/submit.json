@@ -25,7 +25,7 @@
   "Report URL": "レポートURL",
   "Incident IDs": "インシデントID",
   "Language": "言語",
-  "Text": "言語",
+  "Text": "テキスト",
   "CSVDescription": "ファイルのヘッダー行はフォームの入力欄の名前とみなされます。各行は投稿前にフォームのバリデーションを確認しながらひとつずつ処理されます",
   "Advanced: Add by CSV": "高度な機能: CSVで追加する",
   "Was not able to create the report, please review the form and try again.": "レポートが作成できなかった場合は、フォームを確認してもう一度試してください",
