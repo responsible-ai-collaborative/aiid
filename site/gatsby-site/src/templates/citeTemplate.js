@@ -77,10 +77,6 @@ function CiteTemplate({
 
   // meta tags
 
-  const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
-    id: incident.incident_id,
-  });
-
   const addToast = useToastContext();
 
   useEffect(() => {
@@ -172,7 +168,7 @@ function CiteTemplate({
       <div className={'titleWrapper'}>
         <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center">
           <h1 data-testid="incident-title" className="text-2xl inline">
-            {locale == 'en' ? metaTitle : defaultIncidentTitle}
+            {metaTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
             {incidentResponded && (
@@ -245,7 +241,10 @@ function CiteTemplate({
           <Row>
             <Col>
               <div>
-                <strong>Description</strong>: {incident.description}
+                <strong>
+                  <Trans>Description</Trans>
+                </strong>
+                : {incident.description}
               </div>
             </Col>
           </Row>

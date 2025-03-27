@@ -99,6 +99,17 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
   return taxonomies;
 };
 
+export const getTranslatedIncident = (incident, translation) => {
+  return translation
+    ? {
+        ...incident,
+        title: translation.title,
+        description: translation.description,
+        isTranslated: true, // Mark badge to display or not
+      }
+    : incident;
+};
+
 export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, language }) => {
   return allMongodbAiidprodReports.nodes.map((r) => {
     const translation = translations[language]?.nodes.find(
