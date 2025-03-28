@@ -60,7 +60,7 @@ jobs:
       environment: staging
       netlify-context: branch-deploy
       netlify-alias: pr-${{ github.event.pull_request.number }}
-      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app
+      site-url: https://pr-${{ github.event.pull_request.number }}--${{ vars.NETLIFY_SITE_URL || 'staging-aiid.netlify.app' }}
       runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
 
   call-test-playwright-probes:
@@ -71,4 +71,4 @@ jobs:
     with:
       sha: ${{ github.event.pull_request.head.sha }}
       environment: staging
-      site-url: https://pr-${{ github.event.pull_request.number }}--staging-aiid.netlify.app
+      site-url: https://pr-${{ github.event.pull_request.number }}--${{ vars.NETLIFY_SITE_URL || 'staging-aiid.netlify.app' }}
