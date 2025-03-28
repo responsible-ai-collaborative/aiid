@@ -32,6 +32,8 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: ${{ vars.NOTIFICATIONS_SENDER_NAME }}
           NOTIFICATIONS_SENDER: ${{ vars.NOTIFICATIONS_SENDER }}
           SITE_URL: ${{ vars.SITE_URL }}
+          NEXTAUTH_URL: ${{ vars.SITE_URL }} # NextAuth requires this variable
+          NEXTAUTH_SECRET: dummy # No actual secret needed unless sending magic links
           GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
           PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
         run: npm run process-briefing-notifications:ci
