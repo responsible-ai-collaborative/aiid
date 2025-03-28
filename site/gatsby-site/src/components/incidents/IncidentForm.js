@@ -341,6 +341,7 @@ function IncidentForm({ entityNames = [] }) {
                   <input
                     type="text"
                     value={values[name].title}
+                    data-testid={`translation-${c.code}-title`}
                     onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
                     className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
                       errors && touched && touched[`${name}.title`] && errors[`${name}.title`]
@@ -357,6 +358,7 @@ function IncidentForm({ entityNames = [] }) {
                   <input
                     type="text"
                     value={values[name].description}
+                    data-testid={`translation-${c.code}-description`}
                     onChange={(e) => setFieldValue(`${name}.description`, e.target.value)}
                     className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
                       errors && touched && touched[`${name}.title`] && errors[`${name}.description`]

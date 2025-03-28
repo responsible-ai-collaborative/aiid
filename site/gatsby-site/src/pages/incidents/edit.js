@@ -15,6 +15,15 @@ import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
+import { gql } from '@apollo/client';
+
+const UPDATE_INCIDENT_TRANSLATION = gql`
+  mutation UpdateIncidentTranslation($input: UpdateOneIncidentTranslationInput!) {
+    updateOneIncidentTranslation(input: $input) {
+      incident_id
+    }
+  }
+`;
 
 const translationsFields = ['title', 'description'];
 
@@ -45,6 +54,8 @@ function EditCitePage(props) {
   const [updateIncidents] = useMutation(UPDATE_INCIDENTS);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
+  const [updateIncidentTranslation] = useMutation(UPDATE_INCIDENT_TRANSLATION);
 
   const loading = loadingIncident || loadingEntities || incidentTranslations === null;
 
@@ -146,6 +157,13 @@ function EditCitePage(props) {
         updated.editors.link.push(user.id);
       }
 
+      // remove "translations" field from updated
+      delete updated.translations;
+      // remove "translations_${code}" fields from updated
+      for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
+        delete updated[`translations_${code}`];
+      }
+
       await updateIncident({
         variables: {
           filter: {
@@ -158,6 +176,28 @@ function EditCitePage(props) {
           },
         },
       });
+
+      // update incident translations
+      for (const { code } of availableLanguages.filter((c) => c.code !== 'en')) {
+        const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
+
+        // check if at least one of the translationsFields is not empty
+        const shouldUpdateTranslation = translationsFields.some(
+          (field) => updatedTranslation[field] && updatedTranslation[field] !== ''
+        );
+
+        if (shouldUpdateTranslation) {
+          await updateIncidentTranslation({
+            variables: {
+              input: {
+                ...updatedTranslation,
+                language: code,
+                incident_id: incidentId,
+              },
+            },
+          });
+        }
+      }
 
       await updateSimilarIncidentsReciprocal(
         updated.editor_similar_incidents,

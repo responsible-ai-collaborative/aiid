@@ -1291,6 +1291,7 @@ export type Mutation = {
   updateOneEntity?: Maybe<Entity>;
   updateOneEntity_relationship?: Maybe<Entity_Relationship>;
   updateOneIncident?: Maybe<Incident>;
+  updateOneIncidentTranslation?: Maybe<Incident>;
   updateOneQuickadd?: Maybe<Quickadd>;
   updateOneReport?: Maybe<Report>;
   updateOneReportTranslation?: Maybe<Report>;
@@ -1518,6 +1519,11 @@ export type MutationUpdateOneEntity_RelationshipArgs = {
 export type MutationUpdateOneIncidentArgs = {
   filter: IncidentFilterType;
   update: IncidentUpdateType;
+};
+
+
+export type MutationUpdateOneIncidentTranslationArgs = {
+  input: UpdateOneIncidentTranslationInput;
 };
 
 
@@ -2774,6 +2780,13 @@ export type UpdateOneEntityPayload = {
   entity_relationships_to_add?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   entity_relationships_to_remove?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   name: Scalars['String']['output'];
+};
+
+export type UpdateOneIncidentTranslationInput = {
+  description: Scalars['String']['input'];
+  incident_id: Scalars['Int']['input'];
+  language: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type UpdateOneReportTranslationInput = {
