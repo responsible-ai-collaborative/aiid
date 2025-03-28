@@ -1,5 +1,3 @@
-const config = require('../config');
-
 /**
  *
  * @param {{context: {client: import('mongodb').MongoClient}}} context
@@ -14,11 +12,13 @@ exports.up = async ({ context: { client } }) => {
     'luna.mcnulty@dsri.org',
   ];
 
-  const authUsersCollection = client.db(config.realm.production_db.db_auth).collection('users');
+  const authDb = client.db('auth');
 
-  const subscriptionsCollection = client
-    .db(config.realm.production_db.db_custom_data)
-    .collection('subscriptions');
+  const customDataDb = client.db('customData');
+
+  const authUsersCollection = authDb.collection('users');
+
+  const subscriptionsCollection = customDataDb.collection('subscriptions');
 
   const users = await authUsersCollection.find({ email: { $in: subscriptors } }).toArray();
 
