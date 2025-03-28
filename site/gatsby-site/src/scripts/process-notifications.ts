@@ -4,23 +4,7 @@ import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription
 import * as reporter from '../../server/reporter';
 import { MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
-
-const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
-    for (const pendingNotification of notifications) {
-        await notificationsCollection.updateOne(
-            { _id: pendingNotification._id },
-            { $set: { processed: isProcessed, sentDate: new Date() } }
-        );
-    }
-}
-
-const markNotificationsAsProcessed = async (notificationsCollection: any, notifications: any) => {
-    await markNotifications(notificationsCollection, notifications, true);
-}
-
-const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
-    await markNotifications(notificationsCollection, notifications, false);
-}
+import { handleNotificationError, markNotificationsAsProcessed, markNotificationsAsNotProcessed } from '../utils/notificationUtils';
 
 const buildEntityList = (allEntities: any, entityIds: any) => {
     const entityNames = entityIds.map((entityId: string) => {
@@ -99,12 +83,12 @@ async function notificationsToNewIncidents(context: Context, userCacheManager: U
 
 
                     } catch (error: any) {
-                        // If there is an error sending the email > Mark the notification as not processed
-                        await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
-
-                        error.message = `[Process Pending Notifications: New Incidents]: ${error.message}`;
-
-                        throw error;
+                        await handleNotificationError(
+                            error,
+                            notificationsCollection,
+                            [pendingNotification],
+                            "[Process Pending Notifications: New Incidents]"
+                        );
                     }
                 }
             }

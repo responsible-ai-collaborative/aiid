@@ -5,6 +5,7 @@ import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
 import { UserCacheManager } from "../../server/fields/userCacheManager";
+import { handleNotificationError, markNotificationsAsProcessed } from '../utils/notificationUtils';
 
 async function notificationsToBriefingIncidents(context: Context) {
   let result = 0;
@@ -18,13 +19,6 @@ async function notificationsToBriefingIncidents(context: Context) {
     processed: false,
     type: 'ai-briefing'
   }).toArray();
-
-  if (pendingBriefingNotificationsToNewIncidents.length === 0) {
-    // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed
-    await markNotificationsAsProcessed(notificationsCollection, pendingBriefingNotificationsToNewIncidents);
-    console.log("No new incidents for briefing.");
-    return result;
-  }
 
   result += pendingBriefingNotificationsToNewIncidents.length;
 
@@ -155,6 +149,8 @@ async function notificationsToBriefingIncidents(context: Context) {
   const hasContentToSend = incidentList.length > 0 || newBlogPosts.length > 0 || updates.length > 0;
   const shouldSendEmail = recipients.length > 0 && hasContentToSend;
 
+  console.log(`Found ${incidentList.length} incidents, ${newBlogPosts.length} new blog posts, and ${updates.length} updates to send to ${recipients.length} users found between ${lastWeekDate} - ${nowDate}`);
+
   try {
     if (shouldSendEmail) {
       const sendEmailParams: SendBulkEmailParams = {
@@ -171,12 +167,12 @@ async function notificationsToBriefingIncidents(context: Context) {
       await sendBulkEmails(sendEmailParams);
     }
   } catch (error: any) {
-    // If there is an error sending the email > Mark the notification as not processed
-    await markNotificationsAsNotProcessed(notificationsCollection, pendingBriefingNotificationsToNewIncidents);
-
-    error.message = `[Process Briefing Notifications: AI Incident Briefing]: ${error.message}`;
-
-    throw error;
+    await handleNotificationError(
+      error,
+      notificationsCollection,
+      pendingBriefingNotificationsToNewIncidents,
+      "[Process Briefing Notifications: AI Incident Briefing]"
+    );
   }
 
   console.log(`Sent AI Incident Briefing to ${recipients.length} users.`);
@@ -199,23 +195,6 @@ export const processBriefingNotifications = async () => {
 
   return result;
 };
-
-const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
-  for (const pendingNotification of notifications) {
-    await notificationsCollection.updateOne(
-      { _id: pendingNotification._id },
-      { $set: { processed: isProcessed, sentDate: new Date() } }
-    );
-  }
-}
-
-const markNotificationsAsProcessed = async (notificationsCollection: any, notifications: any) => {
-  await markNotifications(notificationsCollection, notifications, true);
-}
-
-const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
-  await markNotifications(notificationsCollection, notifications, false);
-}
 
 const buildEntityList = (allEntities: any, entityIds: any) => {
   const entityNames = entityIds.map((entityId: string) => {
