@@ -152,8 +152,11 @@ async function notificationsToBriefingIncidents(context: Context) {
     updates = [];
   }
 
+  const hasContentToSend = incidentList.length > 0 || newBlogPosts.length > 0 || updates.length > 0;
+  const shouldSendEmail = recipients.length > 0 && hasContentToSend;
+
   try {
-    if (incidentList.length > 0 && recipients.length > 0) {
+    if (shouldSendEmail) {
       const sendEmailParams: SendBulkEmailParams = {
         recipients,
         subject: "Your AI Incident Briefing",

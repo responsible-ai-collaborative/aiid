@@ -41,51 +41,55 @@ const getEmailTemplate = () => {
       </p>
 
       {% if newIncidents %}
-      <div style="${sectionStyle}">
-        <h2>New Incidents & Reports</h2>
+        <div style="${sectionStyle}">
+          <h2>New Incidents & Reports</h2>
+          {% if newIncidents.length <= 0 %}
+            <p>No new incidents or reports.</p>
+          {% else %}
             {% for incident in newIncidents %}
-                <div style="
-                  ${incidentStyle}
-                  {% if not loop.last %}
-                    border-bottom: 1px solid #ccc;
-                  {% endif %}
-                ">
-                  <div style="float: left; width: 30%;">
-                    <img src="{{ incident.reportImageUrl }}" alt="First Report Image" style="${incidentImageStyle}">
-                  </div>
-                  <div style="float: left; width: 65%; margin-left: 5%;">
-                    <h1 style="font-size: 100%; margin-top: 0px;">
-                      Incident {{ incident.id }}: {{ incident.title }}
-                    </h1>
-
-                    <p style="font-size: 85%;">{{ incident.date }}</p>
-
-                    <p style="font-size: 85%;">
-                      {{ incident.description }}
-                    </p>
-                    <p style="margin-bottom: 0px; line-height: 1.75;">
-                      <strong>Alleged</strong>:
-                      <span style="${entityStyle}">{{ incident.developers }}</span> developed an AI system deployed by
-                      <span style="${entityStyle}">{{ incident.deployers }}</span> which harmed 
-                      <span style="${entityStyle}">{{ incident.entitiesHarmed }}</span>.
-                    </p>
-                  </div>
-                  <div style="clear: both;"></div>
+              <div style="
+                ${incidentStyle}
+                {% if not loop.last %}
+                  border-bottom: 1px solid #ccc;
+                {% endif %}
+              ">
+                <div style="float: left; width: 30%;">
+                  <img src="{{ incident.reportImageUrl }}" alt="First Report Image" style="${incidentImageStyle}">
                 </div>
+                <div style="float: left; width: 65%; margin-left: 5%;">
+                  <h1 style="font-size: 100%; margin-top: 0px;">
+                    Incident {{ incident.id }}: {{ incident.title }}
+                  </h1>
+
+                  <p style="font-size: 85%;">{{ incident.date }}</p>
+
+                  <p style="font-size: 85%;">
+                    {{ incident.description }}
+                  </p>
+                  <p style="margin-bottom: 0px; line-height: 1.75;">
+                    <strong>Alleged</strong>:
+                    <span style="${entityStyle}">{{ incident.developers }}</span> developed an AI system deployed by
+                    <span style="${entityStyle}">{{ incident.deployers }}</span> which harmed 
+                    <span style="${entityStyle}">{{ incident.entitiesHarmed }}</span>.
+                  </p>
+                </div>
+                <div style="clear: both;"></div>
+              </div>
             {% endfor %}
-            </div>
-            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
 
       {% if newBlogPosts %}
         <div style="${sectionStyle}">
           <h2>New Blog Posts</h2>
           {% for blogPost in newBlogPosts %}
             <div style="
-                  ${incidentStyle}
-                  {% if not loop.last %}
-                    border-bottom: 1px solid #ccc;
-                  {% endif %}
-                ">
+              ${incidentStyle}
+              {% if not loop.last %}
+                border-bottom: 1px solid #ccc;
+              {% endif %}
+            ">
               <div style="float: left; width: 30%;">
                 <img src="{{ blogPost.image }}" alt="Blog Post Image" style="${incidentImageStyle}">
               </div>
@@ -111,11 +115,11 @@ const getEmailTemplate = () => {
           <h2>New Features & Updates</h2>
           {% for update in updates %}
             <div style="
-                  ${incidentStyle}
-                  {% if not loop.last %}
-                    border-bottom: 1px solid #ccc;
-                  {% endif %}
-                ">
+              ${incidentStyle}
+              {% if not loop.last %}
+                border-bottom: 1px solid #ccc;
+              {% endif %}
+            ">
               <h1 style="font-size: 100%; margin-top: 0px;">
                 {{ update.title }}
               </h1>
