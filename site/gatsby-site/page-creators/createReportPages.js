@@ -2,6 +2,8 @@ const path = require('path');
 
 const { switchLocalizedPath } = require('../i18n');
 
+const { isCompleteReport } = require('../src/utils/variants');
+
 const createReportPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
@@ -10,6 +12,9 @@ const createReportPages = async (graphql, createPage, { languages }) => {
           nodes {
             report_number
             language
+            title
+            url
+            source_domain
           }
         }
       }
@@ -22,7 +27,7 @@ const createReportPages = async (graphql, createPage, { languages }) => {
 
   const pageContexts = [];
 
-  for (const report of reports) {
+  for (const report of reports.filter((r) => isCompleteReport(r))) {
     pageContexts.push({
       report_number: report.report_number,
       language: report.language,
