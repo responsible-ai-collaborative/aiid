@@ -133,6 +133,7 @@ jobs:
           MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
+          GOOGLE_TRANSLATE_API_KEY: dummy
 
       - name: Build size
         run: |
