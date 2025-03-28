@@ -17,8 +17,6 @@
     "Incident Responses": "Respuestas de Incidentes",
     "Search {{count}} records...": "Busca en {{count}} registros...",
     "Entity": "Entidad",
-    "{{count}} Report": "{{count}} Reporte",
-    "{{count}} Report_plural": "{{count}} Reportes",
     "Incidents involved as both Developer and Deployer": "Incidentes involucrados como desarrollador e implementador",
     "Incidents Harmed By": "Afectado por Incidentes",
     "Alleged: <2></2> developed and deployed an AI system, which harmed <6></6>.": "Presunto: un sistema de IA desarrollado e implementado por <2></2>, perjudicó a <6></6>.",
