@@ -27,11 +27,30 @@ export interface SendBulkEmailParams {
         entityName?: string;
         entityUrl?: string;
         magicLink?: string;    // URL for magic link (optional)
+        newIncidents?: {
+            id: number;
+            title: string;
+            url: string;
+            date: string;
+            description: string;
+        }[];
+        newBlogPosts?: {
+            title: string;
+            url: string;
+            date: string;
+            description: string;
+        }[];
+        updates?: {
+            title: string;
+            url: string;
+            date: string;
+            description: string;
+        }[];
     };
     templateId: string; // Email template ID
 }
 
-export const replacePlaceholdersWithAllowedKeys = (template: string, data: { [key: string]: string } = {}, allowedKeys: string[]): string => {
+export const replacePlaceholdersWithAllowedKeys = (template: string, data: any = {}, allowedKeys: string[]): string => {
     return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
         return allowedKeys.includes(key) && key in data ? data[key] : match;
     });
