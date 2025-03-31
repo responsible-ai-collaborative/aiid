@@ -53,7 +53,11 @@ const getEmailTemplate = () => {
               {% endif %}
             ">
               <div style="float: left; width: 30%;">
-                <img src="{{ incident.reportImageUrl }}" alt="First Report Image" style="${incidentImageStyle}">
+                {% if incident.reportImageUrl %}
+                  <img src="{{ incident.reportImageUrl }}" alt="First Report Image" style="${incidentImageStyle}">
+                {% else %}
+                  <img src="https://res.cloudinary.com/responsible-ai-collaborative/image/upload/v1717219200/incidentdatabase.ai/placeholder.svg" alt="Placeholder Image" style="${incidentImageStyle}">
+                {% endif %}
               </div>
               <div style="float: left; width: 65%; margin-left: 5%;">
                 <h1 style="font-size: 100%; margin-top: 0px;">

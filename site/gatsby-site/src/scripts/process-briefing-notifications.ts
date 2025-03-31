@@ -145,7 +145,7 @@ async function notificationsToBriefingIncidents(context: Context) {
       filters: [
         prismic.filter.dateAfter('document.first_publication_date', lastWeekISOString),
         prismic.filter.dateBefore('document.first_publication_date', nowISOString),
-        prismic.filter.at('document.update.language', 'en')
+        prismic.filter.at('my.update.language', 'en')
       ]
     });
 
