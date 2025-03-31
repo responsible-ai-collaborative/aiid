@@ -106,7 +106,7 @@
     "react-is": "^18.2.0",
     "react-json-to-csv": "^1.2.0",
     "react-markdown": "^8.0.7",
-    "react-papaparse": "^3.16.1",
+    "react-papaparse": "^4.4.0",
     "react-string-diff": "^0.2.0",
     "react-table": "^7.8.0",
     "react-zoom-pan-pinch": "^2.6.1",
