@@ -19,7 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@google-cloud/translate": "^8.0.2",
-    "@googlemaps/google-maps-services-js": "^3.3.3",
+    "@googlemaps/google-maps-services-js": "^3.4.1",
     "@graphql-tools/executor-http": "^1.0.9",
     "@graphql-tools/schema": "^10.0.3",
     "@graphql-tools/stitch": "^9.2.9",
