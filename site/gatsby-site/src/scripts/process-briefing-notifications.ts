@@ -50,7 +50,12 @@ async function notificationsToBriefingIncidents(context: Context) {
   const firstReports = await Promise.all(incidents.map(async (incident) => {
     if (incident.reports && incident.reports.length > 0) {
       const firstReportNumber = incident.reports[0];
-      const report = await reportsCollection.findOne({ report_number: firstReportNumber });
+      const report = await reportsCollection.findOne({ report_number: firstReportNumber, language: 'en' });
+
+      if (!report) {
+        console.log(`No report found for incident ${incident.incident_id} with report number ${firstReportNumber}`);
+        return null;
+      }
 
       return {
         incident_id: incident.incident_id,
@@ -66,7 +71,13 @@ async function notificationsToBriefingIncidents(context: Context) {
     const deployers = buildEntityList(allEntities, i['Alleged deployer of AI system']);
     const entitiesHarmed = buildEntityList(allEntities, i['Alleged harmed or nearly harmed parties']);
     const implicatedSystems = buildEntityList(allEntities, i.implicated_systems);
-    const reportImageUrl = firstReports.find(r => r && r.incident_id === i.incident_id)?.image_url;
+    const firstReport = firstReports.find(r => r && r.incident_id === i.incident_id);
+    if (!firstReport) {
+      console.log(`No report found for incident ${i.incident_id}`);
+      return null;
+    }
+
+    const reportImageUrl = firstReport?.image_url;
     return {
       id: i.incident_id,
       title: i.title,
@@ -79,7 +90,7 @@ async function notificationsToBriefingIncidents(context: Context) {
       implicatedSystems,
       reportImageUrl
     }
-  });
+  }).filter(incident => incident !== null);
 
   // Initialize the Prismic client
   const prismicClient = await prismic.createClient(config.GATSBY_PRISMIC_REPO_NAME, {
@@ -106,7 +117,8 @@ async function notificationsToBriefingIncidents(context: Context) {
       },
       filters: [
         prismic.filter.dateAfter('my.blog.date', lastWeekDate),
-        prismic.filter.dateBefore('my.blog.date', nowDate)
+        prismic.filter.dateBefore('my.blog.date', nowDate),
+        prismic.filter.at('my.blog.language', 'en')
       ]
     });
 
@@ -132,7 +144,8 @@ async function notificationsToBriefingIncidents(context: Context) {
       },
       filters: [
         prismic.filter.dateAfter('document.first_publication_date', lastWeekISOString),
-        prismic.filter.dateBefore('document.first_publication_date', nowISOString)
+        prismic.filter.dateBefore('document.first_publication_date', nowISOString),
+        prismic.filter.at('document.update.language', 'en')
       ]
     });
 

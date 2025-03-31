@@ -19,6 +19,7 @@ jest.mock('@prismicio/client', () => ({
   filter: {
     dateAfter: jest.fn(),
     dateBefore: jest.fn(),
+    at: jest.fn(),
   },
 }));
 
@@ -412,8 +413,6 @@ describe(`Briefing Notifications`, () => {
         ]);
     });
 
-
-
     it(`processNotifications mutation - notifications for ai briefings`, async () => {
 
       const notifications: DBNotification[] = [
@@ -522,6 +521,7 @@ describe(`Briefing Notifications`, () => {
             image: {
               url: 'image_url',
             },
+            language: 'en',
           }
         }
       ];
@@ -531,6 +531,7 @@ describe(`Briefing Notifications`, () => {
           data: {
             title: 'Example Update',
             text: [{ text: 'Example Update' }],
+            language: 'en',
           }
         }
       ];

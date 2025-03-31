@@ -13,6 +13,13 @@
         "allowTargetBlank": true,
         "label": "text"
       }
+    },
+    "language": {
+      "type": "Text",
+      "config": {
+        "label": "language",
+        "placeholder": "If left empty defaults to 'en'"
+      }
     }
   }
 }
