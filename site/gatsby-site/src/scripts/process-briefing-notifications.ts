@@ -118,7 +118,7 @@ async function notificationsToBriefingIncidents(context: Context) {
       filters: [
         prismic.filter.dateAfter('my.blog.date', lastWeekDate),
         prismic.filter.dateBefore('my.blog.date', nowDate),
-        prismic.filter.in('my.blog.language', ['en', ''])
+        prismic.filter.at('my.blog.language', 'en')
       ]
     });
 
@@ -165,6 +165,17 @@ async function notificationsToBriefingIncidents(context: Context) {
     }));
 
   } catch (error) {
+    // NOTE:
+    // When querying a field like 'my.update.language' using prismic.filter.missing() or prismic.filter.at() (etc), 
+    // Prismic throws an "unexpected field" API error **if there are no published documents**
+    // of the requested custom type ('update' in this case).
+    //
+    // This error is misleading — it’s not caused by a typo or incorrect query,
+    // but by the fact that Prismic has no indexed documents of that type,
+    // so it doesn't recognize the custom type fields yet.
+    //
+    // See: https://community.prismic.io/t/error-when-there-is-no-document-published-for-particular-custom-type/10803/2
+
     console.error('Error fetching updates:', JSON.stringify(error));
     updates = [];
   }

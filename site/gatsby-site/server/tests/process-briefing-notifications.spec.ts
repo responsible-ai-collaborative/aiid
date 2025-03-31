@@ -19,6 +19,7 @@ jest.mock('@prismicio/client', () => ({
   filter: {
     dateAfter: jest.fn(),
     dateBefore: jest.fn(),
+    at: jest.fn(),
     in: jest.fn(),
   },
 }));
