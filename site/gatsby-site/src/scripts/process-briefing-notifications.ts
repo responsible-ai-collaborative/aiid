@@ -138,16 +138,26 @@ async function notificationsToBriefingIncidents(context: Context) {
   let updates: any[] = [];
 
   try {
-    const response = await prismicClient.getAllByType('update', {
-      orderings: {
-        field: "document.first_publication_date",
-      },
-      filters: [
-        prismic.filter.dateAfter('document.first_publication_date', lastWeekISOString),
-        prismic.filter.dateBefore('document.first_publication_date', nowISOString),
-        prismic.filter.in('my.update.language', ['en', ''])
-      ]
-    });
+    const [withEn, withoutLang] = await Promise.all([
+      prismicClient.getAllByType("update", {
+        filters: [
+          prismic.filter.at("my.update.language", "en"),
+          prismic.filter.dateAfter("document.first_publication_date", lastWeekISOString),
+          prismic.filter.dateBefore("document.first_publication_date", nowISOString),
+        ],
+        orderings: { field: "document.first_publication_date" },
+      }),
+      prismicClient.getAllByType("update", {
+        filters: [
+          prismic.filter.missing("my.update.language"),
+          prismic.filter.dateAfter("document.first_publication_date", lastWeekISOString),
+          prismic.filter.dateBefore("document.first_publication_date", nowISOString),
+        ],
+        orderings: { field: "document.first_publication_date" },
+      }),
+    ]);
+
+    const response = [...withEn, ...withoutLang];
 
     updates = response.map((update: any) => ({
       title: update.data.title,
