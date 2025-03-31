@@ -1,8 +1,8 @@
 import { withSentry } from '../../sentry-instrumentation';
-import siteConfig from '../../config';
 import OpenAPIRequestValidator from 'openapi-request-validator';
 import spec from '../../static/spec.json';
 import { HandlerEvent } from '@netlify/functions';
+import config from '../../server/config';
 
 const requestValidator = new OpenAPIRequestValidator({
   parameters: spec.paths['/api/lookupbyurl'].get.parameters,
@@ -57,7 +57,7 @@ async function handler(event: HandlerEvent) {
         filtered.push({
           incident_id: incident.incident_id,
           title: incident.title,
-          url: `${siteConfig.gatsby.siteUrl}/cite/${incident.incident_id}`,
+          url: `${config.SITE_URL}/cite/${incident.incident_id}`,
         });
       }
       return filtered;
