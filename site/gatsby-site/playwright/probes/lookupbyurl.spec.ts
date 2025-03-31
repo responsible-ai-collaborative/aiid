@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '../utils';
+import config from '../config';
 
 test.describe('/api/lookupbyurl endpoint with production data', () => {
     test('Should fetch matching incidents and reports for Kronos/Starbucks case', async ({ request, baseURL }) => {
@@ -19,26 +20,16 @@ test.describe('/api/lookupbyurl endpoint with production data', () => {
                     url: url1,
                     reports: [
                         {
-                            report_number: 4,
+                            report_number: 17,
                             title: "Kronos shift scheduling software a grind for Starbucks worker",
-                            url: url1,
-                        },
-                        {
-                            report_number: 9,
-                            title: "Response Issue Report 9",
                             url: url1,
                         },
                     ],
                     incidents: [
                         {
-                            incident_id: 3,
+                            incident_id: 10,
                             title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
-                            url: `${baseURL}/cite/3`,
-                        },
-                        {
-                            incident_id: 4,
-                            title: "Test title 4",
-                            url: `${baseURL}/cite/4`,
+                            url: `${config.SITE_URL}/cite/10`,
                         },
                     ],
                 },
@@ -46,16 +37,16 @@ test.describe('/api/lookupbyurl endpoint with production data', () => {
                     url: url2,
                     reports: [
                         {
-                            report_number: 3,
+                            report_number: 16,
                             title: "Working Anything but 9 to 5",
                             url: url2,
                         },
                     ],
                     incidents: [
                         {
-                            incident_id: 3,
+                            incident_id: 10,
                             title: "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees",
-                            url: `${baseURL}/cite/3`,
+                            url: `${config.SITE_URL}/cite/10`,
                         },
                     ],
                 },
