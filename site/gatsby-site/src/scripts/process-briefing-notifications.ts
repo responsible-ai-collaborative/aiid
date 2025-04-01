@@ -149,7 +149,6 @@ async function notificationsToBriefingIncidents(context: Context) {
       }),
       prismicClient.getAllByType("update", {
         filters: [
-          prismic.filter.missing("my.update.language"),
           prismic.filter.dateAfter("document.first_publication_date", lastWeekISOString),
           prismic.filter.dateBefore("document.first_publication_date", nowISOString),
         ],
@@ -157,7 +156,10 @@ async function notificationsToBriefingIncidents(context: Context) {
       }),
     ]);
 
-    const response = [...withEn, ...withoutLang];
+    // Manually filter out updates that have the 'my.update.language' field
+    const withoutLangFiltered = withoutLang.filter((update: any) => !update.data.language);
+
+    const response = [...withEn, ...withoutLangFiltered];
 
     updates = response.map((update: any) => ({
       title: update.data.title,
@@ -170,7 +172,7 @@ async function notificationsToBriefingIncidents(context: Context) {
     // Prismic throws an "unexpected field" API error **if there are no published documents**
     // of the requested custom type ('update' in this case).
     //
-    // This error is misleading — it’s not caused by a typo or incorrect query,
+    // This error is misleading — it's not caused by a typo or incorrect query,
     // but by the fact that Prismic has no indexed documents of that type,
     // so it doesn't recognize the custom type fields yet.
     //
