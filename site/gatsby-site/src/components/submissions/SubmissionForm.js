@@ -39,7 +39,7 @@ import { Checkbox, Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { graphql, useStaticQuery } from 'gatsby';
 
-const SubmissionForm = ({ onChange = null }) => {
+const SubmissionForm = ({ onChange = null, promoType = null }) => {
   const {
     values,
     errors,
@@ -382,7 +382,7 @@ const SubmissionForm = ({ onChange = null }) => {
           </div>
         </div>
 
-        {(!values.incident_ids || values.incident_ids.length === 0) && (
+        {(!values.incident_ids || values.incident_ids.length === 0) && promoType !== 'issue' && (
           <div data-cy="incident-data-section">
             <hr className="my-4" />
             <h3 className="text-lg">Incident Data</h3>
