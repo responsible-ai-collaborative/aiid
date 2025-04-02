@@ -31,7 +31,7 @@ const EmbedsPage = () => {
             <pre className="whitespace-pre-wrap">
               {`<div
   class="aiid-embed"
-  data-incident-id="123"
+  data-incident-id="1"
 ></div>
 <script async src="${config.gatsby.siteUrl}/embed.js"></script>`}
             </pre>
@@ -39,7 +39,7 @@ const EmbedsPage = () => {
 
           <div className="border p-4 rounded">
             <h3 className="font-semibold mb-2">Result:</h3>
-            <div className="aiid-embed" data-incident-id="123"></div>
+            <div className="aiid-embed" data-incident-id="1"></div>
           </div>
           <Script id="aiid-embed-1" src="/embed.js" />
         </section>
