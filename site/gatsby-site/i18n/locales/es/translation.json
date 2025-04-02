@@ -285,6 +285,8 @@
   "csetChartDeveloped": "CSET ha desarrollado definiciones específicas para las frases subrayadas que pueden diferir de las definiciones de otras organizaciones. Como resultado, otras organizaciones pueden hacer diferentes evaluaciones sobre si un incidente de IA en particular es (o no) un daño de IA. Los detalles sobre las definiciones de CSET para el daño de la IA se pueden encontrar <1>aquí</1>.",
   "csetChartMail": "Cada incidente es clasificado de forma independiente por dos anotadores CSET. Las anotaciones se revisan por pares y finalmente se seleccionan al azar para el control de calidad antes de la publicación. A pesar de este riguroso proceso, ocurren errores y se invita a los lectores a <1>informar</1> de cualquier error que puedan descubrir mientras navegan.",
   "[Untitled Report]": "[Informe sin título]",
+  "{{count}} Report": "{{count}} Reporte",
+  "{{count}} Report_plural": "{{count}} Reportes",
   "YYYY-MM-DD": "AAAA-MM-DD",
   "Incidents": "Incidentes",
   "Incident and Issue Reports": "Incidentes e Informes de Problemas",

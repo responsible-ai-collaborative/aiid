@@ -16,8 +16,6 @@
     "Related Entities": "Entités associées",
     "Search {{count}} records...": "Rechercher {{count}} enregistrements...",
     "Entity": "Entité",
-    "{{count}} Report": "{{count}} Rapport",
-    "{{count}} Report_plural": "{{count}} Rapports",
     "Incidents involved as both Developer and Deployer": "Incidents impliqués en tant que développeur et déployeur",
     "Incidents Harmed By": "Affecté par des incidents",
     "Alleged: <2></2> developed and deployed an AI system, which harmed <5></5>.": "Présumé : Un système d'IA développé et mis en œuvre par <2></2>, a endommagé <5></5>.",
