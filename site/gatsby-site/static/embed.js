@@ -1,5 +1,5 @@
 (function () {
-  let lookupData = [];
+  let lookupData = {};
 
   // Default styles for the embed
   const styles = {
@@ -40,29 +40,33 @@
     }
   }
 
-  // Given a report URL, find matching incidents from our local JSON
-  function findIncidentsByReportUrl(url) {
-    if (!isValidURL(url)) return [];
+  // FNV-1a hash function for URL normalization
+  function hashString(str) {
+    let hash = 0x811c9dc5;
 
+    for (let i = 0; i < str.length; i++) {
+      hash ^= str.charCodeAt(i);
+      hash = (hash * 16777619) >>> 0;
+    }
+    return hash.toString(36);
+  }
+
+  function normalizeURL(url) {
     const parsedURL = new URL(url);
 
-    // We'll gather any incidents that contain a matching report URL
-    const matchedIncidents = [];
+    return parsedURL.host + parsedURL.pathname;
+  }
 
-    for (const incident of lookupData) {
-      const hasMatch = incident.r
-        .filter((report) => isValidURL(report.u))
-        .some((report) => {
-          const reportURL = new URL(report.u);
+  // Given a report URL, find matching incident IDs from our local JSON
+  function findIncidentIdsByReportUrl(url) {
+    if (!isValidURL(url)) return [];
 
-          return reportURL.host + reportURL.pathname === parsedURL.host + parsedURL.pathname;
-        });
+    const normalizedUrl = normalizeURL(url);
 
-      if (hasMatch) {
-        matchedIncidents.push(incident);
-      }
-    }
-    return matchedIncidents;
+    const urlHash = hashString(normalizedUrl);
+
+    // Use the hash to look up incident IDs directly
+    return lookupData[urlHash] || [];
   }
 
   // Main initialization function
@@ -79,16 +83,17 @@
     const baseUrl = scriptEl.src.replace('/embed.js', '');
 
     try {
-      // Fetch lookupIndex.json from the same location as the script
+      // Fetch the lookup index file
       const res = await fetch(`${baseUrl}/lookupIndex.json`);
 
       if (!res.ok) {
-        console.error(`Could not retrieve ${baseUrl}/lookupIndex.json`);
+        console.error('Could not retrieve lookup index file');
         return;
       }
+
       lookupData = await res.json();
     } catch (err) {
-      console.error(`Error fetching ${baseUrl}/lookupIndex.json:`, err);
+      console.error('Error fetching lookup index file:', err);
       return;
     }
 
@@ -102,18 +107,18 @@
 
       const reportUrl = container.dataset.reportUrl;
 
-      let incidents = [];
+      let incidentIds = [];
 
       if (incidentId) {
-        // If we already know the incident ID, just show that one
-        incidents = [{ i: incidentId }];
+        // If we already know the incident ID, just use that one
+        incidentIds = [incidentId];
       } else if (reportUrl) {
-        // Otherwise, find all incidents matching that URL
-        incidents = findIncidentsByReportUrl(reportUrl);
+        // Otherwise, find all incident IDs matching that URL
+        incidentIds = findIncidentIdsByReportUrl(reportUrl);
       }
 
       // If we didn't find anything, show a fallback
-      if (!incidents.length) {
+      if (!incidentIds.length) {
         container.textContent = 'No associated incidents were found.';
         continue;
       }
@@ -123,11 +128,11 @@
 
       buttonContainer.style.cssText = styles.buttonContainer;
 
-      for (const inc of incidents) {
+      for (const id of incidentIds) {
         const link = document.createElement('a');
 
-        link.href = `${baseUrl}/cite/${inc.i}`;
-        link.textContent = `See it on the AIID #${inc.i}`;
+        link.href = `${baseUrl}/cite/${id}`;
+        link.textContent = `See it on the AIID #${id}`;
         link.style.cssText = styles.button;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
@@ -148,12 +153,10 @@
     }
   }
 
-  // Check if DOM is already loaded
+  // Initialize when the DOM is ready
   if (document.readyState === 'loading') {
-    // If still loading, wait for DOMContentLoaded
     document.addEventListener('DOMContentLoaded', initializeEmbeds);
   } else {
-    // If already loaded, run immediately
     initializeEmbeds();
   }
 })();

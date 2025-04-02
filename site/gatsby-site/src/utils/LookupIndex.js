@@ -1,14 +1,35 @@
 const fs = require('fs');
 
+// FNV-1a hash function for URL normalization
+function hashString(str) {
+  let hash = 0x811c9dc5;
+
+  for (let i = 0; i < str.length; i++) {
+    hash ^= str.charCodeAt(i);
+    hash = (hash * 16777619) >>> 0;
+  }
+  return hash.toString(36);
+}
+
+function normalizeURL(url) {
+  try {
+    const parsedURL = new URL(url);
+
+    return parsedURL.host + parsedURL.pathname;
+  } catch (e) {
+    return url;
+  }
+}
+
 class LookupIndex {
-  constructor({ client, filePath, includeTitles = true }) {
+  constructor({ client, filePath, optimized = false }) {
     /**
      * @type {import('mongodb').MongoClient}
      * @public
      */
     this.client = client;
     this.filePath = filePath;
-    this.includeTitles = includeTitles;
+    this.optimized = optimized;
   }
 
   async run() {
@@ -26,25 +47,55 @@ class LookupIndex {
 
     const reports = await reportsCollection.find({}, { projection: reportProjection }).toArray();
 
-    const data = incidents.map((incident) => {
-      const reportDocs = reports.filter((report) =>
-        incident.reports.includes(report.report_number)
-      );
+    if (this.optimized) {
+      // Only create URL to incident ID mapping
+      const urlIndex = {};
 
-      const reportsData = reportDocs.map((report) => ({
-        n: report.report_number,
-        ...(this.includeTitles && { t: report.title }),
-        u: report.url,
-      }));
+      // Process each incident
+      incidents.forEach((incident) => {
+        const reportDocs = reports.filter((report) =>
+          incident.reports.includes(report.report_number)
+        );
 
-      return {
-        i: incident.incident_id,
-        ...(this.includeTitles && { t: incident.title }),
-        r: reportsData,
-      };
-    });
+        // Process each report URL
+        reportDocs.forEach((report) => {
+          if (report.url) {
+            const normalizedUrl = normalizeURL(report.url);
 
-    fs.writeFileSync(this.filePath, JSON.stringify(data));
+            const urlHash = hashString(normalizedUrl);
+
+            // Add incident ID to the URL's incident list
+            if (!urlIndex[urlHash]) {
+              urlIndex[urlHash] = [];
+            }
+            if (!urlIndex[urlHash].includes(incident.incident_id)) {
+              urlIndex[urlHash].push(incident.incident_id);
+            }
+          }
+        });
+      });
+
+      fs.writeFileSync(this.filePath, JSON.stringify(urlIndex));
+    } else {
+      // Include all data in non-optimized mode
+      const mappedIncidents = incidents.map((incident) => {
+        const reportDocs = reports.filter((report) =>
+          incident.reports.includes(report.report_number)
+        );
+
+        return {
+          i: incident.incident_id,
+          t: incident.title,
+          r: reportDocs.map((report) => ({
+            n: report.report_number,
+            t: report.title,
+            u: report.url,
+          })),
+        };
+      });
+
+      fs.writeFileSync(this.filePath, JSON.stringify(mappedIncidents));
+    }
   }
 }
 

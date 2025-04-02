@@ -262,7 +262,7 @@ exports.onPreInit = async ({ reporter }) => {
   const staticIndex = new LookupIndex({
     client: mongoClient,
     filePath: path.join(__dirname, 'static', 'lookupIndex.json'),
-    includeTitles: false,
+    optimized: true,
   });
 
   await staticIndex.run();
