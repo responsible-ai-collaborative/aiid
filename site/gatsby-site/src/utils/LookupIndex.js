@@ -1,13 +1,14 @@
 const fs = require('fs');
 
 class LookupIndex {
-  constructor({ client, filePath }) {
+  constructor({ client, filePath, includeTitles = true }) {
     /**
      * @type {import('mongodb').MongoClient}
      * @public
      */
     this.client = client;
     this.filePath = filePath;
+    this.includeTitles = includeTitles;
   }
 
   async run() {
@@ -30,22 +31,20 @@ class LookupIndex {
         incident.reports.includes(report.report_number)
       );
 
-      const reportsData = reportDocs.map((report) => {
-        return {
-          report_number: report.report_number,
-          title: report.title,
-          url: report.url,
-        };
-      });
+      const reportsData = reportDocs.map((report) => ({
+        n: report.report_number,
+        ...(this.includeTitles && { t: report.title }),
+        u: report.url,
+      }));
 
       return {
-        incident_id: incident.incident_id,
-        title: incident.title,
-        reports: reportsData,
+        i: incident.incident_id,
+        ...(this.includeTitles && { t: incident.title }),
+        r: reportsData,
       };
     });
 
-    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+    fs.writeFileSync(this.filePath, JSON.stringify(data));
   }
 }
 
