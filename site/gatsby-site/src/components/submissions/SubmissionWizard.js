@@ -31,6 +31,8 @@ const SubmissionWizard = ({
 
   const [parsingNews, setParsingNews] = useState(false);
 
+  const [returning, setReturning] = useState(false);
+
   const handleNextStep = async (newData, final = false) => {
     setSubmissionFailed(false);
     setSubmissionComplete(false);
@@ -55,6 +57,7 @@ const SubmissionWizard = ({
   };
 
   const handlePreviousStep = (newData) => {
+    setReturning(true);
     setData((prev) => ({ ...prev, ...newData }));
     scrollToTop();
     setCurrentStep((prev) => prev - 1);
@@ -168,7 +171,12 @@ const SubmissionWizard = ({
       Object.keys(invalidFields).map((key) => {
         setFieldTouched(key, true);
       });
-      setIsSubmitting(false);
+
+      if (last) {
+        setIsSubmitting(false);
+      } else {
+        submitForm(values, last);
+      }
     } else {
       submitForm(values, last);
     }
@@ -181,6 +189,7 @@ const SubmissionWizard = ({
         next={handleNextStep}
         data={data}
         name={t('Step 1 - main information')}
+        returning={returning}
         parseNewsUrl={parseNewsUrl}
         parsingNews={parsingNews}
         validateAndSubmitForm={validateAndSubmitForm}
@@ -196,6 +205,7 @@ const SubmissionWizard = ({
         previous={handlePreviousStep}
         data={data}
         name={t('Step 2 - additional information')}
+        returning={returning}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
@@ -208,6 +218,7 @@ const SubmissionWizard = ({
         previous={handlePreviousStep}
         data={data}
         name={t('Step 3 - Tell us more')}
+        returning={returning}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
