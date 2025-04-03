@@ -39,7 +39,7 @@ function CiteTemplate({
   incident,
   sortedReports,
   variants,
-  metaTitle,
+  incidentTitle,
   entities,
   timeline,
   locationPathName,
@@ -172,7 +172,7 @@ function CiteTemplate({
           data-testid="incident-title-section"
         >
           <h1 data-testid="incident-title" className="text-2xl inline">
-            {metaTitle}
+            {incidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
             {incident.isTranslated && (
@@ -198,7 +198,7 @@ function CiteTemplate({
               <>
                 <div className="flex flex-wrap justify-end shrink">
                   <SocialShareButtons
-                    metaTitle={metaTitle}
+                    metaTitle={incidentTitle}
                     path={locationPathName}
                     page="cite"
                   ></SocialShareButtons>

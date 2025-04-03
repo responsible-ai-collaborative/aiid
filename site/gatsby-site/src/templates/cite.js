@@ -48,7 +48,7 @@ function CitePage(props) {
 
   // meta tags
 
-  const metaTitle = `${t('Incident')} ${incidentData.incident_id}: ${incidentData.title}`;
+  const incidentTitle = `${t('Incident')} ${incidentData.incident_id}: ${incidentData.title}`;
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
@@ -104,7 +104,7 @@ function CitePage(props) {
           incident={incidentData}
           sortedReports={sortedReports}
           variants={variants}
-          metaTitle={metaTitle}
+          incidentTitle={incidentTitle}
           entities={entities}
           timeline={timeline}
           locationPathName={props.location.pathname}
