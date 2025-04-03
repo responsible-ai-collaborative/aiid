@@ -38,7 +38,7 @@ function CitePage(props) {
 
   const translation = incidentTranslation?.nodes.length > 0 ? incidentTranslation.nodes[0] : null;
 
-  const translatedIncident = getTranslatedIncident(incident, translation);
+  const incidentData = getTranslatedIncident(incident, translation);
 
   const [isLiveData, setIsLiveData] = useState(false);
 
@@ -48,9 +48,7 @@ function CitePage(props) {
 
   // meta tags
 
-  const metaTitle = `${t('Incident')} ${translatedIncident.incident_id}: ${
-    translatedIncident.title
-  }`;
+  const metaTitle = `${t('Incident')} ${incidentData.incident_id}: ${incidentData.title}`;
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
@@ -73,7 +71,7 @@ function CitePage(props) {
   );
 
   timeline.push({
-    date_published: translatedIncident.date,
+    date_published: incidentData.date,
     title: 'Incident Occurrence',
     mongodb_id: 0,
     isOccurrence: true,
@@ -82,7 +80,7 @@ function CitePage(props) {
   const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
   const entities = computeEntities({
-    incidents: [translatedIncident],
+    incidents: [incidentData],
     entities: entitiesData.nodes,
     responses: responses.nodes,
   });
@@ -93,7 +91,7 @@ function CitePage(props) {
         <CiteDynamicTemplate
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
           entitiesData={entitiesData}
-          incident_id={translatedIncident.incident_id}
+          incident_id={incidentData.incident_id}
           responses={responses}
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
@@ -103,7 +101,7 @@ function CitePage(props) {
         />
       ) : (
         <CiteTemplate
-          incident={translatedIncident}
+          incident={incidentData}
           sortedReports={sortedReports}
           variants={variants}
           metaTitle={metaTitle}
