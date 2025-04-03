@@ -67,7 +67,6 @@ export const IncidentType = new GraphQLObjectType({
                 languages: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) }
             },
             resolve: async (source, args, context: Context) => {
-                console.log('SAPEEEEEE', source.incident_id, args.languages)
                 const translationsCollection = context.client.db('translations').collection("incidents");
             
                 const translations = await translationsCollection.find({
