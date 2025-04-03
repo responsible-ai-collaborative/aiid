@@ -32,7 +32,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
   const { data: parentIncidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: parentIncident.incident_id } } },
+    variables: {
+      filter: { incident_id: { EQ: parentIncident.incident_id } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
