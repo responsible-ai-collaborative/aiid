@@ -40,15 +40,25 @@
     }
   }
 
-  // FNV-1a hash function for URL normalization
+  // FNV-1a hash function for URL normalization with longer output
   function hashString(str) {
-    let hash = 0x811c9dc5;
+    // Use two 32-bit hashes to create a 64-bit hash
+    let h1 = 0x811c9dc5;
+
+    let h2 = 0x811c9dc5;
 
     for (let i = 0; i < str.length; i++) {
-      hash ^= str.charCodeAt(i);
-      hash = (hash * 16777619) >>> 0;
+      const c = str.charCodeAt(i);
+
+      h1 ^= c;
+      h2 ^= c;
+
+      h1 = (h1 * 16777619) >>> 0;
+      h2 = (h2 * 16777619) >>> 0;
     }
-    return hash.toString(36);
+
+    // Combine the two hashes into a single string
+    return h1.toString(36) + h2.toString(36);
   }
 
   function normalizeURL(url) {
