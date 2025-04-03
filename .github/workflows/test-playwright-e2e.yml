@@ -97,6 +97,7 @@ jobs:
           MAILERSEND_API_KEY: dummy # these  are necessary for codegen to work
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
+          GOOGLE_TRANSLATE_API_KEY: dummy
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps
@@ -121,6 +122,8 @@ jobs:
           SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms= # only used in local tests
+          GOOGLE_TRANSLATE_API_KEY: dummy
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
 
       - name: Upload Playwright traces
         if: failure()
