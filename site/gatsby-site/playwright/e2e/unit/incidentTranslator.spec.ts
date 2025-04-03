@@ -231,7 +231,7 @@ test("Translations - Shouldn't call Google's translate api and use translation p
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test('Translations - Should translate incidents with creation date greater than specified date', async ({ page }) => {
+test('Translations - Should only translate incidents with creation date greater than specified date', async ({ page }) => {
   const creationDateStart = '2021-01-01';
 
   const translatedIncidents = [];
