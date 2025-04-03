@@ -24,6 +24,7 @@ const incidents: DBIncident[] = [
     {
         incident_id: 2,
         title: "Incident 2",
+        description: "Incident 2 Description",
         date: "2020-01-01",
         "Alleged deployer of AI system": ["entity-1"],
         "Alleged developer of AI system": ["entity-2"],
@@ -134,6 +135,7 @@ const incidents: DBIncident[] = [
             y: 0.38604577108881916
         },
         created_at: new Date('2020-04-01'),
+        editor_notes: "",
     },
 ]
 

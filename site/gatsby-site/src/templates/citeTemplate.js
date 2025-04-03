@@ -23,6 +23,7 @@ import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowLeft,
@@ -166,11 +167,19 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center">
+        <div
+          className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center"
+          data-testid="incident-title-section"
+        >
           <h1 data-testid="incident-title" className="text-2xl inline">
             {metaTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
+            {incident.isTranslated && (
+              <div className="self-center">
+                <TranslationBadge className="mx-2" />
+              </div>
+            )}
             {incidentResponded && (
               <div className="self-center">
                 <Badge color="success" data-cy="responded-badge">
@@ -240,11 +249,20 @@ function CiteTemplate({
         <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
-              <div>
+              <div
+                className="flex flex-row items-center"
+                data-testid="incident-description-section"
+              >
                 <strong>
                   <Trans>Description</Trans>
                 </strong>
-                : {incident.description}
+                :
+                {incident.isTranslated && (
+                  <div className="self-center">
+                    <TranslationBadge className="mx-2" />
+                  </div>
+                )}
+                {` ${incident.description}`}
               </div>
             </Col>
           </Row>
