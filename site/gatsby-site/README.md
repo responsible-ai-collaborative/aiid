@@ -164,8 +164,11 @@ The project is now running locally with production data and can be accessed at `
 If the feature you are developing requires changes to the Algolia index, you can push the changes to your own Algolia index by setting the `ALGOLIA_ADMIN_KEY` environment variable to your own Algolia admin key and running the following command:
 
 ```bash
-npm run algolia:push
+# For development with free tier, set ALGOLIA_SUBSET=true in your .env file
+npm run algolia-update
 ```
+
+Note: For development purposes, you can use Algolia's free tier by setting `ALGOLIA_SUBSET=true` in your `.env` file. This will limit the number of records pushed to Algolia to stay within the free tier limits.
 
 5. (Optional) Pushing to Your Own Cloudflare R2 Bucket, Prismic, and Other Services
 
