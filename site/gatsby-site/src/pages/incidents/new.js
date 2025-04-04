@@ -162,7 +162,7 @@ function NewIncidentPage() {
         <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={initialValues}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
-              <IncidentForm entityNames={entityNames} />
+              <IncidentForm entityNames={entityNames} isNewIncident={true} />
               <Button
                 onClick={submitForm}
                 type="submit"

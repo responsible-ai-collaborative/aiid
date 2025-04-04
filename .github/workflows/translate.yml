@@ -1,4 +1,5 @@
-name: Translate Reports
+name: Translate Reports and Incidents
+description: This workflow translates reports and incidents. It is used by the translate-production and translate-staging workflows.
 
 on:
   workflow_call:
@@ -26,7 +27,7 @@ jobs:
         run: npm ci
         working-directory: site/gatsby-site
 
-      - name: Run translation script
+      - name: Run Reports translation script
         run: npm run translate-reports
         working-directory: site/gatsby-site
         env:
@@ -35,5 +36,31 @@ jobs:
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           TRANSLATE_SUBMISSION_DATE_START: ${{ vars.TRANSLATE_SUBMISSION_DATE_START }}
           TRANSLATE_DRY_RUN: ${{ vars.TRANSLATE_DRY_RUN }}
+          API_MONGODB_CONNECTION_STRING: dummy
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: dummy
+          MAILERSEND_API_KEY: dummy
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
+          SITE_URL: dummy
+          NEXTAUTH_URL: dummy
+          NEXTAUTH_SECRET: dummy
           GATSBY_SITE_URL: dummy
 
+      - name: Run Incidents translation script
+        run: npm run translate-incidents
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          TRANSLATE_INCIDENT_CREATION_DATE_START: ${{ vars.TRANSLATE_INCIDENT_CREATION_DATE_START }}
+          TRANSLATE_DRY_RUN: ${{ vars.TRANSLATE_DRY_RUN }}
+          API_MONGODB_CONNECTION_STRING: dummy
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: dummy
+          MAILERSEND_API_KEY: dummy
+          NOTIFICATIONS_SENDER_NAME: dummy
+          NOTIFICATIONS_SENDER: dummy
+          SITE_URL: dummy
+          NEXTAUTH_URL: dummy
+          NEXTAUTH_SECRET: dummy
+          GATSBY_SITE_URL: dummy

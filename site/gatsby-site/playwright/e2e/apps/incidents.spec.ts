@@ -277,4 +277,66 @@ test.describe('Incidents App', () => {
     const firstCiteLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
     expect(firstCiteLink).toMatch(/^\/cite\/\d+#r\d+$/);
   });
+
+  test('Should successfully edit incident translations', async ({ page, login }) => {
+    await init();
+
+    await login();
+
+    await page.goto(url);
+
+    await page.waitForSelector('[data-testid="flowbite-toggleswitch-toggle"]');
+    await page.locator('[data-testid="flowbite-toggleswitch-toggle"]').click();
+    await page.locator('[data-cy="input-filter-Incident ID"]').fill('3');
+    await page.keyboard.press('Enter');
+
+    await expect(page.locator('[data-cy="row"]')).toHaveCount(1);
+    await page.click('text=Edit');
+
+    await page.waitForSelector('[data-cy="incident-form"]');
+    await expect(page.locator('.submission-modal h3')).toHaveText('Edit Incident 3');
+
+    await page.locator(`[data-testid="translation-es-title"]`).fill('Nuevo Título en español');
+    await page.locator(`[data-testid="translation-es-description"]`).fill('Nuevo Descripción en español');
+
+    await page.getByText('Update', { exact: true }).click();
+
+    await waitForRequest('logIncidentHistory');
+
+    await expect(page.locator('[data-cy="toast"]').locator('text=Incident 3 updated successfully.')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 3 } }) {
+          incident_id
+          translations(languages: ["es", "fr", "ja"]) {
+            title
+            description
+            language
+          }
+        }
+      }`,
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 3,
+      translations: [
+        {
+          language: 'es',
+          title: 'Nuevo Título en español',
+          description: 'Nuevo Descripción en español',
+        },
+        {
+          language: "fr",
+          title: null,
+          description: null,
+        },
+        {
+          language: 'ja',
+          title: null,
+          description: null,
+        },
+      ],
+    });
+  });
 });
