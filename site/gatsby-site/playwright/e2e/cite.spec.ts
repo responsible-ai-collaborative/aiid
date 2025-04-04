@@ -610,6 +610,6 @@ test.describe('Cite pages', () => {
         await page.goto('/es/cite/1');
 
         await expect(page.locator('[data-testid="incident-title"]')).toHaveText('Incidente 1: Título del Incidente 1');
-        await expect(page.getByText('Descripción: Descripción del incidente 1')).toBeVisible();
+        await expect(page.locator('[data-testid="incident-description"]')).toHaveText('Descripción del incidente 1');
     });
 });

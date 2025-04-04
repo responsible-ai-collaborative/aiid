@@ -262,7 +262,7 @@ function CiteTemplate({
                     <TranslationBadge className="mx-2" />
                   </div>
                 )}
-                {` ${incident.description}`}
+                <div data-testid="incident-description">{incident.description}</div>
               </div>
             </Col>
           </Row>
