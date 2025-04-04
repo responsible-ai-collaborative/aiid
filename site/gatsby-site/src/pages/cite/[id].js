@@ -5,12 +5,15 @@ import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
 import CiteDynamicTemplate from 'templates/citeDynamicTemplate';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
 function CiteDynamicPage(props) {
   const {
     data: { allMongodbAiidprodTaxa, entities: entitiesData, responses },
     params: { id: incident_id },
   } = props;
+
+  const { config: availableLanguages } = useLocalization();
 
   const nlp_similar_incidents = [];
 
@@ -21,7 +24,10 @@ function CiteDynamicPage(props) {
   const [incident, setIncident] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: parseInt(incident_id) } } },
+    variables: {
+      filter: { incident_id: { EQ: parseInt(incident_id) } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   useEffect(() => {
