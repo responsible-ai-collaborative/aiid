@@ -72,6 +72,14 @@ export default function Post(props) {
           </Trans>
         </span>
       </div>
+      <div className="flex flex-col md:flex-row mb-6 max-w-[750px]">
+        <div className="w-full">
+          <img
+            src={mdx.frontmatter.image.childImageSharp.gatsbyImageData.images.fallback.src}
+            alt={mdx.frontmatter.image.alt}
+          />
+        </div>
+      </div>
       <div data-testid="blog-content" className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>

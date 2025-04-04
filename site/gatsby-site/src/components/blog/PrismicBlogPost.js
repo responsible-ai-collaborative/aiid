@@ -74,6 +74,11 @@ const PrismicBlogPost = ({ post, location }) => {
           </Trans>
         </span>
       </div>
+      <div className="flex flex-col md:flex-row mb-6 max-w-[65ch]">
+        <div className="w-full">
+          <img src={post.data.image.url} alt={post.data.image.alt} />
+        </div>
+      </div>
       <div className="prose" data-testid="blog-content">
         <PrismicRichText field={post.data.content.richText} components={components} />
       </div>
