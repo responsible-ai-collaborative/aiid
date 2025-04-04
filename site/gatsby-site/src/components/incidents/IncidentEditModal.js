@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery, gql } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import {
+  UPDATE_INCIDENT_TRANSLATION,
+  translationsFields,
+} from '../../graphql/incident_translations';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner, Modal, Button } from 'flowbite-react';
@@ -13,16 +17,6 @@ import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import pick from 'lodash/pick';
-
-const UPDATE_INCIDENT_TRANSLATION = gql`
-  mutation UpdateIncidentTranslation($input: UpdateOneIncidentTranslationInput!) {
-    updateOneIncidentTranslation(input: $input) {
-      incident_id
-    }
-  }
-`;
-
-const translationsFields = ['title', 'description'];
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();

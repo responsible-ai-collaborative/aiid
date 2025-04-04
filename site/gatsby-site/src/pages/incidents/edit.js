@@ -4,6 +4,10 @@ import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
 import { FIND_FULL_INCIDENT, UPDATE_INCIDENT, UPDATE_INCIDENTS } from '../../graphql/incidents';
+import {
+  UPDATE_INCIDENT_TRANSLATION,
+  translationsFields,
+} from '../../graphql/incident_translations';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -15,17 +19,6 @@ import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
-import { gql } from '@apollo/client';
-
-const UPDATE_INCIDENT_TRANSLATION = gql`
-  mutation UpdateIncidentTranslation($input: UpdateOneIncidentTranslationInput!) {
-    updateOneIncidentTranslation(input: $input) {
-      incident_id
-    }
-  }
-`;
-
-const translationsFields = ['title', 'description'];
 
 function EditCitePage(props) {
   const { user } = useUserContext();
