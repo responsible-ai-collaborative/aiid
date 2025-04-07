@@ -55,6 +55,7 @@ export const SubmissionType = new GraphQLObjectType({
         implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),
         approved_at: { type: GraphQLString },
         rejected_at: { type: GraphQLString },
+        report_number: { type: GraphQLString },
     })
 });
 
