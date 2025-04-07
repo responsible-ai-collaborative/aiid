@@ -65,14 +65,42 @@ const SubmissionList = () => {
 
   const [rejectSubmission] = useMutation(REJECT_SUBMISSION, {
     update: (cache, { data }) => {
-      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
-      cache.evict({
+      const rejectedSubmission = data.rejectSubmission;
+
+      // Update the cache for the rejected submission
+      cache.modify({
         id: cache.identify({
-          __typename: data.deleteOneSubmission.__typename,
-          id: data.deleteOneSubmission._id,
+          __typename: rejectedSubmission.__typename,
+          id: rejectedSubmission._id,
         }),
+        fields: {
+          status() {
+            return 'rejected';
+          },
+        },
       });
     },
+    refetchQueries: [
+      {
+        query: FIND_SUBMISSIONS,
+        variables: {
+          filter: { AND: [{ status: { NE: 'approved' } }, { status: { NE: 'rejected' } }] },
+        },
+      },
+
+      {
+        query: FIND_SUBMISSIONS,
+        variables: {
+          filter: { status: { EQ: 'rejected' } },
+        },
+      },
+      {
+        query: FIND_SUBMISSIONS,
+        variables: {
+          filter: { status: { EQ: 'approved' } },
+        },
+      },
+    ],
   });
 
   const addToast = useToastContext();

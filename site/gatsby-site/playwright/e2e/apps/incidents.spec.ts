@@ -258,6 +258,7 @@ test.describe('Incidents App', () => {
   });
 
   test('Should switch between views', async ({ page }) => {
+    await init();
     await page.goto(url);
 
     await page.waitForSelector('[data-cy="table-view"] button:has-text("Issue Reports")');
