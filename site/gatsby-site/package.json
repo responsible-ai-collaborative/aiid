@@ -25,7 +25,7 @@
     "@graphql-tools/stitch": "^9.2.9",
     "@graphql-tools/utils": "^10.1.2",
     "@graphql-tools/wrap": "^10.0.5",
-    "@mdx-js/react": "^2.3.0",
+    "@mdx-js/react": "^3.1.0",
     "@netlify/functions": "^3.0.4",
     "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
