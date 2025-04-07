@@ -291,7 +291,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             await reportsHistory.insertOne(reportHistory);
 
-            // Perform a soft delete by updating the submission
             await submissions.updateOne(
                 { _id: input.submission_id },
                 { $set: { status: 'approved', approved_at: new Date().toISOString() } }
