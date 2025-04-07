@@ -639,7 +639,7 @@ const SubmissionList = () => {
     }
 
     return columns;
-  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
+  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected, tableData]);
 
   const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
 
