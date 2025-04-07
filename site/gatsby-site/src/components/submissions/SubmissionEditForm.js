@@ -285,7 +285,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     }, 1000);
   }, [values]);
 
-  const rejectReport = async () => {
+  const handleSubmissionRejection = async () => {
     await rejectSubmission({ variables: { input: { submission_id: values._id } } });
   };
 
@@ -308,7 +308,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       return;
     }
     setDeleting(true);
-    await rejectReport();
+    await handleSubmissionRejection();
     setDeleting(false);
     setTimeout(() => {
       window.location.href = localizedPath({ path: '/apps/submitted' });
