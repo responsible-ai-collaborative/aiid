@@ -5,7 +5,8 @@ import {
     GraphQLBoolean,
     GraphQLNonNull,
     GraphQLFieldConfigMap,
-    GraphQLInputObjectType
+    GraphQLInputObjectType,
+    GraphQLString
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
 import { Context, DBIncident, DBNotification, DBSubmission } from '../interfaces';
@@ -36,6 +37,21 @@ const PromoteSubmissionToReportInput = new GraphQLInputObjectType({
         incident_ids: { type: new GraphQLNonNull(new GraphQLList(GraphQLInt)) },
         is_incident_report: { type: GraphQLBoolean },
         submission_id: { type: new GraphQLNonNull(ObjectIdScalar) },
+    },
+});
+
+const RejectSubmissionPayload = new GraphQLObjectType({
+    name: 'RejectSubmissionPayload',
+    fields: {
+      _id: { type: new GraphQLNonNull(ObjectIdScalar) },
+      status: { type: new GraphQLNonNull(GraphQLString) },
+    },
+});
+
+const RejectSubmissionInput = new GraphQLInputObjectType({
+    name: 'RejectSubmissionInput',
+    fields: {
+      submission_id: { type: new GraphQLNonNull(ObjectIdScalar) },
     },
 });
 
@@ -70,6 +86,10 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             if (!target) {
                 throw new Error('Submission not found');
+            }
+
+            if (target.status === 'approved') {
+                throw new Error('Submission already approved');
             }
 
             const { _id: undefined, ...submission }: DBSubmission = target;
@@ -271,11 +291,42 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             await reportsHistory.insertOne(reportHistory);
 
-            await submissions.deleteOne({ _id: input.submission_id });
+            // Perform a soft delete by updating the submission
+            await submissions.updateOne(
+                { _id: input.submission_id },
+                { $set: { status: 'approved', approved_at: new Date().toISOString() } }
+            );
 
             return {
                 incident_ids,
                 report_number,
+            };
+        }
+    },
+    rejectSubmission: {
+        type: new GraphQLNonNull(RejectSubmissionPayload),
+        args: {
+            input: { type: new GraphQLNonNull(RejectSubmissionInput) },
+        },
+        resolve: async (source, { input }, context) => {
+            const submissions = context.client.db('aiidprod').collection<DBSubmission>("submissions");
+            const target = await submissions.findOne({ _id: input.submission_id });
+
+            // Check if the submission is already approved or rejected to prevent accidental rejection of approved submissions
+            if (target?.status === 'approved') {
+                throw new Error('Submission already approved');
+            }
+            if (target?.status === 'rejected') {
+                throw new Error('Submission already rejected');
+            }
+            await submissions.updateOne(
+                { _id: input.submission_id },
+                { $set: { status: 'rejected', rejected_at: new Date().toISOString() } }
+            );
+
+            return {
+                _id: input.submission_id,
+                status: 'rejected',
             };
         }
     }
@@ -291,5 +342,6 @@ export const permissions = {
         updateOneSubmission: allow,
         insertOneSubmission: allow,
         promoteSubmissionToReport: allow,
+        rejectSubmission: isRole('incident_editor'),
     }
 }

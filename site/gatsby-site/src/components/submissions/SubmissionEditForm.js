@@ -6,7 +6,7 @@ import { useFormikContext } from 'formik';
 import RelatedIncidents from 'components/RelatedIncidents';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { useMutation } from '@apollo/client';
-import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
+import { PROMOTE_SUBMISSION, REJECT_SUBMISSION } from '../../graphql/submissions';
 import { incidentSchema, issueSchema, reportSchema } from './schemas';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -63,13 +63,12 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const [subscribeToNewReportsMutation] = useMutation(UPSERT_SUBSCRIPTION);
 
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
+  const [rejectSubmission] = useMutation(REJECT_SUBMISSION, {
     update: (cache, { data }) => {
-      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
       cache.evict({
         id: cache.identify({
-          __typename: data.deleteOneSubmission.__typename,
-          id: data.deleteOneSubmission._id,
+          __typename: data.rejectSubmission.__typename,
+          id: data.rejectSubmission.submission_id,
         }),
       });
     },
@@ -287,7 +286,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
   }, [values]);
 
   const rejectReport = async () => {
-    await deleteSubmission({ variables: { _id: values._id } });
+    await rejectSubmission({ variables: { input: { submission_id: values._id } } });
   };
 
   const promote = () => {
@@ -338,6 +337,14 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     setFieldValue('incident_editors', selectedOptions);
     setFieldTouched('incident_editors', true);
   };
+
+  const isActionDisabled =
+    !canEditSubmissions ||
+    deleting ||
+    promoting ||
+    saving ||
+    values.status === 'approved' ||
+    values.status === 'rejected';
 
   return (
     <>
@@ -429,7 +436,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <div className="flex flex-col gap-2 w-full mb-2">
               <Button
                 onClick={promoteToReport}
-                disabled={!canEditSubmissions || deleting || promoting || saving}
+                disabled={isActionDisabled}
                 data-cy="promote-to-report-button"
               >
                 <FontAwesomeIcon className="mr-2" icon={faCheck} />
@@ -468,9 +475,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             </Select>
             <Button
               onClick={promote}
-              disabled={
-                !canEditSubmissions || deleting || promoting || saving || promoType === 'none'
-              }
+              disabled={isActionDisabled || promoType === 'none'}
               data-cy="promote-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faCheck} />
@@ -482,7 +487,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <Button
               color={'failure'}
               onClick={reject}
-              disabled={!canEditSubmissions || deleting || promoting || saving}
+              disabled={isActionDisabled}
               data-cy="reject-button"
             >
               <FontAwesomeIcon className="mr-2" icon={faXmark} />

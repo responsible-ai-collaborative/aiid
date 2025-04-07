@@ -139,7 +139,7 @@
     "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
     "build": "npm run codegen && netlify build --offline --context=${npm_config_context:-branch-deploy}",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
-    "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\" --ignore-pattern \"src/graphql/**\"",
+    "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\" --ignore-pattern \"**/src/graphql/**\"",
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
     "test:e2e": "npx playwright test playwright/e2e-full --ui",
     "test:e2e:ci": "DEBUG=pw:webserver npx playwright test $TEST_FOLDER --shard=$SHARD_INDEX/$SHARD_TOTAL",
@@ -209,7 +209,7 @@
   "lint-staged": {
     "*.js": [
       "prettier --write",
-      "eslint --fix"
+      "eslint --fix --ignore-pattern \"**/src/graphql/**\""
     ]
   },
   "overrides": {

@@ -9,8 +9,8 @@ export const DELETE_SUBMISSION = gql(`
 `);
 
 export const FIND_SUBMISSIONS = gql(`
-  query FindSubmissions {
-    submissions {
+  query FindSubmissions($filter: SubmissionFilterType!) {
+    submissions(filter: $filter) {
       _id
       cloudinary_id
       date_downloaded
@@ -64,6 +64,8 @@ export const FIND_SUBMISSIONS = gql(`
         entity_id
         name
       }
+      approved_at
+      rejected_at
     }
   }
 `);
@@ -120,6 +122,8 @@ export const FIND_SUBMISSION = gql(`
         entity_id
         name
       }
+      approved_at
+      rejected_at
     }
   }
 `);
@@ -174,6 +178,8 @@ export const UPDATE_SUBMISSION = gql(`
         entity_id
         name
       }
+      approved_at
+      rejected_at
     }
   }
 `);
@@ -191,6 +197,14 @@ export const PROMOTE_SUBMISSION = gql(`
     promoteSubmissionToReport(input: $input) {
       incident_ids
       report_number
+    }
+  }
+`);
+
+export const REJECT_SUBMISSION = gql(`
+  mutation RejectSubmission($input: RejectSubmissionInput!) {
+    rejectSubmission(input: $input) {
+      _id
     }
   }
 `);

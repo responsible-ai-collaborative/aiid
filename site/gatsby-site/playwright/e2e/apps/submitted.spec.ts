@@ -224,7 +224,7 @@ test.describe('Submitted reports', () => {
 
         page.on('dialog', dialog => dialog.accept());
 
-        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'DeleteSubmission');
+        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RejectSubmission');
 
         await page.locator('[data-cy="reject-button"]').click();
 
@@ -232,7 +232,7 @@ test.describe('Submitted reports', () => {
 
         const updated = await getSubmissions();
 
-        expect(updated.find((s) => s._id === submissions[0]._id)).toBeUndefined();
+        expect(updated.find((s) => s._id === submissions[0]._id).status).toBe('rejected');
     });
 
     test('Edits a submission - update just a text', async ({ page, login }) => {
@@ -838,12 +838,13 @@ test.describe('Submitted reports', () => {
           query: gql`{
               submissions {
                   _id
+                  status
               }
           }
         `,
         });
 
-        expect(updatedSubmissions.length).toBe(0);
+        expect(updatedSubmissions.filter((s) => s.status === 'rejected').length).toBe(submissions.length);
     });
 
     test('Should select and claim one submission', async ({ page, login }) => {
