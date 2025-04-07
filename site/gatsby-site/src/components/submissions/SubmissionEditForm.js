@@ -68,7 +68,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
       cache.evict({
         id: cache.identify({
           __typename: data.rejectSubmission.__typename,
-          id: data.rejectSubmission.submission_id,
+          id: data.rejectSubmission._id,
         }),
       });
     },
