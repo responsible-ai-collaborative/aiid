@@ -129,7 +129,7 @@
     "topojson-client": "^3.1.0",
     "tsne-js": "^1.0.3",
     "umzug": "^3.0.0",
-    "use-query-params": "^2.2.1",
+    "use-query-params": "^1.2.0",
     "yargs": "^17.7.2",
     "yup": "^0.29.3"
   },
