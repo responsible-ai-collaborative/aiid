@@ -94,12 +94,6 @@ const SubmissionList = () => {
           filter: { status: { EQ: 'rejected' } },
         },
       },
-      {
-        query: FIND_SUBMISSIONS,
-        variables: {
-          filter: { status: { EQ: 'approved' } },
-        },
-      },
     ],
   });
 
