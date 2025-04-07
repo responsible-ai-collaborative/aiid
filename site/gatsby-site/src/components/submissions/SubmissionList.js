@@ -300,7 +300,7 @@ const SubmissionList = () => {
       },
       reject: {
         confirmMessage: t(
-          'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+          'Are you sure you want to reject these submissions? This will change their status to "rejected".'
         ),
         execute: (submissionId) =>
           rejectSubmission({ variables: { input: { submission_id: submissionId } } }),
