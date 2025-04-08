@@ -794,7 +794,7 @@ const SubmissionList = () => {
           </div>
         </div>
       )}
-      <Button.Group className="mb-4" data-cy="table-view">
+      <Button.Group className="mb-4" data-testid="submissions-view">
         <Button
           color={`${selectedView === 'pending' ? 'dark' : 'gray'}`}
           onClick={() => {
@@ -804,6 +804,7 @@ const SubmissionList = () => {
             url.searchParams.set('view', 'pending');
             window.history.replaceState({}, '', url);
           }}
+          data-testid="pending-submissions-button"
         >
           Pending
         </Button>
@@ -817,6 +818,7 @@ const SubmissionList = () => {
             url.searchParams.set('view', 'approved');
             window.history.replaceState({}, '', url);
           }}
+          data-testid="approved-submissions-button"
         >
           Approved
         </Button>
@@ -829,13 +831,14 @@ const SubmissionList = () => {
             url.searchParams.set('view', 'rejected');
             window.history.replaceState({}, '', url);
           }}
+          data-testid="rejected-submissions-button"
         >
           Rejected
         </Button>
       </Button.Group>
       <Table
         table={table}
-        data-cy="submissions"
+        data-testid="submissions"
         className="mb-5 w-fit"
         tableClassName="rounded-lg border"
       />
