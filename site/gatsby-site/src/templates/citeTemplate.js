@@ -167,6 +167,7 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
+        {incident.isTranslated && <TranslationBadge className="mt-2" />}
         <div
           className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center"
           data-testid="incident-title-section"
@@ -175,11 +176,6 @@ function CiteTemplate({
             {incidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
-            {incident.isTranslated && (
-              <div className="self-center">
-                <TranslationBadge className="mx-2" />
-              </div>
-            )}
             {incidentResponded && (
               <div className="self-center">
                 <Badge color="success" data-cy="responded-badge">
@@ -250,7 +246,7 @@ function CiteTemplate({
           <Row>
             <Col>
               <div
-                className="flex flex-row items-center"
+                className={`${incident.isTranslated ? 'flex flex-wrap' : ''}`}
                 data-testid="incident-description-section"
               >
                 <strong>
