@@ -77,6 +77,7 @@ export default function Post(props) {
           <img
             src={mdx.frontmatter.image.childImageSharp.gatsbyImageData.images.fallback.src}
             alt={mdx.frontmatter.image.alt}
+            data-testid="blog-image"
           />
         </div>
       </div>

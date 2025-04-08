@@ -76,7 +76,7 @@ const PrismicBlogPost = ({ post, location }) => {
       </div>
       <div className="flex flex-col md:flex-row mb-6 max-w-[65ch]">
         <div className="w-full">
-          <img src={post.data.image.url} alt={post.data.image.alt} />
+          <img src={post.data.image.url} alt={post.data.image.alt} data-testid="blog-image" />
         </div>
       </div>
       <div className="prose" data-testid="blog-content">
