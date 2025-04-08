@@ -264,6 +264,7 @@ const plugins = [
           'variants',
           'footer',
           'sponsors',
+          'reports',
           'incidents',
           'auth',
         ],
