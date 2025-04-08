@@ -41,7 +41,7 @@
     "No reports found": "Aucun rapport trouvé",
     "Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.": "Êtes-vous sûr de vouloir vous attribuer ces soumissions ? Cela vous assignera comme éditeur pour toutes les soumissions sélectionnées.",
     "Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.": "Êtes-vous sûr de vouloir vous désattribuer ces soumissions ? Cela vous retirera en tant qu'éditeur sur toutes les soumissions sélectionnées.",
-    "Are you sure you want to reject these submissions? This will permanently delete the submissions.": "Êtes-vous sûr de vouloir rejeter ces soumissions ? Cela supprimera définitivement les soumissions.",
+    "Are you sure you want to reject these submissions? This will change their status to \"rejected\".": "Êtes-vous sûr de vouloir rejeter ces soumissions ? Cela changera leur statut en \"rejeté\".",
     "There was an error performing this action. Please try again.": "Une erreur s'est produite lors de cette action. Veuillez réessayer.",
     "Select All": "Tout sélectionner",
     "Unclaim": "Désattribuer",

@@ -17,11 +17,12 @@ import Table, {
   SelectDatePickerFilter,
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
-import { useMutation } from '@apollo/client';
-import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
+import { useMutation, useQuery } from '@apollo/client';
+import { FIND_SUBMISSIONS, UPDATE_SUBMISSION, REJECT_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import ListSkeleton from '../../elements/Skeletons/List';
 
-const SubmissionList = ({ data }) => {
+const SubmissionList = () => {
   const { t } = useTranslation('submitted');
 
   const { loading, isRole, user } = useUserContext();
@@ -32,18 +33,68 @@ const SubmissionList = ({ data }) => {
 
   const [reviewing, setReviewing] = useState({ submissionId: null, value: false });
 
+  const { data: pendingSubmissionsData, loading: pendingSubmissionsLoading } = useQuery(
+    FIND_SUBMISSIONS,
+    {
+      variables: {
+        filter: { AND: [{ status: { NE: 'approved' } }, { status: { NE: 'rejected' } }] },
+      },
+    }
+  );
+
+  const { data: approvedSubmissionsData, loading: approvedSubmissionsLoading } = useQuery(
+    FIND_SUBMISSIONS,
+    {
+      variables: { filter: { status: { EQ: 'approved' } } },
+    }
+  );
+
+  const { data: rejectedSubmissionsData, loading: rejectedSubmissionsLoading } = useQuery(
+    FIND_SUBMISSIONS,
+    {
+      variables: { filter: { status: { EQ: 'rejected' } } },
+    }
+  );
+
+  const [selectedView, setSelectedView] = useState('pending');
+
+  const submissionsLoading =
+    pendingSubmissionsLoading || approvedSubmissionsLoading || rejectedSubmissionsLoading;
+
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
+  const [rejectSubmission] = useMutation(REJECT_SUBMISSION, {
     update: (cache, { data }) => {
-      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
-      cache.evict({
+      const rejectedSubmission = data.rejectSubmission;
+
+      // Update the cache for the rejected submission
+      cache.modify({
         id: cache.identify({
-          __typename: data.deleteOneSubmission.__typename,
-          id: data.deleteOneSubmission._id,
+          __typename: rejectedSubmission.__typename,
+          id: rejectedSubmission._id,
         }),
+        fields: {
+          status() {
+            return 'rejected';
+          },
+        },
       });
     },
+    refetchQueries: [
+      {
+        query: FIND_SUBMISSIONS,
+        variables: {
+          filter: { AND: [{ status: { NE: 'approved' } }, { status: { NE: 'rejected' } }] },
+        },
+      },
+
+      {
+        query: FIND_SUBMISSIONS,
+        variables: {
+          filter: { status: { EQ: 'rejected' } },
+        },
+      },
+    ],
   });
 
   const addToast = useToastContext();
@@ -76,10 +127,21 @@ const SubmissionList = ({ data }) => {
   const allSelected = selectedRows.length === tableData.length && tableData.length > 0;
 
   useEffect(() => {
-    if (data) {
-      setTableData(data.submissions);
+    switch (selectedView) {
+      case 'pending':
+        setTableData(pendingSubmissionsData?.submissions || []);
+        break;
+      case 'approved':
+        setTableData(approvedSubmissionsData?.submissions || []);
+        break;
+      case 'rejected':
+        setTableData(rejectedSubmissionsData?.submissions || []);
+        break;
+      default:
+        setTableData(pendingSubmissionsData?.submissions || []);
+        break;
     }
-  }, [data]);
+  }, [pendingSubmissionsData, approvedSubmissionsData, rejectedSubmissionsData, selectedView]);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -191,6 +253,8 @@ const SubmissionList = ({ data }) => {
           <option value="incident_date">Incident date</option>
           <option value="date_published">Date published</option>
           <option value="date_submitted">Date submitted</option>
+          <option value="approved_at">Date approved</option>
+          <option value="rejected_at">Date rejected</option>
         </Select>
         <div className="w-1/2 max-w-[190px]">
           {
@@ -258,9 +322,10 @@ const SubmissionList = ({ data }) => {
       },
       reject: {
         confirmMessage: t(
-          'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+          'Are you sure you want to reject these submissions? This will change their status to "rejected".'
         ),
-        execute: (submissionId) => deleteSubmission({ variables: { _id: submissionId } }),
+        execute: (submissionId) =>
+          rejectSubmission({ variables: { input: { submission_id: submissionId } } }),
         successMessage: t(
           `Successfully rejected {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
           { count: selectedRows.length }
@@ -513,6 +578,10 @@ const SubmissionList = ({ data }) => {
         disableSortBy: true,
         disableResizing: true,
         Cell: ({ row: { values } }) => {
+          if (values.status === 'approved' || values.status === 'rejected') {
+            return null;
+          }
+
           const isAlreadyEditor = values?.incident_editors?.find(
             (editor) => editor.userId === user.id
           );
@@ -570,7 +639,7 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
+  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected, tableData]);
 
   const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
 
@@ -603,7 +672,7 @@ const SubmissionList = ({ data }) => {
   const claimSubmission = async (submissionId) => {
     setClaiming({ submissionId, value: true });
     try {
-      const submission = data.submissions.find((submission) => submission._id === submissionId);
+      const submission = tableData.find((submission) => submission._id === submissionId);
 
       const incidentEditors = [...submission.incident_editors];
 
@@ -637,7 +706,7 @@ const SubmissionList = ({ data }) => {
 
   const unclaimSubmission = async (submissionId) => {
     setClaiming({ submissionId, value: true });
-    const submission = data.submissions.find((submission) => submission._id === submissionId);
+    const submission = tableData.find((submission) => submission._id === submissionId);
 
     const incidentEditors = [...submission.incident_editors];
 
@@ -688,6 +757,10 @@ const SubmissionList = ({ data }) => {
     }
   };
 
+  if (submissionsLoading) {
+    return <ListSkeleton />;
+  }
+
   return (
     <div className="relative">
       {performingAction && (
@@ -721,9 +794,51 @@ const SubmissionList = ({ data }) => {
           </div>
         </div>
       )}
+      <Button.Group className="mb-4" data-testid="submissions-view">
+        <Button
+          color={`${selectedView === 'pending' ? 'dark' : 'gray'}`}
+          onClick={() => {
+            setSelectedView('pending');
+            const url = new URL(window.location);
+
+            url.searchParams.set('view', 'pending');
+            window.history.replaceState({}, '', url);
+          }}
+          data-testid="pending-submissions-button"
+        >
+          Pending
+        </Button>
+        <Button
+          className={`rounded-none`}
+          color={`${selectedView === 'approved' ? 'dark' : 'gray'}`}
+          onClick={() => {
+            setSelectedView('approved');
+            const url = new URL(window.location);
+
+            url.searchParams.set('view', 'approved');
+            window.history.replaceState({}, '', url);
+          }}
+          data-testid="approved-submissions-button"
+        >
+          Approved
+        </Button>
+        <Button
+          color={`${selectedView === 'rejected' ? 'dark' : 'gray'}`}
+          onClick={() => {
+            setSelectedView('rejected');
+            const url = new URL(window.location);
+
+            url.searchParams.set('view', 'rejected');
+            window.history.replaceState({}, '', url);
+          }}
+          data-testid="rejected-submissions-button"
+        >
+          Rejected
+        </Button>
+      </Button.Group>
       <Table
         table={table}
-        data-cy="submissions"
+        data-testid="submissions"
         className="mb-5 w-fit"
         tableClassName="rounded-lg border"
       />

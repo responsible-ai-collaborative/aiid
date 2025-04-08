@@ -38,11 +38,11 @@ test.describe('Submitted reports', () => {
 
         await page.goto(url);
 
-        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]')).toHaveCount(submissions.length);
+        await expect(page.locator('[data-testid="submissions"] [data-cy="row"]')).toHaveCount(submissions.length);
 
         for (let index = 0; index < submissions.length; index++) {
             const report = submissions[index];
-            const row = page.locator('[data-cy="submissions"] [data-cy="row"]').nth(index);
+            const row = page.locator('[data-testid="submissions"] [data-cy="row"]').nth(index);
 
             await expect(row.locator('[data-cy="cell"] [data-cy="review-submission"]')).not.toBeVisible();
 
@@ -101,6 +101,18 @@ test.describe('Submitted reports', () => {
         });
 
         expect(incidents.find((i) => i.incident_id === 4).reports.map((r) => r.report_number)).toContain(9);
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { _id: { EQ: "6140e4b4b9b4f7b3b3b1b1b1" } }) {
+                  _id
+                  status
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions[0].status).toBe('approved');
     });
 
     test('Promotes a submission to a new report and links it to an existing incident', async ({ page, login }) => {
@@ -133,6 +145,18 @@ test.describe('Submitted reports', () => {
         });
 
         expect(incidents.find((i) => i.incident_id === 1).reports.map((r) => r.report_number)).toContain(10);
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { _id: { EQ: "6140e4b4b9b4f7b3b3b1b1b1" } }) {
+                  _id
+                  status
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions[0].status).toBe('approved');
     });
 
     test('Promotes a submission to a new report and links it to multiple incidents', async ({ page, login }) => {
@@ -168,6 +192,18 @@ test.describe('Submitted reports', () => {
 
         expect(incidents.find((i) => i.incident_id === 2).reports.map((r) => r.report_number)).toContain(10);
         expect(incidents.find((i) => i.incident_id === 3).reports.map((r) => r.report_number)).toContain(10);
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { _id: { EQ: "6140e4b4b9b4f7b3b3b1b1b1" } }) {
+                  _id
+                  status
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions[0].status).toBe('approved');
     });
 
     test('Displays correct button text when multiple incidents are selected', async ({ page, login }) => {
@@ -209,6 +245,18 @@ test.describe('Submitted reports', () => {
         });
 
         expect(reports.find((r) => r.report_number === 9)).toBeDefined();
+
+        const { data: { submissions: updatedSubmissions } } = await query({
+          query: gql`{
+              submissions(filter: { _id: { EQ: "6140e4b4b9b4f7b3b3b1b1b1" } }) {
+                  _id
+                  status
+              }
+          }
+        `,
+        });
+
+        expect(updatedSubmissions[0].status).toBe('approved');
     });
 
     test('Rejects a submission', async ({ page, login }) => {
@@ -224,7 +272,7 @@ test.describe('Submitted reports', () => {
 
         page.on('dialog', dialog => dialog.accept());
 
-        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'DeleteSubmission');
+        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RejectSubmission');
 
         await page.locator('[data-cy="reject-button"]').click();
 
@@ -232,7 +280,7 @@ test.describe('Submitted reports', () => {
 
         const updated = await getSubmissions();
 
-        expect(updated.find((s) => s._id === submissions[0]._id)).toBeUndefined();
+        expect(updated.find((s) => s._id === submissions[0]._id).status).toBe('rejected');
     });
 
     test('Edits a submission - update just a text', async ({ page, login }) => {
@@ -838,12 +886,19 @@ test.describe('Submitted reports', () => {
           query: gql`{
               submissions {
                   _id
+                  status
               }
           }
         `,
         });
 
-        expect(updatedSubmissions.length).toBe(0);
+        expect(updatedSubmissions.filter((s) => s.status === 'rejected').length).toBe(submissions.length);
+
+        await expect(page.locator('[data-testid="submissions"] [data-cy="row"]')).toHaveCount(0);
+
+        await page.getByTestId("rejected-submissions-button").click();
+
+        await expect(page.locator('[data-testid="submissions"] [data-cy="row"]')).toHaveCount(submissions.length);
     });
 
     test('Should select and claim one submission', async ({ page, login }) => {
@@ -979,5 +1034,11 @@ test.describe('Submitted reports', () => {
   });
 
   expect(updatedSubmissions.length).toBe(0);
+
+  await expect(page.locator('[data-testid="submissions"] [data-cy="row"]')).toHaveCount(submissions.length - 1);
+
+  await page.getByTestId("rejected-submissions-button").click();
+
+  await expect(page.locator('[data-testid="submissions"] [data-cy="row"]')).toHaveCount(1);
   });
 });

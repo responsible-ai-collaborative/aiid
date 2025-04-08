@@ -136,9 +136,22 @@ const SubmitForm = () => {
   const { locale } = useLocalization();
 
   // See https://github.com/apollographql/apollo-client/issues/5419
-  useQuery(FIND_SUBMISSIONS);
+  useQuery(FIND_SUBMISSIONS, {
+    variables: {
+      filter: { AND: [{ status: { NE: 'approved' } }, { status: { NE: 'rejected' } }] },
+    },
+  });
 
-  const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
+  const [insertSubmission] = useMutation(INSERT_SUBMISSION, {
+    refetchQueries: [
+      {
+        query: FIND_SUBMISSIONS,
+        variables: {
+          filter: { AND: [{ status: { NE: 'approved' } }, { status: { NE: 'rejected' } }] },
+        },
+      },
+    ],
+  });
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
