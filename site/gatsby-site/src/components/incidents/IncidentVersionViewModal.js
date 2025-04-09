@@ -125,7 +125,7 @@ export default function IncidentVersionViewModal({
             incident={version}
             sortedReports={sortedReports}
             variants={variants}
-            metaTitle={version.title}
+            incidentTitle={version.title}
             entities={incidentEntities ?? []}
             timeline={timeline}
             locationPathName={null}

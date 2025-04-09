@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useQuery } from '@apollo/client';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
@@ -9,7 +9,6 @@ import { isCompleteReport } from 'utils/variants';
 import { FIND_FULL_INCIDENT, FIND_INCIDENT } from '../graphql/incidents';
 import CiteTemplate from 'templates/citeTemplate';
 import { FIND_CLASSIFICATION } from '../graphql/classifications';
-import { useTranslation } from 'react-i18next';
 
 function CiteDynamicTemplate({
   allMongodbAiidprodTaxa,
@@ -22,7 +21,7 @@ function CiteDynamicTemplate({
   locationPathName,
   setIsLiveData,
 }) {
-  const { locale: language } = useLocalization();
+  const { locale: language, config: availableLanguages } = useLocalization();
 
   const [loadingIncident, setLoadingIncident] = useState(true);
 
@@ -38,13 +37,11 @@ function CiteDynamicTemplate({
 
   const [classifications, setClassifications] = useState(null);
 
-  const { config: availableLanguages } = useLocalization();
-
   const { t } = useTranslation();
 
   // meta tags
 
-  const [metaTitle, setMetaTitle] = useState(null);
+  const [incidentTitle, setIncidentTitle] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
     variables: {
@@ -130,7 +127,7 @@ function CiteDynamicTemplate({
       }
 
       setEntities(entities);
-      setMetaTitle(`${t('Incident')} ${incidentTemp.incident_id}: ${incidentTemp.title}`);
+      setIncidentTitle(`${t('Incident')} ${incidentTemp.incident_id}: ${incidentTemp.title}`);
       setTimeline(timelineTemp);
       setSortedReports(sortedReports);
       setVariants(variantsTemp);
@@ -154,7 +151,7 @@ function CiteDynamicTemplate({
             incident={incident}
             sortedReports={sortedReports}
             variants={variants}
-            metaTitle={metaTitle}
+            incidentTitle={incidentTitle}
             entities={entities}
             timeline={timeline}
             locationPathName={locationPathName}

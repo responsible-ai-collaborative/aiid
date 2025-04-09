@@ -39,7 +39,7 @@ function CiteTemplate({
   incident,
   sortedReports,
   variants,
-  metaTitle,
+  incidentTitle,
   entities,
   timeline,
   locationPathName,
@@ -167,12 +167,13 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
+        {incident.isTranslated && <TranslationBadge className="mt-2" />}
         <div
           className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center"
           data-testid="incident-title-section"
         >
           <h1 data-testid="incident-title" className="text-2xl inline">
-            {metaTitle}
+            {incidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
             {incident.isTranslated && (
@@ -198,7 +199,7 @@ function CiteTemplate({
               <>
                 <div className="flex flex-wrap justify-end shrink">
                   <SocialShareButtons
-                    metaTitle={metaTitle}
+                    metaTitle={incidentTitle}
                     path={locationPathName}
                     page="cite"
                   ></SocialShareButtons>
@@ -250,7 +251,7 @@ function CiteTemplate({
           <Row>
             <Col>
               <div
-                className="flex flex-row items-center"
+                className={`${incident.isTranslated ? 'flex flex-wrap' : ''}`}
                 data-testid="incident-description-section"
               >
                 <strong>
@@ -262,9 +263,7 @@ function CiteTemplate({
                     <TranslationBadge className="mx-2" />
                   </div>
                 )}
-                <div className="ml-2" data-testid="incident-description">
-                  {incident.description}
-                </div>
+                {` ${incident.description}`}
               </div>
             </Col>
           </Row>
