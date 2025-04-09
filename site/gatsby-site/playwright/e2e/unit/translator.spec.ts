@@ -1,6 +1,6 @@
 import { ObjectId } from 'bson';
 import { test } from '../../utils';
-import Translator from '../../../src/scripts/Translator';
+import Translator from '../../../src/scripts/reportTranslator';
 import sinon from 'sinon';
 
 const reports = [

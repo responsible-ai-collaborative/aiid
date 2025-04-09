@@ -602,4 +602,11 @@ test.describe('Cite pages', () => {
         await expect(page.locator(`[data-cy="taxonomy-tag-CSETv1_Annotator"]`)).toHaveCount(0);
 
     });
+
+    test('Should display translated incident title and description', async ({ page }) => {
+        await page.goto('/es/cite/1');
+
+        await expect(page.locator('[data-testid="incident-title"]')).toHaveText('Incidente 1: Título del Incidente 1');
+        await expect(page.locator('[data-testid="incident-description-section"]').getByText('Descripción del incidente 1')).toBeVisible();
+    });
 });

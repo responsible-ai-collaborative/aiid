@@ -15,7 +15,7 @@ const keys = ['text', 'title'];
  * @property {function(string):void} warn
  */
 
-class Translator {
+class ReportTranslator {
   /**
    * @param {Object} options
    * @param {import('mongodb').MongoClient} options.mongoClient
@@ -248,4 +248,4 @@ class Translator {
   }
 }
 
-module.exports = Translator;
+module.exports = ReportTranslator;
