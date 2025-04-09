@@ -86,13 +86,13 @@ const PrismicBlogPost = ({ post, location }) => {
         </span>
       </div>
       {imageLoaded && (
-        <div className="flex flex-col md:flex-row mb-6 max-w-[65ch]">
+        <div className="flex flex-col md:flex-row mb-6 max-w-[750px]">
           <div className="w-full">
             <img src={post.data.image.url} alt={post.data.image.alt} data-testid="blog-image" />
           </div>
         </div>
       )}
-      <div className="prose" data-testid="blog-content">
+      <div className="prose post-styled-main-wrapper" data-testid="blog-content">
         <PrismicRichText field={post.data.content.richText} components={components} />
       </div>
     </>
