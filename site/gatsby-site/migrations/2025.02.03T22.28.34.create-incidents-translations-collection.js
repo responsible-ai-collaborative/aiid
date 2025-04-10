@@ -6,9 +6,20 @@
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  await client.db('translations').createCollection('incidents');
+  const db = client.db('translations');
 
-  const incidentsTranslationsCollection = client.db('translations').collection('incidents');
+  // Verificar si la colección ya existe
+  const collections = await db.listCollections().toArray();
+
+  const collectionExists = collections.some((collection) => collection.name === 'incidents');
+
+  if (!collectionExists) {
+    await db.createCollection('incidents');
+  } else {
+    console.log('translations.incidents collection already exists');
+  }
+
+  const incidentsTranslationsCollection = db.collection('incidents');
 
   incidentsTranslationsCollection.createIndex({ incident_id: 1 });
 };
