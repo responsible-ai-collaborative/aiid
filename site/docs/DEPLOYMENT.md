@@ -134,10 +134,9 @@ ALGOLIA_ADMIN_KEY
 
 Algolia index settings are uploaded at build time as part of the GitHub Actions workflow.
 
-Alternatively, you can update the settings and push the records without rebuilding by running the following command from the `site/gatsby-site` directory.
-
-```
-npm run algolia:push
+The CI pipeline will automatically update the Algolia indexes during deployment using:
+```bash
+npm run algolia-update:ci
 ```
 
 ## MongoDB
