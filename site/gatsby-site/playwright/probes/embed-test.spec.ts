@@ -3,7 +3,7 @@ import { SITE_URL } from '../../config';
 
 test.describe('AIID Embed Test Page', () => {
   test('should display specific AIID link buttons', async ({ page }) => {
-    await page.goto('https://aiid-embed-test.vercel.app');
+    await page.goto('https://aiid-embed-test.netlify.app');
 
     // Check for the first link
     const link1 = page.locator('a:has-text("See it on the AIID #1")');
