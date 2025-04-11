@@ -44,7 +44,6 @@ class LookupIndex {
 
   async run() {
     const incidentsCollection = this.client.db('aiidprod').collection('incidents');
-
     const reportsCollection = this.client.db('aiidprod').collection('reports');
 
     const incidentProjection = { incident_id: 1, title: 1, reports: 1 };
@@ -54,7 +53,6 @@ class LookupIndex {
     const incidents = await incidentsCollection
       .find({}, { projection: incidentProjection })
       .toArray();
-
     const reports = await reportsCollection.find({}, { projection: reportProjection }).toArray();
 
     if (this.optimized) {
@@ -87,19 +85,19 @@ class LookupIndex {
 
       fs.writeFileSync(this.filePath, JSON.stringify(urlIndex));
     } else {
-      // Include all data in non-optimized mode
+
       const mappedIncidents = incidents.map((incident) => {
         const reportDocs = reports.filter((report) =>
           incident.reports.includes(report.report_number)
         );
 
         return {
-          i: incident.incident_id,
-          t: incident.title,
-          r: reportDocs.map((report) => ({
-            n: report.report_number,
-            t: report.title,
-            u: report.url,
+          incident_id: incident.incident_id,
+          title: incident.title,
+          reports: reportDocs.map((report) => ({
+            report_number: report.report_number,
+            title: report.title,
+            url: report.url,
           })),
         };
       });

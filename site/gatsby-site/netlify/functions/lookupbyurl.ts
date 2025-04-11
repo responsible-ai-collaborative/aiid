@@ -42,20 +42,20 @@ async function handler(event: HandlerEvent) {
 
     const incidents = index.reduce((filtered, incident) => {
       if (
-        incident.r
+        incident.reports
           // some reports are missing the url, it should be fixed in the source but for now we'll filter them out
           // https://github.com/responsible-ai-collaborative/aiid/issues/2664
-          .filter((report) => isValidURL(report.u))
+          .filter((report) => isValidURL(report.url))
           .some((report) => {
-            const reportURL = new URL(report.u);
+            const reportURL = new URL(report.url);
 
             return reportURL.host + reportURL.pathname === parsedURL.host + parsedURL.pathname;
           })
       ) {
         filtered.push({
-          incident_id: incident.i,
-          title: incident.t,
-          url: `${siteConfig.gatsby.siteUrl}/cite/${incident.i}`,
+          incident_id: incident.incident_id,
+          title: incident.title,
+          url: `${siteConfig.gatsby.siteUrl}/cite/${incident.incident_id}`,
         });
       }
       return filtered;
@@ -64,16 +64,16 @@ async function handler(event: HandlerEvent) {
     result.incidents = incidents;
 
     const reports = index.reduce((filtered, incident) => {
-      incident.r
-        .filter((report) => isValidURL(report.u))
+      incident.reports
+        .filter((report) => isValidURL(report.url))
         .forEach((report) => {
-          const reportURL = new URL(report.u);
+          const reportURL = new URL(report.url);
 
           if (reportURL.host + reportURL.pathname === parsedURL.host + parsedURL.pathname) {
             filtered.push({
-              report_number: report.n,
-              title: report.t,
-              url: report.u,
+              report_number: report.report_number,
+              title: report.title,
+              url: report.url,
             });
           }
         });
