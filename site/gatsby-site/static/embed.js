@@ -1,7 +1,6 @@
 (function () {
   let lookupData = {};
 
-  // Default styles for the embed
   const styles = {
     container: `
       display: inline-block;
@@ -30,7 +29,6 @@
     `,
   };
 
-  // Simple helper to confirm a URL is parseable
   function isValidURL(str) {
     try {
       new URL(str);
@@ -40,9 +38,7 @@
     }
   }
 
-  // FNV-1a hash function for URL normalization with longer output
   function hashString(str) {
-    // Use two 32-bit hashes to create a 64-bit hash
     let h1 = 0x811c9dc5;
 
     let h2 = 0x811c9dc5;
@@ -67,7 +63,6 @@
     return parsedURL.host + parsedURL.pathname;
   }
 
-  // Given a report URL, find matching incident IDs from our local JSON
   function findIncidentIdsByReportUrl(url) {
     if (!isValidURL(url)) return [];
 
@@ -75,13 +70,10 @@
 
     const urlHash = hashString(normalizedUrl);
 
-    // Use the hash to look up incident IDs directly
     return lookupData[urlHash] || [];
   }
 
-  // Main initialization function
   async function initializeEmbeds() {
-    // Get the base URL from the current script's location
     const scriptEl = document.currentScript;
 
     if (!scriptEl) {
@@ -89,11 +81,9 @@
       return;
     }
 
-    // Get the base URL by removing '/embed.js' from the script's src
     const baseUrl = scriptEl.src.replace('/embed.js', '');
 
     try {
-      // Fetch the lookup index file
       const res = await fetch(`${baseUrl}/lookupIndex.json`);
 
       if (!res.ok) {
@@ -110,7 +100,6 @@
     const embedContainers = document.querySelectorAll('.aiid-embed');
 
     for (const container of embedContainers) {
-      // Apply container styles
       container.style.cssText = styles.container;
 
       const incidentId = container.dataset.incidentId;
@@ -120,20 +109,16 @@
       let incidentIds = [];
 
       if (incidentId) {
-        // If we already know the incident ID, just use that one
         incidentIds = [incidentId];
       } else if (reportUrl) {
-        // Otherwise, find all incident IDs matching that URL
         incidentIds = findIncidentIdsByReportUrl(reportUrl);
       }
 
-      // If we didn't find anything, show a fallback
       if (!incidentIds.length) {
         container.textContent = 'No associated incidents were found.';
         continue;
       }
 
-      // Build out the link(s)
       const buttonContainer = document.createElement('div');
 
       buttonContainer.style.cssText = styles.buttonContainer;
@@ -147,7 +132,6 @@
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
 
-        // Add hover effect
         link.addEventListener('mouseenter', () => {
           link.style.cssText = styles.button + styles.buttonHover;
         });
@@ -163,7 +147,6 @@
     }
   }
 
-  // Initialize when the DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeEmbeds);
   } else {

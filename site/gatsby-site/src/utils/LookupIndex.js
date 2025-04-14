@@ -1,8 +1,6 @@
 const fs = require('fs');
 
-// FNV-1a hash function for URL normalization with longer output
 function hashString(str) {
-  // Use two 32-bit hashes to create a 64-bit hash
   let h1 = 0x811c9dc5;
 
   let h2 = 0x811c9dc5;
@@ -17,7 +15,6 @@ function hashString(str) {
     h2 = (h2 * 16777619) >>> 0;
   }
 
-  // Combine the two hashes into a single string
   return h1.toString(36) + h2.toString(36);
 }
 
@@ -44,6 +41,7 @@ class LookupIndex {
 
   async run() {
     const incidentsCollection = this.client.db('aiidprod').collection('incidents');
+
     const reportsCollection = this.client.db('aiidprod').collection('reports');
 
     const incidentProjection = { incident_id: 1, title: 1, reports: 1 };
@@ -53,26 +51,23 @@ class LookupIndex {
     const incidents = await incidentsCollection
       .find({}, { projection: incidentProjection })
       .toArray();
+
     const reports = await reportsCollection.find({}, { projection: reportProjection }).toArray();
 
     if (this.optimized) {
-      // Only create URL to incident ID mapping
       const urlIndex = {};
 
-      // Process each incident
       incidents.forEach((incident) => {
         const reportDocs = reports.filter((report) =>
           incident.reports.includes(report.report_number)
         );
 
-        // Process each report URL
         reportDocs.forEach((report) => {
           if (report.url) {
             const normalizedUrl = normalizeURL(report.url);
 
             const urlHash = hashString(normalizedUrl);
 
-            // Add incident ID to the URL's incident list
             if (!urlIndex[urlHash]) {
               urlIndex[urlHash] = [];
             }
@@ -85,7 +80,6 @@ class LookupIndex {
 
       fs.writeFileSync(this.filePath, JSON.stringify(urlIndex));
     } else {
-
       const mappedIncidents = incidents.map((incident) => {
         const reportDocs = reports.filter((report) =>
           incident.reports.includes(report.report_number)
