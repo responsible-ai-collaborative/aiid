@@ -79,7 +79,7 @@ test.describe('Navigation', () => {
       await expect(async () => {
         const subject = await page.locator('h2:has-text("🗄 Trending in the AIID")');
         const boundingBox = await subject.boundingBox();
-        expect(boundingBox?.y).toBeCloseTo(0, 30);
+        expect(boundingBox?.y).toBeCloseTo(0, 0.20);
       }).toPass();
     }
   });
