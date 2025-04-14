@@ -45,4 +45,16 @@ test.describe('Translation Badges', () => {
     await expect(page.locator('a', { hasText: 'Ver Original' })).toBeVisible();
     await expect(page.locator('a', { hasText: 'Ver Original' })).toHaveAttribute('href', '/about_apps/');
   });
+
+  test('Should be visible on the incident page if it was translated', async ({ page }) => {
+    await page.goto('/es/cite/1');
+    await expect(page.locator('.titleWrapper').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+    await expect(page.locator('[data-testid="incident-description-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+  });
+
+  test('Should not be visible on the incident page if it was not translated', async ({ page }) => {
+    await page.goto('/es/cite/2');
+    await expect(page.locator('[data-testid="incident-title-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
+    await expect(page.locator('[data-testid="incident-description-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
+  });
 });

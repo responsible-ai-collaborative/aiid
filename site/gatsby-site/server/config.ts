@@ -9,6 +9,8 @@ export interface Config {
     SITE_URL: string;
     NEXTAUTH_URL: string,
     NEXTAUTH_SECRET: string,
+    GOOGLE_TRANSLATE_API_KEY: string;
+    MONGODB_TRANSLATIONS_CONNECTION_STRING: string;
 };
 
 const config: Config = {
@@ -20,6 +22,8 @@ const config: Config = {
     SITE_URL: process.env.SITE_URL! || process.env.URL!,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
+    GOOGLE_TRANSLATE_API_KEY: process.env.GOOGLE_TRANSLATE_API_KEY!,
+    MONGODB_TRANSLATIONS_CONNECTION_STRING: process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING!,
 };
 
 validateEnv(config);
