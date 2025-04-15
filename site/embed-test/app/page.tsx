@@ -1,11 +1,6 @@
 import Script from 'next/script';
 
-interface HomePageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-// The Page component now receives searchParams as a prop
-export default function Home({ searchParams }: HomePageProps) {
+export default function Home({ searchParams }: { searchParams: any }) {
   const baseUrl = searchParams?.embedBaseURL;
 
   if (typeof baseUrl !== 'string' || !baseUrl) {
@@ -37,7 +32,7 @@ export default function Home({ searchParams }: HomePageProps) {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
+
         {/* Card 1: Embed by Incident ID */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-md" suppressHydrationWarning={true}>
           <h2 className="text-xl font-semibold mb-4 text-blue-300">Embed by Incident ID (ID: 1)</h2>
@@ -47,7 +42,7 @@ export default function Home({ searchParams }: HomePageProps) {
   class="aiid-embed"
   data-incident-id="1"
 ></div>
-<script async src="${scriptSrc}"></script>`} 
+<script async src="${scriptSrc}"></script>`}
           </pre>
           <div className="mt-4">
             <p className="text-sm text-gray-400 mb-2">Rendered Embed:</p>
@@ -68,7 +63,7 @@ export default function Home({ searchParams }: HomePageProps) {
   class="aiid-embed"
   data-report-url="https://cofense.com/blog/clickbait-to-catastrophe-how-a-fake-meta-email-leads-to-password-plunder"
 ></div>
-<script async src="${scriptSrc}"></script>`} 
+<script async src="${scriptSrc}"></script>`}
           </pre>
           <div className="mt-4">
             <p className="text-sm text-gray-400 mb-2">Rendered Embed:</p>
@@ -80,7 +75,7 @@ export default function Home({ searchParams }: HomePageProps) {
         </div>
       </div>
 
-      <Script 
+      <Script
         id="aiid-embed-script"
         src={scriptSrc}
         strategy="afterInteractive"
