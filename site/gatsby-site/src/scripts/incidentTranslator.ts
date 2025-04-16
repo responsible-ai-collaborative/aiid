@@ -57,11 +57,11 @@ export default class IncidentTranslator {
    * Performs the actual translation of a given payload to a specified language.
    * If dryRun is true, it returns mocked results instead of calling the API.
    */
-  async translate({ payload, to }: { payload: string[]; to: string }): Promise<string[]> {
+  async translate({ payload, to }: { payload: string[]; to: string }): Promise<[string[], any]> {
     if (!this.dryRun) {
       return this.translateClient.translate(payload, { to });
     } else {
-      return payload.map((p) => `translated-${to}-${p}`);
+      return [payload.map((p) => `translated-${to}-${p}`), {}];
     }
   }
 
@@ -158,6 +158,7 @@ export default class IncidentTranslator {
       const translated: Document = {
         incident_id: t.incident_id,
         language,
+        created_at: new Date(),
       };
 
       for (const key of keys) {
@@ -186,7 +187,7 @@ export default class IncidentTranslator {
     }
 
     // Call the translation API (or mocked call if dryRun is true)
-    const results = await this.translate({ payload, to });
+    const [results] = await this.translate({ payload, to });
 
     // Apply each translated result to the correct field
     for (let i = 0; i < results.length; i++) {
