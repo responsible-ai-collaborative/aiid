@@ -39,7 +39,7 @@
   "Who created or built the technology involved in the incident?": "¿Quién creó o construyó la tecnología involucrada en el incidente?",
   "Who employed or was responsible for the technology?": "¿Quién utilizó o fue responsable de la tecnología?",
   "Who experienced negative impacts?": "¿Quién experimentó impactos negativos?",
-  "Your name as you would like it to appear in the leaderboard": "Tu nombre de la forma que te gustaría que apareciera en la clasificación",
+  "Enter your name for the leaderboard or leave blank for 'Anonymous'.": "Ingresa tu nombre para la clasificación o deja en blanco para 'Anónimo'.",
   "The author or authors of the report": "El autor o autores del informe",
   "Description": "Descripción",
   "Report Description": "Descripción del informe",
