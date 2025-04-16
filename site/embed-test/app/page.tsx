@@ -17,7 +17,7 @@ export default function Home({ searchParams }: { searchParams: any }) {
     );
   }
 
-  const scriptSrc = `${baseUrl}/embed.js`;
+  const scriptSrc = `${baseUrl}/embed.min.js`;
 
   console.log(`Rendering embed script server-side from: ${scriptSrc}`);
 
