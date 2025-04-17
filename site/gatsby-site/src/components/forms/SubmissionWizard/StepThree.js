@@ -13,9 +13,7 @@ import {
   faHandPointRight,
   faCode,
   faBolt,
-  faTag,
   faAlignLeft,
-  faStickyNote,
   faPenNib,
   faTenge,
   faGear,
@@ -419,38 +417,6 @@ const FormDetails = ({
             </FieldContainer>
           </>
         )}
-
-        <FieldContainer>
-          <TagsInputGroup
-            name="tags"
-            label={t('Tags')}
-            icon={faTag}
-            placeholder={t('Tags')}
-            schema={schema}
-            handleChange={handleChange}
-            handleBlur={handleBlur}
-            touched={touched}
-            values={values}
-            errors={errors}
-          />
-        </FieldContainer>
-
-        <FieldContainer>
-          <TextInputGroup
-            name="editor_notes"
-            label={t('Editor Notes')}
-            icon={faStickyNote}
-            type="textarea"
-            placeholder={t('Optional context and notes about the incident')}
-            rows={8}
-            schema={schema}
-            handleChange={handleChange}
-            handleBlur={handleBlur}
-            touched={touched}
-            values={values}
-            errors={errors}
-          />
-        </FieldContainer>
 
         <div className="flex justify-between mt-8">
           <Button
