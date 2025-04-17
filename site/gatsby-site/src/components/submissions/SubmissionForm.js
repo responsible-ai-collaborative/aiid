@@ -382,7 +382,7 @@ const SubmissionForm = ({ onChange = null, promoType = null }) => {
           </div>
         </div>
 
-        {(!values.incident_ids || values.incident_ids.length === 0) && promoType !== 'issue' && (
+        {(!values.incident_ids || values.incident_ids.length === 0) && promoType?.toLowerCase() !== 'issue' && (
           <div data-cy="incident-data-section">
             <hr className="my-4" />
             <h3 className="text-lg">Incident Data</h3>
