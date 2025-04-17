@@ -181,8 +181,8 @@ export const issueSchema = yup.object().shape({
   submitters: yup.array(
     yup
       .string()
-      .min(3, '*Submitter must have at least 3 characters')
-      .max(200, "*Submitter list can't be longer than 200 characters")
+      .min(3, '*Submitters must have at least 3 characters')
+      .max(200, "*Submitters can't be longer than 200 characters")
   ),
   text: yup
     .string()
