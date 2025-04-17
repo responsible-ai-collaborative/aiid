@@ -199,6 +199,7 @@ const StepThree = (props) => {
           setSavingInLocalStorage={props.setSavingInLocalStorage}
           submissionComplete={props.submissionComplete}
           submissionReset={props.submissionReset}
+          returning={props.returning}
         />
       </Formik>
     </StepContainer>
@@ -216,6 +217,7 @@ const FormDetails = ({
   submissionReset,
   entityNames,
   setSavingInLocalStorage,
+  returning,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -292,6 +294,16 @@ const FormDetails = ({
     setSavingInLocalStorage(true);
     saveInLocalStorage(values);
   }, [values]);
+
+  useEffect(() => {
+    if (returning) {
+      validateForm().then((invalidFields) => {
+        Object.keys(invalidFields).map((key) => {
+          setFieldTouched(key, true);
+        });
+      });
+    }
+  }, [returning]);
 
   return (
     <>
