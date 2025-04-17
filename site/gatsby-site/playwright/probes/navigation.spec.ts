@@ -70,6 +70,8 @@ test.describe('Navigation', () => {
     if (await postLink.count() > 0) {
       await postLink.click();
 
+      await page.getByTestId('blog-image').waitFor({ state: 'visible' });
+
       await page.locator('.rightSideTitle:has-text("CONTENTS")').waitFor({ state: 'visible' });
       const listItems = await page.locator('.rightSideBarUL li');
       expect(await listItems.count()).toBeGreaterThanOrEqual(1);
