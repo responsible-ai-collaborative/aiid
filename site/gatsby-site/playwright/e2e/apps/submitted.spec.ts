@@ -352,6 +352,8 @@ test.describe('Submitted reports', () => {
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Issue');
 
+        await expect(page.locator('[data-cy="incident-data-section"]')).not.toBeVisible();
+
         await page.locator('[data-cy="promote-button"]').click();
 
         await expect(page.locator('[data-cy="toast"]').first()).toContainText('*Title must have at least 6 characters');

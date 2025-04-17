@@ -353,7 +353,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             {values.status ? STATUS[values.status].text : STATUS.pendingReview.text}
           </Trans>
         </Badge>
-        <SubmissionForm />
+        <SubmissionForm promoType={promoType} />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
       <div className="flex md:w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
