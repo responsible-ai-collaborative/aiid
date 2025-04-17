@@ -118,7 +118,7 @@ const plugins = [
     resolve: 'gatsby-source-mongodb',
     options: {
       dbName: 'translations',
-      collection: ['reports'],
+      collection: ['reports', 'incidents'],
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,

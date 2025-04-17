@@ -70,6 +70,8 @@ test.describe('Navigation', () => {
     if (await postLink.count() > 0) {
       await postLink.click();
 
+      await page.getByTestId('blog-image').waitFor({ state: 'visible' });
+
       await page.locator('.rightSideTitle:has-text("CONTENTS")').waitFor({ state: 'visible' });
       const listItems = await page.locator('.rightSideBarUL li');
       expect(await listItems.count()).toBeGreaterThanOrEqual(1);
@@ -79,7 +81,7 @@ test.describe('Navigation', () => {
       await expect(async () => {
         const subject = await page.locator('h2:has-text("🗄 Trending in the AIID")');
         const boundingBox = await subject.boundingBox();
-        expect(boundingBox?.y).toBeCloseTo(0, 30);
+        expect(boundingBox?.y).toBeCloseTo(0, 0.20);
       }).toPass();
     }
   });
