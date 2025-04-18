@@ -26,6 +26,8 @@ import TextInputGroup from '../TextInputGroup';
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
 
+  const [hasNextStep, setHasNextStep] = useState(props.hasNextStep);
+
   // Schema for yup
   const stepTwoValidationSchema = yup.object().shape({
     submitters: yup
@@ -54,6 +56,10 @@ const StepTwo = (props) => {
     setData({ ...props.data });
   }, [props.data]);
 
+  useEffect(() => {
+    setHasNextStep(props.hasNextStep);
+  }, [props.hasNextStep]);
+
   return (
     <StepContainer name={props.name} childClassName="p-6">
       <Formik
@@ -72,6 +78,7 @@ const StepTwo = (props) => {
           setSavingInLocalStorage={props.setSavingInLocalStorage}
           submissionComplete={props.submissionComplete}
           submissionReset={props.submissionReset}
+          hasNextStep={hasNextStep}
         />
       </Formik>
     </StepContainer>
@@ -88,6 +95,7 @@ const FormDetails = ({
   submissionComplete,
   submissionReset,
   setSavingInLocalStorage,
+  hasNextStep,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -247,45 +255,47 @@ const FormDetails = ({
             </svg>
             <Trans>Previous</Trans>
           </Button>
-          <div className="flex justify-end gap-2">
-            <Button
-              data-cy="to-step-3"
-              color={'light'}
-              disabled={isSubmitting}
-              onClick={() => {
-                setSubmitCount(submitCount + 1);
-                validateAndSubmitForm(
-                  false,
-                  setIsSubmitting,
-                  isValid,
-                  validateForm,
-                  setFieldTouched,
-                  values,
-                  submitForm
-                );
-              }}
-            >
-              <span className="lg:hidden">
-                <Trans>More</Trans>
-              </span>
-              <span className="hidden lg:inline">
-                <Trans>Add more info</Trans>
-              </span>
-              <svg
-                aria-hidden="true"
-                className="ml-2 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+          {hasNextStep && (
+            <div className="flex justify-end gap-2">
+              <Button
+                data-cy="to-step-3"
+                color={'light'}
+                disabled={isSubmitting}
+                onClick={() => {
+                  setSubmitCount(submitCount + 1);
+                  validateAndSubmitForm(
+                    false,
+                    setIsSubmitting,
+                    isValid,
+                    validateForm,
+                    setFieldTouched,
+                    values,
+                    submitForm
+                  );
+                }}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </Button>
-          </div>
+                <span className="lg:hidden">
+                  <Trans>More</Trans>
+                </span>
+                <span className="hidden lg:inline">
+                  <Trans>Add more info</Trans>
+                </span>
+                <svg
+                  aria-hidden="true"
+                  className="ml-2 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </Button>
+            </div>
+          )}
         </div>
         <div className="flex justify-end mt-4">
           <SubmissionButton

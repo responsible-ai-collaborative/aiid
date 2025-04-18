@@ -31,6 +31,8 @@ const SubmissionWizard = ({
 
   const [parsingNews, setParsingNews] = useState(false);
 
+  const [isIssue, setIsIssue] = useState(false);
+
   const handleNextStep = async (newData, final = false) => {
     setSubmissionFailed(false);
     setSubmissionComplete(false);
@@ -189,9 +191,11 @@ const SubmissionWizard = ({
         urlFromQueryString={urlFromQueryString}
         submissionReset={submissionReset}
         setSavingInLocalStorage={setSavingInLocalStorage}
+        setIsIssue={setIsIssue}
       />,
       <StepTwo
         key={'submission-step-2'}
+        hasNextStep={!isIssue}
         next={handleNextStep}
         previous={handlePreviousStep}
         data={data}
@@ -202,22 +206,24 @@ const SubmissionWizard = ({
         submissionReset={submissionReset}
         setSavingInLocalStorage={setSavingInLocalStorage}
       />,
-      <StepThree
-        key={'submission-step-3'}
-        next={handleNextStep}
-        previous={handlePreviousStep}
-        data={data}
-        name={t('Step 3 - Tell us more')}
-        validateAndSubmitForm={validateAndSubmitForm}
-        submissionFailed={submissionFailed}
-        submissionComplete={submissionComplete}
-        submissionReset={submissionReset}
-        setSavingInLocalStorage={setSavingInLocalStorage}
-      />,
-    ];
+      !isIssue && (
+        <StepThree
+          key={'submission-step-3'}
+          next={handleNextStep}
+          previous={handlePreviousStep}
+          data={data}
+          name={t('Step 3 - Tell us more')}
+          validateAndSubmitForm={validateAndSubmitForm}
+          submissionFailed={submissionFailed}
+          submissionComplete={submissionComplete}
+          submissionReset={submissionReset}
+          setSavingInLocalStorage={setSavingInLocalStorage}
+        />
+      ),
+    ].filter(Boolean);
 
     setSteps(steps);
-  }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset]);
+  }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset, isIssue]);
 
   return <div>{steps[currentStep]}</div>;
 };
