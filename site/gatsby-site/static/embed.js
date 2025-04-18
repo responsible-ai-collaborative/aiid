@@ -84,7 +84,7 @@
       return;
     }
 
-    const baseUrl = scriptEl.src.replace('/embed.js', '');
+    const baseUrl = scriptEl.src.replace(/\/embed(?:\.min)?\.js$/, '');
 
     try {
       const res = await fetch(`${baseUrl}/lookupIndex.json`);
