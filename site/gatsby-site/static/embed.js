@@ -38,6 +38,10 @@
     }
   }
 
+  /**
+   * Generates a hash string from input using FNV-1a algorithm.
+   * WARNING: Must match the implementation in LookupIndex.js; changing it will break links
+   */
   function hashString(str) {
     let h1 = 0x811c9dc5;
 
@@ -53,7 +57,6 @@
       h2 = (h2 * 16777619) >>> 0;
     }
 
-    // Combine the two hashes into a single string
     return h1.toString(36) + h2.toString(36);
   }
 
