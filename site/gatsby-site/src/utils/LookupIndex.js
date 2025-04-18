@@ -1,5 +1,9 @@
 const fs = require('fs');
 
+/**
+ * Generates a hash string from input using FNV-1a algorithm.
+ * WARNING: Must match the implementation in embed.js; changing it will break links
+ */
 function hashString(str) {
   let h1 = 0x811c9dc5;
 
@@ -18,6 +22,9 @@ function hashString(str) {
   return h1.toString(36) + h2.toString(36);
 }
 
+/**
+ * Normalizes a URL to host + pathname, falling back to original string on parse failure.
+ */
 function normalizeURL(url) {
   try {
     const parsedURL = new URL(url);
@@ -28,6 +35,10 @@ function normalizeURL(url) {
   }
 }
 
+/**
+ * Builds a lookup index of incident IDs by report URL.
+ * When optimized is true, outputs a hash-based index for fast lookups.
+ */
 class LookupIndex {
   constructor({ client, filePath, optimized = false }) {
     /**
