@@ -192,7 +192,6 @@ const SubmissionWizard = ({
       />,
       <StepTwo
         key={'submission-step-2'}
-        hasNextStep={data.is_incident_report}
         next={handleNextStep}
         previous={handlePreviousStep}
         data={data}
@@ -203,20 +202,18 @@ const SubmissionWizard = ({
         submissionReset={submissionReset}
         setSavingInLocalStorage={setSavingInLocalStorage}
       />,
-      data.is_incident_report && (
-        <StepThree
-          key={'submission-step-3'}
-          next={handleNextStep}
-          previous={handlePreviousStep}
-          data={data}
-          name={t('Step 3 - Tell us more')}
-          validateAndSubmitForm={validateAndSubmitForm}
-          submissionFailed={submissionFailed}
-          submissionComplete={submissionComplete}
-          submissionReset={submissionReset}
-          setSavingInLocalStorage={setSavingInLocalStorage}
-        />
-      ),
+      <StepThree
+        key={'submission-step-3'}
+        next={handleNextStep}
+        previous={handlePreviousStep}
+        data={data}
+        name={t('Step 3 - Tell us more about the incident')}
+        validateAndSubmitForm={validateAndSubmitForm}
+        submissionFailed={submissionFailed}
+        submissionComplete={submissionComplete}
+        submissionReset={submissionReset}
+        setSavingInLocalStorage={setSavingInLocalStorage}
+      />,
     ].filter(Boolean);
 
     setSteps(steps);

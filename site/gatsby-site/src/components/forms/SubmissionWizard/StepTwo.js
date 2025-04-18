@@ -231,25 +231,32 @@ const FormDetails = ({
           />
         </FieldContainer>
 
-        <div className="flex justify-between mt-8">
-          <Button type="button" color={'light'} onClick={() => previous(values)}>
-            <svg
-              aria-hidden="true"
-              className="mr-2 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            <Trans>Previous</Trans>
-          </Button>
-          {data.is_incident_report && data.incident_ids.length == 0 && (
-            <div className="flex justify-end gap-2">
+        <div
+          className={`flex ${
+            data.is_incident_report && data.incident_ids.length == 0
+              ? 'flex-col'
+              : 'justify-between'
+          } mt-8`}
+        >
+          <div className="flex justify-between">
+            <Button type="button" color={'light'} onClick={() => previous(values)}>
+              <svg
+                aria-hidden="true"
+                className="mr-2 w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              <Trans>Previous</Trans>
+            </Button>
+
+            {data.is_incident_report && data.incident_ids.length == 0 && (
               <Button
                 data-cy="to-step-3"
                 color={'light'}
@@ -287,26 +294,33 @@ const FormDetails = ({
                   ></path>
                 </svg>
               </Button>
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end mt-4">
-          <SubmissionButton
-            data-cy="submit-step-2"
-            disabled={isSubmitting}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                true,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          />
+            )}
+          </div>
+
+          <div
+            className={`flex ${
+              data.is_incident_report && data.incident_ids.length == 0
+                ? 'justify-end mt-4'
+                : 'justify-between'
+            }`}
+          >
+            <SubmissionButton
+              data-cy="submit-step-2"
+              disabled={isSubmitting}
+              onClick={() => {
+                setSubmitCount(submitCount + 1);
+                validateAndSubmitForm(
+                  true,
+                  setIsSubmitting,
+                  isValid,
+                  validateForm,
+                  setFieldTouched,
+                  values,
+                  submitForm
+                );
+              }}
+            />
+          </div>
         </div>
       </Form>
 
