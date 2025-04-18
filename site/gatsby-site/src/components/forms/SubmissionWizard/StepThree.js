@@ -26,7 +26,6 @@ const StepThree = (props) => {
   const [data, setData] = useState(props.data);
 
   const stepThreeValidationSchema = yup.object().shape({
-    editor_notes: yup.string(),
     incident_title: yup.string(),
     incident_editors: yup.array().of(yup.string()).nullable(),
     description: yup

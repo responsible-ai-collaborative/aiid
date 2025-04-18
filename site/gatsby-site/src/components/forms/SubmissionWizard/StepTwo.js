@@ -26,8 +26,6 @@ import TextInputGroup from '../TextInputGroup';
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
 
-  const [hasNextStep, setHasNextStep] = useState(props.hasNextStep);
-
   // Schema for yup
   const stepTwoValidationSchema = yup.object().shape({
     submitters: yup
@@ -46,6 +44,7 @@ const StepTwo = (props) => {
         /((https?):\/\/)(\S)*$/,
         '*Must enter URL in http://www.example.com/images/preview.png format'
       ),
+    editor_notes: yup.string(),
   });
 
   const handleSubmit = (values, last) => {
@@ -55,10 +54,6 @@ const StepTwo = (props) => {
   useEffect(() => {
     setData({ ...props.data });
   }, [props.data]);
-
-  useEffect(() => {
-    setHasNextStep(props.hasNextStep);
-  }, [props.hasNextStep]);
 
   return (
     <StepContainer name={props.name} childClassName="p-6">
@@ -78,7 +73,6 @@ const StepTwo = (props) => {
           setSavingInLocalStorage={props.setSavingInLocalStorage}
           submissionComplete={props.submissionComplete}
           submissionReset={props.submissionReset}
-          hasNextStep={hasNextStep}
         />
       </Formik>
     </StepContainer>
@@ -95,7 +89,6 @@ const FormDetails = ({
   submissionComplete,
   submissionReset,
   setSavingInLocalStorage,
-  hasNextStep,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -255,7 +248,7 @@ const FormDetails = ({
             </svg>
             <Trans>Previous</Trans>
           </Button>
-          {hasNextStep && (
+          {data.is_incident_report && data.incident_ids.length == 0 && (
             <div className="flex justify-end gap-2">
               <Button
                 data-cy="to-step-3"
