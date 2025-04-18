@@ -117,8 +117,23 @@
         incidentIds = findIncidentIdsByReportUrl(reportUrl);
       }
 
+      const rawEmpty = container.dataset.emptyTextMessage;
+
+      const emptyText = rawEmpty === undefined ? 'No incidents found' : rawEmpty;
+
       if (!incidentIds.length) {
-        container.textContent = 'No associated incidents were found.';
+        if (emptyText === '') {
+          container.style.display = 'none';
+        } else {
+          container.innerHTML = '';
+          const disabledLink = document.createElement('a');
+
+          disabledLink.textContent = emptyText;
+          disabledLink.style.cssText =
+            styles.button + ' opacity: 0.5; cursor: not-allowed; pointer-events: none;';
+          disabledLink.setAttribute('aria-disabled', 'true');
+          container.appendChild(disabledLink);
+        }
         continue;
       }
 
