@@ -100,7 +100,6 @@ const StepOne = (props) => {
           submissionReset={props.submissionReset}
           urlFromQueryString={props.urlFromQueryString}
           setSavingInLocalStorage={props.setSavingInLocalStorage}
-          setIsIssue={props.setIsIssue}
         />
       </Formik>
     </StepContainer>
@@ -118,7 +117,6 @@ const FormDetails = ({
   submissionReset,
   urlFromQueryString,
   setSavingInLocalStorage,
-  setIsIssue,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -178,9 +176,6 @@ const FormDetails = ({
   useEffect(() => {
     if (values.is_incident_report === null || values.is_incident_report === undefined) {
       setFieldValue('is_incident_report', true);
-      setIsIssue(false);
-    } else {
-      setIsIssue(!values.is_incident_report);
     }
   }, [values.is_incident_report]);
 
@@ -402,7 +397,6 @@ const FormDetails = ({
               color={!values.is_incident_report ? 'dark' : 'light'}
               onClick={() => {
                 setFieldValue('is_incident_report', false);
-                setIsIssue(true);
               }}
             >
               {t('Issue')}

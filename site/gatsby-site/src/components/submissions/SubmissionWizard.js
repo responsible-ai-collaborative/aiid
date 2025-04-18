@@ -31,8 +31,6 @@ const SubmissionWizard = ({
 
   const [parsingNews, setParsingNews] = useState(false);
 
-  const [isIssue, setIsIssue] = useState(false);
-
   const handleNextStep = async (newData, final = false) => {
     setSubmissionFailed(false);
     setSubmissionComplete(false);
@@ -191,11 +189,10 @@ const SubmissionWizard = ({
         urlFromQueryString={urlFromQueryString}
         submissionReset={submissionReset}
         setSavingInLocalStorage={setSavingInLocalStorage}
-        setIsIssue={setIsIssue}
       />,
       <StepTwo
         key={'submission-step-2'}
-        hasNextStep={!isIssue}
+        hasNextStep={data.is_incident_report}
         next={handleNextStep}
         previous={handlePreviousStep}
         data={data}
@@ -206,7 +203,7 @@ const SubmissionWizard = ({
         submissionReset={submissionReset}
         setSavingInLocalStorage={setSavingInLocalStorage}
       />,
-      !isIssue && (
+      data.is_incident_report && (
         <StepThree
           key={'submission-step-3'}
           next={handleNextStep}
@@ -223,7 +220,7 @@ const SubmissionWizard = ({
     ].filter(Boolean);
 
     setSteps(steps);
-  }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset, isIssue]);
+  }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset]);
 
   return <div>{steps[currentStep]}</div>;
 };
