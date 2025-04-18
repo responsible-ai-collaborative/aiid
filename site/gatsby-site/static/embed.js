@@ -126,11 +126,17 @@
 
       buttonContainer.style.cssText = styles.buttonContainer;
 
+      const textTemplate =
+        container.dataset.textTemplate || 'View incident #{{incident_id}} on AIID';
+
       for (const id of incidentIds) {
         const link = document.createElement('a');
 
         link.href = `${baseUrl}/cite/${id}`;
-        link.textContent = `See it on the AIID #${id}`;
+
+        const linkText = textTemplate.replace(/{{\s*incident_id\s*}}/g, id);
+
+        link.textContent = linkText;
         link.style.cssText = styles.button;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
