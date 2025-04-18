@@ -207,14 +207,14 @@ const SubmissionWizard = ({
         next={handleNextStep}
         previous={handlePreviousStep}
         data={data}
-        name={t('Step 3 - Tell us more')}
+        name={t('Step 3 - Tell us more about the incident')}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
         submissionReset={submissionReset}
         setSavingInLocalStorage={setSavingInLocalStorage}
       />,
-    ];
+    ].filter(Boolean);
 
     setSteps(steps);
   }, [data, submissionFailed, parsingNews, submissionComplete, submissionReset]);

@@ -52,7 +52,7 @@
   "Enter a valid Incident ID": "Ingrese un ID de Incidente válido",
   "Step 1 - main information": "Paso 1 - información principal",
   "Step 2 - additional information": "Paso 2 - información adicional",
-  "Step 3 - Tell us more": "Paso 3 - Cuéntanos más",
+  "Step 3 - Tell us more about the incident": "Paso 3 - Cuéntanos más sobre el incidente",
   "Adding a new report to incident {{incident_id}}": "Agregando un nuevo informe al incidente {{incident_id}}",
   "Adding a new response to incident {{incident_id}}": "Agregando una nueva respuesta al incidente {{incident_id}}",
   "Progress saved!": "¡Progreso guardado!",

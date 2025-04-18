@@ -176,6 +176,8 @@ const SubmitForm = () => {
 
       const source_domain = getSourceDomain(url);
 
+      delete values.is_incident_report;
+
       const submission = {
         ...values,
         source_domain,

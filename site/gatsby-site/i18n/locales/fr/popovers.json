@@ -94,5 +94,9 @@
     "developers": {
         "title": "Développeur présumé du système d'IA",
         "text": "S'il y en a plusieurs, appuyez sur “enter” pour commencer un nouvel élément"
+    },
+    "report_type": {
+        "title": "Type de rapport",
+        "text": "Incident = Harm (or near harm) that already happened.<br />Issue = A potential harm that has not happened yet.<br />Pick based on whether the AI system has already caused impact."
     }
 }

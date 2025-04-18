@@ -63,6 +63,11 @@ test.describe('The Submit form', () => {
 
         await page.locator('[name="language"]').selectOption('Spanish');
 
+        await page.locator('[name="tags"]').fill('New Tag');
+        await page.keyboard.press('Enter');
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
         await page.locator('[data-cy="to-step-3"]').click();
 
         await expect(page.locator('[name="incident_title"]')).not.toBeVisible();
@@ -70,11 +75,6 @@ test.describe('The Submit form', () => {
         await page.locator('[name="description"]').fill('Description');
 
         await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
-
-        await page.locator('[name="tags"]').fill('New Tag');
-        await page.keyboard.press('Enter');
-
-        await page.locator('[name="editor_notes"]').fill('Here are some notes');
 
         await page.locator('button[type="submit"]').click();
 
@@ -195,6 +195,11 @@ test.describe('The Submit form', () => {
 
         await page.locator('[name="language"]').selectOption('Spanish');
 
+        await page.locator('[name="tags"]').fill('New Tag');
+        await page.keyboard.press('Enter');
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
         await page.locator('[data-cy="to-step-3"]').click();
 
         await findUsersResponse;
@@ -204,11 +209,6 @@ test.describe('The Submit form', () => {
         await page.locator('[name="description"]').fill('Description');
 
         await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
-
-        await page.locator('[name="tags"]').fill('New Tag');
-        await page.keyboard.press('Enter');
-
-        await page.locator('[name="editor_notes"]').fill('Here are some notes');
 
         await page.locator('button[type="submit"]').click();
 
@@ -289,7 +289,12 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="to-step-2"]').click();
 
-        await page.locator('[data-cy="to-step-3"]').click();
+        await page.locator('[name="tags"]').fill('New Tag');
+        await page.keyboard.press('Enter');
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
 
         await expect(page.locator('[name="incident_title"]')).not.toBeVisible();
 
@@ -297,15 +302,9 @@ test.describe('The Submit form', () => {
 
         await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
 
-        await page.locator('[name="tags"]').fill('New Tag');
-        await page.keyboard.press('Enter');
-
-        await page.locator('[name="editor_notes"]').fill('Here are some notes');
-
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-2"]').click();
 
         await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
-
 
         await login();
 
@@ -379,9 +378,9 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="to-step-2"]').click();
 
-        await page.locator('[data-cy="to-step-3"]').click();
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-2"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
     });
@@ -426,9 +425,9 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="to-step-2"]').click();
 
-        await page.locator('[data-cy="to-step-3"]').click();
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-2"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
 
@@ -777,24 +776,15 @@ test.describe('The Submit form', () => {
             submitters: 'test submitter',
             image_url: 'https://incidentdatabase.ai/image.jpg',
         };
-
+        
         for (const key in valuesStep2) {
-            await page.locator(`input[name="${key}"]`).fill(valuesStep2[key]);
+          await page.locator(`input[name="${key}"]`).fill(valuesStep2[key]);
         }
+        
+        await page.locator(`textarea[name="editor_notes"]`).fill('Here are some notes');
+        await expect(page.locator('[name="editor_notes"]')).toBeVisible();
 
         await page.mouse.click(0, 0);
-
-        await page.locator('[data-cy="to-step-3"]').click();
-
-        const valuesStep3 = {
-            editor_notes: 'Here are some notes',
-        };
-
-        for (const key in valuesStep3) {
-            await page.locator(`textarea[name="${key}"]`).fill(valuesStep3[key]);
-        }
-
-        await expect(page.locator('[name="editor_notes"]')).toBeVisible();
     });
 
     test('Should show a popover', async ({ page }) => {
@@ -860,9 +850,9 @@ test.describe('The Submit form', () => {
 
         await page.locator('input[name="submitters"]').fill('Something');
 
-        await page.locator('[data-cy="to-step-3"]').click();
-
         await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
+        await page.locator('[data-cy="to-step-3"]').click();
 
         await page.locator('button[type="submit"]').click();
 
@@ -1012,9 +1002,9 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="to-step-2"]').click();
 
-        await page.locator('[data-cy="to-step-3"]').click();
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-2"]').click();
     });
 
     test('Should show related reports based on author and add as similar', async ({ page }) => {
@@ -1151,17 +1141,11 @@ test.describe('The Submit form', () => {
             await page.locator(`input[name="${key}"]`).fill(valuesStep2[key]);
         }
 
+        await page.locator(`textarea[name="editor_notes"]`).fill('Here are some notes');
+
         await page.mouse.click(0, 0);
 
-        await page.locator('[data-cy="to-step-3"]').click();
-
-        const valuesStep3 = {
-            editor_notes: 'Here are some notes',
-        };
-
-        for (const key in valuesStep3) {
-            await page.locator(`textarea[name="${key}"]`).fill(valuesStep3[key]);
-        }
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
 
         await expect(page.locator('input[name="description"]')).not.toBeVisible();
         await expect(page.locator('input[name="deployers"]')).not.toBeVisible();
@@ -1330,6 +1314,7 @@ test.describe('The Submit form', () => {
             submitters: 'test submitter',
             image_url: 'https://incidentdatabase.ai/image.jpg',
             language: 'en',
+            editor_notes: 'Here are some notes',
         };
 
         for (const key in valuesStep2) {
@@ -1346,7 +1331,6 @@ test.describe('The Submit form', () => {
             developers: 'test developer',
             deployers: 'test deployer',
             harmed_parties: 'test harmed_parties',
-            editor_notes: 'Here are some notes',
         };
 
         for (const key in valuesStep3) {

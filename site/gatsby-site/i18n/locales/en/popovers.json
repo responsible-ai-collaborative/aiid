@@ -94,5 +94,9 @@
     "similarIncidentSearch": {
         "title": "Search for similar incidents",
         "text": "Search for a similar or dissimilar incident by typing an incident ID. If the resulting incident is similar click 'Yes', if it's dissimilar click 'No'. If you're not sure click 'Not sure'. Once selected, the incident will be added to the 'Manually-selected similar and dissimilar incidents' section of the form. Once added, if you want to remove it, click the 'Not Sure' button."
+    },
+    "report_type": {
+        "title": "Report Type",
+        "text": "Incident = Harm (or near harm) that already happened.<br />Issue = A potential harm that has not happened yet.<br />Pick based on whether the AI system has already caused impact."
     }
 }
