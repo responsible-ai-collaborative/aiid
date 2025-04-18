@@ -873,6 +873,7 @@ export type Incident = {
   AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Entity>>>;
   AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Entity>>>;
   _id?: Maybe<Scalars['ObjectId']['output']>;
+  classifications?: Maybe<Array<Maybe<Classification>>>;
   created_at?: Maybe<Scalars['DateTime']['output']>;
   date: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
