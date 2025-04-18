@@ -73,6 +73,29 @@ export default function Home({ searchParams }: { searchParams: any }) {
             ></div>
           </div>
         </div>
+
+        {/* Card 3: Embed with Custom Text Template */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md" suppressHydrationWarning={true}>
+          <h2 className="text-xl font-semibold mb-4 text-blue-300">Embed with Custom Text Template</h2>
+          <p className="text-sm text-gray-400 mb-2">Embed Code (custom link text):</p>
+          <pre className="bg-gray-700 p-3 rounded text-sm overflow-x-auto text-gray-300">
+            {`<div
+  class="aiid-embed"
+  data-incident-id="2"
+  data-text-template="Explore incident {{incident_id}} details"
+></div>
+<script async src="${scriptSrc}"></script>`}
+          </pre>
+          <div className="mt-4">
+            <p className="text-sm text-gray-400 mb-2">Rendered Embed:</p>
+            <div
+              className="aiid-embed"
+              data-incident-id="2"
+              data-text-template="Explore incident {{incident_id}} details"
+              suppressHydrationWarning={true}
+            ></div>
+          </div>
+        </div>
       </div>
 
       <Script
