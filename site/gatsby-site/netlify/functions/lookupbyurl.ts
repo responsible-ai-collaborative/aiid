@@ -18,7 +18,6 @@ const isValidURL = (string) => {
 };
 
 async function handler(event: HandlerEvent) {
-
   const parsedUrl = new URL(event.rawUrl);
 
   const urls = [...parsedUrl.searchParams.getAll('urls'), ...parsedUrl.searchParams.getAll('urls[]')];
@@ -26,7 +25,6 @@ async function handler(event: HandlerEvent) {
   const errors = requestValidator.validateRequest({ query: { urls } });
 
   if (errors) {
-
     return {
       statusCode: 400,
       body: JSON.stringify(errors),

@@ -14,3 +14,4 @@ node_modules
 /playwright/.cache/
 
 /netlify/functions/lookupIndex.json
+/static/lookupIndex.json
