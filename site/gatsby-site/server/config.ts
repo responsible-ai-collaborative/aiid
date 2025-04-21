@@ -11,6 +11,8 @@ export interface Config {
     NEXTAUTH_SECRET: string,
     GATSBY_PRISMIC_REPO_NAME: string,
     PRISMIC_ACCESS_TOKEN: string,
+    GOOGLE_TRANSLATE_API_KEY: string;
+    MONGODB_TRANSLATIONS_CONNECTION_STRING: string;
 };
 
 const config: Config = {
@@ -24,6 +26,8 @@ const config: Config = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
     GATSBY_PRISMIC_REPO_NAME: process.env.GATSBY_PRISMIC_REPO_NAME!,
     PRISMIC_ACCESS_TOKEN: process.env.PRISMIC_ACCESS_TOKEN!,
+    GOOGLE_TRANSLATE_API_KEY: process.env.GOOGLE_TRANSLATE_API_KEY!,
+    MONGODB_TRANSLATIONS_CONNECTION_STRING: process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING!,
 };
 
 validateEnv(config);

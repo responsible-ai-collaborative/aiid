@@ -43,4 +43,6 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL }}
           NEXTAUTH_URL: ${{ vars.SITE_URL }} # next auth requires this variables to be set
           NEXTAUTH_SECRET: dummy # unless we want to send emails with the magic link from this workflow, we don't need the actual secret
+          GOOGLE_TRANSLATE_API_KEY: dummy
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
         run: npm run process-notifications:ci
