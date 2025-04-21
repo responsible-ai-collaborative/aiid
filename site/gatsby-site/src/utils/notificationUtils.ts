@@ -1,7 +1,19 @@
+import { Collection } from 'mongodb';
+import { Notification } from '../../server/generated/graphql';
+
+/**
+ * Handles notification errors by marking notifications as not processed
+ * and appending an error message before throwing the error.
+ * 
+ * @param error - The error object to be handled.
+ * @param notificationsCollection - The collection of notifications.
+ * @param pendingNotifications - The notifications that are pending.
+ * @param errorMessage - The error message to append.
+ */
 export async function handleNotificationError(
-  error: any,
-  notificationsCollection: any,
-  pendingNotifications: any,
+  error: Error,
+  notificationsCollection: Collection<Notification>,
+  pendingNotifications: Notification[],
   errorMessage: string
 ) {
   await markNotificationsAsNotProcessed(notificationsCollection, pendingNotifications);
@@ -9,9 +21,16 @@ export async function handleNotificationError(
   throw error;
 }
 
+/**
+ * Marks notifications as processed or not processed in the collection.
+ * 
+ * @param notificationsCollection - The collection of notifications.
+ * @param notifications - The notifications to be updated.
+ * @param isProcessed - Boolean indicating if notifications are processed.
+ */
 async function markNotifications(
-  notificationsCollection: any,
-  notifications: any,
+  notificationsCollection: Collection<Notification>,
+  notifications: Notification[],
   isProcessed: boolean
 ) {
   for (const pendingNotification of notifications) {
@@ -22,13 +41,28 @@ async function markNotifications(
   }
 }
 
+/**
+ * Marks notifications as not processed in the collection.
+ * 
+ * @param notificationsCollection - The collection of notifications.
+ * @param notifications - The notifications to be marked as not processed.
+ */
 export async function markNotificationsAsNotProcessed(
-  notificationsCollection: any,
-  notifications: any
+  notificationsCollection: Collection<Notification>,
+  notifications: Notification[]
 ) {
   await markNotifications(notificationsCollection, notifications, false);
 } 
 
-export const markNotificationsAsProcessed = async (notificationsCollection: any, notifications: any) => {
+/**
+ * Marks notifications as processed in the collection.
+ * 
+ * @param notificationsCollection - The collection of notifications.
+ * @param notifications - The notifications to be marked as processed.
+ */
+export const markNotificationsAsProcessed = async (
+  notificationsCollection: Collection<Notification>,
+  notifications: Notification[]
+) => {
   await markNotifications(notificationsCollection, notifications, true);
 }
