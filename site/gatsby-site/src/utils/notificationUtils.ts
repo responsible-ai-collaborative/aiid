@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb';
-import { Notification } from '../../server/generated/graphql';
+import { DBNotification } from '../../server/interfaces';
 
 /**
  * Handles notification errors by marking notifications as not processed
@@ -12,8 +12,8 @@ import { Notification } from '../../server/generated/graphql';
  */
 export async function handleNotificationError(
   error: Error,
-  notificationsCollection: Collection<Notification>,
-  pendingNotifications: Notification[],
+  notificationsCollection: Collection<DBNotification>,
+  pendingNotifications: DBNotification[],
   errorMessage: string
 ) {
   await markNotificationsAsNotProcessed(notificationsCollection, pendingNotifications);
@@ -29,8 +29,8 @@ export async function handleNotificationError(
  * @param isProcessed - Boolean indicating if notifications are processed.
  */
 async function markNotifications(
-  notificationsCollection: Collection<Notification>,
-  notifications: Notification[],
+  notificationsCollection: Collection<DBNotification>,
+  notifications: DBNotification[],
   isProcessed: boolean
 ) {
   for (const pendingNotification of notifications) {
@@ -48,8 +48,8 @@ async function markNotifications(
  * @param notifications - The notifications to be marked as not processed.
  */
 export async function markNotificationsAsNotProcessed(
-  notificationsCollection: Collection<Notification>,
-  notifications: Notification[]
+  notificationsCollection: Collection<DBNotification>,
+  notifications: DBNotification[]
 ) {
   await markNotifications(notificationsCollection, notifications, false);
 } 
@@ -61,8 +61,8 @@ export async function markNotificationsAsNotProcessed(
  * @param notifications - The notifications to be marked as processed.
  */
 export const markNotificationsAsProcessed = async (
-  notificationsCollection: Collection<Notification>,
-  notifications: Notification[]
+  notificationsCollection: Collection<DBNotification>,
+  notifications: DBNotification[]
 ) => {
   await markNotifications(notificationsCollection, notifications, true);
 }
