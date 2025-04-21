@@ -2,8 +2,9 @@ import { Translate } from '@google-cloud/translate/build/src/v2';
 import { queue } from 'async';
 import { cloneDeep } from 'lodash';
 import { Document, MongoClient } from 'mongodb';
+import { translationsFields } from '../graphql/incident_translations';
 
-const keys: string[] = ['title', 'description'];
+const keys: string[] = translationsFields;
 
 interface Reporter {
   log: (...args: any[]) => void;
