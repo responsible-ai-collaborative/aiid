@@ -180,7 +180,7 @@ test.describe('Incidents', () => {
         {
           language: "fr",
           title: "Titre de l'incident 1",
-          description: "Description du deuxième incident",
+          description: "Description de l'incident 1",
         },
         {
           language: 'ja',
