@@ -1,15 +1,16 @@
 import { MongoClient } from "mongodb";
 import config from "../../server/config";
-import { Context, DBEntity, DBIncident, DBReport, DBSubscription } from "../../server/interfaces";
+import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
 import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
 import { UserCacheManager } from "../../server/fields/userCacheManager";
 import { handleNotificationError, markNotificationsAsProcessed } from '../utils/notificationUtils';
+import { Collection } from "mongodb";
 
 async function notificationsToBriefingIncidents(context: Context) {
   let result = 0;
-  const notificationsCollection = context.client.db('customData').collection("notifications");
+  const notificationsCollection: Collection<DBNotification> = context.client.db('customData').collection("notifications");
   const subscriptionsCollection = context.client.db('customData').collection("subscriptions");
   const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
   const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
@@ -40,7 +41,9 @@ async function notificationsToBriefingIncidents(context: Context) {
 
   const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
-  const incidentIds = pendingBriefingNotificationsToNewIncidents.map(n => n.incident_id);
+  const incidentIds = pendingBriefingNotificationsToNewIncidents
+    .map(n => n.incident_id)
+    .filter((id): id is number => id !== undefined); // Filter out undefined values
 
   await markNotificationsAsProcessed(notificationsCollection, pendingBriefingNotificationsToNewIncidents);
 

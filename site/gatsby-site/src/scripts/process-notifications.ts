@@ -2,7 +2,7 @@ import { UserCacheManager } from "../../server/fields/userCacheManager";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
-import { MongoClient } from "mongodb";
+import { Collection, MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
 import { handleNotificationError, markNotificationsAsProcessed, markNotificationsAsNotProcessed } from '../utils/notificationUtils';
 
@@ -19,7 +19,7 @@ const buildEntityList = (allEntities: any, entityIds: any) => {
 
 async function notificationsToNewIncidents(context: Context, userCacheManager: UserCacheManager) {
 
-    const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
+    const notificationsCollection: Collection<DBNotification> = context.client.db('customData').collection<DBNotification>("notifications");
     const subscriptionsCollection = context.client.db('customData').collection<DBSubscription>("subscriptions");
     const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
     const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
