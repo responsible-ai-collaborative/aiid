@@ -169,7 +169,7 @@ describe(`Briefing Notifications`, () => {
 
     const result = await processBriefingNotifications();
 
-    expect(result).toBe(1);
+    expect(result).toBe(2);
 
     expect(mockMailersendBulkSend.mock.calls[0][0][0]).toMatchObject({
       from: {
@@ -595,7 +595,7 @@ describe(`Briefing Notifications`, () => {
             }
           ],
         updates: [
-          { description: "Example Update", title: "Example Update" }
+          { description: "<p>Example Update</p>", title: "Example Update" }
         ]
       },
       templateId: "AIIncidentBriefing",
