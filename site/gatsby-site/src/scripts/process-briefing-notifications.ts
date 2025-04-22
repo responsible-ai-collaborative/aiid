@@ -21,8 +21,6 @@ async function notificationsToBriefingIncidents(context: Context) {
     type: 'ai-briefing'
   }).toArray();
 
-  result += pendingBriefingNotificationsToNewIncidents.length;
-
   // Get briefing subscribers
   const briefingSubscribers = await subscriptionsCollection.find<DBSubscription>({ type: 'ai-briefing' }).toArray();
 
@@ -166,7 +164,7 @@ async function notificationsToBriefingIncidents(context: Context) {
 
     updates = response.map((update: any) => ({
       title: update.data.title,
-      description: update.data.text[0]?.text ?? '',
+      description: convertRichTextToHTML(update.data.text),
     }));
 
   } catch (error) {
@@ -187,6 +185,10 @@ async function notificationsToBriefingIncidents(context: Context) {
 
   const hasContentToSend = incidentList.length > 0 || newBlogPosts.length > 0 || updates.length > 0;
   const shouldSendEmail = recipients.length > 0 && hasContentToSend;
+
+  if (shouldSendEmail) {
+    result = recipients.length;
+  }
 
   console.log(`Found ${incidentList.length} incidents, ${newBlogPosts.length} new blog posts, and ${updates.length} updates to send to ${recipients.length} users found between ${lastWeekDate} - ${nowDate}`);
 
@@ -260,4 +262,34 @@ export const run = async () => {
 
 if (require.main === module) {
   run();
+}
+
+function convertRichTextToHTML(richText: any[]): string {
+  let html = '';
+  let charCount = 0;
+
+  for (const block of richText) {
+    if (charCount >= 500) break;
+
+    let content = block.text;
+    if (charCount + content.length > 500) {
+      content = content.substring(0, 500 - charCount);
+    }
+
+    switch (block.type) {
+      case 'heading1':
+        html += `<h1>${content}</h1>`;
+        break;
+      case 'paragraph':
+        html += `<p>${content}</p>`;
+        break;
+      // Add more cases as needed for other types
+      default:
+        html += `<p>${content}</p>`;
+    }
+
+    charCount += content.length;
+  }
+
+  return html;
 }
