@@ -27,13 +27,16 @@ const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
 
   const reportLink = `/cite/${incident_id}#r${report_number}`;
 
+  const incidentTitle = `${t('Incident')} ${incident.incident_id}: ${incident.title}`;
+
   return (
     <Card key={key}>
       <CardImage {...{ reportLink, cloudinary_id, image_url, title, t, incident_id }} />
       <CardBody
         {...{
           report,
-          incident,
+          incidentId: incident.incident_id,
+          incidentTitle,
           isLatest,
           reportLink,
           epoch_date_submitted,
@@ -77,7 +80,8 @@ const CardImage = ({ reportLink, cloudinary_id, image_url, title, t, incident_id
 
 const CardBody = ({
   report,
-  incident,
+  incidentId,
+  incidentTitle,
   isLatest,
   reportLink,
   epoch_date_submitted,
@@ -87,9 +91,9 @@ const CardBody = ({
 }) => {
   return (
     <div className="h-full p-6">
-      <LocalizedLink to={`/cite/${incident.incident_id}`} className="text-gray-900">
-        <h4 className="text-2xl">
-          Incident {incident.incident_id}: {incident.title}
+      <LocalizedLink to={`/cite/${incidentId}`} className="text-gray-900">
+        <h4 className="text-2xl" data-testid="latest-incident-title">
+          {incidentTitle}
         </h4>
       </LocalizedLink>
       <ReportPreview
