@@ -64,11 +64,11 @@ async function main(): Promise<void> {
   const similarPairs: SimilarEntityPair[] = findSimilarEntities(entities, args.threshold);
   spinner.succeed(`Found ${similarPairs.length} similar pairs`);
 
-  const header = 'Entity ID 1,Entity Name 1,Entity ID 2,Entity Name 2,Similarity';
+  const header = 'Entity ID 1,Entity Name 1,Entity ID 2,Entity Name 2,Similarity,Keep (1 or 2)';
   const rows = similarPairs.map(p => {
     const name1 = `"${p.entityName1.replace(/"/g, '""')}"`;
     const name2 = `"${p.entityName2.replace(/"/g, '""')}"`;
-    return `${p.entityId1},${name1},${p.entityId2},${name2},${p.similarity.toFixed(2)}`;
+    return `${p.entityId1},${name1},${p.entityId2},${name2},${p.similarity.toFixed(2)},`;
   });
   const csv = [header, ...rows].join('\n');
   fs.writeFileSync(args.output, csv);

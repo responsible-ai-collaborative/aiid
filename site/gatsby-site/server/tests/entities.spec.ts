@@ -125,7 +125,7 @@ describe(`Entities`, () => {
 
     const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
     await client.connect();
-    await mergeEntities("entityA", "entityB", client);
+    await mergeEntities("entityA", "entityB", 1, client);
     await client.close();
 
     // Verify entityB was deleted

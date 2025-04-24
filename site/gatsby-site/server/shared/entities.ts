@@ -119,19 +119,27 @@ async function updateReferences(
     }
 }
 
-export async function mergeEntities(primaryId: string, secondaryId: string, client: MongoClient) {
+export async function mergeEntities(
+    entityId1: string,
+    entityId2: string,
+    keepEntity: 1 | 2,
+    client: MongoClient
+) {
 
-    if (primaryId === secondaryId) {
+    if (entityId1 === entityId2) {
         throw new Error('Cannot merge an entity with itself.');
     }
+
+    const primaryIdToKeep = keepEntity === 1 ? entityId1 : entityId2;
+    const secondaryIdToDelete = keepEntity === 1 ? entityId2 : entityId1;
 
     const db: Db = client.db('aiidprod');
     const entitiesCollection: Collection = db.collection('entities');
     const relationshipsCollection: Collection = db.collection('entity_relationships');
 
-    await verifyEntitiesExist(entitiesCollection, primaryId, secondaryId);
+    await verifyEntitiesExist(entitiesCollection, primaryIdToKeep, secondaryIdToDelete);
 
-    await mergeEntityRelationships(relationshipsCollection, primaryId, secondaryId);
+    await mergeEntityRelationships(relationshipsCollection, primaryIdToKeep, secondaryIdToDelete);
 
     const COLLECTIONS_TO_UPDATE: CollectionUpdateConfig[] = [
         {
@@ -158,10 +166,10 @@ export async function mergeEntities(primaryId: string, secondaryId: string, clie
     ];
 
     for (const colConfig of COLLECTIONS_TO_UPDATE) {
-        await updateReferences(db, primaryId, secondaryId, colConfig);
+        await updateReferences(db, primaryIdToKeep, secondaryIdToDelete, colConfig);
     }
 
-    await entitiesCollection.deleteOne({ entity_id: secondaryId });
+    await entitiesCollection.deleteOne({ entity_id: secondaryIdToDelete });
 }
 
 export interface SimilarEntityPair {
