@@ -1,7 +1,2 @@
-Entity ID 1,Entity Name 1,Entity ID 2,Entity Name 2,Similarity
-primary-1,"Primary One",secondary-1,"Secondary One",0.95
-primary-2,"Primary Two",primary-2,"Primary Two",1.00
-primary-3,"Primary Three",,"Missing Secondary",0.90
-,Missing Primary,secondary-4,"Secondary Four",0.85
-entityA,"Entity A",entityB,"Entity B",0.99
-parent-entity,"Parent",child-entity,"Child",0.80 
+Entity ID 1,Entity Name 1,Entity ID 2,Entity Name 2,Similarity,Keep (1 or 2)
+primary-1,"Primary One",secondary-1,"Secondary One",0.95,1
