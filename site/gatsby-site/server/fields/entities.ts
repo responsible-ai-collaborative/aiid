@@ -1,12 +1,13 @@
-import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt } from "graphql";
 import { allow } from "graphql-shield";
+import { isRole } from "../rules";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { EntityType } from "../types/entity";
 import { GraphQLDateTime, GraphQLJSONObject } from "graphql-scalars";
+import { mergeEntities } from "../shared/entities";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
-
   ...generateQueryFields({ collectionName: 'entities', Type: EntityType })
 }
 
@@ -92,6 +93,20 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
         ...input
       };
     }
+  },
+  mergeEntities: {
+    type: new GraphQLNonNull(EntityType),
+    args: {
+      primaryId: { type: new GraphQLNonNull(GraphQLString) },
+      secondaryId: { type: new GraphQLNonNull(GraphQLString) },
+      keepEntity: { type: new GraphQLNonNull(GraphQLInt) },
+    },
+    resolve: async (_source, { primaryId, secondaryId, keepEntity }, context) => {
+
+      await mergeEntities(primaryId, secondaryId, keepEntity, context.client);
+
+      return keepEntity === 1 ? primaryId : secondaryId;
+    }
   }
 }
 
@@ -103,6 +118,7 @@ export const permissions = {
   Mutation: {
     updateEntityAndRelationships: allow,
     upsertOneEntity: allow,
-    updateOneEntity: allow
+    updateOneEntity: allow,
+    mergeEntities: isRole('incident_editor')
   }
 }

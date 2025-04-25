@@ -36,3 +36,9 @@ export const UPDATE_ENTITY = gql(`
     }
   }
 `);
+
+export const MERGE_ENTITIES = gql(`
+  mutation MergeEntities($primaryId: String!, $secondaryId: String!, $keepEntity: Int!) {
+    mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity)
+  }
+`);
