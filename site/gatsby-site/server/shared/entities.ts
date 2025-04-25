@@ -130,6 +130,10 @@ export async function mergeEntities(
         throw new Error('Cannot merge an entity with itself.');
     }
 
+    if (keepEntity !== 1 && keepEntity !== 2) {
+        throw new Error(`Invalid keepEntity value: ${keepEntity} for entityId1: ${entityId1} and entityId2: ${entityId2}.`);
+    }
+
     const primaryIdToKeep = keepEntity === 1 ? entityId1 : entityId2;
     const secondaryIdToDelete = keepEntity === 1 ? entityId2 : entityId1;
 
