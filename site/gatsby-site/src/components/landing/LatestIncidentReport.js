@@ -94,12 +94,12 @@ const CardBody = ({
 }) => {
   return (
     <div className="h-full p-6">
-      {isIncidentTranslated && <TranslationBadge />}
       <LocalizedLink to={`/cite/${incidentId}`} className="text-gray-900">
         <h4 className="text-2xl" data-testid="latest-incident-title">
           {incidentTitle}
         </h4>
       </LocalizedLink>
+      {isIncidentTranslated && <TranslationBadge />}
       <ReportPreview
         {...{
           reportLink,
