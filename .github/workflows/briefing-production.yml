@@ -8,5 +8,6 @@ on:
 jobs:
   call-briefing:
     uses: ./.github/workflows/process-briefing-notifications.yml
+    secrets: inherit
     with:
       environment: production 
