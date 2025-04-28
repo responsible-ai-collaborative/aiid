@@ -97,6 +97,6 @@
     },
     "report_type": {
         "title": "Type de rapport",
-        "text": "Incident = Harm (or near harm) that already happened.<br />Issue = A potential harm that has not happened yet.<br />Pick based on whether the AI system has already caused impact."
+        "text": "Incident = Dommage (ou quasi-dommage) qui s'est déjà produit.<br />Problème = Un dommage potentiel qui ne s'est pas encore produit.<br />Choisissez en fonction de savoir si le système d'IA a déjà eu un impact."
     }
 }

@@ -157,6 +157,8 @@
   "Thank you for verifying your account.": "アカウントを確認いただきありがとうございます",
   "Read more": "さらに読む",
   "Table View": "テーブル表示",
+  "List View": "リスト表示",
+  "List view": "リスト表示",
   "Submitting...": "投稿中...",
   "View Less": "閉じる",
   "View ({{hidden}}) more": "さらに見る ({{hidden}})",
@@ -304,6 +306,7 @@
   "Most Semantically Similar Incidents (Experimental)": "最も意味的に類似したインシデント（実験的）",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "レポートは意味的類似度を計算するために少なくとも{{minLength}}文字以上の非空白文字を持っている必要があります",
   "No related reports found." : "関連するレポートが見つかりません",
+  "No related incidents found.": "関連するインシデントが見つかりません",
   "<0>Center for Security and Emerging Technology (CSETv1)</0> The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0> CSET AI危害分類法はAIインシデントを特徴づけ、公共政策コミュニティに関連する危害を分類します",
   "Known AI Goal": "既知のAIゴール",
   "Known AI Technology": "既知のAI技術",
@@ -583,5 +586,6 @@
   "Database Roadmap": "データベースのロードマップ",
   "Initial Collection Methodology": "最初の収集方法",
   "Project and Community": "プロジェクトとコミュニティ",
-  "Submission Queue": "登録待ち一覧"
+  "Submission Queue": "登録待ち一覧",
+  "Sign Up": "サインアップ"
 }

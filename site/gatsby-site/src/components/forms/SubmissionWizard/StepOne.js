@@ -118,7 +118,7 @@ const FormDetails = ({
   urlFromQueryString,
   setSavingInLocalStorage,
 }) => {
-  const { t } = useTranslation(['submit']);
+  const { t } = useTranslation(['submit', 'translation']);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -391,7 +391,7 @@ const FormDetails = ({
                 setFieldValue('is_incident_report', true);
               }}
             >
-              {t('Incident')}
+              {t('Incident', { ns: 'translation' })}
             </Button>
             <Button
               color={!values.is_incident_report ? 'dark' : 'light'}
@@ -399,7 +399,7 @@ const FormDetails = ({
                 setFieldValue('is_incident_report', false);
               }}
             >
-              {t('Issue')}
+              {t('Issue', { ns: 'translation' })}
             </Button>
           </Button.Group>
         </FieldContainer>
