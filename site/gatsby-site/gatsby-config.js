@@ -96,24 +96,6 @@ const plugins = [
         : {}),
     },
   },
-  // TODO: Remove the following source once all reports are migrated to the new schema
-  {
-    resolve: 'gatsby-source-mongodb',
-    options: {
-      dbName: 'translations',
-      collection: ['reports'].reduce(
-        (collections, name) => [
-          ...collections,
-          ...config.i18n.availableLanguages.map((lang) => `${name}_${lang}`),
-        ],
-        []
-      ),
-      connectionString: config.mongodb.connectionString,
-      ...(config.mongodb.replicaSet
-        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
-        : {}),
-    },
-  },
   {
     resolve: 'gatsby-source-mongodb',
     options: {
