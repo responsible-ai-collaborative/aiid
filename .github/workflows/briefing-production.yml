@@ -1,0 +1,12 @@
+name: Process Briefing Notifications - Production
+
+on:
+  schedule:
+    - cron: '0 15 * * 0'  # Runs every Sunday at 15:00 UTC
+  workflow_dispatch:
+
+jobs:
+  call-briefing:
+    uses: ./.github/workflows/process-briefing-notifications.yml
+    with:
+      environment: production 
