@@ -87,41 +87,23 @@ class ReportTranslator {
   async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const reportsTranslatedCollection = this.mongoClient
-      .db('translations')
-      .collection(`reports_${language}`);
+    const reportsTranslatedCollection = this.mongoClient.db('translations').collection('reports');
 
     const query = {
       report_number: { $in: originalIds },
-      $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
+      $and: [{ language: language }].concat(
+        [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } }))
+      ),
     };
 
     const translated = await reportsTranslatedCollection
       .find(query, { projection: { report_number: 1 } })
       .toArray();
 
-    // TODO: uncomment this block and delete the code above when the "reports_xx" collections are no longer needed
-    // const reportsTranslatedCollection = this.mongoClient
-    //   .db('translations')
-    //   .collection('reports');
-
-    // const query = {
-    //   report_number: { $in: originalIds },
-    //   $and: [{ language: language }].concat([...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } }))),
-    // };
-
-    // const translated = await reportsTranslatedCollection
-    //   .find(query, { projection: { report_number: 1 } })
-    //   .toArray();
-
     return translated;
   }
 
   async saveTranslatedReports({ items, language }) {
-    const reportsTranslatedCollection = this.mongoClient
-      .db('translations')
-      .collection(`reports_${language}`);
-
     const reportsTranslationsCollection = this.mongoClient.db('translations').collection('reports');
 
     const translated = [];
@@ -133,9 +115,6 @@ class ReportTranslator {
 
       translated.push({ report_number, text, title, plain_text });
     }
-
-    // TODO: remove this line when the "reports_xx" collections are no longer needed
-    await reportsTranslatedCollection.insertMany(translated);
 
     // Insert the translated reports into the reports collection with the language field
     const reportsTranslated = translated.map((t) => ({ ...t, language }));

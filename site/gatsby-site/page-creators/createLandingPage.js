@@ -22,6 +22,7 @@ const createLandingPage = async (graphql, createPage) => {
             text
             title
             url
+            language
           }
         }
       }
