@@ -6,6 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
 import Link from 'components/ui/Link';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
   const report = incident.reports[0];
@@ -37,6 +38,7 @@ const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
           report,
           incidentId: incident.incident_id,
           incidentTitle,
+          isIncidentTranslated: incident.isTranslated,
           isLatest,
           reportLink,
           epoch_date_submitted,
@@ -82,6 +84,7 @@ const CardBody = ({
   report,
   incidentId,
   incidentTitle,
+  isIncidentTranslated,
   isLatest,
   reportLink,
   epoch_date_submitted,
@@ -96,6 +99,7 @@ const CardBody = ({
           {incidentTitle}
         </h4>
       </LocalizedLink>
+      {isIncidentTranslated && <TranslationBadge />}
       <ReportPreview
         {...{
           reportLink,

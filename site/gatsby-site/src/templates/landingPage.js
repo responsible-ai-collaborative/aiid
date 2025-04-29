@@ -54,6 +54,7 @@ const LandingPage = (props) => {
 
     if (incidentTranslation) {
       incident.title = incidentTranslation.title;
+      incident.isTranslated = true;
     }
 
     if (report.language !== language) {

@@ -52,7 +52,7 @@
   "Enter a valid Incident ID": "妥当なインシデントIDを入力してください",
   "Step 1 - main information": "ステップ 1 - 主要な情報",
   "Step 2 - additional information": "ステップ 2 - 追加の情報",
-  "Step 3 - Tell us more": "ステップ 3 - さらに入力",
+  "Step 3 - Tell us more about the incident": "ステップ 3 - インシデントについてさらに入力",
   "Adding a new report to incident {{incident_id}}": "インシデント {{incident_id}} に新しいレポートを追加",
   "Adding a new response to incident {{incident_id}}": "インシデント {{incident_id}} に新しいレスポンスを追加",
   "Progress saved!": "途中経過が保存されました！",
@@ -69,5 +69,6 @@
   "What systems were involved in the incident?": "このインシデントに関わるシステムは何ですか？",
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません",
   "Alleged implicated AI systems": "推定される関連AIシステム",
-  "Which AI systems were involved?": "どのAIシステムが関わっていましたか？"
+  "Which AI systems were involved?": "どのAIシステムが関わっていましたか？",
+  "Report Type": "レポートの種類"
 }

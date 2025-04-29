@@ -94,5 +94,9 @@
     "similarIncidentSearch": {
         "title": "Buscar incidentes similares",
         "text": "Busque un incidente similar o diferente escribiendo un ID de incidente. Si el incidente resultante es similar, haga clic en 'Sí', si es diferente, haga clic en 'No'. Si no está seguro, haga clic en 'No estoy seguro'. Una vez seleccionado, el incidente se agregará a la sección del formulario 'Incidentes similares y diferentes seleccionados manualmente'. Una vez agregado, si desea eliminarlo, haga clic en el botón “No estoy seguro”."
+    },
+    "report_type": {
+        "title": "Tipo de informe",
+        "text": "Incidente = Daño (o daño cercano) que ya ocurrió.<br />Problema = Un daño potencial que aún no ha ocurrido.<br />Elige basado en si el sistema de IA ha causado impacto."
     }
 }
