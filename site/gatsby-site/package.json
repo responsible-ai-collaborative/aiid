@@ -193,7 +193,7 @@
     "postcss": "^8.4.31",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
-    "supertest": "^6.3.4",
+    "supertest": "^7.1.0",
     "tailwindcss": "^3.3.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
