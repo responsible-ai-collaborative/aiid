@@ -45,15 +45,16 @@ exports.up = async ({ context: { client } }) => {
 
     // Insert new incident
     await incidents.insertOne(newIncident);
-    console.log(
-      `Inserted new incident with ID: ${incident_id} and marked Incident 88 as duplicate.`
-    );
 
     // Record duplication
     await duplicates.insertOne({
       duplicate_incident_number: 88,
       true_incident_number: incident_id,
     });
+
+    console.log(
+      `Inserted new incident with ID: ${incident_id} and marked Incident 88 as duplicate.`
+    );
 
     // Update classifications to new incident_id
     await classifications.updateMany({ incident_id: 88 }, { $set: { incident_id: incident_id } });
