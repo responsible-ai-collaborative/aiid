@@ -39,6 +39,21 @@ export const UPDATE_ENTITY = gql(`
 
 export const MERGE_ENTITIES = gql(`
   mutation MergeEntities($primaryId: String!, $secondaryId: String!, $keepEntity: Int!) {
-    mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity)
+    mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity){
+      entity_id
+      name
+    }
+  }
+`);
+
+export const SIMILAR_ENTITIES = gql(`
+  query SimilarEntities($threshold: Int!) {
+    similarEntities(threshold: $threshold) {
+      entityId1
+      entityName1
+      entityId2
+      entityName2
+      similarity
+    }
   }
 `);

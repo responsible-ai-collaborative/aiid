@@ -1,14 +1,42 @@
-import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLFloat } from "graphql";
 import { allow } from "graphql-shield";
 import { isRole } from "../rules";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { EntityType } from "../types/entity";
 import { GraphQLDateTime, GraphQLJSONObject } from "graphql-scalars";
-import { mergeEntities } from "../shared/entities";
+import { mergeEntities, findSimilarEntities } from "../shared/entities";
+import { Entity } from "../generated/graphql";
+
+const SimilarEntityPairType = new GraphQLObjectType({
+  name: 'SimilarEntityPair',
+  fields: {
+    entityId1: { type: new GraphQLNonNull(GraphQLString) },
+    entityName1: { type: new GraphQLNonNull(GraphQLString) },
+    entityId2: { type: new GraphQLNonNull(GraphQLString) },
+    entityName2: { type: new GraphQLNonNull(GraphQLString) },
+    similarity: { type: new GraphQLNonNull(GraphQLFloat) },
+  },
+});
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
-  ...generateQueryFields({ collectionName: 'entities', Type: EntityType })
+  ...generateQueryFields({ collectionName: 'entities', Type: EntityType }),
+  similarEntities: {
+    type: new GraphQLList(SimilarEntityPairType),
+    args: {
+      threshold: { type: new GraphQLNonNull(GraphQLInt) },
+    },
+    resolve: async (_source, { threshold }, context) => {
+      const docs = await context.client.db('aiidprod').collection('entities').find().toArray();
+      const entities: Entity[] = docs.map(doc => ({
+        entity_id: doc.entity_id,
+        name: doc.name,
+        created_at: doc.created_at,
+        date_modified: doc.date_modified,
+      }));
+      return findSimilarEntities(entities, threshold);
+    }
+  }
 }
 
 const UpdateOneEntityPayload = new GraphQLObjectType({
@@ -104,8 +132,9 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
     resolve: async (_source, { primaryId, secondaryId, keepEntity }, context) => {
 
       await mergeEntities(primaryId, secondaryId, keepEntity, context.client);
-
-      return keepEntity === 1 ? primaryId : secondaryId;
+      const mergedId = keepEntity === 1 ? primaryId : secondaryId;
+      const merged = await context.client.db('aiidprod').collection('entities').findOne({ entity_id: mergedId });
+      return merged;
     }
   }
 }
@@ -114,6 +143,7 @@ export const permissions = {
   Query: {
     entity: allow,
     entities: allow,
+    similarEntities: allow,
   },
   Mutation: {
     updateEntityAndRelationships: allow,
