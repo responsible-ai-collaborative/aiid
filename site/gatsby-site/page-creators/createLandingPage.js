@@ -22,6 +22,7 @@ const createLandingPage = async (graphql, createPage) => {
             text
             title
             url
+            language
           }
         }
       }
@@ -79,6 +80,7 @@ const createLandingPage = async (graphql, createPage) => {
       latestIncidents,
       latestIncidentsReportNumbers,
       sponsors: result.data.sponsors.edges,
+      latestIncidentIds: latestIncidents.map((incident) => incident.incident_id),
     },
   });
 };

@@ -47,7 +47,7 @@
   "Enter a valid Incident ID": "Entrez un ID d'incident valide",
   "Step 1 - main information": "Étape 1 - informations principales",
   "Step 2 - additional information": "Étape 2 - informations additionnelles",
-  "Step 3 - Tell us more": "Étape 3 - Dites-nous en plus",
+  "Step 3 - Tell us more about the incident": "Étape 3 - Dites-nous en plus sur l'incident",
   "Tags": "Étiquettes",
   "Report successfully added to review queue. You can see your submission <2>here</2>.": "Rapport ajouté à la file d'attente des révisions. Vous pouvez voir votre soumission <2>ici</2>.",
   "Adding a new report to incident {{incident_id}}": "Ajout d'un nouveau rapport à l'incident {{incident_id}}",
@@ -69,5 +69,6 @@
   "What systems were involved in the incident?": "Quels systèmes étaient impliqués dans l'incident ?",
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.",
   "Alleged implicated AI systems": "Systèmes IA impliqués présumés",
-  "Which AI systems were involved?": "Quels systèmes IA étaient impliqués ?"
+  "Which AI systems were involved?": "Quels systèmes IA étaient impliqués ?",
+  "Report Type": "Type de rapport"
 }

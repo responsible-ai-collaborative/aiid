@@ -27,7 +27,7 @@ const incidents = [
   },
 ];
 
-test('Translations - Should translate all incidents', async ({ page }) => {
+test('Incident Translations - Should translate all incidents', async ({ page }) => {
   // mock new Date()
   const mockDate = new Date('2025-01-01');
   const dateStub = sinon.stub(global, 'Date') as any;
@@ -144,7 +144,7 @@ test('Translations - Should translate all incidents', async ({ page }) => {
   dateStub.restore();
 });
 
-test("Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
+test("Incident Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
   // mock new Date()
   const mockDate = new Date('2025-01-01');
   const dateStub = sinon.stub(global, 'Date') as any;
@@ -260,7 +260,7 @@ test("Translations - Shouldn't call Google's translate api and use translation p
   dateStub.restore();
 });
 
-test('Translations - Should only translate incidents with creation date greater than specified date', async ({ page }) => {
+test('Incident Translations - Should only translate incidents with creation date greater than specified date', async ({ page }) => {
   const creationDateStart = '2021-01-01';
 
   const mockDate = new Date(creationDateStart);
@@ -351,7 +351,7 @@ test('Translations - Should only translate incidents with creation date greater 
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test('Translations - Should not translate if the incident was already translated', async ({ page }) => {
+test('Incident Translations - Should not translate if the incident was already translated', async ({ page }) => {
   const translatedIncidents = [
     {
       incident_id: 1,
@@ -436,7 +436,7 @@ test('Translations - Should not translate if the incident was already translated
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test("Translations - Should not insert incident translation if the Google's translate API returns empty translations", async ({ page }) => {
+test("Incident Translations - Should not insert incident translation if the Google's translate API returns empty translations", async ({ page }) => {
   const translatedIncidents = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
