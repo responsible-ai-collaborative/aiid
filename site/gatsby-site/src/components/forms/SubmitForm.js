@@ -351,7 +351,9 @@ const SubmitForm = () => {
             scrollToTop={() => {
               setTimeout(() => {
                 // This is needed to make it work in Firefox
-                submissionRef.current.scrollIntoView();
+                if (submissionRef.current) {
+                  submissionRef.current.scrollIntoView();
+                }
               }, 0);
             }}
             clearForm={clearForm}

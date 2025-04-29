@@ -99,6 +99,7 @@ const StepOne = (props) => {
           submissionReset={props.submissionReset}
           urlFromQueryString={props.urlFromQueryString}
           setSavingInLocalStorage={props.setSavingInLocalStorage}
+          returning={props.returning}
         />
       </Formik>
     </StepContainer>
@@ -116,6 +117,7 @@ const FormDetails = ({
   submissionReset,
   urlFromQueryString,
   setSavingInLocalStorage,
+  returning,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -171,6 +173,16 @@ const FormDetails = ({
       fetchNews(urlFromQueryString);
     }
   }, [urlFromQueryString]);
+
+  useEffect(() => {
+    if (returning) {
+      validateForm().then((invalidFields) => {
+        Object.keys(invalidFields).map((key) => {
+          setFieldTouched(key, true);
+        });
+      });
+    }
+  }, [returning]);
 
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
