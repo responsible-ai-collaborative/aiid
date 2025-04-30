@@ -105,6 +105,9 @@ exports.down = async ({ context: { client } }) => {
       { report_number: { $in: incident88Reports } },
       { $set: { quiet: false } }
     );
+
+    // Restore reports to incident 88
+    await incidents.updateOne({ incident_id: 88 }, { $set: { reports: incident88Reports } });
   } catch (error) {
     console.error('Migration down failed:', error);
     throw error;
