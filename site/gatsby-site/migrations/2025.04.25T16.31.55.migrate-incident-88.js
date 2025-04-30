@@ -52,6 +52,9 @@ exports.up = async ({ context: { client } }) => {
       true_incident_number: incident_id,
     });
 
+    // Remove reports from incident 88
+    await incidents.updateOne({ incident_id: 88 }, { $set: { reports: [] } });
+
     console.log(
       `Inserted new incident with ID: ${incident_id} and marked Incident 88 as duplicate.`
     );
