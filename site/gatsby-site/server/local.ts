@@ -200,6 +200,7 @@ export const getSchema = () => {
                 ...classificationsPermissions.Mutation,
                 ...candidatesPermissions.Mutation,
                 ...subscriptionsPermissions.Mutation,
+                ...duplicatesPermissions.Mutation,
                 ...checklistsPermissions.Mutation
             },
         },
