@@ -99,7 +99,7 @@ exports.down = async ({ context: { client } }) => {
     await classifications.updateMany({ incident_id: newIncidentId }, { $set: { incident_id: 88 } });
 
     // Unmark reports as quiet
-    const incident88Reports = newIncident.reports;
+    const incident88Reports = newIncident?.reports || [];
 
     await reports.updateMany(
       { report_number: { $in: incident88Reports } },
