@@ -7,7 +7,7 @@ type FieldUpdateConfig = {
     dbField: string;
     fieldType: FieldType;
 };
-type CollectionUpdateConfig = {
+type ReferenceUpdateConfig = {
     name: string;
     fields: FieldUpdateConfig[];
 };
@@ -74,7 +74,7 @@ async function updateReferences(
     db: Db,
     primaryId: string,
     secondaryId: string,
-    collectionConfig: CollectionUpdateConfig
+    collectionConfig: ReferenceUpdateConfig
 ): Promise<void> {
     const collection = db.collection(collectionConfig.name);
     const bulkOps: any[] = [];
@@ -145,7 +145,7 @@ export async function mergeEntities(
 
     await mergeEntityRelationships(relationshipsCollection, primaryIdToKeep, secondaryIdToDelete);
 
-    const COLLECTIONS_TO_UPDATE: CollectionUpdateConfig[] = [
+    const references: ReferenceUpdateConfig[] = [
         {
             name: 'incidents', fields: [
                 { dbField: 'Alleged deployer of AI system', fieldType: 'array' },
@@ -169,9 +169,14 @@ export async function mergeEntities(
         },
     ];
 
-    for (const colConfig of COLLECTIONS_TO_UPDATE) {
-        await updateReferences(db, primaryIdToKeep, secondaryIdToDelete, colConfig);
+    for (const ref of references) {
+        await updateReferences(db, primaryIdToKeep, secondaryIdToDelete, ref);
     }
+
+    await db.collection('entity_duplicates').insertOne({
+        duplicate_entity_id: secondaryIdToDelete,
+        true_entity_id: primaryIdToKeep
+    });
 
     await entitiesCollection.deleteOne({ entity_id: secondaryIdToDelete });
 }
