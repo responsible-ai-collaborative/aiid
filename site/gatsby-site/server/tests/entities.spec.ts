@@ -239,6 +239,12 @@ describe(`Entities`, () => {
     const subscriptionsColl = getCollection('aiidprod', 'subscriptions');
     const updatedSubscr1 = await subscriptionsColl.findOne({ _id: new ObjectId("bbbbbbbbbbbbbbbbbbbbbbb1") });
     expect(updatedSubscr1?.entityId).toEqual("entityA"); // Was "entityB"
+
+    // Verify duplicate record was added
+    const duplicatesColl = getCollection('aiidprod', 'entity_duplicates');
+    const dupRecord = await duplicatesColl.findOne({ duplicate_entity_id: "entityB" });
+    expect(dupRecord?.duplicate_entity_id).toEqual("entityB");
+    expect(dupRecord?.true_entity_id).toEqual("entityA");
   });
 
   it('findSimilarEntities returns correct pairs based on threshold', () => {
