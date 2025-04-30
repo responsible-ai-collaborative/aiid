@@ -1,10 +1,5 @@
 import { ObjectId } from 'bson';
-
-interface DBEntityDuplicate {
-    _id: ObjectId;
-    duplicate_entity_id: string;
-    true_entity_id: string;
-}
+import { DBEntityDuplicate } from '../../../server/interfaces';
 
 const items: DBEntityDuplicate[] = [
     {
