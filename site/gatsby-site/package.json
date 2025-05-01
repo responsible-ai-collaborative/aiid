@@ -155,7 +155,8 @@
     "translate-incidents": "npx tsx src/scripts/translateIncidents.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
     "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
-    "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts"
+    "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
+    "db:migrator": "npx tsx migrator"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
