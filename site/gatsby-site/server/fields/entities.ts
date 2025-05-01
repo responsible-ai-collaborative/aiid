@@ -5,7 +5,7 @@ import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { EntityType } from "../types/entity";
 import { GraphQLDateTime, GraphQLJSONObject } from "graphql-scalars";
-import { mergeEntities, findSimilarEntities } from "../shared/entities";
+import { mergeEntities, findSimilarEntities, SimilarEntityPair } from "../shared/entities";
 import { Entity } from "../generated/graphql";
 
 const SimilarEntityPairType = new GraphQLObjectType({
@@ -25,16 +25,29 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
     type: new GraphQLList(SimilarEntityPairType),
     args: {
       threshold: { type: new GraphQLNonNull(GraphQLInt) },
+      offset: { type: GraphQLInt },
+      limit: { type: GraphQLInt },
     },
-    resolve: async (_source, { threshold }, context) => {
-      const docs = await context.client.db('aiidprod').collection('entities').find().toArray();
-      const entities: Entity[] = docs.map(doc => ({
+    resolve: async (_source, { threshold, offset = 0, limit }, context) => {
+
+      let cursor = context.client.db('aiidprod')
+        .collection('entities')
+        .find()
+        .sort({ entity_id: 1 })
+        .skip(offset);
+
+      if (limit != null) cursor = cursor.limit(limit);
+
+      const docs = await cursor.toArray();
+
+      const entitiesList: Entity[] = docs.map(doc => ({
         entity_id: doc.entity_id,
         name: doc.name,
         created_at: doc.created_at,
         date_modified: doc.date_modified,
       }));
-      return findSimilarEntities(entities, threshold);
+
+      return findSimilarEntities(entitiesList, threshold);
     }
   }
 }

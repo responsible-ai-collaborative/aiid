@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner, Modal } from 'flowbite-react';
+import { Button, Spinner, Modal, Card } from 'flowbite-react';
 import { MERGE_ENTITIES, SIMILAR_ENTITIES } from '../../graphql/entities';
 import { useQuery, useMutation } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
@@ -15,25 +15,51 @@ function MergeEntitiesPage() {
 
   const [threshold, setThreshold] = useState(80);
 
-  const { data: similarData, loading: loadingSimilar } = useQuery(SIMILAR_ENTITIES, {
-    variables: { threshold },
+  const [inputThreshold, setInputThreshold] = useState(threshold);
+
+  const PAGE_SIZE = 100;
+
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const [hasMore, setHasMore] = useState(true);
+
+  const {
+    data: similarData,
+    loading: loadingSimilar,
+    error: loadingError,
+    fetchMore,
+  } = useQuery(SIMILAR_ENTITIES, {
+    variables: { threshold, offset: 0, limit: PAGE_SIZE },
+    notifyOnNetworkStatusChange: true,
   });
 
-  const rawPairs = similarData?.similarEntities || [];
+  useEffect(() => {
+    if (loadingError) {
+      addToast({
+        message: t('Error loading similar entities'),
+        severity: SEVERITY.danger,
+        error: loadingError,
+      });
+    }
+  }, [loadingError, addToast, t]);
 
   const [pairs, setPairs] = useState([]);
 
   useEffect(() => {
-    if (!loadingSimilar && rawPairs.length) {
+    if (!loadingSimilar && similarData?.similarEntities) {
       setPairs(
-        rawPairs.map((p) => ({
+        similarData.similarEntities.map((p) => ({
           primary: { id: p.entityId1, label: p.entityName1 },
           secondary: { id: p.entityId2, label: p.entityName2 },
           score: p.similarity / 100,
         }))
       );
     }
-  }, [loadingSimilar, rawPairs]);
+  }, [loadingSimilar, similarData]);
+
+  useEffect(() => {
+    setInputThreshold(threshold);
+  }, [threshold]);
 
   const [mergeEntities, { loading: merging }] = useMutation(MERGE_ENTITIES);
 
@@ -80,6 +106,30 @@ function MergeEntitiesPage() {
     setModalPair(null);
   };
 
+  // Load more similar entities
+  const loadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const currentCount = similarData.similarEntities.length;
+
+      const { data: moreData } = await fetchMore({
+        variables: { threshold, offset: currentCount, limit: PAGE_SIZE },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return {
+            similarEntities: [...prev.similarEntities, ...fetchMoreResult.similarEntities],
+          };
+        },
+      });
+
+      if (moreData.similarEntities.length < PAGE_SIZE) setHasMore(false);
+    } catch (err) {
+      // optionally handle load more error
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
   if (loadingAuth || loadingSimilar) {
     return <Spinner />;
   }
@@ -97,22 +147,31 @@ function MergeEntitiesPage() {
         <Spinner />
       ) : (
         <>
-          <div className="mb-4">
+          <Card className="mb-4">
             <label className="block mb-1">
               {t('Similarity Threshold')} ({threshold}%)
             </label>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              step={1}
-              value={threshold}
-              onChange={(e) => setThreshold(parseInt(e.target.value, 10))}
-              className="w-full"
-            />
-          </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="number"
+                min={0}
+                max={100}
+                value={inputThreshold}
+                onChange={(e) => setInputThreshold(parseInt(e.target.value, 10) || 0)}
+                className="border rounded px-2 py-1 w-20"
+              />
+              <Button
+                onClick={() => {
+                  setThreshold(inputThreshold);
+                  setHasMore(true);
+                }}
+              >
+                {t('Update')}
+              </Button>
+            </div>
+          </Card>
           {pairs.length === 0 && <div>{t('No similar entities found')}</div>}
-          {pairs.slice(0, 20).map((p) => (
+          {pairs.map((p) => (
             <div
               key={`${p.primary.id}-${p.secondary.id}`}
               className="flex justify-between items-center mb-2"
@@ -125,7 +184,13 @@ function MergeEntitiesPage() {
               </Button>
             </div>
           ))}
-
+          {hasMore && (
+            <div className="text-center mt-4">
+              <Button onClick={loadMore} disabled={loadingMore}>
+                {loadingMore ? <Spinner size="sm" /> : <Trans>Load more</Trans>}
+              </Button>
+            </div>
+          )}
           <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
             <Modal.Header>
               <Trans>Select entity to keep</Trans>
