@@ -4,7 +4,7 @@ const { computeEntities } = require('../src/utils/entities');
 
 const createEntitiesPages = async (graphql, createPage) => {
   const {
-    data: { incidents, entities: entitiesData, responses, entityRelationships },
+    data: { incidents, entities: entitiesData, responses, entityRelationships, entityDuplicates },
   } = await graphql(`
     {
       incidents: allMongodbAiidprodIncidents {
@@ -41,6 +41,12 @@ const createEntitiesPages = async (graphql, createPage) => {
           obj
           is_symmetric
           pred
+        }
+      }
+      entityDuplicates: allMongodbAiidprodEntityDuplicates {
+        nodes {
+          duplicate_entity_id
+          true_entity_id
         }
       }
     }
@@ -89,6 +95,15 @@ const createEntitiesPages = async (graphql, createPage) => {
       entityRelationships: entityRelationships.nodes,
     },
   });
+
+  // create pages for duplicated entities
+  for (const { duplicate_entity_id, true_entity_id } of entityDuplicates.nodes) {
+    createPage({
+      path: `/entities/${duplicate_entity_id}`,
+      component: path.resolve('./src/templates/entity-duplicate.js'),
+      context: { duplicate_entity_id, true_entity_id },
+    });
+  }
 };
 
 module.exports = createEntitiesPages;

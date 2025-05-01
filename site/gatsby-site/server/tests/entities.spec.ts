@@ -1,6 +1,6 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, mockSession, seedFixture, startTestServer, getCollection } from "./utils"; // Import getCollection
+import { makeRequest, mockSession, seedFixture, startTestServer, getCollection } from "./utils";
 import { ObjectId, MongoClient } from 'mongodb';
 import { findSimilarEntities, SimilarEntityPair, mergeEntities } from '../shared/entities';
 import { Entity } from '../generated/graphql';
@@ -99,19 +99,19 @@ describe(`Entities`, () => {
           { entity_id: "entityA", name: "Entity A" },
           { entity_id: "entityB", name: "Entity B" }, // To be merged/deleted
           { entity_id: "entityC", name: "Entity C" },
-           { entity_id: "entityD", name: "Entity D" }
-         ],
-         entity_relationships: [
-           { sub: "entityB", obj: "entityC", is_symmetric: true, pred: "related" }, // Should become A->C
-           { sub: "entityD", obj: "entityB", is_symmetric: true, pred: "related" }  // Should become D->A
-         ],
-         incidents: [
-           { incident_id: 1, date: "2024-01-01", title: "Incident 1", description: "Desc 1", 'Alleged developer of AI system': ["entityB"], 'Alleged harmed or nearly harmed parties': ["entityC"], implicated_systems: ["entityB", "entityD"] },
-           { incident_id: 2, date: "2024-01-02", title: "Incident 2", description: "Desc 2", 'Alleged developer of AI system': ["entityA"], 'Alleged harmed or nearly harmed parties': ["entityB"] },
-         ],
-         submissions: [
-           { _id: new ObjectId("aaaaaaaaaaaaaaaaaaaaaaa1"), date_submitted: "2024-01-01", url: "http://example.com/sub1", source_domain: "example.com", title: "Sub 1", text: "Text 1", authors: [], submitters: [], tags: [], developers: ["entityB"], harmed_parties: ["entityC"] },
-           { _id: new ObjectId("aaaaaaaaaaaaaaaaaaaaaaa2"), date_submitted: "2024-01-02", url: "http://example.com/sub2", source_domain: "example.com", title: "Sub 2", text: "Text 2", authors: [], submitters: [], tags: [], deployers: ["entityA", "entityB"] },
+          { entity_id: "entityD", name: "Entity D" }
+        ],
+        entity_relationships: [
+          { sub: "entityB", obj: "entityC", is_symmetric: true, pred: "related" }, // Should become A->C
+          { sub: "entityD", obj: "entityB", is_symmetric: true, pred: "related" }  // Should become D->A
+        ],
+        incidents: [
+          { incident_id: 1, date: "2024-01-01", title: "Incident 1", description: "Desc 1", 'Alleged developer of AI system': ["entityB"], 'Alleged harmed or nearly harmed parties': ["entityC"], implicated_systems: ["entityB", "entityD"] },
+          { incident_id: 2, date: "2024-01-02", title: "Incident 2", description: "Desc 2", 'Alleged developer of AI system': ["entityA"], 'Alleged harmed or nearly harmed parties': ["entityB"] },
+        ],
+        submissions: [
+          { _id: new ObjectId("aaaaaaaaaaaaaaaaaaaaaaa1"), date_submitted: "2024-01-01", url: "http://example.com/sub1", source_domain: "example.com", title: "Sub 1", text: "Text 1", authors: [], submitters: [], tags: [], developers: ["entityB"], harmed_parties: ["entityC"] },
+          { _id: new ObjectId("aaaaaaaaaaaaaaaaaaaaaaa2"), date_submitted: "2024-01-02", url: "http://example.com/sub2", source_domain: "example.com", title: "Sub 2", text: "Text 2", authors: [], submitters: [], tags: [], deployers: ["entityA", "entityB"] },
         ],
         subscriptions: [
           { _id: new ObjectId("bbbbbbbbbbbbbbbbbbbbbbb1"), type: "entity", entityId: "entityB", userId: "user1" }, // Should be updated
@@ -142,9 +142,12 @@ describe(`Entities`, () => {
         `
       }
     );
+    
     const finalEntityIds = entityListResponse.body.data.entities.map((e: any) => e.entity_id).sort();
+    
     expect(finalEntityIds).toEqual(["entityA", "entityC", "entityD"]); // entityB should be gone
 
+    
     // Verify entity_relationships were updated
 
     const relListResp = await makeRequest(
@@ -162,9 +165,11 @@ describe(`Entities`, () => {
     );
 
     const finalRels = relListResp.body.data.entity_relationships
-        .map((r: any) => [r.sub.entity_id, r.obj.entity_id].sort().join('-'))
-        .sort();
+      .map((r: any) => [r.sub.entity_id, r.obj.entity_id].sort().join('-'))
+      .sort();
+
     expect(finalRels).toEqual(["entityA-entityC", "entityA-entityD"]); // B->C became A->C, D->B became D->A
+
 
     // Verify incidents were updated
 
@@ -235,10 +240,16 @@ describe(`Entities`, () => {
     expect(sub2Resp.body.data.submission.deployers.map((e: any) => e.entity_id).sort()).toEqual(["entityA"]); // Was ["entityA", "entityB"] - should now only contain A once
 
     // Verify subscriptions were updated using direct DB check due to GraphQL query resolution issues
-    
+
     const subscriptionsColl = getCollection('aiidprod', 'subscriptions');
     const updatedSubscr1 = await subscriptionsColl.findOne({ _id: new ObjectId("bbbbbbbbbbbbbbbbbbbbbbb1") });
     expect(updatedSubscr1?.entityId).toEqual("entityA"); // Was "entityB"
+
+    // Verify duplicate record was added
+    const duplicatesColl = getCollection('aiidprod', 'entity_duplicates');
+    const dupRecord = await duplicatesColl.findOne({ duplicate_entity_id: "entityB" });
+    expect(dupRecord?.duplicate_entity_id).toEqual("entityB");
+    expect(dupRecord?.true_entity_id).toEqual("entityA");
   });
 
   it('findSimilarEntities returns correct pairs based on threshold', () => {
@@ -270,5 +281,27 @@ describe(`Entities`, () => {
         },
       ])
     );
+  });
+});
+
+describe(`Entity error handling`, () => {
+  it('throws when merging an entity with itself', async () => {
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+    await client.connect();
+    await expect(
+      mergeEntities('entitySame', 'entitySame', 1, client)
+    ).rejects.toThrow('Cannot merge an entity with itself.');
+    await client.close();
+  });
+
+  it('throws when keepEntity value is invalid', async () => {
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+    await client.connect();
+    await expect(
+      mergeEntities('entityA', 'entityB', 3 as any, client)
+    ).rejects.toThrow(
+      'Invalid keepEntity value: 3 for entityId1: entityA and entityId2: entityB.'
+    );
+    await client.close();
   });
 });
