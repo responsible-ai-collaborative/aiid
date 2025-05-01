@@ -78,6 +78,18 @@ test.describe('createEntitiesPages', () => {
             pred: 'related',
           }
         ],
+      },
+      entityDuplicates: {
+        nodes: [
+          {
+            duplicate_entity_id: 'old-entity-1',
+            true_entity_id: 'ai-developer-1',
+          },
+          {
+            duplicate_entity_id: 'old-entity-2',
+            true_entity_id: 'ai-deployer-2',
+          }
+        ],
       }
     },
   };
@@ -96,8 +108,8 @@ test.describe('createEntitiesPages', () => {
 
     await createEntitiesPages(graphql as unknown as CreatePagesArgs['graphql'], createPage);
 
-    // Total pages created
-    expect(createPage.callCount).toEqual(9);
+    // Total pages created: 8 entities + 1 entities index page + 2 duplicate entity pages
+    expect(createPage.callCount).toEqual(11);
 
     // Validate the first entity
     const firstPage = createPage.getCall(0).args[0];
@@ -121,9 +133,22 @@ test.describe('createEntitiesPages', () => {
       { report_number: 3, incident_id: 2 },
     ]);
 
-    // Validate the last page
-    const lastPage = createPage.getCall(8).args[0];
-    expect(lastPage.path).toBe('/entities');
-    expect(lastPage.context.entities.length).toEqual(8);
+    // Validate the entities index page
+    const indexPage = createPage.getCall(8).args[0];
+    expect(indexPage.path).toBe('/entities');
+    expect(indexPage.context.entities.length).toEqual(8);
+    
+    // Validate duplicate entity pages
+    const firstDuplicatePage = createPage.getCall(9).args[0];
+    expect(firstDuplicatePage.path).toBe('/entities/old-entity-1');
+    expect(firstDuplicatePage.component).toContain('entity-duplicate.js');
+    expect(firstDuplicatePage.context.duplicate_entity_id).toBe('old-entity-1');
+    expect(firstDuplicatePage.context.true_entity_id).toBe('ai-developer-1');
+
+    const secondDuplicatePage = createPage.getCall(10).args[0];
+    expect(secondDuplicatePage.path).toBe('/entities/old-entity-2');
+    expect(secondDuplicatePage.component).toContain('entity-duplicate.js');
+    expect(secondDuplicatePage.context.duplicate_entity_id).toBe('old-entity-2');
+    expect(secondDuplicatePage.context.true_entity_id).toBe('ai-deployer-2');
   });
 });

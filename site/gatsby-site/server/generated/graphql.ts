@@ -504,6 +504,28 @@ export type Entity = {
   name: Scalars['String']['output'];
 };
 
+export type EntityDuplicate = {
+  __typename?: 'EntityDuplicate';
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  duplicate_entity_id: Scalars['String']['output'];
+  true_entity_id: Scalars['String']['output'];
+};
+
+export type EntityDuplicateFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<EntityDuplicateFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<EntityDuplicateFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<EntityDuplicateFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  duplicate_entity_id?: InputMaybe<StringFilter>;
+  true_entity_id?: InputMaybe<StringFilter>;
+};
+
+export type EntityDuplicateSortType = {
+  _id?: InputMaybe<SortType>;
+  duplicate_entity_id?: InputMaybe<SortType>;
+  true_entity_id?: InputMaybe<SortType>;
+};
+
 export type EntityFilterType = {
   AND?: InputMaybe<Array<InputMaybe<EntityFilterType>>>;
   NOR?: InputMaybe<Array<InputMaybe<EntityFilterType>>>;
@@ -1774,6 +1796,8 @@ export type Query = {
   duplicates?: Maybe<Array<Maybe<Duplicate>>>;
   entities?: Maybe<Array<Maybe<Entity>>>;
   entity?: Maybe<Entity>;
+  entityDuplicate?: Maybe<EntityDuplicate>;
+  entityDuplicates?: Maybe<Array<Maybe<EntityDuplicate>>>;
   entity_relationship?: Maybe<Entity_Relationship>;
   entity_relationships?: Maybe<Array<Maybe<Entity_Relationship>>>;
   history_incident?: Maybe<History_Incident>;
@@ -1867,6 +1891,20 @@ export type QueryEntityArgs = {
   filter?: InputMaybe<EntityFilterType>;
   pagination?: InputMaybe<PaginationType>;
   sort?: InputMaybe<EntitySortType>;
+};
+
+
+export type QueryEntityDuplicateArgs = {
+  filter?: InputMaybe<EntityDuplicateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<EntityDuplicateSortType>;
+};
+
+
+export type QueryEntityDuplicatesArgs = {
+  filter?: InputMaybe<EntityDuplicateFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<EntityDuplicateSortType>;
 };
 
 

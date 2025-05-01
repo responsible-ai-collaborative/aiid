@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification, History_Report, History_Incident, Checklist } from './generated/graphql';
 import { IncomingMessage } from 'http';
 
@@ -53,3 +53,9 @@ export type NotificationTypes = 'new-report-incident' | 'incident-updated' | 'en
 export type DBNotification = Omit<Notification, 'userId'> & { userId?: string, type: NotificationTypes }
 
 export type DBChecklist = Checklist;
+
+export type DBEntityDuplicate = {
+  _id: ObjectId;
+  duplicate_entity_id: string;
+  true_entity_id: string;
+}

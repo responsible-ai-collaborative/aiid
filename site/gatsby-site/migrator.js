@@ -34,7 +34,7 @@ const storage = {
 const umzug = new Umzug({
   storage,
   migrations: {
-    glob: './migrations/*.js',
+    glob: './migrations/*.{js,ts}',
   },
   logger: console,
   context: {
