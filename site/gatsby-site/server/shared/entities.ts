@@ -29,6 +29,14 @@ async function verifyEntitiesExist(
     }
 }
 
+/**
+ * Generate a consistent key for a relationship by sorting the two entity IDs.
+ */
+function generateRelKey(id1: string, id2: string): string {
+    return [id1, id2].sort().join(':');
+}
+
+
 async function mergeEntityRelationships(
     relationshipsCollection: Collection,
     primaryId: string,
@@ -36,35 +44,37 @@ async function mergeEntityRelationships(
 ): Promise<void> {
 
     const secondaryRels = await relationshipsCollection.find({ $or: [{ sub: secondaryId }, { obj: secondaryId }] }).toArray();
-
     const potentialNewRelsMap = new Map<string, any>();
+
     for (const r of secondaryRels) {
+
         const sub = r.sub === secondaryId ? primaryId : r.sub;
         const obj = r.obj === secondaryId ? primaryId : r.obj;
-        if (sub === obj) continue; // Skip self-references
 
-        const key = r.is_symmetric ? [sub, obj].sort().join(':') : `${sub}:${obj}`;
+        if (sub === obj) continue;
+
+        const key = generateRelKey(sub, obj);
+
         if (!potentialNewRelsMap.has(key)) {
             potentialNewRelsMap.set(key, { sub, obj, is_symmetric: r.is_symmetric, pred: r.pred });
         }
     }
 
-    // Get existing relationships of the primary entity to filter out duplicates accurately
     const existingPrimaryRels = await relationshipsCollection.find({ $or: [{ sub: primaryId }, { obj: primaryId }] }).toArray();
     const existingKeys = new Set<string>();
+
     existingPrimaryRels.forEach(r => {
-        const key = r.is_symmetric ? [r.sub, r.obj].sort().join(':') : `${r.sub}:${r.obj}`;
+        const key = generateRelKey(r.sub, r.obj);
         existingKeys.add(key);
     });
 
-    // Filter the potential new relationships to only include those not already present for the primary entity
     const newRelsToInsert = Array.from(potentialNewRelsMap.values()).filter(r => {
-        const key = r.is_symmetric ? [r.sub, r.obj].sort().join(':') : `${r.sub}:${r.obj}`;
+        const key = generateRelKey(r.sub, r.obj);
         return !existingKeys.has(key);
     });
 
-    // Atomically (or as close as possible without transactions) delete old and insert new relationships
     await relationshipsCollection.deleteMany({ $or: [{ sub: secondaryId }, { obj: secondaryId }] });
+    
     if (newRelsToInsert.length > 0) {
         await relationshipsCollection.insertMany(newRelsToInsert, { ordered: false });
     }
