@@ -23,6 +23,7 @@ import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowLeft,
@@ -38,7 +39,7 @@ function CiteTemplate({
   incident,
   sortedReports,
   variants,
-  metaTitle,
+  incidentTitle,
   entities,
   timeline,
   locationPathName,
@@ -76,10 +77,6 @@ function CiteTemplate({
   };
 
   // meta tags
-
-  const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
-    id: incident.incident_id,
-  });
 
   const addToast = useToastContext();
 
@@ -170,9 +167,13 @@ function CiteTemplate({
   return (
     <>
       <div className={'titleWrapper'}>
-        <div className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center">
+        {incident.isTranslated && <TranslationBadge className="mt-2" />}
+        <div
+          className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center"
+          data-testid="incident-title-section"
+        >
           <h1 data-testid="incident-title" className="text-2xl inline">
-            {locale == 'en' ? metaTitle : defaultIncidentTitle}
+            {incidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
             {incidentResponded && (
@@ -193,7 +194,7 @@ function CiteTemplate({
               <>
                 <div className="flex flex-wrap justify-end shrink">
                   <SocialShareButtons
-                    metaTitle={metaTitle}
+                    metaTitle={incidentTitle}
                     path={locationPathName}
                     page="cite"
                   ></SocialShareButtons>
@@ -244,8 +245,20 @@ function CiteTemplate({
         <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
-              <div>
-                <strong>Description</strong>: {incident.description}
+              <div
+                className={`${incident.isTranslated ? 'flex flex-wrap' : ''}`}
+                data-testid="incident-description-section"
+              >
+                <strong>
+                  <Trans>Description</Trans>
+                </strong>
+                :
+                {incident.isTranslated && (
+                  <div className="self-center">
+                    <TranslationBadge className="mx-2" />
+                  </div>
+                )}
+                {` ${incident.description}`}
               </div>
             </Col>
           </Row>
