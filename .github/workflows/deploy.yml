@@ -72,6 +72,13 @@ jobs:
         run: npm ci
         working-directory: site/gatsby-site
 
+      - name: Run database migrations
+        if: ${{ inputs.netlify-alias == '' }}
+        run: npm run db:migrator -- up
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
         working-directory: site/gatsby-site
@@ -126,6 +133,7 @@ jobs:
           MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
+          GOOGLE_TRANSLATE_API_KEY: dummy
 
       - name: Build size
         run: |
@@ -151,6 +159,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
       - name: Comment on PR
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}

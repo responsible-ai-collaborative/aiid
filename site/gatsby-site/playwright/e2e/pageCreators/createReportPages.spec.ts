@@ -3,6 +3,7 @@ import createReportPages from '../../../page-creators/createReportPages';
 import { CreatePagesArgs } from 'gatsby';
 import { expect } from '@playwright/test';
 import { getLanguages, test } from '../../utils';
+import { isCompleteReport } from '../../../src/utils/variants';
 
 test.describe('createReportPages', () => {
   let graphql: sinon.SinonStub;
@@ -12,9 +13,35 @@ test.describe('createReportPages', () => {
     data: {
       reports: {
         nodes: [
-          { report_number: 1, language: 'en' },
-          { report_number: 2, language: 'es' },
-          { report_number: 3, language: 'es' },
+          { 
+            report_number: 1, 
+            language: 'en',
+            title: 'Report 1',
+            url: 'http://example.com/1',
+            source_domain: 'example.com'
+          },
+          { 
+            report_number: 2, 
+            language: 'es',
+            title: 'Report 2',
+            url: 'http://example.com/2',
+            source_domain: 'example.com'
+          },
+          { 
+            report_number: 3, 
+            language: 'es',
+            title: 'Report 3',
+            url: 'http://example.com/3',
+            source_domain: 'example.com'
+          },
+          // Incomplete report
+          {
+            report_number: 4,
+            language: 'es',
+            title: '',
+            url: '',
+            source_domain: 'example.com'
+          },
         ],
       },
     },
@@ -31,20 +58,20 @@ test.describe('createReportPages', () => {
     sinon.restore();
   });
 
-  test('Should parse properly', async () => {
+  test('Should create pages for all complete reports', async () => {
     graphql.resolves(response);
 
     await createReportPages(graphql as unknown as CreatePagesArgs['graphql'], createPage, {
       languages,
     });
 
-    // Verify total pages created
-    expect(createPage.callCount).toEqual(languages.length * response.data.reports.nodes.length);
+    const completeReports = response.data.reports.nodes.filter(isCompleteReport);
+
+    expect(createPage.callCount).toEqual(languages.length * completeReports.length);
 
     languages.forEach((language, languageIndex) => {
-      
-      response.data.reports.nodes.forEach((report, reportIndex) => {
-        const callIndex = languageIndex * response.data.reports.nodes.length + reportIndex;
+      completeReports.forEach((report, reportIndex) => {
+        const callIndex = languageIndex * completeReports.length + reportIndex;
         const page = createPage.getCall(callIndex).args[0];
 
         const reportPath = language.code === 'en' ? `/reports/${report.report_number}/` : `/${language.code}/reports/${report.report_number}/`;

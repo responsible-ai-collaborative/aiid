@@ -52,7 +52,7 @@
   "Enter a valid Incident ID": "Ingrese un ID de Incidente válido",
   "Step 1 - main information": "Paso 1 - información principal",
   "Step 2 - additional information": "Paso 2 - información adicional",
-  "Step 3 - Tell us more": "Paso 3 - Cuéntanos más",
+  "Step 3 - Tell us more about the incident": "Paso 3 - Cuéntanos más sobre el incidente",
   "Adding a new report to incident {{incident_id}}": "Agregando un nuevo informe al incidente {{incident_id}}",
   "Adding a new response to incident {{incident_id}}": "Agregando una nueva respuesta al incidente {{incident_id}}",
   "Progress saved!": "¡Progreso guardado!",
@@ -69,5 +69,6 @@
   "What systems were involved in the incident?": "¿Qué sistemas estuvieron involucrados en el incidente?",
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.",
   "Alleged implicated AI systems": "Sistemas de IA presuntamente implicados",
-  "Which AI systems were involved?": "¿Qué sistemas de IA estuvieron involucrados?"
+  "Which AI systems were involved?": "¿Qué sistemas de IA estuvieron involucrados?",
+  "Report Type": "Tipo de informe"
 }
