@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner, Modal, Card } from 'flowbite-react';
-import { MERGE_ENTITIES, SIMILAR_ENTITIES } from '../../graphql/entities';
+import { MERGE_ENTITIES, SIMILAR_ENTITIES, FIND_ENTITIES } from '../../graphql/entities';
 import { useQuery, useMutation } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import { useUserContext } from 'contexts/UserContext';
@@ -17,7 +17,7 @@ function MergeEntitiesPage() {
 
   const [inputThreshold, setInputThreshold] = useState(threshold);
 
-  const PAGE_SIZE = 100;
+  const PAGE_SIZE = 1000;
 
   const [loadingMore, setLoadingMore] = useState(false);
 
@@ -32,6 +32,12 @@ function MergeEntitiesPage() {
     variables: { threshold, offset: 0, limit: PAGE_SIZE },
     notifyOnNetworkStatusChange: true,
   });
+
+  const { data: allEntitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+
+  const [selectedPrimary, setSelectedPrimary] = useState('');
+
+  const [selectedSecondary, setSelectedSecondary] = useState('');
 
   useEffect(() => {
     if (loadingError) {
@@ -72,32 +78,37 @@ function MergeEntitiesPage() {
   const openModal = (pair) => {
     setModalPair(pair);
     setKeepSide('left');
+    setSelectedPrimary(pair.primary.id);
+    setSelectedSecondary(pair.secondary.id);
     setModalOpen(true);
   };
 
   const confirmMerge = async () => {
     if (!modalPair) return;
-    const primary = keepSide === 'left' ? modalPair.primary : modalPair.secondary;
+    const primaryId = selectedPrimary;
 
-    const secondary = keepSide === 'left' ? modalPair.secondary : modalPair.primary;
+    const secondaryId = selectedSecondary;
+
+    const primaryEntity = allEntitiesData.entities.find((e) => e.entity_id === primaryId);
+
+    const secondaryEntity = allEntitiesData.entities.find((e) => e.entity_id === secondaryId);
+
+    const keepEntityInt = keepSide === 'left' ? 1 : 2;
 
     try {
-      await mergeEntities({
-        variables: {
-          primaryId: primary.id,
-          secondaryId: secondary.id,
-          keepEntity: keepSide === 'left' ? 1 : 2,
-        },
-      });
+      await mergeEntities({ variables: { primaryId, secondaryId, keepEntity: keepEntityInt } });
       addToast({
         message: t('Merged {{secondary}} into {{primary}}', {
-          secondary: secondary.label,
-          primary: primary.label,
+          secondary: secondaryEntity?.name,
+          primary: primaryEntity?.name,
         }),
         severity: SEVERITY.success,
       });
       setPairs((prev) =>
-        prev.filter((p) => !(p.primary.id === primary.id && p.secondary.id === secondary.id))
+        prev.filter(
+          (p) =>
+            !(p.primary.id === modalPair.primary.id && p.secondary.id === modalPair.secondary.id)
+        )
       );
     } catch (error) {
       addToast({ message: t('Error merging entities'), severity: SEVERITY.danger, error });
@@ -193,33 +204,72 @@ function MergeEntitiesPage() {
           )}
           <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
             <Modal.Header>
-              <Trans>Select entity to keep</Trans>
+              <Trans>Select entities and keep one</Trans>
             </Modal.Header>
             <Modal.Body>
-              <div className="grid grid-cols-2 gap-4">
-                <label className="flex flex-col items-center p-4 border rounded cursor-pointer">
-                  <input
-                    type="radio"
-                    name="keep"
-                    value="left"
-                    checked={keepSide === 'left'}
-                    onChange={() => setKeepSide('left')}
-                    className="mb-2"
-                  />
-                  {modalPair?.primary.label}
-                </label>
-                <label className="flex flex-col items-center p-4 border rounded cursor-pointer">
-                  <input
-                    type="radio"
-                    name="keep"
-                    value="right"
-                    checked={keepSide === 'right'}
-                    onChange={() => setKeepSide('right')}
-                    className="mb-2"
-                  />
-                  {modalPair?.secondary.label}
-                </label>
-              </div>
+              {loadingEntities ? (
+                <Spinner />
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block mb-1">{t('Entity 1')}</label>
+                      <select
+                        value={selectedPrimary}
+                        onChange={(e) => setSelectedPrimary(e.target.value)}
+                        className="border rounded px-2 py-1 w-full"
+                      >
+                        {allEntitiesData.entities.map((e) => (
+                          <option key={e.entity_id} value={e.entity_id}>
+                            {e.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block mb-1">{t('Entity 2')}</label>
+                      <select
+                        value={selectedSecondary}
+                        onChange={(e) => setSelectedSecondary(e.target.value)}
+                        className="border rounded px-2 py-1 w-full"
+                      >
+                        {allEntitiesData.entities.map((e) => (
+                          <option key={e.entity_id} value={e.entity_id}>
+                            {e.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <label className="flex items-center p-4 border rounded cursor-pointer">
+                      <input
+                        type="radio"
+                        name="keep"
+                        value="left"
+                        checked={keepSide === 'left'}
+                        onChange={() => setKeepSide('left')}
+                        className="mr-2"
+                      />
+                      {allEntitiesData.entities.find((e) => e.entity_id === selectedPrimary)?.name}
+                    </label>
+                    <label className="flex items-center p-4 border rounded cursor-pointer">
+                      <input
+                        type="radio"
+                        name="keep"
+                        value="right"
+                        checked={keepSide === 'right'}
+                        onChange={() => setKeepSide('right')}
+                        className="mr-2"
+                      />
+                      {
+                        allEntitiesData.entities.find((e) => e.entity_id === selectedSecondary)
+                          ?.name
+                      }
+                    </label>
+                  </div>
+                </>
+              )}
             </Modal.Body>
             <Modal.Footer>
               <Button color="gray" onClick={() => setModalOpen(false)}>
