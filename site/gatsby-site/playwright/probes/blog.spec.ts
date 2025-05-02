@@ -13,6 +13,13 @@ test.describe('Blog', () => {
     const div = await page.locator("[data-testid='blog-content']");
     const textContent = await div.textContent();
     expect(textContent).toContain('In November the Partnership on AI AI Incident Database (AIID) publicly invited users to instantly search through thousands of pages of text to better understand the limitations of AI products within the real world. Since November, tens of thousands of people from 157 countries have connected to the AIID. Today marks the launch of the next stage of AI Incident Database with its first complete AI incident taxonomy.');
+    
+    // Check if the image is a valid image
+    const image = await page.locator("[data-testid='blog-image']");
+    await expect(image).toBeVisible();
+    const imageUrl = await image.getAttribute('src');
+    const imageResponse = await page.goto(imageUrl);
+    expect(imageResponse.status()).toBe(200); 
 
   });
 
@@ -54,6 +61,12 @@ test.describe('Blog', () => {
     const textContent = await div.textContent();
     expect(textContent).toContain('Read our month-in-review newsletter recapping new incidents in the AI Incident Database and looking at the trends.');
 
+    // Check if the image is a valid image
+    const image = await page.locator("[data-testid='blog-image']");
+    await expect(image).toBeVisible();
+    const imageUrl = await image.getAttribute('src');
+    const imageResponse = await page.goto(imageUrl);
+    expect(imageResponse.status()).toBe(200); 
   });
 
   test('Should load prismic blog post in spanish', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
@@ -68,6 +81,12 @@ test.describe('Blog', () => {
     const textContent = await div.textContent();
     expect(textContent).toContain('Lea nuestro boletín informativo mensual que resume los nuevos incidentes en la base de datos de incidentes de IA y analiza las tendencias.');
 
+    // Check if the image is a valid image
+    const image = await page.locator("[data-testid='blog-image']");
+    await expect(image).toBeVisible();
+    const imageUrl = await image.getAttribute('src');
+    const imageResponse = await page.goto(imageUrl);
+    expect(imageResponse.status()).toBe(200); 
   });
 
   test('Should include outline in blog post', async ({ page, skipOnEmptyEnvironment }) => {

@@ -94,5 +94,9 @@
     "developers": {
         "title": "Développeur présumé du système d'IA",
         "text": "S'il y en a plusieurs, appuyez sur “enter” pour commencer un nouvel élément"
+    },
+    "report_type": {
+        "title": "Type de rapport",
+        "text": "Incident = Dommage (ou quasi-dommage) qui s'est déjà produit.<br />Problème = Un dommage potentiel qui ne s'est pas encore produit.<br />Choisissez en fonction de savoir si le système d'IA a déjà eu un impact."
     }
 }

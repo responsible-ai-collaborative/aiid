@@ -120,6 +120,7 @@ const typeDefs = `
         weight: Int
         description: String
         dummy_fields: [mongodbAiidprodTaxaDummy_fields]
+        automatedClassifications: Boolean
     }
 
     type mongodbAiidprodClassificationsAttribute {
@@ -183,6 +184,13 @@ const typeDefs = `
         title: String
         text: String
         report_number: Int
+        language: String
+    }
+
+    type mongodbTranslationsIncidents implements Node {
+        title: String
+        description: String
+        incident_id: Int
         language: String
     }
 

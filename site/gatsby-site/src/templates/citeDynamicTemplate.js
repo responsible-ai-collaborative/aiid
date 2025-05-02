@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useQuery } from '@apollo/client';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
@@ -37,9 +37,11 @@ function CiteDynamicTemplate({
 
   const [classifications, setClassifications] = useState(null);
 
+  const { t } = useTranslation();
+
   // meta tags
 
-  const [metaTitle, setMetaTitle] = useState(null);
+  const [incidentTitle, setIncidentTitle] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
     variables: { filter: { incident_id: { EQ: parseInt(incident_id) } } },
@@ -114,7 +116,7 @@ function CiteDynamicTemplate({
       const variantsTemp = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
       setEntities(entities);
-      setMetaTitle(`Incident ${incidentTemp.incident_id}: ${incidentTemp.title}`);
+      setIncidentTitle(`${t('Incident')} ${incidentTemp.incident_id}: ${incidentTemp.title}`);
       setTimeline(timelineTemp);
       setSortedReports(sortedReports);
       setVariants(variantsTemp);
@@ -138,7 +140,7 @@ function CiteDynamicTemplate({
             incident={incident}
             sortedReports={sortedReports}
             variants={variants}
-            metaTitle={metaTitle}
+            incidentTitle={incidentTitle}
             entities={entities}
             timeline={timeline}
             locationPathName={locationPathName}

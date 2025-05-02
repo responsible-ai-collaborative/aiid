@@ -11,10 +11,17 @@ import TagsInputGroup from '../TagsInputGroup';
 import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import {
+  faMedal,
+  faImage,
+  faLanguage,
+  faTag,
+  faStickyNote,
+} from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/UserContext';
 import { debounce } from 'debounce';
 import SubmissionButton from './SubmissionButton';
+import TextInputGroup from '../TextInputGroup';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -37,6 +44,7 @@ const StepTwo = (props) => {
         /((https?):\/\/)(\S)*$/,
         '*Must enter URL in http://www.example.com/images/preview.png format'
       ),
+    editor_notes: yup.string(),
   });
 
   const handleSubmit = (values, last) => {
@@ -191,32 +199,118 @@ const FormDetails = ({
           </Select>
         </FieldContainer>
 
-        <div className="flex justify-between mt-8">
-          <Button type="button" color={'light'} onClick={() => previous(values)}>
-            <svg
-              aria-hidden="true"
-              className="mr-2 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            <Trans>Previous</Trans>
-          </Button>
-          <div className="flex justify-end gap-2">
-            <Button
-              data-cy="to-step-3"
-              color={'light'}
+        <FieldContainer>
+          <TagsInputGroup
+            name="tags"
+            label={t('Tags')}
+            icon={faTag}
+            placeholder={t('Tags')}
+            schema={schema}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            touched={touched}
+            values={values}
+            errors={errors}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TextInputGroup
+            name="editor_notes"
+            label={t('Editor Notes')}
+            icon={faStickyNote}
+            type="textarea"
+            placeholder={t('Optional context and notes about the incident')}
+            rows={8}
+            schema={schema}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            touched={touched}
+            values={values}
+            errors={errors}
+          />
+        </FieldContainer>
+
+        <div
+          className={`flex ${
+            data.is_incident_report && data.incident_ids.length == 0
+              ? 'flex-col'
+              : 'justify-between'
+          } mt-8`}
+        >
+          <div className="flex justify-between">
+            <Button type="button" color={'light'} onClick={() => previous(values)}>
+              <svg
+                aria-hidden="true"
+                className="mr-2 w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              <Trans>Previous</Trans>
+            </Button>
+
+            {data.is_incident_report && data.incident_ids.length == 0 && (
+              <Button
+                data-cy="to-step-3"
+                color={'light'}
+                disabled={isSubmitting}
+                onClick={() => {
+                  setSubmitCount(submitCount + 1);
+                  validateAndSubmitForm(
+                    false,
+                    setIsSubmitting,
+                    isValid,
+                    validateForm,
+                    setFieldTouched,
+                    values,
+                    submitForm
+                  );
+                }}
+              >
+                <span className="lg:hidden">
+                  <Trans>More</Trans>
+                </span>
+                <span className="hidden lg:inline">
+                  <Trans>Add more info</Trans>
+                </span>
+                <svg
+                  aria-hidden="true"
+                  className="ml-2 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </Button>
+            )}
+          </div>
+
+          <div
+            className={`flex ${
+              data.is_incident_report && data.incident_ids.length == 0
+                ? 'justify-end mt-4'
+                : 'justify-between'
+            }`}
+          >
+            <SubmissionButton
+              data-cy="submit-step-2"
               disabled={isSubmitting}
               onClick={() => {
                 setSubmitCount(submitCount + 1);
                 validateAndSubmitForm(
-                  false,
+                  true,
                   setIsSubmitting,
                   isValid,
                   validateForm,
@@ -225,46 +319,8 @@ const FormDetails = ({
                   submitForm
                 );
               }}
-            >
-              <span className="lg:hidden">
-                <Trans>More</Trans>
-              </span>
-              <span className="hidden lg:inline">
-                <Trans>Add more info</Trans>
-              </span>
-              <svg
-                aria-hidden="true"
-                className="ml-2 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </Button>
+            />
           </div>
-        </div>
-        <div className="flex justify-end mt-4">
-          <SubmissionButton
-            data-cy="submit-step-2"
-            disabled={isSubmitting}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                true,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          />
         </div>
       </Form>
 

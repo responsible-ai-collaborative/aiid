@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import config from '../../config';
@@ -28,6 +28,17 @@ export default function Post(props) {
   const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
 
   const loc = new URL(canonicalUrl);
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Checks that the image is valid and loaded
+  useEffect(() => {
+    const image = new Image();
+
+    image.src = mdx.frontmatter.image.childImageSharp.gatsbyImageData.images.fallback.src;
+    image.onerror = () => setImageLoaded(false);
+    image.onload = () => setImageLoaded(true);
+  }, [mdx.frontmatter.image]);
 
   const rightSidebar = (
     <>
@@ -72,6 +83,17 @@ export default function Post(props) {
           </Trans>
         </span>
       </div>
+      {imageLoaded && (
+        <div className="flex flex-col md:flex-row mb-6 max-w-[750px]">
+          <div className="w-full">
+            <img
+              src={mdx.frontmatter.image.childImageSharp.gatsbyImageData.images.fallback.src}
+              alt={mdx.frontmatter.image.alt}
+              data-testid="blog-image"
+            />
+          </div>
+        </div>
+      )}
       <div data-testid="blog-content" className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
       </div>

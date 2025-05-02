@@ -4,7 +4,7 @@ import DateLabel from 'components/ui/DateLabel';
 import { Link } from 'gatsby';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import config from '../../../config';
 import { useLayoutContext } from 'contexts/LayoutContext';
@@ -38,6 +38,17 @@ const PrismicBlogPost = ({ post, location }) => {
   );
 
   const { displayRightSidebar } = useLayoutContext();
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Checks that the image is valid and loaded
+  useEffect(() => {
+    const image = new Image();
+
+    image.src = post.data.image.url;
+    image.onerror = () => setImageLoaded(false);
+    image.onload = () => setImageLoaded(true);
+  }, [post.data.image]);
 
   useEffect(() => {
     displayRightSidebar(rightSidebar);
@@ -74,7 +85,14 @@ const PrismicBlogPost = ({ post, location }) => {
           </Trans>
         </span>
       </div>
-      <div className="prose" data-testid="blog-content">
+      {imageLoaded && (
+        <div className="flex flex-col md:flex-row mb-6 max-w-[750px]">
+          <div className="w-full">
+            <img src={post.data.image.url} alt={post.data.image.alt} data-testid="blog-image" />
+          </div>
+        </div>
+      )}
+      <div className="prose post-styled-main-wrapper" data-testid="blog-content">
         <PrismicRichText field={post.data.content.richText} components={components} />
       </div>
     </>

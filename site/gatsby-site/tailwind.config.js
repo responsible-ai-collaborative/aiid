@@ -110,6 +110,36 @@ module.exports = {
         'table-text': 'rgba(0,0,0,0.05)',
         'btn-check-active': '#565e64',
         'btn-check-border': '#51585e',
+
+        // flowbite-react replaced blue with cyan
+        // in a way that's not easy to reverse.
+        // We don't use cyan anywhere,
+        // so the easiest fix is to redefine cyan as blue.
+        // Issue: https://github.com/responsible-ai-collaborative/aiid/issues/3412
+        'cyan-50': 'oklch(0.97 0.014 254.604)',
+        'cyan-100': 'oklch(0.932 0.032 255.585)',
+        'cyan-200': 'oklch(0.882 0.059 254.128)',
+        'cyan-300': 'oklch(0.809 0.105 251.813)',
+        'cyan-400': 'oklch(0.707 0.165 254.624)',
+        'cyan-500': 'oklch(0.623 0.214 259.815)',
+        'cyan-600': 'oklch(0.546 0.245 262.881)',
+        'cyan-700': 'oklch(0.488 0.243 264.376)',
+        'cyan-800': 'oklch(0.424 0.199 265.638)',
+        'cyan-900': 'oklch(0.379 0.146 265.522)',
+        'cyan-950': 'oklch(0.282 0.091 267.935)',
+
+        // Should we actually need cyan, it's now realcyan
+        'realcyan-50': 'oklch(0.984 0.019 200.873)',
+        'realcyan-100': 'oklch(0.956 0.045 203.388)',
+        'realcyan-200': 'oklch(0.917 0.08 205.041)',
+        'realcyan-300': 'oklch(0.865 0.127 207.078)',
+        'realcyan-400': 'oklch(0.789 0.154 211.53)',
+        'realcyan-500': 'oklch(0.715 0.143 215.221)',
+        'realcyan-600': 'oklch(0.609 0.126 221.723)',
+        'realcyan-700': 'oklch(0.52 0.105 223.128)',
+        'realcyan-800': 'oklch(0.45 0.085 224.283)',
+        'realcyan-900': 'oklch(0.398 0.07 227.392)',
+        'realcyan-950': 'oklch(0.302 0.056 229.695)',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
