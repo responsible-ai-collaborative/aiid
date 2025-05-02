@@ -27,7 +27,12 @@ exports.up = async ({ context: { client } }) => {
     const lastIncident = await incidents.find({}).sort({ incident_id: -1 }).limit(1).next();
 
     // Calculate new incident_id
-    const incident_id = lastIncident ? lastIncident.incident_id + 1 : 1;
+    if (!lastIncident) {
+      console.error('No incidents found. Migration cannot proceed.');
+      return;
+    }
+
+    const incident_id = lastIncident.incident_id + 1;
 
     delete incident88._id; // Remove _id to avoid duplication error
 
