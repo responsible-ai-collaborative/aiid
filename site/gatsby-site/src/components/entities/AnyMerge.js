@@ -62,7 +62,7 @@ export default function AnyMerge() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="entity1" className="block mb-1">
-                <Trans>Entity 1</Trans>
+                <Trans>Primary Entity (Kept)</Trans>
               </label>
               <select
                 id="entity1"
@@ -71,7 +71,7 @@ export default function AnyMerge() {
                 className="border rounded px-2 py-1 w-full"
               >
                 <option value="">
-                  <Trans>Select target entity</Trans>
+                  <Trans>Select primary entity</Trans>
                 </option>
                 {entities.map((e) => (
                   <option key={e.entity_id} value={e.entity_id}>
@@ -82,7 +82,7 @@ export default function AnyMerge() {
             </div>
             <div>
               <label htmlFor="entity2" className="block mb-1">
-                <Trans>Entity 2</Trans>
+                <Trans>Secondary Entity (Deleted)</Trans>
               </label>
               <select
                 id="entity2"
@@ -91,7 +91,7 @@ export default function AnyMerge() {
                 className="border rounded px-2 py-1 w-full"
               >
                 <option value="">
-                  <Trans>Select target entity</Trans>
+                  <Trans>Select secondary entity</Trans>
                 </option>
                 {entities.map((e) => (
                   <option key={e.entity_id} value={e.entity_id}>
