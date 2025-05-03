@@ -1,4 +1,4 @@
-import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLFloat } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLFloat, GraphQLBoolean } from "graphql";
 import { allow } from "graphql-shield";
 import { isRole } from "../rules";
 import { generateMutationFields, generateQueryFields } from "../utils";
@@ -19,10 +19,18 @@ const SimilarEntityPairType = new GraphQLObjectType({
   },
 });
 
+const SimilarEntitiesResultType = new GraphQLObjectType({
+  name: 'SimilarEntitiesResult',
+  fields: {
+    pairs: { type: new GraphQLNonNull(new GraphQLList(SimilarEntityPairType)) },
+    hasMore: { type: new GraphQLNonNull(GraphQLBoolean) },
+  },
+});
+
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
   ...generateQueryFields({ collectionName: 'entities', Type: EntityType }),
   similarEntities: {
-    type: new GraphQLList(SimilarEntityPairType),
+    type: SimilarEntitiesResultType,
     args: {
       threshold: { type: new GraphQLNonNull(GraphQLInt) },
       offset: { type: GraphQLInt },
@@ -30,15 +38,26 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
     },
     resolve: async (_source, { threshold, offset = 0, limit }, context) => {
 
-      let cursor = context.client.db('aiidprod')
+      const cursor = context.client.db('aiidprod')
         .collection('entities')
         .find()
         .sort({ entity_id: 1 })
         .skip(offset);
 
-      if (limit != null) cursor = cursor.limit(limit);
+      let docs: any[];
+      let hasMore = false;
 
-      const docs = await cursor.toArray();
+      if (limit != null) {
+
+        const docsWithExtra = await cursor.limit(limit + 1).toArray();
+
+        hasMore = docsWithExtra.length > limit;
+        docs = docsWithExtra.slice(0, limit);
+      }
+      else {
+      
+        docs = await cursor.toArray();
+      }
 
       const entitiesList: Entity[] = docs.map(doc => ({
         entity_id: doc.entity_id,
@@ -47,7 +66,9 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
         date_modified: doc.date_modified,
       }));
 
-      return findSimilarEntities(entitiesList, threshold);
+      const pairs = findSimilarEntities(entitiesList, threshold);
+      
+      return { pairs, hasMore };
     }
   }
 }
