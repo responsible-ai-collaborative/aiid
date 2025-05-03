@@ -49,11 +49,14 @@ export const MERGE_ENTITIES = gql(`
 export const SIMILAR_ENTITIES = gql(`
   query SimilarEntities($threshold: Int!, $offset: Int!, $limit: Int!) {
     similarEntities(threshold: $threshold, offset: $offset, limit: $limit) {
-      entityId1
-      entityName1
-      entityId2
-      entityName2
-      similarity
+      pairs {
+        entityId1
+        entityName1
+        entityId2
+        entityName2
+        similarity
+      }
+      hasMore
     }
   }
 `);

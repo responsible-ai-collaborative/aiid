@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner, Modal, Card } from 'flowbite-react';
-import { MERGE_ENTITIES, SIMILAR_ENTITIES, FIND_ENTITIES } from '../../graphql/entities';
-import { useQuery, useMutation } from '@apollo/client/react/hooks';
+import { Button, Spinner, Card } from 'flowbite-react';
+import { SIMILAR_ENTITIES } from '../../graphql/entities';
+import { useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import { useUserContext } from 'contexts/UserContext';
+import SimilarMergeModal from 'components/entities/SimilarMergeModal';
+import AnyMerge from 'components/entities/AnyMerge';
 
 function MergeEntitiesPage() {
   const { t } = useTranslation();
@@ -13,7 +15,7 @@ function MergeEntitiesPage() {
 
   const { isRole, loading: loadingAuth } = useUserContext();
 
-  const [threshold, setThreshold] = useState(80);
+  const [threshold, setThreshold] = useState(90);
 
   const [inputThreshold, setInputThreshold] = useState(threshold);
 
@@ -33,11 +35,9 @@ function MergeEntitiesPage() {
     notifyOnNetworkStatusChange: true,
   });
 
-  const { data: allEntitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const [selectedPrimary, setSelectedPrimary] = useState('');
-
-  const [selectedSecondary, setSelectedSecondary] = useState('');
+  const [modalPair, setModalPair] = useState(null);
 
   useEffect(() => {
     if (loadingError) {
@@ -51,67 +51,38 @@ function MergeEntitiesPage() {
 
   const [pairs, setPairs] = useState([]);
 
+  // Initialize pairs on first data load only
   useEffect(() => {
-    if (!loadingSimilar && similarData?.similarEntities) {
+    if (!loadingSimilar && similarData?.similarEntities && pairs.length === 0) {
       setPairs(
-        similarData.similarEntities.map((p) => ({
+        similarData.similarEntities.pairs.map((p) => ({
           primary: { id: p.entityId1, label: p.entityName1 },
           secondary: { id: p.entityId2, label: p.entityName2 },
           score: p.similarity / 100,
         }))
       );
+      // update hasMore from server
+      setHasMore(similarData.similarEntities.hasMore);
     }
-  }, [loadingSimilar, similarData]);
+  }, [loadingSimilar, similarData, pairs.length]);
 
   useEffect(() => {
     setInputThreshold(threshold);
   }, [threshold]);
 
-  const [mergeEntities, { loading: merging }] = useMutation(MERGE_ENTITIES);
-
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const [modalPair, setModalPair] = useState(null);
-
-  const [keepSide, setKeepSide] = useState('left');
-
   const openModal = (pair) => {
     setModalPair(pair);
-    setKeepSide('left');
-    setSelectedPrimary(pair.primary.id);
-    setSelectedSecondary(pair.secondary.id);
     setModalOpen(true);
   };
 
-  const confirmMerge = async () => {
-    if (!modalPair) return;
-    const primaryId = selectedPrimary;
-
-    const secondaryId = selectedSecondary;
-
-    const primaryEntity = allEntitiesData.entities.find((e) => e.entity_id === primaryId);
-
-    const secondaryEntity = allEntitiesData.entities.find((e) => e.entity_id === secondaryId);
-
-    const keepEntityInt = keepSide === 'left' ? 1 : 2;
-
-    try {
-      await mergeEntities({ variables: { primaryId, secondaryId, keepEntity: keepEntityInt } });
-      addToast({
-        message: t('Merged {{secondary}} into {{primary}}', {
-          secondary: secondaryEntity?.name,
-          primary: primaryEntity?.name,
-        }),
-        severity: SEVERITY.success,
-      });
+  const handleMergeComplete = () => {
+    if (modalPair) {
       setPairs((prev) =>
         prev.filter(
           (p) =>
             !(p.primary.id === modalPair.primary.id && p.secondary.id === modalPair.secondary.id)
         )
       );
-    } catch (error) {
-      addToast({ message: t('Error merging entities'), severity: SEVERITY.danger, error });
     }
     setModalOpen(false);
     setModalPair(null);
@@ -121,19 +92,22 @@ function MergeEntitiesPage() {
   const loadMore = async () => {
     setLoadingMore(true);
     try {
-      const currentCount = similarData.similarEntities.length;
+      const currentCount = pairs.length;
 
       const { data: moreData } = await fetchMore({
         variables: { threshold, offset: currentCount, limit: PAGE_SIZE },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev;
-          return {
-            similarEntities: [...prev.similarEntities, ...fetchMoreResult.similarEntities],
-          };
-        },
       });
 
-      if (moreData.similarEntities.length < PAGE_SIZE) setHasMore(false);
+      // Append newly fetched pairs
+      const newPairs = moreData.similarEntities.pairs.map((p) => ({
+        primary: { id: p.entityId1, label: p.entityName1 },
+        secondary: { id: p.entityId2, label: p.entityName2 },
+        score: p.similarity / 100,
+      }));
+
+      setPairs((prev) => [...prev, ...newPairs]);
+      // update hasMore from server
+      setHasMore(moreData.similarEntities.hasMore);
     } catch (err) {
       // optionally handle load more error
     } finally {
@@ -141,7 +115,8 @@ function MergeEntitiesPage() {
     }
   };
 
-  if (loadingAuth || loadingSimilar) {
+  // Show spinner on auth load or initial data load, but not during pagination fetchMore
+  if (loadingAuth || (!similarData && loadingSimilar)) {
     return <Spinner />;
   }
 
@@ -151,136 +126,98 @@ function MergeEntitiesPage() {
 
   return (
     <div className="w-full">
-      <h1 className="mb-5">
-        <Trans>Merge Entities</Trans>
+      <h1 className="text-2xl font-bold mb-5">
+        <Trans>Entity Merge Tool</Trans>
       </h1>
-      {loadingSimilar ? (
+      {loadingSimilar && pairs.length === 0 ? (
         <Spinner />
       ) : (
         <>
-          <Card className="mb-4">
-            <label className="block mb-1">
-              {t('Similarity Threshold')} ({threshold}%)
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                min={0}
-                max={100}
-                value={inputThreshold}
-                onChange={(e) => setInputThreshold(parseInt(e.target.value, 10) || 0)}
-                className="border rounded px-2 py-1 w-20"
-              />
-              <Button
-                onClick={() => {
-                  setThreshold(inputThreshold);
-                  setHasMore(true);
-                }}
-              >
-                {t('Update')}
-              </Button>
-            </div>
-          </Card>
-          {pairs.length === 0 && <div>{t('No similar entities found')}</div>}
-          {pairs.map((p) => (
-            <div
-              key={`${p.primary.id}-${p.secondary.id}`}
-              className="flex justify-between items-center mb-2"
-            >
-              <span>
-                {p.primary.label} ↔ {p.secondary.label} ({(p.score * 100).toFixed(1)}%)
-              </span>
-              <Button onClick={() => openModal(p)} disabled={merging} className="ml-2">
-                {merging ? <Spinner size="sm" /> : <Trans>Merge</Trans>}
-              </Button>
-            </div>
-          ))}
-          {hasMore && (
-            <div className="text-center mt-4">
-              <Button onClick={loadMore} disabled={loadingMore}>
-                {loadingMore ? <Spinner size="sm" /> : <Trans>Load more</Trans>}
-              </Button>
-            </div>
-          )}
-          <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
-            <Modal.Header>
-              <Trans>Select entities and keep one</Trans>
-            </Modal.Header>
-            <Modal.Body>
-              {loadingEntities ? (
-                <Spinner />
-              ) : (
-                <>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block mb-1">{t('Entity 1')}</label>
-                      <select
-                        value={selectedPrimary}
-                        onChange={(e) => setSelectedPrimary(e.target.value)}
-                        className="border rounded px-2 py-1 w-full"
-                      >
-                        {allEntitiesData.entities.map((e) => (
-                          <option key={e.entity_id} value={e.entity_id}>
-                            {e.name}
-                          </option>
-                        ))}
-                      </select>
+          {/* Merge any entity section */}
+          <section className="mb-8">
+            <AnyMerge />
+          </section>
+          {/* Duplicate candidates section */}
+          <section className="mb-8">
+            <Card className="mb-4">
+              <h2 className="text-xl font-semibold mb-2">
+                <Trans>Potential Duplicate Entities</Trans>
+              </h2>
+              <p className="text-sm text-gray-600 mb-0 mt-0">
+                {t(
+                  'This list shows potentially duplicate entities based on name similarity. Higher percentages indicate stronger likelihood of being the same entity.'
+                )}
+              </p>
+              <label className="block mb-1">
+                {t('Similarity Matching Threshold')} ({threshold}%)
+              </label>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={inputThreshold}
+                  onChange={(e) => setInputThreshold(parseInt(e.target.value, 10) || 0)}
+                  className="border rounded px-2 py-1 w-20"
+                />
+                <Button
+                  onClick={() => {
+                    // apply new threshold and reset list for refetch
+                    setThreshold(inputThreshold);
+                    setHasMore(true);
+                    setPairs([]);
+                  }}
+                >
+                  {t('Update')}
+                </Button>
+              </div>
+
+              <hr className="my-4 border-gray-200" />
+
+              <h3 className="text-lg font-medium mb-3">{t('Entity Pairs to Review')}</h3>
+              <p className="text-sm text-gray-600 mt-0 mb-0">
+                {t(
+                  'Review these potential matches and merge entities that represent the same organization or individual.'
+                )}
+              </p>
+              <div className="mt-4">
+                {pairs.length === 0 ? (
+                  <div>{t('No matching entities found at current threshold')}</div>
+                ) : (
+                  pairs.map((p) => (
+                    <div
+                      key={`${p.primary.id}-${p.secondary.id}`}
+                      className="flex justify-between items-center mb-2"
+                    >
+                      <span>
+                        {p.primary.label} ↔ {p.secondary.label} ({(p.score * 100).toFixed(1)}%)
+                      </span>
+                      <Button onClick={() => openModal(p)} className="ml-2">
+                        <Trans>Merge</Trans>
+                      </Button>
                     </div>
-                    <div>
-                      <label className="block mb-1">{t('Entity 2')}</label>
-                      <select
-                        value={selectedSecondary}
-                        onChange={(e) => setSelectedSecondary(e.target.value)}
-                        className="border rounded px-2 py-1 w-full"
-                      >
-                        {allEntitiesData.entities.map((e) => (
-                          <option key={e.entity_id} value={e.entity_id}>
-                            {e.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <label className="flex items-center p-4 border rounded cursor-pointer">
-                      <input
-                        type="radio"
-                        name="keep"
-                        value="left"
-                        checked={keepSide === 'left'}
-                        onChange={() => setKeepSide('left')}
-                        className="mr-2"
-                      />
-                      {allEntitiesData.entities.find((e) => e.entity_id === selectedPrimary)?.name}
-                    </label>
-                    <label className="flex items-center p-4 border rounded cursor-pointer">
-                      <input
-                        type="radio"
-                        name="keep"
-                        value="right"
-                        checked={keepSide === 'right'}
-                        onChange={() => setKeepSide('right')}
-                        className="mr-2"
-                      />
-                      {
-                        allEntitiesData.entities.find((e) => e.entity_id === selectedSecondary)
-                          ?.name
-                      }
-                    </label>
-                  </div>
-                </>
+                  ))
+                )}
+              </div>
+              {hasMore && (
+                <div className="m-auto mt-4">
+                  <Button onClick={loadMore} disabled={loadingMore}>
+                    {loadingMore ? <Spinner size="sm" /> : <Trans>Load more</Trans>}
+                  </Button>
+                </div>
               )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button color="gray" onClick={() => setModalOpen(false)}>
-                <Trans>Cancel</Trans>
-              </Button>
-              <Button onClick={confirmMerge} disabled={merging}>
-                {merging ? <Spinner size="sm" /> : <Trans>Confirm Merge</Trans>}
-              </Button>
-            </Modal.Footer>
-          </Modal>
+            </Card>
+          </section>
         </>
+      )}
+      {modalOpen && modalPair && (
+        <SimilarMergeModal
+          show={modalOpen}
+          onClose={() => setModalOpen(false)}
+          primaryId={modalPair.primary.id}
+          secondaryId={modalPair.secondary.id}
+          onMergeComplete={handleMergeComplete}
+        />
       )}
     </div>
   );
