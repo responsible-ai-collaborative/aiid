@@ -1692,6 +1692,58 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
 
+    test('Should set submitters to Anonymous if they are not provided', async ({ page }) => {
+      await init();
+
+      await conditionalIntercept(
+        page,
+        '**/parseNews**',
+        () => true,
+        parseNews,
+        'parseNews'
+      );
+
+      await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+      );
+
+      await page.goto(url);
+
+      await waitForRequest('findSubmissions');
+
+      await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      await page.locator('[data-cy="fetch-info"]').click();
+
+      await waitForRequest('parseNews');
+
+      await page.locator('input[name="authors"]').fill('Something');
+
+      await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+      await page.locator('[data-cy="submit-step-1"]').click();
+
+      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+      const { data } = await query({
+        query: gql`
+            query {
+              submission(sort: { _id: DESC }){
+                  _id
+                  submitters
+              }
+            }
+          `,
+      });
+
+      expect(data.submission.submitters).toEqual(['Anonymous']);
+    });
+      
     test('Should allow commas in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
       await init();
       await conditionalIntercept(
@@ -1752,5 +1804,4 @@ test.describe('The Submit form', () => {
       await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
       await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
-  
 });

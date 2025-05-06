@@ -39,7 +39,7 @@ import { Checkbox, Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { graphql, useStaticQuery } from 'gatsby';
 
-const SubmissionForm = ({ onChange = null }) => {
+const SubmissionForm = ({ onChange = null, promoType = null }) => {
   const {
     values,
     errors,
@@ -233,10 +233,11 @@ const SubmissionForm = ({ onChange = null }) => {
 
         <TagsInputGroup
           name="submitters"
-          placeholder={t('Your name as you would like it to appear in the leaderboard')}
+          placeholder={t("Enter your name for the leaderboard or leave blank for 'Anonymous'.")}
           label={t('Submitter(s)')}
           icon={faMedal}
           className="mt-3"
+          data-cy="submitters-input"
           {...TextInputGroupProps}
         />
 
@@ -382,7 +383,7 @@ const SubmissionForm = ({ onChange = null }) => {
           </div>
         </div>
 
-        {(!values.incident_ids || values.incident_ids.length === 0) && (
+        {(!values.incident_ids || values.incident_ids.length === 0) && promoType?.toLowerCase() !== 'issue' && (
           <div data-cy="incident-data-section">
             <hr className="my-4" />
             <h3 className="text-lg">Incident Data</h3>

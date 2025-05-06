@@ -352,6 +352,8 @@ test.describe('Submitted reports', () => {
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Issue');
 
+        await expect(page.locator('[data-cy="incident-data-section"]')).not.toBeVisible();
+
         await page.locator('[data-cy="promote-button"]').click();
 
         await expect(page.locator('[data-cy="toast"]').first()).toContainText('*Title must have at least 6 characters');
@@ -381,6 +383,37 @@ test.describe('Submitted reports', () => {
         await page.fill('input[name="date_downloaded"]', '3000-01-01');
 
         await expect(page.locator('[data-cy="submission-form"]')).toContainText('Date must be in the past');
+    });
+
+
+    test('Edits a submission - submitters are Anonymous if left blank', async ({ page, login }) => {
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        // Deletes submitters tags
+        await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
+        await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
+
+        // Expects the submitters input to be empty
+        await expect(page.locator('[data-cy="submitters-input"]')).toHaveText('');
+
+        await expect(page.locator('[data-cy="saving-status"]')).toHaveText('Changes saved');
+
+        const { data: { submissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+                  submitters
+              }
+          }
+      `,
+      });
+
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').submitters).toEqual(['Anonymous']);
     });
 
     test('Claims a submission', async ({ page, login }) => {

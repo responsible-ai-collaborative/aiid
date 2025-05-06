@@ -74,7 +74,7 @@ jobs:
 
       - name: Run database migrations
         if: ${{ inputs.netlify-alias == '' }}
-        run: node migrator up
+        run: npm run db:migrator -- up
         working-directory: site/gatsby-site
         env:
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
@@ -92,6 +92,8 @@ jobs:
           # Extract branch name from ref (removes refs/heads/ prefix)
           if [[ ! -z "${{ inputs.netlify-alias }}" ]]; then
             netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+            netlify env:set SITE_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+            netlify env:set GATSBY_AVAILABLE_LANGUAGES ${{ vars.GATSBY_AVAILABLE_LANGUAGES }} --context "branch:${{ inputs.netlify-alias }}"
           fi
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
