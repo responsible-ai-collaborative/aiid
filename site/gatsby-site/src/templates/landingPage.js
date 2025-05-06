@@ -47,6 +47,16 @@ const LandingPage = (props) => {
       latestIncidentsReportNumbers.includes(r.report_number)
     );
 
+    // Set incident title translation
+    const incidentTranslation = data.incidentTranslations?.nodes.find(
+      (translation) => translation.incident_id === incident.incident_id
+    );
+
+    if (incidentTranslation) {
+      incident.title = incidentTranslation.title;
+      incident.isTranslated = true;
+    }
+
     if (report.language !== language) {
       const translation = data.latestIncidentsReportsTranslations?.edges.find(
         (translation) =>
@@ -191,6 +201,7 @@ export const query = graphql`
     $latestReportNumber: Int
     $latestIncidentsReportNumbers: [Int]
     $locale: String!
+    $latestIncidentIds: [Int]
   ) {
     latestReportIncident: allMongodbAiidprodIncidents(
       filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
@@ -241,6 +252,15 @@ export const query = graphql`
           report_number
           language
         }
+      }
+    }
+    incidentTranslations: allMongodbTranslationsIncidents(
+      filter: { incident_id: { in: $latestIncidentIds }, language: { eq: $locale } }
+    ) {
+      nodes {
+        title
+        incident_id
+        language
       }
     }
     latestPrismicPost: allPrismicBlog(

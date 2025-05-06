@@ -8,6 +8,16 @@
 [build.processing.html]
   pretty_urls = false
 
+[[headers]]
+  for = "/lookupindex.json"
+  [headers.values]
+    access-control-allow-origin = "*"
+
+[[headers]]
+  for = "/embed.js"
+  [headers.values]
+    access-control-allow-origin = "*"
+
 [[redirects]]
   from = "/api/graphql"
   to = "/.netlify/functions/graphql"

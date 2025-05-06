@@ -233,10 +233,11 @@ const SubmissionForm = ({ onChange = null }) => {
 
         <TagsInputGroup
           name="submitters"
-          placeholder={t('Your name as you would like it to appear in the leaderboard')}
+          placeholder={t("Enter your name for the leaderboard or leave blank for 'Anonymous'.")}
           label={t('Submitter(s)')}
           icon={faMedal}
           className="mt-3"
+          data-cy="submitters-input"
           {...TextInputGroupProps}
         />
 

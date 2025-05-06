@@ -159,6 +159,8 @@
   "Thank you for verifying your account.": "Gracias por verificar tu cuenta.",
   "Read more": "Leer más",
   "Table View": "Vista Tabular",
+  "List view": "Vista de lista",
+  "List View": "Vista de lista",
   "Submitting...": "Enviando...",
   "View Less": "Ver Menos",
   "View ({{hidden}}) more": "Ver ({{hidden}}) más",
@@ -331,6 +333,7 @@
   "Most Semantically Similar Incidents (Experimental)": "Incidentes más semánticamente similares (Experimental)",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "Los informes deben tener al menos {{minLength}} caracteres que no sean espacios para calcular la similitud semántica.",
   "No related reports found." : "No se encontraron informes relacionados.",
+  "No related incidents found.": "No se encontraron incidentes relacionados.",
   "<0>Center for Security and Emerging Technology (CSETv1)</0> The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0> La Taxonomía de Daños de IA de CSET caracteriza los incidentes de IA y clasifica los daños de relevancia para la comunidad de políticas públicas.",
   "Known AI Goal": "Objetivo de IA conocido",
   "Known AI Technology": "Tecnología de IA conocida",
@@ -586,5 +589,6 @@
   "Initial Collection Methodology": "Metodología de recopilación inicial",
   "Project and Community": "Proyecto y Comunidad",
   "Submission Queue": "Cola de envío",
-  "Tags": "Etiquetas"
+  "Tags": "Etiquetas",
+  "Sign Up": "Registrarse"
 }
