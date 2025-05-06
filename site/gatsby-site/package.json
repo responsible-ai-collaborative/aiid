@@ -86,8 +86,10 @@
     "md5": "^2.3.0",
     "minimatch": "^9.0.4",
     "mongodb": "^6.10.0",
+    "natural": "^8.0.1",
     "next-auth": "^4.24.10",
     "object-hash": "^3.0.0",
+    "openai": "^4.96.0",
     "openapi-request-validator": "^12.1.3",
     "ora": "^7.0.1",
     "pluralize": "^8.0.0",
@@ -156,7 +158,8 @@
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
     "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
     "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
-    "db:migrator": "npx tsx migrator"
+    "db:migrator": "npx tsx migrator",
+    "export-similar-entities-csv": "npx tsx --env-file=.env src/scripts/export-similar-entities-csv.ts"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
