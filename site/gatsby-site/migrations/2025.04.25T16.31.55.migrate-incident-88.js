@@ -28,8 +28,7 @@ exports.up = async ({ context: { client } }) => {
 
     // Calculate new incident_id
     if (!lastIncident) {
-      console.error('No incidents found. Migration cannot proceed.');
-      return;
+      throw new Error('No incidents found. Migration cannot proceed.');
     }
 
     const incident_id = lastIncident.incident_id + 1;
