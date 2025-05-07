@@ -45,5 +45,7 @@
   "Each alleged Deployer must have at least 3 characters and less than 200": "推定されるデプロイヤーは3文字以上200文字以下でなければいけません",
   "Each alleged Harmed parties must have at least 3 characters and less than 200": "推定される被害グループは3文字以上200文字以下でなければいけません",
   "Each alleged Implicated AI system must have at least 3 characters and less than 200": "推定される関連AIシステムは3文字以上200文字以下でなければいけません",
-  "*Text can't be longer than 50000 characters": "*50000文字を超えるテキストは登録できません"
+  "*Text can't be longer than 50000 characters": "*50000文字を超えるテキストは登録できません",
+  "*Submitters must have at least 3 characters": "*投稿者は3文字以上でなければいけません",
+  "*Submitters can't be longer than 200 characters": "*投稿者は200文字を超えることはできません"
 }

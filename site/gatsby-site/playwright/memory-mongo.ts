@@ -5,9 +5,8 @@ import incidents from './seeds/aiidprod/incidents';
 import reports from './seeds/aiidprod/reports';
 import submissions from './seeds/aiidprod/submissions';
 import entities from './seeds/aiidprod/entities';
-// TODO: Delete "reports_es" when all translations are moved to "reports"
-import reports_es from './seeds/translations/reports_es';
 import reportsTranslations from './seeds/translations/reports';
+import incidentsTranslations from './seeds/translations/incidents';
 import classifications from './seeds/aiidprod/classifications';
 import taxa from './seeds/aiidprod/taxa';
 import candidates from './seeds/aiidprod/candidates';
@@ -64,9 +63,8 @@ export const init = async (seed?: Record<string, Record<string, Record<string, u
             subscriptions,
         },
         translations: {
-            // TODO: Delete "reports_es" when all translations are moved to "reports"
-            reports_es,
             reports: reportsTranslations,
+            incidents: incidentsTranslations,
         },
         auth: {
             users: authUsers,

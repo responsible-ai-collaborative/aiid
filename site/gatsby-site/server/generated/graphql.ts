@@ -873,6 +873,7 @@ export type Incident = {
   AllegedDeveloperOfAISystem?: Maybe<Array<Maybe<Entity>>>;
   AllegedHarmedOrNearlyHarmedParties?: Maybe<Array<Maybe<Entity>>>;
   _id?: Maybe<Scalars['ObjectId']['output']>;
+  classifications?: Maybe<Array<Maybe<Classification>>>;
   created_at?: Maybe<Scalars['DateTime']['output']>;
   date: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
@@ -888,7 +889,13 @@ export type Incident = {
   nlp_similar_incidents?: Maybe<Array<Maybe<IncidentNlp_Similar_Incident>>>;
   reports?: Maybe<Array<Maybe<Report>>>;
   title: Scalars['String']['output'];
+  translations?: Maybe<Array<Maybe<IncidentTranslations>>>;
   tsne?: Maybe<IncidentTsne>;
+};
+
+
+export type IncidentTranslationsArgs = {
+  languages: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type IncidentAllegeddeployerofaisystemRelationInput = {
@@ -1049,6 +1056,13 @@ export type IncidentSortType = {
   incident_id?: InputMaybe<SortType>;
   title?: InputMaybe<SortType>;
   tsne?: InputMaybe<IncidentTsneSortType>;
+};
+
+export type IncidentTranslations = {
+  __typename?: 'IncidentTranslations';
+  description?: Maybe<Scalars['String']['output']>;
+  language?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type IncidentTsne = {
@@ -2262,7 +2276,7 @@ export type ReportSortType = {
 
 export type ReportTranslations = {
   __typename?: 'ReportTranslations';
-  language?: Maybe<Scalars['String']['output']>;
+  language: Scalars['String']['output'];
   plain_text?: Maybe<Scalars['String']['output']>;
   text?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -3038,7 +3052,7 @@ export type FindReportWithTranslationsQueryVariables = Exact<{
 }>;
 
 
-export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations?: Array<{ __typename?: 'ReportTranslations', title?: string | null, text?: string | null, language?: string | null } | null> | null } | null };
+export type FindReportWithTranslationsQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, inputs_outputs?: Array<string | null> | null, quiet?: boolean | null, translations?: Array<{ __typename?: 'ReportTranslations', title?: string | null, text?: string | null, language: string } | null> | null } | null };
 
 export type UpdateReportMutationVariables = Exact<{
   filter: ReportFilterType;
