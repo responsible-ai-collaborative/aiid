@@ -167,11 +167,29 @@ jobs:
           fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
-          echo "$NETLIFY_OUTPUT"   # print the raw deploy output in logs
           echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+
+      - name: Validate deploy output
+        id: validate-deploy
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            try {
+              const data = JSON.parse(output);
+              if (!data.deploy_url || !data.logs) {
+                throw new Error('Missing deploy_url or logs');
+              }
+              console.log('✅ Deploy output validation passed.');
+            } catch (err) {
+              console.error('❌ Deploy output validation failed:', err.message);
+              console.error(output);
+              throw err;
+            }
 
       - name: Comment on PR
         continue-on-error: true
