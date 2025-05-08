@@ -163,10 +163,11 @@ jobs:
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
-            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }} --debug" | tr '\n' ' ')
           fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
+          echo "$NETLIFY_OUTPUT"   # print the raw deploy output in logs
           echo "deploy_log=$NETLIFY_OUTPUT" >> $GITHUB_OUTPUT
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
