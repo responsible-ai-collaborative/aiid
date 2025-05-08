@@ -84,7 +84,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@19.0.2 -g
 
       - name: Set branch context URL
         continue-on-error: true
@@ -152,14 +152,6 @@ jobs:
       - name: Build size
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          limit-access-to-users: cesarvarela
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
       - name: Upload to netlify
         id: deploy-netlify
