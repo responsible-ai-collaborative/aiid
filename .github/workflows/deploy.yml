@@ -153,14 +153,6 @@ jobs:
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          limit-access-to-users: cesarvarela
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
-
       - name: Upload to netlify
         id: deploy-netlify
         working-directory: site/gatsby-site
