@@ -84,7 +84,7 @@ jobs:
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@19.0.2 -g
 
       - name: Set branch context URL
         continue-on-error: true
