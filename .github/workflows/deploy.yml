@@ -163,7 +163,7 @@ jobs:
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
-            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }} --debug" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
           fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
