@@ -39,7 +39,7 @@ import { Checkbox, Select } from 'flowbite-react';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { graphql, useStaticQuery } from 'gatsby';
 
-const SubmissionForm = ({ onChange = null }) => {
+const SubmissionForm = ({ onChange = null, promoType = null }) => {
   const {
     values,
     errors,
@@ -233,10 +233,11 @@ const SubmissionForm = ({ onChange = null }) => {
 
         <TagsInputGroup
           name="submitters"
-          placeholder={t('Your name as you would like it to appear in the leaderboard')}
+          placeholder={t("Enter your name for the leaderboard or leave blank for 'Anonymous'.")}
           label={t('Submitter(s)')}
           icon={faMedal}
           className="mt-3"
+          data-cy="submitters-input"
           {...TextInputGroupProps}
         />
 
@@ -382,80 +383,81 @@ const SubmissionForm = ({ onChange = null }) => {
           </div>
         </div>
 
-        {(!values.incident_ids || values.incident_ids.length === 0) && (
-          <div data-cy="incident-data-section">
-            <hr className="my-4" />
-            <h3 className="text-lg">Incident Data</h3>
-            <TextInputGroup
-              name="incident_title"
-              label={t('Incident Title')}
-              icon={faTenge}
-              placeholder={t('Incident title')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-            <TextInputGroup
-              name="incident_date"
-              label={t('Incident Date')}
-              icon={faCalendar}
-              placeholder={t('Incident Date')}
-              type="date"
-              className="mt-3"
-              disabled={values.incident_id}
-              {...TextInputGroupProps}
-            />
-            <TextInputGroup
-              name="description"
-              label={t('Description')}
-              icon={faAlignLeft}
-              type="textarea"
-              placeholder={t('Incident Description')}
-              rows={3}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-            <TagsInputGroup
-              name="developers"
-              label={t('Alleged developer of AI system')}
-              icon={faCode}
-              placeholder={t('Who created or built the technology involved in the incident?')}
-              className="mt-3"
-              options={entityNames}
-              {...TextInputGroupProps}
-            />
+        {(!values.incident_ids || values.incident_ids.length === 0) &&
+          promoType?.toLowerCase() !== 'issue' && (
+            <div data-cy="incident-data-section">
+              <hr className="my-4" />
+              <h3 className="text-lg">Incident Data</h3>
+              <TextInputGroup
+                name="incident_title"
+                label={t('Incident Title')}
+                icon={faTenge}
+                placeholder={t('Incident title')}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
+              <TextInputGroup
+                name="incident_date"
+                label={t('Incident Date')}
+                icon={faCalendar}
+                placeholder={t('Incident Date')}
+                type="date"
+                className="mt-3"
+                disabled={values.incident_id}
+                {...TextInputGroupProps}
+              />
+              <TextInputGroup
+                name="description"
+                label={t('Description')}
+                icon={faAlignLeft}
+                type="textarea"
+                placeholder={t('Incident Description')}
+                rows={3}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
+              <TagsInputGroup
+                name="developers"
+                label={t('Alleged developer of AI system')}
+                icon={faCode}
+                placeholder={t('Who created or built the technology involved in the incident?')}
+                className="mt-3"
+                options={entityNames}
+                {...TextInputGroupProps}
+              />
 
-            <TagsInputGroup
-              name="deployers"
-              label={t('Alleged deployer of AI system')}
-              icon={faHandPointRight}
-              placeholder={t('Who employed or was responsible for the technology?')}
-              className="mt-3"
-              options={entityNames}
-              {...TextInputGroupProps}
-            />
+              <TagsInputGroup
+                name="deployers"
+                label={t('Alleged deployer of AI system')}
+                icon={faHandPointRight}
+                placeholder={t('Who employed or was responsible for the technology?')}
+                className="mt-3"
+                options={entityNames}
+                {...TextInputGroupProps}
+              />
 
-            <TagsInputGroup
-              name="harmed_parties"
-              label={t('Alleged harmed or nearly harmed parties')}
-              icon={faBolt}
-              placeholder={t('Who experienced negative impacts?')}
-              className="mt-3"
-              options={entityNames}
-              {...TextInputGroupProps}
-            />
+              <TagsInputGroup
+                name="harmed_parties"
+                label={t('Alleged harmed or nearly harmed parties')}
+                icon={faBolt}
+                placeholder={t('Who experienced negative impacts?')}
+                className="mt-3"
+                options={entityNames}
+                {...TextInputGroupProps}
+              />
 
-            <TagsInputGroup
-              name="implicated_systems"
-              label={t('Alleged implicated AI systems')}
-              icon={faGear}
-              placeholder={t('Which AI systems were involved?')}
-              className="mt-3"
-              options={entityNames}
-              {...TextInputGroupProps}
-            />
-            <hr />
-          </div>
-        )}
+              <TagsInputGroup
+                name="implicated_systems"
+                label={t('Alleged implicated AI systems')}
+                icon={faGear}
+                placeholder={t('Which AI systems were involved?')}
+                className="mt-3"
+                options={entityNames}
+                {...TextInputGroupProps}
+              />
+              <hr />
+            </div>
+          )}
 
         <TextInputGroup
           name="editor_notes"

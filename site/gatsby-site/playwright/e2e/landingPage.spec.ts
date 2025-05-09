@@ -54,7 +54,7 @@ test.describe('The Landing page', () => {
 
   test.skip('Should redirect to the account page when logged in',
     async ({ page, skipOnEmptyEnvironment, login }) => {
-      await login(process.env.E2E_ADMIN_USERNAME, process.env.E2E_ADMIN_PASSWORD);
+      await login();
 
       await expect(page).toHaveURL('/');
       await page.locator('[data-cy="sidebar-desktop"]').locator('[data-cy="sidebar-user"]').click();
@@ -104,7 +104,7 @@ test.describe('The Landing page', () => {
     await page.goto('/');
     await page.locator('[data-cy="random-incidents-carousel"]').scrollIntoViewIfNeeded();
     await expect(page.locator('[data-cy="random-incidents-carousel"]')).toBeVisible();
-    await expect(page.locator('[data-cy="random-incidents-carousel-item"]')).toHaveCount(5);
+    await expect(page.locator('[data-cy="random-incidents-carousel-item"]')).toHaveCount(4);
   });
 
   test('Renders commit sha in the footer', async ({ page }) => {
@@ -144,5 +144,15 @@ test.describe('The Landing page', () => {
     await expect(page.getByTestId('sidebar-desktop').locator('[data-testid="flowbite-tooltip"]', { hasText: 'Welcome to the AIID' }))
       .toBeVisible();
 
+  });
+
+  test('Should display the latest incident title translation', async ({ page }) => {
+    await page.goto('/es/');
+    // Incident 1 has a spanish translation
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(0)).toHaveText('Incidente 1: Título del Incidente 1');
+    // Incident 2 does not have a spanish translation
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(1)).toHaveText('Incidente 2: Incident 2');
+    // Incident 3 does not have a spanish translation
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(2)).toHaveText('Incidente 3: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees');
   });
 });

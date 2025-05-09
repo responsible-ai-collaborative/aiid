@@ -6,6 +6,7 @@ import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Trans, useTranslation } from 'react-i18next';
+import Card from 'elements/Card';
 
 const SORT_ORDER = {
   ASC: 'asc',
@@ -14,7 +15,7 @@ const SORT_ORDER = {
 
 const ReportList = ({ items }) => {
   return (
-    <ul className="pl-8 leading-6 my-4 list-revert">
+    <ul className="pl-8 leading-6 mt-4 list-revert">
       {items
         .filter((report) => !hasVariantData(report))
         .map((report) => (
@@ -28,23 +29,32 @@ const ReportList = ({ items }) => {
 
 const IncidentList = ({ incidents }) => {
   return (
-    <div data-cy="incident-list">
+    <div data-cy="incident-list" className="space-y-4">
       {incidents.map((incident) => (
-        <div key={incident.incident_id} data-cy={`incident-${incident.incident_id}`}>
-          <h2>
-            <Trans>Incident</Trans> {incident.incident_id}{' '}
-          </h2>
-          <div className="flex gap-2 mb-2">
-            <Button href={'/cite/' + incident.incident_id}>
-              <Trans>Incident</Trans>
-            </Button>
-            <Button href={'/apps/discover?incident_id=' + incident.incident_id}>
-              <Trans>Discover</Trans>
-            </Button>
+        <Card
+          key={incident.incident_id}
+          data-cy={`incident-${incident.incident_id}`}
+          className="p-4"
+        >
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold text-gray-900">
+              <Link to={'/cite/' + incident.incident_id} className="hover:text-blue-600">
+                <Trans>Incident</Trans> {incident.incident_id}{' '}
+              </Link>
+            </h2>
+            <div className="flex gap-2">
+              <Button
+                color={'light'}
+                href={'/apps/discover?incident_id=' + incident.incident_id}
+                className="text-sm"
+              >
+                <Trans>Discover</Trans>
+              </Button>
+            </div>
           </div>
-          <div className="text-xl">“{incident.title}”</div>
+          <div className="text-base text-gray-700 italic">&ldquo;{incident.title}&rdquo;</div>
           <ReportList items={incident.reports} />
-        </div>
+        </Card>
       ))}
     </div>
   );

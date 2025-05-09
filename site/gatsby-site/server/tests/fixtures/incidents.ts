@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import { Fixture } from "../utils";
 import { Incident, IncidentInsertType, IncidentUpdateType } from "../../generated/graphql";
-import { DBIncident } from "../../interfaces";
+import { DBClassification, DBIncident } from "../../interfaces";
 
 const subscriber = {
     _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e6'),
@@ -289,6 +289,25 @@ const incident3: DBIncident = {
     editor_notes: "",
 };
 
+const classification1: DBClassification = {
+    _id: new ObjectId("63f3d58c26ab981f33b3f9c7"),
+    attributes: [
+        {
+            short_name: "Harm Distribution Basis",
+            value_json: "[]"
+        },
+        {
+            short_name: "Sector of Deployment",
+            value_json: "[]"
+        },
+    ],
+    publish: false,
+    reports: [1],
+    incidents: [1],
+    namespace: "CSETv1",
+    notes: "",
+}
+
 const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
     name: 'incidents',
     query: `
@@ -335,6 +354,9 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
         implicated_systems {
             entity_id
         }
+        classifications {
+            _id
+        }
     `,
     seeds: {
         customData: {
@@ -359,6 +381,9 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
                 report2,
                 report3,
             ],
+            classifications: [
+                classification1,
+            ],
         },
     },
     testSingular: {
@@ -372,7 +397,10 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             reports: [
                 { report_number: 1 },
                 { report_number: 2 }
-            ]
+            ],
+            classifications: [
+                { _id: "63f3d58c26ab981f33b3f9c7" },
+            ],
         },
     },
     testPluralFilter: {

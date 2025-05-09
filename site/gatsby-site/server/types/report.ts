@@ -10,7 +10,9 @@ const ReportTranslationsType = new GraphQLObjectType({
     name: 'ReportTranslations',
     fields: {
         text: { type: GraphQLString },
-        title: { type: GraphQLString }
+        title: { type: GraphQLString },
+        plain_text: { type: GraphQLString },
+        language: { type: new GraphQLNonNull(GraphQLString) },
     }
 });
 
@@ -48,22 +50,33 @@ export const ReportType = new GraphQLObjectType({
         user: getRelationshipConfig(UserType, GraphQLString, 'user', 'userId', 'users', 'customData'),
         quiet: { type: GraphQLBoolean },
         translations: {
-            type: ReportTranslationsType,
+            type: new GraphQLList(ReportTranslationsType),
             args: {
-                input: { type: new GraphQLNonNull(GraphQLString) }
+                languages: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) }
             },
-            resolve: async (source, args, context: Context, info) => {
-
-                const translations = context.client.db('translations').collection("reports_" + args.input);
-
-                const translation = await translations.findOne({ report_number: source.report_number });
-
-                if (translation) {
-
-                    return { text: translation.text, title: translation.title };
-                }
-
-                return { text: "", title: "" }
+            resolve: async (source, args, context: Context) => {
+                const translationsCollection = context.client.db('translations').collection("reports");
+            
+                const translations = await translationsCollection.find({
+                    report_number: source.report_number,
+                    language: { $in: args.languages }
+                }).toArray();
+            
+                return args.languages.map((language: string) => {
+                    const translation = translations.find(t => t.language === language);
+                    
+                    return translation ? {
+                        text: translation.text,
+                        title: translation.title,
+                        plain_text: translation.plain_text,
+                        language: language,
+                    } : {
+                        text: null,
+                        title: null,
+                        plain_text: null,
+                        language: language,
+                    };
+                });
             },
         }
     }

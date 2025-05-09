@@ -159,17 +159,26 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
         },
         type: ReportType,
         resolve: getQueryResolver(ReportType, async (filter, projection, options, obj, args, context) => {
+            // update the translation in the `reports` collection
+            const translationsCollection = context.client.db('translations').collection("reports");
 
-            const translations = context.client.db('translations').collection("reports_" + args.input.language);
-
-            const update = {
+            const translation = {
                 title: args.input.title,
                 text: args.input.text,
-                plain_text: args.input.plain_text
+                plain_text: args.input.plain_text,
+                language: args.input.language,
             };
-
-            await translations.updateOne({ report_number: args.input.report_number }, { $set: { ...update } }, { upsert: true });
-
+            
+            await translationsCollection.updateOne(
+                {
+                    report_number: args.input.report_number,
+                    language: args.input.language,
+                }, 
+                {
+                    $set: { ...translation }
+                }, 
+                { upsert: true }
+            );
 
             const reports = context.client.db('aiidprod').collection("reports");
 
@@ -220,7 +229,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                 image_url: '',
                 cloudinary_id: '',
                 authors: [],
-                submitters: input.variant.submitters,
+                submitters: input.variant.submitters?.length > 0 ? input.variant.submitters : ['Anonymous'],
                 text: input.variant.text,
                 plain_text: '',
                 url: '',

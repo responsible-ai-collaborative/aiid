@@ -23,15 +23,6 @@ jobs:
     with:
       skip-cache: ${{ github.event.inputs.skip-cache }}
 
-  call-atlas:
-    uses: ./.github/workflows/realm.yml
-    secrets: inherit
-    needs: cache-modifier
-    with:
-      sha: ${{ github.sha }}
-      environment: staging
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-
   call-test-api:
     uses: ./.github/workflows/test-api.yml
     needs: cache-modifier
@@ -40,35 +31,13 @@ jobs:
       sha: ${{ github.sha }}
       environment: staging
 
-  call-test-build:
-    uses: ./.github/workflows/test-build.yml
-    secrets: inherit
-    needs: [cache-modifier, call-atlas]
-    with:
-      sha: ${{ github.sha }}
-      environment: staging
-      netlify-context: production
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier }}
-
-  call-test-playwright:
-    uses: ./.github/workflows/test-playwright.yml
-    needs: call-test-build
+  call-test-playwright-e2e:
+    uses: ./.github/workflows/test-playwright-e2e.yml
+    needs: cache-modifier
     secrets: inherit
     with:
       sha: ${{ github.sha }}
       environment: staging
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
-
-  call-test-playwright-full:
-    if: ${{ !failure() && !cancelled() }}
-    uses: ./.github/workflows/test-playwright-full.yml
-    needs: [cache-modifier]
-    secrets: inherit
-    with:
-      sha: ${{ github.sha }}
-      environment: staging
-      runner-label: ${{ vars.PREVIEW_RUNNER_LABEL }}
 
   call-deploy:
     if: (inputs.force-deploy == true || success()) && !cancelled()
@@ -77,8 +46,7 @@ jobs:
       [
         cache-modifier,
         call-test-api,
-        call-test-playwright,
-        call-test-playwright-full,
+        call-test-playwright-e2e,
       ]
     secrets: inherit
     permissions:
@@ -88,11 +56,19 @@ jobs:
       sha: ${{ github.sha }}
       netlify-context: production
       netlify-alias:
-      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
       cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+      runner-label: ${{ vars.STAGING_RUNNER_LABEL }}
+
+  call-test-playwright-probes:
+    uses: ./.github/workflows/test-playwright-probes.yml
+    needs: call-deploy
+    secrets: inherit
+    with:
+      sha: ${{ github.event.pull_request.head.sha }}
+      environment: staging
 
   call-process-notifications:
-    needs: call-deploy
+    needs: call-test-playwright-probes
     uses: ./.github/workflows/process-notifications.yml
     secrets: inherit
     with:

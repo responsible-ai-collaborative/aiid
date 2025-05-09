@@ -18,9 +18,6 @@ on:
         description: The commit SHA to deploy
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
@@ -29,14 +26,18 @@ on:
       site-url:
         description: The URL of the site to deploy
         type: string
-        default: ""
         required: false
+        default: ""
+      runner-label:
+        description: The runner label to use for this workflow
+        type: string
+        required: false
+        default: "ubuntu-latest"
 
 jobs:
   netlify-deploy:
     environment: ${{ inputs.environment }}
-    runs-on:
-      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+    runs-on: ${{ inputs.runner-label || 'ubuntu-latest' }}
     permissions:
       pull-requests: write
     steps:
@@ -56,30 +57,34 @@ jobs:
         with:
           ref: ${{ inputs.sha }}
 
-      - name: Read node modules from cache
-        id: cache-nodemodules
-        uses: actions/cache/restore@v4
-        env:
-          cache-name: cache-install-folder
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
         with:
-          path: |
-            site/gatsby-site/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ inputs.cache-modifier }}
+          path: site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
 
       - name: Install dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: site/gatsby-site
+
+      - name: Run database migrations
+        if: ${{ inputs.netlify-alias == '' }}
+        run: npm run db:migrator -- up
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
 
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@19.0.2 -g
 
       - name: Set branch context URL
         continue-on-error: true
@@ -87,6 +92,8 @@ jobs:
           # Extract branch name from ref (removes refs/heads/ prefix)
           if [[ ! -z "${{ inputs.netlify-alias }}" ]]; then
             netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+            netlify env:set SITE_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+            netlify env:set GATSBY_AVAILABLE_LANGUAGES ${{ vars.GATSBY_AVAILABLE_LANGUAGES }} --context "branch:${{ inputs.netlify-alias }}"
           fi
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -100,18 +107,14 @@ jobs:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
-          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
           GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
           GATSBY_ALGOLIA_SEARCH_KEY: ${{ vars.GATSBY_ALGOLIA_SEARCH_KEY }}
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
-          GATSBY_REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
           MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
           MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
-          GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
           GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
           PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
           NODE_OPTIONS: --dns-result-order=ipv4first
@@ -122,21 +125,29 @@ jobs:
           GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL: ${{ vars.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL }}
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
-          REALM_GRAPHQL_API_KEY: ${{ secrets.REALM_GRAPHQL_API_KEY }}
           GATSBY_COMMIT_SHA: ${{ inputs.sha }}
-          REALM_API_APP_ID: ${{ vars.REALM_API_APP_ID }}
-          REALM_API_GROUP_ID: ${{ vars.REALM_API_GROUP_ID }}
-          REALM_APP_ID: ${{ vars.GATSBY_REALM_APP_ID }}
-          REALM_API_PUBLIC_KEY: ${{ secrets.REALM_API_PUBLIC_KEY }}
-          REALM_API_PRIVATE_KEY: ${{ secrets.REALM_API_PRIVATE_KEY }}
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_URL: ${{ inputs.site-url || vars.SITE_URL }}
           NEXTAUTH_SECRET: dummy # these are necessary for codegen to work
-          MAILERSEND_API_KEY: dummy 
+          MAILERSEND_API_KEY: dummy
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
+          GOOGLE_TRANSLATE_API_KEY: dummy
+
+      - name: Update Algolia indexes
+        if: inputs.netlify-context == 'production' && inputs.netlify-alias == ''
+        run: npm run algolia-update:ci
+        working-directory: site/gatsby-site
+        env:
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GATSBY_SITE_URL: dummy
+          ALGOLIA_SUBSET: ${{ vars.ALGOLIA_SUBSET }}
 
       - name: Build size
         run: |
@@ -148,7 +159,7 @@ jobs:
         run: |
           set -e
           # If no alias is specified, deploy to production
-          if [[ -z "${{ inputs.netlify-alias }}" ]]; then 
+          if [[ -z "${{ inputs.netlify-alias }}" ]]; then
             OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
@@ -161,7 +172,27 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
+      - name: Validate deploy output
+        id: validate-deploy
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            try {
+              const data = JSON.parse(output);
+              if (!data.deploy_url || !data.logs) {
+                throw new Error('Missing deploy_url or logs');
+              }
+              console.log('✅ Deploy output validation passed.');
+            } catch (err) {
+              console.error('❌ Deploy output validation failed:', err.message);
+              console.error(output);
+              throw err;
+            }
+
       - name: Comment on PR
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
