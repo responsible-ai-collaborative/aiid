@@ -262,7 +262,35 @@ DB_STAGING_CONNECTION_STRING=[Staging connection string with admin user credenti
 NETLIFY_BUILD_STAGING_URL=[Netlify Staging build hook. This value is on https://app.netlify.com/sites/staging-aiid/settings/deploys#continuous-deployment]
 ```
 
+### Using a Reduced Dataset for GitHub Runners
 
+To work with a smaller subset of the database (useful for GitHub Actions free runners or local development), you can use the `restore-mongodb.ts` script to create a reduced dataset containing only specific incidents and their related reports.
+
+The script allows you to specify which incidents to include, and it will automatically include all related incidents (similar and dissimilar) and their associated reports.
+
+Usage:
+
+```bash
+npm run restore-mongodb -- --sourceUrl=SOURCE_MONGODB_URL --destinationUrl=DESTINATION_MONGODB_URL --databases=aiidprod,translations --incidentIds=ID1,ID2,ID3
+```
+
+For deploying on a free GitHub runner, you can use the following command that includes a specific set of incident IDs, classification namespaces, and report numbers:
+
+```bash
+npm run restore-mongodb -- --sourceUrl=<SOURCE_MONGODB_URL> --destinationUrl=<DESTINATION_MONGODB_URL> --incidentIds=23,1967,1551,835,1470,1118,1773,1509,1245,679,1606,1374,1065,1543,1505,1468,1539,1420,101,12,368,1427,392,595,1235,45,620,519 --classificationNamespaces=CSETv1 --reportNumbers=2302
+```
+
+The script will:
+1. Find all the specified incidents
+2. Include all related incidents (those marked as similar or dissimilar)
+3. Include all reports associated with these incidents
+4. Copy all the data to the destination database
+
+You can also specify additional options:
+- `--classificationNamespaces=NAMESPACE`: Include only specific classification namespaces
+- `--reportNumbers=NUMBER`: Include specific report numbers
+
+You can also run this in dry-run mode to see what would be copied without making changes with the `--dryRun` flag.
 
 ## Further Reading
 
