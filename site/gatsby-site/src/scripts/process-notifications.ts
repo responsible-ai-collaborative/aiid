@@ -1,54 +1,10 @@
-import { getUserAdminData, UserAdminData } from "../../server/fields/common";
+import { UserCacheManager } from "../../server/fields/userCacheManager";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import * as reporter from '../../server/reporter';
-import { MongoClient } from "mongodb";
+import { Collection, MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
-
-const usersCache: UserAdminData[] = [];
-
-const getAndCacheRecipients = async (userIds: string[], context: Context) => {
-
-    const recipients = [];
-
-    for (const userId of userIds) {
-
-        let user = usersCache.find((user) => user.userId === userId) ?? null;
-
-        if (!user) {
-
-            user = await getUserAdminData(userId, context) ?? null;
-
-            if (user) {
-
-                usersCache.push(user);
-            }
-        }
-
-        if (user?.email && user?.userId) {
-            recipients.push({ email: user.email, userId: user.userId });
-        }
-    }
-
-    return recipients;
-}
-
-const markNotifications = async (notificationsCollection: any, notifications: any, isProcessed: any) => {
-    for (const pendingNotification of notifications) {
-        await notificationsCollection.updateOne(
-            { _id: pendingNotification._id },
-            { $set: { processed: isProcessed, sentDate: new Date() } }
-        );
-    }
-}
-
-const markNotificationsAsProcessed = async (notificationsCollection: any, notifications: any) => {
-    await markNotifications(notificationsCollection, notifications, true);
-}
-
-const markNotificationsAsNotProcessed = async (notificationsCollection: any, notifications: any) => {
-    await markNotifications(notificationsCollection, notifications, false);
-}
+import { handleNotificationError, markNotificationsAsProcessed, markNotificationsAsNotProcessed } from '../utils/notificationUtils';
 
 const buildEntityList = (allEntities: any, entityIds: any) => {
     const entityNames = entityIds.map((entityId: string) => {
@@ -61,9 +17,9 @@ const buildEntityList = (allEntities: any, entityIds: any) => {
     return `${entityNames.slice(0, - 1).join(', ')}, and ${entityNames[entityNames.length - 1]}`;
 }
 
-async function notificationsToNewIncidents(context: Context) {
+async function notificationsToNewIncidents(context: Context, userCacheManager: UserCacheManager) {
 
-    const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
+    const notificationsCollection: Collection<DBNotification> = context.client.db('customData').collection<DBNotification>("notifications");
     const subscriptionsCollection = context.client.db('customData').collection<DBSubscription>("subscriptions");
     const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
     const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
@@ -87,7 +43,7 @@ async function notificationsToNewIncidents(context: Context) {
 
             const uniqueUserIds: string[] = [...new Set(userIds)]!;
 
-            const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+            const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
             const uniqueNotifications: number[] = [];
 
@@ -127,12 +83,12 @@ async function notificationsToNewIncidents(context: Context) {
 
 
                     } catch (error: any) {
-                        // If there is an error sending the email > Mark the notification as not processed
-                        await markNotificationsAsNotProcessed(notificationsCollection, [pendingNotification]);
-
-                        error.message = `[Process Pending Notifications: New Incidents]: ${error.message}`;
-
-                        throw error;
+                        await handleNotificationError(
+                            error,
+                            notificationsCollection,
+                            [pendingNotification],
+                            "[Process Pending Notifications: New Incidents]"
+                        );
                     }
                 }
             }
@@ -151,7 +107,7 @@ async function notificationsToNewIncidents(context: Context) {
     return result;
 }
 
-async function notificationsToIncidentUpdates(context: Context) {
+async function notificationsToIncidentUpdates(context: Context, userCacheManager: UserCacheManager) {
 
     const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
     const subscriptionsCollection = context.client.db('customData').collection<DBSubscription>("subscriptions");
@@ -193,7 +149,7 @@ async function notificationsToIncidentUpdates(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+                        const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -241,7 +197,7 @@ async function notificationsToIncidentUpdates(context: Context) {
     return result;
 }
 
-async function notificationsToNewEntityIncidents(context: Context) {
+async function notificationsToNewEntityIncidents(context: Context, userCacheManager: UserCacheManager) {
 
     const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
     const subscriptionsCollection = context.client.db('customData').collection<DBSubscription>("subscriptions");
@@ -283,7 +239,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
 
                         const uniqueUserIds = [...new Set(userIds)];
 
-                        const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+                        const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
                         const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id! });
 
@@ -335,7 +291,7 @@ async function notificationsToNewEntityIncidents(context: Context) {
     return result;
 }
 
-async function notificationsToNewPromotions(context: Context) {
+async function notificationsToNewPromotions(context: Context, userCacheManager: UserCacheManager) {
 
     const notificationsCollection = context.client.db('customData').collection<DBNotification>("notifications");
     const incidentsCollection = context.client.db('aiidprod').collection<DBIncident>("incidents");
@@ -353,7 +309,7 @@ async function notificationsToNewPromotions(context: Context) {
         for (const pendingNotification of pendingNotificationsToNewPromotions) {
           const uniqueUserIds = [pendingNotification.userId?.toString() ?? ""]; // Sends only to the user who submitted the report
           
-          const recipients = await getAndCacheRecipients(uniqueUserIds, context);
+          const recipients = await userCacheManager.getAndCacheRecipients(uniqueUserIds, context);
 
             // Mark the notification as processed before sending the email
             await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
@@ -404,7 +360,9 @@ async function notificationsToNewPromotions(context: Context) {
 
 export const processNotifications = async () => {
 
-    usersCache.length = 0;
+    const userCacheManager = new UserCacheManager();
+
+    userCacheManager.clearUsersCache();
 
     const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
 
@@ -412,13 +370,13 @@ export const processNotifications = async () => {
 
     let result = 0; // Pending notifications processed count
 
-    result += await notificationsToNewIncidents(context);
+    result += await notificationsToNewIncidents(context, userCacheManager);
 
-    result += await notificationsToNewEntityIncidents(context);
+    result += await notificationsToNewEntityIncidents(context, userCacheManager);
 
-    result += await notificationsToIncidentUpdates(context);
+    result += await notificationsToIncidentUpdates(context, userCacheManager);
 
-    result += await notificationsToNewPromotions(context);
+    result += await notificationsToNewPromotions(context, userCacheManager);
 
     return result;
 }

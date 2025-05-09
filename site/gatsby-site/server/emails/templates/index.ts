@@ -6,6 +6,7 @@ import NewEntityIncident from './NewEntityIncident';
 import NewIncident from './NewIncident';
 import NewReportAddedToAnIncident from './NewReportAddedToAnIncident';
 import SubmissionApproved from './SubmissionApproved';
+import AIIncidentBriefing from './AIIncidentBriefing';
 
 const templates: Record<string, string> = {
     EntityIncidentUpdated,
@@ -16,6 +17,7 @@ const templates: Record<string, string> = {
     SubmissionApproved,
     Login,
     Signup,
+    AIIncidentBriefing,
 };
 
 export default templates;
