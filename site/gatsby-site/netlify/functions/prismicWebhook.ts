@@ -27,26 +27,39 @@ exports.handler = async (event) => {
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
     const environments = [{ name: "production", branch: "main" }, { name: "staging", branch: "staging" }];
 
-    console.log("Triggering GitHub Action...");
+    // Parse the 'environment' field from the webhook payload
+    const environment = body.environment;
 
-    // Trigger GitHub repository_dispatch for each environnment
-    for (const environment of environments) {
-      await axios.post(
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${environment.name}.yml/dispatches`,
-        {
-          inputs: {
-            "skip-cache": true,
-          },
-          ref: environment.branch,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`,
-            Accept: "application/vnd.github.everest-preview+json",
-          },
-        }
-      );
+    // Validate the 'environment' field
+    const validEnvironments = environments.map(env => env.name);
+    if (!validEnvironments.includes(environment)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Invalid environment specified" }),
+      };
     }
+
+    // Find the corresponding environment configuration
+    const targetEnvironment = environments.find(env => env.name === environment);
+
+    console.log(`Triggering GitHub Action for ${environment} environment...`);
+
+    // Trigger GitHub repository_dispatch for the specified environment
+    await axios.post(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${targetEnvironment.name}.yml/dispatches`,
+      {
+        inputs: {
+          "skip-cache": true,
+        },
+        ref: targetEnvironment.branch,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${GITHUB_TOKEN}`,
+          Accept: "application/vnd.github.everest-preview+json",
+        },
+      }
+    );
 
     return {
       statusCode: 200,

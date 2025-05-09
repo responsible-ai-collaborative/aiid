@@ -101,7 +101,10 @@ Add this value to:
 
 - The Prismic Webhook Secret field in the Prismic dashboard:
   - Go to Settings > Webhooks in your Prismic repository.
+  - Create a new Webhook
+  - In `URL` add `https://[your-netlify-url]/.netlify/functions/prismicWebhook`
   - Add the secret under Secret.
+  - Add a Custom Header with key `environment` and values `staging` or `production`. `staging` will re-deploy your staging environment and `production` your production environment.
 - The environment variables in your middleware hosting service (e.g., Netlify).
 - Example: prismic_webhook_secret_123
 
