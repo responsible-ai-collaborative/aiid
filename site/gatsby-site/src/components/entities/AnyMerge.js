@@ -4,6 +4,24 @@ import { Trans, useTranslation } from 'react-i18next';
 import { FIND_ENTITIES, MERGE_ENTITIES } from '../../graphql/entities';
 import { useQuery, useMutation } from '@apollo/client/react/hooks';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import { ExternalLink } from 'react-feather';
+
+export const SelectEntity = ({ id, entities, onChange, selected }) => {
+  return (
+    <Typeahead
+      id={id}
+      className="Typeahead"
+      allowNew={false}
+      multiple={false}
+      labelKey={(option) => option.name}
+      entities={entities}
+      selected={selected}
+      onChange={onChange}
+      options={entities}
+    />
+  );
+};
 
 export default function AnyMerge() {
   const { t } = useTranslation();
@@ -16,14 +34,14 @@ export default function AnyMerge() {
 
   const [mergeEntities, { loading: merging }] = useMutation(MERGE_ENTITIES);
 
-  const [primary, setPrimary] = useState('');
+  const [primary, setPrimary] = useState([]);
 
-  const [secondary, setSecondary] = useState('');
+  const [secondary, setSecondary] = useState([]);
 
   const confirmMerge = async () => {
-    const primaryId = primary;
+    const primaryId = primary[0]?.entity_id;
 
-    const secondaryId = secondary;
+    const secondaryId = secondary[0]?.entity_id;
 
     const keepEntityInt = keepSide === 'left' ? 1 : 2;
 
@@ -35,15 +53,36 @@ export default function AnyMerge() {
     }
   };
 
-  const entities = allEntitiesData?.entities || [];
+  const primaryEntityName = primary[0]?.name;
 
-  const primaryEntityName = entities.find((e) => e.entity_id === primary)?.name || '';
+  const secondaryEntityName = secondary[0]?.name;
 
-  const secondaryEntityName = entities.find((e) => e.entity_id === secondary)?.name || '';
+  const primaryId = primary[0]?.entity_id;
+
+  const secondaryId = secondary[0]?.entity_id;
 
   const keptEntityName = keepSide === 'left' ? primaryEntityName : secondaryEntityName;
 
   const deletedEntityName = keepSide === 'left' ? secondaryEntityName : primaryEntityName;
+
+  const handlePrimaryChange = (selected) => {
+    setPrimary(selected);
+  };
+
+  const handleSecondaryChange = (selected) => {
+    setSecondary(selected);
+  };
+
+  const handleMergeClick = () => {
+    const message = t(
+      'Are you sure you want to merge entity "{{deleted}}" into "{{kept}}"? \n\n This operation is not reversible.',
+      { deleted: deletedEntityName, kept: keptEntityName }
+    );
+
+    if (window.confirm(message)) {
+      confirmMerge();
+    }
+  };
 
   return (
     <Card>
@@ -59,50 +98,56 @@ export default function AnyMerge() {
         <Spinner />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="entity1" className="block mb-1">
                 <Trans>Primary Entity (Kept)</Trans>
               </label>
-              <select
-                id="entity1"
-                value={primary}
-                onChange={(e) => setPrimary(e.target.value)}
-                className="border rounded px-2 py-1 w-full"
-              >
-                <option value="">
-                  <Trans>Select primary entity</Trans>
-                </option>
-                {entities.map((e) => (
-                  <option key={e.entity_id} value={e.entity_id}>
-                    {e.name}
-                  </option>
-                ))}
-              </select>
+              <SelectEntity
+                id={'entity1'}
+                selected={primary}
+                entities={allEntitiesData.entities}
+                onChange={handlePrimaryChange}
+                placeHolder={t('Select primary entity')}
+              />
+              {primary.length > 0 && (
+                <a
+                  href={`/entities/${primary[0].entity_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 block text-sm text-blue-600 hover:underline flex items-center"
+                >
+                  {`/entities/${primary[0].entity_id}`}
+                  <ExternalLink className="ml-1" size={14} />
+                </a>
+              )}
             </div>
             <div>
               <label htmlFor="entity2" className="block mb-1">
                 <Trans>Secondary Entity (Deleted)</Trans>
               </label>
-              <select
-                id="entity2"
-                value={secondary}
-                onChange={(e) => setSecondary(e.target.value)}
-                className="border rounded px-2 py-1 w-full"
-              >
-                <option value="">
-                  <Trans>Select secondary entity</Trans>
-                </option>
-                {entities.map((e) => (
-                  <option key={e.entity_id} value={e.entity_id}>
-                    {e.name}
-                  </option>
-                ))}
-              </select>
+              <SelectEntity
+                id={'entity2'}
+                selected={secondary}
+                entities={allEntitiesData.entities}
+                onChange={handleSecondaryChange}
+                placeHolder={t('Select secondary entity')}
+              />
+              {secondary.length > 0 && (
+                <a
+                  href={`/entities/${secondary[0].entity_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 block text-sm text-blue-600 hover:underline flex items-center"
+                >
+                  {`/entities/${secondary[0].entity_id}`}
+                  <ExternalLink className="ml-1" size={14} />
+                </a>
+              )}
             </div>
           </div>
-          {primary && secondary && (
-            <p className="font-medium text-red-600">
+          {primary.length > 0 && secondary.length > 0 && (
+            <p className="font-medium text-red-600 mt-0">
               <Trans>
                 Warning: This will delete entity &quot;{deletedEntityName}&quot; and update all
                 references to use &quot;{keptEntityName}&quot;.
@@ -110,8 +155,8 @@ export default function AnyMerge() {
             </p>
           )}
           <div className="flex space-x-2">
-            <Button onClick={confirmMerge} disabled={!primary || !secondary || merging}>
-              {merging ? <Spinner size="sm" /> : <Trans>Confirm Merge</Trans>}
+            <Button onClick={handleMergeClick} disabled={!primaryId || !secondaryId || merging}>
+              {merging ? <Spinner size="sm" /> : <Trans>Merge</Trans>}
             </Button>
           </div>
         </>
