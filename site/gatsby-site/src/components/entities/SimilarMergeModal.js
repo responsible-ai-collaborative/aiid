@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { MERGE_ENTITIES, FIND_ENTITIES } from '../../graphql/entities';
 import { useQuery, useMutation } from '@apollo/client/react/hooks';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { ExternalLink } from 'react-feather';
 
 export default function SimilarMergeModal({
   show,
@@ -28,12 +29,10 @@ export default function SimilarMergeModal({
 
   const entities = allEntitiesData?.entities || [];
 
-  // Get entity names for display
   const primaryEntityName = entities.find((e) => e.entity_id === selectedPrimary)?.name || '';
 
   const secondaryEntityName = entities.find((e) => e.entity_id === selectedSecondary)?.name || '';
 
-  // Determine which entity will be kept and which will be deleted based on keepSide
   const keptEntityName = keepSide === 'left' ? primaryEntityName : secondaryEntityName;
 
   const deletedEntityName = keepSide === 'left' ? secondaryEntityName : primaryEntityName;
@@ -66,6 +65,17 @@ export default function SimilarMergeModal({
     }
   };
 
+  const handleMergeClick = () => {
+    const message = t(
+      'Are you sure you want to merge entity "{{deleted}}" into "{{kept}}"? \n\nThis operation is not reversible.',
+      { deleted: deletedEntityName, kept: keptEntityName }
+    );
+
+    if (window.confirm(message)) {
+      confirmMerge();
+    }
+  };
+
   return (
     <Modal show={show} onClose={onClose}>
       <Modal.Header>
@@ -83,34 +93,56 @@ export default function SimilarMergeModal({
             </div>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <label
-                className={`items-center p-4 border rounded cursor-pointer ${
+                className={`flex flex-col items-start p-4 border rounded cursor-pointer ${
                   keepSide === 'left' ? 'border-blue-500 border-2' : ''
                 }`}
               >
-                <input
-                  type="radio"
-                  name="keep"
-                  value="left"
-                  checked={keepSide === 'left'}
-                  onChange={() => setKeepSide('left')}
-                  className="mr-2"
-                />
-                {primaryEntityName}
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="keep"
+                    value="left"
+                    checked={keepSide === 'left'}
+                    onChange={() => setKeepSide('left')}
+                    className="mr-2"
+                  />
+                  <span className="font-medium">{primaryEntityName}</span>
+                </div>
+                <a
+                  href={`/entities/${selectedPrimary}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-gray-600 mt-2 hover:underline flex items-center"
+                >
+                  {`/${selectedPrimary}`}
+                  <ExternalLink size={14} className="ml-1" />
+                </a>
               </label>
               <label
-                className={`items-center p-4 border rounded cursor-pointer ${
+                className={`flex flex-col items-start p-4 border rounded cursor-pointer ${
                   keepSide === 'right' ? 'border-blue-500 border-2' : ''
                 }`}
               >
-                <input
-                  type="radio"
-                  name="keep"
-                  value="right"
-                  checked={keepSide === 'right'}
-                  onChange={() => setKeepSide('right')}
-                  className="mr-2"
-                />
-                {secondaryEntityName}
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="keep"
+                    value="right"
+                    checked={keepSide === 'right'}
+                    onChange={() => setKeepSide('right')}
+                    className="mr-2"
+                  />
+                  <span className="font-medium">{secondaryEntityName}</span>
+                </div>
+                <a
+                  href={`/entities/${selectedSecondary}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-gray-600 mt-2 hover:underline flex items-center"
+                >
+                  {`/${selectedSecondary}`}
+                  <ExternalLink size={14} className="ml-1" />
+                </a>
               </label>
             </div>
             <div className="mt-4">
@@ -128,8 +160,8 @@ export default function SimilarMergeModal({
         <Button color="gray" onClick={onClose}>
           <Trans>Cancel</Trans>
         </Button>
-        <Button onClick={confirmMerge} disabled={merging}>
-          {merging ? <Spinner size="sm" /> : <Trans>Confirm Merge</Trans>}
+        <Button onClick={handleMergeClick} disabled={merging}>
+          {merging ? <Spinner size="sm" /> : <Trans>Merge</Trans>}
         </Button>
       </Modal.Footer>
     </Modal>
