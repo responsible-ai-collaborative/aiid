@@ -229,7 +229,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                 image_url: '',
                 cloudinary_id: '',
                 authors: [],
-                submitters: input.variant.submitters,
+                submitters: input.variant.submitters?.length > 0 ? input.variant.submitters : ['Anonymous'],
                 text: input.variant.text,
                 plain_text: '',
                 url: '',

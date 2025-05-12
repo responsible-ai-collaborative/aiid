@@ -79,7 +79,7 @@ const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
           />
           <TagsInputGroup
             name="submitters"
-            placeholder={t('Your name as you would like it to appear in the leaderboard')}
+            placeholder={t("Enter your name for the leaderboard or leave blank for 'Anonymous'.")}
             label={t('Submitter(s)')}
             errors={errors}
             touched={touched}
