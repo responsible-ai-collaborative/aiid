@@ -1,4 +1,4 @@
-import { test, query } from '../utils';
+import { test, query, fillAutoComplete } from '../utils';
 import { expect } from '@playwright/test';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
@@ -22,7 +22,7 @@ test.describe('Entity Merge Page', () => {
         ).toBeVisible();
     });
 
-    test('AnyMerge component loads with entity list', async ({ page, login }) => {
+    test('AnyMerge displays warning when entities selected', async ({ page, login }) => {
 
         await login();
 
@@ -31,29 +31,17 @@ test.describe('Entity Merge Page', () => {
         await expect(page.getByText('Merge Any Two Entities')).toBeVisible();
         await expect(page.getByText(/Select two entities to merge/)).toBeVisible();
 
-        await expect(page.locator('#entity1')).toBeVisible();
-        await expect(page.locator('#entity2')).toBeVisible();
-
-        await expect(page.locator('#entity1 option')).not.toHaveCount(1); // Should have more than just the placeholder option
-        await expect(page.locator('#entity2 option')).not.toHaveCount(1);
-    });
-
-    test('AnyMerge component displays warning when entities selected', async ({ page, login }) => {
-        await login();
-
-        await page.goto(url);
-
         await expect(page.locator('.text-red-600')).not.toBeVisible();
 
-        await page.locator('#entity1').selectOption({ index: 1 });
-        await page.locator('#entity2').selectOption({ index: 2 });
-
-        const primaryEntityName = await page.locator('#entity1 option:checked').textContent();
-        const secondaryEntityName = await page.locator('#entity2 option:checked').textContent();
+        await fillAutoComplete(page, '#entity1-input', 'Entity', 'Entity 1');
+        await fillAutoComplete(page, '#entity2-input', 'Entity', 'Entity 2');
 
         await expect(page.locator('.text-red-600')).toBeVisible();
-        await expect(page.locator('.text-red-600')).toContainText(`delete entity "${secondaryEntityName}"`);
-        await expect(page.locator('.text-red-600')).toContainText(`use "${primaryEntityName}"`);
+
+
+        await expect(page.locator('.text-red-600')).toBeVisible();
+        await expect(page.locator('.text-red-600')).toContainText(`delete entity "Entity 2"`);
+        await expect(page.locator('.text-red-600')).toContainText(`use "Entity 1"`);
     });
 
     test('Confirm button should be disabled when entities are not selected', async ({ page, login }) => {
@@ -62,15 +50,16 @@ test.describe('Entity Merge Page', () => {
         await page.goto(url);
 
 
-        await expect(page.getByRole('button', { name: 'Confirm Merge' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Merge' })).toBeDisabled();
 
-        await page.locator('#entity1').selectOption({ index: 1 });
+        await fillAutoComplete(page, '#entity1-input', 'Entity', 'Entity 1');
 
-        await expect(page.getByRole('button', { name: 'Confirm Merge' })).toBeDisabled();
 
-        await page.locator('#entity2').selectOption({ index: 2 });
+        await expect(page.getByRole('button', { name: 'Merge' })).toBeDisabled();
 
-        await expect(page.getByRole('button', { name: 'Confirm Merge' })).toBeEnabled();
+        await fillAutoComplete(page, '#entity2-input', 'Entity', 'Entity 2');
+
+        await expect(page.getByRole('button', { name: 'Merge' })).toBeEnabled();
     });
 
     test('AnyMerge component successfully merges entities', async ({ page, login }) => {
@@ -94,10 +83,11 @@ test.describe('Entity Merge Page', () => {
         const primaryEntity = entitiesBeforeMerge.entities[0];
         const secondaryEntity = entitiesBeforeMerge.entities[1];
 
-        await page.locator('#entity1').selectOption({ value: primaryEntity.entity_id });
-        await page.locator('#entity2').selectOption({ value: secondaryEntity.entity_id });
+        await fillAutoComplete(page, '#entity1-input', primaryEntity.name.substring(0, 5), primaryEntity.name);
+        await fillAutoComplete(page, '#entity2-input', secondaryEntity.name.substring(0, 5), secondaryEntity.name);
 
-        await page.getByRole('button', { name: 'Confirm Merge' }).click();
+        page.on('dialog', dialog => dialog.accept());
+        await page.getByRole('button', { name: 'Merge' }).click();
 
         await expect(page.locator('[data-cy="toast"]')).toContainText('Merged successfully');
 

@@ -51,7 +51,6 @@ function MergeEntitiesPage() {
 
   const [pairs, setPairs] = useState([]);
 
-  // Initialize pairs on first data load only
   useEffect(() => {
     if (!loadingSimilar && similarData?.similarEntities && pairs.length === 0) {
       setPairs(
@@ -61,7 +60,6 @@ function MergeEntitiesPage() {
           score: p.similarity / 100,
         }))
       );
-      // update hasMore from server
       setHasMore(similarData.similarEntities.hasMore);
     }
   }, [loadingSimilar, similarData, pairs.length]);
@@ -88,34 +86,27 @@ function MergeEntitiesPage() {
     setModalPair(null);
   };
 
-  // Load more similar entities
   const loadMore = async () => {
     setLoadingMore(true);
-    try {
-      const currentCount = pairs.length;
 
-      const { data: moreData } = await fetchMore({
-        variables: { threshold, offset: currentCount, limit: PAGE_SIZE },
-      });
+    const currentCount = pairs.length;
 
-      // Append newly fetched pairs
-      const newPairs = moreData.similarEntities.pairs.map((p) => ({
-        primary: { id: p.entityId1, label: p.entityName1 },
-        secondary: { id: p.entityId2, label: p.entityName2 },
-        score: p.similarity / 100,
-      }));
+    const { data: moreData } = await fetchMore({
+      variables: { threshold, offset: currentCount, limit: PAGE_SIZE },
+    });
 
-      setPairs((prev) => [...prev, ...newPairs]);
-      // update hasMore from server
-      setHasMore(moreData.similarEntities.hasMore);
-    } catch (err) {
-      // optionally handle load more error
-    } finally {
-      setLoadingMore(false);
-    }
+    const newPairs = moreData.similarEntities.pairs.map((p) => ({
+      primary: { id: p.entityId1, label: p.entityName1 },
+      secondary: { id: p.entityId2, label: p.entityName2 },
+      score: p.similarity / 100,
+    }));
+
+    setPairs((prev) => [...prev, ...newPairs]);
+    setHasMore(moreData.similarEntities.hasMore);
+
+    setLoadingMore(false);
   };
 
-  // Show spinner on auth load or initial data load, but not during pagination fetchMore
   if (loadingAuth || (!similarData && loadingSimilar)) {
     return <Spinner />;
   }

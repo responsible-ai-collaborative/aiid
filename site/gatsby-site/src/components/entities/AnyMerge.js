@@ -11,6 +11,7 @@ export const SelectEntity = ({ id, entities, onChange, selected }) => {
   return (
     <Typeahead
       id={id}
+      inputProps={{ id: `${id}-input` }}
       className="Typeahead"
       allowNew={false}
       multiple={false}
