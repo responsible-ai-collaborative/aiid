@@ -211,6 +211,44 @@ test.describe('Submitted reports', () => {
         expect(reports.find((r) => r.report_number === 9)).toBeDefined();
     });
 
+    test('Promotes a submission to a new issue without Incident Data', async ({ page, login }) => {
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        await page.locator('input[name="incident_title"]').fill('');
+        await page.locator('input[name="incident_date"]').fill('');
+        await page.locator('textarea[name="description"]').fill('');
+        await page.locator('[data-cy="developers-input"] .rbt-close').click();
+        await page.locator('[data-cy="deployers-input"] .rbt-close').click();
+        await page.locator('[data-cy="implicated_systems-input"] .rbt-close').click();
+        await page.locator('[data-cy="harmed_parties-input"] .rbt-close').click();
+
+        await page.locator('select[data-cy="promote-select"]').selectOption('Issue');
+
+        await expect(page.locator('[data-cy="incident-data-section"]')).not.toBeVisible();
+
+        page.on('dialog', dialog => dialog.accept());
+
+        await page.locator('[data-cy="promote-button"]').click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 10');
+
+        const { data: { reports } } = await query({
+            query: gql`{
+                reports {
+                    report_number
+                }
+            }
+        `,
+        });
+
+        expect(reports.find((r) => r.report_number === 9)).toBeDefined();
+    });
+
     test('Rejects a submission', async ({ page, login }) => {
 
         await init();
