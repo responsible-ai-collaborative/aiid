@@ -1,4 +1,5 @@
 import * as notifications from '../../src/scripts/process-notifications';
+import * as briefingNotifications from '../../src/scripts/process-briefing-notifications';
 import * as reporter from '../reporter';
 
 describe('Process Notifications script', () => {
@@ -22,6 +23,27 @@ describe('Process Notifications script', () => {
         mockProcessNotifications.mockRejectedValueOnce(testError);
 
         await notifications.run();
+
+        expect(mockConsoleError).toHaveBeenCalledWith(testError);
+        expect(mockReporterError).toHaveBeenCalledWith(testError);
+        expect(mockProcessExit).toHaveBeenCalledWith(1);
+
+        expect(mockConsoleError).toHaveBeenCalledTimes(1);
+        expect(mockReporterError).toHaveBeenCalledTimes(1);
+        expect(mockProcessExit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle errors properly for briefing notifications, log them, and exit with code 1', async () => {
+
+        const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
+        const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
+        const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
+        const mockProcessBriefingNotifications = jest.spyOn(briefingNotifications, 'processBriefingNotifications')
+
+        const testError = new Error('Test error');
+        mockProcessBriefingNotifications.mockRejectedValueOnce(testError);
+
+        await briefingNotifications.run();
 
         expect(mockConsoleError).toHaveBeenCalledWith(testError);
         expect(mockReporterError).toHaveBeenCalledWith(testError);

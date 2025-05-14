@@ -268,6 +268,7 @@ const plugins = [
         sidebar: require('./custom_types/sidebar.json'),
         sidebar_item: require('./custom_types/sidebar_item.json'),
         sponsor: require('./custom_types/sponsor.json'),
+        update: require('./custom_types/update.json'),
       },
       routes: [
         {

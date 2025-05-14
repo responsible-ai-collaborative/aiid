@@ -64,6 +64,8 @@ jobs:
           GATSBY_SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
+          GATSBY_PRISMIC_REPO_NAME: dummy
+          PRISMIC_ACCESS_TOKEN: dummy
           GOOGLE_TRANSLATE_API_KEY: dummy
           MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
