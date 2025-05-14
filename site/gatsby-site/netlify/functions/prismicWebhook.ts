@@ -16,6 +16,7 @@ exports.handler = async (event: any) => {
 
     // Check if the secret from Prismic matches
     if (!body.secret || body.secret !== PRISMIC_SECRET) {
+      console.log("Invalid secret", body.secret, PRISMIC_SECRET);
       return {
         statusCode: 401,
         body: JSON.stringify({ error: "Unauthorized: Invalid secret" }),
