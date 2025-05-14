@@ -1,10 +1,8 @@
-const config = require('../config');
-
 /** @type {import('umzug').MigrationFn<any>} */
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  const reportsCollection = client.db(config.realm.production_db.db_name).collection('reports');
+  const reportsCollection = client.db('aiidprod').collection('reports');
 
   const reportsCursor = reportsCollection.find({ submitters: [] });
 

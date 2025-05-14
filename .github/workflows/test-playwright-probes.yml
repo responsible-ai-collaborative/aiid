@@ -83,6 +83,7 @@ jobs:
           NEXTAUTH_SECRET: dummy
           GATSBY_PRISMIC_REPO_NAME: dummy
           PRISMIC_ACCESS_TOKEN: dummy
+          GATSBY_COMMIT_SHA: ${{ inputs.sha }}
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
