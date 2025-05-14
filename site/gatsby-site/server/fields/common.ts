@@ -1,8 +1,6 @@
-import { MongoClient, ObjectId } from "mongodb";
-import config from "../config";
+import { MongoClient } from "mongodb";
 import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
-import jwt from 'jsonwebtoken';
 
 export const incidentEmbedding = (reports: Record<string, any>[]) => {
     reports = reports.filter((report) => report.embedding);
@@ -88,25 +86,6 @@ export interface UserAdminData {
     userId?: string;
 }
 
-export const getUserAdminData = async (userId: string, context: Context): Promise<UserAdminData | null> => {
-
-    const authUsersCollection = context.client.db('auth').collection("users");
-    const authUser = await authUsersCollection.findOne({ _id: new ObjectId(userId) });
-
-    if (authUser) {
-
-        return {
-            email: authUser.email,
-            creationDate: new Date(), //TODO: find a way to get this data
-            lastAuthenticationDate: new Date(), //TODO: find a way to get this data
-            disabled: false,
-            userId,
-        }
-    }
-
-    return null;
-}
-
 export const createNotificationsOnNewIncident = async (fullDocument: DBIncident, context: Context): Promise<void> => {
 
     const incidentId = fullDocument.incident_id;
@@ -120,6 +99,13 @@ export const createNotificationsOnNewIncident = async (fullDocument: DBIncident,
         incident_id: incidentId,
         processed: false,
         created_at: new Date(),
+    });
+
+    await notificationsCollection.insertOne({
+      type: 'ai-briefing',
+      incident_id: incidentId,
+      processed: false,
+      created_at: new Date(),
     });
 
     const entityFields: (keyof DBIncident)[] = [
