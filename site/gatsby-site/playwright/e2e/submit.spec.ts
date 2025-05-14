@@ -1804,4 +1804,88 @@ test.describe('The Submit form', () => {
       await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
       await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
+
+    test('Should not add empty entities in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+      await init();
+      await conditionalIntercept(
+        page,
+        '**/parseNews**',
+        () => true,
+        parseNews,
+        'parseNews'
+      );
+
+      await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+      );
+
+      await page.goto(url);
+
+      await waitForRequest('findSubmissions');
+
+      await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      await page.locator('button:has-text("Fetch info")').click();
+
+      await waitForRequest('parseNews');
+
+      await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+      await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+      await page.locator('[data-cy="to-step-2"]').click();
+
+      await page.locator('[data-cy="to-step-3"]').click();
+
+      await page.locator('input[name="developers"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('input[name="deployers"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('input[name="harmed_parties"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('input[name="implicated_systems"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('button[type="submit"]').click();
+      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+      const { data } = await query({
+        query: gql`
+            query {
+              submission(sort: { _id: DESC }){
+                  _id
+                  developers {
+                    entity_id
+                  }
+                  deployers {
+                    entity_id
+                  }
+                  harmed_parties {
+                    entity_id
+                  }
+                  implicated_systems {
+                    entity_id
+                  }
+              }
+            }
+          `,
+      });
+
+      expect(data.submission.developers).toEqual([]);
+      expect(data.submission.deployers).toEqual([]);
+      expect(data.submission.harmed_parties).toEqual([]);
+      expect(data.submission.implicated_systems).toEqual([]);
+    });
 });
