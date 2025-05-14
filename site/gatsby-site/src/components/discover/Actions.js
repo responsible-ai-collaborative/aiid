@@ -149,20 +149,18 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon titleId="report-flag" icon={faFlag} className="fa-flag" />
       </CustomButton>
 
-      {showFlag && (
-        <Modal
-          show={showFlag}
-          onClose={() => setShowFlag(false)}
-          data-cy={'flag-report-' + item.report_number}
-        >
-          <Modal.Header>
-            <Trans>Flag Report</Trans>
-          </Modal.Header>
-          <Modal.Body>
-            <FlagModalContent reportNumber={item.report_number} />
-          </Modal.Body>
-        </Modal>
-      )}
+      <Modal
+        show={showFlag}
+        onClose={() => setShowFlag(false)}
+        data-cy={'flag-report-' + item.report_number}
+      >
+        <Modal.Header>
+          <Trans>Flag Report</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <FlagModalContent reportNumber={item.report_number} />
+        </Modal.Body>
+      </Modal>
 
       {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton
