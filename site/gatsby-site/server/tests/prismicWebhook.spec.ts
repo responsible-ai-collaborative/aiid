@@ -18,8 +18,10 @@ describe('Prismic Webhook Function', () => {
             httpMethod: 'GET',
             body: JSON.stringify({
                 secret: process.env.PRISMIC_SECRET,
+            }),
+            headers: {
                 environment: 'production'
-            })
+            }
         };
 
         const response = await handler(event);
@@ -33,8 +35,10 @@ describe('Prismic Webhook Function', () => {
             httpMethod: 'POST',
             body: JSON.stringify({
                 secret: 'invalid-secret',
+            }),
+            headers: {
                 environment: 'production'
-            })
+            }
         };
 
         const response = await handler(event);
@@ -48,8 +52,10 @@ describe('Prismic Webhook Function', () => {
             httpMethod: 'POST',
             body: JSON.stringify({
                 secret: process.env.PRISMIC_SECRET,
+            }),
+            headers: {
                 environment: 'invalid-environment'
-            })
+            }
         };
 
         const response = await handler(event);
@@ -63,8 +69,10 @@ describe('Prismic Webhook Function', () => {
             httpMethod: 'POST',
             body: JSON.stringify({
                 secret: process.env.PRISMIC_SECRET,
+            }),
+            headers: {
                 environment: 'production'
-            })
+            }
         };
 
         const response = await handler(event);
@@ -91,8 +99,10 @@ describe('Prismic Webhook Function', () => {
             httpMethod: 'POST',
             body: JSON.stringify({
                 secret: process.env.PRISMIC_SECRET,
+            }),
+            headers: {
                 environment: 'staging'
-            })
+            }
         };
 
         const response = await handler(event);
@@ -121,8 +131,10 @@ describe('Prismic Webhook Function', () => {
             httpMethod: 'POST',
             body: JSON.stringify({
                 secret: process.env.PRISMIC_SECRET,
+            }),
+            headers: {
                 environment: 'production'
-            })
+            }
         };
 
         const response = await handler(event);

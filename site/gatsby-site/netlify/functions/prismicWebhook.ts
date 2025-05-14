@@ -12,9 +12,10 @@ exports.handler = async (event: any) => {
     const PRISMIC_SECRET = process.env.PRISMIC_SECRET;
     // Parse Prismic webhook payload
     const body = JSON.parse(event.body);
+    const headers = event.headers;
 
     // Check if the secret from Prismic matches
-    if (body.secret !== PRISMIC_SECRET) {
+    if (!body.secret || body.secret !== PRISMIC_SECRET) {
       return {
         statusCode: 401,
         body: JSON.stringify({ error: "Unauthorized: Invalid secret" }),
@@ -28,7 +29,7 @@ exports.handler = async (event: any) => {
     const environments = [{ name: "staging", branch: "staging" }, { name: "production", branch: "main" }];
 
     // Parse the 'environment' field from the webhook payload
-    const environment = body.environment;
+    const environment = headers.environment;
 
     // Validate the 'environment' field
     const validEnvironments = environments.map(env => env.name);
@@ -39,7 +40,7 @@ exports.handler = async (event: any) => {
       };
     }
 
-    // Find the corresponding environment configuration
+    // Find the corresponding environment configuration, defaults to staging if no environment is specified
     const targetEnvironment = environments.find(env => env.name === environment) || environments[0];
 
     console.log(`Triggering GitHub Action for ${environment} environment...`);
