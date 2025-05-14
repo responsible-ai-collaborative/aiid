@@ -201,7 +201,7 @@ function Tools({
             target="_blank"
           >
             <OecdLogo width={'20px'} className="mr-2" />
-            <Trans>See it OECD AIM</Trans>
+            <Trans>See in OECD AIM</Trans>
           </Button>
         )}
       </Card.Body>
