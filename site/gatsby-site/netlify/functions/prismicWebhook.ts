@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-exports.handler = async (event) => {
+exports.handler = async (event: any) => {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -25,7 +25,7 @@ exports.handler = async (event) => {
     const GITHUB_OWNER = process.env.GITHUB_OWNER;
     const GITHUB_REPO = process.env.GITHUB_REPO;
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const environments = [{ name: "production", branch: "main" }, { name: "staging", branch: "staging" }];
+    const environments = [{ name: "staging", branch: "staging" }, { name: "production", branch: "main" }];
 
     // Parse the 'environment' field from the webhook payload
     const environment = body.environment;
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
     }
 
     // Find the corresponding environment configuration
-    const targetEnvironment = environments.find(env => env.name === environment);
+    const targetEnvironment = environments.find(env => env.name === environment) || environments[0];
 
     console.log(`Triggering GitHub Action for ${environment} environment...`);
 
@@ -65,7 +65,7 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({ success: "GitHub Action triggered successfully!" }),
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error triggering GitHub Action:", error.message);
     return {
       statusCode: 500,
