@@ -26,6 +26,7 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  oecdId,
 }) {
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
@@ -188,6 +189,18 @@ function Tools({
               data-cy="toogle-live-data"
             />
           </div>
+        )}
+        {oecdId && (
+          <Button
+            color="gray"
+            href={`https://oecd.ai/en/incidents/${oecdId}`}
+            className="hover:no-underline"
+            data-cy="oecd-btn"
+            as="a"
+            target="_blank"
+          >
+            <Trans>OECD</Trans>
+          </Button>
         )}
       </Card.Body>
     </Card>
