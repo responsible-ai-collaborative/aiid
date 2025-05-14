@@ -247,7 +247,7 @@ function EditCitePage(props) {
       {loading && <DefaultSkeleton />}
       {incident === null && !loading && <div>Incident not found</div>}
 
-      {incident && (
+      {!loading && incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
