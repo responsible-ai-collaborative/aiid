@@ -45,5 +45,7 @@
   "Each alleged Deployer must have at least 3 characters and less than 200": "Chaque implémenteur présumé doit comporter au moins 3 caractères et moins de 200",
   "Each alleged Harmed parties must have at least 3 characters and less than 200": "Chaque partie lésée présumée doit comporter au moins 3 caractères et moins de 200",
   "Each alleged Implicated AI system must have at least 3 characters and less than 200": "Chaque système d'IA présumé impliqué doit comporter au moins 3 caractères et moins de 200.",
-  "*Text can't be longer than 50000 characters": "*Le texte ne peut pas comporter plus de 50000 caractères"
+  "*Text can't be longer than 50000 characters": "*Le texte ne peut pas comporter plus de 50000 caractères",
+  "*Submitters must have at least 3 characters": "*Les soumissionnaires doivent avoir au moins 3 caractères",
+  "*Submitters can't be longer than 200 characters": "*Les soumissionnaires ne peuvent pas comporter plus de 200 caractères"
 }

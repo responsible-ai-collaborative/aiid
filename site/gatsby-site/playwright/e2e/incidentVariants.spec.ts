@@ -105,35 +105,37 @@ test.describe('Variants pages', () => {
 
     test('Should add a new Variant - without submitters', async ({ page }) => {
 
-      await init();
+        await init();
 
-      await page.goto(url);
+        await page.goto(url);
 
-      await expect(page.getByText('Variants', { exact: true })).toBeVisible();
+        await expect(page.getByText('Variants', { exact: true })).toBeVisible();
 
-      await expect(page.locator('[data-cy=variant-form]')).not.toBeVisible();
+        await expect(page.locator('[data-cy=variant-form]')).not.toBeVisible();
 
-      await page.locator('[data-cy=add-variant-btn]').click();
-      await page.waitForSelector('[data-cy=variant-form]');
+        expect(async () => {
+            await page.locator('[data-cy=add-variant-btn]').click();
+            await page.waitForSelector('[data-cy=variant-form]', { timeout: 2000 });
+        }).toPass();
 
-      await page.locator('[data-cy="variant-form-date-published"]').fill(new_date_published);
-      await page.locator('[data-cy="variant-form-text"]').fill(new_text);
-      await page.locator('[data-cy="variant-form-inputs-outputs"]').nth(0).fill(new_inputs_outputs_1);
-      await page.locator('[data-cy="add-text-row-btn"]').click();
-      await page.locator('[data-cy="variant-form-inputs-outputs"]').nth(1).fill(new_inputs_outputs_2);
+        await page.locator('[data-cy="variant-form-date-published"]').fill(new_date_published);
+        await page.locator('[data-cy="variant-form-text"]').fill(new_text);
+        await page.locator('[data-cy="variant-form-inputs-outputs"]').nth(0).fill(new_inputs_outputs_1);
+        await page.locator('[data-cy="add-text-row-btn"]').click();
+        await page.locator('[data-cy="variant-form-inputs-outputs"]').nth(1).fill(new_inputs_outputs_2);
 
-      await page.locator('[data-cy=add-variant-submit-btn]').click();
+        await page.locator('[data-cy=add-variant-submit-btn]').click();
 
-      await expect(page.locator('[data-cy=success-message]')).toContainText(
-          "Your variant has been added to the review queue and will appear on this page within 12 hours"
-      );
-      await expect(page.locator('[data-cy="toast"]')).toContainText(
-          'Your variant has been added to the review queue and will appear on this page within 12 hours.'
-      );
+        await expect(page.locator('[data-cy=success-message]')).toContainText(
+            "Your variant has been added to the review queue and will appear on this page within 12 hours"
+        );
+        await expect(page.locator('[data-cy="toast"]')).toContainText(
+            'Your variant has been added to the review queue and will appear on this page within 12 hours.'
+        );
 
-      // Check that the new variant's submitters are Anonymous
-      const { data: { reports } } = await query({
-        query: gql`
+        // Check that the new variant's submitters are Anonymous
+        const { data: { reports } } = await query({
+            query: gql`
             query {
                 reports (sort: { created_at: DESC }) {
                     report_number
@@ -148,8 +150,8 @@ test.describe('Variants pages', () => {
                 }
             }
         `});
-      const newVariant = reports[0];
-      expect(newVariant.submitters).toEqual(['Anonymous']);
+        const newVariant = reports[0];
+        expect(newVariant.submitters).toEqual(['Anonymous']);
     });
 
     test("Shouldn't edit a Variant - Unauthenticated user", async ({ page }) => {
