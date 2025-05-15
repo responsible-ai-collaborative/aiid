@@ -1,9 +1,7 @@
-import { expect, jest, it } from '@jest/globals';
+import { expect, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
 import { pluralize, singularize } from "../utils";
-import capitalize from 'lodash/capitalize';
-import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
-import * as context from '../context';
+import { capitalize, makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 
 import quickaddsFixture from './fixtures/quickadds';
 import reportsFixture from './fixtures/reports';
@@ -31,8 +29,8 @@ const fixtures = [
 
 fixtures.forEach((collection) => {
 
-    const singularName = singularize(collection.name);
-    const pluralName = pluralize(collection.name);
+    const singularName = singularize(collection.fieldName ?? collection.name);
+    const pluralName = pluralize(collection.fieldName ?? collection.name);
 
     const filterTypeName = `${capitalize(singularName)}FilterType`;
     const insertTypeName = `${capitalize(singularName)}InsertType`;
