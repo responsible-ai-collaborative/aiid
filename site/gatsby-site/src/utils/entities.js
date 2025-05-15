@@ -181,8 +181,11 @@ module.exports.makeEntitiesHash = (entities, entityRelationships = []) =>
 module.exports.processEntities = async (allEntities, entitiesNames, createEntityMutation) => {
   entitiesNames = entitiesNames
     ? !isArray(entitiesNames)
-      ? entitiesNames.split(',').map((s) => s.trim())
-      : entitiesNames
+      ? entitiesNames
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s !== null && s !== undefined && s !== '')
+      : entitiesNames.filter((s) => s !== null && s !== undefined && s !== '')
     : [];
 
   const entityIds = [];
