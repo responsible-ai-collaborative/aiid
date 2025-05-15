@@ -1,20 +1,14 @@
-name: Process Notifications
+name: Process Briefing Notifications
+
 on:
   workflow_call:
     inputs:
       environment:
-        description: The Github environment to load secrets from
-        type: string
         required: true
-      force-deploy:
-        description: Skip processing notifications if force deploy is true
-        type: boolean
-        required: false
-        default: false
+        type: string
 
 jobs:
-  execute-process:
-    if: ${{ inputs.force-deploy != true }}
+  execute-process-briefing:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -32,7 +26,7 @@ jobs:
         working-directory: site/gatsby-site
         run: npm ci
 
-      - name: Process Notifications
+      - name: Process Briefing Notifications
         working-directory: site/gatsby-site
         env:
           API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
@@ -41,10 +35,10 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: ${{ vars.NOTIFICATIONS_SENDER_NAME }}
           NOTIFICATIONS_SENDER: ${{ vars.NOTIFICATIONS_SENDER }}
           SITE_URL: ${{ vars.SITE_URL }}
-          NEXTAUTH_URL: ${{ vars.SITE_URL }} # next auth requires this variables to be set
-          NEXTAUTH_SECRET: dummy # unless we want to send emails with the magic link from this workflow, we don't need the actual secret
-          GOOGLE_TRANSLATE_API_KEY: dummy
-          MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
+          NEXTAUTH_URL: ${{ vars.SITE_URL }} # NextAuth requires this variable
+          NEXTAUTH_SECRET: dummy # No actual secret needed unless sending magic links
           GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
           PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
-        run: npm run process-notifications:ci
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+        run: npm run process-briefing-notifications:ci 

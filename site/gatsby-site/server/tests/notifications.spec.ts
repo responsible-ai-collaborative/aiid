@@ -1,7 +1,7 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
 import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
-import * as common from '../fields/common';
+import * as userCacheManager from '../fields/userCacheManager';
 import * as emails from '../emails';
 import { DBEntity, DBIncident, DBNotification, DBReport, DBSubmission, DBSubscription, DBUser } from '../interfaces';
 import config from '../config';
@@ -840,6 +840,12 @@ describe(`Notifications`, () => {
                 entity_id: null,
             },
             {
+                type: "ai-briefing",
+                incident_id: 1,
+                processed: false,
+                entity_id: null,
+            },
+            {
                 type: "entity",
                 incident_id: 1,
                 processed: false,
@@ -949,10 +955,16 @@ describe(`Notifications`, () => {
 
         expect(result.body.data.notifications).toMatchObject([
             {
-                type: "new-incidents",
+              type: "new-incidents",
+              incident_id: 1,
+              processed: false,
+              entity_id: null,
+            },
+            {
+                entity_id: null,
                 incident_id: 1,
                 processed: false,
-                entity_id: null,
+                type: "ai-briefing",
             },
             {
                 entity_id: "entity-1",
@@ -1662,23 +1674,23 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'new-incidents',
-                userId: '123',
+                userId: '4a3f9c0d5e7b8a1c2d3e4f60', // Random user id that doesn't exist
             },
             {
                 type: 'incident',
-                userId: '123',
+                userId: '4a3f9c0d5e7b8a1c2d3e4f60',
                 incident_id: 1,
             },
             {
                 type: 'submission-promoted',
-                userId: '123',
+                userId: '4a3f9c0d5e7b8a1c2d3e4f60',
                 incident_id: 1,
             }
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: "4a3f9c0d5e7b8a1c2d3e4f60",
                 roles: ['admin'],
             }
         ]
@@ -1745,10 +1757,10 @@ describe(`Notifications`, () => {
             }
         });
 
-        mockSession('123');
+        mockSession('4a3f9c0d5e7b8a1c2d3e4f60');
 
         // No recipients
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue(null);
+        jest.spyOn(userCacheManager.UserCacheManager.prototype, 'getUserAdminData').mockResolvedValue(null);
 
         const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
             throw new Error('Failed to send email');

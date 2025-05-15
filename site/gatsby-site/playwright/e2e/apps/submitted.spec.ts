@@ -454,6 +454,46 @@ test.describe('Submitted reports', () => {
       expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').submitters).toEqual(['Anonymous']);
     });
 
+    test('Edits a submission - should not allow empty entities', async ({ page, login }) => {
+
+      await init();
+
+      await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+      await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+      await page.locator('input[name="deployers"]').fill('');
+      await page.keyboard.press('Enter');
+
+      await page.locator('input[name="developers"]').fill('');
+      await page.keyboard.press('Enter');
+
+      await page.locator('input[name="harmed_parties"]').fill('');
+      await page.keyboard.press('Enter');
+
+      const { data: { submissions } } = await query({
+        query: gql`{
+            submissions {
+                _id
+                deployers {
+                    entity_id
+                }
+                developers {
+                    entity_id
+                }
+                harmed_parties {
+                    entity_id
+                }
+            }
+        }
+    `,
+      });
+
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').deployers).toHaveLength(1);
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').developers).toHaveLength(1);
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').harmed_parties).toHaveLength(1);
+    });
+
     test('Claims a submission', async ({ page, login }) => {
 
         await init();
