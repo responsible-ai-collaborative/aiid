@@ -45,6 +45,8 @@ jobs:
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
           GATSBY_SITE_URL: dummy
+          GATSBY_PRISMIC_REPO_NAME: dummy
+          PRISMIC_ACCESS_TOKEN: dummy
 
       - name: Run Incidents translation script
         run: npm run translate-incidents
@@ -64,3 +66,5 @@ jobs:
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
           GATSBY_SITE_URL: dummy
+          GATSBY_PRISMIC_REPO_NAME: dummy
+          PRISMIC_ACCESS_TOKEN: dummy
