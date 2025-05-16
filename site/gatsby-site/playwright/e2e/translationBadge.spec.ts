@@ -48,7 +48,7 @@ test.describe('Translation Badges', () => {
 
   test('Should be visible on the incident page if it was translated', async ({ page }) => {
     await page.goto('/es/cite/1');
-    await expect(page.locator('.titleWrapper').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
+    await expect(page.locator('[data-testid="incident-title-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
     await expect(page.locator('[data-testid="incident-description-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
   });
 

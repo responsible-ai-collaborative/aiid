@@ -183,7 +183,7 @@ test.describe('Incidents', () => {
     await modal.getByTestId('incident-title').getByText(version1.title).waitFor();
     await modal.getByText('Modified by: Test User').waitFor();
     await modal.getByText(`Modified on: ${format(fromUnixTime(version1.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`).waitFor();
-    await modal.getByText(`Description: ${version1.description}`).waitFor();
+    await modal.locator('[data-testid="incident-description-section"]').getByText(`${version1.description}`).waitFor();
     if (version1.editor_notes) {
       await modal.getByText(`Editor Notes: ${version1.editor_notes}`).waitFor();
     }
