@@ -17,6 +17,7 @@ import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
 import RemoveDuplicateModal from 'components/cite/RemoveDuplicateModal';
+import OecdLogo from '../ui/OecdLogo';
 
 function Tools({
   incident,
@@ -26,6 +27,7 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  oecdId,
 }) {
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
@@ -188,6 +190,19 @@ function Tools({
               data-cy="toogle-live-data"
             />
           </div>
+        )}
+        {oecdId && (
+          <Button
+            color="gray"
+            href={`https://oecd.ai/en/incidents/${oecdId}`}
+            className="hover:no-underline"
+            data-cy="oecd-btn"
+            as="a"
+            target="_blank"
+          >
+            <OecdLogo width={'20px'} className="mr-2" />
+            <Trans>See in OECD AIM</Trans>
+          </Button>
         )}
       </Card.Body>
     </Card>
