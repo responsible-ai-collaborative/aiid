@@ -10,6 +10,12 @@ exports.handler = async (event: any) => {
 
   try {
     const PRISMIC_SECRET = process.env.PRISMIC_SECRET;
+    if (!PRISMIC_SECRET || PRISMIC_SECRET === '') {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Server misconfiguration: PRISMIC_SECRET is not set." }),
+      };
+    }
     // Parse Prismic webhook payload
     const body = JSON.parse(event.body);
     const headers = event.headers;

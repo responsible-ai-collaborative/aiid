@@ -64,6 +64,26 @@ describe('Prismic Webhook Function', () => {
         playwrightExpect(JSON.parse(response.body).error).toBe('Invalid environment specified');
     });
 
+    test('Should reject missing PRISMIC_SECRET', async () => {
+        const PRISMIC_SECRET_TEST = process.env.PRISMIC_SECRET;
+        process.env.PRISMIC_SECRET = '';
+        const event = {
+            httpMethod: 'POST',
+            body: JSON.stringify({
+                secret: 'invalid-secret',
+            }),
+            headers: {
+                environment: 'staging'
+            }
+        };
+
+        const response = await handler(event);
+
+        playwrightExpect(response.statusCode).toBe(500);
+        playwrightExpect(JSON.parse(response.body).error).toBe('Server misconfiguration: PRISMIC_SECRET is not set.');
+        process.env.PRISMIC_SECRET = PRISMIC_SECRET_TEST;
+    });
+
     test('Should successfully trigger GitHub action for production', async () => {
         const event = {
             httpMethod: 'POST',
