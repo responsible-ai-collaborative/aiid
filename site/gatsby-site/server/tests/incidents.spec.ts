@@ -151,4 +151,67 @@ describe(`Incidents`, () => {
             }
         })
     });
+
+    it(`Update incident's translations`, async () => {
+
+        // This mutation updates the Spanish translation of a incident and returns the Spanish and French translations
+        const mutationData = {
+            query: `
+               mutation (
+                    $input: UpdateOneIncidentTranslationInput!
+                    $languages: [String!]!
+                ) {
+                updateOneIncidentTranslation(input: $input) {
+                    translations(languages: $languages) {
+                        title
+                        description
+                        language
+                    }
+                }
+            }`,
+            variables: {
+                input: {
+                    language: "es",
+                    incident_id: 1,
+                    description: "this is the description in spanish",
+                    title: "this is the title in spanish"
+                },
+                languages: ["es", "fr"]
+            }
+        };
+
+
+        await seedFixture({
+            customData: {
+                users: [
+                    {
+                        userId: "123",
+                        roles: ['incident_editor'],
+                    }
+                ],
+            },
+        });
+
+
+        mockSession('123');
+
+        const response = await makeRequest(url, mutationData);
+
+        expect(response.body.data).toMatchObject({
+            updateOneIncidentTranslation: {
+                translations: [
+                    {
+                        language: "es",
+                        title: "this is the title in spanish",
+                        description: "this is the description in spanish",
+                    },
+                    {
+                        language: "fr",
+                        title: null,
+                        description: null,
+                    },
+                ]
+            }
+        })
+    });
 });

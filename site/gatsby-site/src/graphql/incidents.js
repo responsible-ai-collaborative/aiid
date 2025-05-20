@@ -234,7 +234,7 @@ export const GET_LATEST_INCIDENT_ID = gql(`
 `);
 
 export const FIND_FULL_INCIDENT = gql(`
-  query FindIncidentFull($filter: IncidentFilterType) {
+  query FindIncidentFull($filter: IncidentFilterType, $translationLanguages: [String!]!) {
     incident(filter: $filter) {
       incident_id
       title
@@ -295,6 +295,11 @@ export const FIND_FULL_INCIDENT = gql(`
         x
         y
       }
+      translations(languages: $translationLanguages) {
+        description,
+        title,
+        language
+       }
     }
   }
 `);
