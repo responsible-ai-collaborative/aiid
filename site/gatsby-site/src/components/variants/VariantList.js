@@ -240,14 +240,35 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
       </h1>
       <div className="mb-4">
         <Trans ns="variants">
-          A &quot;variant&quot; is an incident that shares the same causative factors, produces
-          similar harms, and involves the same intelligent systems as a known AI incident. Rather
-          than index variants as entirely separate incidents, we list variations of incidents under
-          the first similar incident submitted to the database. Unlike other submission types to the
-          incident database, variants are not required to have reporting in evidence external to the
-          Incident Database.{' '}
+          A &quot;variant&quot; is an AI incident similar to a known case—it has the same causes,
+          harms, and AI system. Instead of listing it separately, we group it under the first
+          reported incident. Unlike other incidents, variants do not need to have been reported
+          outside the AIID.{' '}
           <a href="https://arxiv.org/abs/2211.10384">Learn more from the research paper.</a>
         </Trans>
+        {!readOnly && (
+          <div className="flex items-center mt-4 gap-4">
+            <div className="font-semibold flex items-center">
+              <Trans ns="variants">Seen something similar?</Trans>
+            </div>
+            <div>
+              <Button
+                variant="outline-primary"
+                onClick={onAddVariantClick}
+                data-cy="add-variant-btn"
+                size="sm"
+              >
+                <FontAwesomeIcon
+                  titleId="add-variant"
+                  icon={faPlus}
+                  title={t('Add Variant')}
+                  className="mr-2"
+                />
+                <Trans ns="variants">Submit a Variant</Trans>
+              </Button>
+            </div>
+          </div>
+        )}
         <div className={'flex flex-col gap-3 mt-5'}>
           {variantList.map((variant) => (
             <VariantCard
@@ -258,20 +279,6 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
           ))}
         </div>
       </div>
-
-      {!readOnly && (
-        <div>
-          <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
-            <FontAwesomeIcon
-              titleId="add-variant"
-              icon={faPlus}
-              title={t('Add Variant')}
-              className="mr-2"
-            />
-            <Trans ns="variants">Add Variant</Trans>
-          </Button>
-        </div>
-      )}
 
       {displaySuccessMessage && (
         <div data-cy="success-message" className="mt-3 font-medium text-green-600">
