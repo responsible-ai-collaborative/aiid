@@ -166,6 +166,7 @@ const RelatedIncidents = ({
   incident,
   setFieldValue = null,
   columns = Object.keys(allSearchColumns),
+  triggerSearch = null,
 }) => {
   const searchColumns = {};
 
@@ -248,6 +249,8 @@ const RelatedIncidents = ({
     <div data-cy="related-reports">
       {Object.keys(searchColumns).map((key) => {
         const column = searchColumns[key];
+
+        if (!triggerSearch) return null;
 
         return (
           <RelatedIncidentsArea

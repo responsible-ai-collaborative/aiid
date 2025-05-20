@@ -1,15 +1,12 @@
-import Rollbar from 'rollbar';
-import siteConfig from '../../config';
+import { withSentry } from '../../sentry-instrumentation';
 import OpenAPIRequestValidator from 'openapi-request-validator';
-import Cors from 'cors';
 import spec from '../../static/spec.json';
-import normalizeRequest from '../../src/utils/normalizeRequest';
+import { HandlerEvent } from '@netlify/functions';
+import config from '../../server/config';
 
 const requestValidator = new OpenAPIRequestValidator({
   parameters: spec.paths['/api/lookupbyurl'].get.parameters,
 });
-
-const cors = Cors();
 
 const isValidURL = (string) => {
   try {
@@ -20,22 +17,19 @@ const isValidURL = (string) => {
   }
 };
 
-async function handler(event) {
-  const req = normalizeRequest(event);
+async function handler(event: HandlerEvent) {
+  const parsedUrl = new URL(event.rawUrl);
 
-  const errors = requestValidator.validateRequest(req);
+  const urls = [...parsedUrl.searchParams.getAll('urls'), ...parsedUrl.searchParams.getAll('urls[]')];
+
+  const errors = requestValidator.validateRequest({ query: { urls } });
 
   if (errors) {
-    console.warn(req.query, errors);
-    rollbar.warning(req.query, errors);
-
     return {
       statusCode: 400,
       body: JSON.stringify(errors),
     };
   }
-
-  const urls = req.query.urls;
 
   const index = require('./lookupIndex.json');
 
@@ -61,7 +55,7 @@ async function handler(event) {
         filtered.push({
           incident_id: incident.incident_id,
           title: incident.title,
-          url: `${siteConfig.gatsby.siteUrl}/cite/${incident.incident_id}`,
+          url: `${config.SITE_URL}/cite/${incident.incident_id}`,
         });
       }
       return filtered;
@@ -97,25 +91,4 @@ async function handler(event) {
   };
 }
 
-const rollbar = new Rollbar({
-  accessToken: siteConfig.rollbar.token,
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-  payload: {
-    code_version: '1.0.0',
-  },
-});
-
-exports.handler = async function (event) {
-  try {
-    return await handler(event);
-  } catch (error) {
-    console.error(error);
-    rollbar.error(error);
-
-    return {
-      statusCode: 500,
-      body: 'An error occurred',
-    };
-  }
-};
+module.exports = { handler: withSentry(handler) };

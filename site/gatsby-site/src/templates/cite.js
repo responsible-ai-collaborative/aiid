@@ -3,12 +3,17 @@ import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import HeadContent from 'components/HeadContent';
-import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
+import {
+  getTranslatedReports,
+  sortIncidentsByDatePublished,
+  getTranslatedIncident,
+} from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
 import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
 import CiteDynamicTemplate from './citeDynamicTemplate';
+import { useTranslation } from 'react-i18next';
 
 function CitePage(props) {
   const {
@@ -23,33 +28,32 @@ function CitePage(props) {
       allMongodbAiidprodTaxa,
       allMongodbAiidprodClassifications,
       allMongodbAiidprodReports,
-      allMongodbTranslationsReportsEs,
-      allMongodbTranslationsReportsEn,
-      allMongodbTranslationsReportsFr,
-      allMongodbTranslationsReportsJa,
+      allMongodbTranslationsReports,
       incident,
+      incidentTranslation,
       entities: entitiesData,
       responses,
     },
   } = props;
 
+  const translation = incidentTranslation?.nodes.length > 0 ? incidentTranslation.nodes[0] : null;
+
+  const incidentData = getTranslatedIncident(incident, translation);
+
   const [isLiveData, setIsLiveData] = useState(false);
 
-  const { locale } = useLocalization();
+  const { locale: language } = useLocalization();
+
+  const { t } = useTranslation();
 
   // meta tags
 
-  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+  const incidentTitle = `${t('Incident')} ${incidentData.incident_id}: ${incidentData.title}`;
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: {
-      en: allMongodbTranslationsReportsEn,
-      es: allMongodbTranslationsReportsEs,
-      fr: allMongodbTranslationsReportsFr,
-      ja: allMongodbTranslationsReportsJa,
-    },
-    locale,
+    translations: { [language]: allMongodbTranslationsReports },
+    language,
   });
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
@@ -67,7 +71,7 @@ function CitePage(props) {
   );
 
   timeline.push({
-    date_published: incident.date,
+    date_published: incidentData.date,
     title: 'Incident Occurrence',
     mongodb_id: 0,
     isOccurrence: true,
@@ -76,7 +80,7 @@ function CitePage(props) {
   const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
   const entities = computeEntities({
-    incidents: [incident],
+    incidents: [incidentData],
     entities: entitiesData.nodes,
     responses: responses.nodes,
   });
@@ -87,7 +91,7 @@ function CitePage(props) {
         <CiteDynamicTemplate
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
           entitiesData={entitiesData}
-          incident_id={incident.incident_id}
+          incident_id={incidentData.incident_id}
           responses={responses}
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
@@ -97,10 +101,10 @@ function CitePage(props) {
         />
       ) : (
         <CiteTemplate
-          incident={incident}
+          incident={incidentData}
           sortedReports={sortedReports}
           variants={variants}
-          metaTitle={metaTitle}
+          incidentTitle={incidentTitle}
           entities={entities}
           timeline={timeline}
           locationPathName={props.location.pathname}
@@ -123,27 +127,26 @@ export const Head = (props) => {
     location: { pathname: path },
     data: {
       allMongodbAiidprodReports,
-      allMongodbTranslationsReportsEs,
-      allMongodbTranslationsReportsEn,
-      allMongodbTranslationsReportsFr,
+      allMongodbTranslationsReports,
       incident,
+      incidentTranslation,
     },
   } = props;
 
-  const { locale } = useLocalization();
+  const translation = incidentTranslation?.nodes.length > 0 ? incidentTranslation.nodes[0] : null;
 
-  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+  const { locale: language } = useLocalization();
 
-  const metaDescription = incident.description;
+  const metaTitle = `Incident ${incident.incident_id}: ${
+    translation ? translation.title : incident.title
+  }`;
+
+  const metaDescription = translation ? translation.description : incident.description;
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: {
-      en: allMongodbTranslationsReportsEn,
-      es: allMongodbTranslationsReportsEs,
-      fr: allMongodbTranslationsReportsFr,
-    },
-    locale,
+    translations: { [language]: allMongodbTranslationsReports },
+    language,
   });
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
@@ -162,14 +165,7 @@ export const Head = (props) => {
 };
 
 export const query = graphql`
-  query CitationPageQuery(
-    $incident_id: Int
-    $report_numbers: [Int]
-    $translate_es: Boolean!
-    $translate_fr: Boolean!
-    $translate_ja: Boolean!
-    $translate_en: Boolean!
-  ) {
+  query CitationPageQuery($incident_id: Int, $report_numbers: [Int], $locale: String!) {
     allMongodbAiidprodClassifications(
       filter: { incidents: { elemMatch: { incident_id: { eq: $incident_id } } } }
     ) {
@@ -194,6 +190,7 @@ export const query = graphql`
         weight
         description
         complete_entities
+        automatedClassifications
         dummy_fields {
           field_number
           short_name
@@ -262,32 +259,9 @@ export const query = graphql`
         inputs_outputs
       }
     }
-    allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_es) {
-      nodes {
-        title
-        text
-        report_number
-      }
-    }
-    allMongodbTranslationsReportsFr(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_fr) {
-      nodes {
-        title
-        text
-        report_number
-      }
-    }
-    allMongodbTranslationsReportsJa(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_ja) {
-      nodes {
-        title
-        text
-        report_number
-      }
-    }
-    allMongodbTranslationsReportsEn(filter: { report_number: { in: $report_numbers } })
-      @include(if: $translate_en) {
+    allMongodbTranslationsReports(
+      filter: { report_number: { in: $report_numbers }, language: { eq: $locale } }
+    ) {
       nodes {
         title
         text
@@ -313,6 +287,16 @@ export const query = graphql`
       Alleged_harmed_or_nearly_harmed_parties
       editor_notes
       implicated_systems
+    }
+    incidentTranslation: allMongodbTranslationsIncidents(
+      filter: { incident_id: { eq: $incident_id }, language: { eq: $locale } }
+    ) {
+      nodes {
+        title
+        description
+        incident_id
+        language
+      }
     }
 
     entities: allMongodbAiidprodEntities {

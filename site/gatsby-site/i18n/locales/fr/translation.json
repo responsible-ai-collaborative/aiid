@@ -112,6 +112,8 @@
   "Loading...": "Chargement...",
   "Spatial View": "Vue spatiale",
   "Table View": "Vue de tableau",
+  "List View": "Vue de liste",
+  "List view": "Vue de liste",
   "Incident Report Acceptance Criteria": "Critères d'acceptation du rapport d'incident",
   "Database Roadmap": "Feuille de route de la base de données",
   "Initial Collection Methodology": "Méthodologie de collecte initiale",
@@ -273,6 +275,8 @@
   "csetChartDeveloped": "Le CSET a développé des définitions spécifiques pour les phrases soulignées qui peuvent différer des définitions d'autres organisations. Par conséquent, d'autres organisations peuvent procéder à des évaluations différentes pour déterminer si un incident d'IA particulier est (ou n'est pas) un préjudice lié à l'IA. Des détails sur les définitions du CSET pour les dommages causés par l'IA peuvent être trouvés <1>ici</1>.",
   "csetChartMail": "Chaque incident est classé indépendamment par deux annotateurs CSET. Les annotations sont examinées par des pairs et finalement sélectionnées au hasard pour un contrôle qualité avant publication. Malgré ce processus rigoureux, des erreurs se produisent et les lecteurs sont invités à <1>signaler</1> toute erreur qu'ils pourraient découvrir en naviguant.",
   "[Untitled Report]": "[Rapport sans titre]",
+  "{{count}} Report": "{{count}} Rapport",
+  "{{count}} Report_plural": "{{count}} Rapports",
   "YYYY-MM-DD": "AAAA-MM-JJ",
   "Incidents": "Incidents",
   "Incident and Issue Reports": "Incidents et rapports de problèmes",
@@ -317,6 +321,7 @@
   "Most Semantically Similar Incidents (Experimental)": "Incidents les plus similaires sémantiquement (expérimental)",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "Les rapports doivent comporter au moins {{minLength}} caractères autres que des espaces pour calculer la similarité sémantique.",
   "No related reports found." : "Aucun rapport connexe trouvé.",
+  "No related incidents found.": "Aucun incident connexe trouvé.",
   "<0>Center for Security and Emerging Technology (CSETv1)</0> The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0> La taxonomie des dommages causés par l'IA de CSET caractérise les incidents d'IA et classe les préjudices pertinents pour la communauté des politiques publiques.",
   "Known AI Goal": "Objectif d'IA connu",
   "Known AI Technology": "Technologie d'IA connue",
@@ -585,5 +590,6 @@
   "Language": "Langue",
   "Email": "E-mail",
   "Subscribe": "S'abonner",
-  "Tags": "Étiquettes"
+  "Tags": "Étiquettes",
+  "Sign Up": "S'inscrire"
 }

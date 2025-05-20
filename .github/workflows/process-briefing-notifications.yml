@@ -1,0 +1,44 @@
+name: Process Briefing Notifications
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+jobs:
+  execute-process-briefing:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: site/gatsby-site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site/gatsby-site
+        run: npm ci
+
+      - name: Process Briefing Notifications
+        working-directory: site/gatsby-site
+        env:
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN }}
+          MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
+          NOTIFICATIONS_SENDER_NAME: ${{ vars.NOTIFICATIONS_SENDER_NAME }}
+          NOTIFICATIONS_SENDER: ${{ vars.NOTIFICATIONS_SENDER }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          NEXTAUTH_URL: ${{ vars.SITE_URL }} # NextAuth requires this variable
+          NEXTAUTH_SECRET: dummy # No actual secret needed unless sending magic links
+          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+        run: npm run process-briefing-notifications:ci 

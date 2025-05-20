@@ -7,15 +7,13 @@ import * as yup from 'yup';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import FieldContainer from './FieldContainer';
 import {
   faHandPointRight,
   faCode,
   faBolt,
-  faTag,
   faAlignLeft,
-  faStickyNote,
   faPenNib,
   faTenge,
   faGear,
@@ -28,7 +26,6 @@ const StepThree = (props) => {
   const [data, setData] = useState(props.data);
 
   const stepThreeValidationSchema = yup.object().shape({
-    editor_notes: yup.string(),
     incident_title: yup.string(),
     incident_editors: yup.array().of(yup.string()).nullable(),
     description: yup
@@ -43,48 +40,93 @@ const StepThree = (props) => {
       })
       .nullable(),
     developers: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Alleged Developer must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Alleged Developers can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup.mixed().test({
+          name: 'string-or-object',
+          message: 'Each alleged developer must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3 && value.length < 200;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
+      )
       .nullable(),
     deployers: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Alleged Deployers must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Alleged Deployers can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup.mixed().test({
+          name: 'string-or-object',
+          message: 'Each alleged deployer must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3 && value.length < 200;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
+      )
       .nullable(),
     harmed_parties: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Harmed Parties must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Harmed Parties can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup.mixed().test({
+          name: 'string-or-object',
+          message: 'Each alleged Harmed parties must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3 && value.length < 200;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
+      )
       .nullable(),
     implicated_systems: yup
-      .string()
-      .matches(/^.{3,}$/, {
-        excludeEmptyString: true,
-        message: 'Alleged implicated AI Systems must have at least 3 characters',
-      })
-      .matches(/^.{3,200}$/, {
-        excludeEmptyString: true,
-        message: "Alleged implicated AI Systems can't be longer than 200 characters",
-      })
+      .array()
+      .of(
+        yup.mixed().test({
+          name: 'string-or-object',
+          message:
+            'Each alleged Implicated AI system must have at least 3 characters and less than 200',
+          test(value) {
+            if (typeof value === 'string') {
+              return value.length >= 3 && value.length < 200;
+            }
+            if (typeof value === 'object' && value !== null && 'label' in value) {
+              return (
+                typeof value.label === 'string' &&
+                value.label.length >= 3 &&
+                value.label.length < 200
+              );
+            }
+            return false; // Invalid if neither condition is met
+          },
+        })
+      )
       .nullable(),
   });
 
@@ -132,7 +174,13 @@ const StepThree = (props) => {
   return (
     <StepContainer name={props.name} childClassName="p-6">
       <Formik
-        initialValues={data}
+        initialValues={{
+          ...data,
+          developers: data.developers || [],
+          deployers: data.deployers || [],
+          harmed_parties: data.harmed_parties || [],
+          implicated_systems: data.implicated_systems || [],
+        }}
         onSubmit={() => {}}
         validationSchema={stepThreeValidationSchema}
         enableReinitialize
@@ -210,9 +258,13 @@ const FormDetails = ({
     const newEntityNamesList = values
       .filter((value) => {
         if (!value.label) {
-          return !entityNamesList.includes(value);
+          return !entityNamesList.includes(value) && value.length > 2 && value.length < 200;
         }
-        return !entityNamesList.includes(value?.label);
+        return (
+          !entityNamesList.includes(value?.label) &&
+          value?.label.length > 2 &&
+          value?.label.length < 200
+        );
       })
       .map((entity) => {
         if (entity.label) {
@@ -291,7 +343,7 @@ const FormDetails = ({
               </FieldContainer>
             )}
 
-            <FieldContainer>
+            <FieldContainer data-testid="deployers-input">
               <TagsInputGroup
                 name="deployers"
                 label={t('Alleged deployer of AI system')}
@@ -305,10 +357,11 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
 
-            <FieldContainer>
+            <FieldContainer data-testid="developers-input">
               <TagsInputGroup
                 name="developers"
                 label={t('Alleged developer of AI system')}
@@ -322,10 +375,11 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
 
-            <FieldContainer>
+            <FieldContainer data-testid="harmed_parties-input">
               <TagsInputGroup
                 name="harmed_parties"
                 label={t('Alleged harmed or nearly harmed parties')}
@@ -339,10 +393,11 @@ const FormDetails = ({
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
 
-            <FieldContainer>
+            <FieldContainer data-testid="implicated_systems-input">
               <TagsInputGroup
                 name="implicated_systems"
                 label={t('Implicated Systems')}
@@ -350,48 +405,17 @@ const FormDetails = ({
                 placeholder={t('What systems were involved in the incident?')}
                 className="mt-3"
                 schema={schema}
-                options={entityNames}
-                handleChange={handleChange}
+                options={entityNamesList}
+                handleChange={handleEntityChange}
                 handleBlur={handleBlur}
                 touched={touched}
                 values={values}
                 errors={errors}
+                splitChar={null}
               />
             </FieldContainer>
           </>
         )}
-
-        <FieldContainer>
-          <TagsInputGroup
-            name="tags"
-            label={t('Tags')}
-            icon={faTag}
-            placeholder={t('Tags')}
-            schema={schema}
-            handleChange={handleChange}
-            handleBlur={handleBlur}
-            touched={touched}
-            values={values}
-            errors={errors}
-          />
-        </FieldContainer>
-
-        <FieldContainer>
-          <TextInputGroup
-            name="editor_notes"
-            label={t('Editor Notes')}
-            icon={faStickyNote}
-            type="textarea"
-            placeholder={t('Optional context and notes about the incident')}
-            rows={8}
-            schema={schema}
-            handleChange={handleChange}
-            handleBlur={handleBlur}
-            touched={touched}
-            values={values}
-            errors={errors}
-          />
-        </FieldContainer>
 
         <div className="flex justify-between mt-8">
           <Button

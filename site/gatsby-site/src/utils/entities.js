@@ -167,8 +167,12 @@ module.exports.makeIncidentsHash = (incidents) =>
     return hash;
   }, {});
 
-module.exports.makeEntitiesHash = (entities) =>
+module.exports.makeEntitiesHash = (entities, entityRelationships = []) =>
   entities.reduce((hash, entity) => {
+    entity.entityRelationships =
+      entityRelationships?.filter(
+        (relationship) => relationship.sub === entity.id || relationship.obj === entity.id
+      ) || [];
     hash[entity.id] = entity;
     return hash;
   }, {});
@@ -177,8 +181,11 @@ module.exports.makeEntitiesHash = (entities) =>
 module.exports.processEntities = async (allEntities, entitiesNames, createEntityMutation) => {
   entitiesNames = entitiesNames
     ? !isArray(entitiesNames)
-      ? entitiesNames.split(',').map((s) => s.trim())
-      : entitiesNames
+      ? entitiesNames
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s !== null && s !== undefined && s !== '')
+      : entitiesNames.filter((s) => s !== null && s !== undefined && s !== '')
     : [];
 
   const entityIds = [];

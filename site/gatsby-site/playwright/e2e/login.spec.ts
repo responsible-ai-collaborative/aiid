@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import { waitForRequest, conditionalIntercept, test } from '../utils';
-import config from '../config';
+import { generateMagicLink, test } from '../utils';
+import { init } from '../memory-mongo';
 
 test.describe('Login', () => {
   const url = '/login';
@@ -9,106 +9,78 @@ test.describe('Login', () => {
     await page.goto(url);
   });
 
-  test('Should redirect to home page after login by default', 
+  test('Should redirect to home page after login by default',
     async ({ page, skipOnEmptyEnvironment, login }) => {
-      await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+      await login();
 
       await expect(page).toHaveURL('/');
     }
   );
 
-  test.skip('Should redirect to the account page if the signup storage key is set', 
-    async ({ page, skipOnEmptyEnvironment, login }) => {
+  test('Should send redirectTo param to auth endpoint', async ({ page }) => {
 
-      await page.goto('/');
+    await init();
 
-      await page.evaluate(() => window.localStorage.setItem('signup', '1'));
+    const initialUrl = '/cite/1/';
 
-      await login(config.E2E_ADMIN_USERNAME, config.E2E_ADMIN_PASSWORD);
+    await page.goto(initialUrl);
 
-      await expect(page).toHaveURL('/account/?askToCompleteProfile=1');
+    await page.locator('[data-cy="subscribe-btn"]').click();
 
-      await expect(page.getByTestId('edit-user-modal')).toBeVisible({ timeout: 30000 });
+    await page.getByText('Login').click();
 
-      const localStorage = await page.evaluate(() => window.localStorage);
+    const email = 'test.user@incidentdatabase.ai';
 
-      expect(localStorage.signup).toBeUndefined();
-    }
-  );
+    await page.route('**/api/auth/signin/http-email*', async (route) => {
 
-  test('Should redirect to specific page after login if redirectTo is provided', 
-    async ({ page, skipOnEmptyEnvironment, login }) => {
-      const redirectTo = '/cite/10/';
+      const formData = new URLSearchParams(await route.request().postData());
 
-      await page.goto(`${url}?redirectTo=${redirectTo}`);
-      await page.locator('input[name=email]').fill(config.E2E_ADMIN_USERNAME);
-      await page.locator('input[name=password]').fill(config.E2E_ADMIN_PASSWORD);
-      await page.locator('[data-cy="login-btn"]').click();
+      expect(formData.get('callbackUrl')).toBe(initialUrl);
 
-      await expect(page).toHaveURL(redirectTo, { timeout: 60000 });
-    }
-  );
+      await route.fulfill({
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: "http://localhost:8000/api/auth/verify-request?provider=http-email&type=email",
+        })
+      });
+    });
 
-  test('Should display error toast if the email address or password is incorrect', async ({ page }) => {
-    await page.goto(url);
-    await page.locator('input[name=email]').fill('fakeUser@test.com');
-    await page.locator('input[name=password]').fill('fakePassword');
+    await expect(async () => {
+      await page.locator('input[name=email]').clear();
+      await page.locator('input[name=email]').fill(email);
+      await expect(page.locator('[data-cy="login-btn"]')).toBeEnabled({ timeout: 1000 });
+    }).toPass();
+
+    const signupResponse = page.waitForResponse('**/api/auth/signin/http-email*');
+
     await page.locator('[data-cy="login-btn"]').click();
 
-    await expect(page.locator('[data-cy="toast"]')).toBeVisible();
-    await expect(page.locator('[data-cy="toast"]')).toContainText('unauthorized');
+    await signupResponse;
+
+    await expect(page.getByText(`A sign in link has been sent to ${email}`)).toBeVisible();
   });
+
+  test('Should redirect to specific page after login if redirectTo is provided',
+    async ({ page, skipOnEmptyEnvironment, login }) => {
+      const redirectTo = '/cite/1/';
+
+      const magicLink = await generateMagicLink('test.user@incidentdatabase.ai', redirectTo);
+
+      await page.goto(magicLink);
+
+      await expect(page).toHaveURL(redirectTo);
+    }
+  );
 
   test('Should disable Login button if email address is not valid', async ({ page }) => {
     await page.goto(url);
     await page.locator('input[name=email]').fill('fakeUser');
-    await page.locator('input[name=password]').fill('fakePassword');
     await expect(page.locator('[data-cy="login-btn"]')).toBeDisabled();
 
     await page.locator('input[name=email]').fill('fakeUser@test.com');
     await expect(page.locator('[data-cy="login-btn"]')).toBeEnabled();
-  });
-
-  test('Should redirect to forgot password page if the user clicks on "Forgot password?" link', async ({ page }) => {
-    await page.goto(url);
-    await page.getByText('Forgot password?').click();
-    await expect(page).toHaveURL('/forgotpassword/', { timeout: 30000 });
-  });
-
-  test('Should give the option to resend Email verification if the user is not confirmed', async ({ page, login }) => {
-    await conditionalIntercept(
-      page,
-      '**/login',
-      (req) => req.method() == "POST" && req.postDataJSON().username == config.E2E_ADMIN_USERNAME,
-      {
-        error: 'confirmation required',
-        error_code: 'AuthError',
-        link: 'https://services.cloud.mongodb.com/groups/633205e6aecbcc4b2c2067c3/apps/633207f10d438f13ab3ab4d6/logs?co_id=6549772172bdb9e8eadeea95'
-      },
-      'Login',
-      401
-    );
-
-    await conditionalIntercept(
-      page,
-      '**/auth/providers/local-userpass/confirm/call',
-      (req) => req.postDataJSON().email == config.E2E_ADMIN_USERNAME,
-      {},
-      'Confirmation',
-      204
-    );
-
-    await page.goto(url);
-
-    await page.locator('input[name=email]').fill(config.E2E_ADMIN_USERNAME);
-    await page.locator('input[name=password]').fill(config.E2E_ADMIN_PASSWORD);
-    await page.locator('[data-cy="login-btn"]').click();
-
-    await waitForRequest('Login');
-    await expect(page.locator('[data-cy="toast"]').getByText('Resend Verification email')).toBeVisible();
-    await page.locator('[data-cy="toast"]').getByText('Resend Verification email').click();
-
-    await waitForRequest('Confirmation');
-    await expect(page.locator('[data-cy="toast"]').getByText(`Verification email sent to ${config.E2E_ADMIN_USERNAME}`)).toBeVisible();
   });
 });

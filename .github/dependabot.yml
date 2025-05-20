@@ -5,7 +5,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/site/gatsby-site/"
     target-branch: "staging"
     schedule:
       interval: "weekly"

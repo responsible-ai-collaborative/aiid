@@ -1,6 +1,6 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
+import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
 
 describe(`Reports`, () => {
@@ -56,7 +56,7 @@ describe(`Reports`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
 
         const response = await makeRequest(url, mutationData);
 
@@ -72,28 +72,31 @@ describe(`Reports`, () => {
 
     it(`Update reports translations`, async () => {
 
+        // This mutation updates the Spanish translation of a report and returns the Spanish and French translations
         const mutationData = {
             query: `
                mutation (
                     $input: UpdateOneReportTranslationInput!
-                    $language: String!
+                    $languages: [String!]!
                 ) {
                 updateOneReportTranslation(input: $input) {
-                        translations(input: $language) {
+                    translations(languages: $languages) {
                         title
                         text
-                        }
+                        plain_text
+                        language
                     }
-                }`,
+                }
+            }`,
             variables: {
                 input: {
                     language: "es",
-                    plain_text: "this is plain text",
+                    plain_text: "this is plain text in spanish",
                     report_number: 1,
-                    text: "this is the text",
-                    title: "this is the title"
+                    text: "this is the text in spanish",
+                    title: "this is the title in spanish"
                 },
-                language: "es"
+                languages: ["es", "fr"]
             }
         };
 
@@ -118,16 +121,26 @@ describe(`Reports`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
 
         const response = await makeRequest(url, mutationData);
 
         expect(response.body.data).toMatchObject({
             updateOneReportTranslation: {
-                translations: {
-                    title: "this is the title",
-                    text: "this is the text"
-                }
+                translations: [
+                    {
+                        language: "es",
+                        title: "this is the title in spanish",
+                        text: "this is the text in spanish",
+                        plain_text: "this is plain text in spanish",
+                    },
+                    {
+                        language: "fr",
+                        title: null,
+                        text: null,
+                        plain_text: null,
+                    },
+                ]
             }
         })
     });
@@ -183,7 +196,7 @@ describe(`Reports`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
+        mockSession('123');
 
         const response = await makeRequest(url, mutationData);
 

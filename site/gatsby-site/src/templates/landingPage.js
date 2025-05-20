@@ -47,9 +47,21 @@ const LandingPage = (props) => {
       latestIncidentsReportNumbers.includes(r.report_number)
     );
 
+    // Set incident title translation
+    const incidentTranslation = data.incidentTranslations?.nodes.find(
+      (translation) => translation.incident_id === incident.incident_id
+    );
+
+    if (incidentTranslation) {
+      incident.title = incidentTranslation.title;
+      incident.isTranslated = true;
+    }
+
     if (report.language !== language) {
-      const translation = data[`latestIncidentsReports_${language}`]?.edges.find(
-        (translation) => translation.node.report_number === report.report_number
+      const translation = data.latestIncidentsReportsTranslations?.edges.find(
+        (translation) =>
+          translation.node.report_number === report.report_number &&
+          translation.node.language === language
       );
 
       if (translation) {
@@ -189,6 +201,7 @@ export const query = graphql`
     $latestReportNumber: Int
     $latestIncidentsReportNumbers: [Int]
     $locale: String!
+    $latestIncidentIds: [Int]
   ) {
     latestReportIncident: allMongodbAiidprodIncidents(
       filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
@@ -229,7 +242,7 @@ export const query = graphql`
       cloudinary_id
       language
     }
-    latestIncidentsReports_es: allMongodbTranslationsReportsEs(
+    latestIncidentsReportsTranslations: allMongodbTranslationsReports(
       filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
       edges {
@@ -237,40 +250,17 @@ export const query = graphql`
           title
           text
           report_number
+          language
         }
       }
     }
-    latestIncidentsReports_fr: allMongodbTranslationsReportsFr(
-      filter: { report_number: { in: $latestIncidentsReportNumbers } }
+    incidentTranslations: allMongodbTranslationsIncidents(
+      filter: { incident_id: { in: $latestIncidentIds }, language: { eq: $locale } }
     ) {
-      edges {
-        node {
-          title
-          text
-          report_number
-        }
-      }
-    }
-    latestIncidentsReports_ja: allMongodbTranslationsReportsJa(
-      filter: { report_number: { in: $latestIncidentsReportNumbers } }
-    ) {
-      edges {
-        node {
-          title
-          text
-          report_number
-        }
-      }
-    }
-    latestIncidentsReports_en: allMongodbTranslationsReportsEn(
-      filter: { report_number: { in: $latestIncidentsReportNumbers } }
-    ) {
-      edges {
-        node {
-          title
-          text
-          report_number
-        }
+      nodes {
+        title
+        incident_id
+        language
       }
     }
     latestPrismicPost: allPrismicBlog(

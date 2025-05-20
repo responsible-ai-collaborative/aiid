@@ -13,7 +13,8 @@ const adapter = require('gatsby-adapter-netlify').default;
 
 let googleTrackingIds = [];
 
-if (process.env.SITE_URL === config.gatsby.siteUrl) {
+// TODO: Remove this once we have a new env variable ENVIRONMENT to check against
+if (process.env.SITE_URL === 'https://incidentdatabase.ai') {
   googleTrackingIds.push(config.gatsby.gaTrackingId);
 }
 
@@ -87,24 +88,19 @@ const plugins = [
         'classifications',
         'reports',
         'entities',
+        'entity_relationships',
       ],
       connectionString: config.mongodb.connectionString,
-      extraParams: {
-        replicaSet: config.mongodb.replicaSet,
-      },
+      ...(config.mongodb.replicaSet
+        ? { extraParams: { replicaSet: config.mongodb.replicaSet } }
+        : {}),
     },
   },
   {
     resolve: 'gatsby-source-mongodb',
     options: {
       dbName: 'translations',
-      collection: ['reports'].reduce(
-        (collections, name) => [
-          ...collections,
-          ...config.i18n.availableLanguages.map((lang) => `${name}_${lang}`),
-        ],
-        []
-      ),
+      collection: ['reports', 'incidents'],
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
@@ -250,7 +246,9 @@ const plugins = [
           'variants',
           'footer',
           'sponsors',
+          'reports',
           'incidents',
+          'auth',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
@@ -270,6 +268,7 @@ const plugins = [
         sidebar: require('./custom_types/sidebar.json'),
         sidebar_item: require('./custom_types/sidebar_item.json'),
         sponsor: require('./custom_types/sponsor.json'),
+        update: require('./custom_types/update.json'),
       },
       routes: [
         {

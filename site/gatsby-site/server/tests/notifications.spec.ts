@@ -1,8 +1,7 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, seedFixture, startTestServer } from "./utils";
-import * as context from '../context';
-import * as common from '../fields/common';
+import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
+import * as userCacheManager from '../fields/userCacheManager';
 import * as emails from '../emails';
 import { DBEntity, DBIncident, DBNotification, DBReport, DBSubmission, DBSubscription, DBUser } from '../interfaces';
 import config from '../config';
@@ -42,7 +41,8 @@ describe(`Notifications`, () => {
         });
 
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        mockSession('123');
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         await processNotifications();
 
@@ -62,23 +62,31 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'new-incidents',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
             },
             {
                 type: 'incident',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
             {
                 type: 'submission-promoted',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             }
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
+                roles: ['admin'],
+            }
+        ]
+
+        const authUsers = [
+            {
+                _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                email: 'test@test.com',
                 roles: ['admin'],
             }
         ]
@@ -90,7 +98,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -142,13 +150,16 @@ describe(`Notifications`, () => {
                 incidents,
                 entities,
                 reports,
+            },
+            auth: {
+                users: authUsers,
             }
         });
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
+        mockSession('5f8f4b3b9b3e6f001f3b3b3b');
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
 
         const result = await processNotifications();
@@ -159,7 +170,7 @@ describe(`Notifications`, () => {
             recipients: [
                 {
                     email: "test@test.com",
-                    userId: "123",
+                    userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 },
             ],
             subject: "New Incident {{incidentId}} was created",
@@ -194,19 +205,19 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'entity',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 entityId: 'entity-1',
             },
             {
                 type: 'incident',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 roles: ['admin'],
             }
         ]
@@ -218,7 +229,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -270,14 +281,22 @@ describe(`Notifications`, () => {
                 incidents,
                 entities,
                 reports,
+            },
+            auth: {
+                users: [
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                        email: 'test@test.com',
+                        roles: ['admin'],
+                    }
+                ]
             }
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
+        mockSession('5f8f4b3b9b3e6f001f3b3b3b');
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -286,7 +305,7 @@ describe(`Notifications`, () => {
             recipients: [
                 {
                     email: "test@test.com",
-                    userId: "123",
+                    userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 },
             ],
             subject: "New Incident for {{entityName}}",
@@ -322,19 +341,19 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'incident',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
             {
                 type: 'submission-promoted',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             }
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 roles: ['admin'],
             }
         ]
@@ -346,7 +365,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -398,12 +417,21 @@ describe(`Notifications`, () => {
                 incidents,
                 entities,
                 reports,
+            },
+            auth: {
+                users: [
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                        email: 'test@test.com',
+                        roles: ['admin'],
+                    }
+                ]
             }
         });
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -412,7 +440,7 @@ describe(`Notifications`, () => {
             recipients: [
                 {
                     email: "test@test.com",
-                    userId: "123",
+                    userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 },
             ],
             subject: "Incident {{incidentId}} was updated",
@@ -442,18 +470,18 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'new-incidents',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
             },
             {
                 type: 'incident',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 roles: ['admin'],
             }
         ]
@@ -465,7 +493,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -517,13 +545,22 @@ describe(`Notifications`, () => {
                 incidents,
                 entities,
                 reports,
+            },
+            auth: {
+                users: [
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                        email: 'test@test.com',
+                        roles: ['admin'],
+                    }
+                ]
             }
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
@@ -532,7 +569,7 @@ describe(`Notifications`, () => {
             recipients: [
                 {
                     email: "test@test.com",
-                    userId: "123",
+                    userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 },
             ],
             subject: "Incident {{incidentId}} was updated",
@@ -552,29 +589,39 @@ describe(`Notifications`, () => {
     it(`processNotifications mutation - notifications of submission promotion`, async () => {
 
         const notifications: DBNotification[] = [
-            {
-                processed: false,
-                type: 'submission-promoted',
-                incident_id: 1,
-                userId: '123',
-            },
+          {
+              processed: false,
+              type: 'submission-promoted',
+              incident_id: 1,
+              userId: '5f8f4b3b9b3e6f001f3b3b3b',
+          },
+          {
+              processed: false,
+              type: 'submission-promoted',
+              incident_id: 2,
+              userId: '60a7c5b7b4f5b8a6d8f9c7e4',
+          },
         ]
 
         const subscriptions: DBSubscription[] = [
             {
                 type: 'new-incidents',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
             },
             {
                 type: 'incident',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                roles: ['admin'],
+            },
+            {
+                userId: "60a7c5b7b4f5b8a6d8f9c7e4",
                 roles: ['admin'],
             }
         ]
@@ -586,7 +633,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -598,7 +645,20 @@ describe(`Notifications`, () => {
                 editors: [],
                 reports: [1],
                 implicated_systems: [],
-            }
+            },
+
+            {
+              incident_id: 2,
+              title: 'Incident 2',
+              description: 'Incident 2 description',
+              "Alleged deployer of AI system": [],
+              "Alleged developer of AI system": [],
+              "Alleged harmed or nearly harmed parties": [],
+              date: new Date().toISOString(),
+              editors: [],
+              reports: [2],
+              implicated_systems: [],
+          }
         ]
 
         const reports: DBReport[] = [
@@ -638,22 +698,37 @@ describe(`Notifications`, () => {
                 incidents,
                 entities,
                 reports,
+            },
+            auth: {
+                users: [
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                        email: 'test@test.com',
+                        roles: ['admin'],
+                    },
+                    {
+                        _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4'),
+                        email: 'user2@test.com',
+                        roles: ['admin'],
+                    }
+                ]
             }
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
+        mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+        mockSession('60a7c5b7b4f5b8a6d8f9c7e4');
+
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
         const result = await processNotifications();
 
-        expect(sendEmailMock).toHaveBeenCalledTimes(1);
+        expect(sendEmailMock).toHaveBeenCalledTimes(2);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",
-                    userId: "123",
+                    userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 },
             ],
             subject: "Your submission has been approved!",
@@ -666,7 +741,26 @@ describe(`Notifications`, () => {
             },
             templateId: "SubmissionApproved",
         }));
-        expect(result).toBe(1);
+        
+        expect(sendEmailMock).nthCalledWith(2, expect.objectContaining({
+            recipients: [
+                {
+                    email: "user2@test.com",
+                    userId: "60a7c5b7b4f5b8a6d8f9c7e4",
+                },
+            ],
+            subject: "Your submission has been approved!",
+            dynamicData: {
+                incidentId: "2",
+                incidentTitle: "Incident 2",
+                incidentUrl: config.SITE_URL + "/cite/2",
+                incidentDescription: "Incident 2 description",
+                incidentDate: incidents[1].date,
+            },
+            templateId: "SubmissionApproved",
+        }));
+
+        expect(result).toBe(2);
     });
 
     it(`Should create Incident and Entity Notifications on Incident creation`, async () => {
@@ -697,7 +791,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
 
         const newIncident: IncidentInsertType = {
@@ -741,6 +835,12 @@ describe(`Notifications`, () => {
         expect(result.body.data.notifications).toMatchObject([
             {
                 type: 'new-incidents',
+                incident_id: 1,
+                processed: false,
+                entity_id: null,
+            },
+            {
+                type: "ai-briefing",
                 incident_id: 1,
                 processed: false,
                 entity_id: null,
@@ -811,7 +911,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
         const mutationData: { query: string, variables: { input: PromoteSubmissionToReportInput } } = {
             query: `
@@ -855,10 +955,16 @@ describe(`Notifications`, () => {
 
         expect(result.body.data.notifications).toMatchObject([
             {
-                type: "new-incidents",
+              type: "new-incidents",
+              incident_id: 1,
+              processed: false,
+              entity_id: null,
+            },
+            {
+                entity_id: null,
                 incident_id: 1,
                 processed: false,
-                entity_id: null,
+                type: "ai-briefing",
             },
             {
                 entity_id: "entity-1",
@@ -1029,7 +1135,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
         const mutationData: { query: string, variables: { filter: IncidentFilterType, update: IncidentUpdateType } } = {
             query: `
@@ -1149,7 +1255,7 @@ describe(`Notifications`, () => {
         });
 
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "user1" })
+        mockSession('user1');
 
         const mutationData: { query: string, variables: { filter: IncidentFilterType, update: IncidentUpdateType } } = {
             query: `
@@ -1199,31 +1305,31 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'new-incidents',
-                userId: 'user1',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
             },
             {
                 type: 'new-incidents',
-                userId: 'user2',
+                userId: '5f8f4b3b9b3e6f001f3b3b3c',
             },
             {
                 type: 'incident',
-                userId: 'user1',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
             {
                 type: 'submission-promoted',
-                userId: 'user1',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             }
         ]
 
         const users: DBUser[] = [
             {
-                userId: "user1",
+                userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 roles: ['admin'],
             },
             {
-                userId: "user2",
+                userId: "5f8f4b3b9b3e6f001f3b3b3c",
                 roles: ['subscriber'],
             }
         ]
@@ -1239,7 +1345,7 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -1291,20 +1397,24 @@ describe(`Notifications`, () => {
                 incidents,
                 entities,
                 reports,
+            },
+            auth: {
+                users: [
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                        email: 'test@test.com',
+                        roles: ['admin'],
+                    },
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3c'),
+                        email: 'test2@test.com',
+                        roles: ['subscriber'],
+                    }
+                ]
             }
         });
 
-        const mutationData = {
-            query: `
-                mutation {
-                    processNotifications
-                }
-            `,
-        };
-
-        jest.spyOn(emails, 'sendEmail').mockRestore();
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValueOnce({ userId: 'user1', email: 'test@test.com' })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValueOnce({ userId: 'user2', email: 'test2@test.com' });
+        jest.spyOn(emails, 'sendBulkEmails').mockRestore();
 
         const mockMailersendBulkSend = jest.spyOn(emails, 'mailersendBulkSend').mockResolvedValue();
 
@@ -1320,7 +1430,7 @@ describe(`Notifications`, () => {
             to: [
                 {
                     email: "test@test.com",
-                    name: "",
+                    name: undefined,
                 },
             ],
             cc: undefined,
@@ -1352,7 +1462,7 @@ describe(`Notifications`, () => {
                         developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         email: "test@test.com",
-                        userId: "user1",
+                        userId: "5f8f4b3b9b3e6f001f3b3b3b",
                         siteUrl: "http://localhost:8000",
                         implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
@@ -1369,7 +1479,7 @@ describe(`Notifications`, () => {
             to: [
                 {
                     email: "test2@test.com",
-                    name: "",
+                    name: undefined,
                 },
             ],
             cc: undefined,
@@ -1401,7 +1511,7 @@ describe(`Notifications`, () => {
                         developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                         email: "test2@test.com",
-                        userId: "user2",
+                        userId: "5f8f4b3b9b3e6f001f3b3b3c",
                         siteUrl: "http://localhost:8000",
                         implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
@@ -1424,23 +1534,23 @@ describe(`Notifications`, () => {
         const subscriptions: DBSubscription[] = [
             {
                 type: 'new-incidents',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
             },
             {
                 type: 'incident',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             },
             {
                 type: 'submission-promoted',
-                userId: '123',
+                userId: '5f8f4b3b9b3e6f001f3b3b3b',
                 incident_id: 1,
             }
         ]
 
         const users: DBUser[] = [
             {
-                userId: "123",
+                userId: "5f8f4b3b9b3e6f001f3b3b3b",
                 roles: ['admin'],
             }
         ]
@@ -1452,7 +1562,147 @@ describe(`Notifications`, () => {
             }
         ]
 
-        const incidents: DBIncident[] = [
+        const incidents: Partial<DBIncident>[] = [
+            {
+                incident_id: 1,
+                title: 'Incident 1',
+                description: 'Incident 1 description',
+                "Alleged deployer of AI system": [],
+                "Alleged developer of AI system": [],
+                "Alleged harmed or nearly harmed parties": [],
+                date: new Date().toISOString(),
+                editors: [],
+                reports: [1],
+                implicated_systems: [],
+            }
+        ]
+
+        const reports: DBReport[] = [
+            {
+                report_number: 1,
+                title: 'Report 1',
+                description: 'Report 1 description',
+                authors: [],
+                cloudinary_id: 'cloudinary_id',
+                date_downloaded: new Date().toISOString(),
+                date_modified: new Date().toISOString(),
+                date_published: new Date().toISOString(),
+                date_submitted: new Date().toISOString(),
+                epoch_date_downloaded: 1,
+                epoch_date_modified: 1,
+                epoch_date_published: 1,
+                epoch_date_submitted: 1,
+                image_url: 'image_url',
+                language: 'en',
+                plain_text: 'plain_text',
+                source_domain: 'source_domain',
+                submitters: [],
+                tags: [],
+                text: 'text',
+                url: 'url',
+                user: 'user_id',
+            }
+        ]
+
+        await seedFixture({
+            customData: {
+                users,
+                notifications,
+                subscriptions,
+            },
+            aiidprod: {
+                incidents,
+                entities,
+                reports,
+            },
+            auth: {
+                users: [
+                    {
+                        _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+                        email: 'test@test.com',
+                        roles: ['admin'],
+                    }
+                ]
+            }
+        });
+
+
+        mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+
+
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
+            throw new Error('Failed to send email');
+        });
+
+        const expectedErrorMessage = "[Process Pending Notifications: New Incidents]: Failed to send email";
+        await expect(processNotifications()).rejects.toThrow(expectedErrorMessage);
+
+        expect(sendEmailMock).toHaveBeenCalledTimes(1);
+
+        const result = await makeRequest(url, {
+            query: `
+            query {
+                notifications {
+                    type
+                    incident_id
+                    processed
+                    entity_id
+                }
+            }
+            `});
+
+        expect(result.body.data.notifications).toMatchObject([
+            {
+                type: 'new-incidents',
+                incident_id: 1,
+                processed: false,
+                entity_id: null,
+            },
+        ]);
+    });
+
+    it('Should not crash if no recipients found', async () => {
+
+        const notifications: DBNotification[] = [
+            {
+                processed: false,
+                type: 'new-incidents',
+                incident_id: 1,
+            },
+        ]
+
+        const subscriptions: DBSubscription[] = [
+            {
+                type: 'new-incidents',
+                userId: '4a3f9c0d5e7b8a1c2d3e4f60', // Random user id that doesn't exist
+            },
+            {
+                type: 'incident',
+                userId: '4a3f9c0d5e7b8a1c2d3e4f60',
+                incident_id: 1,
+            },
+            {
+                type: 'submission-promoted',
+                userId: '4a3f9c0d5e7b8a1c2d3e4f60',
+                incident_id: 1,
+            }
+        ]
+
+        const users: DBUser[] = [
+            {
+                userId: "4a3f9c0d5e7b8a1c2d3e4f60",
+                roles: ['admin'],
+            }
+        ]
+
+        const entities: DBEntity[] = [
+            {
+                entity_id: 'entity-1',
+                name: 'Entity 1',
+            }
+        ]
+
+        const incidents: Partial<DBIncident>[] = [
             {
                 incident_id: 1,
                 title: 'Incident 1',
@@ -1507,17 +1757,19 @@ describe(`Notifications`, () => {
             }
         });
 
+        mockSession('4a3f9c0d5e7b8a1c2d3e4f60');
 
-        jest.spyOn(context, 'verifyToken').mockResolvedValue({ sub: "123" })
-        jest.spyOn(common, 'getUserAdminData').mockResolvedValue({ userId: '123', email: 'test@test.com' });
+        // No recipients
+        jest.spyOn(userCacheManager.UserCacheManager.prototype, 'getUserAdminData').mockResolvedValue(null);
 
-        const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockImplementation(() => {
+        const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockImplementation(() => {
             throw new Error('Failed to send email');
         });
 
 
-        await expect(processNotifications()).rejects.toThrow('Failed to send email');
-        expect(sendEmailMock).toHaveBeenCalledTimes(1);
+        await processNotifications();
+
+        expect(sendEmailMock).not.toHaveBeenCalled();
 
         const result = await makeRequest(url, {
             query: `
@@ -1531,11 +1783,12 @@ describe(`Notifications`, () => {
             }
             `});
 
+        // notifications should be marked as processed
         expect(result.body.data.notifications).toMatchObject([
             {
                 type: 'new-incidents',
                 incident_id: 1,
-                processed: false,
+                processed: true,
                 entity_id: null,
             },
         ]);

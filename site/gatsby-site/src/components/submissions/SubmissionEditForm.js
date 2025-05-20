@@ -19,7 +19,7 @@ import {
 import { debounce } from 'debounce';
 import { STATUS } from 'utils/submissions';
 import StepContainer from 'components/forms/SubmissionWizard/StepContainer';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import { UPSERT_SUBSCRIPTION } from '../../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import isEmpty from 'lodash/isEmpty';
@@ -353,7 +353,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             {values.status ? STATUS[values.status].text : STATUS.pendingReview.text}
           </Trans>
         </Badge>
-        <SubmissionForm />
+        <SubmissionForm promoType={promoType} />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
       </StepContainer>
       <div className="flex md:w-1/3 pt-8 pb-6 pl-6 items-center flex-col justify-between">
@@ -433,9 +433,13 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
                 data-cy="promote-to-report-button"
               >
                 <FontAwesomeIcon className="mr-2" icon={faCheck} />
-                <Trans ns="submitted" id={values.incident_ids[0]}>
-                  Add to incident {{ id: values.incident_ids[0] }}
-                </Trans>
+                {values.incident_ids.length > 1 ? (
+                  <Trans ns="submitted">Add to incidents {values.incident_ids.join(', ')}</Trans>
+                ) : (
+                  <Trans ns="submitted" id={values.incident_ids[0]}>
+                    Add to incident {{ id: values.incident_ids[0] }}
+                  </Trans>
+                )}
               </Button>
             </div>
           )}

@@ -9,7 +9,7 @@ import {
   NumericArrayParam,
 } from 'use-query-params';
 import Link from 'components/ui/Link';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse, getUnixTime } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
@@ -113,13 +113,11 @@ const SubmitForm = () => {
       };
     }
 
-    if (!loading) {
-      if (user?.profile?.email) {
-        submission.user = { link: user.id };
+    if (!loading && user) {
+      submission.user = { link: user.id };
 
-        if (user.customData.first_name && user.customData.last_name) {
-          submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
-        }
+      if (user.first_name && user.last_name) {
+        submission.submitters = [`${user.first_name} ${user.last_name}`];
       }
     }
     setSubmission(submission);
@@ -177,6 +175,8 @@ const SubmitForm = () => {
       const url = new URL(values?.url);
 
       const source_domain = getSourceDomain(url);
+
+      delete values.is_incident_report;
 
       const submission = {
         ...values,
@@ -244,11 +244,11 @@ const SubmitForm = () => {
   const clearForm = () => {
     const submission = { ...SUBMISSION_INITIAL_VALUES };
 
-    if (user?.profile?.email) {
+    if (user) {
       submission.user = { link: user.id };
 
-      if (user.customData.first_name && user.customData.last_name) {
-        submission.submitters = [`${user.customData.first_name} ${user.customData.last_name}`];
+      if (user.first_name && user.last_name) {
+        submission.submitters = [`${user.first_name} ${user.last_name}`];
       }
     }
     setSubmission(submission);

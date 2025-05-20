@@ -6,6 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import DateLabel from 'components/ui/DateLabel';
 import Link from 'components/ui/Link';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
   const report = incident.reports[0];
@@ -27,13 +28,17 @@ const LatestIncidentReport = ({ incident, key, isLatest = false }) => {
 
   const reportLink = `/cite/${incident_id}#r${report_number}`;
 
+  const incidentTitle = `${t('Incident')} ${incident.incident_id}: ${incident.title}`;
+
   return (
     <Card key={key}>
       <CardImage {...{ reportLink, cloudinary_id, image_url, title, t, incident_id }} />
       <CardBody
         {...{
           report,
-          incident,
+          incidentId: incident.incident_id,
+          incidentTitle,
+          isIncidentTranslated: incident.isTranslated,
           isLatest,
           reportLink,
           epoch_date_submitted,
@@ -77,7 +82,9 @@ const CardImage = ({ reportLink, cloudinary_id, image_url, title, t, incident_id
 
 const CardBody = ({
   report,
-  incident,
+  incidentId,
+  incidentTitle,
+  isIncidentTranslated,
   isLatest,
   reportLink,
   epoch_date_submitted,
@@ -87,11 +94,12 @@ const CardBody = ({
 }) => {
   return (
     <div className="h-full p-6">
-      <LocalizedLink to={`/cite/${incident.incident_id}`} className="text-gray-900">
-        <h4 className="text-2xl">
-          Incident {incident.incident_id}: {incident.title}
+      <LocalizedLink to={`/cite/${incidentId}`} className="text-gray-900">
+        <h4 className="text-2xl" data-testid="latest-incident-title">
+          {incidentTitle}
         </h4>
       </LocalizedLink>
+      {isIncidentTranslated && <TranslationBadge />}
       <ReportPreview
         {...{
           reportLink,

@@ -10,9 +10,6 @@ on:
         description: The commit SHA to run the tests against
         type: string
         required: true
-      runner-label:
-        description: The label of the runner to use
-        type: string
       cache-modifier:
         description: A modifier for the cache key used to bypass existing cache
         type: string
@@ -24,7 +21,7 @@ jobs:
     name: Run tests
     environment: ${{ inputs.environment }}
     runs-on:
-      labels: ${{ inputs.runner-label || 'ubuntu-latest' }}
+      labels: 'ubuntu-latest'
     defaults:
       run:
         shell: bash
@@ -58,20 +55,21 @@ jobs:
       - name: Jest run
         run: npm run test:api:ci
         env:
-          REALM_APP_ID: dummy
-          REALM_API_APP_ID: dummy
-          REALM_API_GROUP_ID: dummy
-          REALM_API_PUBLIC_KEY: dummy
-          REALM_API_PRIVATE_KEY: dummy
-          REALM_GRAPHQL_API_KEY: dummy
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
           ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: sarasa
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com
           SITE_URL: http://localhost:8000
+          GATSBY_SITE_URL: http://localhost:8000
           NEXTAUTH_URL: http://localhost:8000
           NEXTAUTH_SECRET: 678x1irXYWeiOqTwCv1awvkAUbO9eHa5xzQEYhxhMms=
+          GATSBY_PRISMIC_REPO_NAME: dummy
+          PRISMIC_ACCESS_TOKEN: dummy
+          GOOGLE_TRANSLATE_API_KEY: dummy
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          PRISMIC_SECRET: dummy
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4

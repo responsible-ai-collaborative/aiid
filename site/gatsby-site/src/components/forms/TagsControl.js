@@ -10,6 +10,7 @@ const TagsControl = ({
   disabled = false,
   options = undefined,
   handleChange = undefined,
+  splitChar = ',',
 }) => {
   const {
     0: { value },
@@ -37,6 +38,7 @@ const TagsControl = ({
         disabled,
         className,
         options,
+        splitChar,
       }}
     />
   );

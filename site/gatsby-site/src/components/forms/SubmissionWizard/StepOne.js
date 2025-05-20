@@ -23,6 +23,7 @@ import {
   faDownload,
   faNewspaper,
   faTenge,
+  faFile,
 } from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
@@ -117,7 +118,7 @@ const FormDetails = ({
   urlFromQueryString,
   setSavingInLocalStorage,
 }) => {
-  const { t } = useTranslation(['submit']);
+  const { t } = useTranslation(['submit', 'translation']);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -171,6 +172,12 @@ const FormDetails = ({
       fetchNews(urlFromQueryString);
     }
   }, [urlFromQueryString]);
+
+  useEffect(() => {
+    if (values.is_incident_report === null || values.is_incident_report === undefined) {
+      setFieldValue('is_incident_report', true);
+    }
+  }, [values.is_incident_report]);
 
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
@@ -245,7 +252,12 @@ const FormDetails = ({
             btnDisabled={!!errors.url || !touched.url || parsingNews}
             btnText={t('Fetch info')}
           />
-          <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+          <RelatedIncidents
+            incident={values}
+            setFieldValue={setFieldValue}
+            columns={['byURL']}
+            triggerSearch={values['url']?.length}
+          />
         </FieldContainer>
 
         <FieldContainer>
@@ -279,6 +291,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byAuthors']}
+            triggerSearch={values['authors']?.length}
           />
         </FieldContainer>
 
@@ -301,6 +314,7 @@ const FormDetails = ({
             incident={values}
             setFieldValue={setFieldValue}
             columns={['byDatePublished']}
+            triggerSearch={values['date_published']?.length}
           />
         </FieldContainer>
 
@@ -364,6 +378,31 @@ const FormDetails = ({
             </Trans>
           </span>
           <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+        </FieldContainer>
+
+        <FieldContainer>
+          <div className="flex items-center mb-1">
+            <FontAwesomeIcon fixedWidth icon={faFile} title={t('Report Type')} className="mr-1" />
+            <Label popover="report_type" label={t('Report Type')} />
+          </div>
+          <Button.Group>
+            <Button
+              color={!values.is_incident_report ? 'light' : 'dark'}
+              onClick={() => {
+                setFieldValue('is_incident_report', true);
+              }}
+            >
+              {t('Incident', { ns: 'translation' })}
+            </Button>
+            <Button
+              color={!values.is_incident_report ? 'dark' : 'light'}
+              onClick={() => {
+                setFieldValue('is_incident_report', false);
+              }}
+            >
+              {t('Issue', { ns: 'translation' })}
+            </Button>
+          </Button.Group>
         </FieldContainer>
 
         <FieldContainer>
