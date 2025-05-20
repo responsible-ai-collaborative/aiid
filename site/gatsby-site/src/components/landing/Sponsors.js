@@ -14,45 +14,41 @@ import ReactMarkdown from 'react-markdown';
 
 const SponsorModal = ({ setModalState, modalState, modalName, children, title, logo, linkTo }) => {
   return (
-    <>
-      {modalState === modalName && (
-        <Modal
-          show={modalState === modalName}
-          onClose={() => setModalState('close')}
-          data-cy="sponsor-modal"
-        >
-          <Modal.Header>
-            <h5>{title}</h5>
-          </Modal.Header>
-          <Modal.Body>
-            {children}
-            {logo.gatsbyImageData ? (
-              <div className="flex justify-center items-center mt-2">
-                <Link to={linkTo} target="_blank">
-                  <GatsbyImage
-                    alt={`${title} Logo`}
-                    className="img-fluid rounded-lg w-[85%] max-w-[200px] max-h-[80px]"
-                    imgClassName="object-fill"
-                    image={logo.gatsbyImageData}
-                  />
-                </Link>
-              </div>
-            ) : (
-              <div className="mt-2">
-                <StyledImageModal src={`/images/${logo}`} linkTo={linkTo} />
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="flex justify-end w-full">
-              <Button color="dark" onClick={() => setModalState('close')} data-cy="close-modal">
-                <Trans>Close</Trans>
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
-      )}
-    </>
+    <Modal
+      show={modalState === modalName}
+      onClose={() => setModalState('close')}
+      data-cy="sponsor-modal"
+    >
+      <Modal.Header>
+        <h5>{title}</h5>
+      </Modal.Header>
+      <Modal.Body>
+        {children}
+        {logo.gatsbyImageData ? (
+          <div className="flex justify-center items-center mt-2">
+            <Link to={linkTo} target="_blank">
+              <GatsbyImage
+                alt={`${title} Logo`}
+                className="img-fluid rounded-lg w-[85%] max-w-[200px] max-h-[80px]"
+                imgClassName="object-fill"
+                image={logo.gatsbyImageData}
+              />
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-2">
+            <StyledImageModal src={`/images/${logo}`} linkTo={linkTo} />
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <div className="flex justify-end w-full">
+          <Button color="dark" onClick={() => setModalState('close')} data-cy="close-modal">
+            <Trans>Close</Trans>
+          </Button>
+        </div>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
