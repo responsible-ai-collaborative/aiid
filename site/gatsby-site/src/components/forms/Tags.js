@@ -14,6 +14,7 @@ export default function Tags({
   className,
   allowNew = true,
   stayOpen = false,
+  onBlur,
   splitChar = ',',
 }) {
   const [open, setOpen] = useState(false);
@@ -53,6 +54,9 @@ export default function Tags({
           commitTag(e.target.value);
         }
         setOpen(false);
+        if (onBlur) {
+          onBlur();
+        }
       }}
       multiple
       open={open && stayOpen ? true : undefined}

@@ -43,21 +43,21 @@ const StepOne = (props) => {
       .nullable(),
     authors: yup
       .string()
+      .required('*Author is required. Anonymous or the publication can be entered.')
       .min(3, '*Authors must have at least 3 characters')
       .max(200, "*Authors can't be longer than 200 characters")
-      .required('*Author is required. Anonymous or the publication can be entered.')
       .nullable(),
     date_published: yup
       .string()
       .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-      .test(isPastDate)
       .required('*Date published is required')
+      .test(isPastDate)
       .nullable(),
     date_downloaded: yup
       .string()
       .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-      .test(isPastDate)
       .required('*Date downloaded required')
+      .test(isPastDate)
       .nullable(),
     url: yup
       .string()
@@ -347,6 +347,7 @@ const FormDetails = ({
               position: 'relative',
               ...styles,
             }}
+            onBlur={() => setFieldTouched('text', true)}
           >
             {touched['text'] && errors['text'] && (
               <div
