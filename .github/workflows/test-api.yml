@@ -69,6 +69,7 @@ jobs:
           GOOGLE_TRANSLATE_API_KEY: dummy
           MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          PRISMIC_SECRET: dummy
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
