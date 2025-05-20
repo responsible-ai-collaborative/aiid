@@ -2,6 +2,8 @@ const path = require('path');
 
 const { switchLocalizedPath } = require('../i18n');
 
+const oecdMap = require('../data/aiid_matches_export');
+
 const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
@@ -56,6 +58,9 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       ...allMongodbAiidprodIncidents.nodes.find((incident) => incident.incident_id === incident_id),
     }));
 
+    const oecdId = oecdMap.find((o) => o.report.aiid_incident_ids.includes(incident_id))?.incident
+      .id;
+
     pageContexts.push({
       incident,
       incident_id,
@@ -68,6 +73,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      oecdId,
     });
   });
 
